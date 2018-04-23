@@ -1,0 +1,9 @@
+server:
+  port: 9003
+eureka:
+  client:
+    service-url:
+      default-zone: http://127.0.0.1:6003/eureka/
+spring:
+  application:
+    name: staff-app-server

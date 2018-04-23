@@ -1,0 +1,9 @@
+server:
+  port: 8001
+eureka:
+  client: 
+    service-url:
+      default-zone: http://127.0.0.1:6002/eureka/
+spring:
+  application:
+    name: order-server

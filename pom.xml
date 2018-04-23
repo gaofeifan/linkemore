@@ -22,5 +22,6 @@
   		<module>coupon-service</module>
   		<module>order-service</module>
   		<module>third-party-service</module>
+  		<module>common-service</module>
   	</modules>
 </project>

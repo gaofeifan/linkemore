@@ -1,5 +1,5 @@
 server:
-  port: 9007
+  port: 6007
 spring:
   application:
     name: turbine-server
@@ -13,4 +13,4 @@ turbine:
 eureka:
   client:
     service-url:
-      default-zone: http://127.0.0.1:9003/eureka/
+      default-zone: http://127.0.0.1:6003/eureka/

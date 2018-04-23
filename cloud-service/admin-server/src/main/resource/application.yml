@@ -1,5 +1,5 @@
 server:
-  port: 9002
+  port: 6002
 spring:  
   application:  
     name: admin-server
@@ -10,7 +10,7 @@ spring:
 eureka:
   client:
     service-url:
-      default-zone: http://127.0.0.1:9003/eureka/ 
+      default-zone: http://127.0.0.1:6003/eureka/ 
   
 management:
   security:

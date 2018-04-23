@@ -1,12 +1,12 @@
 server:
-  port: 9004
+  port: 6004
   
 spring:
   application:
     name: config-server
   boot: 
     admin:
-      url: http://127.0.0.1:9002
+      url: http://127.0.0.1:6002
   cloud:
     config:
       label: master
@@ -23,7 +23,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://127.0.0.1:9003/eureka/
+      defaultZone: http://127.0.0.1:6003/eureka/
 
 management:
   security:

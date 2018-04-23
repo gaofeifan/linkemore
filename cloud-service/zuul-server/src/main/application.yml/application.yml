@@ -1,16 +1,16 @@
 server:
-  port: 9005
+  port: 6005
 spring:
   application:
     name: zuul-server
   boot: 
     admin:
-      url: http://127.0.0.1:9002
+      url: http://127.0.0.1:6002
 
 eureka:
   client:
     service-url:
-      default-zone: http://127.0.0.1:9003/eureka/ 
+      default-zone: http://127.0.0.1:6003/eureka/ 
   
 management:
   security:
