@@ -1,0 +1,17 @@
+server:
+  port: 9005
+spring:
+  application:
+    name: zuul-server
+  boot: 
+    admin:
+      url: http://127.0.0.1:9002
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://127.0.0.1:9003/eureka/ 
+  
+management:
+  security:
+    enabled: false

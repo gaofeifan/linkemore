@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+	    <groupId>cn.linkmore</groupId>
+	    <artifactId>linkmore</artifactId>
+	    <version>2.0.0.1-RELEASE</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>cloud-service</artifactId> 
+ 	<packaging>pom</packaging>
+  	<name>linkmore cloud service</name>
+  	<description>linkmore cloud service</description> 
+	<modules>
+		<module>admin-server</module>
+		<module>eureka-server</module>
+		<module>zuul-server</module>
+		<module>turbine-server</module>
+		<module>sleuth-server</module>
+		<module>hystrix-dashboard</module>
+		<module>config-server</module>
+	</modules>
+</project>

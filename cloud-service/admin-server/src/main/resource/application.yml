@@ -1,0 +1,17 @@
+server:
+  port: 9002
+spring:  
+  application:  
+    name: admin-server
+  boot:  
+    admin:  
+      context-path: /index
+ 
+eureka:
+  client:
+    service-url:
+      default-zone: http://127.0.0.1:9003/eureka/ 
+  
+management:
+  security:
+    enabled: false 
