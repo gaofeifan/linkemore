@@ -9,8 +9,8 @@ spring:
 
 eureka:
   client:
-    service-url:
-      default-zone: http://127.0.0.1:6003/eureka/ 
+    serviceUrl:
+      defaultZone: http://127.0.0.1:6003/eureka/
   
 management:
   security:

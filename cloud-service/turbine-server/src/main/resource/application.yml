@@ -5,12 +5,12 @@ spring:
     name: turbine-server
 
 turbine:
-  app-config: eureka-consumer-ribbon-hystrix
-  cluster-name-expression: "default"
-  combine-host-port: true
+  appConfig: eureka-consumer-ribbon-hystrix
+  clusterNameExpression: "default"
+  combineHostPort: true
 
 #must dependent eureka server , it used be as service cluster monitor
 eureka:
   client:
-    service-url:
-      default-zone: http://127.0.0.1:6003/eureka/
+    serviceUrl:
+      defaultZone: http://127.0.0.1:6003/eureka/

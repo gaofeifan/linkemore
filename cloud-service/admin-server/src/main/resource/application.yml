@@ -1,17 +1,16 @@
 server:
   port: 6002
-spring:  
+spring:
   application:  
     name: admin-server
-  boot:  
-    admin:  
+  boot:
+    admin:
       context-path: /index
- 
 eureka:
   client:
-    service-url:
-      default-zone: http://127.0.0.1:6003/eureka/ 
+    serviceUrl:
+      defaultZone: http://127.0.0.1:6003/eureka/
   
 management:
   security:
-    enabled: false 
+    enabled: false

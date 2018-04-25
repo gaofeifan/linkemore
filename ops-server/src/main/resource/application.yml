@@ -1,8 +1,8 @@
 server:
-  port: 8000 
+  port: 9000 
 spring:
   application:
-    name: third-party-server
+    name: ops-server
   boot: 
     admin:
       url: http://127.0.0.1:6002

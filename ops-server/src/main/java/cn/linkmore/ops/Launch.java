@@ -1,4 +1,4 @@
-package cn.linkmore.staff;
+package cn.linkmore.ops;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

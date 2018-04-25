@@ -10,21 +10,18 @@
 	</parent>
 	<artifactId>eureka-server</artifactId>
 	<name>eureka-server</name>
-	<url>http://www.linkmoreparking.com</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-		<spring-cloud.version>Edgware.SR2</spring-cloud.version>
-	</properties>
-
+	<url>http://www.linkmoreparking.com</url>   
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-eureka-server</artifactId>
-		</dependency>
-	</dependencies>
-
+		</dependency>  
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-starter-client</artifactId>
+			<version>${spring-boot-admin.version}</version>
+		</dependency> 
+	</dependencies> 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -35,8 +32,7 @@
 				<scope>import</scope>
 			</dependency>
 		</dependencies>
-	</dependencyManagement>
-
+	</dependencyManagement> 
 	<build>
 		<plugins>
 			<plugin>

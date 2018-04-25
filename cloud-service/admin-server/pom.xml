@@ -10,15 +10,7 @@
 	</parent>
 	<artifactId>admin-server</artifactId>
 	<name>admin-server</name>
-	<url>http://www.linkmoreparking.com</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-		<spring-boot-admin.version>1.5.7</spring-boot-admin.version>
-		<spring-cloud.version>Edgware.SR2</spring-cloud.version>
-	</properties>
-
+	<url>http://www.linkmoreparking.com</url>  
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -63,7 +55,7 @@
 				<scope>import</scope>
 			</dependency>
 		</dependencies>
-	</dependencyManagement>
+	</dependencyManagement> 
 	<build>
 		<plugins>
 			<plugin>
@@ -72,4 +64,5 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 </project>
