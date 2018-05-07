@@ -1,17 +1,29 @@
 server:
-  port: 6001
+  port: 6001 
 spring:
   application:
     name: sleuth-server
   boot:
     admin:
-      url: http://127.0.0.1:6002 
+      url: http://127.0.0.1:6002  
+zipkin:
+  collector:
+    rabbitmq:
+      addresses: localhost:5672 
+      password: guest
+      username: guest
+      queue: zipkin
 
 eureka:
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
   client:
+    fetch-registry: true 
     serviceUrl:
-      defaultZone: http://127.0.0.1:6003/eureka/
-      
+      defaultZone: http://127.0.0.1:6003/eureka/  
 management:
   security:
-    enabled: false
+    enabled: false  

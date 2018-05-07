@@ -1,13 +1,16 @@
 package cn.linkmore.cloud.config;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.annotation.Configuration;
 /**
- * Hello world!
- *
+ * Boot admin server
+ * @author liwenlong
+ * @version 1。0
  */
-public class Launch 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
-}
+@Configuration 
+public class Launch { 
+	public static void main(String[] args) {
+		SpringApplication.run(Launch.class, args);
+	}
+
+} 

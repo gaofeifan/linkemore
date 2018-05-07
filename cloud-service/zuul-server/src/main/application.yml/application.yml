@@ -8,9 +8,37 @@ spring:
       url: http://127.0.0.1:6002
 
 eureka:
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
   client:
+    fetch-registry: true 
     serviceUrl:
-      defaultZone: http://127.0.0.1:6003/eureka/
+      defaultZone: http://127.0.0.1:6003/eureka/ 
+
+zuul:
+  host:
+    max-per-route-connections: 1000
+    max-total-connections: 1000
+  routes:
+    user-app-api:
+      path: /user-app/**  
+      serviceId: user-app-server
+    staff-app-api:
+      path: /staff-app/**  
+      serviceId: staff-app-server
+    wxapp-api:
+      path: /wxapp/**  
+      serviceId: wxapp-server
+    third-party-api:
+      path: /third-party/**  
+      serviceId: third-party-server
+    ops-api:
+      path: /ops/**  
+      serviceId: ops-server 
+  
   
 management:
   security:

@@ -6,6 +6,12 @@ spring:
   boot: 
     admin:
       url: http://127.0.0.1:6002
+security:
+  basic:
+    enabled: true
+  user:
+    name: linkmore
+    password: Linkmore@2018
 eureka:
   instance:
     hostname: 127.0.0.1

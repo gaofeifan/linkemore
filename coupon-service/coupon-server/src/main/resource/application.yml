@@ -6,6 +6,11 @@ spring:
   boot: 
     admin:
       url: http://127.0.0.1:6002
+  zipkin:
+    base-url: http://127.0.0.1:6001
+  sleuth:
+    sampler:
+      percentage: 1.0
 eureka:
   instance:
     instance-id: ${spring.application.name}:${server.port}

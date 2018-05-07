@@ -5,12 +5,17 @@ spring:
     name: turbine-server
 
 turbine:
-  appConfig: eureka-consumer-ribbon-hystrix
+  appConfig: wxapp-server,common-server
   clusterNameExpression: "default"
   combineHostPort: true
 
-#must dependent eureka server , it used be as service cluster monitor
 eureka:
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
   client:
+    fetch-registry: true 
     serviceUrl:
-      defaultZone: http://127.0.0.1:6003/eureka/
+      defaultZone: http://127.0.0.1:6003/eureka/ 

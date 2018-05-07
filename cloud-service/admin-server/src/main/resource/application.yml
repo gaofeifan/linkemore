@@ -7,7 +7,13 @@ spring:
     admin:
       context-path: /index
 eureka:
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
   client:
+    fetch-registry: true 
     serviceUrl:
       defaultZone: http://127.0.0.1:6003/eureka/
   

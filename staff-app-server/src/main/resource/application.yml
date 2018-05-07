@@ -15,8 +15,4 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://127.0.0.1:6003/eureka/ 
-
-feign:
-  hystrix:
-    enabled: true
+      defaultZone: http://127.0.0.1:6003/eureka/

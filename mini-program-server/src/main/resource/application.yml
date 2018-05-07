@@ -1,0 +1,28 @@
+server:
+  port: 9001 
+spring:
+  application:
+    name: mini-program-server
+  boot: 
+    admin:
+      url: http://127.0.0.1:6002
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  zipkin:
+    rabbitmq:
+      queue: zipkin 
+      
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
+  client:
+    fetch-registry: true 
+    serviceUrl:
+      defaultZone: http://127.0.0.1:6003/eureka/ 
+ 
