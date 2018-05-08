@@ -1,11 +1,11 @@
-package cn.linkmore.common.bean;
+package cn.linkmore.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import cn.linkmore.common.bean.ViewOrder.Direction;
+import cn.linkmore.bean.ViewOrder.Direction;
  
 /**
  * 通用 - 请求 - 分页封装

@@ -15,8 +15,8 @@ import zipkin2.reporter.Reporter;
 
 @SpringBootApplication 
 @EnableFeignClients(basePackages = { "cn.linkmore" })
-@ComponentScan(basePackages = { "cn.linkmore" })
-@EnableHystrix
+@ComponentScan(basePackages = { "cn.linkmore" }) 
+@EnableHystrix 
 public class Launch {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	

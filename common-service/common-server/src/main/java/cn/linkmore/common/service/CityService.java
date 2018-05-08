@@ -1,7 +1,7 @@
 package cn.linkmore.common.service;
 
-import cn.linkmore.common.bean.ViewPage;
-import cn.linkmore.common.bean.ViewPageable;
+import cn.linkmore.bean.ViewPage;
+import cn.linkmore.bean.ViewPageable;
 import cn.linkmore.common.entity.City;
 import cn.linkmore.common.response.ResCity;
 

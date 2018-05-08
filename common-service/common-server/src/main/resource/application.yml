@@ -7,7 +7,7 @@ spring:
     admin:
       url: http://127.0.0.1:6002
   zipkin:
-    base-url: http://127.0.0.1:6001
+    base-url: http://127.0.0.1:6001 
 eureka:
   instance:
     instance-id: ${spring.application.name}:${server.port}
@@ -17,12 +17,12 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://127.0.0.1:6003/eureka/  
+      defaultZone: http://127.0.0.1:6003/eureka/
       
 master-db:   
   url: jdbc:mysql://192.168.1.60:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
   username: ppyx_dev
-  password: PPYX_dev123
+  password: PPYX_dev123 
   driver-class-name: com.mysql.jdbc.Driver  
   initial-size: 10
   min-idle: 10
@@ -58,8 +58,23 @@ cluster-db:
   max-pool-prepared-statement-per-connection-size: 20 
   filters: stat,wall,slf4j 
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 
-     
-  
+
+redis:
+  host: 192.168.1.63
+  port: 7001
+  database: 1
+  timeout: 5000
+  password: ppyx!@#
+  pool-max-active: 500
+  pool-max-wait: -1
+  pool-max-idle: 100
+  pool-min-idle: 5
+  test-while-idle: true
+  test-on-borrow: true
+  test-on-create: true 
+  sentinel-master: ppyxmaster
+  sentinel-nodes: 192.168.1.61:26379
+   
 management:   
   port: 5566
   health:  

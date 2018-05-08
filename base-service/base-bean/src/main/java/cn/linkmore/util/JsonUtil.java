@@ -1,4 +1,4 @@
-package cn.linkmore.common.util;
+package cn.linkmore.util;
 
 
 import java.io.IOException;

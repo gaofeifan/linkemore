@@ -24,6 +24,7 @@
 	</properties>   
   	<modules>
   		<module>cloud-service</module>
+  		<module>base-service</module>
   		<module>prefecture-service</module>
   		<module>account-service</module>
   		<module>wxapp-server</module>

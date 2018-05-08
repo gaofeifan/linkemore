@@ -1,4 +1,4 @@
-package cn.linkmore.common.bean;
+package cn.linkmore.bean;
 
 import java.io.Serializable;
 import java.util.HashMap;

@@ -6,14 +6,14 @@ spring:
     name: config-server
   boot: 
     admin:
-      url: http://127.0.0.1:6002
+      url: http://127.0.0.1:6002 
+  profiles:
+    active: native
   cloud:
     config:
-      label: master
       server:
-        git:
-          uri: https://github.com/backkoms/spring-cloud-repo
-          search-paths: repo 
+        native:
+          search-locations: config-repo 
   rabbitmq:
     host: localhost
     port: 5672
@@ -32,7 +32,7 @@ management:
 #enforce config-service security
 security:
   user:
-    name: user
-    password: yourPW
+    name: linkmore
+    password: linkmore@2018
 
   

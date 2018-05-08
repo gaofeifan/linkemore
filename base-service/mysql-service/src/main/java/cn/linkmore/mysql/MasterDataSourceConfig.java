@@ -1,4 +1,4 @@
-package cn.linkmore.common.config;
+package cn.linkmore.mysql;
 
 import java.sql.SQLException;
 
@@ -25,6 +25,56 @@ import com.alibaba.druid.pool.DruidDataSource;
 @ConfigurationProperties(prefix = "master-db")
 @MapperScan(basePackages = MasterDataSourceConfig.PACKAGE, sqlSessionFactoryRef = "masterSqlSessionFactory")
 public class MasterDataSourceConfig {
+	
+	static final String PACKAGE = "cn.linkmore.*.dao.master";
+	static final String MAPPER_LOCATION = "classpath:/cn/linkmore/*/mapper/master/*.xml";
+
+	@Bean(name = "masterDataSource")
+	@Primary
+	public DataSource masterDataSource() {
+		DruidDataSource datasource = new DruidDataSource();
+		datasource.setUrl(this.getUrl());
+		datasource.setUsername(this.getUsername());
+		datasource.setPassword(this.getPassword());
+		datasource.setDriverClassName(this.getDriverClassName()); 
+		datasource.setInitialSize(this.getInitialSize());
+		datasource.setMinIdle(this.getMinIdle());
+		datasource.setMaxActive(this.getMaxActive());
+		datasource.setMaxWait(this.getMaxWait());
+		datasource.setTimeBetweenEvictionRunsMillis(this.getTimeBetweenEvictionRunsMillis());
+		datasource.setMinEvictableIdleTimeMillis(this.getMinEvictableIdleTimeMillis());
+		datasource.setValidationQuery(this.getValidationQuery());
+		datasource.setTestWhileIdle(this.isTestWhileIdle());
+		datasource.setTestOnBorrow(this.isTestOnBorrow());
+		datasource.setTestOnReturn(this.isTestOnReturn());
+		datasource.setPoolPreparedStatements(this.isPoolPreparedStatements());
+		datasource.setMaxPoolPreparedStatementPerConnectionSize(
+				this.getMaxPoolPreparedStatementPerConnectionSize());
+		try {
+			datasource.setFilters(this.getFilters());
+		} catch (SQLException e) {
+			System.err.println("druid configuration initialization filter: " + e);
+		}
+		datasource.setConnectionProperties(this.getConnectionProperties());
+		return datasource;
+	}
+
+	@Bean(name = "masterTransactionManager")
+	@Primary
+	public DataSourceTransactionManager masterTransactionManager() {
+		return new DataSourceTransactionManager(masterDataSource());
+	}
+
+	@Bean(name = "masterSqlSessionFactory")
+	@Primary
+	public SqlSessionFactory masterSqlSessionFactory(@Qualifier("masterDataSource") DataSource masterDataSource)
+			throws Exception {
+		final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+		sessionFactory.setDataSource(masterDataSource);
+		sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(MAPPER_LOCATION));
+		return sessionFactory.getObject();
+	}
+	
 	private String url;
     private String username;
     private String password;
@@ -188,53 +238,5 @@ public class MasterDataSourceConfig {
         this.connectionProperties = connectionProperties;
     }
 
-	static final String PACKAGE = "cn.linkmore.common.dao.master";
-	static final String MAPPER_LOCATION = "classpath:/cn/linkmore/common/mapper/master/*.xml";
-
-	@Bean(name = "masterDataSource")
-	@Primary
-	public DataSource masterDataSource() {
-		DruidDataSource datasource = new DruidDataSource();
-		datasource.setUrl(this.getUrl());
-		datasource.setUsername(this.getUsername());
-		datasource.setPassword(this.getPassword());
-		datasource.setDriverClassName(this.getDriverClassName());
-		// configuration
-		datasource.setInitialSize(this.getInitialSize());
-		datasource.setMinIdle(this.getMinIdle());
-		datasource.setMaxActive(this.getMaxActive());
-		datasource.setMaxWait(this.getMaxWait());
-		datasource.setTimeBetweenEvictionRunsMillis(this.getTimeBetweenEvictionRunsMillis());
-		datasource.setMinEvictableIdleTimeMillis(this.getMinEvictableIdleTimeMillis());
-		datasource.setValidationQuery(this.getValidationQuery());
-		datasource.setTestWhileIdle(this.isTestWhileIdle());
-		datasource.setTestOnBorrow(this.isTestOnBorrow());
-		datasource.setTestOnReturn(this.isTestOnReturn());
-		datasource.setPoolPreparedStatements(this.isPoolPreparedStatements());
-		datasource.setMaxPoolPreparedStatementPerConnectionSize(
-				this.getMaxPoolPreparedStatementPerConnectionSize());
-		try {
-			datasource.setFilters(this.getFilters());
-		} catch (SQLException e) {
-			System.err.println("druid configuration initialization filter: " + e);
-		}
-		datasource.setConnectionProperties(this.getConnectionProperties());
-		return datasource;
-	}
-
-	@Bean(name = "masterTransactionManager")
-	@Primary
-	public DataSourceTransactionManager masterTransactionManager() {
-		return new DataSourceTransactionManager(masterDataSource());
-	}
-
-	@Bean(name = "masterSqlSessionFactory")
-	@Primary
-	public SqlSessionFactory masterSqlSessionFactory(@Qualifier("masterDataSource") DataSource masterDataSource)
-			throws Exception {
-		final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-		sessionFactory.setDataSource(masterDataSource);
-		sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(MAPPER_LOCATION));
-		return sessionFactory.getObject();
-	}
+	
 }

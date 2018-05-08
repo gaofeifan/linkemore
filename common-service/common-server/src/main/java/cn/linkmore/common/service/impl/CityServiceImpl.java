@@ -8,15 +8,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.common.bean.ViewFilter;
-import cn.linkmore.common.bean.ViewPage;
-import cn.linkmore.common.bean.ViewPageable;
+import cn.linkmore.bean.ViewFilter;
+import cn.linkmore.bean.ViewPage;
+import cn.linkmore.bean.ViewPageable;
 import cn.linkmore.common.dao.cluster.CityClusterMapper;
 import cn.linkmore.common.dao.master.CityMasterMapper;
 import cn.linkmore.common.entity.City;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.service.CityService;
-import cn.linkmore.common.util.EntityUtil;
+import cn.linkmore.util.EntityUtil;
 /**
  * Service实现类 - 城市信息
  * @author liwenlong
