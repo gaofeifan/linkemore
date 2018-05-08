@@ -1,7 +1,5 @@
 package cn.linkmore.common.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,11 +10,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.ViewPage;
+import cn.linkmore.bean.ViewPageable;
+import cn.linkmore.common.entity.City;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.service.CityService;
+import cn.linkmore.util.JsonUtil;
 
 /**
  * Controller - 城市信息
@@ -38,37 +41,38 @@ public class CityController {
 		return this.cityService.find(id);
 	}
 	
-	@RequestMapping(value="list",method=RequestMethod.GET)
-	public List<ResCity> list(@RequestParam("start") int start, @RequestParam("size") int size) {
-		List<ResCity> rcs = new ArrayList<ResCity>();
-		ResCity rc = new ResCity();
-		rc.setId(12L);
-		rc.setName("北京");
-		rc.setCode("00100");
-		rc.setCreateTime(new Date());
-		rcs.add(rc);
-		rc = new ResCity();
-		rc.setId(13L);
-		rc.setName("杭州");
-		rc.setCode("10100");
-		rc.setCreateTime(new Date());
-		rcs.add(rc);
-		rc = new ResCity();
-		rc.setId(14L);
-		rc.setName("广州");
-		rc.setCode("20100");
-		rc.setCreateTime(new Date());
-		rcs.add(rc);
-		return rcs;
+	@RequestMapping(method=RequestMethod.GET)
+	public List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size) { 
+		return this.cityService.findList(start,size);
+	}
+	
+	@RequestMapping(method=RequestMethod.GET)
+	@ResponseBody 
+	public ViewPage list(@RequestBody ViewPageable pageable) { 
+		return this.cityService.findPage(pageable);
 	}
 	 
 	@RequestMapping(method=RequestMethod.POST)
 	public void save(@RequestBody ReqCity reqCity) {
-		
+		City city = new City();
+		city.setCityName(reqCity.getName());
+		city.setAdcode(reqCity.getCode());
+		this.cityService.save(city);
 	}
 	
 	@RequestMapping(method=RequestMethod.PUT)
 	public void update(@RequestBody ReqCity reqCity) {
-		
+		log.info("update city :{}",JsonUtil.toJson(reqCity)); 
+		City city = new City();
+		city.setCityName(reqCity.getName());
+		city.setAdcode(reqCity.getCode());
+		city.setId(reqCity.getId());
+		this.cityService.save(city);
+	}
+	
+	@RequestMapping(value="{id}",method = RequestMethod.DELETE)
+	public void delete(@PathVariable("id") Long id) {
+		log.info("delete city  with id:{}",id); 
+		this.cityService.delete(id);
 	}
 }

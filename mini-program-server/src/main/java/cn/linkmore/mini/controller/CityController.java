@@ -32,7 +32,7 @@ public class CityController {
 	@RequestMapping(method=RequestMethod.GET)
 	public List<ResCity> list() { 
 		log.info("get city list ");
-		return this.cityClient.list(0, 12);
+		return this.cityClient.list(new Integer(1), new Integer(12));
 	}
 	
 	@ApiOperation(value="根据ID获取城市信息", notes="获取城市信息")

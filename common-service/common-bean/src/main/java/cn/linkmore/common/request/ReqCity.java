@@ -6,6 +6,12 @@ package cn.linkmore.common.request;
  *
  */
 public class ReqCity {
+	
+	/**
+	 * 城市ID
+	 */
+	private Long id;
+	
 	/**
 	 * 行政编码
 	 */
@@ -27,4 +33,12 @@ public class ReqCity {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 }

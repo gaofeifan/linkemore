@@ -21,15 +21,7 @@
     from t_city
     where adcode = #{code,jdbcType=VARCHAR}
   </select>
-  <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_city
-    where 1 = 1
-    <if test="adcode != null">
-    and    adcode = #{code,jdbcType=VARCHAR}
-    </if>
-  </select> 
+   
   <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
   	select
 	 <include refid="Base_Column_List" />
@@ -46,4 +38,35 @@
     </if>
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
+  
+  <select id="findList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select
+	<include refid="Base_Column_List" />
+    from t_city 
+    limit  #{start,jdbcType=INTEGER} 
+    <if test="size!=null">  
+    ,#{size,jdbcType=INTEGER}
+    </if> 
+  </select>
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+   	from t_city where 1=1 
+    <if test="cityName!=null">  
+    and city_name like #{cityName,jdbcType=VARCHAR}
+    </if>  
+    <if test="adcode!=null">  
+    and adcode = #{adcode,jdbcType=VARCHAR}
+    </if> 
+  </select>
+  
+  <select id="exists"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_city where   
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
+  
+  
+  exists
 </mapper>

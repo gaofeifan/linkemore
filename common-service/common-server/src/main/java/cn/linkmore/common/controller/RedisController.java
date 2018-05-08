@@ -41,7 +41,7 @@ public class RedisController {
 	@RequestMapping(value = "{key}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable("key") String key) {
 		log.info("delete redis object with key:{}",key);
-		this.redisService.remove(key);
+		this.redisService.remove(key); 
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE)

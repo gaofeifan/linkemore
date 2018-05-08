@@ -1,5 +1,7 @@
 package cn.linkmore.common.service;
 
+import java.util.List;
+
 import cn.linkmore.bean.ViewPage;
 import cn.linkmore.bean.ViewPageable;
 import cn.linkmore.common.entity.City;
@@ -53,5 +55,22 @@ public interface CityService {
 	 * @return
 	 */
 	ViewPage findPage(ViewPageable pageable);
+	
+	/**
+	 * 获取数据列表
+	 * @param start
+	 * @param size
+	 * @return
+	 */
+	List<ResCity> findList(Integer start,Integer size);
+	
+	/**
+	 * 是否存在实体
+	 * @param property
+	 * @param value
+	 * @param id
+	 * @return
+	 */
+	Integer exists(String property,String value,Long id);
 
 }

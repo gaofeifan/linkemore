@@ -75,4 +75,24 @@ public class CityServiceImpl implements CityService {
 	public int delete(Long id) {
 		return this.cityMasterMapper.delete(id); 
 	}
+	@Override
+	public List<ResCity> findList(Integer start,Integer size) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		if(start==null) {
+			start = 0;
+		}
+		param.put("start", start);
+		if(size!=null) {
+			param.put("size", size);
+		}
+		return this.cityClusterMapper.findList(param);
+	}
+	@Override
+	public Integer exists(String property, String value, Long id) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", property.replaceAll(" ", ""));
+		param.put("value", value);
+		param.put("id", id);
+		return this.cityClusterMapper.exists(param);
+	}
 }

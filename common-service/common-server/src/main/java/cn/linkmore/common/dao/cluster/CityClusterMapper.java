@@ -41,7 +41,7 @@ public interface CityClusterMapper {
      * @param param 查询条件
      * @return  返回结果集
      */
-    List<ResCity> findPage(Map<String,Object> param);
+    List<ResCity> findPage(Map<String,Object> param); 
     
     /**
      * 查询数量
@@ -49,4 +49,10 @@ public interface CityClusterMapper {
      * @return
      */
     Integer count(Map<String,Object> param);
+    /**
+     * 存在的记录数
+     * @param param
+     * @return
+     */
+    Integer exists(Map<String,Object> param);
 }
