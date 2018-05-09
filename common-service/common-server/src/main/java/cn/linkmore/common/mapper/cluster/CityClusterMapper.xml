@@ -67,6 +67,4 @@
     and id != #{id} 
   </select>
   
-  
-  exists
 </mapper>
