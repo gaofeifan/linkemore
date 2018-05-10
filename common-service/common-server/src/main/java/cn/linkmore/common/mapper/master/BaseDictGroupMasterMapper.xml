@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linkmore.common.dao.master.BaseDictGroupMasterMapper" >
+  <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.BaseDictGroup" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="CauseResponseMap" type="cn.linkmore.common.response.ResCauseBean" >
+    <result column="id" property="id"  />
+    <result column="name" property="name"  />
+  </resultMap>
+  <resultMap id="DictResponseMap" type="cn.linkmore.common.response.ResCustomerInfoBean" >
+    <result column="id" property="id"  />
+    <result column="title" property="title"  />
+    <result column="code" property="code"  />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, code, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_dict_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="findByCause" resultMap="CauseResponseMap" parameterType="java.util.HashMap" >
+    SELECT
+	b.id,
+	b.name
+    FROM
+        t_base_dict_group g
+    LEFT JOIN base_dict b ON g.id = b.group_id
+    WHERE
+        g.code = #{code}
+    ORDER BY
+        b.id
+  </select>
+  <select id="findByCode" resultMap="CauseResponseMap" parameterType="java.util.HashMap" >
+    SELECT
+	b.id,
+	b.name
+    FROM
+        t_base_dict_group g
+    LEFT JOIN base_dict b ON g.id = b.group_id
+    WHERE
+        g.code = #{code}
+    ORDER BY
+        b.id
+  </select>
+  <select id="findCustomerBean" resultMap="DictResponseMap" parameterType="java.util.List" >
+    SELECT
+	b.id id,
+	g.code code,
+	b.name title
+    FROM
+        t_base_dict_group g
+    LEFT JOIN base_dict b ON g.id = b.group_id
+    WHERE
+        g.code in
+    <foreach collection="list"  index="index" item="code" open="(" separator="," close=")"  >
+       #{code}
+    </foreach> 
+    ORDER BY
+        b.id
+  </select> 
+</mapper>

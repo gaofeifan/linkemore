@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.linkmore.common.dao.cluster.AdminUserAuthMapper" >
-  <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.AdminUserAuth" >
+<mapper namespace="cn.linkmore.account.dao.master.AdminUserAuthMasterMapper" >
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.AdminUserAuth" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="user_id" property="userId" jdbcType="BIGINT" />
     <result column="auth_id" property="authId" jdbcType="BIGINT" />

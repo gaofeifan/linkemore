@@ -1,8 +1,8 @@
-package cn.linkmore.common.dao.cluster;
+package cn.linkmore.account.dao.cluster;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.common.entity.AdminUser;
+import cn.linkmore.account.entity.AdminUser;
 
 
 
@@ -13,7 +13,7 @@ import cn.linkmore.common.entity.AdminUser;
  * @Date     2018年5月10日
  */
 @Mapper
-public interface AdminUserMapper { 
+public interface AdminUserClusterMapper { 
 	
     AdminUser find(Long id);
     

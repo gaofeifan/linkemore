@@ -2,16 +2,24 @@ package cn.linkmore.common.entity;
 
 import java.util.Date;
 
-public class AdminAuth {
+/**
+ * 数据词典
+ * @Version 2.0
+ * @author  GFF
+ * @Date     2018年5月10日
+ */
+public class BaseDict {
     private Long id;
 
+    private Long groupId;
+
     private String name;
+
+    private String code;
 
     private Date createTime;
 
     private Date updateTime;
-
-    private Short status;
 
     public Long getId() {
         return id;
@@ -21,12 +29,28 @@ public class AdminAuth {
         this.id = id;
     }
 
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code == null ? null : code.trim();
     }
 
     public Date getCreateTime() {
@@ -43,13 +67,5 @@ public class AdminAuth {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
     }
 }
