@@ -5,7 +5,7 @@ package cn.linkmore.bean.exception;
  * @version 2.0
  *
  */
-public enum ExceptionEnum {
+public enum StatusEnum {
 	SUCCESS(200, "操作成功"),   
 	BAD_REQUEST(400, "错误的请求"),  
 	NO_SERVICE(404, "服务不存在"),  
@@ -16,7 +16,7 @@ public enum ExceptionEnum {
 	public int code;
 	public String label;
 
-	private ExceptionEnum(int code, String label) {
+	private StatusEnum(int code, String label) {
 		this.code = code;
 		this.label = label;
 	} 
@@ -29,7 +29,7 @@ public enum ExceptionEnum {
 	 */
 	public static String getLabel(int code) {
 		String result = "";
-		for (ExceptionEnum status : ExceptionEnum.values()) {
+		for (StatusEnum status : StatusEnum.values()) {
 			if (status.code == code) {
 				result = status.label;
 			}

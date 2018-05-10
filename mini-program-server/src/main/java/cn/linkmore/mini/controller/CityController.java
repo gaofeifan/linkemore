@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiOperation;
  * @version 2.0
  */
 
-@Api(tags="城市信息相关接口")
+@Api(tags = "CityController",description="城市接口")
 @RestController
 @RequestMapping("/common/citys")
 public class CityController {

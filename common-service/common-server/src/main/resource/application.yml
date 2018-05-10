@@ -73,15 +73,8 @@ redis:
   test-on-borrow: true
   test-on-create: true 
   sentinel-master: ppyxmaster
-  sentinel-nodes: 192.168.1.61:26379
-  
-swagger:
-  enable: true
-  title: 基础模块微服务应用接口
-  description: 本文档适应内部微服务调用 完全基于RESTful接口说明
-  version: 2.0
-  service-url: http://www.linkmoreparking.com
-  contact: 凌猫停车 
+  sentinel-nodes: 192.168.1.61:26379 
+ 
    
 management:   
   port: 5566

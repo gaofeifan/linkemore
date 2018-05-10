@@ -16,20 +16,14 @@ import cn.linkmore.common.entity.City;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.service.CityService;
-import cn.linkmore.util.JsonUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import cn.linkmore.util.JsonUtil; 
 
 /**
  * Controller - 城市信息
  * @author liwenlong
  * @version 2.0
  *
- */
- 
-@Api(tags = "CityController",description="城市接口")
+ */ 
 @RestController
 @RequestMapping("/common/citys")
 public class CityController {
@@ -38,21 +32,17 @@ public class CityController {
 	
 	@Autowired
 	private CityService cityService;
-	 
-	@ApiOperation(value="根据ID获取 信息",notes="主键ID是必输项，并且必须是数字")
-	@ApiImplicitParams({ @ApiImplicitParam(paramType = "query", dataType = "Long", name = "id", value = "信息id", required = true) })
+	  
 	@RequestMapping(value="{id}",method=RequestMethod.GET)
 	public ResCity getById(@PathVariable("id") Long id) {
 		return this.cityService.find(id);
 	}
-	
-	@ApiOperation("查询城市列表")
+	 
 	@RequestMapping(method=RequestMethod.GET)
 	public List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size) { 
 		return this.cityService.findList(start,size);
 	}
-	
-	@ApiOperation("保存城市信息")
+	 
 	@RequestMapping(method=RequestMethod.POST)
 	public void save(@RequestBody ReqCity reqCity) {
 		City city = new City();
@@ -60,8 +50,7 @@ public class CityController {
 		city.setAdcode(reqCity.getCode());
 		this.cityService.save(city);
 	}
-	
-	@ApiOperation("更新城市信息")
+	 
 	@RequestMapping(method=RequestMethod.PUT)
 	public void update(@RequestBody ReqCity reqCity) {
 		log.info("update city :{}",JsonUtil.toJson(reqCity)); 
@@ -71,8 +60,7 @@ public class CityController {
 		city.setId(reqCity.getId());
 		this.cityService.save(city);
 	}
-	
-	@ApiOperation("删除城市信息")
+	 
 	@RequestMapping(value="{id}",method = RequestMethod.DELETE)
 	public void delete(@PathVariable("id") Long id) {
 		log.info("delete city  with id:{}",id); 

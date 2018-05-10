@@ -58,11 +58,7 @@
 			<artifactId>mysql-service</artifactId>
 			<version>${version}</version>
 		</dependency> 
-		<dependency>
-			<groupId>cn.linkmore</groupId>
-			<artifactId>swagger-service</artifactId>
-			<version>${version}</version>
-		</dependency>
+		 
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>
