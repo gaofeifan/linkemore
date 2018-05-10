@@ -3,12 +3,14 @@ package cn.linkmore.common.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import cn.linkmore.bean.ViewFilter;
-import cn.linkmore.bean.ViewPage;
-import cn.linkmore.bean.ViewPageable;
+
+import cn.linkmore.bean.view.ViewFilter;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.dao.cluster.DistrictClusterMapper;
 import cn.linkmore.common.dao.master.DistrictMasterMapper;
 import cn.linkmore.common.entity.District;
