@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.cluster.CouponClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.Coupon">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="combo_id" jdbcType="BIGINT" property="comboId" />
+    <result column="coupon_grant_id" jdbcType="BIGINT" property="couponGrantId" />
+    <result column="value_pack_id" jdbcType="BIGINT" property="valuePackId" />
+    <result column="face_amount" jdbcType="DECIMAL" property="faceAmount" />
+    <result column="vp_valid_time" jdbcType="TIMESTAMP" property="vpValidTime" />
+    <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="theme_id" jdbcType="BIGINT" property="themeId" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="record_id" jdbcType="BIGINT" property="recordId" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="condition_id" jdbcType="BIGINT" property="conditionId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="discount" jdbcType="INTEGER" property="discount" />
+    <result column="used_amount" jdbcType="DECIMAL" property="usedAmount" />
+    <result column="send_user_id" jdbcType="BIGINT" property="sendUserId" />
+    <result column="condition_amount" jdbcType="DECIMAL" property="conditionAmount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, combo_id, coupon_grant_id, value_pack_id, face_amount, vp_valid_time, 
+    valid_time, status, update_time, create_time, enterprise_id, theme_id, item_id, record_id, 
+    template_id, condition_id, type, order_amount, discount, used_amount, send_user_id, 
+    condition_amount
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from c_coupon
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+</mapper>
