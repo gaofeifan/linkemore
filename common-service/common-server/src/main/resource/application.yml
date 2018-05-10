@@ -18,7 +18,9 @@ eureka:
     fetch-registry: true 
     serviceUrl:
       defaultZone: http://127.0.0.1:6003/eureka/
-      
+feign:
+  hystrix:
+    enabled: true
 master-db:   
   url: jdbc:mysql://192.168.1.60:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
   username: ppyx_dev
@@ -73,12 +75,5 @@ redis:
   test-on-borrow: true
   test-on-create: true 
   sentinel-master: ppyxmaster
-  sentinel-nodes: 192.168.1.61:26379 
- 
-   
-management:   
-  port: 5566
-  health:  
-    mail:  
-      enabled: false
+  sentinel-nodes: 192.168.1.61:26379  
  

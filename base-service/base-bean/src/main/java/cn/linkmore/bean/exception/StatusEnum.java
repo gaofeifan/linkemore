@@ -11,7 +11,9 @@ public enum StatusEnum {
 	NO_SERVICE(404, "服务不存在"),  
 	UNAUTHORIZED(403, "未授权访问"),  
 	SERVER_EXCEPTION(500, "服务异常"), 
-	VALID_EXCEPTION(501, "请求参数不合法"); 
+	VALID_EXCEPTION(501, "请求参数不合法"), 
+	
+	USER_APP_NO_LOGIN(501, "请求参数不合法");
 	
 	public int code;
 	public String label;

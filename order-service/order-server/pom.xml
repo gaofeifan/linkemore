@@ -31,27 +31,27 @@
 		</dependency>
         <dependency>
 			<groupId>cn.linkmore</groupId>
+			<artifactId>mysql-service</artifactId>
+			<version>${version}</version>
+		</dependency> 
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>redis-service</artifactId>
+			<version>${version}</version>
+		</dependency> 
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>base-bean</artifactId>
+			<version>${version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>base-util</artifactId>
+			<version>${version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
 			<artifactId>order-bean</artifactId>
-			<version>${version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cn.linkmore</groupId>
-			<artifactId>account-client</artifactId>
-			<version>${version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cn.linkmore</groupId>
-			<artifactId>common-client</artifactId>
-			<version>${version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cn.linkmore</groupId>
-			<artifactId>coupon-client</artifactId>
-			<version>${version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cn.linkmore</groupId>
-			<artifactId>prefecture-client</artifactId>
 			<version>${version}</version>
 		</dependency>
 	</dependencies>
