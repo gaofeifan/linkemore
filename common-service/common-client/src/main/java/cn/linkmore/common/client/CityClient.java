@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.linkmore.bean.ViewPage;
-import cn.linkmore.bean.ViewPageable;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.hystrix.CityClientHystrix;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
@@ -39,7 +39,7 @@ public interface CityClient {
 	 * @param size 记录数
 	 * @return List<ResCity> 城市信息集合
 	 */
-	@RequestMapping(value="list",method=RequestMethod.GET)
+	@RequestMapping(method=RequestMethod.GET)
 	List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size); 
 	 
 	/**
@@ -56,7 +56,7 @@ public interface CityClient {
 	 * @param reqCity 城市信息
 	 */
 	@RequestMapping(method=RequestMethod.POST)
-	 void save(@RequestBody ReqCity reqCity) ; 
+	void save(@RequestBody ReqCity reqCity) ; 
 	
 	/**
 	 * 更新城市信息

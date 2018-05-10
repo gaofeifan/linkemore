@@ -25,4 +25,18 @@ eureka:
     fetch-registry: true 
     serviceUrl:
       defaultZone: http://127.0.0.1:6003/eureka/ 
+      
+feign:
+  hystrix:
+    enabled: true      
+
+
+swagger:
+  enable: true
+  title: 小程序前端应用接口
+  description: 本文档适应微信小程序前端调用 完全基于RESTful接口说明
+  version: 2.0
+  service-url: http://www.linkmoreparking.com
+  contact: 凌猫停车
+  class-path: cn.linkmore.mini.controller
  
