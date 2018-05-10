@@ -40,16 +40,7 @@ public interface CityClient {
 	 * @return List<ResCity> 城市信息集合
 	 */
 	@RequestMapping(method=RequestMethod.GET)
-	List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size); 
-	 
-	/**
-	 * 分页查询
-	 * @param pageable
-	 * @return
-	 */
-	@RequestMapping(method=RequestMethod.GET)
-	@ResponseBody 
-	ViewPage list(@RequestBody ViewPageable pageable);
+	List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size);  
 	 
 	/**
 	 * 保存城市信息

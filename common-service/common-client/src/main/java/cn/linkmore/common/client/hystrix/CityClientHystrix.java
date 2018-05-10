@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import cn.linkmore.bean.view.ViewPage;
-import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
@@ -29,13 +27,7 @@ public class CityClientHystrix implements CityClient {
 	public List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size) { 
 		log.info("common service citys find list(int start,int size) hystrix");
 		return new ArrayList<ResCity>();
-	}
-
-	@Override 
-	public ViewPage list(@RequestBody ViewPageable pageable) {
-		log.info("common service citys list(ViewPageable pageable) hystrix");
-		return null;
-	};
+	} 
 	 
 	/**
 	 * 保存城市信息

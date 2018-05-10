@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper" >
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.Prefecture" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="strategy_id" property="strategyId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="route_guidance" property="routeGuidance" jdbcType="VARCHAR" />
+    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="stall_total" property="stallTotal" jdbcType="INTEGER" />
+    <result column="sold_times" property="soldTimes" jdbcType="INTEGER" />
+    <result column="date_contract" property="dateContract" jdbcType="TIMESTAMP" />
+    <result column="valid_time" property="validTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="route_description" property="routeDescription" jdbcType="VARCHAR" />
+    <result column="district_id" property="districtId" jdbcType="BIGINT" />
+    <result column="base_dict_id" property="baseDictId" jdbcType="BIGINT" />
+    <result column="city_id" property="cityId" jdbcType="BIGINT" />
+    <result column="order_index" property="orderIndex" jdbcType="INTEGER" />
+    <result column="leave_time" property="leaveTime" jdbcType="BIGINT" />
+    <result column="charge_price" property="chargePrice" jdbcType="VARCHAR" />
+    <result column="charge_time" property="chargeTime" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="SMALLINT" />
+    <result column="category" property="category" jdbcType="SMALLINT" />
+    <result column="enterprise_id" property="enterpriseId" jdbcType="BIGINT" />
+     <result column="limit_status" property="limitStatus" jdbcType="SMALLINT" />
+  </resultMap>
+  <!-- <resultMap type="com.pabei.backend.controller.response.PrefectureResponseBean" id="PreResponseBeanMap">
+  	<id column="id" property="id" />
+  	<result column="name" property="preName" />
+  	<result column="leisure_stall" property="leisureStall" />
+  	<result column="latitude" property="latitude" />
+  	<result column="longitude" property="longitude" />
+  	<result column="type" property="type" />
+  	<result column="limit_status" property="limitStatus" />
+  </resultMap>
+  <resultMap type="com.pabei.backend.controller.response.PrefecturePageListResponseBean" id="PageListBeanMap">
+  	<id column="id" property="id"/>
+  	<result column="name" property="name" />
+  	<result column="leisure_stall" property="leisureStall" />
+  	<result column="address" property="address" />
+  	<result column="first_hour" property="firstHour" />
+  	<result column="timely_Long" property="timelyLong" />
+  	<result column="free_mins" property="freeMins" />
+  	<result column="timely_unit" property="timelyUnit" />
+  	<result column="limit_status" property="limitStatus" />
+  	<result column="type" property="type" />
+  </resultMap>
+  <resultMap type="com.pabei.backend.controller.response.PrefectureDetailResponseBean" id="DetailBeanMap">
+  	<id column="id" property="id"/>
+  	<result column="name" property="name" />
+  	<result column="leisure_stall" property="leisureStall" />
+  	<result column="address" property="address" />
+  	<result column="first_hour" property="firstHour" />
+  	<result column="timely_Long" property="timelyLong" />
+  	<result column="free_mins" property="freeMins" />
+  	<result column="timely_unit" property="timelyUnit" />
+  	<result column="limit_status" property="limitStatus" />
+  	<result column="type" property="type" />
+  </resultMap> -->
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, strategy_id, status, name, address, latitude, longitude, route_guidance, 
+    image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
+    route_description, district_id, base_dict_id, city_id, order_index, leave_time, charge_price,
+    charge_time,type,enterprise_id,category,limit_status
+    from v_prefecture
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getStrategyId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, strategy_id
+    from v_prefecture
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, strategy_id, status, name, address, latitude, longitude, route_guidance, 
+    image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
+    route_description, district_id, base_dict_id, city_id, order_index, leave_time,charge_price,
+    charge_time,type,enterprise_id
+    from v_prefecture
+  </select>
+  
+  <select id="getCountByCityId" resultType="java.lang.Integer" parameterType="java.util.Map">
+  	select count(id) 
+  	from v_prefecture
+  	where city_id = #{cityId} and status = #{status} 
+  	<if test="userType != null">
+		<choose>
+			<when test="userType == 0">
+				and (type is null or type = 0 )
+			</when>
+			<otherwise>
+				and (type is null or type in (0,#{userType})) 
+				<if test="enterpriseId != null">
+					and (enterprise_id in(${enterpriseId}) or enterprise_id is null)
+				</if>
+			</otherwise>
+		</choose>
+	</if>
+	<if test="userType == null">
+    	and (type is null or type = 0 )
+    </if>
+  </select>
+  
+  <!-- <select id="getPreByStatusAndGPS" resultMap="PreResponseBeanMap" parameterType="java.util.Map">
+    select p.id,p.name,p.latitude,p.longitude,p.type,p.limit_status
+	from v_prefecture p 
+	where p.status = #{status}
+	<if test="userType != null">
+		<choose>
+			<when test="userType == 0">
+				and (p.type is null or p.type = 0)
+			</when>
+			<otherwise>
+				and (p.type is null or p.type in (0,#{userType})) 
+				<if test="enterpriseId != null">
+					and (p.enterprise_id in(${enterpriseId}) or p.enterprise_id is null)
+				</if>
+			</otherwise>
+		</choose>
+	</if>
+	<if test="userType == null">
+    	and (p.type is null or p.type = 0 )
+    </if>
+    and p.category = 0
+  </select>
+  
+  <select id="getPreByStatusAndGPS1" resultMap="PreResponseBeanMap" parameterType="java.util.Map">
+    select p.id,p.name,p.latitude,p.longitude,p.type,p.limit_status
+	from v_prefecture p 
+	where p.status = #{status} 
+    and p.category != 0
+  </select>
+  -->
+  
+  
+  <!--
+  <select id="getPageList" resultMap="PageListBeanMap" parameterType="java.util.Map">
+  	select p.id,p.name,p.address,b.free_mins,b.timely_unit,p.charge_price first_hour,
+  		p.charge_time timely_Long,p.type,p.limit_status
+	from v_prefecture p 
+	LEFT JOIN v_strategy_base b on b.id = p.strategy_id
+	where p.status = #{status} and p.city_id = #{cityId}
+	<if test="userType != null">
+		<choose>
+			<when test="userType == 0">
+				and (p.type is null or p.type = 0 )
+			</when>
+			<otherwise>
+				and (p.type is null or p.type in (0,#{userType})) 
+				<if test="enterpriseId != null">
+					and (p.enterprise_id in(${enterpriseId}) or p.enterprise_id is null)
+				</if>
+			</otherwise>
+		</choose>
+	</if>
+	<if test="userType == null">
+    	and (p.type is null or p.type = 0 )
+    </if>
+    and p.category = 0
+	ORDER BY p.order_index DESC
+    limit #{page}, #{pageSize}
+  </select>
+  <select id="getPageList1" resultMap="PageListBeanMap" parameterType="java.util.Map">
+  	select p.id,p.name,p.address,b.free_mins,b.timely_unit,p.charge_price first_hour,
+  		p.charge_time timely_Long,p.type,p.limit_status
+	from v_prefecture p 
+	LEFT JOIN v_strategy_base b on b.id = p.strategy_id
+	where p.status = #{status} and p.city_id = #{cityId} 
+    and p.category != 0
+	ORDER BY p.order_index DESC
+    limit #{page}, #{pageSize}
+  </select>
+  
+  <select id="getPreDetail" resultMap="DetailBeanMap" parameterType="java.lang.Long">
+  	select p.id,p.name,p.address,b.free_mins,b.timely_unit,p.charge_price first_hour,p.charge_time timely_Long,p.type,p.limit_status
+	from v_prefecture p 
+	LEFT JOIN v_strategy_base b on b.id = p.strategy_id
+	where p.id = #{id}
+  </select> -->
+</mapper>
