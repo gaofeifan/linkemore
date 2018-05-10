@@ -8,8 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
@@ -28,11 +33,14 @@ public class CityClientHystrix implements CityClient {
 		log.info("common service citys find list(int start,int size) hystrix");
 		return new ArrayList<ResCity>();
 	} 
-	 
-	/**
-	 * 保存城市信息
-	 * @param reqCity 城市信息
-	 */
+	
+	@RequestMapping(method=RequestMethod.GET)
+	@ResponseBody 
+	public ViewPage list(@RequestBody ViewPageable pageable) {
+		log.info("common service citys find page( ViewPageable pageable) hystrix");
+		return null;
+	}
+	  
 	@Override
 	public void save(@RequestBody ReqCity reqCity) {
 		log.info("common service citys save( ReqCity reqCity) hystrix");

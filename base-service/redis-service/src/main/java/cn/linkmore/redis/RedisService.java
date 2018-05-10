@@ -26,6 +26,9 @@ public class RedisService {
 	@SuppressWarnings("rawtypes")
 	@Autowired
 	private RedisTemplate redisTemplate;
+	
+	
+	
 
 	/**
 	 * 写入缓存

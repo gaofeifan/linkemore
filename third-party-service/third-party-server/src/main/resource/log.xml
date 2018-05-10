@@ -10,7 +10,7 @@
     <append>true</append>
     <file>log/third-party-server.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>../log/third-party-server.%d{yyyyMMdd}.log.%i</fileNamePattern>
+      <fileNamePattern>log/third-party-server.%d{yyyyMMdd}.log.%i</fileNamePattern>
       <maxHistory>30</maxHistory>
       <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
         <maxFileSize>100MB</maxFileSize>

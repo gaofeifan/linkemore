@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
-import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -14,9 +13,8 @@ import zipkin2.Span;
 import zipkin2.reporter.Reporter;
 
 @SpringBootApplication 
-@EnableFeignClients(basePackages = { "cn.linkmore" })
-@ComponentScan(basePackages = { "cn.linkmore" }) 
-@EnableHystrix 
+@EnableFeignClients
+@ComponentScan(basePackages = { "cn.linkmore" })  
 public class Launch {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	

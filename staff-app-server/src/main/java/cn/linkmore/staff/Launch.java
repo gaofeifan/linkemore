@@ -6,7 +6,7 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication 
-@EnableFeignClients(basePackages = { "cn.linkmore" })
+@EnableFeignClients
 @ComponentScan(basePackages = { "cn.linkmore" })
 public class Launch {
 	public static void main(String[] args) {

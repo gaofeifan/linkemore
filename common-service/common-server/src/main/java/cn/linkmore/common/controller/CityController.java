@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.entity.City;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
@@ -34,13 +37,21 @@ public class CityController {
 	private CityService cityService;
 	  
 	@RequestMapping(value="{id}",method=RequestMethod.GET)
+	@ResponseBody 
 	public ResCity getById(@PathVariable("id") Long id) {
 		return this.cityService.find(id);
 	}
 	 
 	@RequestMapping(method=RequestMethod.GET)
+	@ResponseBody 
 	public List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size) { 
 		return this.cityService.findList(start,size);
+	}
+	
+	@RequestMapping(method=RequestMethod.GET)
+	@ResponseBody 
+	public ViewPage list(@RequestBody ViewPageable pageable) { 
+		return this.cityService.findPage(pageable);
 	}
 	 
 	@RequestMapping(method=RequestMethod.POST)

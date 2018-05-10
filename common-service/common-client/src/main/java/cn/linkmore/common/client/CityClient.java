@@ -31,6 +31,7 @@ public interface CityClient {
 	 * @return 城市信息
 	 */
 	@RequestMapping(value="{id}",method=RequestMethod.GET)
+	@ResponseBody 
     ResCity find(@PathVariable("id") Long id);
 	
 	/**
@@ -40,7 +41,12 @@ public interface CityClient {
 	 * @return List<ResCity> 城市信息集合
 	 */
 	@RequestMapping(method=RequestMethod.GET)
-	List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size);  
+	@ResponseBody 
+	List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size);
+	
+	@RequestMapping(method=RequestMethod.GET)
+	@ResponseBody 
+	public ViewPage list(@RequestBody ViewPageable pageable);
 	 
 	/**
 	 * 保存城市信息
