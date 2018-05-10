@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linkmore.prefecture.dao.master.PrefectureMasterMapper" >
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.Prefecture" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="strategy_id" property="strategyId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="route_guidance" property="routeGuidance" jdbcType="VARCHAR" />
+    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="stall_total" property="stallTotal" jdbcType="INTEGER" />
+    <result column="sold_times" property="soldTimes" jdbcType="INTEGER" />
+    <result column="date_contract" property="dateContract" jdbcType="TIMESTAMP" />
+    <result column="valid_time" property="validTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="route_description" property="routeDescription" jdbcType="VARCHAR" />
+    <result column="district_id" property="districtId" jdbcType="BIGINT" />
+    <result column="base_dict_id" property="baseDictId" jdbcType="BIGINT" />
+    <result column="city_id" property="cityId" jdbcType="BIGINT" />
+    <result column="order_index" property="orderIndex" jdbcType="INTEGER" />
+    <result column="leave_time" property="leaveTime" jdbcType="BIGINT" />
+    <result column="charge_price" property="chargePrice" jdbcType="VARCHAR" />
+    <result column="charge_time" property="chargeTime" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="SMALLINT" />
+    <result column="category" property="category" jdbcType="SMALLINT" />
+    <result column="enterprise_id" property="enterpriseId" jdbcType="BIGINT" />
+     <result column="limit_status" property="limitStatus" jdbcType="SMALLINT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from v_prefecture
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pabei.backend.domain.Prefecture" >
+    insert into v_prefecture (id, strategy_id, status, 
+      name, address, latitude, 
+      longitude, route_guidance, image_url, 
+      stall_total, sold_times, date_contract, 
+      valid_time, create_time, update_time, 
+      route_description, district_id, base_dict_id, 
+      city_id,order_index,leave_time,charge_price,charge_time,type,enterprise_id)
+    values (#{id,jdbcType=BIGINT}, #{strategyId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{latitude,jdbcType=DECIMAL}, 
+      #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, #{imageUrl,jdbcType=VARCHAR}, 
+      #{stallTotal,jdbcType=INTEGER}, #{soldTimes,jdbcType=INTEGER}, #{dateContract,jdbcType=TIMESTAMP}, 
+      #{validTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{routeDescription,jdbcType=VARCHAR}, #{districtId,jdbcType=BIGINT}, #{baseDictId,jdbcType=BIGINT}, 
+      #{cityId,jdbcType=BIGINT},#{orderIndex,jdbcType=BIGINT},#{leaveTime,jdbcType=BIGINT},
+      #{chargePrice,jdbcType=VARCHAR},#{chargeTime,jdbcType=INTEGER},#{type,jdbcType=SMALLINT},#{enterprise_id,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.pabei.backend.domain.Prefecture" >
+    update v_prefecture
+    set strategy_id = #{strategyId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      route_guidance = #{routeGuidance,jdbcType=VARCHAR},
+      image_url = #{imageUrl,jdbcType=VARCHAR},
+      stall_total = #{stallTotal,jdbcType=INTEGER},
+      sold_times = #{soldTimes,jdbcType=INTEGER},
+      date_contract = #{dateContract,jdbcType=TIMESTAMP},
+      valid_time = #{validTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      route_description = #{routeDescription,jdbcType=VARCHAR},
+      district_id = #{districtId,jdbcType=BIGINT},
+      base_dict_id = #{baseDictId,jdbcType=BIGINT},
+      city_id = #{cityId,jdbcType=BIGINT},
+      order_index = #{orderIndex,jdbcType=BIGINT},
+      leave_time = #{leaveTime,jdbcType=BIGINT},
+      charge_price = #{chargePrice,jdbcType=VARCHAR},
+      charge_time = #{chargeTime,jdbcType=INTEGER},
+      type = #{type,jdbcType=SMALLINT},
+      enterprise_id = #{enterprise_id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

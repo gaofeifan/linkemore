@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linkmore.prefecture.dao.master.StrategyBaseMasterMapper" >
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.StrategyBase" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="begin_time" property="beginTime" jdbcType="CHAR" />
+    <result column="free_mins" property="freeMins" jdbcType="INTEGER" />
+    <result column="end_time" property="endTime" jdbcType="CHAR" />
+    <result column="first_hour" property="firstHour" jdbcType="DECIMAL" />
+    <result column="base_price" property="basePrice" jdbcType="DECIMAL" />
+    <result column="night_price" property="nightPrice" jdbcType="DECIMAL" />
+    <result column="timely_long" property="timelyLong" jdbcType="INTEGER" />
+    <result column="night_timely_long" property="nightTimelyLong" jdbcType="INTEGER" />
+    <result column="timely_unit" property="timelyUnit" jdbcType="CHAR" />
+    <result column="top_daily" property="topDaily" jdbcType="INTEGER" />
+    <result column="top_day" property="topDay" jdbcType="INTEGER" />
+    <result column="top_night" property="topNight" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="is_prepaid_pay" property="isPrepaidPay" jdbcType="INTEGER" />
+    <result column="first_hour_long" property="firstHourLong" jdbcType="INTEGER" />
+    <result column="flex_detail" property="flexDetail" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from v_strategy_base
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pabei.backend.domain.StrategyBase" >
+    insert into v_strategy_base (id, type, name, 
+      begin_time, free_mins, end_time, 
+      first_hour, base_price, night_price, 
+      timely_long, night_timely_long, timely_unit, 
+      top_daily, top_day, top_night, 
+      creator, create_time, update_time, 
+      status, is_prepaid_pay,first_hour_long)
+    values (#{id,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{beginTime,jdbcType=CHAR}, #{freeMins,jdbcType=INTEGER}, #{endTime,jdbcType=CHAR}, 
+      #{firstHour,jdbcType=DECIMAL}, #{basePrice,jdbcType=DECIMAL}, #{nightPrice,jdbcType=DECIMAL}, 
+      #{timelyLong,jdbcType=INTEGER}, #{nightTimelyLong,jdbcType=INTEGER}, #{timelyUnit,jdbcType=CHAR}, 
+      #{topDaily,jdbcType=INTEGER}, #{topDay,jdbcType=INTEGER}, #{topNight,jdbcType=INTEGER}, 
+      #{creator,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{isPrepaidPay,jdbcType=INTEGER},#{firstHourLong,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.pabei.backend.domain.StrategyBase" >
+    update v_strategy_base
+    set type = #{type,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      begin_time = #{beginTime,jdbcType=CHAR},
+      free_mins = #{freeMins,jdbcType=INTEGER},
+      end_time = #{endTime,jdbcType=CHAR},
+      first_hour = #{firstHour,jdbcType=DECIMAL},
+      base_price = #{basePrice,jdbcType=DECIMAL},
+      night_price = #{nightPrice,jdbcType=DECIMAL},
+      timely_long = #{timelyLong,jdbcType=INTEGER},
+      night_timely_long = #{nightTimelyLong,jdbcType=INTEGER},
+      timely_unit = #{timelyUnit,jdbcType=CHAR},
+      top_daily = #{topDaily,jdbcType=INTEGER},
+      top_day = #{topDay,jdbcType=INTEGER},
+      top_night = #{topNight,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      is_prepaid_pay = #{isPrepaidPay,jdbcType=INTEGER},
+      first_hour_long = #{firstHourLong,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+</mapper>
