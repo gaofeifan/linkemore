@@ -1,4 +1,4 @@
-package cn.linkmore.common.entity;
+package cn.linkmore.account.entity;
 import java.io.Serializable;
 import java.util.Date;
 /**

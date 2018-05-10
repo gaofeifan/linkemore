@@ -14,10 +14,10 @@ public class AuthController {
 	@ApiOperation("创建用户")
     @PostMapping("/users")
     public void create( ) { 
-    }
+    }	
 
     @ApiOperation("用户详情")
     @GetMapping("/users/{id}")
-    public void findById(@PathVariable Long id) { 
+    public void findById(@PathVariable Long id) {
     }
 }

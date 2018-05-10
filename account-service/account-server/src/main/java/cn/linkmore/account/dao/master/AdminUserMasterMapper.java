@@ -1,6 +1,7 @@
-package cn.linkmore.common.dao.master;
+package cn.linkmore.account.dao.master;
 import org.apache.ibatis.annotations.Mapper;
-import cn.linkmore.common.entity.AdminUser;
+
+import cn.linkmore.account.entity.AdminUser;
 
 /**
  * 管理员--只写
@@ -9,6 +10,6 @@ import cn.linkmore.common.entity.AdminUser;
  * @Date     2018年5月10日
  */
 @Mapper
-public interface AdminUserMapper { 
+public interface AdminUserMasterMapper { 
     int update(AdminUser record); 
 }

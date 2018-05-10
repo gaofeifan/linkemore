@@ -1,4 +1,4 @@
-package cn.linkmore.common.entity;
+package cn.linkmore.account.entity;
 
 public class AdminUserAuth {
     private Long id;
