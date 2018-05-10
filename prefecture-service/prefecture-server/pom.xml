@@ -29,23 +29,16 @@
 			<artifactId>spring-boot-admin-starter-client</artifactId>
 			<version>${spring-boot-admin.version}</version>
 		</dependency>
-        <dependency>
-			<groupId>cn.linkmore</groupId>
-			<artifactId>prefecture-bean</artifactId>
-			<version>${version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cn.linkmore</groupId>
-			<artifactId>common-bean</artifactId>
-			<version>${version}</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>mysql-service</artifactId>
 			<version>${version}</version>
 		</dependency> 
-		
+		 <dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>redis-service</artifactId>
+			<version>${version}</version>
+		</dependency> 
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>
@@ -56,6 +49,11 @@
 			<artifactId>base-util</artifactId>
 			<version>${version}</version>
 		</dependency>
+        <dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>prefecture-bean</artifactId>
+			<version>${version}</version>
+		</dependency> 
 		
 	</dependencies>
 

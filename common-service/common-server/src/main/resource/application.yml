@@ -18,7 +18,10 @@ eureka:
     fetch-registry: true 
     serviceUrl:
       defaultZone: http://127.0.0.1:6003/eureka/
-      
+feign:
+  hystrix:
+    enabled: true 
+          
 master-db:   
   url: jdbc:mysql://192.168.1.60:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
   username: ppyx_dev

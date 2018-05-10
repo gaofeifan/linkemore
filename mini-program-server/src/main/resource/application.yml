@@ -28,7 +28,24 @@ eureka:
       
 feign:
   hystrix:
-    enabled: true      
+    enabled: true  
+    
+    
+redis:
+  host: 192.168.1.63
+  port: 7001
+  database: 1
+  timeout: 5000
+  password: ppyx!@#
+  pool-max-active: 500
+  pool-max-wait: -1
+  pool-max-idle: 100
+  pool-min-idle: 5
+  test-while-idle: true
+  test-on-borrow: true
+  test-on-create: true 
+  sentinel-master: ppyxmaster
+  sentinel-nodes: 192.168.1.61:26379     
 
 
 swagger:
