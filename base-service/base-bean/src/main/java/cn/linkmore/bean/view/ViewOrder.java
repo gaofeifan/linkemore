@@ -1,4 +1,4 @@
-package cn.linkmore.bean;
+package cn.linkmore.bean.view;
 
 import java.io.Serializable;
  

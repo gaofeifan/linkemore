@@ -13,6 +13,9 @@
 	<modules>  
 		<module>redis-service</module>
 		<module>mysql-service</module>
+		<module>swagger-service</module>
+		<module>exception-service</module>
 		<module>base-bean</module>
+		<module>base-util</module>
 	</modules>
 </project>

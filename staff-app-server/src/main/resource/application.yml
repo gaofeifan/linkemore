@@ -16,3 +16,16 @@ eureka:
     fetch-registry: true 
     serviceUrl:
       defaultZone: http://127.0.0.1:6003/eureka/
+      
+swagger:
+  title: Staff app api
+  description: Staff app api 2.x
+  version: 1.1.0.RELEASE
+  license: Apache License, Version 2.0
+  licenseUrl: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfServiceUrl: https://api.linkmoreparking.com
+  contact:
+    name: Linkmore
+    url: https://www.linkmoreparking.com
+    email: service@papayixing.com
+  base-package: cn.linkmore

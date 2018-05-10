@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import cn.linkmore.bean.ViewPage;
-import cn.linkmore.bean.ViewPageable;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
