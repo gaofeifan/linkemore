@@ -11,19 +11,4 @@
   <sql id="Base_Column_List" >
     id, group_id, name, code, create_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_base_dict
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <select id="selectByCodes" resultMap="BaseResultMap"  >
-    select 
-    <include refid="Base_Column_List" />
-    from t_base_dict
-    where code in
-    <foreach collection="codes" item="code"  open="(" separator="," close=")">
-	    #{code}
-    </foreach>
-  </select>
 </mapper>
