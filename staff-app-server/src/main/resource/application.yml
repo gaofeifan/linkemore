@@ -18,14 +18,9 @@ eureka:
       defaultZone: http://127.0.0.1:6003/eureka/
       
 swagger:
-  title: Staff app api
-  description: Staff app api 2.x
-  version: 1.1.0.RELEASE
-  license: Apache License, Version 2.0
-  licenseUrl: https://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfServiceUrl: https://api.linkmoreparking.com
-  contact:
-    name: Linkmore
-    url: https://www.linkmoreparking.com
-    email: service@papayixing.com
-  base-package: cn.linkmore
+  enable: true
+  title: 凌猫停车管理版APP接口文档
+  description: 本文档为内部文档，仅供内部前端及测试人员参考。 完全基于RESTful接口说明
+  version: 2.0
+  service-url: http://www.linkmoreparking.com
+  contact: 凌猫停车  

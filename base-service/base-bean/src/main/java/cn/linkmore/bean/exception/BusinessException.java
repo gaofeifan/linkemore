@@ -5,18 +5,18 @@ package cn.linkmore.bean.exception;
  * @version 2.0
  *
  */
-public class BusinessException extends RuntimeException {
+public class BusinessException extends RuntimeException implements BaseException {
 	private static final long serialVersionUID = -4310721413425427596L;
 	/**
 	 * 错误码
 	 */
-	private Integer code = ExceptionEnum.SERVER_EXCEPTION.code;
+	private Integer code = StatusEnum.SERVER_EXCEPTION.code;
 	/**
 	 * 错误码的说明
 	 */
-	private String label = ExceptionEnum.SERVER_EXCEPTION.label;
+	private String label = StatusEnum.SERVER_EXCEPTION.label;
 	
-	private ExceptionEnum exceptionEnum;
+	private StatusEnum statusEnum;
 
 	public BusinessException() {
 		super();
@@ -66,11 +66,11 @@ public class BusinessException extends RuntimeException {
 	 * 
 	 * @param error：错误码
 	 */
-	public BusinessException(ExceptionEnum error) {
+	public BusinessException(StatusEnum error) {
 		super(error.label);
 		setCode(error.code);
 		setLabel(error.label);
-		setExceptionEnum(error);
+		setStatusEnum(error);
 	}
 
 	/**
@@ -79,11 +79,11 @@ public class BusinessException extends RuntimeException {
 	 * @param error：错误码
 	 * @param message：异常说明
 	 */
-	public BusinessException(ExceptionEnum error, String message) {
+	public BusinessException(StatusEnum error, String message) {
 		super(message);
 		setCode(error.code);
 		setLabel(error.label);
-		setExceptionEnum(error);
+		setStatusEnum(error);
 	}
 
 	/**
@@ -93,11 +93,11 @@ public class BusinessException extends RuntimeException {
 	 * @param message：异常说明
 	 * @param cause
 	 */
-	public BusinessException(ExceptionEnum error, String message, Throwable cause) {
+	public BusinessException(StatusEnum error, String message, Throwable cause) {
 		super(message, cause);
 		setCode(error.code);
 		setLabel(error.label);
-		setExceptionEnum(error);
+		setStatusEnum(error);
 	}
 
 	public Integer getCode() {
@@ -114,14 +114,19 @@ public class BusinessException extends RuntimeException {
 
 	public void setLabel(String label) {
 		this.label = label;
+	} 
+
+	public StatusEnum getStatusEnum() {
+		return statusEnum;
 	}
 
-	public ExceptionEnum getExceptionEnum() {
-		return exceptionEnum;
+	public void setStatusEnum(StatusEnum statusEnum) {
+		statusEnum = statusEnum;
 	}
 
-	public void setExceptionEnum(ExceptionEnum exceptionEnum) {
-		this.exceptionEnum = exceptionEnum;
+	@Override
+	public Exception getException() {
+		return this;
 	}
 	
 }
