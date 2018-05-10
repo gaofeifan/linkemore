@@ -3,238 +3,183 @@ package cn.linkmore.prefecture.entity;
 import java.util.Date;
 
 public class Stall {
+    private Long id;
 
-	public static int STATUS_FREE = 1;
-	public static int STATUS_USED = 2;
-	public static int STATUS_PREOUTLINE = 3;
-	public static int STATUS_OUTLINE = 4;
-	public static int LOCK_STATUS_DOWN = 2;
-	public static int LOCK_STATUS_UP = 1; 
-	public static int BIND_ORDER_STATUS_NONE = 0; 
-	/**
-	 * 主键
-	 */
-	private Long id;
-	/**
-	 * 车位名称
-	 */
-	private String stallName;
-	/**
-	 * 已售车位次数
-	 */
-	private Integer sellCount;
-	/**
-	 * 专区id
-	 */
-	private Long preId;
-	/**
-	 * 网关id
-	 */
-	private Long gatewayId;
-	/**
-	 * 雷达
-	 */
-	private String radar;
-	/**
-	 * 车位锁主键
-	 */
-	private Long lockId;
-	/**
-	 * 车位锁序列号
-	 */
-	private String lockSn;
-	/**
-	 * 车位锁操作状态：1，升起；2，降下
-	 */
-	private Integer lockStatus;
-	/**
-	 * 状态:1，空闲；2，使用中；3,预下线；4，下线
-	 */
-	private Integer status;
-	/**
-	 * 车位位置描述
-	 */
-	private String stallLocal;
-	/**
-	 * 路线指引
-	 */
-	private String routeGuidance;
-	/**
-	 * 创建时间
-	 */
-	private Date createTime;
-	/**
-	 * 更新时间
-	 */
-	private Date updateTime;
-	/**
-	 * 车位导航图
-	 */
-	private String imageUrl;
-	/**
-	 * 电量百分数
-	 */
-	private Integer lockBattery;
-	/**
-	 * 车位锁电压
-	 */
-	private Double lockVoltage;
-	/**
-	 * 绑定订单状态
-	 */
-	private Integer bindOrderStatus;
+    private String stallName;
 
-	public Long getId() {
-		return id;
-	}
+    private Integer sellCount;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    private Long preId;
 
-	public String getStallName() {
-		return stallName;
-	}
+    private Long gatewayId;
 
-	public void setStallName(String stallName) {
-		this.stallName = stallName == null ? null : stallName.trim();
-	}
+    private String radar;
 
-	public Integer getSellCount() {
-		return sellCount;
-	}
+    private Long lockId;
 
-	public void setSellCount(Integer sellCount) {
-		this.sellCount = sellCount;
-	}
+    private String lockSn;
 
-	public Long getPreId() {
-		return preId;
-	}
+    private Integer lockStatus;
 
-	public void setPreId(Long preId) {
-		this.preId = preId;
-	}
+    private Integer status;
 
-	public Long getGatewayId() {
-		return gatewayId;
-	}
+    private String stallLocal;
 
-	public void setGatewayId(Long gatewayId) {
-		this.gatewayId = gatewayId;
-	}
+    private String routeGuidance;
 
-	public String getRadar() {
-		return radar;
-	}
+    private Date createTime;
 
-	public void setRadar(String radar) {
-		this.radar = radar == null ? null : radar.trim();
-	}
+    private Date updateTime;
 
-	public Long getLockId() {
-		return lockId;
-	}
+    private String imageUrl;
 
-	public void setLockId(Long lockId) {
-		this.lockId = lockId;
-	}
+    private Integer lockBattery;
 
-	public String getLockSn() {
-		return lockSn;
-	}
+    private Float lockVoltage;
 
-	public void setLockSn(String lockSn) {
-		this.lockSn = lockSn == null ? null : lockSn.trim();
-	}
+    private Short bindOrderStatus;
 
-	public Integer getLockStatus() {
-		return lockStatus;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setLockStatus(Integer lockStatus) {
-		this.lockStatus = lockStatus;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Integer getStatus() {
-		return status;
-	}
+    public String getStallName() {
+        return stallName;
+    }
 
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
+    public void setStallName(String stallName) {
+        this.stallName = stallName == null ? null : stallName.trim();
+    }
 
-	public String getStallLocal() {
-		return stallLocal;
-	}
+    public Integer getSellCount() {
+        return sellCount;
+    }
 
-	public void setStallLocal(String stallLocal) {
-		this.stallLocal = stallLocal == null ? null : stallLocal.trim();
-	}
+    public void setSellCount(Integer sellCount) {
+        this.sellCount = sellCount;
+    }
 
-	public String getRouteGuidance() {
-		return routeGuidance;
-	}
+    public Long getPreId() {
+        return preId;
+    }
 
-	public void setRouteGuidance(String routeGuidance) {
-		this.routeGuidance = routeGuidance == null ? null : routeGuidance.trim();
-	}
+    public void setPreId(Long preId) {
+        this.preId = preId;
+    }
 
-	public Date getCreateTime() {
-		return createTime;
-	}
+    public Long getGatewayId() {
+        return gatewayId;
+    }
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
+    public void setGatewayId(Long gatewayId) {
+        this.gatewayId = gatewayId;
+    }
 
-	public Date getUpdateTime() {
-		return updateTime;
-	}
+    public String getRadar() {
+        return radar;
+    }
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
+    public void setRadar(String radar) {
+        this.radar = radar == null ? null : radar.trim();
+    }
 
-	public String getImageUrl() {
-		return imageUrl;
-	}
+    public Long getLockId() {
+        return lockId;
+    }
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl == null ? null : imageUrl.trim();
-	}
+    public void setLockId(Long lockId) {
+        this.lockId = lockId;
+    }
 
-	public Integer getLockBattery() {
-		return lockBattery;
-	}
+    public String getLockSn() {
+        return lockSn;
+    }
 
-	public void setLockBattery(Integer lockBattery) {
-		this.lockBattery = lockBattery;
-	}
-	
-	public Integer getBindOrderStatus() {
-		return bindOrderStatus;
-	}
+    public void setLockSn(String lockSn) {
+        this.lockSn = lockSn == null ? null : lockSn.trim();
+    }
 
-	public void setBindOrderStatus(Integer bindOrderStatus) {
-		this.bindOrderStatus = bindOrderStatus;
-	}
+    public Integer getLockStatus() {
+        return lockStatus;
+    }
 
-	public Double getLockVoltage() {
-		return lockVoltage;
-	}
+    public void setLockStatus(Integer lockStatus) {
+        this.lockStatus = lockStatus;
+    }
 
-	public void setLockVoltage(Double lockVoltage) {
-		this.lockVoltage = lockVoltage;
-	}
+    public Integer getStatus() {
+        return status;
+    }
 
-	@Override
-	public String toString() {
-		return "Stall [id=" + id + ", stallName=" + stallName + ", sellCount=" + sellCount + ", preId=" + preId
-				+ ", gatewayId=" + gatewayId + ", radar=" + radar + ", lockId=" + lockId + ", lockSn=" + lockSn
-				+ ", lockStatus=" + lockStatus + ", status=" + status + ", stallLocal=" + stallLocal
-				+ ", routeGuidance=" + routeGuidance + ", createTime=" + createTime + ", updateTime=" + updateTime
-				+ ", imageUrl=" + imageUrl + ", lockBattery=" + lockBattery + "]";
-	}
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
+    public String getStallLocal() {
+        return stallLocal;
+    }
+
+    public void setStallLocal(String stallLocal) {
+        this.stallLocal = stallLocal == null ? null : stallLocal.trim();
+    }
+
+    public String getRouteGuidance() {
+        return routeGuidance;
+    }
+
+    public void setRouteGuidance(String routeGuidance) {
+        this.routeGuidance = routeGuidance == null ? null : routeGuidance.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl == null ? null : imageUrl.trim();
+    }
+
+    public Integer getLockBattery() {
+        return lockBattery;
+    }
+
+    public void setLockBattery(Integer lockBattery) {
+        this.lockBattery = lockBattery;
+    }
+
+    public Float getLockVoltage() {
+        return lockVoltage;
+    }
+
+    public void setLockVoltage(Float lockVoltage) {
+        this.lockVoltage = lockVoltage;
+    }
+
+    public Short getBindOrderStatus() {
+        return bindOrderStatus;
+    }
+
+    public void setBindOrderStatus(Short bindOrderStatus) {
+        this.bindOrderStatus = bindOrderStatus;
+    }
 }

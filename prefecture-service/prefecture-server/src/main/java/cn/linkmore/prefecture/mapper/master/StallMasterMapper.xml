@@ -1,44 +1,53 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.linkmore.prefecture.dao.master.StallMasterMapper" >
-  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.Stall" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="stall_name" property="stallName" jdbcType="VARCHAR" />
-    <result column="sell_count" property="sellCount" jdbcType="INTEGER" />
-    <result column="pre_id" property="preId" jdbcType="BIGINT" />
-    <result column="gateway_id" property="gatewayId" jdbcType="BIGINT" />
-    <result column="radar" property="radar" jdbcType="VARCHAR" />
-    <result column="lock_id" property="lockId" jdbcType="BIGINT" />
-    <result column="lock_sn" property="lockSn" jdbcType="VARCHAR" />
-    <result column="lock_status" property="lockStatus" jdbcType="INTEGER" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="stall_local" property="stallLocal" jdbcType="VARCHAR" />
-    <result column="route_guidance" property="routeGuidance" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
-    <result column="lock_battery" property="lockBattery" jdbcType="INTEGER" />
-    <result column="bind_order_status" property="bindOrderStatus" jdbcType="INTEGER" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.StallMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.Stall">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="sell_count" jdbcType="INTEGER" property="sellCount" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="gateway_id" jdbcType="BIGINT" property="gatewayId" />
+    <result column="radar" jdbcType="VARCHAR" property="radar" />
+    <result column="lock_id" jdbcType="BIGINT" property="lockId" />
+    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+    <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="stall_local" jdbcType="VARCHAR" property="stallLocal" />
+    <result column="route_guidance" jdbcType="VARCHAR" property="routeGuidance" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="lock_battery" jdbcType="INTEGER" property="lockBattery" />
+    <result column="lock_voltage" jdbcType="REAL" property="lockVoltage" />
+    <result column="bind_order_status" jdbcType="SMALLINT" property="bindOrderStatus" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <sql id="Base_Column_List">
+    id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
+    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, 
+    lock_voltage, bind_order_status
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
     delete from v_stall
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.pabei.backend.domain.Stall" >
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.Stall">
     insert into v_stall (id, stall_name, sell_count, 
       pre_id, gateway_id, radar, 
       lock_id, lock_sn, lock_status, 
       status, stall_local, route_guidance, 
       create_time, update_time, image_url, 
-      lock_battery,bind_order_status)
+      lock_battery, lock_voltage, bind_order_status
+      )
     values (#{id,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}, #{sellCount,jdbcType=INTEGER}, 
       #{preId,jdbcType=BIGINT}, #{gatewayId,jdbcType=BIGINT}, #{radar,jdbcType=VARCHAR}, 
       #{lockId,jdbcType=BIGINT}, #{lockSn,jdbcType=VARCHAR}, #{lockStatus,jdbcType=INTEGER}, 
       #{status,jdbcType=INTEGER}, #{stallLocal,jdbcType=VARCHAR}, #{routeGuidance,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{imageUrl,jdbcType=VARCHAR}, 
-      #{lockBattery,jdbcType=INTEGER},#{bindOrderStatus,jdbcType=INTEGER})
+      #{lockBattery,jdbcType=INTEGER}, #{lockVoltage,jdbcType=REAL}, #{bindOrderStatus,jdbcType=SMALLINT}
+      )
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.pabei.backend.domain.Stall" >
+  
+  <update id="update" parameterType="cn.linkmore.prefecture.entity.Stall">
     update v_stall
     set stall_name = #{stallName,jdbcType=VARCHAR},
       sell_count = #{sellCount,jdbcType=INTEGER},
@@ -55,41 +64,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       image_url = #{imageUrl,jdbcType=VARCHAR},
       lock_battery = #{lockBattery,jdbcType=INTEGER},
-      bind_order_status = #{bindOrderStatus,jdbcType=INTEGER}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  
-  <update id="order" parameterType="com.pabei.backend.domain.Stall" >
-    update v_stall
-    set  
-      lock_status = #{lockStatus,jdbcType=INTEGER},
-      status = #{status,jdbcType=INTEGER},
-      bind_order_status = #{bindOrderStatus,jdbcType=INTEGER}  
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  
-  <update id="cancel" parameterType="com.pabei.backend.domain.Stall" >
-    update v_stall
-    set  
-      lock_status = #{lockStatus,jdbcType=INTEGER},
-      status = #{status,jdbcType=INTEGER},
-      bind_order_status = #{bindOrderStatus,jdbcType=INTEGER}  
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="lockdown" parameterType="com.pabei.backend.domain.Stall" >
-    update v_stall
-    set  
-      lock_status = #{lockStatus,jdbcType=INTEGER}, 
-      lock_battery = #{lockBattery,jdbcType=INTEGER} 
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="pay" parameterType="com.pabei.backend.domain.Stall" >
-    update v_stall
-    set  
-      lock_status = #{lockStatus,jdbcType=INTEGER},
-      status = #{status,jdbcType=INTEGER},
-      bind_order_status = #{bindOrderStatus,jdbcType=INTEGER} ,
-      lock_battery = #{lockBattery,jdbcType=INTEGER}  
+      lock_voltage = #{lockVoltage,jdbcType=REAL},
+      bind_order_status = #{bindOrderStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

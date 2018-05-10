@@ -5,18 +5,24 @@ import cn.linkmore.prefecture.entity.Stall;
 
 @Mapper
 public interface StallMasterMapper {
-	int deleteByPrimaryKey(Long id);
+	/**
+	 * 删除id对应的信息
+	 * @param id 主键
+	 * @return  删除条数
+	 */
+	int delete(Long id);
 
-	int insert(Stall record);
+	/**
+	 * 保存信息
+	 * @param record 车位信息
+	 * @return 保存条数
+	 */
+	int save(Stall record);  
 
-	int updateByPrimaryKey(Stall stall);
-
-	void order(Stall stall);
-	
-	void cancel(Stall stall);
-	
-	void lockdown(Stall stall);
-
-	void pay(Stall stall);
-
+	/**
+	 * 更新信息
+	 * @param record 车位信息
+	 * @return 更新条数
+	 */
+	int update(Stall record); 
 }

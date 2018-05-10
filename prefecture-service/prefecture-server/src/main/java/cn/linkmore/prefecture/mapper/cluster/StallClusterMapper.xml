@@ -1,79 +1,36 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.linkmore.prefecture.dao.cluster.StallClusterMapper" >
-  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.Stall" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="stall_name" property="stallName" jdbcType="VARCHAR" />
-    <result column="sell_count" property="sellCount" jdbcType="INTEGER" />
-    <result column="pre_id" property="preId" jdbcType="BIGINT" />
-    <result column="gateway_id" property="gatewayId" jdbcType="BIGINT" />
-    <result column="radar" property="radar" jdbcType="VARCHAR" />
-    <result column="lock_id" property="lockId" jdbcType="BIGINT" />
-    <result column="lock_sn" property="lockSn" jdbcType="VARCHAR" />
-    <result column="lock_status" property="lockStatus" jdbcType="INTEGER" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="stall_local" property="stallLocal" jdbcType="VARCHAR" />
-    <result column="route_guidance" property="routeGuidance" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
-    <result column="lock_battery" property="lockBattery" jdbcType="INTEGER" />
-    <result column="bind_order_status" property="bindOrderStatus" jdbcType="INTEGER" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.StallClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.Stall">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="sell_count" jdbcType="INTEGER" property="sellCount" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="gateway_id" jdbcType="BIGINT" property="gatewayId" />
+    <result column="radar" jdbcType="VARCHAR" property="radar" />
+    <result column="lock_id" jdbcType="BIGINT" property="lockId" />
+    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+    <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="stall_local" jdbcType="VARCHAR" property="stallLocal" />
+    <result column="route_guidance" jdbcType="VARCHAR" property="routeGuidance" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="lock_battery" jdbcType="INTEGER" property="lockBattery" />
+    <result column="lock_voltage" jdbcType="REAL" property="lockVoltage" />
+    <result column="bind_order_status" jdbcType="SMALLINT" property="bindOrderStatus" />
   </resultMap>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
-    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, bind_order_status
+  <sql id="Base_Column_List">
+    id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
+    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, 
+    lock_voltage, bind_order_status
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
     from v_stall
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
-    select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
-    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, bind_order_status
-    from v_stall
-  </select>
-  <select id="getByStatus" resultType="Stall" parameterType="java.lang.Integer" >
-    select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
-    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, bind_order_status
-    from v_stall
-    where status = #{status}
-  </select>
   
-  <!-- <resultMap id="CurrentOrderMap" type="com.pabei.backend.controller.response.CurrentOrderResponseBean" >
-  	<result column="name" property="preName" jdbcType="VARCHAR" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
-    <result column="route_description" property="routeDescription" jdbcType="VARCHAR" />
-    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
-    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
-    <result column="stall_name" property="stallName" jdbcType="VARCHAR" />
-    <result column="route_guidance" property="routeGuidance" jdbcType="VARCHAR" />
-    <result column="free_mins" property="freeMins" jdbcType="INTEGER" />
-  </resultMap>
-  
-  <select id="getCurrentOrder" resultMap="CurrentOrderMap" parameterType="java.lang.Long" >
-	select p.name, p.`address`, p.`route_description`, p.latitude, p.longitude,
-	s.`stall_name`, p.route_guidance, b.free_mins
-	from v_stall s LEFT JOIN v_prefecture p 
-	ON s.`pre_id` = p.`id` 
-	left join v_strategy_base b
-	on b.id = p.strategy_id
-	where s.id = #{id,jdbcType=BIGINT}
-  </select> -->
-  
-  <select id="getByLockSn" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
-    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery
-    from v_stall
-    where lock_sn = #{lockSn,jdbcType=VARCHAR}
-  </select>
-  
-  <select id="getPreFreeStall" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
-    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery
-    from v_stall
-    where pre_id = #{preId,jdbcType=BIGINT} and status = 1 limit 0,1
-  </select>
-  
-  <select id="getCountByPreId" parameterType="java.lang.Long" resultType="java.lang.Integer">
-  	select count(*) from v_stall where pre_id = #{preId}
-  </select>
 </mapper>

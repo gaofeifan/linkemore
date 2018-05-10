@@ -1,61 +1,75 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.linkmore.prefecture.dao.master.PrefectureMasterMapper" >
-  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.Prefecture" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="strategy_id" property="strategyId" jdbcType="BIGINT" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
-    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
-    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
-    <result column="route_guidance" property="routeGuidance" jdbcType="VARCHAR" />
-    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
-    <result column="stall_total" property="stallTotal" jdbcType="INTEGER" />
-    <result column="sold_times" property="soldTimes" jdbcType="INTEGER" />
-    <result column="date_contract" property="dateContract" jdbcType="TIMESTAMP" />
-    <result column="valid_time" property="validTime" jdbcType="TIMESTAMP" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="route_description" property="routeDescription" jdbcType="VARCHAR" />
-    <result column="district_id" property="districtId" jdbcType="BIGINT" />
-    <result column="base_dict_id" property="baseDictId" jdbcType="BIGINT" />
-    <result column="city_id" property="cityId" jdbcType="BIGINT" />
-    <result column="order_index" property="orderIndex" jdbcType="INTEGER" />
-    <result column="leave_time" property="leaveTime" jdbcType="BIGINT" />
-    <result column="charge_price" property="chargePrice" jdbcType="VARCHAR" />
-    <result column="charge_time" property="chargeTime" jdbcType="INTEGER" />
-    <result column="type" property="type" jdbcType="SMALLINT" />
-    <result column="category" property="category" jdbcType="SMALLINT" />
-    <result column="enterprise_id" property="enterpriseId" jdbcType="BIGINT" />
-     <result column="limit_status" property="limitStatus" jdbcType="SMALLINT" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.PrefectureMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.Prefecture">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="district_id" jdbcType="BIGINT" property="districtId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="latitude" jdbcType="DECIMAL" property="latitude" />
+    <result column="longitude" jdbcType="DECIMAL" property="longitude" />
+    <result column="route_guidance" jdbcType="VARCHAR" property="routeGuidance" />
+    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="stall_total" jdbcType="INTEGER" property="stallTotal" />
+    <result column="sold_times" jdbcType="INTEGER" property="soldTimes" />
+    <result column="date_contract" jdbcType="TIMESTAMP" property="dateContract" />
+    <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="route_description" jdbcType="VARCHAR" property="routeDescription" />
+    <result column="areas_id" jdbcType="BIGINT" property="areasId" />
+    <result column="base_dict_id" jdbcType="BIGINT" property="baseDictId" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="leave_time" jdbcType="INTEGER" property="leaveTime" />
+    <result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
+    <result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="category" jdbcType="SMALLINT" property="category" />
+    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <sql id="Base_Column_List">
+    id, strategy_id, status, name, district_id, address, latitude, longitude, route_guidance, 
+    image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
+    route_description, areas_id, base_dict_id, city_id, order_index, leave_time, charge_price, 
+    charge_time, type, enterprise_id, category, limit_status
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
     delete from v_prefecture
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.pabei.backend.domain.Prefecture" >
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.Prefecture">
     insert into v_prefecture (id, strategy_id, status, 
-      name, address, latitude, 
-      longitude, route_guidance, image_url, 
-      stall_total, sold_times, date_contract, 
-      valid_time, create_time, update_time, 
-      route_description, district_id, base_dict_id, 
-      city_id,order_index,leave_time,charge_price,charge_time,type,enterprise_id)
+      name, district_id, address, 
+      latitude, longitude, route_guidance, 
+      image_url, stall_total, sold_times, 
+      date_contract, valid_time, create_time, 
+      update_time, route_description, areas_id, 
+      base_dict_id, city_id, order_index, 
+      leave_time, charge_price, charge_time, 
+      type, enterprise_id, category, 
+      limit_status)
     values (#{id,jdbcType=BIGINT}, #{strategyId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
-      #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{latitude,jdbcType=DECIMAL}, 
-      #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, #{imageUrl,jdbcType=VARCHAR}, 
-      #{stallTotal,jdbcType=INTEGER}, #{soldTimes,jdbcType=INTEGER}, #{dateContract,jdbcType=TIMESTAMP}, 
-      #{validTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{routeDescription,jdbcType=VARCHAR}, #{districtId,jdbcType=BIGINT}, #{baseDictId,jdbcType=BIGINT}, 
-      #{cityId,jdbcType=BIGINT},#{orderIndex,jdbcType=BIGINT},#{leaveTime,jdbcType=BIGINT},
-      #{chargePrice,jdbcType=VARCHAR},#{chargeTime,jdbcType=INTEGER},#{type,jdbcType=SMALLINT},#{enterprise_id,jdbcType=BIGINT})
+      #{name,jdbcType=VARCHAR}, #{districtId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, 
+      #{latitude,jdbcType=DECIMAL}, #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, 
+      #{imageUrl,jdbcType=VARCHAR}, #{stallTotal,jdbcType=INTEGER}, #{soldTimes,jdbcType=INTEGER}, 
+      #{dateContract,jdbcType=TIMESTAMP}, #{validTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{routeDescription,jdbcType=VARCHAR}, #{areasId,jdbcType=BIGINT}, 
+      #{baseDictId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT}, #{orderIndex,jdbcType=INTEGER}, 
+      #{leaveTime,jdbcType=INTEGER}, #{chargePrice,jdbcType=VARCHAR}, #{chargeTime,jdbcType=INTEGER}, 
+      #{type,jdbcType=SMALLINT}, #{enterpriseId,jdbcType=BIGINT}, #{category,jdbcType=SMALLINT}, 
+      #{limitStatus,jdbcType=SMALLINT})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.pabei.backend.domain.Prefecture" >
+  
+  <update id="update" parameterType="cn.linkmore.prefecture.entity.Prefecture">
     update v_prefecture
     set strategy_id = #{strategyId,jdbcType=BIGINT},
       status = #{status,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},
+      district_id = #{districtId,jdbcType=BIGINT},
       address = #{address,jdbcType=VARCHAR},
       latitude = #{latitude,jdbcType=DECIMAL},
       longitude = #{longitude,jdbcType=DECIMAL},
@@ -68,15 +82,17 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       route_description = #{routeDescription,jdbcType=VARCHAR},
-      district_id = #{districtId,jdbcType=BIGINT},
+      areas_id = #{areasId,jdbcType=BIGINT},
       base_dict_id = #{baseDictId,jdbcType=BIGINT},
       city_id = #{cityId,jdbcType=BIGINT},
-      order_index = #{orderIndex,jdbcType=BIGINT},
-      leave_time = #{leaveTime,jdbcType=BIGINT},
+      order_index = #{orderIndex,jdbcType=INTEGER},
+      leave_time = #{leaveTime,jdbcType=INTEGER},
       charge_price = #{chargePrice,jdbcType=VARCHAR},
       charge_time = #{chargeTime,jdbcType=INTEGER},
       type = #{type,jdbcType=SMALLINT},
-      enterprise_id = #{enterprise_id,jdbcType=BIGINT}
+      enterprise_id = #{enterpriseId,jdbcType=BIGINT},
+      category = #{category,jdbcType=SMALLINT},
+      limit_status = #{limitStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
