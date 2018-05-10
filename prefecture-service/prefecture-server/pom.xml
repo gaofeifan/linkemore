@@ -39,6 +39,24 @@
 			<artifactId>common-bean</artifactId>
 			<version>${version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>mysql-service</artifactId>
+			<version>${version}</version>
+		</dependency> 
+		
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>base-bean</artifactId>
+			<version>${version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>base-util</artifactId>
+			<version>${version}</version>
+		</dependency>
+		
 	</dependencies>
 
 	<dependencyManagement>
