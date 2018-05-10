@@ -4,60 +4,126 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Prefecture {
+	//状态：0，启用；1，禁用
+	public static final int PRE_STATUS_ENABLE = 0;
+	public static final int PRE_STATUS_DISABLE = 1;
+	
+	public final static short CATEGORY_COMMON = 0;
+	public final static short CATEGORY_TEST = 1;
+	public final static short CATEGORY_SHARE = 2;
+	
+	public final static short LIMIT_STATUS_FALSE = 0;
+	/**
+	 * 主键
+	 */
     private Long id;
-
+    /**
+     * 计费策略ID
+     */
     private Long strategyId;
-
+    /**
+     * 状态：0，启用；1，禁用
+     */
     private Integer status;
-
+    /**
+     * 专区名称
+     */
     private String name;
-
+    /**
+     * 区域id
+     */
     private Long districtId;
-
+    /**
+     * 专区地址
+     */
     private String address;
-
+    /**
+     * 纬度
+     */
     private BigDecimal latitude;
-
+    /**
+     * 经度
+     */
     private BigDecimal longitude;
-
+    /**
+     * 路线指引url
+     */
     private String routeGuidance;
-
+    /**
+     * 图片URL
+     */
     private String imageUrl;
-
+    /**
+     * 车位总数
+     */
     private Integer stallTotal;
-
+    /**
+     * 车位已售总次数
+     */
     private Integer soldTimes;
-
+    /**
+     * 签约时间
+     */
     private Date dateContract;
-
+    /**
+     * 有效期
+     */
     private Date validTime;
-
+    /**
+     * 创建时间
+     */
     private Date createTime;
-
+    /**
+     * 更新时间
+     */
     private Date updateTime;
-
+    /**
+     * 线路描述
+     */
     private String routeDescription;
-
+    /**
+     * areas_id(正式库中没有)
+     */
     private Long areasId;
-
+    /**
+     * 字典id
+     */
     private Long baseDictId;
-
+    /**
+     * 城市id
+     */
     private Long cityId;
-
+    /**
+     * 专区排序指标（值大的排名靠前）
+     */
     private Integer orderIndex;
-
+    /**
+     * 结账成功后提示的-离场时间(分钟)
+     */
     private Integer leaveTime;
-
+    /**
+     * 计费价格
+     */
     private String chargePrice;
-
+    /**
+     * 计费时间
+     */
     private Integer chargeTime;
-
+    /**
+     * 专区类型(0普通，1奥迪内部定制专区)
+     */
     private Short type;
-
+    /**
+     * 企业id
+     */
     private Long enterpriseId;
-
+    /**
+     * 分类(0普通,1测试,2共享)
+     */
     private Short category;
-
+    /**
+     * 预约受限(0不受限，1受限)
+     */
     private Short limitStatus;
 
     public Long getId() {

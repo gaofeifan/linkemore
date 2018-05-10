@@ -4,50 +4,91 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Coupon {
+	/**
+	 * 主键
+	 */
     private Long id;
-
+    /**
+     * 用户id
+     */
     private Long userId;
-
+    /**
+     * 优惠包id
+     */
     private Long comboId;
 
     private Long couponGrantId;
 
     private Long valuePackId;
-
+    /**
+     * 减免金额/折扣上限/立减金额
+     */
     private BigDecimal faceAmount;
 
     private Date vpValidTime;
-
+    /**
+     * 过期时间
+     */
     private Date validTime;
-
+    /**
+     * 状态0未使用，1已使用，2已过期
+     */
     private Short status;
-
+    /**
+     * 更新时间
+     */
     private Date updateTime;
-
+    /**
+     * 创建时间
+     */
     private Date createTime;
-
+    /**
+     * 企业id
+     */
     private Long enterpriseId;
-
+    /**
+     * 主题id
+     */
     private Long themeId;
-
+    /**
+     * 优惠券项id
+     */
     private Long itemId;
-
+    /**
+     * 发放记录id
+     */
     private Long recordId;
-
+    /**
+     * 优惠券套餐id
+     */
     private Long templateId;
-
+    /**
+     * 使用条件id
+     */
     private Long conditionId;
-
+    /**
+     * 类型0立减，1满减，2折扣
+     */
     private Integer type;
-
+    /**
+     * 订单金额
+     */
     private BigDecimal orderAmount;
-
+    /**
+     * 折扣[1,99]
+     */
     private Integer discount;
-
+    /**
+     * 使用金额[券最终价值]
+     */
     private BigDecimal usedAmount;
-
+    /**
+     * 发送人id
+     */
     private Long sendUserId;
-
+    /**
+     * 满足金额
+     */
     private BigDecimal conditionAmount;
 
     public Long getId() {

@@ -3,40 +3,84 @@ package cn.linkmore.prefecture.entity;
 import java.util.Date;
 
 public class Stall {
+	public static int STATUS_FREE = 1;
+	public static int STATUS_USED = 2;
+	public static int STATUS_PREOUTLINE = 3;
+	public static int STATUS_OUTLINE = 4;
+	public static int LOCK_STATUS_DOWN = 2;
+	public static int LOCK_STATUS_UP = 1; 
+	public static int BIND_ORDER_STATUS_NONE = 0; 
+	/**
+	 * 主键
+	 */
     private Long id;
-
+    /**
+	 * 车位名称
+	 */
     private String stallName;
-
+    /**
+	 * 已售车位次数
+	 */
     private Integer sellCount;
-
+    /**
+	 * 专区id
+	 */
     private Long preId;
-
+    /**
+	 * 网关id
+	 */
     private Long gatewayId;
-
+    /**
+	 * 雷达
+	 */
     private String radar;
-
+    /**
+	 * 车位锁主键
+	 */
     private Long lockId;
-
+    /**
+	 * 车位锁序列号
+	 */
     private String lockSn;
-
+    /**
+	 * 车位锁操作状态：1，升起；2，降下
+	 */
     private Integer lockStatus;
-
+    /**
+	 * 状态:1，空闲；2，使用中；3,预下线；4，下线
+	 */
     private Integer status;
-
+    /**
+	 * 车位位置描述
+	 */
     private String stallLocal;
-
+    /**
+	 * 路线指引
+	 */
     private String routeGuidance;
-
+    /**
+	 * 创建时间
+	 */
     private Date createTime;
-
+    /**
+	 * 更新时间
+	 */
     private Date updateTime;
-
+    /**
+	 * 车位导航图
+	 */
     private String imageUrl;
-
+    /**
+	 * 电量百分数
+	 */
     private Integer lockBattery;
-
+    /**
+	 * 车位锁电压
+	 */
     private Float lockVoltage;
-
+    /**
+	 * 绑定订单状态
+	 */
     private Short bindOrderStatus;
 
     public Long getId() {
