@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.common.dao.cluster.DistrictClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.common.response.ResDistrict">
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="district_name" property="districtName" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="city_id" property="cityId" jdbcType="BIGINT" />
+  </resultMap>
+  <select id="find" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, district_name, code, city_id  
+    from t_district
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findAll" resultMap="BaseResultMap" >
+    select id, district_name, code, city_id  
+    from t_district
+  </select> 
+  <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select id, district_name, code, city_id  
+    from t_district
+    where 1 = 1
+    <if test="districtName!=null">  
+    and district_name like #{districtName,jdbcType=VARCHAR}
+    </if> 
+    <if test="code!=null">  
+    and code = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="cityId!=null">  
+    and city_id = #{cityId,jdbcType=VARCHAR}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="findList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select id, district_name, code, city_id  
+    from t_district
+    where 1 = 1
+    <if test="districtName!=null">  
+    and district_name like #{districtName,jdbcType=VARCHAR}
+    </if> 
+    <if test="code!=null">  
+    and code = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="cityId!=null">  
+    and city_id = #{cityId,jdbcType=VARCHAR}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
+  </select>
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_district
+    where 1 = 1
+    <if test="districtName!=null">  
+    and district_name like #{districtName,jdbcType=VARCHAR}
+    </if> 
+    <if test="code!=null">  
+    and code = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="cityId!=null">  
+    and city_id = #{cityId,jdbcType=VARCHAR}
+    </if> 
+  </select>
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_district
+    where 
+    ${property} = #{value}
+    and id != #{id} 
+  </select>
+  <select id="findDistrictByCityId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, district_name, city_id
+    from t_district
+    where city_id = #{cityId}
+  </select>
+  
+</mapper>
