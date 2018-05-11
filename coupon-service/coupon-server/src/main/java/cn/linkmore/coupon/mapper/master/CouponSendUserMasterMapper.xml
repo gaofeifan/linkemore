@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.master.CouponSendUserMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.CouponSendUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="record_id" jdbcType="BIGINT" property="recordId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="rollback_flag" jdbcType="INTEGER" property="rollbackFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, template_id, record_id, user_id, create_time, rollback_flag
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_coupon_send_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.CouponSendUser">
+    insert into t_coupon_send_user (id, template_id, record_id, 
+      user_id, create_time, rollback_flag
+      )
+    values (#{id,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, #{recordId,jdbcType=BIGINT}, 
+      #{userId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{rollbackFlag,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.coupon.entity.CouponSendUser">
+    update t_coupon_send_user
+    set template_id = #{templateId,jdbcType=BIGINT},
+      record_id = #{recordId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      rollback_flag = #{rollbackFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.master.CouponThemeMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.CouponTheme">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="enterprise_name" jdbcType="VARCHAR" property="enterpriseName" />
+    <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="tellphone" jdbcType="VARCHAR" property="tellphone" />
+    <result column="about_url" jdbcType="VARCHAR" property="aboutUrl" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="template_name" jdbcType="VARCHAR" property="templateName" />
+    <result column="template_code" jdbcType="VARCHAR" property="templateCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, enterprise_id, enterprise_name, logo_url, address, remark, tellphone, about_url, 
+    status, template_id, template_name, template_code, create_time
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_coupon_theme
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.CouponTheme">
+    insert into t_coupon_theme (id, enterprise_id, enterprise_name, 
+      logo_url, address, remark, 
+      tellphone, about_url, status, 
+      template_id, template_name, template_code, 
+      create_time)
+    values (#{id,jdbcType=BIGINT}, #{enterpriseId,jdbcType=BIGINT}, #{enterpriseName,jdbcType=VARCHAR}, 
+      #{logoUrl,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{tellphone,jdbcType=VARCHAR}, #{aboutUrl,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, 
+      #{templateId,jdbcType=BIGINT}, #{templateName,jdbcType=VARCHAR}, #{templateCode,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.coupon.entity.CouponTheme">
+    update t_coupon_theme
+    set enterprise_id = #{enterpriseId,jdbcType=BIGINT},
+      enterprise_name = #{enterpriseName,jdbcType=VARCHAR},
+      logo_url = #{logoUrl,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      tellphone = #{tellphone,jdbcType=VARCHAR},
+      about_url = #{aboutUrl,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT},
+      template_id = #{templateId,jdbcType=BIGINT},
+      template_name = #{templateName,jdbcType=VARCHAR},
+      template_code = #{templateCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
