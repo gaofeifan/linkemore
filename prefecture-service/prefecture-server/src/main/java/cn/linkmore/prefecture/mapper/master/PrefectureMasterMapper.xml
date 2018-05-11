@@ -19,7 +19,6 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="route_description" jdbcType="VARCHAR" property="routeDescription" />
-    <result column="areas_id" jdbcType="BIGINT" property="areasId" />
     <result column="base_dict_id" jdbcType="BIGINT" property="baseDictId" />
     <result column="city_id" jdbcType="BIGINT" property="cityId" />
     <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
@@ -34,7 +33,7 @@
   <sql id="Base_Column_List">
     id, strategy_id, status, name, district_id, address, latitude, longitude, route_guidance, 
     image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
-    route_description, areas_id, base_dict_id, city_id, order_index, leave_time, charge_price, 
+    route_description, base_dict_id, city_id, order_index, leave_time, charge_price, 
     charge_time, type, enterprise_id, category, limit_status
   </sql>
   <delete id="delete" parameterType="java.lang.Long">
@@ -47,7 +46,7 @@
       latitude, longitude, route_guidance, 
       image_url, stall_total, sold_times, 
       date_contract, valid_time, create_time, 
-      update_time, route_description, areas_id, 
+      update_time, route_description, 
       base_dict_id, city_id, order_index, 
       leave_time, charge_price, charge_time, 
       type, enterprise_id, category, 
@@ -57,7 +56,7 @@
       #{latitude,jdbcType=DECIMAL}, #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, 
       #{imageUrl,jdbcType=VARCHAR}, #{stallTotal,jdbcType=INTEGER}, #{soldTimes,jdbcType=INTEGER}, 
       #{dateContract,jdbcType=TIMESTAMP}, #{validTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{routeDescription,jdbcType=VARCHAR}, #{areasId,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{routeDescription,jdbcType=VARCHAR}, 
       #{baseDictId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT}, #{orderIndex,jdbcType=INTEGER}, 
       #{leaveTime,jdbcType=INTEGER}, #{chargePrice,jdbcType=VARCHAR}, #{chargeTime,jdbcType=INTEGER}, 
       #{type,jdbcType=SMALLINT}, #{enterpriseId,jdbcType=BIGINT}, #{category,jdbcType=SMALLINT}, 
@@ -82,7 +81,6 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       route_description = #{routeDescription,jdbcType=VARCHAR},
-      areas_id = #{areasId,jdbcType=BIGINT},
       base_dict_id = #{baseDictId,jdbcType=BIGINT},
       city_id = #{cityId,jdbcType=BIGINT},
       order_index = #{orderIndex,jdbcType=INTEGER},

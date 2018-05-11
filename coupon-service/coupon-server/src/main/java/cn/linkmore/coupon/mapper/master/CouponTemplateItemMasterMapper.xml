@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.master.CouponTemplateItemMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.CouponTemplateItem">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="face_amount" jdbcType="DECIMAL" property="faceAmount" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="valid_day" jdbcType="INTEGER" property="validDay" />
+    <result column="discount" jdbcType="INTEGER" property="discount" />
+    <result column="condition_amount" jdbcType="DECIMAL" property="conditionAmount" />
+    <result column="source" jdbcType="INTEGER" property="source" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, template_id, type, face_amount, quantity, valid_day, discount, condition_amount, 
+    source, delete_status
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_coupon_template_item
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.CouponTemplateItem">
+    insert into t_coupon_template_item (id, template_id, type, 
+      face_amount, quantity, valid_day, 
+      discount, condition_amount, source, 
+      delete_status)
+    values (#{id,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, 
+      #{faceAmount,jdbcType=DECIMAL}, #{quantity,jdbcType=INTEGER}, #{validDay,jdbcType=INTEGER}, 
+      #{discount,jdbcType=INTEGER}, #{conditionAmount,jdbcType=DECIMAL}, #{source,jdbcType=INTEGER}, 
+      #{deleteStatus,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.coupon.entity.CouponTemplateItem">
+    update t_coupon_template_item
+    set template_id = #{templateId,jdbcType=BIGINT},
+      type = #{type,jdbcType=INTEGER},
+      face_amount = #{faceAmount,jdbcType=DECIMAL},
+      quantity = #{quantity,jdbcType=INTEGER},
+      valid_day = #{validDay,jdbcType=INTEGER},
+      discount = #{discount,jdbcType=INTEGER},
+      condition_amount = #{conditionAmount,jdbcType=DECIMAL},
+      source = #{source,jdbcType=INTEGER},
+      delete_status = #{deleteStatus,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.master.CouponTemplateConditionMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.CouponTemplateCondition">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="available_time" jdbcType="INTEGER" property="availableTime" />
+    <result column="available_prefecture" jdbcType="INTEGER" property="availablePrefecture" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="is_default" jdbcType="INTEGER" property="isDefault" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, template_id, available_time, available_prefecture, status, create_time, 
+    is_default
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_template_condition
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_coupon_template_condition
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.linkmore.coupon.entity.CouponTemplateCondition">
+    insert into t_coupon_template_condition (id, name, template_id, 
+      available_time, available_prefecture, status, 
+      create_time, is_default)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{templateId,jdbcType=BIGINT}, 
+      #{availableTime,jdbcType=INTEGER}, #{availablePrefecture,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{isDefault,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.coupon.entity.CouponTemplateCondition">
+    insert into t_coupon_template_condition
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="availableTime != null">
+        available_time,
+      </if>
+      <if test="availablePrefecture != null">
+        available_prefecture,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="isDefault != null">
+        is_default,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="templateId != null">
+        #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="availableTime != null">
+        #{availableTime,jdbcType=INTEGER},
+      </if>
+      <if test="availablePrefecture != null">
+        #{availablePrefecture,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.linkmore.coupon.entity.CouponTemplateCondition">
+    update t_coupon_template_condition
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="availableTime != null">
+        available_time = #{availableTime,jdbcType=INTEGER},
+      </if>
+      <if test="availablePrefecture != null">
+        available_prefecture = #{availablePrefecture,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.linkmore.coupon.entity.CouponTemplateCondition">
+    update t_coupon_template_condition
+    set name = #{name,jdbcType=VARCHAR},
+      template_id = #{templateId,jdbcType=BIGINT},
+      available_time = #{availableTime,jdbcType=INTEGER},
+      available_prefecture = #{availablePrefecture,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      is_default = #{isDefault,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -19,7 +19,6 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="route_description" jdbcType="VARCHAR" property="routeDescription" />
-    <result column="areas_id" jdbcType="BIGINT" property="areasId" />
     <result column="base_dict_id" jdbcType="BIGINT" property="baseDictId" />
     <result column="city_id" jdbcType="BIGINT" property="cityId" />
     <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
@@ -34,7 +33,7 @@
   <sql id="Base_Column_List">
     id, strategy_id, status, name, district_id, address, latitude, longitude, route_guidance, 
     image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
-    route_description, areas_id, base_dict_id, city_id, order_index, leave_time, charge_price, 
+    route_description, base_dict_id, city_id, order_index, leave_time, charge_price, 
     charge_time, type, enterprise_id, category, limit_status
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
