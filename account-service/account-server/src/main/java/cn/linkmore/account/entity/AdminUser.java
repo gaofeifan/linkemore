@@ -1,20 +1,9 @@
 package cn.linkmore.account.entity;
-import java.io.Serializable;
-import java.util.Date;
-/**
- * @Version 2.0
- * @author  GFF
- * @Date     2018年5月10日
- */
-public class AdminUser implements Serializable{
-	public static final int STATUS_FALSE = 0;
-	public static final int STATUS_TRUE = 1;
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -6631425800654808128L;
 
-	private Long id;
+import java.util.Date;
+
+public class AdminUser {
+    private Long id;
 
     private String cellphone;
 

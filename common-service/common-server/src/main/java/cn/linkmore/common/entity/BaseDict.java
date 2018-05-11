@@ -2,12 +2,6 @@ package cn.linkmore.common.entity;
 
 import java.util.Date;
 
-/**
- * 数据词典
- * @Version 2.0
- * @author  GFF
- * @Date     2018年5月10日
- */
 public class BaseDict {
     private Long id;
 
@@ -17,9 +11,11 @@ public class BaseDict {
 
     private String code;
 
+    private Integer orderIndex;
+
     private Date createTime;
 
-    private Date updateTime;
+    private Integer extra;
 
     public Long getId() {
         return id;
@@ -53,6 +49,14 @@ public class BaseDict {
         this.code = code == null ? null : code.trim();
     }
 
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -61,11 +65,11 @@ public class BaseDict {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public Integer getExtra() {
+        return extra;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setExtra(Integer extra) {
+        this.extra = extra;
     }
 }

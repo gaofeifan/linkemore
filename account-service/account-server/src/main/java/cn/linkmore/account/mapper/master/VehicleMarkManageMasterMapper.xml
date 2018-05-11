@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.VehicleMarkManage">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="veh_user_id" jdbcType="VARCHAR" property="vehUserId" />
+    <result column="veh_mark" jdbcType="VARCHAR" property="vehMark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, veh_user_id, veh_mark, create_time, update_time
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from v_vehicle_mark_manage
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.linkmore.account.entity.VehicleMarkManage">
+    insert into v_vehicle_mark_manage (id, veh_user_id, veh_mark, 
+      create_time, update_time)
+    values (#{id,jdbcType=BIGINT}, #{vehUserId,jdbcType=VARCHAR}, #{vehMark,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.account.entity.VehicleMarkManage">
+    insert into v_vehicle_mark_manage
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="vehUserId != null">
+        veh_user_id,
+      </if>
+      <if test="vehMark != null">
+        veh_mark,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="vehUserId != null">
+        #{vehUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="vehMark != null">
+        #{vehMark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.VehicleMarkManage">
+    update v_vehicle_mark_manage
+    <set>
+      <if test="vehUserId != null">
+        veh_user_id = #{vehUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="vehMark != null">
+        veh_mark = #{vehMark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.VehicleMarkManage">
+    update v_vehicle_mark_manage
+    set veh_user_id = #{vehUserId,jdbcType=VARCHAR},
+      veh_mark = #{vehMark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

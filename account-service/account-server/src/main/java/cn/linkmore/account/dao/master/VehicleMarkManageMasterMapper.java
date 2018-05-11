@@ -5,10 +5,13 @@ import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.account.entity.VehicleMarkManage;
 @Mapper
 public interface VehicleMarkManageMasterMapper {
-    int deleteByPrimaryKey(Long id);
+    int deleteById(Long id);
 
     int insert(VehicleMarkManage record);
 
-    int updateByPrimaryKey(VehicleMarkManage record);
+    int insertSelective(VehicleMarkManage record);
+
+    int updateByIdSelective(VehicleMarkManage record);
+
+    int updateById(VehicleMarkManage record);
 }
-    

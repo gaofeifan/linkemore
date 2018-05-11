@@ -1,22 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.linkmore.account.dao.cluster.UserVersionClusterMapper" >
-  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserVersion" >
-    <id column="user_id" property="userId" jdbcType="BIGINT" />
-    <result column="client" property="client" jdbcType="SMALLINT" />
-    <result column="model" property="model" jdbcType="VARCHAR" />
-    <result column="os_version" property="osVersion" jdbcType="VARCHAR" />
-    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
-    <result column="version" property="version" jdbcType="VARCHAR" />
-    <result column="commit_time" property="commitTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.UserVersionClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserVersion">
+    <id column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="client" jdbcType="SMALLINT" property="client" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="os_version" jdbcType="VARCHAR" property="osVersion" />
+    <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="commit_time" jdbcType="TIMESTAMP" property="commitTime" />
   </resultMap>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select user_id, client, model, os_version, uuid, version, commit_time
+  <sql id="Base_Column_List">
+    user_id, client, model, os_version, uuid, version, commit_time
+  </sql>
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
     from t_user_version
     where user_id = #{userId,jdbcType=BIGINT}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
-    select user_id, client, model, os_version, uuid, version, commit_time
-    from t_user_version
   </select>
 </mapper>

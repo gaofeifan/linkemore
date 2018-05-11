@@ -48,11 +48,11 @@ public class CityController {
 		return this.cityService.findList(start,size);
 	}
 	
-	@RequestMapping(method=RequestMethod.GET)
+	/*@RequestMapping(method=RequestMethod.GET)
 	@ResponseBody 
 	public ViewPage list(@RequestBody ViewPageable pageable) { 
 		return this.cityService.findPage(pageable);
-	}
+	}*/
 	 
 	@RequestMapping(method=RequestMethod.POST)
 	public void save(@RequestBody ReqCity reqCity) {

@@ -1,292 +1,315 @@
 package cn.linkmore.account.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class User  implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -9092175315338674155L;
+public class User {
+    private Long id;
 
-	private Long id;
+    private String username;
 
-	private String username;
+    private String password;
 
-	private String password;
+    private String nickname;
 
-	private String nickname;
+    private Short sex;
 
-	private String status;
+    private String status;
 
-	private String userType;
-	
-	private Integer sex;
+    private String userType;
 
-	private String enterpriseName;
+    private String enterpriseName;
 
-	private String entAdminName;
+    private String entAdminName;
 
-	private String industry;
+    private String industry;
 
-	private Long parentId;
+    private Long parentId;
 
-	private String mobile;
+    private String mobile;
 
-	private String province;
+    private String province;
 
-	private String city;
+    private String city;
 
-	private String address;
+    private String address;
 
-	private String email;
+    private String email;
 
-	private String wechat;
+    private String wechat;
 
-	private String qq;
+    private String qq;
 
-	private String icon;
+    private String icon;
 
-	private Date lastLoginTime;
+    private Date lastLoginTime;
 
-	private Date createTime;
+    private Date createTime;
 
-	private Date updateTime;
+    private Date updateTime;
 
-	private Long hobbyBrandId;
+    private Long hobbyBrandId;
 
-	private Short isAppRegister;
+    private Short isAppRegister;
 
-	private Short isWechatBind;
+    private Short isWechatBind;
 
-	private Date appRegisterTime;
+    private Date appRegisterTime;
 
-	private Date wechatBindTime;
-	
-	private Integer type; //用户类型(0普通，1奥迪内部用户(根据专区type值判断车区))
+    private Date wechatBindTime;
 
-	public Long getId() {
-		return id;
-	}
+    private Short type;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    private Integer loginCount;
 
-	public String getUsername() {
-		return username;
-	}
+    private Integer orderCount;
 
-	public void setUsername(String username) {
-		this.username = username == null ? null : username.trim();
-	}
+    private Integer completeOrderCount;
 
-	public String getPassword() {
-		return password;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setPassword(String password) {
-		this.password = password == null ? null : password.trim();
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getNickname() {
-		return nickname;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setNickname(String nickname) {
-		this.nickname = nickname == null ? null : nickname.trim();
-	}
+    public void setUsername(String username) {
+        this.username = username == null ? null : username.trim();
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setStatus(String status) {
-		this.status = status == null ? null : status.trim();
-	}
-
-	public String getUserType() {
-		return userType;
-	}
-
-	public void setUserType(String userType) {
-		this.userType = userType == null ? null : userType.trim();
-	}
-
-	public String getEnterpriseName() {
-		return enterpriseName;
-	}
-
-	public void setEnterpriseName(String enterpriseName) {
-		this.enterpriseName = enterpriseName == null ? null : enterpriseName.trim();
-	}
-
-	public String getEntAdminName() {
-		return entAdminName;
-	}
-
-	public void setEntAdminName(String entAdminName) {
-		this.entAdminName = entAdminName == null ? null : entAdminName.trim();
-	}
-
-	public String getIndustry() {
-		return industry;
-	}
-
-	public void setIndustry(String industry) {
-		this.industry = industry == null ? null : industry.trim();
-	}
-
-	public Long getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
-	}
-
-	public String getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile == null ? null : mobile.trim();
-	}
-
-	public String getProvince() {
-		return province;
-	}
-
-	public void setProvince(String province) {
-		this.province = province == null ? null : province.trim();
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city == null ? null : city.trim();
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address == null ? null : address.trim();
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email == null ? null : email.trim();
-	}
-
-	public String getWechat() {
-		return wechat;
-	}
-
-	public void setWechat(String wechat) {
-		this.wechat = wechat == null ? null : wechat.trim();
-	}
-
-	public String getQq() {
-		return qq;
-	}
-
-	public void setQq(String qq) {
-		this.qq = qq == null ? null : qq.trim();
-	}
-
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon == null ? null : icon.trim();
-	}
-
-	public Date getLastLoginTime() {
-		return lastLoginTime;
-	}
-
-	public void setLastLoginTime(Date lastLoginTime) {
-		this.lastLoginTime = lastLoginTime;
-	}
-
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	public Date getUpdateTime() {
-		return updateTime;
-	}
-
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
-
-	public Long getHobbyBrandId() {
-		return hobbyBrandId;
-	}
-
-	public void setHobbyBrandId(Long hobbyBrandId) {
-		this.hobbyBrandId = hobbyBrandId;
-	}
-
-	public Short getIsAppRegister() {
-		return isAppRegister;
-	}
-
-	public void setIsAppRegister(Short isAppRegister) {
-		this.isAppRegister = isAppRegister;
-	}
-
-	public Short getIsWechatBind() {
-		return isWechatBind;
-	}
-
-	public void setIsWechatBind(Short isWechatBind) {
-		this.isWechatBind = isWechatBind;
-	}
-
-	public Date getAppRegisterTime() {
-		return appRegisterTime;
-	}
-
-	public void setAppRegisterTime(Date appRegisterTime) {
-		this.appRegisterTime = appRegisterTime;
-	}
-
-	public Date getWechatBindTime() {
-		return wechatBindTime;
-	}
-
-	public void setWechatBindTime(Date wechatBindTime) {
-		this.wechatBindTime = wechatBindTime;
-	}
-
-	public Integer getSex() {
-		return sex;
-	}
-
-	public void setSex(Integer sex) {
-		this.sex = sex;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	} 
-	
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname == null ? null : nickname.trim();
+    }
+
+    public Short getSex() {
+        return sex;
+    }
+
+    public void setSex(Short sex) {
+        this.sex = sex;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType == null ? null : userType.trim();
+    }
+
+    public String getEnterpriseName() {
+        return enterpriseName;
+    }
+
+    public void setEnterpriseName(String enterpriseName) {
+        this.enterpriseName = enterpriseName == null ? null : enterpriseName.trim();
+    }
+
+    public String getEntAdminName() {
+        return entAdminName;
+    }
+
+    public void setEntAdminName(String entAdminName) {
+        this.entAdminName = entAdminName == null ? null : entAdminName.trim();
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry == null ? null : industry.trim();
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile == null ? null : mobile.trim();
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province == null ? null : province.trim();
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city == null ? null : city.trim();
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim();
+    }
+
+    public String getWechat() {
+        return wechat;
+    }
+
+    public void setWechat(String wechat) {
+        this.wechat = wechat == null ? null : wechat.trim();
+    }
+
+    public String getQq() {
+        return qq;
+    }
+
+    public void setQq(String qq) {
+        this.qq = qq == null ? null : qq.trim();
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon == null ? null : icon.trim();
+    }
+
+    public Date getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(Date lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Long getHobbyBrandId() {
+        return hobbyBrandId;
+    }
+
+    public void setHobbyBrandId(Long hobbyBrandId) {
+        this.hobbyBrandId = hobbyBrandId;
+    }
+
+    public Short getIsAppRegister() {
+        return isAppRegister;
+    }
+
+    public void setIsAppRegister(Short isAppRegister) {
+        this.isAppRegister = isAppRegister;
+    }
+
+    public Short getIsWechatBind() {
+        return isWechatBind;
+    }
+
+    public void setIsWechatBind(Short isWechatBind) {
+        this.isWechatBind = isWechatBind;
+    }
+
+    public Date getAppRegisterTime() {
+        return appRegisterTime;
+    }
+
+    public void setAppRegisterTime(Date appRegisterTime) {
+        this.appRegisterTime = appRegisterTime;
+    }
+
+    public Date getWechatBindTime() {
+        return wechatBindTime;
+    }
+
+    public void setWechatBindTime(Date wechatBindTime) {
+        this.wechatBindTime = wechatBindTime;
+    }
+
+    public Short getType() {
+        return type;
+    }
+
+    public void setType(Short type) {
+        this.type = type;
+    }
+
+    public Integer getLoginCount() {
+        return loginCount;
+    }
+
+    public void setLoginCount(Integer loginCount) {
+        this.loginCount = loginCount;
+    }
+
+    public Integer getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(Integer orderCount) {
+        this.orderCount = orderCount;
+    }
+
+    public Integer getCompleteOrderCount() {
+        return completeOrderCount;
+    }
+
+    public void setCompleteOrderCount(Integer completeOrderCount) {
+        this.completeOrderCount = completeOrderCount;
+    }
 }

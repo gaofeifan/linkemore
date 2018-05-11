@@ -1,40 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper" >
-  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.VehicleMarkManage" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="veh_user_id" property="vehUserId" jdbcType="VARCHAR" />
-    <result column="veh_mark" property="vehMark" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.VehicleMarkManage">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="veh_user_id" jdbcType="VARCHAR" property="vehUserId" />
+    <result column="veh_mark" jdbcType="VARCHAR" property="vehMark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, veh_user_id, veh_mark, create_time, update_time
+  <sql id="Base_Column_List">
+    id, veh_user_id, veh_mark, create_time, update_time
+  </sql>
+  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
     from v_vehicle_mark_manage
     where id = #{id,jdbcType=BIGINT}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
-    select id, veh_user_id, veh_mark, create_time, update_time
-    from v_vehicle_mark_manage
-  </select>
-  <select id="getCountByVehMark" resultType="java.lang.Integer" parameterType="java.util.Map">
-  	select count(id) 
-  	from v_vehicle_mark_manage 
-  	where veh_mark = #{vehMark} and veh_user_id = #{userId}
-  </select>
-  <select id="getTotalByUserId" resultType="java.lang.Integer" parameterType="java.lang.Long" >
-    select count(id) 
-    from v_vehicle_mark_manage 
-    where veh_user_id = #{userId}
-  </select>
-  <select id="getCountById" resultType="java.lang.Integer" parameterType="java.lang.Long" >
-    select count(id) 
-    from v_vehicle_mark_manage 
-    where id = #{id}
-  </select>
-    <select id="getAllByUserId" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select id, veh_user_id, veh_mark, create_time, update_time 
-    from v_vehicle_mark_manage where veh_user_id = #{userId}
-    ORDER BY update_time DESC
   </select>
 </mapper>

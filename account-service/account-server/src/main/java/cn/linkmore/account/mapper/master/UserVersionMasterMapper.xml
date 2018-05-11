@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.UserVersionMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserVersion">
+    <id column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="client" jdbcType="SMALLINT" property="client" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="os_version" jdbcType="VARCHAR" property="osVersion" />
+    <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="commit_time" jdbcType="TIMESTAMP" property="commitTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, client, model, os_version, uuid, version, commit_time
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_user_version
+    where user_id = #{userId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.linkmore.account.entity.UserVersion">
+    insert into t_user_version (user_id, client, model, 
+      os_version, uuid, version, 
+      commit_time)
+    values (#{userId,jdbcType=BIGINT}, #{client,jdbcType=SMALLINT}, #{model,jdbcType=VARCHAR}, 
+      #{osVersion,jdbcType=VARCHAR}, #{uuid,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
+      #{commitTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.account.entity.UserVersion">
+    insert into t_user_version
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="client != null">
+        client,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="osVersion != null">
+        os_version,
+      </if>
+      <if test="uuid != null">
+        uuid,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="commitTime != null">
+        commit_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="client != null">
+        #{client,jdbcType=SMALLINT},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="osVersion != null">
+        #{osVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="uuid != null">
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="commitTime != null">
+        #{commitTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.UserVersion">
+    update t_user_version
+    <set>
+      <if test="client != null">
+        client = #{client,jdbcType=SMALLINT},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="osVersion != null">
+        os_version = #{osVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="uuid != null">
+        uuid = #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="commitTime != null">
+        commit_time = #{commitTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.UserVersion">
+    update t_user_version
+    set client = #{client,jdbcType=SMALLINT},
+      model = #{model,jdbcType=VARCHAR},
+      os_version = #{osVersion,jdbcType=VARCHAR},
+      uuid = #{uuid,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      commit_time = #{commitTime,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=BIGINT}
+  </update>
+</mapper>

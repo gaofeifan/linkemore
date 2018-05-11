@@ -9,6 +9,8 @@ public class BaseDictGroup {
 
     private String code;
 
+    private Integer orderIndex;
+
     private Date createTime;
 
     public Long getId() {
@@ -33,6 +35,14 @@ public class BaseDictGroup {
 
     public void setCode(String code) {
         this.code = code == null ? null : code.trim();
+    }
+
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
     }
 
     public Date getCreateTime() {
