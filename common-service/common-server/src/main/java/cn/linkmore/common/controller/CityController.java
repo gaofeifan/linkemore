@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.bean.view.ViewPage;
-import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.entity.City;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
@@ -23,7 +21,7 @@ import cn.linkmore.util.JsonUtil;
 
 /**
  * Controller - 城市信息
- * @author liwenlong
+ * @author liwenlongq
  * @version 2.0
  *
  */ 

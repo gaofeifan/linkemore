@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.linkmore.account.dao.master.UserVersionMasterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserVersion">
+<mapper namespace="cn.linkmore.common.dao.master.UserVersionMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.UserVersion">
     <id column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="client" jdbcType="SMALLINT" property="client" />
     <result column="model" jdbcType="VARCHAR" property="model" />
@@ -17,7 +17,7 @@
     delete from t_user_version
     where user_id = #{userId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.linkmore.account.entity.UserVersion">
+  <insert id="insert" parameterType="cn.linkmore.common.entity.UserVersion">
     insert into t_user_version (user_id, client, model, 
       os_version, uuid, version, 
       commit_time)
@@ -25,7 +25,7 @@
       #{osVersion,jdbcType=VARCHAR}, #{uuid,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
       #{commitTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="cn.linkmore.account.entity.UserVersion">
+  <insert id="insertSelective" parameterType="cn.linkmore.common.entity.UserVersion">
     insert into t_user_version
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -74,7 +74,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.UserVersion">
+  <update id="updateByIdSelective" parameterType="cn.linkmore.common.entity.UserVersion">
     update t_user_version
     <set>
       <if test="client != null">
@@ -98,7 +98,7 @@
     </set>
     where user_id = #{userId,jdbcType=BIGINT}
   </update>
-  <update id="updateById" parameterType="cn.linkmore.account.entity.UserVersion">
+  <update id="updateById" parameterType="cn.linkmore.common.entity.UserVersion">
     update t_user_version
     set client = #{client,jdbcType=SMALLINT},
       model = #{model,jdbcType=VARCHAR},

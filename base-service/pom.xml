@@ -10,6 +10,7 @@
 	<packaging>pom</packaging>
 	<name>linkmore base service</name>
 	<description>linkmore base service</description>
+	
 	<modules>  
 		<module>redis-service</module>
 		<module>feign-service</module>

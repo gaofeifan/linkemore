@@ -2,27 +2,41 @@ package cn.linkmore.common.entity;
 
 import java.util.Date;
 
+import cn.linkmore.annotation.GColumn;
+import cn.linkmore.annotation.GTable;
+@GTable(vlaue="t_base_app_version")
 public class BaseAppVersion {
+	@GColumn
     private Long id;
 
+	@GColumn
     private String version;
 
+	@GColumn
     private Long code;
 
+	@GColumn
     private String name;
 
+    @GColumn
     private Integer status;
 
+    @GColumn
     private String url;
 
+    @GColumn
     private Integer type;
 
+    @GColumn
     private Integer updateStatus;
 
+    @GColumn
     private Date createTime;
 
+    @GColumn
     private String description;
 
+    @GColumn
     private Date updateTime;
 
     public Long getId() {

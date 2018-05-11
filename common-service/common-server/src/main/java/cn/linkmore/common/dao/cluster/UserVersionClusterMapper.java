@@ -1,8 +1,8 @@
-package cn.linkmore.account.dao.cluster;
+package cn.linkmore.common.dao.cluster;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.account.entity.UserVersion;
+import cn.linkmore.common.entity.UserVersion;
 @Mapper
 public interface UserVersionClusterMapper {
 
