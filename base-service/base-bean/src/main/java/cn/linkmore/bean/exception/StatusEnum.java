@@ -13,7 +13,9 @@ public enum StatusEnum {
 	SERVER_EXCEPTION(500, "服务异常"), 
 	VALID_EXCEPTION(501, "请求参数不合法"), 
 	
-	USER_APP_NO_LOGIN(501, "请求参数不合法");
+	USER_APP_NO_LOGIN(2000, "请求参数不合法"), 
+	USER_APP_ILLEGAL_REQUEST(2001,"非法请求"), 
+	USER_APP_SMS_FAILED(2002,"短信发送失败");
 	
 	public int code;
 	public String label;

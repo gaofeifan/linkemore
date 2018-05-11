@@ -21,14 +21,9 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
-			<artifactId>mysql-service</artifactId>
+			<artifactId>feign-service</artifactId>
 			<version>${version}</version>
-		</dependency> 
-		 <dependency>
-			<groupId>cn.linkmore</groupId>
-			<artifactId>redis-service</artifactId>
-			<version>${version}</version>
-		</dependency> 
+		</dependency>   
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>

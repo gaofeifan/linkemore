@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>  
-	<sms tpl="SMS_52350243" id="login_code" desc="登录验证码"/>
-	<sms tpl="SMS_60125034" id="set_lock_auth_notice" desc="车位锁授权通知"/>
-	<sms tpl="SMS_60085035" id="cancel_lock_auth_notice" desc="取消车位锁授权"/>
-	<sms tpl="SMS_77145014" id="share_coupon_code" desc="常规发送停车券和分享领券"/>
+	<sms tpl="SMS_52350243" id="user_app_login_code" desc="登录验证码"/> 
+	<sms tpl="SMS_77145014" id="share_coupon_notice" desc="常规发送停车券和分享领券"/>
 </config>

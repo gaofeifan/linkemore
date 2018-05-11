@@ -6,7 +6,8 @@ package cn.linkmore.bean.constant;
  *
  */
 public class RedisKey {
-	public final static String USER_LOGIN_TOKEN = "user:login:uid:";
-	public final static String USER_LOGIN_USER = "user:login:user:";
-	public final static String USER_LOGIN_SMS_CODE = "user:login:code:";
+	public final static String USER_APP_LOGIN_TOKEN = "user:login:uid:";
+	public final static String USER_APP_LOGIN_USER = "user:login:user:";
+	public final static String USER_APP_LOGIN_CODE = "user:login:code:";
+	public final static String USER_APP_LOGIN_MOBILE="user:login:mobile:";
 }

@@ -2,6 +2,7 @@ package cn.linkmore.third.client;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 
+import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.third.client.hystrix.WechatClientHystrix;
 
 /**

@@ -7,13 +7,10 @@
 		<groupId>cn.linkmore</groupId>
 		<artifactId>base-service</artifactId>
 		<version>2.0.0.1-RELEASE</version>
-	</parent> 
-	<artifactId>exception-service</artifactId> 
-	<name>exception-service</name>
+	</parent>
+	<artifactId>feign-service</artifactId>
+	<name>feign-service</name>
 	<url>http://maven.apache.org</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -45,4 +42,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
 </project>

@@ -1,7 +1,9 @@
 package cn.linkmore.third.client.hystrix;
 
-import cn.linkmore.third.client.MiniProgramClient;
+import org.springframework.stereotype.Component;
 
+import cn.linkmore.third.client.MiniProgramClient;
+@Component
 public class MiniProgramClientHystrix implements MiniProgramClient {
 
 }

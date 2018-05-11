@@ -1,4 +1,4 @@
-package cn.linkmore.exception;
+package cn.linkmore.feign;
 
 import org.springframework.context.annotation.Configuration;
 
