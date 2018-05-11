@@ -4,52 +4,101 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Orders {
+	/**
+	 * 主键
+	 */
     private Long id;
-
+    /**
+     * 用户id
+     */
     private Long userId;
-
+    /**
+     * 车区id
+     */
     private Long preId;
-
+    /**
+     * 车位id
+     */
     private Long stallId;
-
+    /**
+     * 订单编号
+     */
     private String orderNo;
-
+    /**
+     * 支付类型:1免费2优惠券3账户
+     */
     private Integer payType;
-
+    /**
+     * 总金额
+     */
     private BigDecimal totalAmount;
-
+    /**
+     * 实际金额
+     */
     private BigDecimal actualAmount;
-
+    /**
+     * 状态：1，未支付；2，已支付；3，已完成；4，已取消 5 退款，6挂起订单，7关闭订单
+     */
     private Integer status;
-
+    /**
+     * 开始时间
+     */
     private Date beginTime;
-
+    /**
+     * 用户名
+     */
     private String username;
-
+    /**
+     * 结束时间
+     */
     private Date endTime;
-
+    /**
+     * 车牌号
+     */
     private String plateNo;
-
+    /**
+     * 车位导航图
+     */
     private String stallImage;
-
+    /**
+     * 车位位置描述
+     */
     private String stallLocal;
-
+    /**
+     * 车位路线指引
+     */
     private String stallGuidance;
-
+    /**
+     * 创建时间
+     */
     private Date createTime;
-
+    /**
+     * 更新时间
+     */
     private Date updateTime;
-
+    /**
+     * 对接计费系统id
+     */
     private String dockId;
-
+    /**
+     * 订单历史操作状态（1.挂起2关闭）
+     */
     private Short statusHistory;
-
+    /**
+     * 订单用户类型(0普通，1奥迪内部用户)
+     */
     private Short userType;
-
+    /**
+     * 订单操作时间[挂起关闭]
+     */
     private Date statusTime;
-
+    /**
+     * 降锁时间
+     */
     private Date lockDownTime;
-
+    /**
+     * 降锁状态:null未操作，0失败，1成功
+     */
     private Short lockDownStatus;
 
     public Long getId() {
