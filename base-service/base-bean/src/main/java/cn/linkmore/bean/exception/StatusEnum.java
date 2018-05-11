@@ -36,8 +36,20 @@ public enum StatusEnum {
 		for (StatusEnum status : StatusEnum.values()) {
 			if (status.code == code) {
 				result = status.label;
+				break;
 			}
 		}
 		return result;
+	}
+	
+	public static StatusEnum get(int code) {
+		StatusEnum se = null;
+		for (StatusEnum status : StatusEnum.values()) {
+			if (status.code == code) {
+				se = status;
+				break;
+			}
+		}
+		return se;
 	}
 }

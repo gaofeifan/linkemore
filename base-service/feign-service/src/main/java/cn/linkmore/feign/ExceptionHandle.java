@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import cn.linkmore.bean.exception.BaseException;
 import cn.linkmore.bean.exception.BusinessException;
-import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.bean.exception.ExceptionInfo;
 import cn.linkmore.bean.exception.InternalException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.util.JsonUtil;
 
 @ControllerAdvice
@@ -39,8 +39,10 @@ public class ExceptionHandle {
 		PrintWriter pw = null;
 		try {
 			pw = response.getWriter();
-			BaseException be = new BusinessException(StatusEnum.BAD_REQUEST);
-			pw.write(JsonUtil.toJson(be));
+			ExceptionInfo ei = new ExceptionInfo();
+			ei.setClazz(BusinessException.class);
+			ei.setCode(StatusEnum.BAD_REQUEST.code);
+			pw.write(JsonUtil.toJson(ei));
 			pw.flush();
 		} catch (IOException ie) {
 
@@ -53,12 +55,17 @@ public class ExceptionHandle {
 
 	@ExceptionHandler(value = Exception.class)
 	@ResponseBody
-	public void handle(Exception e, HttpServletResponse response) {
-		BaseException be = null;
+	public void handle(Exception e, HttpServletResponse response) { 
+		ExceptionInfo ei = new ExceptionInfo();
 		if (e instanceof BusinessException) {
-			be = (BusinessException) e;
-		} else {
-			be = new InternalException("未知异常");
+			BusinessException b = (BusinessException) e; 
+			ei.setClazz(BusinessException.class);
+			ei.setCode(b.getCode());
+			ei.setMessage(b.getMessage());
+		} else { 
+			ei.setClazz(InternalException.class);
+			ei.setCode(StatusEnum.BAD_REQUEST.code);
+			ei.setMessage("未知异常");
 		}
 		response.setStatus(500);
 		response.setCharacterEncoding("UTF-8");
@@ -66,7 +73,7 @@ public class ExceptionHandle {
 		PrintWriter pw = null;
 		try {
 			pw = response.getWriter();
-			pw.write(JsonUtil.toJson(be));
+			pw.write(JsonUtil.toJson(ei));
 			pw.flush();
 		} catch (IOException ie) {
 
