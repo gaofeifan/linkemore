@@ -81,10 +81,7 @@ public class Prefecture {
      * 线路描述
      */
     private String routeDescription;
-    /**
-     * areas_id(正式库中没有)
-     */
-    private Long areasId;
+    
     /**
      * 字典id
      */
@@ -260,14 +257,6 @@ public class Prefecture {
 
     public void setRouteDescription(String routeDescription) {
         this.routeDescription = routeDescription == null ? null : routeDescription.trim();
-    }
-
-    public Long getAreasId() {
-        return areasId;
-    }
-
-    public void setAreasId(Long areasId) {
-        this.areasId = areasId;
     }
 
     public Long getBaseDictId() {
