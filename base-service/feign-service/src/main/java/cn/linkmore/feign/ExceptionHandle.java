@@ -1,4 +1,4 @@
-package cn.linkmore.exception;
+package cn.linkmore.feign;
 
 import java.io.IOException;
 import java.io.PrintWriter;

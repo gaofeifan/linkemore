@@ -12,9 +12,9 @@
 	<description>linkmore base service</description>
 	<modules>  
 		<module>redis-service</module>
+		<module>feign-service</module>
 		<module>mysql-service</module>
-		<module>swagger-service</module>
-		<module>exception-service</module>
+		<module>swagger-service</module> 
 		<module>base-bean</module>
 		<module>base-util</module>
 	</modules>

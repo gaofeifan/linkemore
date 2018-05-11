@@ -16,6 +16,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.hystrix.CityClientHystrix;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
+import cn.linkmore.feign.FeignConfiguration;
 /**
  * 远程调用 - 城市信息
  * @author liwenlong
