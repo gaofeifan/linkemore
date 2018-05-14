@@ -24,6 +24,6 @@
     select 
     <include refid="Base_Column_List" />
     from t_biz_enterprise_user
-    where user_id = #{userId,jdbcType=LONG}
+    where user_id = #{userId,jdbcType=BIGINT}
   </select>
 </mapper>
