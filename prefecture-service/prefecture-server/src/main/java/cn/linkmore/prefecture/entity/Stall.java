@@ -9,7 +9,7 @@ public class Stall {
 	public static int STATUS_OUTLINE = 4;
 	public static int LOCK_STATUS_DOWN = 2;
 	public static int LOCK_STATUS_UP = 1; 
-	public static int BIND_ORDER_STATUS_NONE = 0; 
+	public static short BIND_ORDER_STATUS_NONE = 0; 
 	/**
 	 * 主键
 	 */
@@ -77,7 +77,7 @@ public class Stall {
     /**
 	 * 车位锁电压
 	 */
-    private Float lockVoltage;
+    private Double lockVoltage;
     /**
 	 * 绑定订单状态
 	 */
@@ -211,11 +211,11 @@ public class Stall {
         this.lockBattery = lockBattery;
     }
 
-    public Float getLockVoltage() {
+    public Double getLockVoltage() {
         return lockVoltage;
     }
 
-    public void setLockVoltage(Float lockVoltage) {
+    public void setLockVoltage(Double lockVoltage) {
         this.lockVoltage = lockVoltage;
     }
 
