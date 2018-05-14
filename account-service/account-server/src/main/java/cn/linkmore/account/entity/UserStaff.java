@@ -3,6 +3,8 @@ package cn.linkmore.account.entity;
 import java.util.Date;
 
 public class UserStaff {
+	public final static Short STATUS_ON = 1;
+	public final static Short STATUS_OFF = 0;
     private Long id;
 
     private String username;
