@@ -14,15 +14,35 @@ public interface StallMasterMapper {
 
 	/**
 	 * 保存信息
-	 * @param record 车位信息
+	 * @param stall 车位信息
 	 * @return 保存条数
 	 */
-	int save(Stall record);  
+	int save(Stall stall);  
 
 	/**
 	 * 更新信息
-	 * @param record 车位信息
+	 * @param stall 车位信息
 	 * @return 更新条数
 	 */
-	int update(Stall record); 
+	int update(Stall stall); 
+	/**
+	 * 预约分配车位
+	 * @param stall
+	 */
+	void order(Stall stall);
+	/**
+	 * 取消订单释放车位
+	 * @param stall
+	 */
+	void cancel(Stall stall);
+	/**
+	 * 降锁操作
+	 * @param stall
+	 */
+	void lockdown(Stall stall);
+	/**
+	 * 结账立场释放车位
+	 * @param stall
+	 */
+	void pay(Stall stall);
 }

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.UserAppfansMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserAppfans">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="headurl" jdbcType="VARCHAR" property="headurl" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="register_status" jdbcType="SMALLINT" property="registerStatus" />
+    <result column="unionid" jdbcType="VARCHAR" property="unionid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, nickname, headurl, user_id, status, create_time, register_status, unionid
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.String">
+    delete from t_user_appfans
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.linkmore.account.entity.UserAppfans">
+    insert into t_user_appfans (id, nickname, headurl, 
+      user_id, status, create_time, 
+      register_status, unionid)
+    values (#{id,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{headurl,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=BIGINT}, #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{registerStatus,jdbcType=SMALLINT}, #{unionid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.account.entity.UserAppfans">
+    insert into t_user_appfans
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="headurl != null">
+        headurl,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="registerStatus != null">
+        register_status,
+      </if>
+      <if test="unionid != null">
+        unionid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="headurl != null">
+        #{headurl,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registerStatus != null">
+        #{registerStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="unionid != null">
+        #{unionid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.UserAppfans">
+    update t_user_appfans
+    <set>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="headurl != null">
+        headurl = #{headurl,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registerStatus != null">
+        register_status = #{registerStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="unionid != null">
+        unionid = #{unionid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.UserAppfans">
+    update t_user_appfans
+    set nickname = #{nickname,jdbcType=VARCHAR},
+      headurl = #{headurl,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
+      status = #{status,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      register_status = #{registerStatus,jdbcType=SMALLINT},
+      unionid = #{unionid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

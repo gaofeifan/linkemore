@@ -1,5 +1,7 @@
 package cn.linkmore.account.dao.master;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.account.entity.User;
@@ -14,4 +16,6 @@ public interface UserMasterMapper {
     int updateByIdSelective(User record);
 
     int updateById(User record);
+
+	void updateByColumn(Map<String, Object> param);
 }

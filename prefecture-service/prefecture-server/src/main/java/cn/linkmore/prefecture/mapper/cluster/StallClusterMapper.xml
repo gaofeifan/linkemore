@@ -18,7 +18,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
     <result column="lock_battery" jdbcType="INTEGER" property="lockBattery" />
-    <result column="lock_voltage" jdbcType="REAL" property="lockVoltage" />
+    <result column="lock_voltage" jdbcType="DOUBLE" property="lockVoltage" />
     <result column="bind_order_status" jdbcType="SMALLINT" property="bindOrderStatus" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -31,6 +31,24 @@
     <include refid="Base_Column_List" />
     from v_stall
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="getCountByPreId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+  	select count(*) from v_stall where pre_id = #{preId}
+  </select>
+  
+   <select id="getByStatus" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from v_stall
+    where status = #{status}
+  </select>
+  
+  <select id="getByLockSn" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
+    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, lock_voltage
+    from v_stall
+    where lock_sn = #{lockSn,jdbcType=VARCHAR}
   </select>
   
 </mapper>

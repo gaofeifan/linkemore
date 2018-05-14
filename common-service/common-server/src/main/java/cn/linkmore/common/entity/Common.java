@@ -43,6 +43,8 @@ public class Common {
 	
 	private int pageSize;
 	
+	private String updateSql;
+	
 	private List<String> insertSqls = new ArrayList<>();
 	
 	public Common(Class<?> clazz) {
@@ -208,5 +210,15 @@ public class Common {
 		return insertSqls;
 	}
 
+	public String getUpdateSql() {
+		return updateSql;
+	}
+
+	public void setUpdateSql(String updateSql) {
+		this.updateSql = updateSql;
+	}
+
+	
+	
 	
 }

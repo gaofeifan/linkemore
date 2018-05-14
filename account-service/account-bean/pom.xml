@@ -20,5 +20,10 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>base-util</artifactId>
+			<version>${version}</version>
+		</dependency>
 	</dependencies>
 </project>
