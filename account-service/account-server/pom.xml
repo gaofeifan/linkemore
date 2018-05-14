@@ -54,7 +54,6 @@
 			<artifactId>account-bean</artifactId>
 			<version>${version}</version>
 		</dependency>
-		
 	</dependencies>
 
 	<dependencyManagement>

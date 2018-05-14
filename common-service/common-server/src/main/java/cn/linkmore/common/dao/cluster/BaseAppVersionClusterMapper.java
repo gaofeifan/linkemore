@@ -8,4 +8,5 @@ public interface BaseAppVersionClusterMapper {
 
 
     BaseAppVersion selectById(Long id);
+
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.linkmore.account.dao.cluster.UserVersionClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserVersion">
+<mapper namespace="cn.linkmore.common.dao.cluster.UserVersionClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.UserVersion">
     <id column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="client" jdbcType="SMALLINT" property="client" />
     <result column="model" jdbcType="VARCHAR" property="model" />

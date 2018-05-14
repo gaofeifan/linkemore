@@ -1,4 +1,4 @@
-package cn.linkmore.account.entity;
+package cn.linkmore.common.entity;
 
 import java.util.Date;
 
