@@ -12,4 +12,10 @@ public interface StallClusterMapper {
 	 * @return ResStall车位信息
 	 */
 	Stall findById (Long id);
+	/**
+	 * 根据车区id查询车位总数
+	 * @param preId 车区id
+	 * @return int
+	 */
+	int getCountByPreId(Long preId);
 }

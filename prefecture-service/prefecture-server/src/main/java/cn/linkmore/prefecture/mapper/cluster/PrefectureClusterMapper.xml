@@ -30,6 +30,23 @@
     <result column="category" jdbcType="SMALLINT" property="category" />
     <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
   </resultMap>
+  
+  <resultMap type="cn.linkmore.prefecture.response.ResPrefectureDetail" id="DetailBeanMap">
+  	<id column="id" property="id"/>
+  	<result column="name" property="name" />
+  	<result column="leisure_stall" property="leisureStall" />
+  	<result column="address" property="address" />
+  	<result column="first_hour" property="firstHour" />
+  	<result column="timely_Long" property="timelyLong" />
+  	<result column="free_mins" property="freeMins" />
+  	<result column="timely_unit" property="timelyUnit" />
+  	<result column="limit_status" property="limitStatus" />
+  	<result column="type" property="type" />
+  </resultMap>
+  
+  
+  
+  
   <sql id="Base_Column_List">
     id, strategy_id, status, name, district_id, address, latitude, longitude, route_guidance, 
     image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
@@ -42,5 +59,15 @@
     from v_prefecture
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findPrefectureById" resultMap="DetailBeanMap" parameterType="java.lang.Long">
+  	select p.id,p.name,p.address,b.free_mins,b.timely_unit,p.charge_price first_hour,p.charge_time timely_Long,p.type,p.limit_status
+	from v_prefecture p 
+	LEFT JOIN v_strategy_base b on b.id = p.strategy_id
+	where p.id = #{id}
+  </select>
+  
+  
+  
   
 </mapper>
