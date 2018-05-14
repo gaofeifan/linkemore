@@ -15,8 +15,9 @@ public enum StatusEnum {
 	
 	USER_APP_NO_LOGIN(2000, "请求参数不合法"), 
 	USER_APP_ILLEGAL_REQUEST(2001,"非法请求"), 
-	USER_APP_SMS_FAILED(2002,"短信发送失败");
-	
+	USER_APP_SMS_FAILED(2002,"短信发送失败"),
+	USER_APP_SMS_ERROR(2003,"验证码错误"),
+	USER_APP_SMS_EXPIRED(2003,"验证码已过期");
 	public int code;
 	public String label;
 

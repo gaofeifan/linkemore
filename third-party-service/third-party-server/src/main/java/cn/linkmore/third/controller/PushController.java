@@ -10,5 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/third/push")
 public class PushController {
-
+	public void push() {
+		t
+	}
 }

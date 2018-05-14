@@ -13,11 +13,11 @@ public class Token   implements Serializable{
 	 * serial id
 	 */
 	private static final long serialVersionUID = 9006558116290567282L;
-	public final static String OS_ANDROID = "1";
-	public final static String OS_IOS = "2";
+	public final static short OS_ANDROID = 1;
+	public final static short OS_IOS = 2;
 	private String value;
 	private Long timestamp;
-	private String os;
+	private Short os;
 	public String getValue() {
 		return value;
 	}
@@ -30,10 +30,10 @@ public class Token   implements Serializable{
 	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
 	}
-	public String getOs() {
+	public Short getOs() {
 		return os;
 	}
-	public void setOs(String os) {
+	public void setOs(Short os) {
 		this.os = os;
 	} 
 }
