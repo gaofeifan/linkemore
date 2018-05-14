@@ -1,4 +1,4 @@
-package cn.linkmore.common.entity;
+package cn.linkmore.account.entity;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

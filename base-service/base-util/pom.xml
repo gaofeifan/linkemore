@@ -44,6 +44,11 @@
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>base-bean</artifactId>
+			<version>${version}</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>commons-lang</groupId>
