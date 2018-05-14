@@ -11,8 +11,6 @@ public interface EnterpriseUserMasterMapper {
 
     int insertSelective(EnterpriseUser record);
 
-    EnterpriseUser selectById(Long id);
-
     int updateByIdSelective(EnterpriseUser record);
 
     int updateById(EnterpriseUser record);

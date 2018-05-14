@@ -14,12 +14,6 @@
   <sql id="Base_Column_List">
     id, user_id, mobile, plate_no, create_time, update_time, status, enterprise_id
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_biz_enterprise_user
-    where id = #{id,jdbcType=BIGINT}
-  </select>
   <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_biz_enterprise_user
     where id = #{id,jdbcType=BIGINT}
