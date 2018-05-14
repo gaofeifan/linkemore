@@ -2,15 +2,23 @@ package cn.linkmore.account.entity;
 
 import java.util.Date;
 
+import cn.linkmore.annotation.GColumn;
+import cn.linkmore.annotation.GTable;
+@GTable(vlaue="v_vehicle_mark_manage")
 public class VehicleMarkManage {
+	@GColumn
     private Long id;
 
+	@GColumn
     private String vehUserId;
 
+	@GColumn
     private String vehMark;
 
+	@GColumn
     private Date createTime;
 
+	@GColumn
     private Date updateTime;
 
     public Long getId() {

@@ -14,4 +14,5 @@ public interface AdminUserMasterMapper {
     int updateByIdSelective(AdminUser record);
 
     int updateById(AdminUser record);
+
 }

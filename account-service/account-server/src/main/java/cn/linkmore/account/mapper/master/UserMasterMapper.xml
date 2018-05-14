@@ -391,4 +391,10 @@
       complete_order_count = #{completeOrderCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateByColumn" parameterType="java.util.Map">
+    update t_user
+   		 set #{column} = #{value},
+    	update_time = #{updateTime}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

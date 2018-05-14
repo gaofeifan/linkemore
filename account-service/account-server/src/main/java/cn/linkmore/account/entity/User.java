@@ -2,67 +2,101 @@ package cn.linkmore.account.entity;
 
 import java.util.Date;
 
+import cn.linkmore.annotation.GColumn;
+import cn.linkmore.annotation.GTable;
+
+@GTable(vlaue="t_user")
 public class User {
+	@GColumn
     private Long id;
 
+	@GColumn
     private String username;
 
+	@GColumn
     private String password;
 
+	@GColumn
     private String nickname;
 
+	@GColumn
     private Short sex;
 
     private String status;
 
+    @GColumn
     private String userType;
 
+    @GColumn
     private String enterpriseName;
 
+    @GColumn
     private String entAdminName;
 
+    @GColumn
     private String industry;
 
+    @GColumn
     private Long parentId;
 
+    @GColumn
     private String mobile;
 
+    @GColumn
     private String province;
 
+    @GColumn
     private String city;
 
+    @GColumn
     private String address;
 
+    @GColumn
     private String email;
 
+    @GColumn
     private String wechat;
 
+    @GColumn
     private String qq;
 
+    @GColumn
     private String icon;
 
+    @GColumn
     private Date lastLoginTime;
 
+    @GColumn
     private Date createTime;
 
+    @GColumn
     private Date updateTime;
 
+    @GColumn
     private Long hobbyBrandId;
 
+    @GColumn
     private Short isAppRegister;
 
+    @GColumn
     private Short isWechatBind;
 
+    @GColumn
     private Date appRegisterTime;
 
+    @GColumn
     private Date wechatBindTime;
 
+    @GColumn
     private Short type;
 
+    @GColumn
     private Integer loginCount;
 
+    @GColumn
     private Integer orderCount;
 
+    @GColumn
     private Integer completeOrderCount;
 
     public Long getId() {

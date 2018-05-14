@@ -20,5 +20,25 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>feign-service</artifactId>
+			<version>${version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>account-bean</artifactId>
+			<version>${version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>account-server</artifactId>
+			<version>${version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>account-bean</artifactId>
+			<version>${version}</version>
+		</dependency>
 	</dependencies>
 </project>
