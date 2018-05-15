@@ -72,12 +72,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture,User user) {
-		Map<String,Object> param = new HashMap<String,Object>();
-		/*param.put("latitude", reqPrefecture.getLatitude());
+		/*Map<String,Object> param = new HashMap<String,Object>();
+		param.put("latitude", reqPrefecture.getLatitude());
 		param.put("longitude", reqPrefecture.getLongitude());
 		param.put("scale", reqPrefecture.getScale());*/
 		
-		Map<String,Object> paramMap = new HashMap<>();
+		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
 		if(StringUtil.isNotBlank(user)){
 			List<EnterpriseUser> enterpriseUser = enterpriseUserClusterMapper.selectByUserId(user.getId());
