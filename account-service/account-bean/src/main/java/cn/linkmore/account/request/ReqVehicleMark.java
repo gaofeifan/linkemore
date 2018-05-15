@@ -4,6 +4,8 @@ public class ReqVehicleMark {
 	
 	private String vehMark;
 
+	private Long userId;
+	
 	public String getVehMark() {
 		return vehMark;
 	}
@@ -11,5 +13,14 @@ public class ReqVehicleMark {
 	public void setVehMark(String vehMark) {
 		this.vehMark = vehMark;
 	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	
 }
 

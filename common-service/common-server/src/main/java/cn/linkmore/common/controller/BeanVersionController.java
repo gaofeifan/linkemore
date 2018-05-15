@@ -1,14 +1,13 @@
 package cn.linkmore.common.controller;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.service.BeanVersionService;
@@ -23,7 +22,7 @@ public class BeanVersionController {
 	
 	@RequestMapping(value="/current/{requestSource}",method = RequestMethod.GET)
 	@ResponseBody
-	public ResVersionBean current(@PathParam("requestSource")Short requestSource){
+	public ResVersionBean current(@PathVariable("requestSource")Short requestSource){
 		int appType = 0;
 		if(Token.OS_ANDROID == requestSource){
 			appType=1;

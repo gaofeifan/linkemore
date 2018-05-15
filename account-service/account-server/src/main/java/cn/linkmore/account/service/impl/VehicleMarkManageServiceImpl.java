@@ -15,7 +15,6 @@ import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.VehicleMarkManage;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
-import cn.linkmore.account.service.CommonService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.account.service.VehicleMarkManageService;
 import cn.linkmore.bean.exception.BusinessException;
@@ -28,23 +27,13 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	@Resource
 	private VehicleMarkManageMasterMapper vehicleMarkManageMasterMapper;
 	@Resource
-	private CommonService commonService;
-	@Resource
 	private UserService userService;
 	
 	@Override
 	public List<VehicleMarkManage> selectByUserId(Long userId) {
-		return selectBy("veh_user_id", userId);
+		return this.vehicleMarkManageClusterMapper.selectByUserId(userId);
 	}
 
-	@SuppressWarnings("unchecked")
-	private List<VehicleMarkManage> selectBy(String column , Object value){
-		Common common = new Common(VehicleMarkManage.class);
-		CreateCriteria criteria = common.createCriteria();
-		criteria.equals(column , value);
-		return (List<VehicleMarkManage>) commonService.selectList(common );
-	}
-	
 	@Override
 	public void save(ReqVehicleMark bean, Long userId) {
 		User user = this.userService.getUserCacheKey(userId);
@@ -69,18 +58,21 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	public void deleteById(Long id, Long userId) {
-		this.vehicleMarkManageMasterMapper.deleteById(id);
+		List<VehicleMarkManage> list = this.selectByUserId(userId);
+		if(list !=null && list.size() != 0) {
+			List<String> vlaue = ObjectUtils.findFieldVlaue(list, "id", new String[] {"id"}, new Object[] {userId});
+			if(vlaue.size() > 0) {
+				this.vehicleMarkManageMasterMapper.deleteById(id);
+				return ;
+			}
+		}
+		throw new BusinessException();
 	}
 
 	@Override
-	public List<ResVechicleMark> selectList(Long userId) {
-		User user = this.userService.getUserCacheKey(userId);
-		Common common = new Common(ResVechicleMark.class);
-		CreateCriteria criteria = common.createCriteria();
-		criteria.equals("veh_user_id" , user.getIcon());
-		return (List<ResVechicleMark>) commonService.selectList(common );
+	public List<ResVechicleMark> selectResList(Long userId) {
+		return this.vehicleMarkManageClusterMapper.selectResList(userId);
 	}
-	
-	
+
 	
 }

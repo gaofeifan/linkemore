@@ -119,4 +119,10 @@
       unionid = #{unionid,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <update id="updateStatusByUserId">
+    update t_user_appfans
+    set 
+      status = #{status}
+    where user_id = #{userId}
+  </update>
 </mapper>
