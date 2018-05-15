@@ -1,7 +1,11 @@
 package cn.linkmore.third.service.impl;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.push.model.Message;
@@ -18,53 +22,86 @@ import cn.linkmore.third.config.BeanFactory;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.service.PushService;
 
+/**
+ * Service - 推送
+ * @author liwenlong
+ * @version 2.0
+ *
+ */
+@Service
 public class PushServiceImpl implements PushService {
 	
 	@Autowired
 	private BeanFactory beanFactory;
 	
 	
-	private boolean push(ReqPush rp) {   
-		String content = "账号已在其它设备上登录,请重新登录"; 
+	private boolean android(ReqPush rp) {
 		boolean flag = false;
 		JPushClient jpushClient = this.beanFactory.jPushClient(); 
-		if(Token.OS_ANDROID == rp.getOs()){
-			Builder android = PushPayload.newBuilder();  
-			android.setAudience(Audience.alias(rp.getAlias()));
-			android.setMessage(Message.newBuilder()
-					.addExtra("title", rp.getTitle())
-					.addExtra("content", rp.getContent())
-					.addExtra("type",rp.getType().id) 
-					.addExtra("data", rp.getData())
-					.setMsgContent(content).build());
-			android.setPlatform(Platform.android());
-			PushPayload androidppl = android.build();
-			try {
-				jpushClient.sendPush(androidppl);
-				flag = true;
-			} catch (Exception e) { }
-			
-		}else if(Token.OS_IOS==rp.getOs()){
-			Builder ios = PushPayload.newBuilder(); 
-			ios.setAudience(Audience.alias(rp.getAlias()));
-			ios.setPlatform(Platform.ios());
-			Notification.Builder nfb = Notification.newBuilder();
-			nfb.setAlert(content);
-			nfb.addPlatformNotification(AndroidNotification.newBuilder().setTitle(rp.getTitle()).build());
-			nfb.addPlatformNotification(IosNotification.newBuilder().incrBadge(1)
-					.addExtra("title",rp.getTitle())
-					.addExtra("content", rp.getContent())
-					.addExtra("data", rp.getData())
-					.addExtra("type", rp.getType().id).build());
-			ios.setOptions(Options.newBuilder().setApnsProduction(true).build());
-			ios.setNotification(nfb.build());
-			PushPayload iosppl = ios.build();
-			try {
-				jpushClient.sendPush(iosppl);
-				flag = true;
-			} catch (Exception e) { } 
-		}  
+		Builder android = PushPayload.newBuilder();  
+		android.setAudience(Audience.alias(rp.getAlias()));
+		android.setMessage(Message.newBuilder()
+				.addExtra("title", rp.getTitle())
+				.addExtra("content", rp.getContent())
+				.addExtra("type",rp.getType().id) 
+				.addExtra("data", rp.getData())
+				.setMsgContent(rp.getContent()).build());
+		android.setPlatform(Platform.android());
+		PushPayload androidppl = android.build();
+		try {
+			jpushClient.sendPush(androidppl);
+			flag = true;
+		} catch (Exception e) { }
 		return flag;
 	}
-
+	
+	private boolean ios(ReqPush rp) {
+		boolean flag = false;
+		JPushClient jpushClient = this.beanFactory.jPushClient(); 
+		Builder ios = PushPayload.newBuilder(); 
+		ios.setAudience(Audience.alias(rp.getAlias()));
+		ios.setPlatform(Platform.ios());
+		Notification.Builder nfb = Notification.newBuilder();
+		nfb.setAlert(rp.getContent());
+		nfb.addPlatformNotification(AndroidNotification.newBuilder().setTitle(rp.getTitle()).build());
+		nfb.addPlatformNotification(IosNotification.newBuilder().incrBadge(1)
+				.addExtra("title",rp.getTitle())
+				.addExtra("content", rp.getContent())
+				.addExtra("data", rp.getData())
+				.addExtra("type", rp.getType().id).build());
+		ios.setOptions(Options.newBuilder().setApnsProduction(true).build());
+		ios.setNotification(nfb.build());
+		PushPayload iosppl = ios.build();
+		try {
+			jpushClient.sendPush(iosppl);
+			flag = true;
+		} catch (Exception e) { } 
+		return flag;
+	} 
+	
+	@Override
+	@Async
+	public void push(ReqPush rp) { 
+		if(rp.getOs().shortValue()==Token.OS_ANDROID) {
+			this.android(rp);
+		}else {
+			this.ios(rp);
+		}
+	}
+	
+	@Override
+	@Async
+	public void push(List<ReqPush> rps) { 
+		for(ReqPush rp:rps) {
+			try {
+				if(rp.getOs().shortValue()==Token.OS_ANDROID) {
+					this.android(rp);
+				}else {
+					this.ios(rp);
+				}
+			}catch(Exception e) {
+				
+			}
+		} 
+	} 
 }

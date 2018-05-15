@@ -1,7 +1,12 @@
 package cn.linkmore.third.request;
 
 import cn.linkmore.bean.constant.PushType;
-
+/**
+ * 请求 - 推送
+ * @author liwenlong
+ * @version 2.0
+ *
+ */
 public class ReqPush { 
 	private String alias;
 	private String title;

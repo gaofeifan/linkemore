@@ -3,7 +3,11 @@ package cn.linkmore.third.request;
 import java.util.Map;
 
 import cn.linkmore.bean.constant.SmsTemplate;
-
+/**
+ * 请求 - 短信
+ * @author liwenlong
+ * @version 2.0
+ */
 public class ReqSms {
 	private String mobile;
 	private SmsTemplate st;

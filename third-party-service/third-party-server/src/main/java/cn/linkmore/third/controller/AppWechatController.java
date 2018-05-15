@@ -1,22 +1,26 @@
-package cn.linkmore.third.client;
+package cn.linkmore.third.controller;
 
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.feign.FeignConfiguration;
-import cn.linkmore.third.client.hystrix.AppWechatClientHystrix;
 import cn.linkmore.third.response.ResFans;
-
+import cn.linkmore.third.service.AppWechatService;
 /**
- * Client - 微信支付[集成App]
+ * Controller - 微信支付[APP]
  * @author liwenlong
  * @version 2.0
+ *
  */
-@FeignClient(value = "third-party-server", path = "/third/app-wechat", fallback=AppWechatClientHystrix.class,configuration = FeignConfiguration.class)
-public interface AppWechatClient {
+@RestController
+@RequestMapping("/third/app-wechat")
+public class AppWechatController {
+	@Autowired
+	private AppWechatService appWechatService;
+	
 	/**
 	 * 根据code获取粉丝
 	 * @param code 授权码
@@ -24,5 +28,8 @@ public interface AppWechatClient {
 	 */
 	@RequestMapping(value = "/v2.0/fans/${code}", method = RequestMethod.GET) 
 	@ResponseBody
-	ResFans getFans(@RequestParam String code);
+	public ResFans getFans(@RequestParam String code) {
+		return this.appWechatService.getWechatFans(code);
+	}
+	
 }
