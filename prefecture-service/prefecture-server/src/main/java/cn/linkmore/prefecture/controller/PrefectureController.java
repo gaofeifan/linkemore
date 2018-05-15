@@ -1,7 +1,6 @@
 package cn.linkmore.prefecture.controller;
 
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.account.entity.User;
+import cn.linkmore.account.service.UserService;
 import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
@@ -34,7 +34,7 @@ public class PrefectureController {
 	@Autowired
 	private PrefectureService preService;
 	
-	//private UserService userService;
+	private UserService userService;
 	
 	/**
 	 * 根据主键查询详情  
@@ -44,8 +44,7 @@ public class PrefectureController {
 	 */
 	@RequestMapping(value="{id}",method=RequestMethod.GET)
 	@ResponseBody 
-	public ResPrefectureDetail findById(@PathVariable("id") Long id,HttpServletRequest request) {
-		String language = request.getHeader("lan");
+	public ResPrefectureDetail findById(@PathVariable("id") Long id,String language) {
 		return this.preService.find(id,language);
 	}
 	/**
@@ -57,8 +56,7 @@ public class PrefectureController {
 	@RequestMapping(value="/findPreListByLoc", method=RequestMethod.GET)
 	@ResponseBody 
 	public List<ResPrefecture> findPreListByLoc(@RequestBody ReqPrefecture reqPrefecture,Long userId) { 
-		//User user = userService.findById(userId);
-		User user = null;
+		User user = userService.getUserCacheKey(userId);
 		return this.preService.findPreListByLoc(reqPrefecture,user);
 	}
 	/**
@@ -70,10 +68,8 @@ public class PrefectureController {
 	 */
 	@RequestMapping(value="/findPreListByCityId", method=RequestMethod.GET)
 	@ResponseBody 
-	public List<ResPrefectureList> findPreListByCityId(Long cityId, Long userId, HttpServletRequest request) { 
-		//User user = userService.findById(userId);
-		User user = null;
-		String language = request.getHeader("lan");
+	public List<ResPrefectureList> findPreListByCityId(Long cityId, Long userId, String language) { 
+		User user = userService.getUserCacheKey(userId);
 		List<ResPrefectureList> preList= this.preService.findPreListByCityId(cityId,language,user);
 		return preList;
 	}
@@ -85,8 +81,7 @@ public class PrefectureController {
 	 */
 	@RequestMapping(value="/findPreStrategy", method=RequestMethod.GET)
 	@ResponseBody 
-	public ResPrefectureStrategy findPreStrategy(Long preId,HttpServletRequest request) { 
-		String language = request.getHeader("lan");
+	public ResPrefectureStrategy findPreStrategy(Long preId, String language) { 
 		ResPrefectureStrategy resPreStrategy = preService.getPreStrategy(preId,language);
 		return resPreStrategy;
 	}
