@@ -121,7 +121,7 @@ public class BusinessException extends RuntimeException implements BaseException
 	}
 
 	public void setStatusEnum(StatusEnum statusEnum) {
-		statusEnum = statusEnum;
+		this.statusEnum = statusEnum;
 	}
 
 	@Override
