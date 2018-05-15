@@ -11,6 +11,8 @@ public class ReqBind implements Serializable{
 	 */
 	private String mobile;
 
+	private Long userId;
+	
 	public String getMobile() {
 		return mobile;
 	}
@@ -18,5 +20,15 @@ public class ReqBind implements Serializable{
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	
+	
 	
 }

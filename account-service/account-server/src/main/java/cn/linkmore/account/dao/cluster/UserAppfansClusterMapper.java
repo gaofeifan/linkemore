@@ -9,6 +9,6 @@ public interface UserAppfansClusterMapper {
 
     UserAppfans selectById(String id);
 
-	UserAppfans findByUserId(@Param("userId")Long userId);
+	UserAppfans selectByUserId(@Param("userId")Long userId);
 
 }

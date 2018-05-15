@@ -8,20 +8,20 @@ import cn.linkmore.account.request.ReqWxLogin;
 import cn.linkmore.account.response.ResUserDetails;
 
 public interface UserService {
-
+	
 	void logout(Long request);
-
+	
 	void updateNickname(String nickname, Long userId);
 
 	void updateSex(Integer sex, Long userId);
 
-	void updateVehicle(ReqVehicle req, Long userId);
+	void updateVehicle(ReqVehicle req);
 
 	ResUserDetails detail(Long userId);
 
-	void updateMobile(ReqLogin bean, Long userId);
+	void updateMobile(ReqLogin bean);
 
-	void updateWechat(ReqWxLogin bean, Long userId);
+	void updateWechat(ReqWxLogin bean);
 
 	void removeWechat(Long userId);
 

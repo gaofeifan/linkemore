@@ -6,6 +6,8 @@ public class ReqWxLogin {
 	
 	private String code;
 
+	private Long userId;
+	
 	public String getMobile() {
 		return mobile;
 	}
@@ -17,4 +19,19 @@ public class ReqWxLogin {
 	public String getCode() {
 		return code;
 	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
+	
+	
 }

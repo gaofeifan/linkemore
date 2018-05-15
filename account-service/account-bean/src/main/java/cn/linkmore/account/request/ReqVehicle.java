@@ -2,6 +2,8 @@ package cn.linkmore.account.request;
 
 public class ReqVehicle {
 	
+	private Long userId;
+	
 	private Integer model;
 
 	private Integer brandId;
@@ -21,6 +23,15 @@ public class ReqVehicle {
 	public void setBrandId(Integer brandId) {
 		this.brandId = brandId;
 	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	
 
 }
 

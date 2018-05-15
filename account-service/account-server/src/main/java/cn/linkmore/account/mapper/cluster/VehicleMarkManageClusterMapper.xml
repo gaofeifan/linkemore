@@ -17,4 +17,16 @@
     from v_vehicle_mark_manage
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByUserId"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_vehicle_mark_manage
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
+  <select id="selectResList" resultType="cn.linkmore.account.response.ResVechicleMark">
+    select 
+   		veh_mark as vehMark ,id 
+    from v_vehicle_mark_manage
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
 </mapper>

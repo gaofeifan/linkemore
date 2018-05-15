@@ -46,4 +46,15 @@
     from t_user
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectResUserById" resultType="cn.linkmore.account.response.ResUserDetails">
+    select 
+    uv.model brandModel,uv.brand_id brandId,u.sex,u.nickname,u.mobile,u.id
+    from t_user_vehicle uv INNER JOIN t_user u ON u.id = uv.user_id AND u.id = #{userId}
+  </select>
+  <select id="selectByMobile" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where mobile = #{mobile}
+  </select>
 </mapper>

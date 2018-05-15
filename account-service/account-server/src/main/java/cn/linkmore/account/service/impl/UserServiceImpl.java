@@ -18,8 +18,6 @@ import cn.linkmore.account.dao.master.UserAppfansMasterMapper;
 import cn.linkmore.account.dao.master.UserMasterMapper;
 import cn.linkmore.account.dao.master.UserVechicleMasterMapper;
 import cn.linkmore.account.entity.AdminUser;
-import cn.linkmore.account.entity.Common;
-import cn.linkmore.account.entity.CreateCriteria;
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.entity.UserVechicle;
@@ -27,7 +25,6 @@ import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
 import cn.linkmore.account.response.ResUserDetails;
-import cn.linkmore.account.service.CommonService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.constant.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
@@ -39,8 +36,6 @@ public class UserServiceImpl implements UserService {
 	private UserAppfansClusterMapper userAppfansClusterMapper;
 	@Resource
 	private UserAppfansMasterMapper userAppfansMasterMapper;
-	@Resource
-	private CommonService commonService;
 	@Resource
 	private UserVechicleClusterMapper userVechicleClusterMapper;
 	@Resource
@@ -90,8 +85,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateVehicle(ReqVehicle req, Long userId) {
-		User user = getUserCacheKey(userId);
+	public void updateVehicle(ReqVehicle req) {
+		User user = getUserCacheKey(req.getUserId());
 		UserVechicle vechicle = userVechicleClusterMapper.selectByUserId(user.getId());
 		boolean flag = false;
 		if(vechicle == null) {
@@ -110,11 +105,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ResUserDetails detail(Long userId) {
-		User user = getUserCacheKey(userId);
-		Common common = new Common(ResUserDetails.class);
-		common.setColumns("uv.model brand_model,uv.brand_id,uv.sex,u.nickname,u.mobile,u.id");
-		common.setTable(" t_user_vehicle uv INNER JOIN t_user u ON u.id = uv.user_id AND u.id = "+user.getId());
-		List<?> list = this.commonService.selectList(common );
+		List<ResUserDetails> list = this.userClusterMapper.selectResUserById(userId );
 		if(list.size() == 1) {
 			ResUserDetails res = (ResUserDetails)list.get(0);
 			if(res != null) {
@@ -147,7 +138,7 @@ public class UserServiceImpl implements UserService {
 					res.setBrandModel(brandModel);
 				}
 			}
-			UserAppfans af = this.userAppfansClusterMapper.findByUserId(user.getId());
+			UserAppfans af = this.userAppfansClusterMapper.selectByUserId(userId);
 			if(af!=null&&af.getStatus().shortValue()==1){
 				res.setWechatId(af.getId());
 				res.setWechatUrl(af.getHeadurl());
@@ -159,8 +150,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateMobile(ReqLogin bean, Long userId) {
-		User user = getUserCacheKey(userId);
+	public void updateMobile(ReqLogin bean) {
+		User user = getUserCacheKey(bean.getUserId());
 		User dbUser = this.selectByMobile(bean.getMobile());
 		if(dbUser == null) {
 			this.updateByColumn("mobile", bean.getMobile(), user.getId());
@@ -170,7 +161,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateWechat(ReqWxLogin bean, Long request) {
+	public void updateWechat(ReqWxLogin bean) {
 		/*JSONObject json = this.getOAuthUserinfo(wechatConfig.getAppId(), wechatConfig.getAppSecret(), bean.getCode()); 
 		log.info("json:{}",json.toString()); 
 		if (json==null||json.get("errcode") != null) {
@@ -204,29 +195,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void removeWechat(Long userId) {
-		User user = this.getUserCacheKey(userId);
-		Common common = new Common(UserAppfans.class);
-		common.setColumn("status");
-		common.setColumnValue((short)0);
-		CreateCriteria criteria = common.createCriteria();
-		criteria.equals("user_id", user.getId());
-		commonService.updateColumnValue(common);
-	}
-	
-	@SuppressWarnings({ "unchecked" })
-	private List<User> selectByColumn(Common common){
-		return  (List<User>) this.commonService.selectList(common);
+		this.userAppfansMasterMapper.updateStatusByUserId(userId,0);
 	}
 	
 	public User selectByMobile(String mobile) {
-		Common common = new Common(User.class);
-		CreateCriteria criteria = common.createCriteria();
-		criteria.equals("mobile", mobile);
-		List<User> list = this.selectByColumn(common );
-		if(list.size() == 1) {
-			return list.get(0);
-		}
-		return null;
+		return this.userClusterMapper.selectByMobile(mobile);
 	}
 	
 	public User selectById(Long userId) {

@@ -14,6 +14,6 @@ public interface VehicleMarkManageService {
 
 	void deleteById(Long id, Long userId);
 
-	List<ResVechicleMark> selectList(Long userId);
+	List<ResVechicleMark> selectResList(Long userId);
 
 }
