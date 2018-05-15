@@ -9,6 +9,7 @@ import cn.linkmore.account.response.ResUserDetails;
 
 public interface UserService {
 
+	
 	void logout(Long request);
 
 	void updateNickname(String nickname, Long userId);
