@@ -1,9 +1,9 @@
 package cn.linkmore.third.client;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.feign.FeignConfiguration;
@@ -24,5 +24,5 @@ public interface AppWechatClient {
 	 */
 	@RequestMapping(value = "/v2.0/fans/${code}", method = RequestMethod.GET) 
 	@ResponseBody
-	ResFans getFans(@RequestParam String code);
+	ResFans getFans(@PathVariable String code);
 }
