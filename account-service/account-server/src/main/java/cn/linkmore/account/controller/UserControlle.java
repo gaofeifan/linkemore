@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.account.request.ReqBind;
 import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
@@ -73,7 +72,7 @@ public class UserControlle {
 	@RequestMapping(value = "/v2.0/update_vehicle", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateVehicle(@RequestBody ReqVehicle req) {
-			this.userService.updateVehicle(req);
+		this.userService.updateVehicle(req);
 	}
 	
 	
@@ -90,17 +89,6 @@ public class UserControlle {
 	}
 	
 	
-	/**
-	 * @Description  发送短信通知
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	@RequestMapping(value = "/v2.0/send_code", method = RequestMethod.GET)
-	@ResponseBody
-	public void sendCode( @RequestBody ReqBind bean) {
-		/*this.messageService.sendLoginCode(bean.getMobile());*/
-	}
-
 	/**
 	 * @Description  更新手机号
 	 * @Author   GFF 
@@ -133,6 +121,7 @@ public class UserControlle {
 	public void removeWechat(@PathVariable Long userId) {
 		this.userService.removeWechat(userId);
 	}
+	
 	
 	
 	

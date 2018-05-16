@@ -1,7 +1,6 @@
 package cn.linkmore.common.controller;
 
 import javax.annotation.Resource;
-import javax.websocket.server.PathParam;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,14 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.service.BeanVersionService;
 
 @RestController
-@RequestMapping("version")
-public class BeanVersionController {
+@RequestMapping("/common/version")
+public class BaseVersionController {
 	
 	@Resource
 	private BeanVersionService beanVersionService;

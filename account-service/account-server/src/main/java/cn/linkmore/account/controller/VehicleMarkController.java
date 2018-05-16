@@ -3,7 +3,6 @@ package cn.linkmore.account.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.websocket.server.PathParam;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +32,7 @@ public class VehicleMarkController{
 	}
 	
 	@RequestMapping(value = "/list/{userId}", method = RequestMethod.GET)
-	public List<ResVechicleMark> list(@PathParam("userId")Long userId){
+	public List<ResVechicleMark> list(@PathVariable("userId")Long userId){
 		return vehicleMarkManageService.selectResList(userId);
 	}
 	

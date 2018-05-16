@@ -10,11 +10,11 @@ import javax.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.account.dao.cluster.UserAppfansClusterMapper;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
 import cn.linkmore.account.dao.cluster.UserVechicleClusterMapper;
 import cn.linkmore.account.dao.master.AdminUserMasterMapper;
-import cn.linkmore.account.dao.master.UserAppfansMasterMapper;
 import cn.linkmore.account.dao.master.UserMasterMapper;
 import cn.linkmore.account.dao.master.UserVechicleMasterMapper;
 import cn.linkmore.account.entity.AdminUser;
@@ -25,17 +25,21 @@ import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
 import cn.linkmore.account.response.ResUserDetails;
+import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.constant.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.util.ObjectUtils;
 @Service
 public class UserServiceImpl implements UserService {
 
+	public static final String LINKMORE_APP_SMS_CODE = "";
+	
 	@Resource
-	private UserAppfansClusterMapper userAppfansClusterMapper;
+	private SmsClient smsClient;
 	@Resource
-	private UserAppfansMasterMapper userAppfansMasterMapper;
+	private UserAppfansService userAppfansService;
 	@Resource
 	private UserVechicleClusterMapper userVechicleClusterMapper;
 	@Resource
@@ -138,7 +142,7 @@ public class UserServiceImpl implements UserService {
 					res.setBrandModel(brandModel);
 				}
 			}
-			UserAppfans af = this.userAppfansClusterMapper.selectByUserId(userId);
+			UserAppfans af = this.userAppfansService.selectByUserId(userId);
 			if(af!=null&&af.getStatus().shortValue()==1){
 				res.setWechatId(af.getId());
 				res.setWechatUrl(af.getHeadurl());
@@ -162,19 +166,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateWechat(ReqWxLogin bean) {
-		/*JSONObject json = this.getOAuthUserinfo(wechatConfig.getAppId(), wechatConfig.getAppSecret(), bean.getCode()); 
-		log.info("json:{}",json.toString()); 
+		JSONObject json = new JSONObject();//this.getOAuthUserinfo(wechatConfig.getAppId(), wechatConfig.getAppSecret(), bean.getCode()); 
 		if (json==null||json.get("errcode") != null) {
-			throw new BusinessException(Msg.WECHAT_LOGIN_ERROR); 
+			throw new BusinessException(); 
 		}else{
 			String openid = json.getString("openid"); 
 			String nickname = json.getString("nickname");
 			String headimgurl = json.getString("headimgurl"); 
 			String unionid = json.getString("unionid");
-			Appfans fans = this.appfansMapper.selectByPrimaryKey(openid);
-			User user = this.getCacheUser(request);
+			UserAppfans fans = this.userAppfansService.selectById(openid);
+			User user = this.getUserCacheKey(bean.getUserId());
 			if(fans==null){
-				fans = new Appfans();
+				fans = new UserAppfans();
 				fans.setId(openid);
 				fans.setHeadurl(headimgurl);
 				fans.setNickname(nickname);
@@ -183,28 +186,31 @@ public class UserServiceImpl implements UserService {
 				fans.setStatus((short)1);
 				fans.setUserId(user.getId());
 				fans.setRegisterStatus((short)0);
-				this.appfansMapper.insert(fans);  
+				this.userAppfansService.insertSelective(fans);  
 			}else{
 				fans.setStatus((short)1);
 				fans.setUserId(user.getId());
-				this.appfansMapper.updateByPrimaryKey(fans);  
+				this.userAppfansService.updateByIdSelective(fans);  
 			}
 		}  
-	}*/
 	}
 
 	@Override
 	public void removeWechat(Long userId) {
-		this.userAppfansMasterMapper.updateStatusByUserId(userId,0);
+		this.userAppfansService.updateStatusByUserId(userId,0);
 	}
 	
+	@Override
 	public User selectByMobile(String mobile) {
 		return this.userClusterMapper.selectByMobile(mobile);
 	}
 	
+	@Override
 	public User selectById(Long userId) {
 		return this.userClusterMapper.selectById(userId);
 	}
+
+
 	
 	
 	

@@ -38,7 +38,6 @@ public class CarBrandController {
 
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
-	
 	public static final String CAR_BRAND_LIST = "car_brand_list";
 	//API域名
     private final static String HOST = "http://jisucxdq.market.alicloudapi.com";
@@ -117,9 +116,14 @@ public class CarBrandController {
  	    	redisTemplate.opsForValue().set("car_brand_status", 2);
 			msg.put("message", "连接失败，请稍后重试");
 			log.info("连接失败，车辆品牌数据请求失败......");
-		}	
+		}
  	    return msg;
 	}
 	
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	public Object list(){
+		Object obj = redisTemplate.opsForValue().get("car_brand_list");
+		return obj;
+	}
 	
 }

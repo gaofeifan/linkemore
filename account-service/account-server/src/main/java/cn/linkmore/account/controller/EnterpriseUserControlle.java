@@ -23,7 +23,7 @@ public class EnterpriseUserControlle {
 	@Resource
 	private EnterpriseUserService enterpriseUserService;
 	
-	@RequestMapping(value="/v2.0/selectById/{userId}",method=RequestMethod.GET)
+	@RequestMapping(value="/v2.0/by_id/{userId}",method=RequestMethod.GET)
 	public EnterpriseUser selectById(@PathVariable Long userId) {
 		return this.enterpriseUserService.selectByUserId(userId);
 	}

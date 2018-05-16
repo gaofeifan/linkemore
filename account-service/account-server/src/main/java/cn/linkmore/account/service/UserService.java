@@ -27,4 +27,8 @@ public interface UserService {
 
 	User getUserCacheKey(Long userId);
 
+	User selectByMobile(String mobile);
+
+	User selectById(Long userId);
+
 }
