@@ -1,7 +1,6 @@
 package cn.linkmore.account.controller;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,7 +52,7 @@ public class UserControlle {
 	
 	@RequestMapping(value = "/v2.0/detail/{userId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResUserDetails detail(@PathVariable Long userId) { 
+	public ResUserDetails detail(@PathVariable Long userId) {
 		ResUserDetails res = this.userService.detail(userId); 
 		return res;
 	}

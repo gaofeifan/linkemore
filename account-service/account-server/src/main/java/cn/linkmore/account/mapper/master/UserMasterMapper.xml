@@ -393,8 +393,8 @@
   </update>
   <update id="updateByColumn" parameterType="java.util.Map">
     update t_user
-   		 set #{column} = #{value},
+   		 set ${column} = #{value},
     	update_time = #{updateTime}
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id}
   </update>
 </mapper>

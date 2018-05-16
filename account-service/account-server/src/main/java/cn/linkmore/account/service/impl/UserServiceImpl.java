@@ -61,13 +61,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateNickname(String nickname, Long userId) {
 		User user = getUserCacheKey(userId);
-		updateByColumn("nickname", nickname, user.getId());
+		updateByColumn("nickname", nickname, userId);
 	}
 	
 	@Override
 	public void updateSex( Integer sex, Long request) {
 		User user = getUserCacheKey(request);
-		updateByColumn("sex", sex, user.getId());
+		updateByColumn("sex", sex, request);
 	}
 	
 	private void updateByColumn(String column,Object value,Long id) {

@@ -4,11 +4,13 @@ import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
 
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.common.security.Token;
+import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.service.BeanVersionService;
 
@@ -34,8 +36,8 @@ public class BeanVersionController {
 	}
 	
 	
-	/*@RequestMapping(method = RequestMethod.GET)
-	public void report(HttpServletRequest request,@RequestBody ReqVersion vrb){
+	@RequestMapping(value="/report",method = RequestMethod.GET)
+	public void report(@RequestBody ReqVersion vrb){
 		this.beanVersionService.report(vrb);
-	}*/
+	}
 }
