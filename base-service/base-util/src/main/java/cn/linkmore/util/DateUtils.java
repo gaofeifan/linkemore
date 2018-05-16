@@ -151,4 +151,38 @@ public class DateUtils {
 		  SimpleDateFormat s = new SimpleDateFormat(dateFormat);
 		  return s.format(date);
 	  }
+	  
+	  /**
+		 * @Description: 获取格式为yyyy-MM-dd HH:mm:ss的当前时间
+		 * @return Date 当前时间
+		 
+		 * @Time 2016年8月1日 上午9:56:36
+		 */
+		public static Date getCurrentDateTime() {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String time = sdf.format(new Date());
+			try {
+				Date date = sdf.parse(time);
+				return date;
+			} catch (ParseException e) {
+				return null;
+			}
+		}
+
+		/**
+		 * @Description: 获取格式为yyyy-MM-dd的当前时间
+		 * @return Date 当前时间
+		 
+		 * @Time 2016年8月1日 上午9:56:36
+		 */
+		public static Date getCurrentDate() {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String time = sdf.format(new Date());
+			try {
+				Date date = sdf.parse(time);
+				return date;
+			} catch (ParseException e) {
+				return null;
+			}
+		}
 }
