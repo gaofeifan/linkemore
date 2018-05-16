@@ -67,6 +67,13 @@
 			<version>${version}</version>
 		</dependency> 
 		
+		<dependency>
+			<groupId>com.linkmore</groupId>
+			<artifactId>linkmore-lock-sdk</artifactId>
+			<version>${linkmore-lock-sdk.version}</version>
+			<classifier>Releases</classifier>
+		</dependency>
+		
 	</dependencies>
 
 	<dependencyManagement>

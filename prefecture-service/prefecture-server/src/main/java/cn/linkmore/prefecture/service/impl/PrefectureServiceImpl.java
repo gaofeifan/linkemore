@@ -80,15 +80,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
 		if(StringUtil.isNotBlank(user)){
-			List<EnterpriseUser> enterpriseUser = enterpriseUserClusterMapper.selectByUserId(user.getId());
+			EnterpriseUser enterpriseUser = enterpriseUserClusterMapper.selectByUserId(user.getId());
 			paramMap.put("userType", user.getType());
-			if(enterpriseUser.size() > 0){
-				String enIds = "";
-				for (int i = 0; i < enterpriseUser.size(); i++) {
-					EnterpriseUser enUser = enterpriseUser.get(i);
-					enIds += enUser.getEnterpriseId()+",";
-				}
-				paramMap.put("enterpriseId", enIds.substring(0, enIds.length()-1));
+			if(enterpriseUser!=null){
+				paramMap.put("enterpriseId", enterpriseUser.getId());
 			}
 		}else{
 			paramMap.put("userType", -1);
@@ -126,15 +121,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}
 		paramMap.put("status", 0);
 		if(StringUtil.isNotBlank(user)){
-			List<EnterpriseUser> enterpriseUser = enterpriseUserClusterMapper.selectByUserId(user.getId());
+			EnterpriseUser enterpriseUser = enterpriseUserClusterMapper.selectByUserId(user.getId());
 			paramMap.put("userType", user.getType());
-			if(enterpriseUser.size() > 0){
-				String enIds = "";
-				for (int i = 0; i < enterpriseUser.size(); i++) {
-					EnterpriseUser enUser = enterpriseUser.get(i);
-					enIds += enUser.getEnterpriseId()+",";
-				}
-				paramMap.put("enterpriseId", enIds.substring(0, enIds.length()-1));
+			if(enterpriseUser!=null){
+				paramMap.put("enterpriseId", enterpriseUser.getId());
 			}
 		}else{
 			paramMap.put("userType", -1);
