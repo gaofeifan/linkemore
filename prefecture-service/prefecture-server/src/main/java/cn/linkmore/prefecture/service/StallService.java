@@ -1,7 +1,5 @@
 package cn.linkmore.prefecture.service;
 
-import cn.linkmore.prefecture.entity.Stall;
-
 /**
  * Service接口 - 车位信息
  * @author jiaohanbin
@@ -20,14 +18,19 @@ public interface StallService {
 	 */
 	void cancel(Long stallId);
 	/**
-	 * 降锁操作
-	 * @param stallId
-	 */
-	void lockdown(Long stallId);
-	/**
 	 * 结账立场释放车位
 	 * @param stallId
 	 */
 	void pay(Long stallId);
+	/**
+	 * 升锁操作
+	 * @param stallId
+	 */
+	void uplock(Long stallId);
+	/**
+	 * 降锁操作
+	 * @param stallId
+	 */
+	void downlock(Long stallId);
 	
 }

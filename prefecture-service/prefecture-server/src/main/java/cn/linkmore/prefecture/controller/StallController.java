@@ -49,9 +49,19 @@ public class StallController {
 	 * 
 	 * @param stallId Long
 	 */
-	@RequestMapping(value = "/v2.0/lockdown", method=RequestMethod.PUT)
-	public void lockdown(@RequestParam("stallId") Long stallId) {
-		 this.stallService.lockdown(stallId);
+	@RequestMapping(value = "/v2.0/downlock", method=RequestMethod.PUT)
+	public void downlock(@RequestParam("stallId") Long stallId) {
+		 this.stallService.downlock(stallId);
+	}
+	
+	/**
+	 * 升锁操作
+	 * 
+	 * @param stallId Long
+	 */
+	@RequestMapping(value = "/v2.0/uplock", method=RequestMethod.PUT)
+	public void uplock(@RequestParam("stallId") Long stallId) {
+		 this.stallService.uplock(stallId);
 	}
 
 	/**
