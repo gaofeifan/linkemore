@@ -1,9 +1,5 @@
 package cn.linkmore.common.client;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,10 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.account.request.ReqBind;
 import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
-import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.request.ReqWxLogin;
 import cn.linkmore.account.response.ResUserDetails;
-import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.common.client.hystrix.VehicleMarkClientHystrix;
 import cn.linkmore.feign.FeignConfiguration;
 
@@ -59,4 +53,8 @@ public interface UserClient {
 	@RequestMapping(value = "/v2.0/remove_wechat/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void removeWechat(@PathVariable Long userId);
+	
+	@RequestMapping(value = "/v2.0/cache_key/{userId}", method = RequestMethod.DELETE)
+	@ResponseBody
+	public Object getUserCacheKey(@PathVariable Long userId);
 }

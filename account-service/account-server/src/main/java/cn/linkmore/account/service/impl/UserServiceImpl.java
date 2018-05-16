@@ -207,6 +207,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public User selectById(Long userId) {
+		
 		return this.userClusterMapper.selectById(userId);
 	}
 

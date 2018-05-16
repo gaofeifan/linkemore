@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.account.entity.User;
 import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.service.UserService;
+import cn.linkmore.bean.common.ResponseEntity;
 
 /**
  * 用户
@@ -120,6 +122,17 @@ public class UserControlle {
 	@ResponseBody
 	public void removeWechat(@PathVariable Long userId) {
 		this.userService.removeWechat(userId);
+	}
+	
+	@RequestMapping(value = "/v2.0/mobile/{mobile}", method = RequestMethod.GET)
+	public void selectByMobile(@PathVariable String mobile) {
+		this.userService.selectByMobile(mobile);
+	}
+	
+	@RequestMapping(value = "/v2.0/cache_key/{userId}", method = RequestMethod.GET)
+	public Object getUserCacheKey(@PathVariable Long userId) {
+		User user = this.userService.getUserCacheKey(userId);
+		return user;
 	}
 	
 	

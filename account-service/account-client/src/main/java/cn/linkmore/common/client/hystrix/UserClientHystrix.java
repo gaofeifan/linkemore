@@ -50,5 +50,13 @@ public class UserClientHystrix implements UserClient{
 	public void removeWechat(@PathVariable Long userId) {
 		
 	}
+
+	@Override
+	public Object getUserCacheKey(Long userId) {
+		return null;
+		
+	}
+	
+	
 }
 
