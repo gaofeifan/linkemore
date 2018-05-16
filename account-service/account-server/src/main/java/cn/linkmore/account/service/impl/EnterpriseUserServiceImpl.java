@@ -19,7 +19,7 @@ public class EnterpriseUserServiceImpl implements EnterpriseUserService {
 	private EnterpriseUserMasterMapper enterpriseUserMasterMapper;
 	
 	@Override
-	public List<EnterpriseUser> selectByUserId(Long userId){
+	public EnterpriseUser selectByUserId(Long userId){
 		return this.enterpriseUserClusterMapper.selectByUserId(userId);
 	}
 }

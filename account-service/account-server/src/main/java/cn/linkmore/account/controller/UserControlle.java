@@ -16,6 +16,12 @@ import cn.linkmore.account.request.ReqWxLogin;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.service.UserService;
 
+/**
+ * 用户
+ * @author   GFF
+ * @Date     2018年5月16日
+ * @Version  v2.0
+ */
 @RestController
 @RequestMapping("/account/user")
 public class UserControlle {
@@ -23,6 +29,11 @@ public class UserControlle {
 	@Resource
 	private UserService userService;
 
+	/**
+	 * @Description  退出登录
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value="/v2.0/logout/{userId}" , method = RequestMethod.GET)
 	public void logout(@PathVariable Long userId) {
 		try {
@@ -32,24 +43,45 @@ public class UserControlle {
 		}
 	}
 	
+	/**
+	 * @Description  更新昵称
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/update_nickname/{userId}/{nickname}", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updRateNickname(@PathVariable Long userId,@PathVariable("nickname")String nickname) {
+	public void updateNickname(@PathVariable Long userId,@PathVariable("nickname")String nickname) {
 		this.userService.updateNickname(nickname,userId);
 	}
 	
+	/**
+	 * @Description  更新性别
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/update_sex/{sex}/{userId}", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updRateNickname(@PathVariable Long userId,@PathVariable("sex")Integer sex) {
+	public void updateSex(@PathVariable Long userId,@PathVariable("sex")Integer sex) {
 		this.userService.updateSex(sex,userId);
 	}
 	
+	/**
+	 * @Description  更新车牌
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/update_vehicle", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateVehicle(@RequestBody ReqVehicle req) {
 			this.userService.updateVehicle(req);
 	}
 	
+	
+	/**
+	 * @Description  查询详情
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/detail/{userId}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserDetails detail(@PathVariable Long userId) {
@@ -57,24 +89,45 @@ public class UserControlle {
 		return res;
 	}
 	
+	
+	/**
+	 * @Description  发送短信通知
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/send_code", method = RequestMethod.GET)
 	@ResponseBody
 	public void sendCode( @RequestBody ReqBind bean) {
 		/*this.messageService.sendLoginCode(bean.getMobile());*/
 	}
 
+	/**
+	 * @Description  更新手机号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/update_mobile", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateMobile( @RequestBody ReqLogin bean) {
 		this.userService.updateMobile(bean);
 	}
 	
+	/**
+	 * @Description  更新微信号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/update_wechat", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateWechat(@RequestBody ReqWxLogin bean) {
 		this.userService.updateWechat(bean);
 	}
 	
+	/**
+	 * @Description  删除微信号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/remove_wechat/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void removeWechat(@PathVariable Long userId) {

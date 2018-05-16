@@ -35,8 +35,8 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	}
 
 	@Override
-	public void save(ReqVehicleMark bean, Long userId) {
-		User user = this.userService.getUserCacheKey(userId);
+	public void save(ReqVehicleMark bean) {
+		User user = this.userService.getUserCacheKey(bean.getUserId());
 		List<VehicleMarkManage> list = this.selectByUserId(user.getId());
 		if(list.size() < 3){
 			//检查车牌号是否已经存在

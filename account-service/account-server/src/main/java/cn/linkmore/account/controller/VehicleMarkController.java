@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,12 +23,12 @@ public class VehicleMarkController{
 	@Resource
 	private VehicleMarkManageService vehicleMarkManageService;
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public void create( @RequestBody ReqVehicleMark bean,Long userId) {
-		this.vehicleMarkManageService.save(bean,userId);
+	public void create( @RequestBody ReqVehicleMark bean) {
+		this.vehicleMarkManageService.save(bean);
 	}
 	
-	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-	public void delete(@PathParam("id") Long id,Long userId){
+	@RequestMapping(value = "/delete/{id}/{userId}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable("id") Long id, @PathVariable Long userId){
 		this.vehicleMarkManageService.deleteById(id,userId);
 	}
 	
