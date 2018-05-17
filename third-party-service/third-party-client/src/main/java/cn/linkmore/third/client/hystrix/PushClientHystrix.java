@@ -19,12 +19,12 @@ import cn.linkmore.third.request.ReqPush;
 public class PushClientHystrix implements PushClient {
 	 
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
-	
+	 
 	public void push(@RequestBody ReqPush rp) {
 		log.warn("push failure");
 	}
  
-	 
+	  
 	public void push(@RequestBody List<ReqPush> rps) {
 		log.warn("push failure");
 	}

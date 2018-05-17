@@ -12,7 +12,7 @@ public class AppWechatClientHystrix implements AppWechatClient {
 	
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	public ResFans getFans(@PathVariable String code) {
+	public ResFans getFans(@PathVariable("code") String code) {
 		log.warn("get app wechat fans failure");
 		return null;
 	}

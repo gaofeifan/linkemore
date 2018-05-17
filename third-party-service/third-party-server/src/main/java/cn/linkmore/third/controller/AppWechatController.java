@@ -26,9 +26,9 @@ public class AppWechatController {
 	 * @param code 授权码
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/fans/${code}", method = RequestMethod.GET) 
+	@RequestMapping(value = "/v2.0/fans/{code}", method = RequestMethod.GET) 
 	@ResponseBody
-	public ResFans getFans(@PathVariable String code) {
+	public ResFans getFans(@PathVariable("code") String code) {
 		return this.appWechatService.getWechatFans(code);
 	}
 	
