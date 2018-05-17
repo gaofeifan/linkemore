@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import cn.linkmore.account.request.ReqBind;
-import cn.linkmore.account.request.ReqLogin;
-import cn.linkmore.account.request.ReqNickname;
-import cn.linkmore.account.request.ReqSex;
-import cn.linkmore.account.request.ReqVehicle;
-import cn.linkmore.account.request.ReqWxLogin;
+import cn.linkmore.account.request.ReqUpdateMobile;
+import cn.linkmore.account.request.ReqUpdateNickname;
+import cn.linkmore.account.request.ReqUpdateSex;
+import cn.linkmore.account.request.ReqUpdateVehicle;
+import cn.linkmore.account.request.ReqUpdateWechat;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
+import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.common.client.UserClient;
 
 @Component
@@ -23,14 +24,14 @@ public class UserClientHystrix implements UserClient{
 	}
 	
 	@Override
-	public void updateNickname(@RequestBody ReqNickname nickname) {
+	public void updateNickname(@RequestBody ReqUpdateNickname nickname) {
 	}
 
 	@Override
-	public void updateSex(@RequestBody ReqSex reqSex) {
+	public void updateSex(@RequestBody ReqUpdateSex reqSex) {
 	}
 	
-	public void updateVehicle(@RequestBody ReqVehicle req) {
+	public void updateVehicle(@RequestBody ReqUpdateVehicle req) {
 		
 	}
 	
@@ -42,11 +43,11 @@ public class UserClientHystrix implements UserClient{
 		
 	}
 
-	public void updateMobile(@RequestBody ReqLogin bean) {
+	public void updateMobile(@RequestBody ReqUpdateMobile bean) {
 		
 	}
 	
-	public void updateWechat(@RequestBody ReqWxLogin bean) {
+	public void updateWechat(@RequestBody ReqUpdateWechat bean) {
 		
 	}
 	
@@ -59,6 +60,12 @@ public class UserClientHystrix implements UserClient{
 		return null;
 		
 	}
+
+	@Override
+	public ResUserLogin appLogin(@PathVariable String mobile){
+		return null;
+	}
+	
 	
 	
 }

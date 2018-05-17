@@ -18,4 +18,8 @@ public interface UserMasterMapper {
     int updateById(User record);
 
 	void updateByColumn(Map<String, Object> param);
+
+	void updateLoginTime(Map<String, Object> param);
+
+	void updateMobile(Map<String, Object> param);
 }

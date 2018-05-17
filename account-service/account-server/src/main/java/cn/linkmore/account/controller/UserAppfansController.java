@@ -3,11 +3,15 @@ package cn.linkmore.account.controller;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
+import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 
 @RestController
@@ -21,4 +25,11 @@ public class UserAppfansController {
 	public ResUserAppfans selectByUserId(@PathVariable Long userId) {
 		return userAppfansService.selectByUserId(userId);
 	}
+
+	@RequestMapping(value="/v2.0/login",method = RequestMethod.POST)
+	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans) {
+		return userAppfansService.wxLogin(appfans);
+	}
+	
+	
 }

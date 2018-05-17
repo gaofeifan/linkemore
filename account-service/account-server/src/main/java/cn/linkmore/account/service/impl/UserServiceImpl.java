@@ -14,33 +14,38 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
 import cn.linkmore.account.dao.cluster.UserVechicleClusterMapper;
+import cn.linkmore.account.dao.master.AccountMasterMapper;
 import cn.linkmore.account.dao.master.AdminUserMasterMapper;
 import cn.linkmore.account.dao.master.UserMasterMapper;
 import cn.linkmore.account.dao.master.UserVechicleMasterMapper;
+import cn.linkmore.account.entity.Account;
 import cn.linkmore.account.entity.AdminUser;
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.entity.UserVechicle;
-import cn.linkmore.account.request.ReqLogin;
-import cn.linkmore.account.request.ReqNickname;
-import cn.linkmore.account.request.ReqSex;
-import cn.linkmore.account.request.ReqVehicle;
-import cn.linkmore.account.request.ReqWxLogin;
+import cn.linkmore.account.request.ReqUpdateMobile;
+import cn.linkmore.account.request.ReqUpdateNickname;
+import cn.linkmore.account.request.ReqUpdateSex;
+import cn.linkmore.account.request.ReqUpdateVehicle;
+import cn.linkmore.account.request.ReqUpdateWechat;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
+import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
-import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.constant.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.util.ObjectUtils;
+
 @Service
 public class UserServiceImpl implements UserService {
 
 	public static final String LINKMORE_APP_SMS_CODE = "";
-	
+
+	@Resource
+	private AccountMasterMapper accountMasterMapper;
 	@Resource
 	private SmsClient smsClient;
 	@Resource
@@ -57,55 +62,57 @@ public class UserServiceImpl implements UserService {
 	private RedisTemplate<String, Object> redisTemplate;
 	@Resource
 	private AdminUserMasterMapper adminUserMasterMapper;
+
 	@Override
 	public void logout(Long userId) {
 		String key = "";
-		AdminUser user =(AdminUser) redisTemplate.opsForValue().get(key);
-		if(user!=null){
+		AdminUser user = (AdminUser) redisTemplate.opsForValue().get(key);
+		if (user != null) {
 			redisTemplate.delete(key);
 			redisTemplate.delete(RedisKey.LINKMORE_APP_USER_ID + user.getId());
 		}
 	}
 
 	@Override
-	public void updateNickname(ReqNickname nickname) {
+	public void updateNickname(ReqUpdateNickname nickname) {
 		ResUser user = getUserCacheKey(nickname.getUserId());
 		updateByColumn("nickname", nickname.getNickname(), user.getId());
 	}
 
 	@Override
-	public void updateSex(ReqSex sex) {
+	public void updateSex(ReqUpdateSex sex) {
 		ResUser user = getUserCacheKey(sex.getUserId());
-		updateByColumn("sex", sex.getSex(), user.getId());		
+		updateByColumn("sex", sex.getSex(), user.getId());
 	}
-	
-	private void updateByColumn(String column,Object value,Long id) {
-		Map<String,Object> param = new HashMap<>();
+
+	private void updateByColumn(String column, Object value, Long id) {
+		Map<String, Object> param = new HashMap<>();
 		param.put("id", id);
 		param.put("column", column);
 		param.put("value", value);
 		param.put("updateTime", new Date());
 		userMasterMapper.updateByColumn(param);
 	}
-	
+
 	@Override
-	public ResUser getUserCacheKey(Long userId){
-		return new ResUser();
+	public ResUser getUserCacheKey(Long userId) {
+		User u = this.selectById(userId);
+		return ObjectUtils.copyObject(u, new ResUser());
 	}
 
 	@Override
-	public void updateVehicle(ReqVehicle req) {
+	public void updateVehicle(ReqUpdateVehicle req) {
 		ResUser user = getUserCacheKey(req.getUserId());
 		UserVechicle vechicle = userVechicleClusterMapper.selectByUserId(user.getId());
 		boolean flag = false;
-		if(vechicle == null) {
+		if (vechicle == null) {
 			flag = true;
 		}
 		UserVechicle object = ObjectUtils.copyObject(req, vechicle);
 		object.setUpdateTime(new Date());
-		if(flag) {
+		if (flag) {
 			object.setCreateTime(new Date());
-			object.setUserId(user.getId());	
+			object.setUserId(user.getId());
 			this.userVechicleMasterMapper.insert(object);
 			return;
 		}
@@ -114,30 +121,30 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ResUserDetails detail(Long userId) {
-		List<ResUserDetails> list = this.userClusterMapper.selectResUserById(userId );
-		if(list.size() == 1) {
-			ResUserDetails res = (ResUserDetails)list.get(0);
-			if(res != null) {
+		List<ResUserDetails> list = this.userClusterMapper.selectResUserById(userId);
+		if (list.size() == 1) {
+			ResUserDetails res = (ResUserDetails) list.get(0);
+			if (res != null) {
 				Object carObj = redisTemplate.opsForValue().get(RedisKey.CAR_BRAND_LIST);
-				if(null != carObj){
-					//拼装返回  车辆品牌-型号
+				if (null != carObj) {
+					// 拼装返回 车辆品牌-型号
 					String brandModel = "";
 					int num = 0;
-					for (Object carBrand : (List)carObj) {
+					for (Object carBrand : (List) carObj) {
 						Map m = (Map) carBrand;
-						if(m.get("id").toString().equals(res.getBrandModel())){
+						if (m.get("id").toString().equals(res.getBrandModel())) {
 							brandModel = brandModel + m.get("name");
-							for (Object carFirm : (List)m.get("childlist")) {
-								Map m2 = (Map)carFirm;
-								for (Object carModel : (List)m2.get("carlist")) {
-									Map m3 = (Map)carModel;
-									if(m3.get("id").toString().equals(res.getBrandModel())){
-										brandModel = brandModel+"-"+m3.get("fullname");
+							for (Object carFirm : (List) m.get("childlist")) {
+								Map m2 = (Map) carFirm;
+								for (Object carModel : (List) m2.get("carlist")) {
+									Map m3 = (Map) carModel;
+									if (m3.get("id").toString().equals(res.getBrandModel())) {
+										brandModel = brandModel + "-" + m3.get("fullname");
 										num++;
 										break;
 									}
 								}
-								if(num>0){
+								if (num > 0) {
 									break;
 								}
 							}
@@ -148,7 +155,7 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 			ResUserAppfans af = this.userAppfansService.selectByUserId(userId);
-			if(af!=null&&af.getStatus().shortValue()==1){
+			if (af != null && af.getStatus().shortValue() == 1) {
 				res.setWechatId(af.getId());
 				res.setWechatUrl(af.getHeadurl());
 				res.setWechatName(af.getNickname());
@@ -159,66 +166,121 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateMobile(ReqLogin bean) {
-		ResUser user = getUserCacheKey(bean.getUserId());
-		User dbUser = this.selectByMobile(bean.getMobile());
-		if(dbUser == null) {
-			this.updateByColumn("mobile", bean.getMobile(), user.getId());
-		}else {
+	public void updateMobile(ReqUpdateMobile bean) {
+		User user = this.selectById(bean.getUserId());
+		if (user != null) {
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", user.getId());
+			param.put("updateTime", new Date());
+			param.put("mobile",bean.getMobile());
+			this.userMasterMapper.updateMobile(param);
+		} else {
 			throw new BusinessException();
 		}
 	}
 
 	@Override
-	public void updateWechat(ReqWxLogin bean) {
-		JSONObject json = new JSONObject();//this.getOAuthUserinfo(wechatConfig.getAppId(), wechatConfig.getAppSecret(), bean.getCode()); 
-		if (json==null||json.get("errcode") != null) {
-			throw new BusinessException(); 
-		}else{
-			String openid = json.getString("openid"); 
+	public void updateWechat(ReqUpdateWechat bean) {
+		JSONObject json = new JSONObject();// this.getOAuthUserinfo(wechatConfig.getAppId(),
+											// wechatConfig.getAppSecret(), bean.getCode());
+		if (json == null || json.get("errcode") != null) {
+			throw new BusinessException();
+		} else {
+			String openid = json.getString("openid");
 			String nickname = json.getString("nickname");
-			String headimgurl = json.getString("headimgurl"); 
+			String headimgurl = json.getString("headimgurl");
 			String unionid = json.getString("unionid");
 			UserAppfans fans = this.userAppfansService.selectById(openid);
 			ResUser user = this.getUserCacheKey(bean.getUserId());
-			if(fans==null){
+			if (fans == null) {
 				fans = new UserAppfans();
 				fans.setId(openid);
 				fans.setHeadurl(headimgurl);
 				fans.setNickname(nickname);
 				fans.setUnionid(unionid);
 				fans.setCreateTime(new Date());
-				fans.setStatus((short)1);
+				fans.setStatus((short) 1);
 				fans.setUserId(user.getId());
-				fans.setRegisterStatus((short)0);
-				this.userAppfansService.insertSelective(fans);  
-			}else{
-				fans.setStatus((short)1);
+				fans.setRegisterStatus((short) 0);
+				this.userAppfansService.insertSelective(fans);
+			} else {
+				fans.setStatus((short) 1);
 				fans.setUserId(user.getId());
-				this.userAppfansService.updateByIdSelective(fans);  
+				this.userAppfansService.updateByIdSelective(fans);
 			}
-		}  
+		}
 	}
 
 	@Override
 	public void removeWechat(Long userId) {
-		this.userAppfansService.updateStatusByUserId(userId,0);
+		this.userAppfansService.updateStatusByUserId(userId, 0);
 	}
-	
+
 	@Override
 	public User selectByMobile(String mobile) {
 		return this.userClusterMapper.selectByMobile(mobile);
 	}
-	
+
 	@Override
 	public User selectById(Long userId) {
-		
+
 		return this.userClusterMapper.selectById(userId);
 	}
 
+	@Override
+	public ResUserLogin appLogin(String mobile) {
+		User user = this.selectByMobile(mobile);
+		if (user == null) {
+			user = new User();
+			user.setMobile(mobile);
+			user.setUsername(mobile);
+			user.setPassword("");
+			user.setUserType("1");
+			user.setStatus("1");
+			user.setLastLoginTime(new Date());
+			user.setCreateTime(new Date());
+			user.setUpdateTime(new Date());
+			user.setIsAppRegister((short) 1);
+			user.setAppRegisterTime(new Date());
+			user.setIsWechatBind((short) 0);
+			this.userMasterMapper.insert(user);
+			Account account = new Account();
+			account.setId(user.getId());
+			account.setAmount(0.00d);
+			account.setUsableAmount(0.00d);
+			account.setFrozenAmount(0.00d);
+			account.setRechagePaymentAmount(0.00d);
+			account.setRechargeAmount(0.00d);
+			account.setAccType(1);
+			account.setStatus((short) 1);
+			account.setOrderAmount(0.00d);
+			account.setOrderPaymentAmount(0.00d);
+			account.setCreateTime(new Date());
+			accountMasterMapper.insert(account);
+		} else if (user.getStatus().equals("2")) {
+			throw new BusinessException();
+		} else {
+			user.setLastLoginTime(new Date());
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", user.getId());
+			param.put("lastLoginTime", new Date());
+			param.put("updateTime", new Date());
+			this.userMasterMapper.updateLoginTime(param);
+		}
+		ResUserLogin token = new ResUserLogin();
+		token.setId(user.getId());
+		token.setMobile(user.getUsername());
+		return token;
+	}
 
-	
-	
-	
+	@Override
+	public void insertSelective(User user) {
+		this.userMasterMapper.insertSelective(user);
+	}
+
+	@Override
+	public void updateLoginTime(Map<String, Object> param) {
+		this.userMasterMapper.updateLoginTime(param);
+	}
 
 }

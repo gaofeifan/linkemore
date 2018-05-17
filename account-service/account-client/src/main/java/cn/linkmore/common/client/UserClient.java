@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.account.request.ReqBind;
-import cn.linkmore.account.request.ReqLogin;
-import cn.linkmore.account.request.ReqNickname;
-import cn.linkmore.account.request.ReqSex;
-import cn.linkmore.account.request.ReqVehicle;
-import cn.linkmore.account.request.ReqWxLogin;
+import cn.linkmore.account.request.ReqUpdateMobile;
+import cn.linkmore.account.request.ReqUpdateNickname;
+import cn.linkmore.account.request.ReqUpdateSex;
+import cn.linkmore.account.request.ReqUpdateVehicle;
+import cn.linkmore.account.request.ReqUpdateWechat;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
-import cn.linkmore.common.client.hystrix.VehicleMarkClientHystrix;
+import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.feign.FeignConfiguration;
 
 @RestController
@@ -28,14 +28,14 @@ public interface UserClient {
 	
 	@RequestMapping(value = "/v2.0/nickname", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateNickname(@RequestBody ReqNickname nickname);
+	public void updateNickname(@RequestBody ReqUpdateNickname nickname);
 	
 	@RequestMapping(value = "/v2.0/sex", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateSex(@RequestBody ReqSex reqSex);
+	public void updateSex(@RequestBody ReqUpdateSex reqSex);
 	
 	@RequestMapping(value = "/v2.0/vehicle", method = RequestMethod.PUT)
-	public void updateVehicle(@RequestBody ReqVehicle req);
+	public void updateVehicle(@RequestBody ReqUpdateVehicle req);
 	
 	@RequestMapping(value = "/v2.0/detail/{userId}", method = RequestMethod.GET)
 	@ResponseBody
@@ -47,11 +47,11 @@ public interface UserClient {
 
 	@RequestMapping(value = "/v2.0/mobile", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateMobile(@RequestBody ReqLogin bean);
+	public void updateMobile(@RequestBody ReqUpdateMobile bean);
 	
 	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateWechat(@RequestBody ReqWxLogin bean) ;
+	public void updateWechat(@RequestBody ReqUpdateWechat bean) ;
 	
 	@RequestMapping(value = "/v2.0/wechat/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
@@ -60,4 +60,8 @@ public interface UserClient {
 	@RequestMapping(value = "/v2.0/cache/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResUser getUserCacheKey(@PathVariable Long userId);
+
+	@RequestMapping(value = "/v2.0/resuser_mobile/{mobile}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserLogin appLogin(@PathVariable String mobile);
 }
