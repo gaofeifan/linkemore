@@ -1,8 +1,6 @@
 package cn.linkmore.prefecture.dao.master;
-
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.prefecture.entity.StrategyBase;
-
 @Mapper
 public interface StrategyBaseMasterMapper {
 	/**
