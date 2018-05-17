@@ -90,23 +90,7 @@
   <select id="findPreByStatusAndGPS" resultMap="ResPrefectureMap" parameterType="java.util.Map">
     select p.id,p.name,p.latitude,p.longitude,p.type,p.limit_status
 	from v_prefecture p 
-	where p.status = #{status}
-	<if test="userType != null">
-		<choose>
-			<when test="userType == 0">
-				and (p.type is null or p.type = 0)
-			</when>
-			<otherwise>
-				and (p.type is null or p.type in (0,#{userType})) 
-				<if test="enterpriseId != null">
-					and (p.enterprise_id in(${enterpriseId}) or p.enterprise_id is null)
-				</if>
-			</otherwise>
-		</choose>
-	</if>
-	<if test="userType == null">
-    	and (p.type is null or p.type = 0 )
-    </if>
+	where p.status = #{status} and (p.type is null or p.type = 0 )
     and p.category = 0
   </select>
   
@@ -123,22 +107,7 @@
 	from v_prefecture p 
 	LEFT JOIN v_strategy_base b on b.id = p.strategy_id
 	where p.status = #{status} and p.city_id = #{cityId}
-	<if test="userType != null">
-		<choose>
-			<when test="userType == 0">
-				and (p.type is null or p.type = 0 )
-			</when>
-			<otherwise>
-				and (p.type is null or p.type in (0,#{userType})) 
-				<if test="enterpriseId != null">
-					and (p.enterprise_id in(${enterpriseId}) or p.enterprise_id is null)
-				</if>
-			</otherwise>
-		</choose>
-	</if>
-	<if test="userType == null">
-    	and (p.type is null or p.type = 0 )
-    </if>
+	and (p.type is null or p.type = 0 )
     and p.category = 0
 	ORDER BY p.order_index DESC
   </select>
