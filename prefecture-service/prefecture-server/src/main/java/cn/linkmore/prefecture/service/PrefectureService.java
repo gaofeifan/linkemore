@@ -19,10 +19,9 @@ public interface PrefectureService {
 	/**
 	 * 根据ID查询对应的车区信息
 	 * @param id 主键
-	 * @param language 语言
 	 * @return
 	 */
-	ResPrefectureDetail find(Long id,String language);
+	ResPrefectureDetail find(Long id);
 	
 	/**
 	 * 根据当前位置获取车区列表
@@ -36,17 +35,15 @@ public interface PrefectureService {
 	 * 根据城市获取车区卡片列表
 	 * @param cityId
 	 * @param user 
-	 * @param language 
 	 * @param size
 	 * @return
 	 */
-	List<ResPrefectureList> findPreListByCityId(Long cityId, String language, User user);
+	List<ResPrefectureList> findPreListByCityId(Long cityId, User user);
 	/**
 	 * 根据车区id查询计费策略
 	 * @param preId
-	 * @param language
 	 * @return
 	 */
-	ResPrefectureStrategy getPreStrategy(Long preId, String language);
+	ResPrefectureStrategy getPreStrategy(Long preId);
 
 }

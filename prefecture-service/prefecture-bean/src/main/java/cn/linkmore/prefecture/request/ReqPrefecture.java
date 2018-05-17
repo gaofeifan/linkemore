@@ -15,8 +15,20 @@ public class ReqPrefecture {
      * 比例尺
      */
     private Double scale;
+    /**
+     * 用户id
+     */
+    private Long userId;
 
-    public Double getLatitude() {
+    public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Double getLatitude() {
         return latitude;
     }
 
