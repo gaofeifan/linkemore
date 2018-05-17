@@ -1,17 +1,17 @@
 package cn.linkmore.account.request;
 
-public class ReqSex {
+public class ReqUpdateNickname {
 
-	private Integer sex;
+	private String nickname;
 	
 	private Long userId;
 
-	public Integer getSex() {
-		return sex;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setSex(Integer sex) {
-		this.sex = sex;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	public Long getUserId() {

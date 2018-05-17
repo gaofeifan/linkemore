@@ -1,6 +1,6 @@
 package cn.linkmore.account.request;
 
-public class ReqVehicle {
+public class ReqUpdateVehicle {
 	
 	private Long userId;
 	

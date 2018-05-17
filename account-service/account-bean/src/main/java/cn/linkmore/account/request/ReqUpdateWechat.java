@@ -1,6 +1,6 @@
 package cn.linkmore.account.request;
 
-public class ReqLogin {
+public class ReqUpdateWechat {
 
 	private String mobile;
 	
@@ -31,5 +31,7 @@ public class ReqLogin {
 	public void setCode(String code) {
 		this.code = code;
 	}
+	
+	
 	
 }

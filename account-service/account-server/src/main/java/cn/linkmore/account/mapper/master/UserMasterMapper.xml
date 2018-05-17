@@ -44,7 +44,7 @@
     delete from t_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.linkmore.account.entity.User">
+  <insert id="insert" parameterType="cn.linkmore.account.entity.User" useGeneratedKeys="true" keyProperty="id">
     insert into t_user (id, username, password, 
       nickname, sex, status, 
       user_type, enterprise_name, ent_admin_name, 
@@ -68,7 +68,7 @@
       #{type,jdbcType=SMALLINT}, #{loginCount,jdbcType=INTEGER}, #{orderCount,jdbcType=INTEGER}, 
       #{completeOrderCount,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="cn.linkmore.account.entity.User">
+  <insert id="insertSelective" parameterType="cn.linkmore.account.entity.User" useGeneratedKeys="true" keyProperty="id">
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -396,5 +396,20 @@
    		 set ${column} = #{value},
     	update_time = #{updateTime}
     where id = #{id}
+  </update>
+  <update id="updateLoginTime" parameterType="java.util.Map" >
+    update t_user
+    set  
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}, 
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateMobile" parameterType="java.util.Map" >
+    update t_user
+    set  
+      mobile = #{mobile},
+      username=#{mobile}, 
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

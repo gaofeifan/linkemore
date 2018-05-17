@@ -10,7 +10,6 @@ import cn.linkmore.account.response.ResEnterpriseUser;
 import cn.linkmore.common.client.hystrix.EnterpriseUserClientHystrix;
 import cn.linkmore.feign.FeignConfiguration;
 
-@RestController
 @FeignClient(value = "account-server", path = "/account/enterprise_user", fallback=EnterpriseUserClientHystrix.class,configuration = FeignConfiguration.class)
 public interface EnterpriseUserClient {
 	

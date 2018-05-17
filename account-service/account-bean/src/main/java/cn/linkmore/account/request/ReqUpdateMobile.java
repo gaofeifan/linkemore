@@ -1,6 +1,6 @@
 package cn.linkmore.account.request;
 
-public class ReqWxLogin {
+public class ReqUpdateMobile {
 
 	private String mobile;
 	
@@ -31,7 +31,5 @@ public class ReqWxLogin {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
-	
 	
 }

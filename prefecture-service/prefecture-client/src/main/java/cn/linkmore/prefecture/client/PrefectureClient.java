@@ -1,13 +1,20 @@
 package cn.linkmore.prefecture.client;
 
+import java.util.List;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.PrefectureClientHystrix;
+import cn.linkmore.prefecture.request.ReqCity;
+import cn.linkmore.prefecture.request.ReqPrefecture;
+import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.prefecture.response.ResPrefectureList;
 import cn.linkmore.prefecture.response.ResPrefectureStrategy;
 /**
  * 远程调用 - 车区信息
@@ -35,4 +42,25 @@ public interface PrefectureClient {
 	@ResponseBody
 	public ResPrefectureStrategy findPreStrategy(@PathVariable Long preId);
 	
+	/**
+	 * 根据城市id查询车区卡片列表
+	 * 
+	 * @param cityId Long
+	 * @param userId Long
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/city", method = RequestMethod.PUT)
+	@ResponseBody
+	public List<ResPrefectureList> findPreListByCityId(@RequestBody ReqCity reqCity);
+	
+	/**
+	 * 根据位置查询车区地图
+	 * 
+	 * @param reqPrefecture ReqPrefecture
+	 * @param userId Long
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.PUT)
+	@ResponseBody
+	public List<ResPrefecture> findPreListByLoc(@RequestBody ReqPrefecture reqPrefecture);
 }

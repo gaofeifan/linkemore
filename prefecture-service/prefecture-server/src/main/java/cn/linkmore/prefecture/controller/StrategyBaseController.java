@@ -5,6 +5,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,9 +37,10 @@ public class StrategyBaseController {
 	 * @param beginTime Date
 	 * @param endTime Date
 	 */
-	@RequestMapping(value = "/v2.0/fee", method=RequestMethod.PUT)
-	public Map<String, Object> order(@RequestParam("strategyId") Long strategyId, @RequestParam("beginTime") Date beginTime,
-			@RequestParam("endTime") Date endTime) {
+	@RequestMapping(value = "/v2.0/fee", method=RequestMethod.GET)
+	public Map<String, Object> fee(@RequestParam("strategyId") Long strategyId, 
+			@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date beginTime,
+			@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date endTime) {
 		StrategyBase strategyBase =  this.strategyBaseService.findById(strategyId);
 		Map<String, Object> costMap = OrderFee.getMultipleParkingCost(strategyBase, beginTime, endTime);
 		return costMap;

@@ -83,6 +83,11 @@ public class StallServiceImpl implements StallService {
 		Stall stall = stallClusterMapper.findById(stallId);
 		LockFactory lockFactory = InitLockFactory.getInstance();
 		ResponseMessage<LockBean> res=lockFactory.lockUp(stall.getLockSn());
+		int code = res.getMsgCode();
+    	if(code!=200){
+    		 //此处为升锁操作
+    		 throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL); 
+    	}
 		stall.setLockStatus(Stall.LOCK_STATUS_UP);
 		stallMasterMapper.lockdown(stall);
 	}
