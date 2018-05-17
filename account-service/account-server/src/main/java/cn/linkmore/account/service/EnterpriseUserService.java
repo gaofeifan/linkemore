@@ -1,11 +1,9 @@
 package cn.linkmore.account.service;
 
-import java.util.List;
-
-import cn.linkmore.account.entity.EnterpriseUser;
+import cn.linkmore.account.response.ResEnterpriseUser;
 
 public interface EnterpriseUserService {
 
-	EnterpriseUser selectByUserId(Long userId);
+	ResEnterpriseUser selectByUserId(Long userId);
 
 }

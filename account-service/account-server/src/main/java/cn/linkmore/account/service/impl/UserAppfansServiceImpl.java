@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.account.dao.cluster.UserAppfansClusterMapper;
 import cn.linkmore.account.dao.master.UserAppfansMasterMapper;
 import cn.linkmore.account.entity.UserAppfans;
+import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.service.UserAppfansService;
+import cn.linkmore.util.ObjectUtils;
 @Service
 public class UserAppfansServiceImpl implements UserAppfansService {
 
@@ -22,8 +24,9 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 	}
 
 	@Override
-	public UserAppfans selectByUserId(Long userId) {
-		return this.selectByUserId(userId);
+	public ResUserAppfans selectByUserId(Long userId) {
+		UserAppfans userAppfans = this.userAppfansClusterMapper.selectByUserId(userId);
+		return ObjectUtils.copyObject(userAppfans, new ResUserAppfans());
 	}
 
 	@Override

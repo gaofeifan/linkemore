@@ -22,14 +22,16 @@ import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.entity.UserVechicle;
 import cn.linkmore.account.request.ReqLogin;
+import cn.linkmore.account.request.ReqNickname;
+import cn.linkmore.account.request.ReqSex;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
-import cn.linkmore.account.response.ReqNickname;
-import cn.linkmore.account.response.ReqSex;
 import cn.linkmore.account.response.ResUser;
+import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
+import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.constant.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.third.client.SmsClient;
@@ -88,7 +90,6 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public ResUser getUserCacheKey(Long userId){
-		
 		return new ResUser();
 	}
 
@@ -146,7 +147,7 @@ public class UserServiceImpl implements UserService {
 					res.setBrandModel(brandModel);
 				}
 			}
-			UserAppfans af = this.userAppfansService.selectByUserId(userId);
+			ResUserAppfans af = this.userAppfansService.selectByUserId(userId);
 			if(af!=null&&af.getStatus().shortValue()==1){
 				res.setWechatId(af.getId());
 				res.setWechatUrl(af.getHeadurl());

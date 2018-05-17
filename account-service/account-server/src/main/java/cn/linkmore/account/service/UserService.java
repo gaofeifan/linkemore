@@ -3,10 +3,10 @@ package cn.linkmore.account.service;
 
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.request.ReqLogin;
+import cn.linkmore.account.request.ReqNickname;
+import cn.linkmore.account.request.ReqSex;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
-import cn.linkmore.account.response.ReqNickname;
-import cn.linkmore.account.response.ReqSex;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 

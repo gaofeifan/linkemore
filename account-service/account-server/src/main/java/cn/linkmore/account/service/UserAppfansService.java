@@ -1,12 +1,13 @@
 package cn.linkmore.account.service;
 
 import cn.linkmore.account.entity.UserAppfans;
+import cn.linkmore.account.response.ResUserAppfans;
 
 public interface UserAppfansService {
 
 	UserAppfans selectById(String id);
 
-	UserAppfans selectByUserId(Long userId);
+	ResUserAppfans selectByUserId(Long userId);
 
 	void insertSelective(UserAppfans record);
 

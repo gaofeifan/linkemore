@@ -1,4 +1,4 @@
-package cn.linkmore.account.response;
+package cn.linkmore.account.request;
 
 public class ReqSex {
 
