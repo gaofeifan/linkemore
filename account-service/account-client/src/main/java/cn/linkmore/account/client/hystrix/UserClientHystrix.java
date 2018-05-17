@@ -44,7 +44,7 @@ public class UserClientHystrix implements UserClient{
 	}
 	
 	@Override
-	public void updateAppfans(ReqUpdateMobile bean) {
+	public void updateAppfans(ReqUserAppfans bean) {
 	}
 
 	public void removeWechat(@PathVariable Long userId) {

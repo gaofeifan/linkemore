@@ -4,8 +4,6 @@ public class ReqUpdateMobile {
 
 	private String mobile;
 	
-	private String code;
-
 	private Long userId;
 	
 	public String getMobile() {
@@ -16,10 +14,6 @@ public class ReqUpdateMobile {
 		this.mobile = mobile;
 	}
 
-	public String getCode() {
-		return code;
-	}
-
 	public Long getUserId() {
 		return userId;
 	}
@@ -28,8 +22,5 @@ public class ReqUpdateMobile {
 		this.userId = userId;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
-	}
 	
 }

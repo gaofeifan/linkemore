@@ -50,7 +50,7 @@ public interface UserClient {
 	
 	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateAppfans(@RequestBody ReqUpdateMobile bean) ;
+	public void updateAppfans(@RequestBody ReqUserAppfans bean) ;
 	
 	@RequestMapping(value = "/v2.0/wechat/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
