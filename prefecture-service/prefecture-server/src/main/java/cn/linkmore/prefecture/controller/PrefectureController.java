@@ -1,9 +1,7 @@
 package cn.linkmore.prefecture.controller;
 
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import cn.linkmore.account.entity.User;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.common.client.hystrix.UserClientHystrix;
 import cn.linkmore.prefecture.request.ReqCity;
 import cn.linkmore.prefecture.request.ReqPrefecture;
@@ -40,11 +38,8 @@ public class PrefectureController {
 
 	@Autowired
 	private PrefectureService preService;
-	
 	@Autowired
 	private UserClientHystrix userClient;
-	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
 
 	/**
 	 * 根据主键查询详情
@@ -69,8 +64,8 @@ public class PrefectureController {
 	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ResPrefecture> findPreListByLoc(@RequestBody ReqPrefecture reqPrefecture) {
-		Object obj = userClient.getUserCacheKey(reqPrefecture.getUserId());
-		return this.preService.findPreListByLoc(reqPrefecture, (User)obj);
+		ResUser resUser = userClient.getUserCacheKey(reqPrefecture.getUserId());
+		return this.preService.findPreListByLoc(reqPrefecture, resUser);
 	}
 
 	/**
@@ -78,14 +73,13 @@ public class PrefectureController {
 	 * 
 	 * @param cityId Long
 	 * @param userId Long
-	 * @param language String
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/city", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/city", method = RequestMethod.PUT)
 	@ResponseBody
 	public List<ResPrefectureList> findPreListByCityId(@RequestBody ReqCity reqCity) {
-		Object obj = userClient.getUserCacheKey(reqCity.getUserId());
-		List<ResPrefectureList> preList = this.preService.findPreListByCityId(reqCity.getCityId(), (User)obj);
+		ResUser resUser = userClient.getUserCacheKey(reqCity.getUserId());
+		List<ResPrefectureList> preList = this.preService.findPreListByCityId(reqCity.getCityId(), resUser);
 		return preList;
 	}
 
@@ -93,13 +87,36 @@ public class PrefectureController {
 	 * 根据车区id查询计费策略
 	 * 
 	 * @param preId Long
-	 * @param language String
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/strategy", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/strategy/{preId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResPrefectureStrategy findPreStrategy(@RequestParam("preId")Long preId) {
+	public ResPrefectureStrategy findPreStrategy(@PathVariable Long preId) {
 		ResPrefectureStrategy resPreStrategy = preService.getPreStrategy(preId);
 		return resPreStrategy;
+	}
+	
+	/**
+	 * addUser
+	 * 
+	 * @param username String
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/addUser", method = RequestMethod.GET)
+	@ResponseBody
+	public String findPreStrategy(@RequestParam(value="username") String username) {
+		return username;
+	}
+	
+	/**
+	 * addUserReq
+	 * 
+	 * @param name String
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/addUserReq", method = RequestMethod.PUT)
+	@ResponseBody
+	public String addUserReq(@RequestBody String name) {
+		return name;
 	}
 }

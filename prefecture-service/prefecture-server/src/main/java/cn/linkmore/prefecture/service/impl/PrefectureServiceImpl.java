@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.account.dao.cluster.EnterpriseUserClusterMapper;
 import cn.linkmore.account.dao.cluster.UserStaffClusterMapper;
 import cn.linkmore.account.entity.EnterpriseUser;
-import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.UserStaff;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.common.dao.cluster.CityClusterMapper;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
@@ -65,7 +65,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return detail;
 	}
 	@Override
-	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture,User user) {
+	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture,ResUser user) {
 		/*Map<String,Object> param = new HashMap<String,Object>();
 		param.put("latitude", reqPrefecture.getLatitude());
 		param.put("longitude", reqPrefecture.getLongitude());
@@ -104,7 +104,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	@Override
-	public List<ResPrefectureList> findPreListByCityId(Long cityId,User user) {
+	public List<ResPrefectureList> findPreListByCityId(Long cityId,ResUser user) {
 		Map<String,Object> paramMap = new HashMap<>();
 		//如果传城市id为-1 获取杭州的专区数据
 		if(cityId == -1){

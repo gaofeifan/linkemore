@@ -1,0 +1,38 @@
+package cn.linkmore.prefecture.client;
+
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import cn.linkmore.feign.FeignConfiguration;
+import cn.linkmore.prefecture.client.hystrix.PrefectureClientHystrix;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.prefecture.response.ResPrefectureStrategy;
+/**
+ * 远程调用 - 车区信息
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */ 
+@FeignClient(value = "prefecture-server", path = "/prefecture/pres", fallback=PrefectureClientHystrix.class,configuration = FeignConfiguration.class)
+public interface PrefectureClient {
+	/**
+	 * 根据主键查询详情
+	 * @param id 主键ID
+	 * @return 车区信息
+	 */
+	@RequestMapping(value="/v2.0/{id}",method=RequestMethod.GET)
+	@ResponseBody 
+	public ResPrefectureDetail findById(@PathVariable("id") Long id);
+	/**
+	 * 根据车区id查询计费策略
+	 * 
+	 * @param preId Long
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/strategy/{preId}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResPrefectureStrategy findPreStrategy(@PathVariable Long preId);
+	
+}

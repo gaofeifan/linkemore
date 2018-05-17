@@ -1,7 +1,8 @@
 package cn.linkmore.prefecture.service;
 
 import java.util.List;
-import cn.linkmore.account.entity.User;
+
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
@@ -29,7 +30,7 @@ public interface PrefectureService {
 	 * @param user
 	 * @return
 	 */
-	List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture,User user);
+	List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture,ResUser user);
 	
 	/**
 	 * 根据城市获取车区卡片列表
@@ -38,7 +39,7 @@ public interface PrefectureService {
 	 * @param size
 	 * @return
 	 */
-	List<ResPrefectureList> findPreListByCityId(Long cityId, User user);
+	List<ResPrefectureList> findPreListByCityId(Long cityId, ResUser user);
 	/**
 	 * 根据车区id查询计费策略
 	 * @param preId
