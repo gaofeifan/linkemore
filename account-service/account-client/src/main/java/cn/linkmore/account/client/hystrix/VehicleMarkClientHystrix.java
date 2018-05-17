@@ -1,6 +1,5 @@
 package cn.linkmore.account.client.hystrix;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -18,16 +17,16 @@ public class VehicleMarkClientHystrix  implements VehicleMarkClient{
 	
 	
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
-
+ 
 	public List<ResVechicleMark> list(@PathVariable ("userId")Long userId){
-		return new ArrayList<ResVechicleMark>();
+		return null;
 	}
-	
+	 
 	public void create( @RequestBody ReqVehicleMark bean) {
 		
-	}
-	
-	public void delete(@PathVariable Long id) {
+	};
+	 
+	public void delete(@PathVariable("id") Long id) {
 		
 	}
 	

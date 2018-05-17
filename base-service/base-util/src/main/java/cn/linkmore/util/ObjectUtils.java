@@ -161,7 +161,7 @@ public class ObjectUtils {
 	 * @Date       2018年5月11日
 	 */
 	public static <T,E> T copyObject(E source,T target) {
-		return copyObject(source, target, null, null, null);
+		return copyObject(source, target, null, null);
 	}
 
 	/**

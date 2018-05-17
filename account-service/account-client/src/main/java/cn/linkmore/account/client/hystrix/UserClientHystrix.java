@@ -19,50 +19,56 @@ import cn.linkmore.account.response.ResUserLogin;
 @Component
 public class UserClientHystrix implements UserClient{
 
-	@Override
+	 
 	public void updateNickname(@RequestBody ReqUpdateNickname nickname) {
-	}
-
-	@Override
+		
+	};
+	
+	 
 	public void updateSex(@RequestBody ReqUpdateSex reqSex) {
+		
 	}
 	
+	 
 	public void updateVehicle(@RequestBody ReqUpdateVehicle req) {
 		
 	}
 	
-	public ResUserDetails detail(@PathVariable Long userId) {
-		return new ResUserDetails();
+	 
+	public ResUserDetails detail(@PathVariable("userId") Long userId) {
+		return null;
 	}
 	
+	 
 	public void sendCode( @RequestBody ReqBind bean) {
 		
 	}
 
+	 
 	public void updateMobile(@RequestBody ReqUpdateMobile bean) {
 		
 	}
 	
-	@Override
-	public void updateAppfans(ReqUpdateMobile bean) {
-	}
-
-	public void removeWechat(@PathVariable Long userId) {
+	 
+	public void updateAppfans(@RequestBody ReqUserAppfans bean) {
 		
-	}
-
-	@Override
-	public ResUser getUserCacheKey(Long userId) {
-		return null;
-		
-	}
-
-	@Override
-	public ResUserLogin appLogin(@PathVariable String mobile){
-		return null;
+	} 
+	
+	 
+	public void removeWechat(@PathVariable("userId") Long userId) { 
 	}
 	
-	@Override
+	 
+	public ResUser getUserCacheKey(@PathVariable("userId") Long userId) {
+		
+		return null;
+	}
+
+	 
+	public ResUserLogin appLogin(@PathVariable("mobile") String mobile) {
+		return null;
+	}
+ 
 	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans) {
 		return null;
 	}

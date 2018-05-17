@@ -1,7 +1,9 @@
 package cn.linkmore.account.dao.master;
 
-import cn.linkmore.account.entity.UserStaff;
+import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.account.entity.UserStaff;
+@Mapper
 public interface UserStaffMasterMapper {
     int delete(Long id);
 
