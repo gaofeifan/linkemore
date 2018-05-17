@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.account.client.hystrix.UserClientHystrix;
 import cn.linkmore.account.request.ReqBind;
@@ -19,8 +18,7 @@ import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.feign.FeignConfiguration;
-
-@RestController
+ 
 @FeignClient(value = "account-server", path = "/account/user", fallback=UserClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UserClient {
 	
@@ -38,7 +36,7 @@ public interface UserClient {
 	
 	@RequestMapping(value = "/v2.0/detail/{userId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResUserDetails detail(@PathVariable Long userId) ;
+	public ResUserDetails detail(@PathVariable("userId") Long userId) ;
 	
 	@RequestMapping(value = "/v2.0/send_code", method = RequestMethod.GET)
 	@ResponseBody
@@ -54,15 +52,15 @@ public interface UserClient {
 	
 	@RequestMapping(value = "/v2.0/wechat/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public void removeWechat(@PathVariable Long userId);
+	public void removeWechat(@PathVariable("userId") Long userId);
 	
 	@RequestMapping(value = "/v2.0/cache/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public ResUser getUserCacheKey(@PathVariable Long userId);
+	public ResUser getUserCacheKey(@PathVariable("userId") Long userId);
 
 	@RequestMapping(value = "/v2.0/resuser_mobile/{mobile}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResUserLogin appLogin(@PathVariable String mobile);
+	public ResUserLogin appLogin(@PathVariable("mobile") String mobile);
 
 	@RequestMapping(value="/v2.0/login",method = RequestMethod.POST)
 	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans);
