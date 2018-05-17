@@ -14,8 +14,6 @@ import cn.linkmore.account.response.ResUserLogin;
 
 public interface UserService {
 	
-	void logout(Long request);
-	
 	void updateVehicle(ReqUpdateVehicle req);
 
 	ResUserDetails detail(Long userId);

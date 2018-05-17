@@ -24,8 +24,6 @@ import cn.linkmore.feign.FeignConfiguration;
 @FeignClient(value = "account-server", path = "/account/user", fallback=UserClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UserClient {
 	
-	@RequestMapping(value="/v2.0/logout/{userId}" ,method = RequestMethod.GET)
-	public void logout(@PathVariable Long userId);
 	
 	@RequestMapping(value = "/v2.0/nickname", method = RequestMethod.PUT)
 	@ResponseBody

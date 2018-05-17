@@ -19,9 +19,6 @@ import cn.linkmore.common.client.UserClient;
 @Component
 public class UserClientHystrix implements UserClient{
 
-	public void logout(@PathVariable Long userId) {
-		
-	}
 	
 	@Override
 	public void updateNickname(@RequestBody ReqUpdateNickname nickname) {

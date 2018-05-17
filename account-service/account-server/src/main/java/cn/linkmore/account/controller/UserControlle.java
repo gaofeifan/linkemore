@@ -35,19 +35,6 @@ public class UserControlle {
 	@Resource
 	private UserAppfansService userAppfansService;
 
-	/**
-	 * @Description  退出登录
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	@RequestMapping(value="/v2.0/logout/{userId}" , method = RequestMethod.GET)
-	public void logout(@PathVariable Long userId) {
-		try {
-			this.userService.logout(userId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	/**
 	 * @Description  更新昵称

@@ -63,16 +63,6 @@ public class UserServiceImpl implements UserService {
 	private AdminUserMasterMapper adminUserMasterMapper;
 
 	@Override
-	public void logout(Long userId) {
-		String key = "";
-		AdminUser user = (AdminUser) redisTemplate.opsForValue().get(key);
-		if (user != null) {
-			redisTemplate.delete(key);
-			redisTemplate.delete(RedisKey.LINKMORE_APP_USER_ID + user.getId());
-		}
-	}
-
-	@Override
 	public void updateNickname(ReqUpdateNickname nickname) {
 		ResUser user = getUserCacheKey(nickname.getUserId());
 		updateByColumn("nickname", nickname.getNickname(), user.getId());
