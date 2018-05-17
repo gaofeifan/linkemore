@@ -13,12 +13,11 @@ import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
-import cn.linkmore.account.request.ReqUpdateWechat;
 import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
-import cn.linkmore.common.client.hystrix.UserClientHystrix;
 import cn.linkmore.account.response.ResUserLogin;
+import cn.linkmore.common.client.hystrix.UserClientHystrix;
 import cn.linkmore.feign.FeignConfiguration;
 
 @RestController
@@ -53,7 +52,7 @@ public interface UserClient {
 	
 	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateWechat(@RequestBody ReqUpdateWechat bean) ;
+	public void updateAppfans(@RequestBody ReqUpdateMobile bean) ;
 	
 	@RequestMapping(value = "/v2.0/wechat/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody

@@ -27,7 +27,6 @@ import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
-import cn.linkmore.account.request.ReqUpdateWechat;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
@@ -180,7 +179,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateWechat(ReqUpdateWechat bean) {
+	public void updateAppfans(ReqUpdateMobile bean) {
 		JSONObject json = new JSONObject();// this.getOAuthUserinfo(wechatConfig.getAppId(),
 											// wechatConfig.getAppSecret(), bean.getCode());
 		if (json == null || json.get("errcode") != null) {

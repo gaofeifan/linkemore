@@ -13,7 +13,6 @@ import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
-import cn.linkmore.account.request.ReqUpdateWechat;
 import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
@@ -113,10 +112,10 @@ public class UserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/appfans", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateWechat(@RequestBody ReqUpdateWechat bean) {
-		this.userService.updateWechat(bean);
+	public void updateAppfans(@RequestBody ReqUpdateMobile bean) {
+		this.userService.updateAppfans(bean);
 	}
 	
 	/**

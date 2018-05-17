@@ -8,7 +8,6 @@ import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
-import cn.linkmore.account.request.ReqUpdateWechat;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
@@ -22,8 +21,6 @@ public interface UserService {
 	ResUserDetails detail(Long userId);
 
 	void updateMobile(ReqUpdateMobile bean);
-
-	void updateWechat(ReqUpdateWechat bean);
 
 	void removeWechat(Long userId);
 
@@ -42,5 +39,7 @@ public interface UserService {
 	void updateLoginTime(Map<String, Object> param);
 
 	ResUserLogin appLogin(String mobile);
+
+	void updateAppfans(ReqUpdateMobile bean);
 
 }

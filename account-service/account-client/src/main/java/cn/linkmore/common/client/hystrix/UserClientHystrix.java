@@ -4,15 +4,12 @@ package cn.linkmore.common.client.hystrix;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.linkmore.account.request.ReqBind;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
-import cn.linkmore.account.request.ReqUpdateWechat;
 import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
@@ -50,10 +47,10 @@ public class UserClientHystrix implements UserClient{
 		
 	}
 	
-	public void updateWechat(@RequestBody ReqUpdateWechat bean) {
-		
+	@Override
+	public void updateAppfans(ReqUpdateMobile bean) {
 	}
-	
+
 	public void removeWechat(@PathVariable Long userId) {
 		
 	}

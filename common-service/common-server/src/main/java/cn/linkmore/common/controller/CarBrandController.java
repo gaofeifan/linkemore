@@ -120,7 +120,7 @@ public class CarBrandController {
  	    return msg;
 	}
 	
-	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Object list(){
 		Object obj = redisTemplate.opsForValue().get("car_brand_list");
 		return obj;
