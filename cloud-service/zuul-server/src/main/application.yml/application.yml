@@ -5,7 +5,7 @@ spring:
     name: zuul-server
   boot: 
     admin:
-      url: http://127.0.0.1:6002
+      url: http://192.168.1.64:6002
 
 eureka:
   instance:
@@ -16,7 +16,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://127.0.0.1:6003/eureka/ 
+      defaultZone: http://192.168.1.64:6003/eureka/ 
 
 zuul:
   host:
@@ -31,10 +31,7 @@ zuul:
       serviceId: staff-app-server
     wxapp-api:
       path: /wxapp/**  
-      serviceId: wxapp-server
-    third-party-api:
-      path: /third-party/**  
-      serviceId: third-party-server
+      serviceId: wxapp-server 
     ops-api:
       path: /ops/**  
       serviceId: ops-server 
