@@ -1,5 +1,5 @@
 base:
-  service-url: https://api.linkmoreparking.com/third
+  service-url: https://api.linkmoreparking.cn/callback
   online: false
 server:
   port: 8000 

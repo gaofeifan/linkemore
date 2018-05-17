@@ -5,10 +5,10 @@ spring:
     name: eureka-server
   boot: 
     admin:
-      url: http://127.0.0.1:6002 
+      url: http://192.168.1.64:6002 
 eureka:
   instance:
-    hostname: 127.0.0.1
+    hostname: 192.168.1.64
   client:
     registerWithEureka: false
     fetchRegistry: false

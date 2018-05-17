@@ -72,7 +72,7 @@ public class StallServiceImpl implements StallService {
 		ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
 		int code = res.getMsgCode();
     	if(code!=200){
-    		 throw new BusinessException(StatusEnum.ORDERS_LOCKDOWN_FAIL); 
+    		 throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL); 
     	}
 		stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
 		stallMasterMapper.lockdown(stall);
