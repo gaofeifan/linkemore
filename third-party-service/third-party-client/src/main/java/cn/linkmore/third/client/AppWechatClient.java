@@ -22,7 +22,7 @@ public interface AppWechatClient {
 	 * @param code 授权码
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/fans/${code}", method = RequestMethod.GET) 
+	@RequestMapping(value = "/v2.0/fans/{code}", method = RequestMethod.GET) 
 	@ResponseBody
-	ResFans getFans(@PathVariable String code);
+	ResFans getFans(@PathVariable("code") String code);
 }

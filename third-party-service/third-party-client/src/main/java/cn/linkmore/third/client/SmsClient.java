@@ -26,6 +26,6 @@ public interface SmsClient {
 	 * @return  true 成功，false 失败
 	 */
 	@RequestMapping(method=RequestMethod.POST)
-	@ResponseBody
+	@ResponseBody 
 	public Boolean send(@RequestBody ReqSms req);
 }

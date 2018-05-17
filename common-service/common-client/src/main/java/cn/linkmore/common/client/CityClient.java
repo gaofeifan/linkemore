@@ -2,9 +2,7 @@ package cn.linkmore.common.client;
 
 import java.util.List;
 
-
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +21,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @author liwenlong
  * @version 2.0
  *
- */
-@Controller
+ */ 
 @FeignClient(value = "common-server", path = "/common/citys", fallback=CityClientHystrix.class,configuration = FeignConfiguration.class)
 public interface CityClient {
 	/**

@@ -3,6 +3,7 @@ package cn.linkmore.third.client;
 import java.util.List;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +24,7 @@ public interface PushClient {
 	 * 推送消息
 	 * 个推
 	 * @param rp
-	 */
+	 */ 
 	@RequestMapping(value = "/v2.0", method = RequestMethod.POST) 
 	void push(@RequestBody ReqPush rp);
  
@@ -31,7 +32,7 @@ public interface PushClient {
 	 * 推送消息
 	 * 群推
 	 * @param rps
-	 */
+	 */ 
 	@RequestMapping(value = "/v2.0", method = RequestMethod.PUT) 
 	void push(@RequestBody List<ReqPush> rps) ;
 }

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
-import cn.linkmore.bean.constant.Msg;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;

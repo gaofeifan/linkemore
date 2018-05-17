@@ -68,6 +68,12 @@
 		</dependency> 
 		
 		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>account-client</artifactId>
+			<version>${version}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>com.linkmore</groupId>
 			<artifactId>linkmore-lock-sdk</artifactId>
 			<version>${linkmore-lock-sdk.version}</version>
@@ -75,6 +81,33 @@
 		</dependency>
 		
 	</dependencies>
+
+	<repositories> 
+        <repository> 
+            <id>nexus</id> 
+            <name>rongxin private nexus</name> 
+            <url>http://192.168.1.9:8088/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases> 
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots> 
+        </repository> 
+    </repositories> 
+    <pluginRepositories> 
+        <pluginRepository> 
+            <id>nexus</id> 
+            <name>rongxin private nexus</name> 
+            <url>http://192.168.1.9:8088/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases> 
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots> 
+        </pluginRepository> 
+    </pluginRepositories>
 
 	<dependencyManagement>
 		<dependencies>

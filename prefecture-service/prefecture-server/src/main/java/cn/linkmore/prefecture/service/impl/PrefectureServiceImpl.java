@@ -54,16 +54,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private PrefectureMasterMapper prefectureMasterMapper;
 	
 	@Override
-	public ResPrefectureDetail find(Long preId,String language) {
+	public ResPrefectureDetail find(Long preId) {
 		ResPrefectureDetail detail = prefectureClusterMapper.findPrefectureById(preId);
 		int stallCount = stallClusterMapper.findCountByPreId(preId);
-		
 		String lan = detail.getTimelyUnit();
-		if(StringUtil.isNotBlank(language)){
-			if(language.equals("en")){
-				lan = "mins";
-			}
-		}
 		detail.setStallCount(stallCount);
 		detail.setFirstHour(detail.getFirstHour());
 		detail.setTimelyLong(detail.getTimelyLong()+lan);
@@ -110,7 +104,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	@Override
-	public List<ResPrefectureList> findPreListByCityId(Long cityId,String language,User user) {
+	public List<ResPrefectureList> findPreListByCityId(Long cityId,User user) {
 		Map<String,Object> paramMap = new HashMap<>();
 		//如果传城市id为-1 获取杭州的专区数据
 		if(cityId == -1){
@@ -130,11 +124,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 			paramMap.put("userType", -1);
 		}
 		String lan = "分钟";
-		if(StringUtil.isNotBlank(language)){
-			if(language.equals("en")){
-				lan = "mins";
-			}
-		}
 		List<ResPrefectureList> list = prefectureClusterMapper.findPreListByCityId(paramMap);
 		if(user!=null){
 			UserStaff us = this.userStaffClusterMapper.findById(user.getId());
@@ -158,23 +147,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return list;
 	}
 	@Override
-	public ResPrefectureStrategy getPreStrategy(Long preId, String language) {
+	public ResPrefectureStrategy getPreStrategy(Long preId) {
 		String mins = "分钟";
 		String freetime = "免费时长";
 		String free = "免费";
 		String yuan = "￥";
 		String cap = "￥封顶";
 		String total = "共";
-		if(StringUtil.isNotBlank(language)){
-			if(language.equals("en")){
-				mins = "mins";
-				freetime = "Free time ";
-				free = "free";
-				yuan = "￥";
-				cap = " cap";
-				total = "A total of ";
-			}
-		}
+		
 		ResPrefectureStrategy bean = null;
 		Prefecture prefecture = prefectureClusterMapper.findById(preId);
 		if(StringUtil.isNotBlank(prefecture)){

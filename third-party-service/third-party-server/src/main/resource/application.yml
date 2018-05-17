@@ -8,7 +8,7 @@ spring:
     name: third-party-server
   boot: 
     admin:
-      url: http://127.0.0.1:6002 
+      url: http://192.168.1.64:6002 
   http:
     encoding:
       charset: UTF-8
@@ -23,7 +23,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://127.0.0.1:6003/eureka/ 
+      defaultZone: http://192.168.1.64:6003/eureka/ 
 feign:
   hystrix:
     enabled: true
