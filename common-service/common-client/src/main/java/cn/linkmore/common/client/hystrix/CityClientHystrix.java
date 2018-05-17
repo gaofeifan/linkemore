@@ -50,6 +50,12 @@ public class CityClientHystrix implements CityClient {
 	@Override
 	public void delete(@PathVariable("id") Long id) {
 		log.info("common service citys delete(Long id) hystrix");
+	}
+
+	@Override
+	public ResCity findByCode(String code) {
+		log.info("common service citys getByCode(Long code) hystrix");
+		return new ResCity();
 	};
 
 }

@@ -3,8 +3,9 @@ package cn.linkmore.account.response;
 import java.util.Date;
 
 public class ResUserStaff {
-
-	  private Long id;
+		public final static Short STATUS_ON = 1;
+		public final static Short STATUS_OFF = 0;
+	  	private Long id;
 
 	    private String username;
 

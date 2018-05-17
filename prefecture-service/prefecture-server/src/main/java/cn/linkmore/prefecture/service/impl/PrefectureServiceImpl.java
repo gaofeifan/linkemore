@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import cn.linkmore.account.dao.cluster.UserStaffClusterMapper;
-import cn.linkmore.account.entity.UserStaff;
+import cn.linkmore.account.client.hystrix.UserStaffClientHystrix;
 import cn.linkmore.account.response.ResUser;
-import cn.linkmore.common.dao.cluster.CityClusterMapper;
+import cn.linkmore.account.response.ResUserStaff;
+import cn.linkmore.common.client.hystrix.CityClientHystrix;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
@@ -41,13 +41,13 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private StrategyBaseClusterMapper strategyBaseClusterMapper;
 	@Autowired
-	private UserStaffClusterMapper userStaffClusterMapper;
-	@Autowired
-	private CityClusterMapper cityClusterMapper;
-	@Autowired
 	private FreeLockPool freeLockPool;
 	@Autowired
 	private PrefectureMasterMapper prefectureMasterMapper;
+	@Autowired
+	private UserStaffClientHystrix userStaffClient;
+	@Autowired
+	private CityClientHystrix cityClient;
 	
 	@Override
 	public ResPrefectureDetail find(Long preId) {
@@ -72,8 +72,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		 
 		if(user!=null){
-			UserStaff us = this.userStaffClusterMapper.findById(user.getId());
-			if(us!=null&&us.getStatus().intValue() == UserStaff.STATUS_ON.intValue()){
+			ResUserStaff us = this.userStaffClient.selectById(user.getId());
+			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
 				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
 				if(preList1!=null){
 					if(preList==null){
@@ -95,7 +95,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Map<String,Object> paramMap = new HashMap<>();
 		//如果传城市id为-1 获取杭州的专区数据
 		if(cityId == -1){
-			ResCity city = cityClusterMapper.findByCode("330100");
+			ResCity city = this.cityClient.findByCode("330100");
 			paramMap.put("cityId", city.getId());
 		}else{
 			paramMap.put("cityId", cityId);
@@ -105,8 +105,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 		String lan = "分钟";
 		List<ResPrefectureList> list = prefectureClusterMapper.findPreListByCityId(paramMap);
 		if(user!=null){
-			UserStaff us = this.userStaffClusterMapper.findById(user.getId());
-			if(us!=null&&us.getStatus().intValue()==UserStaff.STATUS_ON.intValue()){
+			ResUserStaff us = this.userStaffClient.selectById(user.getId());
+			if(us!=null&&us.getStatus().intValue()==ResUserStaff.STATUS_ON.intValue()){
 				List<ResPrefectureList> list1 = prefectureClusterMapper.findPreListByCityId1(paramMap);
 				if(list1!=null){ 
 					if(list!=null){

@@ -72,4 +72,15 @@ public class CityController {
 		log.info("delete city  with id:{}",id); 
 		this.cityService.delete(id);
 	}
+	
+	/**
+	 * 根据行政编号查询对应的城市信息
+	 * @param code 行政编号
+	 * @return
+	 */
+	@RequestMapping(value="/code",method=RequestMethod.GET)
+	@ResponseBody 
+	public ResCity getByCode(@RequestParam("code") String code) {
+		return this.cityService.find(code);
+	}
 }

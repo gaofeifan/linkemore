@@ -29,6 +29,7 @@
     <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
     <result column="category" jdbcType="SMALLINT" property="category" />
     <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+    <result column="gateway" jdbcType="VARCHAR" property="gateway" />
   </resultMap>
   
   <resultMap id="ResPrefectureDetailMap" type="cn.linkmore.prefecture.response.ResPrefectureDetail">
@@ -71,7 +72,7 @@
     id, strategy_id, status, name, district_id, address, latitude, longitude, route_guidance, 
     image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
     route_description, base_dict_id, city_id, order_index, leave_time, charge_price, 
-    charge_time, type, enterprise_id, category, limit_status
+    charge_time, type, enterprise_id, category, limit_status, gateway
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

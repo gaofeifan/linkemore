@@ -122,6 +122,10 @@ public class Prefecture {
      * 预约受限(0不受限，1受限)
      */
     private Short limitStatus;
+    /**
+     * 网关分组
+     */
+    private String gateway;
 
     public Long getId() {
         return id;
@@ -338,4 +342,13 @@ public class Prefecture {
     public void setLimitStatus(Short limitStatus) {
         this.limitStatus = limitStatus;
     }
+
+	public String getGateway() {
+		return gateway;
+	}
+
+	public void setGateway(String gateway) {
+		this.gateway = gateway;
+	}
+    
 }
