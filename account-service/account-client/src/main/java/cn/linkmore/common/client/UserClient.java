@@ -14,6 +14,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUpdateWechat;
+import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.common.client.hystrix.UserClientHystrix;
@@ -65,4 +66,7 @@ public interface UserClient {
 	@RequestMapping(value = "/v2.0/resuser_mobile/{mobile}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserLogin appLogin(@PathVariable String mobile);
+
+	@RequestMapping(value="/v2.0/login",method = RequestMethod.POST)
+	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans);
 }

@@ -14,9 +14,11 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUpdateWechat;
+import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
+import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
 
 /**
@@ -31,6 +33,8 @@ public class UserControlle {
 	
 	@Resource
 	private UserService userService;
+	@Resource
+	private UserAppfansService userAppfansService;
 
 	/**
 	 * @Description  退出登录
@@ -142,6 +146,10 @@ public class UserControlle {
 		return this.userService.appLogin(mobile);
 	}
 	
+	@RequestMapping(value="/v2.0/login",method = RequestMethod.POST)
+	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans) {
+		return userAppfansService.wxLogin(appfans);
+	}
 	
 	
 	
