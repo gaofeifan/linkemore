@@ -1,4 +1,4 @@
-package cn.linkmore.common.client;
+package cn.linkmore.account.client;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import cn.linkmore.account.client.hystrix.VehicleMarkClientHystrix;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
-import cn.linkmore.common.client.hystrix.VehicleMarkClientHystrix;
 import cn.linkmore.feign.FeignConfiguration;
 
 @Controller
@@ -24,5 +24,5 @@ public interface VehicleMarkClient {
 	public void create( @RequestBody ReqVehicleMark bean);
 	
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable("id") Long id);
+	public void delete(@PathVariable Long id);
 }

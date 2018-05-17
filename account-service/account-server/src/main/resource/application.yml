@@ -22,7 +22,7 @@ feign:
     enabled: true 
           
 master-db:   
-  url: jdbc:mysql://192.168.1.60:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+  url: jdbc:mysql://192.168.1.60:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
   username: ppyx_dev
   password: PPYX_dev123 
   driver-class-name: com.mysql.jdbc.Driver  

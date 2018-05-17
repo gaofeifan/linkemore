@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-@RequestMapping("/third/wechat")
+@RequestMapping("/wechat")
 public class WechatController {
 	
 }

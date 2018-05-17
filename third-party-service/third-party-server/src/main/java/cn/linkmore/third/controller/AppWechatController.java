@@ -16,7 +16,7 @@ import cn.linkmore.third.service.AppWechatService;
  *
  */
 @RestController
-@RequestMapping("/third/app-wechat")
+@RequestMapping("/app-wechat")
 public class AppWechatController {
 	@Autowired
 	private AppWechatService appWechatService;

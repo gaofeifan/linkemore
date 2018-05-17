@@ -9,7 +9,7 @@ import cn.linkmore.third.client.hystrix.MiniProgramClientHystrix;
  * @author liwenlong
  * @version 2.0
  */
-@FeignClient(value = "third-party-server", path = "/third/mini-program", fallback=MiniProgramClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/mini-program", fallback=MiniProgramClientHystrix.class,configuration = FeignConfiguration.class)
 public interface MiniProgramClient {
 
 }

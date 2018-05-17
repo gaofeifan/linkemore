@@ -6,10 +6,11 @@ package cn.linkmore.bean.constant;
  *
  */
 public class RedisKey {
-	public final static String USER_APP_LOGIN_TOKEN = "user:login:uid:";
-	public final static String USER_APP_LOGIN_USER = "user:login:user:";
-	public final static String USER_APP_LOGIN_CODE = "user:login:code:";
-	public final static String USER_APP_LOGIN_MOBILE="user:login:mobile:";
-	public static final String LINKMORE_APP_USER_ID = "LINKMORE_APP_UID_";
-	public static final String CAR_BRAND_LIST = "CAR_BRAND_LIST";
+	public final static String USER_APP_AUTH_TOKEN = "user_app:auth:uid:";
+	public final static String USER_APP_AUTH_USER = "user_app:auth:user:";
+	public final static String USER_APP_AUTH_CODE = "user_app:auth:code:";
+	public final static String USER_APP_AUTH_MOBILE="user_app:auth:mobile:";
+	public final static String USER_APP_USER_CODE = "user_app:user:code:";
+	public final static String USER_APP_USER_MOBILE = "user_app:user:mobile:"; 
+	public static final String COMMON_CAR_BRAND_LIST = "common:car_brand:list";
 }

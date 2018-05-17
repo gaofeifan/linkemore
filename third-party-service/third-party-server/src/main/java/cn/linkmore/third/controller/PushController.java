@@ -16,7 +16,7 @@ import cn.linkmore.third.service.PushService;
  * @version 2.0
  */
 @RestController
-@RequestMapping("/third/push")
+@RequestMapping("/push")
 public class PushController {
 	
 	@Autowired

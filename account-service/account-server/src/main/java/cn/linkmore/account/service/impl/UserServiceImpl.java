@@ -19,7 +19,6 @@ import cn.linkmore.account.dao.master.AdminUserMasterMapper;
 import cn.linkmore.account.dao.master.UserMasterMapper;
 import cn.linkmore.account.dao.master.UserVechicleMasterMapper;
 import cn.linkmore.account.entity.Account;
-import cn.linkmore.account.entity.AdminUser;
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.entity.UserVechicle;
@@ -33,7 +32,6 @@ import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
-import cn.linkmore.bean.constant.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.util.ObjectUtils;
@@ -43,6 +41,7 @@ public class UserServiceImpl implements UserService {
 
 	public static final String LINKMORE_APP_SMS_CODE = "";
 
+	public static final String CAR_BRAND_LIST = "CAR_BRAND_LIST";
 	@Resource
 	private AccountMasterMapper accountMasterMapper;
 	@Resource
@@ -114,7 +113,7 @@ public class UserServiceImpl implements UserService {
 		if (list.size() == 1) {
 			ResUserDetails res = (ResUserDetails) list.get(0);
 			if (res != null) {
-				Object carObj = redisTemplate.opsForValue().get(RedisKey.CAR_BRAND_LIST);
+				Object carObj = redisTemplate.opsForValue().get(CAR_BRAND_LIST);
 				if (null != carObj) {
 					// 拼装返回 车辆品牌-型号
 					String brandModel = "";

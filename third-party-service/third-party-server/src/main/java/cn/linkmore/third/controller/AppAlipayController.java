@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-@RequestMapping("/third/alipay")
+@RequestMapping("/alipay")
 public class AppAlipayController {
 
 }
