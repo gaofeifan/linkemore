@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-@RequestMapping("/third/union-pay")
+@RequestMapping("/union-pay")
 public class UnionPayController {
 
 }

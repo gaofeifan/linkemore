@@ -1,4 +1,4 @@
-package cn.linkmore.common.client.hystrix;
+package cn.linkmore.account.client.hystrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
-import cn.linkmore.common.client.VehicleMarkClient;
 
 @Component
 public class VehicleMarkClientHystrix  implements VehicleMarkClient{

@@ -1,10 +1,10 @@
-package cn.linkmore.common.client.hystrix;
+package cn.linkmore.account.client.hystrix;
 
 
 import org.springframework.stereotype.Component;
 
+import cn.linkmore.account.client.EnterpriseUserClient;
 import cn.linkmore.account.response.ResEnterpriseUser;
-import cn.linkmore.common.client.EnterpriseUserClient;
 
 @Component
 public class EnterpriseUserClientHystrix implements EnterpriseUserClient{

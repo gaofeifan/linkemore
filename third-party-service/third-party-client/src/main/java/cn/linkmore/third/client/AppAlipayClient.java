@@ -10,7 +10,7 @@ import cn.linkmore.third.client.hystrix.AppAlipayClientHystrix;
  * @version 2.0
  *
  */
-@FeignClient(value = "third-party-server", path = "/third/alipay", fallback=AppAlipayClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/alipay", fallback=AppAlipayClientHystrix.class,configuration = FeignConfiguration.class)
 public interface AppAlipayClient {
 
 }

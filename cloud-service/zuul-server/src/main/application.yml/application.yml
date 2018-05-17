@@ -35,6 +35,12 @@ zuul:
     ops-api:
       path: /ops/**  
       serviceId: ops-server 
+    cloud-admin:
+      path: /cloud-admin/**
+      serviceId: admin-server
+    cloud-eureka:
+      path: /cloud-eureka/**
+      serviceId: eureka-server
   
   
 management:

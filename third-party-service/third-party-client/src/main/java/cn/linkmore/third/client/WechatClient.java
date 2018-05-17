@@ -10,7 +10,7 @@ import cn.linkmore.third.client.hystrix.WechatClientHystrix;
  * @author liwenlong
  * @version 2.0
  */
-@FeignClient(value = "third-party-server", path = "/third/wechat", fallback=WechatClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/wechat", fallback=WechatClientHystrix.class,configuration = FeignConfiguration.class)
 public interface WechatClient {
 
 }

@@ -1,4 +1,4 @@
-package cn.linkmore.common.client;
+package cn.linkmore.account.client;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import cn.linkmore.account.client.hystrix.VehicleMarkClientHystrix;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
-import cn.linkmore.common.client.hystrix.VehicleMarkClientHystrix;
 import cn.linkmore.feign.FeignConfiguration;
 
 @Controller

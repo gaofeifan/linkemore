@@ -10,7 +10,7 @@ import cn.linkmore.third.client.hystrix.UnionPayClientHystrix;
  * @author liwenlong
  * @version 2.0
  */
-@FeignClient(value = "third-party-server", path = "/third/apple-pay", fallback=UnionPayClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/union-pay", fallback=UnionPayClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UnionPayClient {
 
 }
