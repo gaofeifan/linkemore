@@ -1,7 +1,9 @@
 package cn.linkmore.order.dao.master;
 
-import cn.linkmore.order.entity.OrdersDetail;
+import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.order.entity.OrdersDetail;
+@Mapper
 public interface OrdersDetailMasterMapper {
     int delete(Long id);
 

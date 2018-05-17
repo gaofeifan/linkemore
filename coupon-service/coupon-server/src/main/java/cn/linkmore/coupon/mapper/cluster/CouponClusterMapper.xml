@@ -26,17 +26,48 @@
     <result column="send_user_id" jdbcType="BIGINT" property="sendUserId" />
     <result column="condition_amount" jdbcType="DECIMAL" property="conditionAmount" />
   </resultMap>
+  
+  <resultMap id="ResResultMap" type="cn.linkmore.coupon.response.ResCoupon">
+    <result column="id" jdbcType="BIGINT" property="id" />  
+    <result column="face_amount" jdbcType="DECIMAL" property="faceAmount" />  
+    <result column="status" jdbcType="SMALLINT" property="status" /> 
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />  
+    <result column="item_id" jdbcType="BIGINT" property="itemId" /> 
+     <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="condition_id" jdbcType="BIGINT" property="conditionId" />
+    <result column="type" jdbcType="INTEGER" property="type" /> 
+    <result column="discount" jdbcType="INTEGER" property="discount" />  
+    <result column="condition_amount" jdbcType="DECIMAL" property="conditionAmount" />
+  </resultMap>
+  
   <sql id="Base_Column_List">
     id, user_id, combo_id, coupon_grant_id, value_pack_id, face_amount, vp_valid_time, 
     valid_time, status, update_time, create_time, enterprise_id, theme_id, item_id, record_id, 
     template_id, condition_id, type, order_amount, discount, used_amount, send_user_id, 
     condition_amount
   </sql>
+   <sql id="Res_Column_List">
+    id, face_amount, 
+    valid_time, status, create_time, enterprise_id, item_id, 
+    template_id, condition_id, type, discount, 
+    condition_amount
+  </sql>
+  
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from c_coupon
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findEnabledList" parameterType="java.lang.Long" resultMap="ResResultMap">
+    select 
+    <include refid="Res_Column_List" />
+    from c_coupon
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
+  
+  
   
 </mapper>
