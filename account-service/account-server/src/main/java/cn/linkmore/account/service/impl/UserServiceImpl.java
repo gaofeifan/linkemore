@@ -10,8 +10,6 @@ import javax.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
-
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
 import cn.linkmore.account.dao.cluster.UserVechicleClusterMapper;
 import cn.linkmore.account.dao.master.AccountMasterMapper;
@@ -26,6 +24,7 @@ import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
+import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
@@ -168,40 +167,36 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateAppfans(ReqUpdateMobile bean) {
-		JSONObject json = new JSONObject();// this.getOAuthUserinfo(wechatConfig.getAppId(),
-											// wechatConfig.getAppSecret(), bean.getCode());
-		if (json == null || json.get("errcode") != null) {
-			throw new BusinessException();
+	public void updateAppfans(ReqUserAppfans bean) {
+		User user = this.selectById(bean.getUserId());
+		UserAppfans fans = this.userAppfansService.selectById(bean.getId());
+		if (fans == null) {
+			fans = new UserAppfans();
+			fans.setId(bean.getId());
+			fans.setHeadurl(bean.getHeadurl());
+			fans.setNickname(bean.getNickname());
+			fans.setUnionid(bean.getUnionid());
+			fans.setCreateTime(new Date());
+			fans.setStatus((short) 1);
+			fans.setUserId(user.getId());
+			fans.setRegisterStatus((short) 0);
+			this.userAppfansService.insertSelective(fans);
 		} else {
-			String openid = json.getString("openid");
-			String nickname = json.getString("nickname");
-			String headimgurl = json.getString("headimgurl");
-			String unionid = json.getString("unionid");
-			UserAppfans fans = this.userAppfansService.selectById(openid);
-			ResUser user = this.getUserCacheKey(bean.getUserId());
-			if (fans == null) {
-				fans = new UserAppfans();
-				fans.setId(openid);
-				fans.setHeadurl(headimgurl);
-				fans.setNickname(nickname);
-				fans.setUnionid(unionid);
-				fans.setCreateTime(new Date());
-				fans.setStatus((short) 1);
-				fans.setUserId(user.getId());
-				fans.setRegisterStatus((short) 0);
-				this.userAppfansService.insertSelective(fans);
-			} else {
-				fans.setStatus((short) 1);
-				fans.setUserId(user.getId());
-				this.userAppfansService.updateByIdSelective(fans);
-			}
+			fans.setStatus((short) 1);
+			fans.setUserId(user.getId());
+			this.userAppfansService.updateByIdSelective(fans);
 		}
 	}
 
 	@Override
 	public void removeWechat(Long userId) {
 		this.userAppfansService.updateStatusByUserId(userId, 0);
+		Map<String, Object> param = new HashMap<>();
+		param.put("column", "wechat");
+		param.put("value", null);
+		param.put("id", userId);
+		param.put("updateTime", new Date());
+		this.userMasterMapper.updateByColumn(param );
 	}
 
 	@Override

@@ -21,17 +21,17 @@ public class VehicleMarkController{
 
 	@Resource
 	private VehicleMarkManageService vehicleMarkManageService;
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
 	public void create( @RequestBody ReqVehicleMark bean) {
 		this.vehicleMarkManageService.save(bean);
 	}
 	
-	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable("id") Long id){
 		this.vehicleMarkManageService.deleteById(id);
 	}
 	
-	@RequestMapping(value = "/list/{userId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/{userId}", method = RequestMethod.GET)
 	public List<ResVechicleMark> list(@PathVariable("userId")Long userId){
 		return vehicleMarkManageService.selectResList(userId);
 	}

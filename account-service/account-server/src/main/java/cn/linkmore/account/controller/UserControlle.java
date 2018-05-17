@@ -101,7 +101,7 @@ public class UserControlle {
 	 */
 	@RequestMapping(value = "/v2.0/appfans", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateAppfans(@RequestBody ReqUpdateMobile bean) {
+	public void updateAppfans(@RequestBody ReqUserAppfans bean) {
 		this.userService.updateAppfans(bean);
 	}
 	

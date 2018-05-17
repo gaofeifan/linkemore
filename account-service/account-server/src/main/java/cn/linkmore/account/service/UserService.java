@@ -8,6 +8,7 @@ import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
+import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
@@ -38,6 +39,6 @@ public interface UserService {
 
 	ResUserLogin appLogin(String mobile);
 
-	void updateAppfans(ReqUpdateMobile bean);
+	void updateAppfans(ReqUserAppfans bean);
 
 }

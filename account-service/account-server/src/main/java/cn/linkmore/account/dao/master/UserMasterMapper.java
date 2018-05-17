@@ -3,6 +3,7 @@ package cn.linkmore.account.dao.master;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import cn.linkmore.account.entity.User;
 @Mapper
@@ -22,4 +23,5 @@ public interface UserMasterMapper {
 	void updateLoginTime(Map<String, Object> param);
 
 	void updateMobile(Map<String, Object> param);
+
 }

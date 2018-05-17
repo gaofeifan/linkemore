@@ -17,12 +17,12 @@ import cn.linkmore.feign.FeignConfiguration;
 @Controller
 @FeignClient(value = "account-server", path = "/account/vehicle_mark", fallback=VehicleMarkClientHystrix.class,configuration = FeignConfiguration.class)
 public interface VehicleMarkClient {
-	@RequestMapping(value = "/list/{userId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/{userId}", method = RequestMethod.GET)
 	public List<ResVechicleMark> list(@PathVariable ("userId")Long userId);
 	
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
 	public void create( @RequestBody ReqVehicleMark bean);
 	
-	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable Long id);
 }
