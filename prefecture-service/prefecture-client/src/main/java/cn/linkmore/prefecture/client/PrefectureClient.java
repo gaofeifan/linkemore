@@ -49,7 +49,7 @@ public interface PrefectureClient {
 	 * @param userId Long
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/city", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/city", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPrefectureList> findPreListByCityId(@RequestBody ReqCity reqCity);
 	
@@ -60,7 +60,7 @@ public interface PrefectureClient {
 	 * @param userId Long
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPrefecture> findPreListByLoc(@RequestBody ReqPrefecture reqPrefecture);
 }
