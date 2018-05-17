@@ -24,6 +24,8 @@ import cn.linkmore.account.entity.UserVechicle;
 import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
+import cn.linkmore.account.response.ReqNickname;
+import cn.linkmore.account.response.ReqSex;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.service.UserAppfansService;
@@ -64,15 +66,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateNickname(String nickname, Long userId) {
-		ResUser user = getUserCacheKey(userId);
-		updateByColumn("nickname", nickname, userId);
+	public void updateNickname(ReqNickname nickname) {
+		ResUser user = getUserCacheKey(nickname.getUserId());
+		updateByColumn("nickname", nickname.getNickname(), user.getId());
 	}
-	
+
 	@Override
-	public void updateSex( Integer sex, Long request) {
-		ResUser user = getUserCacheKey(request);
-		updateByColumn("sex", sex, user.getId());
+	public void updateSex(ReqSex sex) {
+		ResUser user = getUserCacheKey(sex.getUserId());
+		updateByColumn("sex", sex.getSex(), user.getId());		
 	}
 	
 	private void updateByColumn(String column,Object value,Long id) {

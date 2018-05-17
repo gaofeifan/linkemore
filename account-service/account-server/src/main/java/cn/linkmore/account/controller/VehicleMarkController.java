@@ -26,9 +26,9 @@ public class VehicleMarkController{
 		this.vehicleMarkManageService.save(bean);
 	}
 	
-	@RequestMapping(value = "/delete/{id}/{userId}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable("id") Long id, @PathVariable Long userId){
-		this.vehicleMarkManageService.deleteById(id,userId);
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable("id") Long id){
+		this.vehicleMarkManageService.deleteById(id);
 	}
 	
 	@RequestMapping(value = "/list/{userId}", method = RequestMethod.GET)

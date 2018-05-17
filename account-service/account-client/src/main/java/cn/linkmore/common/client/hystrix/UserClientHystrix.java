@@ -9,6 +9,9 @@ import cn.linkmore.account.request.ReqBind;
 import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
+import cn.linkmore.account.response.ReqNickname;
+import cn.linkmore.account.response.ReqSex;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.common.client.UserClient;
 
@@ -19,12 +22,12 @@ public class UserClientHystrix implements UserClient{
 		
 	}
 	
-	public void updRateNickname(@PathVariable Long userId,@PathVariable String nickname) {
-		
+	@Override
+	public void updateNickname(@RequestBody ReqNickname nickname) {
 	}
-	
-	public void updRateNickname(@PathVariable Long userId,@PathVariable("sex")Integer sex) {
-		
+
+	@Override
+	public void updateSex(@RequestBody ReqSex reqSex) {
 	}
 	
 	public void updateVehicle(@RequestBody ReqVehicle req) {
@@ -52,7 +55,7 @@ public class UserClientHystrix implements UserClient{
 	}
 
 	@Override
-	public Object getUserCacheKey(Long userId) {
+	public ResUser getUserCacheKey(Long userId) {
 		return null;
 		
 	}

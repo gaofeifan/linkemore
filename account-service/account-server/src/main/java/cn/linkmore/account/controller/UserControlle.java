@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
+import cn.linkmore.account.response.ReqNickname;
+import cn.linkmore.account.response.ReqSex;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.service.UserService;
@@ -48,10 +50,10 @@ public class UserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/update_nickname/{userId}/{nickname}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/nickname", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateNickname(@PathVariable Long userId,@PathVariable("nickname")String nickname) {
-		this.userService.updateNickname(nickname,userId);
+	public void updateNickname(@RequestBody ReqNickname nickname) {
+		this.userService.updateNickname(nickname);
 	}
 	
 	/**
@@ -59,10 +61,10 @@ public class UserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/update_sex/{sex}/{userId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/sex", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateSex(@PathVariable Long userId,@PathVariable("sex")Integer sex) {
-		this.userService.updateSex(sex,userId);
+	public void updateSex(@RequestBody ReqSex sex) {
+		this.userService.updateSex(sex);
 	}
 	
 	/**
@@ -70,7 +72,7 @@ public class UserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/update_vehicle", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/vehicle", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateVehicle(@RequestBody ReqVehicle req) {
 		this.userService.updateVehicle(req);
@@ -95,7 +97,7 @@ public class UserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/update_mobile", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/mobile", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateMobile( @RequestBody ReqLogin bean) {
 		this.userService.updateMobile(bean);
@@ -106,7 +108,7 @@ public class UserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/update_wechat", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateWechat(@RequestBody ReqWxLogin bean) {
 		this.userService.updateWechat(bean);
@@ -117,7 +119,7 @@ public class UserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/remove_wechat/{userId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/v2.0/wechat/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void removeWechat(@PathVariable Long userId) {
 		this.userService.removeWechat(userId);
@@ -128,7 +130,7 @@ public class UserControlle {
 		this.userService.selectByMobile(mobile);
 	}
 	
-	@RequestMapping(value = "/v2.0/cache_key/{userId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/cache/{userId}", method = RequestMethod.GET)
 	public ResUser getUserCacheKey(@PathVariable Long userId) {
 		ResUser user = this.userService.getUserCacheKey(userId);
 		return user;

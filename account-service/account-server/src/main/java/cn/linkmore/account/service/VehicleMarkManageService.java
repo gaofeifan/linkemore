@@ -12,7 +12,7 @@ public interface VehicleMarkManageService {
 
 	void save(ReqVehicleMark bean);
 
-	void deleteById(Long id, Long userId);
+	void deleteById(Long id);
 
 	List<ResVechicleMark> selectResList(Long userId);
 

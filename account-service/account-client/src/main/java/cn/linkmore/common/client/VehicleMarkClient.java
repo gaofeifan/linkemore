@@ -23,6 +23,6 @@ public interface VehicleMarkClient {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public void create( @RequestBody ReqVehicleMark bean);
 	
-	@RequestMapping(value = "/delete/{id}/{userId}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable Long id,@PathVariable Long userId);
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable Long id);
 }

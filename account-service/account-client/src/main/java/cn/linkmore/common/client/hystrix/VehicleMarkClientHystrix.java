@@ -27,7 +27,7 @@ public class VehicleMarkClientHystrix  implements VehicleMarkClient{
 		
 	}
 	
-	public void delete(@PathVariable Long id,@PathVariable Long userId) {
+	public void delete(@PathVariable Long id) {
 		
 	}
 	

@@ -55,16 +55,8 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	}
 
 	@Override
-	public void deleteById(Long id, Long userId) {
-		List<VehicleMarkManage> list = this.selectByUserId(userId);
-		if(list !=null && list.size() != 0) {
-			List<String> vlaue = ObjectUtils.findFieldVlaue(list, "id", new String[] {"id"}, new Object[] {userId});
-			if(vlaue.size() > 0) {
-				this.vehicleMarkManageMasterMapper.deleteById(id);
-				return ;
-			}
-		}
-		throw new BusinessException();
+	public void deleteById(Long id) {
+		this.vehicleMarkManageMasterMapper.deleteById(id);
 	}
 
 	@Override
