@@ -24,6 +24,7 @@ import cn.linkmore.account.entity.UserVechicle;
 import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
@@ -64,14 +65,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateNickname(String nickname, Long userId) {
-		User user = getUserCacheKey(userId);
+		ResUser user = getUserCacheKey(userId);
 		updateByColumn("nickname", nickname, userId);
 	}
 	
 	@Override
 	public void updateSex( Integer sex, Long request) {
-		User user = getUserCacheKey(request);
-		updateByColumn("sex", sex, request);
+		ResUser user = getUserCacheKey(request);
+		updateByColumn("sex", sex, user.getId());
 	}
 	
 	private void updateByColumn(String column,Object value,Long id) {
@@ -84,13 +85,14 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public User getUserCacheKey(Long userId){
-		return new User();
+	public ResUser getUserCacheKey(Long userId){
+		
+		return new ResUser();
 	}
 
 	@Override
 	public void updateVehicle(ReqVehicle req) {
-		User user = getUserCacheKey(req.getUserId());
+		ResUser user = getUserCacheKey(req.getUserId());
 		UserVechicle vechicle = userVechicleClusterMapper.selectByUserId(user.getId());
 		boolean flag = false;
 		if(vechicle == null) {
@@ -155,7 +157,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateMobile(ReqLogin bean) {
-		User user = getUserCacheKey(bean.getUserId());
+		ResUser user = getUserCacheKey(bean.getUserId());
 		User dbUser = this.selectByMobile(bean.getMobile());
 		if(dbUser == null) {
 			this.updateByColumn("mobile", bean.getMobile(), user.getId());
@@ -175,7 +177,7 @@ public class UserServiceImpl implements UserService {
 			String headimgurl = json.getString("headimgurl"); 
 			String unionid = json.getString("unionid");
 			UserAppfans fans = this.userAppfansService.selectById(openid);
-			User user = this.getUserCacheKey(bean.getUserId());
+			ResUser user = this.getUserCacheKey(bean.getUserId());
 			if(fans==null){
 				fans = new UserAppfans();
 				fans.setId(openid);

@@ -54,6 +54,11 @@
 			<artifactId>account-bean</artifactId>
 			<version>${version}</version>
 		</dependency>
+        <dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>third-party-client</artifactId>
+			<version>${version}</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

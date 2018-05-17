@@ -5,6 +5,7 @@ import cn.linkmore.account.entity.User;
 import cn.linkmore.account.request.ReqLogin;
 import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 
 public interface UserService {
@@ -25,7 +26,7 @@ public interface UserService {
 
 	void removeWechat(Long userId);
 
-	User getUserCacheKey(Long userId);
+	ResUser getUserCacheKey(Long userId);
 
 	User selectByMobile(String mobile);
 

@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
-import cn.linkmore.account.entity.Common;
-import cn.linkmore.account.entity.CreateCriteria;
-import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.VehicleMarkManage;
 import cn.linkmore.account.request.ReqVehicleMark;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.account.service.VehicleMarkManageService;
@@ -36,7 +34,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	public void save(ReqVehicleMark bean) {
-		User user = this.userService.getUserCacheKey(bean.getUserId());
+		ResUser user = this.userService.getUserCacheKey(bean.getUserId());
 		List<VehicleMarkManage> list = this.selectByUserId(user.getId());
 		if(list.size() < 3){
 			//检查车牌号是否已经存在
