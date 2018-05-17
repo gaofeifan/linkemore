@@ -1,7 +1,5 @@
 package cn.linkmore.account.client;
 
-import java.util.List;
-
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,5 +14,5 @@ import cn.linkmore.feign.FeignConfiguration;
 @FeignClient(value = "account-server", path = "/account/user_staff", fallback=UserStaffClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UserStaffClient {
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
-	public List<ResUserStaff> list(@PathVariable ("id")Long id);
+	public ResUserStaff selectById(@PathVariable ("id")Long id);
 }
