@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import cn.linkmore.account.dao.cluster.EnterpriseUserClusterMapper;
 import cn.linkmore.account.dao.cluster.UserStaffClusterMapper;
-import cn.linkmore.account.entity.EnterpriseUser;
 import cn.linkmore.account.entity.UserStaff;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.common.dao.cluster.CityClusterMapper;
@@ -43,8 +41,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private StrategyBaseClusterMapper strategyBaseClusterMapper;
 	@Autowired
-	private EnterpriseUserClusterMapper enterpriseUserClusterMapper;
-	@Autowired
 	private UserStaffClusterMapper userStaffClusterMapper;
 	@Autowired
 	private CityClusterMapper cityClusterMapper;
@@ -73,15 +69,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
-		if(StringUtil.isNotBlank(user)){
-			EnterpriseUser enterpriseUser = enterpriseUserClusterMapper.selectByUserId(user.getId());
-			paramMap.put("userType", user.getType());
-			if(enterpriseUser!=null){
-				paramMap.put("enterpriseId", enterpriseUser.getId());
-			}
-		}else{
-			paramMap.put("userType", -1);
-		}
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		 
 		if(user!=null){
@@ -114,15 +101,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			paramMap.put("cityId", cityId);
 		}
 		paramMap.put("status", 0);
-		if(StringUtil.isNotBlank(user)){
-			EnterpriseUser enterpriseUser = enterpriseUserClusterMapper.selectByUserId(user.getId());
-			paramMap.put("userType", user.getType());
-			if(enterpriseUser!=null){
-				paramMap.put("enterpriseId", enterpriseUser.getId());
-			}
-		}else{
-			paramMap.put("userType", -1);
-		}
+		
 		String lan = "分钟";
 		List<ResPrefectureList> list = prefectureClusterMapper.findPreListByCityId(paramMap);
 		if(user!=null){

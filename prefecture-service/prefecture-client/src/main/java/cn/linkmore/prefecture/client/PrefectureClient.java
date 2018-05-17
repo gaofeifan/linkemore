@@ -40,7 +40,7 @@ public interface PrefectureClient {
 	 */
 	@RequestMapping(value = "/v2.0/strategy/{preId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResPrefectureStrategy findPreStrategy(@PathVariable Long preId);
+	public ResPrefectureStrategy findPreStrategy(@PathVariable("preId") Long preId);
 	
 	/**
 	 * 根据城市id查询车区卡片列表
