@@ -73,7 +73,7 @@ public class PrefectureController {
 	 * @param userId Long
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/city", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/city", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPrefectureList> findPreListByCityId(@RequestBody ReqCity reqCity) {
 		ResUser resUser = userClient.getUserCacheKey(reqCity.getUserId());
@@ -87,34 +87,11 @@ public class PrefectureController {
 	 * @param preId Long
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/strategy/{preId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/strategy/{preId}", method = RequestMethod.POST)
 	@ResponseBody
 	public ResPrefectureStrategy findPreStrategy(@PathVariable Long preId) {
 		ResPrefectureStrategy resPreStrategy = preService.getPreStrategy(preId);
 		return resPreStrategy;
 	}
 	
-	/**
-	 * addUser
-	 * 
-	 * @param username String
-	 * @return
-	 */
-	@RequestMapping(value = "/v2.0/addUser", method = RequestMethod.GET)
-	@ResponseBody
-	public String findPreStrategy(@RequestParam(value="username") String username) {
-		return username;
-	}
-	
-	/**
-	 * addUserReq
-	 * 
-	 * @param name String
-	 * @return
-	 */
-	@RequestMapping(value = "/v2.0/addUserReq", method = RequestMethod.PUT)
-	@ResponseBody
-	public String addUserReq(@RequestBody String name) {
-		return name;
-	}
 }

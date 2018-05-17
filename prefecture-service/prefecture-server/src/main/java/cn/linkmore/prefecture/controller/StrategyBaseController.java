@@ -45,5 +45,4 @@ public class StrategyBaseController {
 		Map<String, Object> costMap = OrderFee.getMultipleParkingCost(strategyBase, beginTime, endTime);
 		return costMap;
 	}
-	
 }
