@@ -16,11 +16,12 @@ import cn.linkmore.account.request.ReqVehicle;
 import cn.linkmore.account.request.ReqWxLogin;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
+import cn.linkmore.common.client.hystrix.UserClientHystrix;
 import cn.linkmore.common.client.hystrix.VehicleMarkClientHystrix;
 import cn.linkmore.feign.FeignConfiguration;
 
 @RestController
-@FeignClient(value = "account-server", path = "/account/user", fallback=UserClient.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "account-server", path = "/account/user", fallback=UserClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UserClient {
 	
 	@RequestMapping(value="/v2.0/logout/{userId}" ,method = RequestMethod.GET)
