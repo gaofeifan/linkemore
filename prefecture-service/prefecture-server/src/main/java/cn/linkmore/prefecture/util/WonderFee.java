@@ -5,7 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.linkmore.prefecture.entity.StrategyBase; 
-
+/**
+ * 计费策略
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class WonderFee {
 
 	

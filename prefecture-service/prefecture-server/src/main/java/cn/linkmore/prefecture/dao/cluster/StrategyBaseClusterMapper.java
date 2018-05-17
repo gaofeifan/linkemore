@@ -3,7 +3,12 @@ package cn.linkmore.prefecture.dao.cluster;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.prefecture.entity.StrategyBase;
-
+/**
+ * dao 计费详情
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 @Mapper
 public interface StrategyBaseClusterMapper {
 	/**

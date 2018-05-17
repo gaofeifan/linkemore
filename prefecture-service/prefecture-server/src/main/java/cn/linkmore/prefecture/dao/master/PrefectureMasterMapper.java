@@ -3,7 +3,12 @@ package cn.linkmore.prefecture.dao.master;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.prefecture.entity.Prefecture;
-
+/**
+ * dao 车区
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 @Mapper
 public interface PrefectureMasterMapper {
     /**

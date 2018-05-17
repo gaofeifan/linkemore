@@ -2,7 +2,12 @@ package cn.linkmore.prefecture.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
+/**
+ * entity 计费策略
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class StrategyBase {
 	public static final int TYPE_TOP_NONE=1;//无封顶计费
 	public static final int TYPE_TOP_DAILY=2;//按天封顶计费

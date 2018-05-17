@@ -1,7 +1,12 @@
 package cn.linkmore.prefecture.entity;
 
 import java.util.Date;
-
+/**
+ * entity 车位指定
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class StallRecharge {
     private Long id;
 

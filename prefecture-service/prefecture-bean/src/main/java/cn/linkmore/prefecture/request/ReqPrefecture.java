@@ -1,5 +1,10 @@
 package cn.linkmore.prefecture.request;
-
+/**
+ * 请求车区
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class ReqPrefecture {
 
 	/**

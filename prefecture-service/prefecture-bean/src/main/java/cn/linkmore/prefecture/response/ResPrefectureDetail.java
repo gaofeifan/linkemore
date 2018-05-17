@@ -1,7 +1,12 @@
 package cn.linkmore.prefecture.response;
 
 import java.util.Map;
-
+/**
+ * 响应-车区详情
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class ResPrefectureDetail {
 	/**
 	 * 专区id

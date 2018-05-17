@@ -2,7 +2,12 @@ package cn.linkmore.prefecture.dao.master;
 
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.prefecture.entity.Stall;
-
+/**
+ * dao 车位
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 @Mapper
 public interface StallMasterMapper {
 	/**

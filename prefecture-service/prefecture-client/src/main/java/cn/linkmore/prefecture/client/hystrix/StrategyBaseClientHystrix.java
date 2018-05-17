@@ -7,7 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
-
+/**
+ * 远程调用实现 - 计费策略信息
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */ 
 @Component
 public class StrategyBaseClientHystrix implements StrategyBaseClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());

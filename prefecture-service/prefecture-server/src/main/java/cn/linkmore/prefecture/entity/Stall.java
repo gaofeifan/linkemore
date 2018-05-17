@@ -1,7 +1,12 @@
 package cn.linkmore.prefecture.entity;
 
 import java.util.Date;
-
+/**
+ * entity 车位
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class Stall {
 	public static int STATUS_FREE = 1;
 	public static int STATUS_USED = 2;

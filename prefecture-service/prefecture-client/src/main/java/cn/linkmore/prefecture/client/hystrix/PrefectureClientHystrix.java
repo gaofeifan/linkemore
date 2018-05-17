@@ -13,7 +13,12 @@ import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
 import cn.linkmore.prefecture.response.ResPrefectureStrategy;
-
+/**
+ * 远程调用实现 - 车区信息
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */ 
 @Component
 public class PrefectureClientHystrix implements PrefectureClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());

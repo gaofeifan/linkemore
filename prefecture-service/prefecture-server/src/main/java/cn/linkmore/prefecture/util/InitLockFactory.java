@@ -2,7 +2,12 @@ package cn.linkmore.prefecture.util;
 
 import com.linkmore.lock.bean.AbuttingBean;
 import com.linkmore.lock.factory.LockFactory;
-
+/**
+ * 初始化锁工厂
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class InitLockFactory {
 	private static LockFactory lockFactory;
 

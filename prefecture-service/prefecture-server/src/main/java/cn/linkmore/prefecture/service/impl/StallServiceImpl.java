@@ -15,7 +15,7 @@ import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.prefecture.util.FreeLockPool;
 import cn.linkmore.prefecture.util.InitLockFactory;
 /**
- * Service实现类 - 车区信息
+ * Service实现类 - 车位信息
  * @author jiaohanbin
  * @version 2.0
  *
