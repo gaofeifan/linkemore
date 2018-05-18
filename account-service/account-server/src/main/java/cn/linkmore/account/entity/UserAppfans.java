@@ -2,6 +2,11 @@ package cn.linkmore.account.entity;
 
 import java.util.Date;
 
+/**
+ * @author   GFF
+ * @Date     2018年5月18日
+ * @Version  v2.0
+ */
 public class UserAppfans {
     private String id;
 

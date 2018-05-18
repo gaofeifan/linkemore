@@ -22,7 +22,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "common-server", path = "/common/citys", fallback=CityClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "/citys", fallback=CityClientHystrix.class,configuration = FeignConfiguration.class)
 public interface CityClient {
 	/**
 	 * 根据城市id获取对应的城市信息

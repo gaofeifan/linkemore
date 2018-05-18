@@ -2,19 +2,37 @@ package cn.linkmore.account.entity;
 
 import java.util.Date;
 
+/**
+ * 管理员用户
+ * @author   GFF
+ * @Date     2018年5月18日
+ * @Version  v2.0
+ */
 public class AdminUser {
     private Long id;
 
+    /**
+     *  手机号(全局唯一)
+     */ 
     private String cellphone;
 
+    /**
+     *  姓名
+     */ 
     private String realname;
 
     private Date createTime;
 
     private Date updateTime;
 
+    /**
+     *  最近一次登录时间
+     */ 
     private Date loginTime;
 
+    /**
+     *  状态(0禁用,1启用)
+     */ 
     private Short status;
 
     public Long getId() {

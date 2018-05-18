@@ -28,17 +28,18 @@ public class BaseVersionController {
 	private BeanVersionService beanVersionService;
 	
 	/**
-	 * @Description  
+	 * @Description  当前版本 
 	 * @Author   GFF 
 	 * @Version  v2.0
+	 * @param  source 请求来源 1 Android 2 IOS
 	 */
-	@RequestMapping(value="/current/{requestSource}",method = RequestMethod.GET)
+	@RequestMapping(value="/current/{source}",method = RequestMethod.GET)
 	@ResponseBody
-	public ResVersionBean current(@PathVariable("requestSource")Short requestSource){
+	public ResVersionBean current(@PathVariable("source")Short source){
 		int appType = 0;
-		if(Token.OS_ANDROID == requestSource){
+		if(Token.OS_ANDROID == source){
 			appType = 1;
-		}else if(Token.OS_IOS == requestSource){
+		}else if(Token.OS_IOS == source){
 			appType = 2;
 		}
 		ResVersionBean app = this.beanVersionService.currentAppVersion(appType);
@@ -46,7 +47,7 @@ public class BaseVersionController {
 	}
 	
 	/**
-	 * @Description  
+	 * @Description  上报用户版本
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
