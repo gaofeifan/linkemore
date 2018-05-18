@@ -50,7 +50,7 @@ public class StallServiceImpl implements StallService {
 	}
 	
 	@Override
-	public void pay(Long stallId) {
+	public void checkout(Long stallId) {
 		Stall stall = stallClusterMapper.findById(stallId);
 		LockFactory lockFactory = InitLockFactory.getInstance();
 		ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
@@ -62,7 +62,7 @@ public class StallServiceImpl implements StallService {
 		stall.setUpdateTime(new Date());
 		stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
 		stall.setStatus(Stall.STATUS_FREE);
-		this.stallMasterMapper.pay(stall);
+		this.stallMasterMapper.checkout(stall);
 	}
 
 	@Override

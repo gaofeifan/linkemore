@@ -21,7 +21,7 @@ public interface StallService {
 	 * 结账立场释放车位
 	 * @param stallId
 	 */
-	void pay(Long stallId);
+	void checkout(Long stallId);
 	/**
 	 * 升锁操作
 	 * @param stallId

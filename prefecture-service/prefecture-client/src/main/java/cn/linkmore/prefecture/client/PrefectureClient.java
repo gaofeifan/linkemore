@@ -22,7 +22,7 @@ import cn.linkmore.prefecture.response.ResPrefectureStrategy;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/prefecture/pres", fallback=PrefectureClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/pres", fallback=PrefectureClientHystrix.class,configuration = FeignConfiguration.class)
 public interface PrefectureClient {
 	/**
 	 * 根据主键查询详情
@@ -45,8 +45,7 @@ public interface PrefectureClient {
 	/**
 	 * 根据城市id查询车区卡片列表
 	 * 
-	 * @param cityId Long
-	 * @param userId Long
+	 * @param reqCity ReqCity
 	 * @return
 	 */
 	@RequestMapping(value = "/v2.0/city", method = RequestMethod.POST)
@@ -57,7 +56,6 @@ public interface PrefectureClient {
 	 * 根据位置查询车区地图
 	 * 
 	 * @param reqPrefecture ReqPrefecture
-	 * @param userId Long
 	 * @return
 	 */
 	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.POST)

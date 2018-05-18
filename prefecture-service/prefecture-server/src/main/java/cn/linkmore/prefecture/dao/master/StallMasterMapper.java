@@ -49,5 +49,5 @@ public interface StallMasterMapper {
 	 * 结账立场释放车位
 	 * @param stall
 	 */
-	void pay(Stall stall);
+	void checkout(Stall stall);
 }

@@ -12,7 +12,7 @@ import cn.linkmore.prefecture.client.hystrix.StallClientHystrix;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/prefecture/stall", fallback=StallClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/stall", fallback=StallClientHystrix.class,configuration = FeignConfiguration.class)
 public interface StallClient {
 	
 	/**
@@ -51,8 +51,8 @@ public interface StallClient {
 	 * 
 	 * @param stallId Long
 	 */
-	@RequestMapping(value = "/v2.0/pay", method=RequestMethod.PUT)
-	public void pay(@RequestParam("stallId") Long stallId);
+	@RequestMapping(value = "/v2.0/checkout", method=RequestMethod.PUT)
+	public void checkout(@RequestParam("stallId") Long stallId);
 	
 	
 }
