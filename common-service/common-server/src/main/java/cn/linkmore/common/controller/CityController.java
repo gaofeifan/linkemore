@@ -45,7 +45,7 @@ public class CityController {
 	
 	/*@RequestMapping(method=RequestMethod.GET)
 	@ResponseBody 
-	public ViewPage list(@RequestBody ViewPageable pageable) { 
+	public ViewPage list(@RequestBody ViewPageable pageable) {
 		return this.cityService.findPage(pageable);
 	}*/
 	 

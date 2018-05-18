@@ -26,7 +26,7 @@ public class UserStaffController {
 	private UserStaffService userStaffService;
 	
 	/**
-	 * @Description	根据id查询  
+	 * @Description	根据id查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */

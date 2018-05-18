@@ -15,7 +15,6 @@ import cn.linkmore.account.entity.Account;
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.request.ReqUserAppfans;
-import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
