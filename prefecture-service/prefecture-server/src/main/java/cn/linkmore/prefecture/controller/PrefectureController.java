@@ -28,7 +28,7 @@ import cn.linkmore.prefecture.service.PrefectureService;
  *
  */
 @RestController
-@RequestMapping("/prefecture/pres")
+@RequestMapping("/pres")
 public class PrefectureController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -42,7 +42,6 @@ public class PrefectureController {
 	 * 根据主键查询详情
 	 * 
 	 * @param id Long
-	 * @param language String
 	 * @return
 	 */
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
@@ -55,10 +54,9 @@ public class PrefectureController {
 	 * 根据位置查询车区地图
 	 * 
 	 * @param reqPrefecture ReqPrefecture
-	 * @param userId Long
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPrefecture> findPreListByLoc(@RequestBody ReqPrefecture reqPrefecture) {
 		ResUser resUser = userClient.getUserCacheKey(reqPrefecture.getUserId());
@@ -68,8 +66,7 @@ public class PrefectureController {
 	/**
 	 * 根据城市id查询车区卡片列表
 	 * 
-	 * @param cityId Long
-	 * @param userId Long
+	 * @param reqCity ReqCity
 	 * @return
 	 */
 	@RequestMapping(value = "/v2.0/city", method = RequestMethod.POST)
@@ -86,9 +83,9 @@ public class PrefectureController {
 	 * @param preId Long
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/strategy/{preId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/strategy/{preId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResPrefectureStrategy findPreStrategy(@PathVariable Long preId) {
+	public ResPrefectureStrategy findPreStrategy(@PathVariable ("preId") Long preId) {
 		ResPrefectureStrategy resPreStrategy = preService.getPreStrategy(preId);
 		return resPreStrategy;
 	}

@@ -38,8 +38,8 @@ public class StallClientHystrix implements StallClient {
 	}
 
 	@Override
-	public void pay(Long stallId) {
-		log.info("prefecture service stall pay(Long stallId) hystrix");
+	public void checkout(Long stallId) {
+		log.info("prefecture service stall checkout(Long stallId) hystrix");
 		
 	}
 	

@@ -22,7 +22,7 @@ import cn.linkmore.prefecture.util.OrderFee;
  *
  */
 @RestController
-@RequestMapping("/prefecture/strategy")
+@RequestMapping("/strategy")
 public class StrategyBaseController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());

@@ -17,7 +17,7 @@ import cn.linkmore.prefecture.service.StallService;
  *
  */
 @RestController
-@RequestMapping("/prefecture/stall")
+@RequestMapping("/stall")
 public class StallController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -65,12 +65,12 @@ public class StallController {
 	}
 
 	/**
-	 * 结账立场释放车位
+	 * 结账离场释放车位
 	 * 
 	 * @param stallId Long
 	 */
-	@RequestMapping(value = "/v2.0/pay", method=RequestMethod.PUT)
-	public void pay(@RequestParam("stallId") Long stallId) {
-		 this.stallService.pay(stallId);
+	@RequestMapping(value = "/v2.0/checkout", method=RequestMethod.PUT)
+	public void checkout(@RequestParam("stallId") Long stallId) {
+		 this.stallService.checkout(stallId);
 	}
 }

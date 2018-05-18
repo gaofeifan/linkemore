@@ -9,11 +9,11 @@ import java.util.Set;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.entity.Stall;
+import cn.linkmore.redis.RedisService;
 
 /**
  * 空闲锁池 采用redis 实现空闲锁的 生产和消费
@@ -24,7 +24,8 @@ public class FreeLockPool {
 	@Resource
 	private StallClusterMapper stallClusterMapper;
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private RedisService redisService;
+	
 	/**
 	 * 定义空闲锁redis队列的KEY
 	 */
@@ -40,7 +41,7 @@ public class FreeLockPool {
 		/**
 		 * 取得锁服务中可用的锁
 		 */
-		Set<Object> enableLockSet = redisTemplate.opsForSet().members(KEY_LOCK_ENABLE_CODE);
+		Set<Object> enableLockSet = redisService.members(KEY_LOCK_ENABLE_CODE);
 
 		log.info(" cs: " + JSONObject.toJSONString(enableLockSet));
 		/**
@@ -66,17 +67,17 @@ public class FreeLockPool {
 			enableStallMap.get(key).retainAll(enableLockSet);
 			log.info(key + " -- " + JSONObject.toJSONString(enableStallMap.get(key)));
 			// 取得可用锁的并集
-			Set<Object> enableLock = redisTemplate.opsForSet().members(FREE_LOKC_KEY + key);
+			Set<Object> enableLock = redisService.members(FREE_LOKC_KEY + key);
 			enableLock.removeAll(enableStallMap.get(key));
 			// log.info(JSONObject.toJSONString(enableLock));
 			if (enableLock.size() > 0) {
-				redisTemplate.opsForSet().remove(FREE_LOKC_KEY + key, enableLock.toArray());
+				redisService.remove(FREE_LOKC_KEY + key, enableLock.toArray());
 			}
 			if (enableStallMap.get(key).size() > 0) {
-				redisTemplate.opsForSet().add(FREE_LOKC_KEY + key, enableStallMap.get(key).toArray());
+				redisService.add(FREE_LOKC_KEY + key, enableStallMap.get(key).toArray());
 			}
 			log.info("可用锁列" + key);
-			log.info(JSONObject.toJSONString(redisTemplate.opsForSet().members(FREE_LOKC_KEY + key)));
+			log.info(JSONObject.toJSONString(redisService.members(FREE_LOKC_KEY + key)));
 
 		}
 	}
@@ -85,7 +86,7 @@ public class FreeLockPool {
 	 * 加入空闲锁至 空闲锁池中
 	 */
 	public void addFreeLock(Long pid, String lockSn) {
-		redisTemplate.opsForSet().add(FREE_LOKC_KEY + pid, lockSn);
+		redisService.add(FREE_LOKC_KEY + pid, lockSn);
 	}
 
 	/**
@@ -93,7 +94,7 @@ public class FreeLockPool {
 	 */
 	public String getFreeLock(Long pid) {
 		// 该专区所有可用锁
-		return (String) redisTemplate.opsForSet().pop(FREE_LOKC_KEY + pid);
+		return redisService.pop(FREE_LOKC_KEY + pid);
 	}
 
 	/**
@@ -103,7 +104,7 @@ public class FreeLockPool {
 	 * @return
 	 */
 	public Long freeStallCount(Long pid) {
-		return redisTemplate.opsForSet().size(FREE_LOKC_KEY + pid);
+		return redisService.size(FREE_LOKC_KEY + pid);
 	}
 
 	/**
@@ -116,9 +117,9 @@ public class FreeLockPool {
 	 */
 	public void redisSetOper(int type, String key, String val) {
 		if (type == 0) {
-			redisTemplate.opsForSet().add(key, val);
+			redisService.add(key, val);
 		} else if (type == 1) {
-			redisTemplate.opsForSet().remove(key, val);
+			redisService.remove(key, val);
 		}
 	}
 
@@ -130,7 +131,7 @@ public class FreeLockPool {
 	 * @param val
 	 */
 	public Set<Object> redisSetOper(String key) {
-		return redisTemplate.opsForSet().members(key);
+		return redisService.members(key);
 	}
 
 }

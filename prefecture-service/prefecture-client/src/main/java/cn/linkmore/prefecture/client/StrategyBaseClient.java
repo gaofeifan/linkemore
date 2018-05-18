@@ -16,7 +16,7 @@ import cn.linkmore.prefecture.client.hystrix.StrategyBaseClientHystrix;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/prefecture/strategy", fallback=StrategyBaseClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/strategy", fallback=StrategyBaseClientHystrix.class,configuration = FeignConfiguration.class)
 public interface StrategyBaseClient {
 	
 	/**
