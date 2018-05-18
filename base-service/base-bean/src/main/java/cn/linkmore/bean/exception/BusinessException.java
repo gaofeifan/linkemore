@@ -5,7 +5,7 @@ package cn.linkmore.bean.exception;
  * @version 2.0
  *
  */
-public class BusinessException extends RuntimeException implements BaseException {
+public class BusinessException extends RuntimeException{
 	private static final long serialVersionUID = -4310721413425427596L;
 	/**
 	 * 错误码
@@ -122,11 +122,5 @@ public class BusinessException extends RuntimeException implements BaseException
 
 	public void setStatusEnum(StatusEnum statusEnum) {
 		this.statusEnum = statusEnum;
-	}
-
-	@Override
-	public Exception getException() {
-		return this;
-	}
-	
+	} 
 }

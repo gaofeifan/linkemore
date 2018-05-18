@@ -2,6 +2,7 @@ package cn.linkmore.feign;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ import cn.linkmore.bean.exception.InternalException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.util.JsonUtil;
 
-@ControllerAdvice(basePackages = { "cn.linkmore.*.service" })
+@ControllerAdvice(basePackages = { "cn.linkmore.*.controller" })
 public class ExceptionHandle {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
@@ -44,8 +45,9 @@ public class ExceptionHandle {
 		try {
 			pw = response.getWriter();
 			ExceptionInfo ei = new ExceptionInfo();
-			ei.setClazz(BusinessException.class);
-			ei.setCode(StatusEnum.BAD_REQUEST.code);
+			ei.setException(BusinessException.class.getName());
+			ei.setStatus(StatusEnum.BAD_REQUEST.code);
+			ei.setMessage(StatusEnum.BAD_REQUEST.label);
 			pw.write(JsonUtil.toJson(ei));
 			pw.flush();
 		} catch (IOException ie) {
@@ -64,14 +66,15 @@ public class ExceptionHandle {
 		ExceptionInfo ei = new ExceptionInfo();
 		if (e instanceof BusinessException) {
 			BusinessException b = (BusinessException) e; 
-			ei.setClazz(BusinessException.class);
-			ei.setCode(b.getCode());
-			ei.setMessage(b.getMessage());
-		} else { 
-			ei.setClazz(InternalException.class);
-			ei.setCode(StatusEnum.BAD_REQUEST.code);
-			ei.setMessage("未知异常");
+			ei.setException(BusinessException.class.getName());
+			ei.setStatus(b.getCode());
+			ei.setMessage(b.getMessage()); 
+		} else {  
+			ei.setException(InternalException.class.getName());
+			ei.setStatus(StatusEnum.BAD_REQUEST.code);
+			ei.setMessage(StatusEnum.BAD_REQUEST.label); 
 		}
+		ei.setTimestamp(new Date().getTime());
 		response.setStatus(500);
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=utf-8");

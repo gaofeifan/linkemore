@@ -13,6 +13,7 @@ import cn.linkmore.third.request.ReqSms;
 /**
  * Client - 短信服务
  * @author liwenlong
+ * @version 2.0
  *
  */
 @FeignClient(value = "third-party-server", path = "/sms", fallback=SmsClientHystrix.class,configuration = FeignConfiguration.class)

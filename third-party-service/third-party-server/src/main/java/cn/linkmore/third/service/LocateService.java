@@ -1,6 +1,5 @@
 package cn.linkmore.third.service;
 
-import cn.linkmore.third.request.ReqLocate;
 import cn.linkmore.third.response.ResLocate;
 
 /**
@@ -12,9 +11,10 @@ public interface LocateService {
 
 	/**
 	 * 根据经纬度获取位置信息
-	 * @param req
+	 * @param longitude
+	 * @param latitude
 	 * @return
 	 */
-	ResLocate getInfo(ReqLocate req);
+	ResLocate getInfo(String longitude,String latitude);
 
 }

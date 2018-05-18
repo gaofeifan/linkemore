@@ -36,6 +36,11 @@
 		</dependency> 
 		<dependency>
 			<groupId>cn.linkmore</groupId>
+			<artifactId>feign-service</artifactId>
+			<version>${version}</version>
+		</dependency> 
+		<dependency>
+			<groupId>cn.linkmore</groupId>
 			<artifactId>redis-service</artifactId>
 			<version>${version}</version>
 		</dependency> 

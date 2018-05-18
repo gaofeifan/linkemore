@@ -8,12 +8,35 @@ import cn.linkmore.bean.constant.PushType;
  *
  */
 public class ReqPush { 
+	/**
+	 * 别名
+	 */
 	private String alias;
+	
+	/**
+	 * 标题
+	 */
 	private String title;
+	
+	/**
+	 * 内部
+	 */
 	private String content;
+	
+	/**
+	 * 版本(1android,2ios)
+	 */
 	private Short os;
+	/**
+	 * 分类
+	 */
 	private PushType type;
+	
+	/**
+	 * 实体
+	 */
 	private String data;
+	
 	public String getAlias() {
 		return alias;
 	}
