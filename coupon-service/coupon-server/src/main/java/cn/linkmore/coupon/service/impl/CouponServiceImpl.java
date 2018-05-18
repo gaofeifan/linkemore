@@ -10,9 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.linkmore.coupon.dao.cluster.CouponClusterMapper;
-import cn.linkmore.coupon.dao.cluster.CouponTemplateConditionClusterMapper;
+import cn.linkmore.coupon.dao.cluster.TemplateConditionClusterMapper;
 import cn.linkmore.coupon.dao.master.CouponMasterMapper;
-import cn.linkmore.coupon.entity.CouponTemplateCondition;
+import cn.linkmore.coupon.entity.TemplateCondition;
 import cn.linkmore.coupon.response.ResCondition;
 import cn.linkmore.coupon.response.ResCoupon;
 import cn.linkmore.coupon.response.ResCouponPrefecture;
@@ -40,7 +40,7 @@ public class CouponServiceImpl implements CouponService {
 	private static final short WEEK_TIME = 1;
 	private static final short DAY_TIME = 2;
 	
-	private  CouponTemplateConditionClusterMapper couponThemplateConditionClusterMapper;
+	private  TemplateConditionClusterMapper couponThemplateConditionClusterMapper;
 	
 	
 	private void addCondition(Map<Long,List<ResCoupon>> ucrbsMap){ 
@@ -49,14 +49,14 @@ public class CouponServiceImpl implements CouponService {
 		for(Long key:keys){
 			ids.add(key.longValue());
 		} 
-		List<CouponTemplateCondition> list = this.couponThemplateConditionClusterMapper.findConditionList(ids); 
-		Map<Long,CouponTemplateCondition> ccMap = new HashMap<Long,CouponTemplateCondition>();
+		List<TemplateCondition> list = this.couponThemplateConditionClusterMapper.findConditionList(ids); 
+		Map<Long,TemplateCondition> ccMap = new HashMap<Long,TemplateCondition>();
 		String json = null;
 		ids = new ArrayList<Long>();
 		Map<Long,ResCondition> crbMap = new HashMap<Long,ResCondition>(); 
 		ResCondition crb = null;
 		List<ResCondition> crbs = new ArrayList<ResCondition>();
-		for(CouponTemplateCondition cc:list){
+		for(TemplateCondition cc:list){
 			ccMap.put(cc.getId(), cc);
 			crb = new ResCondition();
 			crb.setPreLimit(cc.getAvailablePrefecture().shortValue());

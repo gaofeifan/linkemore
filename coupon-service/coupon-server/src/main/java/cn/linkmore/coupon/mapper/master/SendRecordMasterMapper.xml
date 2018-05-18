@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.master.SendRecordMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.SendRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="condition_id" jdbcType="BIGINT" property="conditionId" />
+    <result column="creator_id" jdbcType="INTEGER" property="creatorId" />
+    <result column="creator_name" jdbcType="VARCHAR" property="creatorName" />
+    <result column="task_time" jdbcType="TIMESTAMP" property="taskTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, template_id, condition_id, creator_id, creator_name, task_time, create_time, 
+    status, send_time
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_coupon_send_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.SendRecord">
+    insert into t_coupon_send_record (id, type, template_id, 
+      condition_id, creator_id, creator_name, 
+      task_time, create_time, status, 
+      send_time)
+    values (#{id,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{templateId,jdbcType=BIGINT}, 
+      #{conditionId,jdbcType=BIGINT}, #{creatorId,jdbcType=INTEGER}, #{creatorName,jdbcType=VARCHAR}, 
+      #{taskTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{sendTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.coupon.entity.SendRecord">
+    update t_coupon_send_record
+    set type = #{type,jdbcType=INTEGER},
+      template_id = #{templateId,jdbcType=BIGINT},
+      condition_id = #{conditionId,jdbcType=BIGINT},
+      creator_id = #{creatorId,jdbcType=INTEGER},
+      creator_name = #{creatorName,jdbcType=VARCHAR},
+      task_time = #{taskTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      send_time = #{sendTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
