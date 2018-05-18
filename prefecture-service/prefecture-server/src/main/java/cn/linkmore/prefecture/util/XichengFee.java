@@ -14,8 +14,8 @@ import com.alibaba.druid.support.json.JSONUtils;
 import cn.linkmore.prefecture.entity.StrategyBase;
 /**
  * 西城广场计费
- * @author liwenlong
- * @version 1。0
+ * @author jiaohanbin
+ * @version 2.0
  *
  */
 public class XichengFee {

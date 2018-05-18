@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.cluster.QrcClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.Qrc">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="combo_id" jdbcType="BIGINT" property="comboId" />
+    <result column="pack_id" jdbcType="BIGINT" property="packId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="ticket" jdbcType="VARCHAR" property="ticket" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, operator_id, enterprise_id, combo_id, pack_id, create_time, url, update_time, 
+    status, ticket, template_id
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_qrc
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>

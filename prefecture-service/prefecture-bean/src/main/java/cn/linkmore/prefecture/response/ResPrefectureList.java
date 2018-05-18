@@ -1,5 +1,10 @@
 package cn.linkmore.prefecture.response;
-
+/**
+ * 响应-车区列表
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class ResPrefectureList {
 	/**
 	 * 专区id

@@ -2,7 +2,12 @@ package cn.linkmore.prefecture.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
+/**
+ * entity 车区
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class Prefecture {
 	//状态：0，启用；1，禁用
 	public static final int PRE_STATUS_ENABLE = 0;

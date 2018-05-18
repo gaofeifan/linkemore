@@ -4,7 +4,12 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.prefecture.entity.Stall;
-
+/**
+ * dao 车位
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 @Mapper
 public interface StallClusterMapper {
 	/**

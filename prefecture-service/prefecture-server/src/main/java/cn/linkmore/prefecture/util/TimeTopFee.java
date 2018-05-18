@@ -8,8 +8,8 @@ import cn.linkmore.prefecture.entity.StrategyBase;
 
 /**
  * 杭州24小时封顶计费
- * @author liwl
- * @version 1.0
+ * @author jiaohanbin
+ * @version 2.0
  *
  */
 public class TimeTopFee {

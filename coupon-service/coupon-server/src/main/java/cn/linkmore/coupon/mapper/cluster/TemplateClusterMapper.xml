@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.cluster.TemplateClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.Template">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="total_quantity" jdbcType="INTEGER" property="totalQuantity" />
+    <result column="unit_count" jdbcType="INTEGER" property="unitCount" />
+    <result column="unit_amount" jdbcType="DECIMAL" property="unitAmount" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="send_quantity" jdbcType="INTEGER" property="sendQuantity" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="valid_status" jdbcType="INTEGER" property="validStatus" />
+    <result column="valid_type" jdbcType="INTEGER" property="validType" />
+    <result column="valid_day" jdbcType="INTEGER" property="validDay" />
+    <result column="expiry_time" jdbcType="TIMESTAMP" property="expiryTime" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="creator_id" jdbcType="INTEGER" property="creatorId" />
+    <result column="creator_name" jdbcType="VARCHAR" property="creatorName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="enterprise_deal_number" jdbcType="VARCHAR" property="enterpriseDealNumber" />
+    <result column="release_method" jdbcType="INTEGER" property="releaseMethod" />
+    <result column="coupon_expires" jdbcType="INTEGER" property="couponExpires" />
+    <result column="maturity_amount" jdbcType="INTEGER" property="maturityAmount" />
+    <result column="merchant_default" jdbcType="INTEGER" property="merchantDefault" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="contract_amount" jdbcType="DECIMAL" property="contractAmount" />
+    <result column="given_amount" jdbcType="DECIMAL" property="givenAmount" />
+    <result column="delete_status" jdbcType="BIGINT" property="deleteStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, remark, type, enterprise_id, total_quantity, unit_count, unit_amount, total_amount, 
+    send_quantity, status, valid_status, valid_type, valid_day, expiry_time, start_time, 
+    end_time, creator_id, creator_name, create_time, update_time, enterprise_deal_number, 
+    release_method, coupon_expires, maturity_amount, merchant_default, city_id, pre_id, 
+    contract_amount, given_amount, delete_status
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_template
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+</mapper>

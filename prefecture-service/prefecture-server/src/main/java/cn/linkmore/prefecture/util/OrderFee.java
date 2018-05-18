@@ -7,7 +7,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.linkmore.prefecture.entity.StrategyBase;
-
+/**
+ * 计费策略
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class OrderFee {
 	private static Logger log = LoggerFactory.getLogger(OrderFee.class);
 

@@ -1,5 +1,10 @@
 package cn.linkmore.prefecture.request;
-
+/**
+ * 请求城市id
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class ReqCity {
 
 	/**

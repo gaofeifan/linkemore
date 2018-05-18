@@ -13,8 +13,8 @@ import java.util.Set;
 import cn.linkmore.prefecture.entity.StrategyBase; 
 /**
  * 计费策略 - 国瑞城按时段计费
- * @author liwenlong
- * @version 1.0
+ * @author jiaohanbin
+ * @version 2.0
  *
  */
 public class PeriodFee {

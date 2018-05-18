@@ -7,7 +7,12 @@ import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
-
+/**
+ * dao 车区
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 @Mapper
 public interface PrefectureClusterMapper {
 	/**

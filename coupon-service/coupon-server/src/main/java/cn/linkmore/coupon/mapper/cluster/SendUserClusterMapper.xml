@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.cluster.SendUserClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.SendUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="record_id" jdbcType="BIGINT" property="recordId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="rollback_flag" jdbcType="INTEGER" property="rollbackFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, template_id, record_id, user_id, create_time, rollback_flag
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_send_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>

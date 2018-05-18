@@ -1,5 +1,10 @@
 package cn.linkmore.prefecture.response;
-
+/**
+ * 响应-计费策略详情
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class ResPrefectureStrategy {
 	/**
 	 * 免费时长
