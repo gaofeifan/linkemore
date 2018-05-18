@@ -19,6 +19,13 @@ public enum StatusEnum {
 	USER_APP_SMS_ERROR(9002003,"验证码错误"),
 	USER_APP_SMS_EXPIRED(9002003,"验证码已过期"), 
 	
+	 
+	ACCOUNT_USER_MOBILE_EXIST(8003001 ,"手机号已被占用"),  
+	ACCOUNT_WECHAT_LOGIN_ERROR(8003002,"微信用户登录失败"), 
+	ACCOUNT_PLATE_LIMIT(8003021,"添加失败,最多添加三个!"), 
+	ACCOUNT_PLATE_EXISTS(8003022,"添加失败,车牌号已存在! "), 
+	ACCOUNT_PLATE_NONE(8003023 ,"删除失败,车牌号不存在 "),  
+	
 	ORDER_UNPAY_ORDER(8005001,"您有未支付的订单，请先结账!"),
 	ORDER_CREATE_FAIL(8005002,"预约失败请重新预约^_^!"),
 	ORDER_USERID_ERROR(8005003,"取消失败,预约用户信息错误!"),
