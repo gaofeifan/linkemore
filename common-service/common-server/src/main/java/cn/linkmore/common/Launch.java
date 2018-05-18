@@ -8,13 +8,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import zipkin2.Span;
 import zipkin2.reporter.Reporter;
 
 @SpringBootApplication 
-@EnableFeignClients
-@ComponentScan(basePackages = { "cn.linkmore" })  
+@EnableFeignClients(basePackages = { "cn.linkmore" })
+@ComponentScan(basePackages = { "cn.linkmore" })
+@EnableAsync
 public class Launch {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	
