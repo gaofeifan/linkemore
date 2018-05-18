@@ -27,8 +27,40 @@ public class RedisService {
 	@Autowired
 	private RedisTemplate redisTemplate;
 	
-	
-	
+	/**
+	 * 随机从set集合中获取一个数
+	 * @param key
+	 * @return
+	 */
+	public String pop(String key) {
+		return (String) redisTemplate.opsForSet().pop(key);
+	}
+	/**
+	 * 获取set集中中长度
+	 * @param key
+	 * @return
+	 */
+	public Long size(String key) {
+		return (Long) redisTemplate.opsForSet().size(key);
+	}
+	/**
+	 * 获取集合中所有成员元素
+	 * @param key
+	 * @return
+	 */
+	public Set<Object> members(String key){
+		return redisTemplate.opsForSet().members(key);
+	}
+	/**
+	 * 返回删除数量
+	 * @param key
+	 * @param value
+	 */
+	@SuppressWarnings("unchecked")
+	public void remove(String key, Object value) {
+		SetOperations<String, Object> set = redisTemplate.opsForSet();
+		set.remove(key, value);
+	}
 
 	/**
 	 * 写入缓存
@@ -234,4 +266,5 @@ public class RedisService {
 		ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
 		return zset.rangeByScore(key, scoure, scoure1);
 	}
+	
 }
