@@ -27,9 +27,9 @@ master-db:
   username: ppyx_dev
   password: PPYX_dev123 
   driver-class-name: com.mysql.jdbc.Driver  
-  initial-size: 10
-  min-idle: 10
-  max-active: 20 
+  initial-size: 2
+  min-idle: 2
+  max-active: 5
   max-wait: 60000 
   time-between-eviction-runs-millis: 60000 
   min-evictable-idle-time-millis: 30000
@@ -47,9 +47,9 @@ cluster-db:
   username: ppyx_dev
   password: PPYX_dev123
   driver-class-name: com.mysql.jdbc.Driver  
-  initial-size: 10
-  min-idle: 10
-  max-active: 20 
+  initial-size: 2
+  min-idle: 2
+  max-active: 5 
   max-wait: 60000 
   time-between-eviction-runs-millis: 60000 
   min-evictable-idle-time-millis: 30000
