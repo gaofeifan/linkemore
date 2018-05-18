@@ -66,6 +66,7 @@ public class UserClientHystrix implements UserClient{
 
 	 
 	public ResUserLogin appLogin(@PathVariable("mobile") String mobile) {
+		System.out.println("UserClientHystrix");
 		return null;
 	}
  

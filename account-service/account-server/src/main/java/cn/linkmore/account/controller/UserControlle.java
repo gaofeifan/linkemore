@@ -143,6 +143,7 @@ public class UserControlle {
 	 * @Version  v2.0
 	 */
 	@RequestMapping(value = "/v2.0/login/{mobile}", method = RequestMethod.GET)
+	@ResponseBody
 	public ResUserLogin appLogin(@PathVariable("mobile") String mobile) {
 		return this.userService.appLogin(mobile);
 	}

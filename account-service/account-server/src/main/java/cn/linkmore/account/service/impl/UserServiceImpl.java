@@ -32,6 +32,7 @@ import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.util.ObjectUtils;
 
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
 	@Resource
 	private UserClusterMapper userClusterMapper;
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private RedisService redisService;
 	@Resource
 	private AdminUserMasterMapper adminUserMasterMapper;
 
@@ -118,7 +119,7 @@ public class UserServiceImpl implements UserService {
 		if (list.size() == 1) {
 			ResUserDetails res = (ResUserDetails) list.get(0);
 			if (res != null) {
-				Object carObj = redisTemplate.opsForValue().get(CAR_BRAND_LIST);
+				Object carObj = redisService.get(CAR_BRAND_LIST);
 				if (null != carObj) {
 					// 拼装返回 车辆品牌-型号
 					String brandModel = "";
@@ -160,10 +161,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateMobile(ReqUpdateMobile bean) {
-		User user = this.selectById(bean.getUserId());
-		if (user != null) {
+		User user = this.selectByMobile(bean.getMobile());
+		if (user == null) {
 			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("id", user.getId());
+			param.put("id", bean.getUserId());
 			param.put("updateTime", new Date());
 			param.put("mobile",bean.getMobile());
 			this.userMasterMapper.updateMobile(param);
@@ -212,7 +213,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User selectById(Long userId) {
-
 		return this.userClusterMapper.selectById(userId);
 	}
 
