@@ -67,10 +67,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 		/*Map<String,Object> param = new HashMap<String,Object>();
 		param.put("latitude", reqPrefecture.getLatitude());
 		param.put("longitude", reqPrefecture.getLongitude());
-		param.put("scale", reqPrefecture.getScale());*/
+		*/
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
+		//此处cityId暂时为空，返回所有的车区信息
+		paramMap.put("cityId", null);
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		 
 		if(user!=null){

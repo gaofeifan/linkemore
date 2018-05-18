@@ -10,16 +10,16 @@ public class ReqPrefecture {
 	/**
 	 * 经度
 	 */
-    private Double latitude;
+    private String latitude;
 
     /**
      * 纬度
      */
-    private Double longitude;
+    private String longitude;
     /**
-     * 比例尺
+     * 城市id
      */
-    private Double scale;
+    private Long cityId;
     /**
      * 用户id
      */
@@ -33,27 +33,27 @@ public class ReqPrefecture {
 		this.userId = userId;
 	}
 
-	public Double getLatitude() {
+	public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public Double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
-	public Double getScale() {
-		return scale;
+	public Long getCityId() {
+		return cityId;
 	}
 
-	public void setScale(Double scale) {
-		this.scale = scale;
+	public void setCityId(Long cityId) {
+		this.cityId = cityId;
 	}
 }
