@@ -26,7 +26,7 @@ import cn.linkmore.util.JsonUtil;
  *
  */ 
 @RestController
-@RequestMapping("/common/citys")
+@RequestMapping("/citys")
 public class CityController {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired

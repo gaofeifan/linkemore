@@ -16,7 +16,7 @@ import cn.linkmore.common.service.AccessDetailService;
  * @Date     2018年5月15日
  */
 @RestController
-@RequestMapping("/common/access_detail")
+@RequestMapping("/access_detail")
 public class AccessDetailController {
 	
 	@Resource

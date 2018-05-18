@@ -33,7 +33,7 @@ import cn.linkmore.util.HttpUtils;
  * @Date     2018年5月11日
  */
 @RestController
-@RequestMapping("car_brand")
+@RequestMapping("/car_brand")
 public class CarBrandController {
 
 	@Resource

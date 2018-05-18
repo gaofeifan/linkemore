@@ -19,18 +19,22 @@ import cn.linkmore.util.ObjectUtils;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping("/account/user_staff")
+@RequestMapping("/user_staff")
 public class UserStaffController {
 
 	@Resource
 	private UserStaffService userStaffService;
 	
+	/**
+	 * @Description	根据id查询  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserStaff selectById(@PathVariable("id") Long id) {
 		UserStaff staff = this.userStaffService.findById(id);
 		return ObjectUtils.copyObject(staff, new ResUserStaff());
-		
 	}
 	
 }

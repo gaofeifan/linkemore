@@ -14,23 +14,45 @@ import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.VehicleMarkManageService;
 	
-
+/**
+ * 车牌号管理
+ * @author   GFF 
+ * @Date     2018年5月17日
+ * @Version  v2.0
+ */
 @RestController
-@RequestMapping("/account/vehicle_mark")
+@RequestMapping("/vehicle_mark")
 public class VehicleMarkController{
 
 	@Resource
 	private VehicleMarkManageService vehicleMarkManageService;
+	
+	
+	/**
+	 * @Description  新增
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
 	public void create( @RequestBody ReqVehicleMark bean) {
 		this.vehicleMarkManageService.save(bean);
 	}
 	
+	/**
+	 * @Description  删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable("id") Long id){
 		this.vehicleMarkManageService.deleteById(id);
 	}
 	
+	/**
+	 * @Description  列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/{userId}", method = RequestMethod.GET)
 	public List<ResVechicleMark> list(@PathVariable("userId")Long userId){
 		return vehicleMarkManageService.selectResList(userId);

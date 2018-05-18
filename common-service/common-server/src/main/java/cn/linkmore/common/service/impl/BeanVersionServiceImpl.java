@@ -18,6 +18,12 @@ import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.service.BeanVersionService;
 import cn.linkmore.common.service.CommonService;
 import cn.linkmore.util.ObjectUtils;
+/**
+ * 版本实现类
+ * @author   GFF
+ * @Date     2018年5月17日
+ * @Version  v2.0
+ */
 @Service
 public class BeanVersionServiceImpl implements BeanVersionService {
 

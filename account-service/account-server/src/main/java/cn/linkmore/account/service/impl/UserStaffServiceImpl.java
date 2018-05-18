@@ -5,6 +5,11 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.account.dao.cluster.UserStaffClusterMapper;
 import cn.linkmore.account.entity.UserStaff;
 import cn.linkmore.account.service.UserStaffService;
+/**
+ * @author   GFF
+ * @Date     2018年5月17日
+ * @Version  v2.0
+ */
 @Service
 public class UserStaffServiceImpl implements UserStaffService {
 

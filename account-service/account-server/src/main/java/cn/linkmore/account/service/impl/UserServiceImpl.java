@@ -35,6 +35,12 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.util.ObjectUtils;
 
+/**
+ * 用户实体类
+ * @author   GFF
+ * @Date     2018年5月17日
+ * @Version  v2.0
+ */
 @Service
 public class UserServiceImpl implements UserService {
 

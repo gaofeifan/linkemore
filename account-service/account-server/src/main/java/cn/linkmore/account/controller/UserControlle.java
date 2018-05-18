@@ -116,22 +116,42 @@ public class UserControlle {
 		this.userService.removeWechat(userId);
 	}
 	
+	/**
+	 * @Description  根据手机号查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/mobile/{mobile}", method = RequestMethod.GET)
 	public void selectByMobile(@PathVariable String mobile) {
 		this.userService.selectByMobile(mobile);
 	}
 	
+	/**
+	 * @Description  查询缓存数据
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/cache/{userId}", method = RequestMethod.GET)
 	public ResUser getUserCacheKey(@PathVariable Long userId) {
 		ResUser user = this.userService.getUserCacheKey(userId);
 		return user;
 	}
 	
+	/**
+	 * @Description  app登录
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/login/{mobile}", method = RequestMethod.GET)
 	public ResUserLogin appLogin(@PathVariable String mobile) {
 		return this.userService.appLogin(mobile);
 	}
 	
+	/**
+	 * @Description  微信登录
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value="/v2.0/login",method = RequestMethod.POST)
 	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans) {
 		return userAppfansService.wxLogin(appfans);
