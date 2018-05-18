@@ -1,35 +1,73 @@
 package cn.linkmore.account.entity;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * 账户
+ * @author   GFF
+ * @Date     2018年5月18日
+ * @Version  v2.0
+ */
 public class Account {
     private Long id;
 
+    /**
+     *  总金额
+     */ 
     private Double amount;
 
+    /**
+     *  可用金额
+     */ 
     private Double usableAmount;
 
+    /**
+     *  冻结金额
+     */ 
     private Double frozenAmount;
 
+    /**
+     *  充值金额
+     */ 
     private Double rechargeAmount;
 
+    /**
+     *  实际充值金额
+     */ 
     private Double rechagePaymentAmount;
 
+    /**
+     *  账户状态: 0 启用；1禁用
+     */ 
     private Short status;
 
+    /**
+     *  订单消费总金额
+     */ 
     private Double orderAmount;
 
+    /**
+     *  实际支付金额
+     */ 
     private Double orderPaymentAmount;
 
+    /**
+     *  赠送余额
+     */ 
     private Double giftAmount;
 
+    /**
+     *  赠送总额
+     */ 
     private Double giftTotalAmount;
 
     private Date createTime;
 
     private Date updateTime;
 
+    /**
+     *  账户分类
+     */ 
     private Integer accType;
 
 	public Long getId() {

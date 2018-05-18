@@ -12,7 +12,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,11 +22,13 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.linkmore.common.response.ResCarBrandBean;
 import cn.linkmore.common.response.ResCarFirmBean;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.HttpUtils;
 
 
 
 /**
+ * 车辆品牌数据
  * @Version 2.0
  * @author  GFF
  * @Date     2018年5月11日
@@ -37,7 +38,7 @@ import cn.linkmore.util.HttpUtils;
 public class CarBrandController {
 
 	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
+	private RedisService redisService;
 	public static final String CAR_BRAND_LIST = "car_brand_list";
 	//API域名
     private final static String HOST = "http://jisucxdq.market.alicloudapi.com";
@@ -52,16 +53,27 @@ public class CarBrandController {
     
     private  Logger log = LoggerFactory.getLogger(getClass());
     
+	/**
+	 * 查询list
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public Object list(HttpServletRequest request) {
-		return redisTemplate.opsForValue().get(CAR_BRAND_LIST);
+		return redisService.get(CAR_BRAND_LIST);
 	}
 	
+	/**
+	 * @Description  加载车辆品牌数据接口
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/load", method = RequestMethod.GET)
 	public Map<String,Object> load(){
 		log.info("请求车辆品牌接口,请耐心等待......");
 		//请求状态  0成功，1请求中，2失败, 方便后台页面控制 请求按钮
-		redisTemplate.opsForValue().set("car_brand_status", 1);
+		redisService.set("car_brand_status", 1);
 		Map<String,Object> msg = new HashMap<String,Object>();
  	    Map<String, String> headers = new HashMap<String, String>();
  	    headers.put("Authorization", "APPCODE " + APP_CODE);
@@ -103,17 +115,17 @@ public class CarBrandController {
 					}
 				}
 			}
- 	    	redisTemplate.opsForValue().set("car_brand_list", JSON.toJSON(resultList));
+ 	    	redisService.set("car_brand_list", JSON.toJSON(resultList));
  	    	//将成功状态存入redis
- 	    	redisTemplate.opsForValue().set("car_brand_status", 0);
+ 	    	redisService.set("car_brand_status", 0);
 	    	msg.put("message", true);
 	    	log.info("车辆品牌数据请求成功......");
  	    } catch (NullPointerException n) {
- 	    	redisTemplate.opsForValue().set("car_brand_status", 2);
+ 	    	redisService.set("car_brand_status", 2);
 			msg.put("message", "请求数据丢失，请稍后重试");
 			log.info("数据丢失，车辆品牌数据请求失败......");
 		} catch (Exception e) {
- 	    	redisTemplate.opsForValue().set("car_brand_status", 2);
+			redisService.set("car_brand_status", 2);
 			msg.put("message", "连接失败，请稍后重试");
 			log.info("连接失败，车辆品牌数据请求失败......");
 		}
@@ -122,7 +134,7 @@ public class CarBrandController {
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Object list(){
-		Object obj = redisTemplate.opsForValue().get("car_brand_list");
+		Object obj = redisService.get("car_brand_list");
 		return obj;
 	}
 	

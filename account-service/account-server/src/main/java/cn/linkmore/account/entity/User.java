@@ -5,6 +5,12 @@ import java.util.Date;
 import cn.linkmore.annotation.GColumn;
 import cn.linkmore.annotation.GTable;
 
+/**
+ * 用户
+ * @author   GFF
+ * @Date     2018年5月18日
+ * @Version  v2.0
+ */
 @GTable(vlaue="t_user")
 public class User {
     private Long id;

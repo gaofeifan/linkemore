@@ -9,8 +9,18 @@ import cn.linkmore.account.client.hystrix.UserStaffClientHystrix;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.feign.FeignConfiguration;
  
-@FeignClient(value = "account-server", path = "/account/user_staff", fallback=UserStaffClientHystrix.class,configuration = FeignConfiguration.class)
+/**
+ * @author   GFF
+ * @Date     2018年5月18日
+ * @Version  v2.0
+ */
+@FeignClient(value = "account-server", path = "/user_staff", fallback=UserStaffClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UserStaffClient {
+	/**
+	 * @Description  根据id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
 	public ResUserStaff selectById(@PathVariable("id") Long id);
 }

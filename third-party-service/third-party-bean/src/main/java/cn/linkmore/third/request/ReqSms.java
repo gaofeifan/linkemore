@@ -9,8 +9,18 @@ import cn.linkmore.bean.constant.SmsTemplate;
  * @version 2.0
  */
 public class ReqSms {
+	/**
+	 * 手机号
+	 */
 	private String mobile;
+	/**
+	 * 模板
+	 */
 	private SmsTemplate st;
+	
+	/**
+	 * 短信体参数
+	 */
 	private Map<String,String> param;
 	public String getMobile() {
 		return mobile;

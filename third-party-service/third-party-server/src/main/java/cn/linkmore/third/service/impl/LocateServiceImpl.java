@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.third.request.ReqLocate;
 import cn.linkmore.third.response.ResLocate;
 import cn.linkmore.third.service.LocateService;
 import cn.linkmore.util.HttpUtil;
@@ -33,9 +32,9 @@ public class LocateServiceImpl implements LocateService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public  ResLocate getInfo(ReqLocate req) {
+	public  ResLocate getInfo(String longitude,String latitude) {
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("location", req.getLatitude() + "," + req.getLongitude());
+		parameters.put("location", latitude + "," + longitude);
 		parameters.put("key", KEYS[COUNT++ % KEYS.length]); 
 		ResLocate res = null;
 		try { 

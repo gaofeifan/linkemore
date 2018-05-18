@@ -19,49 +19,110 @@ import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.feign.FeignConfiguration;
  
-@FeignClient(value = "account-server", path = "/account/user", fallback=UserClientHystrix.class,configuration = FeignConfiguration.class)
+/**
+ * 用户
+ * @author   GFF
+ * @Date     2018年5月18日
+ * @Version  v2.0
+ */
+@FeignClient(value = "account-server", path = "/user", fallback=UserClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UserClient {
 	
 	
+	/**
+	 * @Description	更新昵称  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/nickname", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateNickname(@RequestBody ReqUpdateNickname nickname);
 	
+	/**
+	 * @Description  更新性别
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/sex", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateSex(@RequestBody ReqUpdateSex reqSex);
 	
+	/**
+	 * @Description  更新车牌号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/vehicle", method = RequestMethod.PUT)
 	public void updateVehicle(@RequestBody ReqUpdateVehicle req);
 	
+	/**
+	 * @Description  查询详情
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/detail/{userId}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserDetails detail(@PathVariable("userId") Long userId) ;
 	
+	/**
+	 * @Description  发送短信
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/send_code", method = RequestMethod.GET)
 	@ResponseBody
 	public void sendCode( @RequestBody ReqBind bean) ;
 
+	/**
+	 * @Description  更新手机号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/mobile", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateMobile(@RequestBody ReqUpdateMobile bean);
 	
+	/**
+	 * @Description  更新微信
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateAppfans(@RequestBody ReqUserAppfans bean) ;
 	
+	/**
+	 * @Description  删除微信
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/wechat/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void removeWechat(@PathVariable("userId") Long userId);
 	
+	/**
+	 * @Description  查询缓存用户
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value = "/v2.0/cache/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResUser getUserCacheKey(@PathVariable("userId") Long userId);
 
-	@RequestMapping(value = "/v2.0/resuser_mobile/{mobile}", method = RequestMethod.GET)
+	/**
+	 * @Description app登录
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/login/{mobile}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserLogin appLogin(@PathVariable("mobile") String mobile);
 
+	/**
+	 * @Description  微信登录
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@RequestMapping(value="/v2.0/login",method = RequestMethod.POST)
 	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans);
 }

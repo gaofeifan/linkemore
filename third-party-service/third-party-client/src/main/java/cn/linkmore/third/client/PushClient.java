@@ -3,7 +3,6 @@ package cn.linkmore.third.client;
 import java.util.List;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

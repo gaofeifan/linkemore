@@ -1,21 +1,36 @@
 package cn.linkmore.bean.exception;
-
-
+ 
 public class ExceptionInfo {
-	private Class<?> clazz;
-	private Integer code;
+	private Long timestamp;
+	private Integer status;
+	private String error; 
+	private String exception;
 	private String message;
-	public Class<?> getClazz() {
-		return clazz;
+	private String path;
+	
+	public Long getTimestamp() {
+		return timestamp;
 	}
-	public void setClazz(Class<?> clazz) {
-		this.clazz = clazz;
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
 	}
-	public Integer getCode() {
-		return code;
+	public Integer getStatus() {
+		return status;
 	}
-	public void setCode(Integer code) {
-		this.code = code;
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public String getError() {
+		return error;
+	}
+	public void setError(String error) {
+		this.error = error;
+	}
+	public String getException() {
+		return exception;
+	}
+	public void setException(String exception) {
+		this.exception = exception;
 	}
 	public String getMessage() {
 		return message;
@@ -23,5 +38,11 @@ public class ExceptionInfo {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	public String getPath() {
+		return path;
+	}
+	public void setPath(String path) {
+		this.path = path;
+	} 
 	
 }

@@ -27,7 +27,7 @@ import cn.linkmore.account.service.UserService;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping("/account/user")
+@RequestMapping("/user")
 public class UserControlle {
 	
 	@Resource
@@ -143,7 +143,7 @@ public class UserControlle {
 	 * @Version  v2.0
 	 */
 	@RequestMapping(value = "/v2.0/login/{mobile}", method = RequestMethod.GET)
-	public ResUserLogin appLogin(@PathVariable String mobile) {
+	public ResUserLogin appLogin(@PathVariable("mobile") String mobile) {
 		return this.userService.appLogin(mobile);
 	}
 	

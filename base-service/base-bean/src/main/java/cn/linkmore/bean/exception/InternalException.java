@@ -2,7 +2,7 @@ package cn.linkmore.bean.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-public class InternalException extends RuntimeException implements BaseException {
+public class InternalException extends RuntimeException {
 	/**
 	 * serial id
 	 */
@@ -11,11 +11,5 @@ public class InternalException extends RuntimeException implements BaseException
 	@JsonIgnoreProperties
 	public InternalException(String message) {
 		super(message);
-	}
-
-	@Override
-	@JsonIgnoreProperties
-	public Exception getException() {
-		return this; 
-	}
+	} 
 }
