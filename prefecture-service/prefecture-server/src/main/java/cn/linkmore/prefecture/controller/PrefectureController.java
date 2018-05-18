@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import cn.linkmore.account.client.hystrix.UserClientHystrix;
+import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.prefecture.request.ReqCity;
 import cn.linkmore.prefecture.request.ReqPrefecture;
@@ -36,7 +36,7 @@ public class PrefectureController {
 	@Autowired
 	private PrefectureService preService;
 	@Autowired
-	private UserClientHystrix userClient;
+	private UserClient userClient;
 
 	/**
 	 * 根据主键查询详情

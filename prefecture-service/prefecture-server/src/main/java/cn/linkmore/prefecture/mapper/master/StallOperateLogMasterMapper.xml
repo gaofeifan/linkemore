@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.StallOperateLogMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.StallOperateLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="source" jdbcType="SMALLINT" property="source" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="operation" jdbcType="SMALLINT" property="operation" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="remark_id" jdbcType="BIGINT" property="remarkId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, operator_id, source, stall_id, operation, remark, remark_id, create_time, status
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_stall_operate_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.StallOperateLog">
+    insert into t_stall_operate_log (id, operator_id, source, 
+      stall_id, operation, remark, 
+      remark_id, create_time, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{operatorId,jdbcType=BIGINT}, #{source,jdbcType=SMALLINT}, 
+      #{stallId,jdbcType=BIGINT}, #{operation,jdbcType=SMALLINT}, #{remark,jdbcType=VARCHAR}, 
+      #{remarkId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.prefecture.entity.StallOperateLog">
+    update t_stall_operate_log
+    set operator_id = #{operatorId,jdbcType=BIGINT},
+      source = #{source,jdbcType=SMALLINT},
+      stall_id = #{stallId,jdbcType=BIGINT},
+      operation = #{operation,jdbcType=SMALLINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      remark_id = #{remarkId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

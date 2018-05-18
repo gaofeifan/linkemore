@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.hystrix.UserStaffClientHystrix;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserStaff;
@@ -45,7 +47,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private PrefectureMasterMapper prefectureMasterMapper;
 	@Autowired
-	private UserStaffClientHystrix userStaffClient;
+	private UserStaffClient userStaff;
 	@Autowired
 	private CityClientHystrix cityClient;
 	
@@ -72,7 +74,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		 
 		if(user!=null){
-			ResUserStaff us = this.userStaffClient.selectById(user.getId());
+			ResUserStaff us = this.userStaff.selectById(user.getId());
 			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
 				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
 				if(preList1!=null){
@@ -105,7 +107,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		String lan = "分钟";
 		List<ResPrefectureList> list = prefectureClusterMapper.findPreListByCityId(paramMap);
 		if(user!=null){
-			ResUserStaff us = this.userStaffClient.selectById(user.getId());
+			ResUserStaff us = this.userStaff.selectById(user.getId());
 			if(us!=null&&us.getStatus().intValue()==ResUserStaff.STATUS_ON.intValue()){
 				List<ResPrefectureList> list1 = prefectureClusterMapper.findPreListByCityId1(paramMap);
 				if(list1!=null){ 
