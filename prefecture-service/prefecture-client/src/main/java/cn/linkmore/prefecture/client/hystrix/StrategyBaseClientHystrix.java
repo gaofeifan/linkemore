@@ -19,7 +19,7 @@ public class StrategyBaseClientHystrix implements StrategyBaseClient {
 
 	@Override
 	public Map<String, Object> fee(Long strategyId, Date beginTime, Date endTime) {
-		log.info("prefecture service strategy order(String lockSn) hystrix");
+		log.info("prefecture service strategy fee(Long strategyId) hystrix");
 		return new HashMap<String,Object>();
 	}
 }

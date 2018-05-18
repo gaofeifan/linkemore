@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.StallBatteryLogMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.StallBatteryLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="voltage" jdbcType="DOUBLE" property="voltage" />
+    <result column="total_num" jdbcType="INTEGER" property="totalNum" />
+    <result column="admin_id" jdbcType="BIGINT" property="adminId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stall_id, voltage, total_num, admin_id, create_time
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_stall_battery_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.StallBatteryLog">
+    insert into t_stall_battery_log (id, stall_id, voltage, 
+      total_num, admin_id, create_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, #{voltage,jdbcType=DOUBLE}, 
+      #{totalNum,jdbcType=INTEGER}, #{adminId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.prefecture.entity.StallBatteryLog">
+    update t_stall_battery_log
+    set stall_id = #{stallId,jdbcType=BIGINT},
+      voltage = #{voltage,jdbcType=DOUBLE},
+      total_num = #{totalNum,jdbcType=INTEGER},
+      admin_id = #{adminId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
