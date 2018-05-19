@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.bean.common.security.Token;
+import cn.linkmore.bean.common.Constants;
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.service.BeanVersionService;
@@ -37,9 +37,9 @@ public class BaseVersionController {
 	@ResponseBody
 	public ResVersionBean current(@PathVariable("source")Short source){
 		int appType = 0;
-		if(Token.OS_ANDROID == source){
+		if(Constants.ClientSource.ANDROID.source == source){
 			appType = 1;
-		}else if(Token.OS_IOS == source){
+		}else if(Constants.ClientSource.IOS.source == source){
 			appType = 2;
 		}
 		ResVersionBean app = this.beanVersionService.currentAppVersion(appType);

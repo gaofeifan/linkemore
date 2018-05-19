@@ -17,7 +17,7 @@ import cn.jpush.api.push.model.audience.Audience;
 import cn.jpush.api.push.model.notification.AndroidNotification;
 import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
-import cn.linkmore.bean.common.security.Token;
+import cn.linkmore.bean.common.Constants;
 import cn.linkmore.third.config.BeanFactory;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.service.PushService;
@@ -82,7 +82,7 @@ public class PushServiceImpl implements PushService {
 	@Override
 	@Async
 	public void push(ReqPush rp) { 
-		if(rp.getOs().shortValue()==Token.OS_ANDROID) {
+		if(rp.getClient().intValue()  ==Constants.ClientSource.ANDROID.source) {
 			this.android(rp);
 		}else {
 			this.ios(rp);
@@ -94,7 +94,7 @@ public class PushServiceImpl implements PushService {
 	public void push(List<ReqPush> rps) { 
 		for(ReqPush rp:rps) {
 			try {
-				if(rp.getOs().shortValue()==Token.OS_ANDROID) {
+				if(rp.getClient().intValue()  ==Constants.ClientSource.ANDROID.source) {
 					this.android(rp);
 				}else {
 					this.ios(rp);

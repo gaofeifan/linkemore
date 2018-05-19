@@ -62,6 +62,16 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
+			<artifactId>order-client</artifactId>
+			<version>${version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>prefecture-client</artifactId>
+			<version>${version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
 			<artifactId>third-party-client</artifactId>
 			<version>${version}</version>
 		</dependency> 

@@ -14,9 +14,17 @@ public interface CouponService {
 
 	/**
 	 * 查询用户下所有可用停车券
-	 * @param userId
+	 * @param userId 用户ID
 	 * @return
 	 */
-	List<ResCoupon> enabledList(Long userId);
+	List<ResCoupon> userEnabledList(Long userId);
+
+	/**
+	 * 查询用户订单可用停车券
+	 * @param userId 用户ID
+	 * @param orderId 订单ID
+	 * @return
+	 */
+	List<ResCoupon> userOrderEnableList(Long userId, Long orderId);
 
 }

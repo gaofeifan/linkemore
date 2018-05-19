@@ -2,7 +2,7 @@ package cn.linkmore.third.request;
 
 import java.util.Map;
 
-import cn.linkmore.bean.constant.SmsTemplate;
+import cn.linkmore.bean.common.Constants;
 /**
  * 请求 - 短信
  * @author liwenlong
@@ -16,7 +16,7 @@ public class ReqSms {
 	/**
 	 * 模板
 	 */
-	private SmsTemplate st;
+	private Constants.SmsTemplate st;
 	
 	/**
 	 * 短信体参数
@@ -28,10 +28,10 @@ public class ReqSms {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-	public SmsTemplate getSt() {
+	public Constants.SmsTemplate getSt() {
 		return st;
 	}
-	public void setSt(SmsTemplate st) {
+	public void setSt(Constants.SmsTemplate st) {
 		this.st = st;
 	}
 	public Map<String, String> getParam() {

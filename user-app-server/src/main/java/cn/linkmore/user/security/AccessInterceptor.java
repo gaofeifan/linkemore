@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.bean.constant.RedisKey;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.common.UserCache;
@@ -37,6 +37,9 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			add("/swagger-ui.html");
 			add("/configuration");
 			add("/swagger-resources");
+			add("/swagger-resources/configuration/ui"); 
+			add("/swagger-ui.html/swagger-resources/configuration/ui");
+			add("/swagger-resources/configuration/security");
 			add("/api-docs");
 			add("/v2/api-docs");
 			add("/auth/v2.0/login");
@@ -47,7 +50,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			add("/prefectures/v2.0/list"); 
 			add("/prefectures/v2.0/detail");
 			add("/prefectures/v2.0/strategy");
-			add("/citys/v2.0//list");  
+			add("/citys/v2.0/list");  
 		}
 	}; 
 	@Autowired

@@ -33,9 +33,10 @@ public class OrderController {
 	@ApiOperation(value="预约下单",notes="车区ID不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> login(@RequestParam(value="prefectureId" ,required=true) Long prefectureId, HttpServletRequest request) {
+	public ResponseEntity<?> create(@RequestParam(value="prefectureId" ,required=true) Long prefectureId, HttpServletRequest request) {
 		ResponseEntity<?> response = null; 
 		try {  
+			this.orderService.create(prefectureId,request);
 			response = ResponseEntity.success(null, request);
 		}catch(BusinessException e){
 			response = ResponseEntity.fail(e.getStatusEnum(), request); 
@@ -51,7 +52,8 @@ public class OrderController {
 	public ResponseEntity<ResOrder> current(HttpServletRequest request) {
 		ResponseEntity<ResOrder> response = null; 
 		try {  
-			response = ResponseEntity.success(null, request);
+			ResOrder order = this.orderService.current(request);
+			response = ResponseEntity.success(order, request);
 		}catch(BusinessException e){
 			response = ResponseEntity.fail(e.getStatusEnum(), request); 
 		}catch(Exception e){

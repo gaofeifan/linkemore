@@ -5,11 +5,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -33,13 +34,11 @@ public class PrefectureController {
 	private PrefectureService prefectureService;
 	
 	@ApiOperation(value = "列表", notes = "根据城市ID及经伟度得到周边车区列表[因车区数量少，现为全部车区]", consumes = "application/json")
-	@RequestMapping(value = "/v2.0", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<List<ResPrefecture>> list(@RequestParam("cityId") Long cityId, HttpServletRequest request) {
+	public ResponseEntity<List<ResPrefecture>> list(@RequestBody ReqPrefecture rp, HttpServletRequest request) {
 		ResponseEntity<List<ResPrefecture>> response = null;
 		try { 
-			ReqPrefecture rp = new ReqPrefecture();
-			rp.setCityId(cityId);
 			List<ResPrefecture> list = this.prefectureService.list(rp, request);
 			response = ResponseEntity.success(list, request);
 		} catch (BusinessException e) {

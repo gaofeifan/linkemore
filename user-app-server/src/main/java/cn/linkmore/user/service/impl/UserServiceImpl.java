@@ -17,10 +17,11 @@ import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUserLogin;
+import cn.linkmore.bean.common.Constants;
+import cn.linkmore.bean.common.Constants.PushType;
+import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.Constants.SmsTemplate;
 import cn.linkmore.bean.common.security.Token;
-import cn.linkmore.bean.constant.PushType;
-import cn.linkmore.bean.constant.RedisKey;
-import cn.linkmore.bean.constant.SmsTemplate;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
@@ -84,7 +85,7 @@ public class UserServiceImpl implements UserService {
 		ReqSms sms = new ReqSms();
 		sms.setMobile(rs.getMobile());
 		sms.setParam(param);
-		sms.setSt(SmsTemplate.USER_APP_LOGIN_CODE);
+		sms.setSt(Constants.SmsTemplate.USER_APP_LOGIN_CODE);
 		boolean success = this.smsClient.send(sms);   
 		if(success){ 
 			this.redisService.set(RedisKey.USER_APP_AUTH_CODE+rs.getMobile(), code, 60*10); 
@@ -136,8 +137,8 @@ public class UserServiceImpl implements UserService {
 		ReqPush rp = new ReqPush();
 		rp.setAlias(uid);
 		rp.setContent("强制退出,账号已在其它设备登录");
-		rp.setData(token.getValue());
-		rp.setOs(token.getOs());
+		rp.setData(token.getAccessToken());
+		rp.setClient(token.getClient());
 		rp.setType(PushType.USER_APP_LOGOUT_NOTICE);
 		rp.setTitle("账号已在其它设备登录"); 
 		this.pushClient.push(rp);
@@ -184,18 +185,18 @@ public class UserServiceImpl implements UserService {
 	private Token cacheUser(HttpServletRequest request, ResUser user) {
 		String key = UserCache.getCacheKey(request);
 		
-		Token last = (Token)this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN+user.getId());
+		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 		if(last!=null){ 
-			this.redisService.remove(RedisKey.USER_APP_AUTH_TOKEN+user.getId());
-			this.redisService.remove(RedisKey.USER_APP_AUTH_USER+last.getValue());  
-			last.setValue(key);
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
+			last.setAccessToken(key);
 		}
-		this.redisService.set(RedisKey.USER_APP_AUTH_USER+key, user); 
+		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user); 
 		Token token = new Token();
-		token.setOs(new Short(request.getHeader("os")==null?"0":request.getHeader("os")));
+		token.setClient(new Short(request.getHeader("os")==null?"0":request.getHeader("os")));
 		token.setTimestamp(new Date().getTime());
-		token.setValue(key);
-		this.redisService.set(RedisKey.USER_APP_AUTH_TOKEN+user.getId(), token); 
+		token.setAccessToken(key);
+		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token); 
 		return last;
 	}
 	/**
