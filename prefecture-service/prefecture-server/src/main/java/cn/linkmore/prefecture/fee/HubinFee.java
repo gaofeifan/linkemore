@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.util;
+package cn.linkmore.prefecture.fee;
 
 import java.math.BigDecimal;
 import java.text.ParseException;

@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.util;
+package cn.linkmore.prefecture.fee;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.util;
+package cn.linkmore.prefecture.fee;
 
 import com.linkmore.lock.bean.AbuttingBean;
 import com.linkmore.lock.factory.LockFactory;

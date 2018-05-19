@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.util;
+package cn.linkmore.prefecture.lock;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -19,6 +19,7 @@ import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.StrategyBase;
+import cn.linkmore.prefecture.lock.FreeLockPool;
 import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
@@ -26,7 +27,6 @@ import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
 import cn.linkmore.prefecture.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.service.PrefectureService;
-import cn.linkmore.prefecture.util.FreeLockPool;
 import cn.linkmore.util.StringUtil;
 /**
  * Service实现类 - 车区信息

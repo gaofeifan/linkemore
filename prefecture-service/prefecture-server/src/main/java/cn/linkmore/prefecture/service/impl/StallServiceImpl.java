@@ -11,9 +11,9 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
 import cn.linkmore.prefecture.entity.Stall;
+import cn.linkmore.prefecture.lock.FreeLockPool;
+import cn.linkmore.prefecture.fee.InitLockFactory;
 import cn.linkmore.prefecture.service.StallService;
-import cn.linkmore.prefecture.util.FreeLockPool;
-import cn.linkmore.prefecture.util.InitLockFactory;
 /**
  * Service实现类 - 车位信息
  * @author jiaohanbin
