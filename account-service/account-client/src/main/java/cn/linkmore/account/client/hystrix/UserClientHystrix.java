@@ -62,7 +62,7 @@ public class UserClientHystrix implements UserClient{
 	
 	 
 	public ResUser getUserCacheKey(@PathVariable("userId") Long userId) {
-		log.info("-------------------------account service user getUserCacheKey(userId) hystrix" + userId);
+		log.info("account service user getUserCacheKey(userId) hystrix" + userId);
 		return null;
 	}
 

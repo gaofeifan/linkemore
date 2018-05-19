@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private RedisService redisService;
 	
-	private final static String TEST_MOBILE= "18612100125|17800242258|13693544138|18810796650|18334787583";
+	private final static String TEST_MOBILE= "18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
 
 	@Override
 	public void send(ReqAuthSend rs) {     
