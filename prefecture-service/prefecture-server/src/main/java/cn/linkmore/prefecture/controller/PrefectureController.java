@@ -14,6 +14,7 @@ import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.prefecture.request.ReqCity;
 import cn.linkmore.prefecture.request.ReqPrefecture;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
@@ -48,6 +49,18 @@ public class PrefectureController {
 	@ResponseBody
 	public ResPrefectureDetail findById(@PathVariable("id") Long id) {
 		return this.preService.find(id);
+	}
+	
+	/**
+	 * 根据主键查询批量车区名称
+	 * 
+	 * @param id Long
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/prename", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPre> prenames(@RequestBody List<Long> ids) {
+		return this.preService.findList(ids);
 	}
 
 	/**

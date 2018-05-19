@@ -20,6 +20,7 @@ import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.request.ReqPrefecture;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
@@ -242,5 +243,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 		}
 		return bean;
+	}
+	@Override
+	public List<ResPre> findList(List<Long> ids) {
+		List<ResPre> list = this.prefectureClusterMapper.findByIds(ids);
+		return list;
 	}
 }

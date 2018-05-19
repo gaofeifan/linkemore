@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.prefecture.request.ReqPrefecture;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
@@ -46,5 +47,11 @@ public interface PrefectureService {
 	 * @return
 	 */
 	ResPrefectureStrategy getPreStrategy(Long preId);
+	/**
+	 * 根据车区id集合查询车名名称集合
+	 * @param ids
+	 * @return
+	 */
+	List<ResPre> findList(List<Long> ids);
 
 }
