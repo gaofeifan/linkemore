@@ -53,7 +53,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private CityClientHystrix cityClient;
 	
 	@Override
-	public ResPrefectureDetail find(Long preId) {
+	public ResPrefectureDetail findById(Long preId) {
 		ResPrefectureDetail detail = prefectureClusterMapper.findPrefectureById(preId);
 		int stallCount = stallClusterMapper.findCountByPreId(preId);
 		String lan = detail.getTimelyUnit();
