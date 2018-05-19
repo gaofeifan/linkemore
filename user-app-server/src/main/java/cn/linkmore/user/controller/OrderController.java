@@ -31,7 +31,7 @@ public class OrderController {
 	private OrderService orderService;
 	
 	@ApiOperation(value="预约下单",notes="车区ID不能为空", consumes = "application/json")
-	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/create", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> create(@RequestParam(value="prefectureId" ,required=true) Long prefectureId, HttpServletRequest request) {
 		ResponseEntity<?> response = null; 
@@ -47,7 +47,7 @@ public class OrderController {
 	}
 	
 	@ApiOperation(value="当前订单",notes="结账离场[组织数据,计算费用，计算时长]", consumes = "application/json")
-	@RequestMapping(value = "/v2.0", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/current", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<ResOrder> current(HttpServletRequest request) {
 		ResponseEntity<ResOrder> response = null; 
@@ -63,7 +63,7 @@ public class OrderController {
 	}
 	
 	@ApiOperation(value="降下地锁",notes="降下预约车位地锁[异步操作]", consumes = "application/json")
-	@RequestMapping(value = "/v2.0", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/down", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<?> downLock(HttpServletRequest request) {
 		ResponseEntity<ResOrder> response = null; 

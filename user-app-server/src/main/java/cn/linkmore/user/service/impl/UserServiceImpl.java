@@ -37,7 +37,6 @@ import cn.linkmore.user.request.ReqAuthSend;
 import cn.linkmore.user.request.ReqMobileBind;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.UserService;
-import cn.linkmore.util.JsonUtil;
 
 /**
  * Service实现 - 用户
@@ -119,7 +118,9 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		ResUserLogin rul = this.userClient.appLogin(rl.getMobile());
-		log.info("userClient.appLogin():{}",JsonUtil.toJson(rul));
+		if(rul==null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
+		} 
 		String key = UserCache.getCacheKey(request); 
 		ResUser ru = new ResUser();
 		ru.setId(rul.getId());
@@ -147,6 +148,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResUser login(String code, HttpServletRequest request) {
 		ResFans fans = this.appWechatClient.getFans(code);
+		if(fans==null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_LOGIN_ERROR);
+		} 
 		ReqUserAppfans ruaf = new ReqUserAppfans();
 		ruaf.setCreateTime(fans.getCreateTime());
 		ruaf.setHeadurl(fans.getHeadurl());
@@ -156,6 +160,9 @@ public class UserServiceImpl implements UserService {
 		ruaf.setStatus(fans.getStatus());
 		ruaf.setUnionid(fans.getUnionid());
 		ResUserLogin rul =this.userClient.wxLogin(ruaf);
+		if(rul==null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
+		} 
 		String key = UserCache.getCacheKey(request); 
 		ResUser ru = new ResUser();
 		ru.setId(rul.getId());

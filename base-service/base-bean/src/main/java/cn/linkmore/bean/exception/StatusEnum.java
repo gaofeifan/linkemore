@@ -19,7 +19,7 @@ public enum StatusEnum {
 	USER_APP_SMS_ERROR(9002003,"验证码错误"),
 	USER_APP_SMS_EXPIRED(9002003,"验证码已过期"), 
 	
-	 
+	ACCOUNT_USER_NOT_EXIST(8003000 ,"用户不存在"),
 	ACCOUNT_USER_MOBILE_EXIST(8003001 ,"手机号已被占用"),  
 	ACCOUNT_WECHAT_LOGIN_ERROR(8003002,"微信用户登录失败"), 
 	ACCOUNT_USER_LOCKED(8003003 ,"删除失败,车牌号不存在 "),

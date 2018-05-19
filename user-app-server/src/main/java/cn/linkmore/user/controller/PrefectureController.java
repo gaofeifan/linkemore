@@ -33,8 +33,8 @@ public class PrefectureController {
 	@Autowired
 	private PrefectureService prefectureService;
 	
-	@ApiOperation(value = "列表", notes = "根据城市ID及经伟度得到周边车区列表[因车区数量少，现为全部车区]", consumes = "application/json")
-	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
+	@ApiOperation(value = "地图列表", notes = "根据城市ID及经伟度得到周边车区列表[因车区数量少，现为全部车区]", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/map", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<List<ResPrefecture>> list(@RequestBody ReqPrefecture rp, HttpServletRequest request) {
 		ResponseEntity<List<ResPrefecture>> response = null;
