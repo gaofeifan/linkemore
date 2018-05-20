@@ -20,17 +20,20 @@ public interface StallService {
 	/**
 	 * 结账立场释放车位
 	 * @param stallId
+	 * @return true 车位锁升起成功 false 车位锁升起失败
 	 */
-	void checkout(Long stallId);
+	boolean checkout(Long stallId);
 	/**
 	 * 升锁操作
 	 * @param stallId
+	 * @return true 车位锁升起成功 false 车位锁升起失败
 	 */
-	void uplock(Long stallId);
+	boolean uplock(Long stallId);
 	/**
 	 * 降锁操作
 	 * @param stallId
+	 * @return true 车位锁降下成功 false 车位锁降下失败
 	 */
-	void downlock(Long stallId);
+	boolean downlock(Long stallId);
 	
 }

@@ -32,27 +32,27 @@ public interface StallClient {
 	
 	/**
 	 * 降锁操作
-	 * 
-	 * @param stallId Long
+	 * @param stallId
+	 * @return true 车位锁降下成功 false 车位锁降下失败
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method=RequestMethod.PUT)
-	public void downlock(@RequestParam("stallId") Long stallId);
+	public Boolean downlock(@RequestParam("stallId") Long stallId);
 	
 	/**
 	 * 升锁操作
-	 * 
-	 * @param stallId Long
+	 * @param stallId
+	 * @return true 车位锁升起成功 false 车位锁升起失败
 	 */
 	@RequestMapping(value = "/v2.0/uplock", method=RequestMethod.PUT)
-	public void uplock(@RequestParam("stallId") Long stallId);
+	public Boolean uplock(@RequestParam("stallId") Long stallId);
 	
 	/**
 	 * 结账立场释放车位
-	 * 
-	 * @param stallId Long
+	 * @param stallId
+	 * @return true 车位锁升起成功 false 车位锁升起失败
 	 */
 	@RequestMapping(value = "/v2.0/checkout", method=RequestMethod.PUT)
-	public void checkout(@RequestParam("stallId") Long stallId);
+	public Boolean checkout(@RequestParam("stallId") Long stallId);
 	
 	
 }
