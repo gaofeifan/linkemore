@@ -3,13 +3,11 @@ package cn.linkmore.user.service;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
-import cn.linkmore.prefecture.response.ResPrefectureDetail;
-import cn.linkmore.prefecture.response.ResPrefectureStrategy;
-import cn.linkmore.user.request.ReqPreCity;
 import cn.linkmore.user.request.ReqPrefecture;
 import cn.linkmore.user.response.ResPrefecture;
+import cn.linkmore.user.response.ResPrefectureDetail;
 import cn.linkmore.user.response.ResPrefectureList;
+import cn.linkmore.user.response.ResPrefectureStrategy;
 
 /**
  * Service接口 - 车区
