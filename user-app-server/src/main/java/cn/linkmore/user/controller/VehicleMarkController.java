@@ -77,7 +77,7 @@ public class VehicleMarkController{
 	 * @Version  v2.0
 	 */
 	@ApiOperation(value="根据id查询",notes="根据id查询车牌号详情", consumes = "application/json")
-	@RequestMapping(value = "/v2.0", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/by_id", method = RequestMethod.GET)
 	public ResponseEntity<?> selectById(@RequestParam("id") Long id,HttpServletRequest request) {
 		ResVechicleMark mark = this.vehicleMarkManageService.selectById(id);
 		return ResponseEntity.success(mark, request);
