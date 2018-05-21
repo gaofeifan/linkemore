@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,6 +61,6 @@ public interface StallClient {
 	 * 
 	 * @param stallId Long
 	 */
-	@RequestMapping(value = "/v2.0/stall", method=RequestMethod.GET)
-	public ResStallEntity findById(@RequestParam("stallId") Long stallId);
+	@RequestMapping(value = "/v2.0/{stallId}", method=RequestMethod.GET)
+	public ResStallEntity findById(@PathVariable("stallId") Long stallId);
 }

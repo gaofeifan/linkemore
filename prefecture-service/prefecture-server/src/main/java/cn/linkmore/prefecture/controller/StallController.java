@@ -3,6 +3,7 @@ package cn.linkmore.prefecture.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -84,8 +85,8 @@ public class StallController {
 	 * 
 	 * @param stallId Long
 	 */
-	@RequestMapping(value = "/v2.0/stall", method=RequestMethod.GET)
-	public ResStallEntity findById(@RequestParam("stallId") Long stallId) {
+	@RequestMapping(value = "/v2.0/{stallId}", method=RequestMethod.GET)
+	public ResStallEntity findById(@PathVariable("stallId") Long stallId) {
 		 ResStallEntity stallEntity = this.stallService.findById(stallId);
 		 return stallEntity;
 	}

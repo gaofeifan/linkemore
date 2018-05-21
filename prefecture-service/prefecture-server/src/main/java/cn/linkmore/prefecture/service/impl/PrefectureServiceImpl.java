@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import cn.linkmore.common.response.ResCity;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
-import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.fee.InitLockFactory;
@@ -33,7 +31,7 @@ import cn.linkmore.prefecture.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.util.ObjectUtils;
-import cn.linkmore.util.StringUtil;
+
 /**
  * Service实现类 - 车区信息
  * @author jiaohanbin
@@ -52,8 +50,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private FreeLockPool freeLockPool;
 	@Autowired
-	private PrefectureMasterMapper prefectureMasterMapper;
-	@Autowired
 	private UserStaffClient userStaff;
 	@Autowired
 	private CityClientHystrix cityClient;
@@ -62,21 +58,18 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public ResPrefectureDetail findById(Long preId) {
 		ResPrefectureDetail detail = new ResPrefectureDetail();
 		Prefecture pre = prefectureClusterMapper.findById(preId);
-		return ObjectUtils.copyObject(pre, detail);
+		if(pre != null) {
+			return ObjectUtils.copyObject(pre, detail);
+		}
+		return null;
 	}
 	@Override
 	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture,ResUser user) {
-		/*Map<String,Object> param = new HashMap<String,Object>();
-		param.put("latitude", reqPrefecture.getLatitude());
-		param.put("longitude", reqPrefecture.getLongitude());
-		*/
-		
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
 		//此处cityId暂时为空，返回所有的车区信息
 		paramMap.put("cityId", null);
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
-		 
 		if(user!=null){
 			ResUserStaff us = this.userStaff.selectById(user.getId());
 			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
@@ -142,7 +135,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		
 		ResPrefectureStrategy bean = null;
 		Prefecture prefecture = prefectureClusterMapper.findById(preId);
-		if(StringUtil.isNotBlank(prefecture)){
+		if(prefecture != null){
 			bean = new ResPrefectureStrategy();
 			StrategyBase strategyBase = strategyBaseClusterMapper.findById(prefecture.getStrategyId());
 			//当type大于4时，情况另行判断
