@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import cn.linkmore.bean.view.ViewPage;
-import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
@@ -20,7 +18,7 @@ import cn.linkmore.common.response.ResCity;
 public class CityClientHystrix implements CityClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Override
-	public ResCity find(@PathVariable("id") Long id) { 
+	public ResCity getById(@PathVariable("id") Long id) { 
 		log.info("common service citys find(Long id) hystrix");
 		return new ResCity();
 	}
@@ -30,12 +28,7 @@ public class CityClientHystrix implements CityClient {
 		log.info("common service citys find list(int start,int size) hystrix");
 		return new ArrayList<ResCity>();
 	} 
-	
-	@Override
-	public ViewPage list(@RequestBody ViewPageable pageable) {
-		log.info("common service citys find page( ViewPageable pageable) hystrix");
-		return null;
-	}
+	 
 	  
 	@Override
 	public void save(@RequestBody ReqCity reqCity) {
@@ -53,7 +46,7 @@ public class CityClientHystrix implements CityClient {
 	}
 
 	@Override
-	public ResCity findByCode(String code) {
+	public ResCity getByCode(String code) {
 		log.info("common service citys getByCode(Long code) hystrix");
 		return new ResCity();
 	};

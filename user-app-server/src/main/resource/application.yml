@@ -18,11 +18,7 @@ eureka:
       defaultZone: http://192.168.1.64:6003/eureka/ 
 feign:
   hystrix:
-    enabled: true 
-    
-ribbon:
-  ReadTimeout: 120000   
-  ConnectTimeout: 30000 
+    enabled: true  
 
 swagger:
   enable: true
