@@ -1,5 +1,6 @@
 package cn.linkmore.user.response;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @version 2.0
  *
  */
+@ApiModel("车区列表")
 public class ResPrefectureList {
 	@ApiModelProperty(value = "主键")
 	private Long id;

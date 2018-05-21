@@ -86,10 +86,10 @@ public class PrefectureController {
 	@ApiOperation(value = "城市车区", notes = "根据城市ID获取本市车区列表", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/city", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<List<ResPrefectureList>> city(@RequestBody ReqPreCity rp, HttpServletRequest request) {
+	public ResponseEntity<List<ResPrefectureList>> city(@RequestParam("cityId") Long cityId, HttpServletRequest request) {
 		ResponseEntity<List<ResPrefectureList>> response = null;
 		try { 
-			List<ResPrefectureList> list = this.prefectureService.findPreListByCityId(rp,request);
+			List<ResPrefectureList> list = this.prefectureService.findPreListByCityId(cityId,request);
 			response = ResponseEntity.success(list, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
