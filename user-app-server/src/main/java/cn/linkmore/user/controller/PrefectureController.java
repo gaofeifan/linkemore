@@ -88,11 +88,20 @@ public class PrefectureController {
 	 * @param preId Long
 	 * @return
 	 */
+	@ApiOperation(value = "空闲车位数", notes = "根据车区ID获取空闲车位数", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/free_count", method = RequestMethod.GET)
 	@ResponseBody
-	public Integer findFreeStallCount(@RequestParam(value="preId", required=true) Long preId) {
-		Integer count = this.prefectureService.findFreeStallCount(preId);
-		return count;
+	public ResponseEntity<Integer> findFreeStallCount(@RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
+		ResponseEntity<Integer> response = null ;  
+		try {
+			Integer count = this.prefectureService.findFreeStallCount(preId);
+			response = ResponseEntity.success(count, request);
+		}catch(BusinessException e){
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		}catch(Exception e){
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 	
 }
