@@ -12,10 +12,8 @@ import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.common.UserCache;
-import cn.linkmore.user.request.ReqPreCity;
 import cn.linkmore.user.request.ReqPrefecture;
 import cn.linkmore.user.response.ResPrefecture;
-import cn.linkmore.user.response.ResPrefectureDetail;
 import cn.linkmore.user.response.ResPrefectureList;
 import cn.linkmore.user.response.ResPrefectureStrategy;
 import cn.linkmore.user.response.ResUser;
@@ -51,14 +49,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 			resPrefecture = ObjectUtils.copyObject(preList.get(i), new ResPrefecture());
 			resPrefectureList.add(resPrefecture);
 		}
-		log.info("=================="+ resPrefectureList.size());
 		return resPrefectureList;
 	}
-	@Override
-	public ResPrefectureDetail findById(Long preId, HttpServletRequest request) {
-		cn.linkmore.prefecture.response.ResPrefectureDetail detail = this.preClient.findById(preId);
-		return ObjectUtils.copyObject(detail, new ResPrefectureDetail());
-	}
+	
 	@Override
 	public ResPrefectureStrategy findStrategyById(Long preId, HttpServletRequest request) {
 		cn.linkmore.prefecture.response.ResPrefectureStrategy strategy = this.preClient.findPreStrategy(preId);
@@ -80,7 +73,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 			resPrefecture = ObjectUtils.copyObject(preList.get(i), new ResPrefectureList());
 			resPrefectureList.add(resPrefecture);
 		}
-		log.info("=================="+ resPrefectureList.size());
 		return resPrefectureList;
 	}
 

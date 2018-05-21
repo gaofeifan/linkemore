@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.PrefectureClientHystrix;
@@ -72,4 +73,14 @@ public interface PrefectureClient {
 	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPrefecture> findPreListByLoc(@RequestBody ReqPrefecture reqPrefecture);
+	
+	/**
+	 * 根据车区id查询车区空闲车位
+	 * 
+	 * @param preId Long
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/free_count", method = RequestMethod.GET)
+	@ResponseBody
+	public Integer findFreeStallCount(@RequestParam("preId") Long preId);
 }

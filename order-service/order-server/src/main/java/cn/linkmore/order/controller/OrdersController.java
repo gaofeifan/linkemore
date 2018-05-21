@@ -41,4 +41,8 @@ public class OrdersController {
 	public ResUserOrder detail(@PathVariable("id") Long id){
 		return this.ordersService.detail(id);
 	}
+	@RequestMapping(value = "/v2.0/{id}/down", method = RequestMethod.PUT) 
+	public void down(@PathVariable("id") Long id){
+		this.ordersService.down(id);
+	} 
 }

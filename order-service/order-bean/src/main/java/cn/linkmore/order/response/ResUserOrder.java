@@ -21,10 +21,14 @@ public class ResUserOrder {
      * 车区id
      */
     private Long preId;
+    
+    private String preName;
     /**
      * 车位id
      */
     private Long stallId;
+    
+    private String stallName;
     /**
      * 订单编号
      */
@@ -60,19 +64,8 @@ public class ResUserOrder {
     /**
      * 车牌号
      */
-    private String plateNo;
-    /**
-     * 车位导航图
-     */
-    private String stallImage;
-    /**
-     * 车位位置描述
-     */
-    private String stallLocal;
-    /**
-     * 车位路线指引
-     */
-    private String stallGuidance;
+    private String plateNo; 
+     
     /**
      * 创建时间
      */
@@ -213,31 +206,7 @@ public class ResUserOrder {
 
     public void setPlateNo(String plateNo) {
         this.plateNo = plateNo == null ? null : plateNo.trim();
-    }
-
-    public String getStallImage() {
-        return stallImage;
-    }
-
-    public void setStallImage(String stallImage) {
-        this.stallImage = stallImage == null ? null : stallImage.trim();
-    }
-
-    public String getStallLocal() {
-        return stallLocal;
-    }
-
-    public void setStallLocal(String stallLocal) {
-        this.stallLocal = stallLocal == null ? null : stallLocal.trim();
-    }
-
-    public String getStallGuidance() {
-        return stallGuidance;
-    }
-
-    public void setStallGuidance(String stallGuidance) {
-        this.stallGuidance = stallGuidance == null ? null : stallGuidance.trim();
-    }
+    } 
 
     public Date getCreateTime() {
         return createTime;
@@ -310,5 +279,20 @@ public class ResUserOrder {
 	public void setStrategyId(Long strategyId) {
 		this.strategyId = strategyId;
 	}
-    
+
+	public String getPreName() {
+		return preName;
+	}
+
+	public void setPreName(String preName) {
+		this.preName = preName;
+	}
+
+	public String getStallName() {
+		return stallName;
+	}
+
+	public void setStallName(String stallName) {
+		this.stallName = stallName;
+	} 
 }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import cn.linkmore.prefecture.client.StallClient;
+import cn.linkmore.prefecture.response.ResStallEntity;
 /**
  * 远程调用实现 - 车位信息
  * @author jiaohanbin
@@ -15,14 +16,15 @@ public class StallClientHystrix implements StallClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public void order(String lockSn) {
+	public boolean order(String lockSn) {
 		log.info("prefecture service stall order(String lockSn) hystrix");
+		return false;
 	}
 
 	@Override
-	public void cancel(Long stallId) {
+	public boolean cancel(Long stallId) {
 		log.info("prefecture service stall cancel(Long stallId) hystrix");
-		
+		return false;
 	}
 
 	@Override
@@ -42,6 +44,10 @@ public class StallClientHystrix implements StallClient {
 		log.info("prefecture service stall checkout(Long stallId) hystrix");
 		return false;
 	}
-	
 
+	@Override
+	public ResStallEntity findById(Long stallId) {
+		log.info("prefecture service stall findById(Long stallId) hystrix");
+		return new ResStallEntity();
+	}
 }

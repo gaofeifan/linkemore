@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.cluster.TradeRecordClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.order.entity.TradeRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account_id" jdbcType="BIGINT" property="accountId" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="trade_amount" jdbcType="DECIMAL" property="tradeAmount" />
+    <result column="payment_amount" jdbcType="DECIMAL" property="paymentAmount" />
+    <result column="biz_id" jdbcType="BIGINT" property="bizId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="trade_id" jdbcType="BIGINT" property="tradeId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, account_id, type, trade_amount, payment_amount, biz_id, code, trade_id, create_time, 
+    update_time
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_acc_trade_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+</mapper>

@@ -25,4 +25,8 @@ public class OrderClientHystrix implements OrderClient {
 	public ResUserOrder detail(@PathVariable("id") Long id){
 		return null;
 	}
+	 
+	public void down(@PathVariable("id") Long id) {
+		throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
+	}
 }

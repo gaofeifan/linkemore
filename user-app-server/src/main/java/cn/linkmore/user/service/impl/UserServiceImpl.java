@@ -3,7 +3,9 @@ package cn.linkmore.user.service.impl;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +69,8 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private RedisService redisService;
 	
+	private final static long SPACE = 1000L*60*30;
+	
 	private final static String TEST_MOBILE= "18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
 
 	@Override
@@ -75,7 +79,7 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		}
 		long space = new Date().getTime()-rs.getTimestamp(); 
-		if(space>100000||space<-100000) {
+		if(space>SPACE||space<-SPACE) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		}
 		if(this.redisService.exists(RedisKey.USER_APP_AUTH_MOBILE+rs.getMobile())) {

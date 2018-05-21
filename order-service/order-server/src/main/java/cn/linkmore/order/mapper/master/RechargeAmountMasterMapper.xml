@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.master.RechargeAmountMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.order.entity.RechargeAmount">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="payment" jdbcType="DECIMAL" property="payment" />
+    <result column="gift" jdbcType="DECIMAL" property="gift" />
+    <result column="order_index" jdbcType="SMALLINT" property="orderIndex" />
+    <result column="checked" jdbcType="BIT" property="checked" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, payment, gift, order_index, checked, status
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_acc_recharge_amount
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.order.entity.RechargeAmount">
+    insert into t_acc_recharge_amount (id, payment, gift, 
+      order_index, checked, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{payment,jdbcType=DECIMAL}, #{gift,jdbcType=DECIMAL}, 
+      #{orderIndex,jdbcType=SMALLINT}, #{checked,jdbcType=BIT}, #{status,jdbcType=SMALLINT}
+      )
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.order.entity.RechargeAmount">
+    update t_acc_recharge_amount
+    set payment = #{payment,jdbcType=DECIMAL},
+      gift = #{gift,jdbcType=DECIMAL},
+      order_index = #{orderIndex,jdbcType=SMALLINT},
+      checked = #{checked,jdbcType=BIT},
+      status = #{status,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.master.TradeRecordMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.order.entity.TradeRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account_id" jdbcType="BIGINT" property="accountId" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="trade_amount" jdbcType="DECIMAL" property="tradeAmount" />
+    <result column="payment_amount" jdbcType="DECIMAL" property="paymentAmount" />
+    <result column="biz_id" jdbcType="BIGINT" property="bizId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="trade_id" jdbcType="BIGINT" property="tradeId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, account_id, type, trade_amount, payment_amount, biz_id, code, trade_id, create_time, 
+    update_time
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_acc_trade_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.order.entity.TradeRecord">
+    insert into t_acc_trade_record (id, account_id, type, 
+      trade_amount, payment_amount, biz_id, 
+      code, trade_id, create_time, 
+      update_time)
+    values (#{id,jdbcType=BIGINT}, #{accountId,jdbcType=BIGINT}, #{type,jdbcType=SMALLINT}, 
+      #{tradeAmount,jdbcType=DECIMAL}, #{paymentAmount,jdbcType=DECIMAL}, #{bizId,jdbcType=BIGINT}, 
+      #{code,jdbcType=VARCHAR}, #{tradeId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="update" parameterType="cn.linkmore.order.entity.TradeRecord">
+    update t_acc_trade_record
+    set account_id = #{accountId,jdbcType=BIGINT},
+      type = #{type,jdbcType=SMALLINT},
+      trade_amount = #{tradeAmount,jdbcType=DECIMAL},
+      payment_amount = #{paymentAmount,jdbcType=DECIMAL},
+      biz_id = #{bizId,jdbcType=BIGINT},
+      code = #{code,jdbcType=VARCHAR},
+      trade_id = #{tradeId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

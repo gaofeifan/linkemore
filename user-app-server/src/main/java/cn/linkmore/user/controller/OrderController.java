@@ -65,9 +65,10 @@ public class OrderController {
 	@ApiOperation(value="降下地锁",notes="降下预约车位地锁[异步操作]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/down", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> downLock(HttpServletRequest request) {
+	public ResponseEntity<?> downLock(@RequestParam("stallId")Long stallId,HttpServletRequest request) {
 		ResponseEntity<ResOrder> response = null; 
 		try {  
+			this.orderService.down(stallId, request);
 			response = ResponseEntity.success(null, request);
 		}catch(BusinessException e){
 			response = ResponseEntity.fail(e.getStatusEnum(), request); 

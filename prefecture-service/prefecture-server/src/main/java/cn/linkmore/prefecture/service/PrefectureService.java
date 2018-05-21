@@ -53,5 +53,11 @@ public interface PrefectureService {
 	 * @return
 	 */
 	List<ResPre> findList(List<Long> ids);
+	/**
+	 * 根据车区id查询空闲车位数量
+	 * @param preId
+	 * @return
+	 */
+	Integer getStallCount(Long preId);
 
 }
