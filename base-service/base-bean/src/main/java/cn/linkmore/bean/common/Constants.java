@@ -93,22 +93,22 @@ public class Constants {
 
 	public enum OperateStatus {
 		FAILURE(0, "失败"), SUCCESS(1, "成功");
-		public int code;
+		public int status;
 		public String label;
 
-		private OperateStatus(int code, String label) {
-			this.code = code;
+		private OperateStatus(int status, String label) {
+			this.status = status;
 			this.label = label;
 		}
 	}
 
 	public enum OperateSource {
 		OPS(1, "后台操作"), STAFF_APP(2, "管理版APP"), USER_APP(3, "个人版APP");
-		public int code;
+		public int source;
 		public String label;
 
-		private OperateSource(int code, String label) {
-			this.code = code;
+		private OperateSource(int source, String label) {
+			this.source = source;
 			this.label = label;
 		}
 	}
@@ -139,13 +139,16 @@ public class Constants {
 	}
 
 	public enum RedisKey {
-		USER_APP_AUTH_TOKEN("user_app:auth:uid:"), USER_APP_AUTH_USER("user_app:auth:user:"), USER_APP_AUTH_CODE(
-				"user_app:auth:code:"), USER_APP_AUTH_MOBILE("user_app:auth:mobile:"), USER_APP_USER_CODE(
-						"user_app:user:code:"), USER_APP_USER_MOBILE(
-								"user_app:user:mobile:"), COMMON_CAR_BRAND_LIST("common:car_brand:list"),
-
-		COUPON_TEMPLATE_CONDITION_USETIME("coupon:temp:condition:time:"), COUPON_TEMPLATE_CONDITION_PREIDS(
-				"coupon:temp:condition:pid:");
+		USER_APP_AUTH_TOKEN("user_app:auth:uid:"), 
+		USER_APP_AUTH_USER("user_app:auth:user:"), 
+		USER_APP_AUTH_CODE("user_app:auth:code:"), 
+		USER_APP_AUTH_MOBILE("user_app:auth:mobile:"), 
+		USER_APP_USER_CODE("user_app:user:code:"), 
+		USER_APP_USER_MOBILE("user_app:user:mobile:"), 
+		COMMON_CAR_BRAND_LIST("common:car_brand:list"), 
+		COUPON_TEMPLATE_CONDITION_USETIME("coupon:temp:condition:time:"), 
+		COUPON_TEMPLATE_CONDITION_PREIDS( "coupon:temp:condition:pid:"),
+		ORDER_ASSIGN_STALL("assign_lock");
 		public String key;
 
 		private RedisKey(String key) {

@@ -26,4 +26,7 @@ public interface OrderClient {
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserOrder detail(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/v2.0/{id}/down", method = RequestMethod.PUT) 
+	public void down(@PathVariable("id") Long id);
 }
