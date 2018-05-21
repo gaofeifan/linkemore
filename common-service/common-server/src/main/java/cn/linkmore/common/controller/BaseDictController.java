@@ -1,14 +1,12 @@
 package cn.linkmore.common.controller;
-
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
+import cn.linkmore.common.request.ReqBaseDict;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.service.BaseDictService;
 
@@ -35,5 +33,21 @@ public class BaseDictController {
 		List<ResBaseDict> res = this.baseDictService.selectList(code);
 		return res;
 	}
+	
+	@RequestMapping(method=RequestMethod.POST)
+	public void save(@RequestBody ReqBaseDict baseDict) {
+		this.baseDictService.save(baseDict);
+	}
+
+	@RequestMapping(method=RequestMethod.PUT)
+	public void update(@RequestBody ReqBaseDict baseDict) {
+		this.baseDictService.updateByIdSelective(baseDict);
+	}
+	
+	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
+	public void update(@PathVariable("id") Long id) {
+		this.baseDictService.deleteById(id);
+	}
+	
 
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.linkmore.common.client.hystrix.BeanVersionClientHystrix;
+import cn.linkmore.common.client.hystrix.BaseVersionClientHystrix;
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.feign.FeignConfiguration;
@@ -18,8 +18,8 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "common-server", path = "/version", fallback=BeanVersionClientHystrix.class,configuration = FeignConfiguration.class)
-public interface BeanVersionClient {
+@FeignClient(value = "common-server", path = "/version", fallback=BaseVersionClientHystrix.class,configuration = FeignConfiguration.class)
+public interface BaseVersionClient {
 	
 	/**
 	 * @Description  当前版本
@@ -29,7 +29,7 @@ public interface BeanVersionClient {
 	 */
 	@RequestMapping(value="/current/{source}",method = RequestMethod.GET)
 	@ResponseBody
-	public ResVersionBean current(@PathVariable("source")Short source);
+	public ResVersionBean current(@PathVariable("source")Integer source);
 	
 	/**
 	 * @Description  上报用户版本 

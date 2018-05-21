@@ -7,6 +7,8 @@ import cn.linkmore.annotation.GTable;
 public class ResVechicleMark {
 	@GColumn
 	private Long id;
+	
+	private Long userId;
 
 	@GColumn
 	private String vehMark;
@@ -25,6 +27,14 @@ public class ResVechicleMark {
 
 	public void setVehMark(String vehMark) {
 		this.vehMark = vehMark;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 }

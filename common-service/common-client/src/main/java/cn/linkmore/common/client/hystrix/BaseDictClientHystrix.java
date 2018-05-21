@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import cn.linkmore.common.client.BaseDictClient;
+import cn.linkmore.common.request.ReqBaseDict;
 import cn.linkmore.common.response.ResBaseDict;
 
 /**
@@ -26,4 +27,20 @@ public class BaseDictClientHystrix implements BaseDictClient {
 		return null;
 	}
 
+	@Override
+	public void save(ReqBaseDict baseDict) {
+		
+	}
+
+	@Override
+	public void update(ReqBaseDict baseDict) {
+		
+	}
+
+	@Override
+	public void update(Long id) {
+		
+	}
+
+	
 }

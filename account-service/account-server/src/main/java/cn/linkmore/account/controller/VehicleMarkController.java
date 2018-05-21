@@ -58,5 +58,15 @@ public class VehicleMarkController{
 		return vehicleMarkManageService.selectResList(userId);
 	}
 	
+	/**
+	 * @Description  根据id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
+	public ResVechicleMark selectById(@PathVariable("id") Long id) {
+		return this.vehicleMarkManageService.selectById(id);
+	}
+	
 	
 }

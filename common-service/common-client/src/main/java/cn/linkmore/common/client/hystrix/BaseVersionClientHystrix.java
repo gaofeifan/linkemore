@@ -6,16 +6,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import cn.linkmore.common.client.BeanVersionClient;
+import cn.linkmore.common.client.BaseVersionClient;
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 
 @Component
-public class BeanVersionClientHystrix implements BeanVersionClient {
+public class BaseVersionClientHystrix implements BaseVersionClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public ResVersionBean current(@PathVariable("source") Short source) {
+	public ResVersionBean current(@PathVariable("source") Integer source) {
 		return null;
 	}
 

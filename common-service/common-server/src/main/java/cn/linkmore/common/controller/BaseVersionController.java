@@ -35,7 +35,7 @@ public class BaseVersionController {
 	 */
 	@RequestMapping(value="/current/{source}",method = RequestMethod.GET)
 	@ResponseBody
-	public ResVersionBean current(@PathVariable("source")Short source){
+	public ResVersionBean current(@PathVariable("source")Integer source){
 		int appType = 0;
 		if(Constants.ClientSource.ANDROID.source == source){
 			appType = 1;
@@ -48,8 +48,8 @@ public class BaseVersionController {
 	
 	/**
 	 * @Description  上报用户版本
-	 * @Author   GFF 
-	 * @Version  v2.0
+	 * @Author  	 GFF 
+	 * @Version  	 v2.0
 	 */
 	@RequestMapping(value="/report",method = RequestMethod.GET)
 	public void report(@RequestBody ReqVersion vrb){

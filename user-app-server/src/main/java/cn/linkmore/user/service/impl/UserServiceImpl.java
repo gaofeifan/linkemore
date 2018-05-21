@@ -264,7 +264,7 @@ public class UserServiceImpl implements UserService {
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
 		ReqUpdateNickname nick = new ReqUpdateNickname();
 		nick.setNickname(nickname);
-		nick.setUserId(ru.getId());
+		nick.setUserId(2752L);
 		this.userClient.updateNickname(nick);
 	}
 	@Override
