@@ -2,25 +2,22 @@ package cn.linkmore.user.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.prefecture.client.PrefectureClient;
-import cn.linkmore.prefecture.response.ResPrefectureDetail;
-import cn.linkmore.prefecture.response.ResPrefectureStrategy;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.common.UserCache;
 import cn.linkmore.user.request.ReqPreCity;
 import cn.linkmore.user.request.ReqPrefecture;
 import cn.linkmore.user.response.ResPrefecture;
+import cn.linkmore.user.response.ResPrefectureDetail;
 import cn.linkmore.user.response.ResPrefectureList;
+import cn.linkmore.user.response.ResPrefectureStrategy;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.PrefectureService;
 import cn.linkmore.util.ObjectUtils;
