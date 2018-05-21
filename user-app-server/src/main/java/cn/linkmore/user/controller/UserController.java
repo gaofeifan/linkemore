@@ -3,7 +3,6 @@ package cn.linkmore.user.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.account.request.ReqUpdateNickname;
-import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
@@ -59,14 +57,7 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> sms(@RequestParam(value="mobile" ,required=true) String mobile,HttpServletRequest request){
 		ResponseEntity<?> response = null; 
-		try {
-			this.userService.send(mobile,request);
-			response = ResponseEntity.success(null, request);
-		}catch(BusinessException e){
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		}catch(Exception e){
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
+		this.userService.send(mobile,request);
 		return response;
 	}
 	
@@ -76,10 +67,12 @@ public class UserController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
+	@ApiOperation(value="更新昵称",notes="昵称不能为空，用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/nickname", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateNickname(@RequestBody ReqUpdateNickname nickname) {
-		this.userService.updateNickname(nickname);
+	public ResponseEntity<?> updateNickname(@RequestParam("nickname") String nickname,HttpServletRequest request) {
+		this.userService.updateNickname(nickname,request);
+		return new ResponseEntity<>();
 	}
 	
 	/**
@@ -87,21 +80,25 @@ public class UserController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
+	@ApiOperation(value="更新性别",notes="性别不能为空，用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/sex", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateSex(@RequestBody ReqUpdateSex sex) {
-		this.userService.updateSex(sex);
+	public ResponseEntity<?> updateSex(@RequestParam("sex") Integer sex,HttpServletRequest request) {
+		this.userService.updateSex(sex,request);
+		return new ResponseEntity<>();
 	}
 	
 	/**
-	 * @Description  更新车牌
+	 * @Description  更新车牌号
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
+	@ApiOperation(value="更新车牌号",notes="车牌号不能为空，用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/vehicle", method = RequestMethod.PUT)
 	@ResponseBody
-	public void updateVehicle(@RequestBody ReqUpdateVehicle req) {
-		this.userService.updateVehicle(req);
+	public ResponseEntity<?> updateVehicle(@RequestBody ReqUpdateVehicle vehicle,HttpServletRequest request) {
+		this.userService.updateVehicle(vehicle,request);
+		return new ResponseEntity<>();
 	}
 	
 	
@@ -110,11 +107,14 @@ public class UserController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/detail/{userId}", method = RequestMethod.GET)
+	@ApiOperation(value="查询详情",notes="用户需要登录", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
 	@ResponseBody
-	public ResUserDetails detail(@PathVariable Long userId) {
-		ResUserDetails res = this.userService.detail(userId); 
-		return res;
+	public ResponseEntity<?> detail(HttpServletRequest request) {
+		ResUserDetails details = this.userService.detail(request);
+		ResponseEntity<ResUserDetails> response = new ResponseEntity<>();
+		response.setData(details);
+		return response;
 	}
 	
 	/**
@@ -122,10 +122,13 @@ public class UserController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/wechat/{userId}", method = RequestMethod.DELETE)
+	@ApiOperation(value="删除微信号",notes="用户需要登录", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.DELETE)
 	@ResponseBody
-	public void removeWechat(@PathVariable Long userId) {
-		this.userService.removeWechat(userId);
+	public ResponseEntity<?> removeWechat(HttpServletRequest request) {
+		this.userService.removeWechat(request);
+		ResponseEntity<?> response = ResponseEntity.success(null, request);
+		return response;
 	}
 	
 	/**
@@ -133,9 +136,13 @@ public class UserController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/mobile/{mobile}", method = RequestMethod.GET)
-	public void selectByMobile(@PathVariable String mobile) {
-		this.userService.selectByMobile(mobile);
+	@ApiOperation(value="根据手机号查询",notes="用户需要登录", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/mobile", method = RequestMethod.GET)
+	public ResponseEntity<?> selectByMobile(@RequestParam("mobile") String mobile,HttpServletRequest request) {
+		ResponseEntity<?> response = null; 
+		ResUser user = this.userService.selectByMobile(mobile);
+		response = ResponseEntity.success(user, request);
+		return response;
 	}
 	
 }

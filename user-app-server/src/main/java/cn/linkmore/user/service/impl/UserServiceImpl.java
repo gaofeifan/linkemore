@@ -258,24 +258,41 @@ public class UserServiceImpl implements UserService {
 		} 
 	}
 	@Override
-	public void updateNickname(ReqUpdateNickname nickname) {
-		this.userClient.updateNickname(nickname);
+	public void updateNickname(String nickname, HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ReqUpdateNickname nick = new ReqUpdateNickname();
+		nick.setNickname(nickname);
+		nick.setUserId(ru.getId());
+		this.userClient.updateNickname(nick);
 	}
 	@Override
-	public void updateSex(ReqUpdateSex sex) {
-		this.userClient.updateSex(sex);
+	public void updateSex(Integer sex, HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ReqUpdateSex req = new ReqUpdateSex();
+		req.setSex(sex);
+		req.setUserId(ru.getId());
+		this.userClient.updateSex(req);
 	}
 	@Override
-	public void updateVehicle(ReqUpdateVehicle req) {
-		this.userClient.updateVehicle(req);
+	public void updateVehicle(ReqUpdateVehicle vehicle, HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		vehicle.setUserId(ru.getId());
+		this.userClient.updateVehicle(vehicle);
 	}
 	@Override
-	public ResUserDetails detail(Long userId) {
-		return this.detail(userId);
+	public ResUserDetails detail(HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		return this.userClient.detail(ru.getId());
 	}
 	@Override
-	public void removeWechat(Long userId) {
-		this.userClient.removeWechat(userId);
+	public void removeWechat(HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		this.userClient.removeWechat(ru.getId());
 	}
 	
 	@Override

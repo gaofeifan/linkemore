@@ -50,8 +50,8 @@ public class VehicleMarkController{
 	
 	/**
 	 * @Description  列表
-	 * @Author  	 GFF 
-	 * @Version  	 v2.0
+	 * @Author   GFF 
+	 * @Version  v2.0
 	 */
 	@RequestMapping(value = "/v2.0/{userId}", method = RequestMethod.GET)
 	public List<ResVechicleMark> list(@PathVariable("userId")Long userId){
