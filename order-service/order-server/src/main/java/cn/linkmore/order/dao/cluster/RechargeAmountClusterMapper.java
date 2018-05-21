@@ -1,7 +1,9 @@
 package cn.linkmore.order.dao.cluster;
 
-import cn.linkmore.order.entity.RechargeAmount;
+import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.order.entity.RechargeAmount;
+@Mapper
 public interface RechargeAmountClusterMapper {
 
     RechargeAmount findById(Long id);

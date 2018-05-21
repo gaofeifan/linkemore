@@ -1,7 +1,12 @@
 package cn.linkmore.order.entity;
 
 import java.util.Date;
-
+/**
+ * 预约记录
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class Booking {
     private Long id;
 

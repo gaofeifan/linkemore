@@ -1,7 +1,9 @@
 package cn.linkmore.order.dao.cluster;
 
-import cn.linkmore.order.entity.AccountHistory;
+import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.order.entity.AccountHistory;
+@Mapper
 public interface AccountHistoryClusterMapper {
 
     AccountHistory findById(Long id);

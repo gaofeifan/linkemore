@@ -2,7 +2,11 @@ package cn.linkmore.order.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
+/**
+ * 订单信息
+ * @author jiaohanbin
+ * @version 2.0
+ */
 public class Orders {
 	/**
 	 * 主键
