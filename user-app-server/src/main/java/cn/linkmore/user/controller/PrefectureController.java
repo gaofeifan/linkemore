@@ -83,7 +83,7 @@ public class PrefectureController {
 	} 
 	
 	@ApiOperation(value = "城市车区", notes = "根据城市ID获取本市车区列表", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/city", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/city", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<ResPrefectureList>> city(@RequestParam("cityId") Long cityId, HttpServletRequest request) {
 		ResponseEntity<List<ResPrefectureList>> response = null;
@@ -97,8 +97,5 @@ public class PrefectureController {
 		}
 		return response;
 	} 
-	
-	
-	
 	
 }

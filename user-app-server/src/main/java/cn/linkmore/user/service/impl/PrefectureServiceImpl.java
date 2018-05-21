@@ -12,7 +12,6 @@ import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.common.UserCache;
-import cn.linkmore.user.request.ReqPreCity;
 import cn.linkmore.user.request.ReqPrefecture;
 import cn.linkmore.user.response.ResPrefecture;
 import cn.linkmore.user.response.ResPrefectureDetail;
