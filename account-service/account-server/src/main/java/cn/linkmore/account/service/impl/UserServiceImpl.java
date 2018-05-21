@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
@@ -32,6 +31,7 @@ import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.util.ObjectUtils;
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
 			param.put("mobile",bean.getMobile());
 			this.userMasterMapper.updateMobile(param);
 		} else {
-			throw new BusinessException();
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
 		}
 	}
 

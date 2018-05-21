@@ -65,6 +65,14 @@ public interface UserClient {
 	public ResUserDetails detail(@PathVariable("userId") Long userId) ;
 	
 	/**
+	 * @Description  根据手机号查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/mobile/{mobile}", method = RequestMethod.GET)
+	public ResUser selectByMobile(@PathVariable("mobile") String mobile);
+	
+	/**
 	 * @Description  发送短信
 	 * @Author   GFF 
 	 * @Version  v2.0

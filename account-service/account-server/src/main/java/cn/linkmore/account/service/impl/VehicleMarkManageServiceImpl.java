@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
@@ -16,6 +17,7 @@ import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.account.service.VehicleMarkManageService;
 import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.util.ObjectUtils;
 @Service
 public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
@@ -33,14 +35,15 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	}
 
 	@Override
+	@Transactional
 	public void save(ReqVehicleMark bean) {
 		ResUser user = this.userService.getUserCacheKey(bean.getUserId());
 		List<VehicleMarkManage> list = this.selectByUserId(user.getId());
-		if(list.size() < 3){
+		if(list.size() < 4){
 			//检查车牌号是否已经存在
 			List<String> fieldVlaue = ObjectUtils.findFieldVlaue(list, "vehMark", new String[]{"vehMark"}, new String[] {bean.getVehMark()});
 			if(fieldVlaue.size() > 0){
-				throw new BusinessException();
+				throw new BusinessException(StatusEnum.ACCOUNT_PLATE_EXISTS);
 			}else{
 				VehicleMarkManage manage = new VehicleMarkManage();
 				manage.setVehUserId(user.getId().toString());
@@ -51,10 +54,11 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				return;
 			}
 		}
-		throw new BusinessException();
+		throw new BusinessException(StatusEnum.ACCOUNT_PLATE_LIMIT);
 	}
 
 	@Override
+	@Transactional
 	public void deleteById(Long id) {
 		this.vehicleMarkManageMasterMapper.deleteById(id);
 	}

@@ -2,9 +2,7 @@ package cn.linkmore.common.service;
 
 import java.util.List;
 
-import cn.linkmore.bean.view.ViewPage;
-import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.common.entity.District;
+import cn.linkmore.common.response.ResBaseDict;
 
 /**
  * Service接口 - 区域信息
@@ -13,6 +11,8 @@ import cn.linkmore.common.entity.District;
  *
  */
 public interface BaseDictService {
+
+	List<ResBaseDict> selectList(String code);
 
 
 }

@@ -85,7 +85,7 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 				fans.setUserId(user.getId()); 
 				this.userAppfansMasterMapper.updateByIdSelective(fans);
 			}
-		} 
+		}
 		if(user==null){
 			user = new User();
 			user.setMobile(fans.getId());
