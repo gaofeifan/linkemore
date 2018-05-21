@@ -100,7 +100,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Map<String,Object> paramMap = new HashMap<>();
 		//如果传城市id为-1 获取杭州的专区数据
 		if(cityId == -1){
-			ResCity city = this.cityClient.findByCode("330100");
+			ResCity city = this.cityClient.getByCode("330100");
 			paramMap.put("cityId", city.getId());
 		}else{
 			paramMap.put("cityId", cityId);
