@@ -13,11 +13,15 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
+import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.lock.FreeLockPool;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
+import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.fee.InitLockFactory;
 import cn.linkmore.prefecture.service.StallService;
+import cn.linkmore.util.ObjectUtils;
 /**
  * Service实现类 - 车位信息
  * @author jiaohanbin
@@ -118,6 +122,13 @@ public class StallServiceImpl implements StallService {
 	public List<ResStall> findStallsByPreId(Long preId) {
 		List<ResStall> resStall = stallClusterMapper.findStallsByPreId(preId);
 		return resStall;
+	}
+
+	@Override
+	public ResStallEntity findById(Long stallId) {
+		ResStallEntity detail = new ResStallEntity();
+		Stall stall = stallClusterMapper.findById(stallId);
+		return ObjectUtils.copyObject(stall, detail);
 	}
 	
 }
