@@ -20,6 +20,7 @@ import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.util.ObjectUtils;
 @Service
 public class UserAppfansServiceImpl implements UserAppfansService {
@@ -117,7 +118,7 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 			fans.setUserId(user.getId());
 			this.userAppfansMasterMapper.updateByIdSelective(fans);
 		}  else if(user.getStatus().equals("2")){
-			throw new BusinessException();
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {
 			user.setLastLoginTime(new Date());
 			Map<String,Object> param = new HashMap<String,Object>();

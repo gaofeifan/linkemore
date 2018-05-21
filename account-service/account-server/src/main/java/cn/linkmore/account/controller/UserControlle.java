@@ -163,7 +163,4 @@ public class UserControlle {
 	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans) {
 		return userAppfansService.wxLogin(appfans);
 	}
-	
-	
-	
 }

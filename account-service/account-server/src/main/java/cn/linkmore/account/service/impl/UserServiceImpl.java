@@ -251,7 +251,7 @@ public class UserServiceImpl implements UserService {
 			account.setCreateTime(new Date());
 			accountMasterMapper.insert(account);
 		} else if (user.getStatus().equals("2")) {
-			throw new BusinessException();
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {
 			user.setLastLoginTime(new Date());
 			Map<String, Object> param = new HashMap<String, Object>();
