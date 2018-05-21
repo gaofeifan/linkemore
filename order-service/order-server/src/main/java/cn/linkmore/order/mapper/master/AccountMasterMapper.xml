@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.master.AccountMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.order.entity.Account">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="usable_amount" jdbcType="DECIMAL" property="usableAmount" />
+    <result column="frozen_amount" jdbcType="DECIMAL" property="frozenAmount" />
+    <result column="recharge_amount" jdbcType="DECIMAL" property="rechargeAmount" />
+    <result column="rechage_payment_amount" jdbcType="DECIMAL" property="rechagePaymentAmount" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="order_payment_amount" jdbcType="DECIMAL" property="orderPaymentAmount" />
+    <result column="gift_amount" jdbcType="DECIMAL" property="giftAmount" />
+    <result column="gift_total_amount" jdbcType="DECIMAL" property="giftTotalAmount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="acc_type" jdbcType="INTEGER" property="accType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, amount, usable_amount, frozen_amount, recharge_amount, rechage_payment_amount, 
+    status, order_amount, order_payment_amount, gift_amount, gift_total_amount, create_time, 
+    update_time, acc_type
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_acc_account
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.order.entity.Account">
+    insert into t_acc_account (id, amount, usable_amount, 
+      frozen_amount, recharge_amount, rechage_payment_amount, 
+      status, order_amount, order_payment_amount, 
+      gift_amount, gift_total_amount, create_time, 
+      update_time, acc_type)
+    values (#{id,jdbcType=BIGINT}, #{amount,jdbcType=DECIMAL}, #{usableAmount,jdbcType=DECIMAL}, 
+      #{frozenAmount,jdbcType=DECIMAL}, #{rechargeAmount,jdbcType=DECIMAL}, #{rechagePaymentAmount,jdbcType=DECIMAL}, 
+      #{status,jdbcType=SMALLINT}, #{orderAmount,jdbcType=DECIMAL}, #{orderPaymentAmount,jdbcType=DECIMAL}, 
+      #{giftAmount,jdbcType=DECIMAL}, #{giftTotalAmount,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{accType,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.order.entity.Account">
+    update t_acc_account
+    set amount = #{amount,jdbcType=DECIMAL},
+      usable_amount = #{usableAmount,jdbcType=DECIMAL},
+      frozen_amount = #{frozenAmount,jdbcType=DECIMAL},
+      recharge_amount = #{rechargeAmount,jdbcType=DECIMAL},
+      rechage_payment_amount = #{rechagePaymentAmount,jdbcType=DECIMAL},
+      status = #{status,jdbcType=SMALLINT},
+      order_amount = #{orderAmount,jdbcType=DECIMAL},
+      order_payment_amount = #{orderPaymentAmount,jdbcType=DECIMAL},
+      gift_amount = #{giftAmount,jdbcType=DECIMAL},
+      gift_total_amount = #{giftTotalAmount,jdbcType=DECIMAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      acc_type = #{accType,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

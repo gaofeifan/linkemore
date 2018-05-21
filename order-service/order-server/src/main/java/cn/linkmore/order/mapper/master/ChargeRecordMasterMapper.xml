@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.master.ChargeRecordMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.order.entity.ChargeRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="account_id" jdbcType="BIGINT" property="accountId" />
+    <result column="package_id" jdbcType="BIGINT" property="packageId" />
+    <result column="package_amount" jdbcType="DECIMAL" property="packageAmount" />
+    <result column="charge_amount" jdbcType="DECIMAL" property="chargeAmount" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="recharge_record_id" jdbcType="BIGINT" property="rechargeRecordId" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="attach_url" jdbcType="VARCHAR" property="attachUrl" />
+    <result column="verify" jdbcType="BIT" property="verify" />
+    <result column="verifier_id" jdbcType="BIGINT" property="verifierId" />
+    <result column="verify_date" jdbcType="TIMESTAMP" property="verifyDate" />
+    <result column="verify_status" jdbcType="BIT" property="verifyStatus" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="verify_time" jdbcType="TIMESTAMP" property="verifyTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, mobile, account_id, package_id, package_amount, charge_amount, description, 
+    create_time, recharge_record_id, operator_id, attach_url, verify, verifier_id, verify_date, 
+    verify_status, update_time, verify_time
+  </sql>
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from t_acc_charge_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.order.entity.ChargeRecord">
+    insert into t_acc_charge_record (id, code, mobile, 
+      account_id, package_id, package_amount, 
+      charge_amount, description, create_time, 
+      recharge_record_id, operator_id, attach_url, 
+      verify, verifier_id, verify_date, 
+      verify_status, update_time, verify_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+      #{accountId,jdbcType=BIGINT}, #{packageId,jdbcType=BIGINT}, #{packageAmount,jdbcType=DECIMAL}, 
+      #{chargeAmount,jdbcType=DECIMAL}, #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{rechargeRecordId,jdbcType=BIGINT}, #{operatorId,jdbcType=BIGINT}, #{attachUrl,jdbcType=VARCHAR}, 
+      #{verify,jdbcType=BIT}, #{verifierId,jdbcType=BIGINT}, #{verifyDate,jdbcType=TIMESTAMP}, 
+      #{verifyStatus,jdbcType=BIT}, #{updateTime,jdbcType=TIMESTAMP}, #{verifyTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+ 
+  <update id="update" parameterType="cn.linkmore.order.entity.ChargeRecord">
+    update t_acc_charge_record
+    set code = #{code,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      account_id = #{accountId,jdbcType=BIGINT},
+      package_id = #{packageId,jdbcType=BIGINT},
+      package_amount = #{packageAmount,jdbcType=DECIMAL},
+      charge_amount = #{chargeAmount,jdbcType=DECIMAL},
+      description = #{description,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      recharge_record_id = #{rechargeRecordId,jdbcType=BIGINT},
+      operator_id = #{operatorId,jdbcType=BIGINT},
+      attach_url = #{attachUrl,jdbcType=VARCHAR},
+      verify = #{verify,jdbcType=BIT},
+      verifier_id = #{verifierId,jdbcType=BIGINT},
+      verify_date = #{verifyDate,jdbcType=TIMESTAMP},
+      verify_status = #{verifyStatus,jdbcType=BIT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      verify_time = #{verifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

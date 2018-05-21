@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.master.RechargeRecordMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.order.entity.RechargeRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="account_id" jdbcType="BIGINT" property="accountId" />
+    <result column="package_id" jdbcType="BIGINT" property="packageId" />
+    <result column="package_amount" jdbcType="DECIMAL" property="packageAmount" />
+    <result column="payment_amount" jdbcType="DECIMAL" property="paymentAmount" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="pay_status" jdbcType="BIT" property="payStatus" />
+    <result column="pay_type" jdbcType="SMALLINT" property="payType" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, account_id, package_id, package_amount, payment_amount, status, pay_status, 
+    pay_type, pay_time, create_time, serial_number, update_time, order_id
+  </sql>
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from t_acc_recharge_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.order.entity.RechargeRecord">
+    insert into t_acc_recharge_record (id, code, account_id, 
+      package_id, package_amount, payment_amount, 
+      status, pay_status, pay_type, 
+      pay_time, create_time, serial_number, 
+      update_time, order_id)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{accountId,jdbcType=BIGINT}, 
+      #{packageId,jdbcType=BIGINT}, #{packageAmount,jdbcType=DECIMAL}, #{paymentAmount,jdbcType=DECIMAL}, 
+      #{status,jdbcType=SMALLINT}, #{payStatus,jdbcType=BIT}, #{payType,jdbcType=SMALLINT}, 
+      #{payTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{serialNumber,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{orderId,jdbcType=BIGINT})
+  </insert>
+  <update id="update" parameterType="cn.linkmore.order.entity.RechargeRecord">
+    update t_acc_recharge_record
+    set code = #{code,jdbcType=VARCHAR},
+      account_id = #{accountId,jdbcType=BIGINT},
+      package_id = #{packageId,jdbcType=BIGINT},
+      package_amount = #{packageAmount,jdbcType=DECIMAL},
+      payment_amount = #{paymentAmount,jdbcType=DECIMAL},
+      status = #{status,jdbcType=SMALLINT},
+      pay_status = #{payStatus,jdbcType=BIT},
+      pay_type = #{payType,jdbcType=SMALLINT},
+      pay_time = #{payTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      order_id = #{orderId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.cluster.AccountClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.order.entity.Account">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="usable_amount" jdbcType="DECIMAL" property="usableAmount" />
+    <result column="frozen_amount" jdbcType="DECIMAL" property="frozenAmount" />
+    <result column="recharge_amount" jdbcType="DECIMAL" property="rechargeAmount" />
+    <result column="rechage_payment_amount" jdbcType="DECIMAL" property="rechagePaymentAmount" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="order_payment_amount" jdbcType="DECIMAL" property="orderPaymentAmount" />
+    <result column="gift_amount" jdbcType="DECIMAL" property="giftAmount" />
+    <result column="gift_total_amount" jdbcType="DECIMAL" property="giftTotalAmount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="acc_type" jdbcType="INTEGER" property="accType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, amount, usable_amount, frozen_amount, recharge_amount, rechage_payment_amount, 
+    status, order_amount, order_payment_amount, gift_amount, gift_total_amount, create_time, 
+    update_time, acc_type
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_acc_account
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+</mapper>
