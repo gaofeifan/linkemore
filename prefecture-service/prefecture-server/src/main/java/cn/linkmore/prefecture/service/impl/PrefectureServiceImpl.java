@@ -252,15 +252,21 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public Integer getStallCount(Long preId) {
-		List<ResStall> resStall = this.stallClusterMapper.findStallsByPreId(preId);
+		Prefecture preDetail = this.prefectureClusterMapper.findById(preId);
+		List<ResStall> stallList = this.stallClusterMapper.findStallsByPreId(preId);
 		LockFactory lockFactory = InitLockFactory.getInstance();
+		ResponseMessage<LockBean> lc = lockFactory.findAvailableLock(preDetail.getGateway());
+		List<LockBean> lockBeanList = lc.getDataList();
 		Integer count = 0;
-		if(CollectionUtils.isNotEmpty(resStall)) {
-			for(ResStall stall : resStall) {
-				ResponseMessage<LockBean> res= lockFactory.getLockInfo(stall.getLockSn());
-				//1 表示竖起来 0 表示躺下占用
-				if(res.getData().getOpenState().equals(1)) {
-					count ++;
+		if(CollectionUtils.isNotEmpty(lockBeanList) && CollectionUtils.isNotEmpty(stallList)) {
+			for(LockBean lock : lockBeanList) {
+				for(ResStall stall : stallList) {
+					if(lock.getSlaveId().equals(stall.getLockSn())) {
+						//1 表示竖起来 0 表示躺下被占用
+						if(lock.getOpenState().equals(1)) {
+							count ++;
+						}
+					}
 				}
 			}
 		}
