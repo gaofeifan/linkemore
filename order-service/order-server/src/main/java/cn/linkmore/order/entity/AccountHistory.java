@@ -2,7 +2,12 @@ package cn.linkmore.order.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
+/**
+ * 历史账户
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class AccountHistory {
     private Long id;
 
