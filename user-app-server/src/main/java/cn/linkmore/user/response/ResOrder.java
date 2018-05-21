@@ -2,6 +2,7 @@ package cn.linkmore.user.response;
 
 import java.util.Date;
 
+import cn.linkmore.order.response.ResUserOrder;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -22,11 +23,17 @@ public class ResOrder {
 	@ApiModelProperty(value = "车牌号")
 	private String plateNumber;
 	@ApiModelProperty(value = "预约时间")
-	private Date createTime;
-	@ApiModelProperty(value = "停车时长")
+	private Date startTime;
+	@ApiModelProperty(value = "停车时长[分钟]")
 	private Integer parkingTime;
+	@ApiModelProperty(value = "结束时间")
+	private Date endTime;
 	@ApiModelProperty(value = "停车费用")
 	private String totalAmount;
+	@ApiModelProperty(value = "支付类型")
+	private Short payType;
+	@ApiModelProperty(value = "实际费用")
+	private String actualAmount; 
 	@ApiModelProperty(value = "订单状态[1预约中,3已结账,6已挂起]")
 	private Short status; 
 	public Long getId() {
@@ -71,12 +78,7 @@ public class ResOrder {
 	public void setPlateNumber(String plateNumber) {
 		this.plateNumber = plateNumber;
 	}
-	public Date getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
+	 
 	public Integer getParkingTime() {
 		return parkingTime;
 	}
@@ -94,5 +96,47 @@ public class ResOrder {
 	}
 	public void setStatus(Short status) {
 		this.status = status;
-	}  
+	}   
+	public Date getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+	public Date getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+	public Short getPayType() {
+		return payType;
+	}
+	public void setPayType(Short payType) {
+		this.payType = payType;
+	}
+	public String getActualAmount() {
+		return actualAmount;
+	}
+	public void setActualAmount(String actualAmount) {
+		this.actualAmount = actualAmount;
+	}
+	public void copy(ResUserOrder ruo) {
+		this.setStartTime(ruo.getCreateTime());
+		this.setId(ruo.getId());
+		Date start = ruo.getCreateTime();
+		Date end = new Date(); 
+		if(ruo.getStatusHistory()!=null) {
+			end = ruo.getStatusTime(); 
+		}
+		this.setEndTime(end);
+		this.setParkingTime(new Long((end.getTime()-start.getTime())/(60*1000)).intValue());
+		this.setPlateNumber(ruo.getPlateNo());
+		this.setPrefectureId(ruo.getPreId());
+		this.setStallId(ruo.getStallId());
+		this.setStatus(ruo.getStatus().shortValue());
+		this.setStallName(ruo.getStallName());
+		this.setPrefectureName(ruo.getPreName());
+		
+	}
 }

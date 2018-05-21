@@ -30,7 +30,7 @@ public class CityController {
 	@Autowired
 	private CityService cityService;
 	
-	@ApiOperation(value = "列表", notes = "城市列表[<br/>经度<br/>longitude纬度]", consumes = "application/json")
+	@ApiOperation(value = "列表", notes = "城市列表[<br/>latitude经度<br/>longitude纬度]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<ResCity>> list(@RequestParam(value="longitude",required=true)String longitude,@RequestParam(value="latitude",required=true)String latitude, HttpServletRequest request) {

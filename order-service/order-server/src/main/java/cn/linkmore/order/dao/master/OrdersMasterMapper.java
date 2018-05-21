@@ -1,5 +1,7 @@
 package cn.linkmore.order.dao.master;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.order.entity.Orders;
@@ -10,4 +12,11 @@ public interface OrdersMasterMapper {
     int save(Orders record);
 
     int update(Orders record);
+
+    /**
+     * 更新订单降锁状态
+     * @param param
+     * @return
+     */
+	int updateLockStatus(Map<String, Object> param);
 }

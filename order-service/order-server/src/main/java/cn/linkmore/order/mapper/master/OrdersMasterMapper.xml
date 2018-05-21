@@ -85,4 +85,11 @@
       lock_down_status = #{lockDownStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateLockStatus" parameterType="java.util.HashMap">
+    update o_orders
+    set  
+      lock_down_time = #{lockDownTime,jdbcType=TIMESTAMP},
+      lock_down_status = #{lockDownStatus,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

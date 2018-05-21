@@ -25,5 +25,12 @@ public interface OrderService {
 	 * @return
 	 */
 	ResOrder current(HttpServletRequest request);
+	
+	/**
+	 * 降下地锁
+	 * @param stallId
+	 * @param request
+	 */
+	void down(Long stallId,HttpServletRequest request);
 
 }

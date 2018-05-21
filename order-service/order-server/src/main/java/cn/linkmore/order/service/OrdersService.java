@@ -31,4 +31,10 @@ public interface OrdersService {
 	 */
 	ResUserOrder detail(Long id);
 
+	/**
+	 * 降下地锁
+	 * @param id
+	 */
+	void down(Long id);
+
 }
