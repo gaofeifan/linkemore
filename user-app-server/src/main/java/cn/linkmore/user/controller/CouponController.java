@@ -29,7 +29,7 @@ public class CouponController {
 	private CouponService couponService; 
 	
 	@ApiOperation(value = "账户下停车券", notes = "停车劵管理", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/all", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/usable", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<ResCoupon>> usableList(HttpServletRequest request) {  
 		List<ResCoupon> resultMap = couponService.usableList(request); 
@@ -38,7 +38,7 @@ public class CouponController {
 	 
 	
 	@ApiOperation(value = "支付可用停车券", notes = "停车劵管理", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/enable", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/payment", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<ResCoupon>>  paymentList(HttpServletRequest request) {  
 		List<ResCoupon> resultMap = couponService.paymentList(request);

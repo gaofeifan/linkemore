@@ -1,6 +1,8 @@
 package cn.linkmore.account.client.hystrix;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +20,7 @@ import cn.linkmore.account.response.ResUserLogin;
 
 @Component
 public class UserClientHystrix implements UserClient{
-
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	 
 	public void updateNickname(@RequestBody ReqUpdateNickname nickname) {
 		
@@ -60,7 +62,7 @@ public class UserClientHystrix implements UserClient{
 	
 	 
 	public ResUser getUserCacheKey(@PathVariable("userId") Long userId) {
-		
+		log.info("account service user getUserCacheKey(userId) hystrix" + userId);
 		return null;
 	}
 

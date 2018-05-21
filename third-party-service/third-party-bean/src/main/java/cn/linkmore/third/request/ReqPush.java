@@ -1,6 +1,7 @@
 package cn.linkmore.third.request;
 
-import cn.linkmore.bean.constant.PushType;
+import cn.linkmore.bean.common.Constants;
+import cn.linkmore.bean.common.Constants.PushType;
 /**
  * 请求 - 推送
  * @author liwenlong
@@ -26,11 +27,11 @@ public class ReqPush {
 	/**
 	 * 版本(1android,2ios)
 	 */
-	private Short os;
+	private Short client;
 	/**
 	 * 分类
 	 */
-	private PushType type;
+	private Constants.PushType type;
 	
 	/**
 	 * 实体
@@ -49,11 +50,12 @@ public class ReqPush {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Short getOs() {
-		return os;
+	 
+	public Short getClient() {
+		return client;
 	}
-	public void setOs(Short os) {
-		this.os = os;
+	public void setClient(Short client) {
+		this.client = client;
 	}
 	public PushType getType() {
 		return type;

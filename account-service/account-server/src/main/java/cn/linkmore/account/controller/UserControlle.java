@@ -2,6 +2,8 @@ package cn.linkmore.account.controller;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +38,7 @@ public class UserControlle {
 	private UserService userService;
 	@Resource
 	private UserAppfansService userAppfansService;
-
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * @Description  更新昵称
@@ -137,6 +139,7 @@ public class UserControlle {
 	@RequestMapping(value = "/v2.0/cache/{userId}", method = RequestMethod.GET)
 	public ResUser getUserCacheKey(@PathVariable Long userId) {
 		ResUser user = this.userService.getUserCacheKey(userId);
+		log.info("getUserCacheKey = " + user.getId());
 		return user;
 	}
 	

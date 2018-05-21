@@ -4,16 +4,9 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ResCoupon { 
-	
-	public final static int FREE = 0;
-	public final static int USED = 1;
-	public final static int EXPIRED = 2;
-	
-	public final static short TYPE_NORMAL = 0;
-	public final static short TYPE_CONDITION = 1;
-	public final static short TYPE_DISCOUNT = 2; 
-	
+import cn.linkmore.bean.common.Constants;
+
+public class ResCoupon {  
 	private Long id;
 
 	private BigDecimal faceAmount;
@@ -58,7 +51,7 @@ public class ResCoupon {
 
 	public Integer getType() {
 		if(type==null){
-			type = (int) TYPE_NORMAL;
+			type = Constants.CouponType.NORMAL.type;
 		}
 		return type;
 	}

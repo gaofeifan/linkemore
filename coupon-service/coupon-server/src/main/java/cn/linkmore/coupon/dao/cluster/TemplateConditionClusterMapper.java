@@ -10,5 +10,10 @@ public interface TemplateConditionClusterMapper {
 	
 	TemplateCondition findById(Long id);
 	
-	List<TemplateCondition> findConditionList(List<Long> ids);
+	/**
+	 * 查询templateId集合对应的条件
+	 * @param templateIds
+	 * @return
+	 */
+	List<TemplateCondition> findTemplateList(List<Long> list); 
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.request.ReqCity;
 import cn.linkmore.prefecture.request.ReqPrefecture;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
@@ -42,6 +43,11 @@ public class PrefectureClientHystrix implements PrefectureClient {
 	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture) {
 		log.info("prefecture service pres findPreListByLoc(ReqPrefecture reqPrefecture) hystrix");
 		return new ArrayList<ResPrefecture>();
+	}
+	@Override
+	public List<ResPre> prenames(List<Long> ids) {
+		log.info("prefecture service pres prenames(List<Long> ids) hystrix");
+		return new ArrayList<ResPre>();
 	}
 
 }

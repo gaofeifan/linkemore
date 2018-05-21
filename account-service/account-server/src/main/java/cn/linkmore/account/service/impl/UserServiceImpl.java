@@ -28,6 +28,7 @@ import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
+import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.exception.BusinessException;
@@ -91,7 +92,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResUser getUserCacheKey(Long userId) {
 		User u = this.selectById(userId);
-		return ObjectUtils.copyObject(u, new ResUser());
+		if(u != null) {
+			return ObjectUtils.copyObject(u, new ResUser());
+		}
+		return null;
 	}
 
 	@Override

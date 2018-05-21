@@ -34,7 +34,10 @@ public class UserStaffController {
 	@ResponseBody
 	public ResUserStaff selectById(@PathVariable("id") Long id) {
 		UserStaff staff = this.userStaffService.findById(id);
-		return ObjectUtils.copyObject(staff, new ResUserStaff());
+		if(staff != null) {
+			return ObjectUtils.copyObject(staff, new ResUserStaff());
+		}
+		return null;
 	}
 	
 }

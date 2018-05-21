@@ -22,4 +22,14 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
+  <select id="findTemplateList" parameterType="java.util.List" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_template_condition
+    where template_id in 
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id,jdbcType=BIGINT}
+    </foreach> 
+  </select>
+  
 </mapper>

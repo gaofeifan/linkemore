@@ -19,10 +19,11 @@ import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
+import cn.linkmore.bean.common.Constants;
+import cn.linkmore.bean.common.Constants.PushType;
+import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.Constants.SmsTemplate;
 import cn.linkmore.bean.common.security.Token;
-import cn.linkmore.bean.constant.PushType;
-import cn.linkmore.bean.constant.RedisKey;
-import cn.linkmore.bean.constant.SmsTemplate;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
@@ -38,7 +39,6 @@ import cn.linkmore.user.request.ReqAuthSend;
 import cn.linkmore.user.request.ReqMobileBind;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.UserService;
-import cn.linkmore.util.JsonUtil;
 
 /**
  * Service实现 - 用户
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private RedisService redisService;
 	
-	private final static String TEST_MOBILE= "18612100125|17800242258|13693544138|18810796650|18334787583";
+	private final static String TEST_MOBILE= "18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
 
 	@Override
 	public void send(ReqAuthSend rs) {     
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 		ReqSms sms = new ReqSms();
 		sms.setMobile(rs.getMobile());
 		sms.setParam(param);
-		sms.setSt(SmsTemplate.USER_APP_LOGIN_CODE);
+		sms.setSt(Constants.SmsTemplate.USER_APP_LOGIN_CODE);
 		boolean success = this.smsClient.send(sms);   
 		if(success){ 
 			this.redisService.set(RedisKey.USER_APP_AUTH_CODE+rs.getMobile(), code, 60*10); 
@@ -120,7 +120,9 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		ResUserLogin rul = this.userClient.appLogin(rl.getMobile());
-		log.info("userClient.appLogin():{}",JsonUtil.toJson(rul));
+		if(rul==null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
+		} 
 		String key = UserCache.getCacheKey(request); 
 		ResUser ru = new ResUser();
 		ru.setId(rul.getId());
@@ -138,8 +140,8 @@ public class UserServiceImpl implements UserService {
 		ReqPush rp = new ReqPush();
 		rp.setAlias(uid);
 		rp.setContent("强制退出,账号已在其它设备登录");
-		rp.setData(token.getValue());
-		rp.setOs(token.getOs());
+		rp.setData(token.getAccessToken());
+		rp.setClient(token.getClient());
 		rp.setType(PushType.USER_APP_LOGOUT_NOTICE);
 		rp.setTitle("账号已在其它设备登录"); 
 		this.pushClient.push(rp);
@@ -148,6 +150,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResUser login(String code, HttpServletRequest request) {
 		ResFans fans = this.appWechatClient.getFans(code);
+		if(fans==null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_LOGIN_ERROR);
+		} 
 		ReqUserAppfans ruaf = new ReqUserAppfans();
 		ruaf.setCreateTime(fans.getCreateTime());
 		ruaf.setHeadurl(fans.getHeadurl());
@@ -157,6 +162,9 @@ public class UserServiceImpl implements UserService {
 		ruaf.setStatus(fans.getStatus());
 		ruaf.setUnionid(fans.getUnionid());
 		ResUserLogin rul =this.userClient.wxLogin(ruaf);
+		if(rul==null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
+		} 
 		String key = UserCache.getCacheKey(request); 
 		ResUser ru = new ResUser();
 		ru.setId(rul.getId());
@@ -186,18 +194,18 @@ public class UserServiceImpl implements UserService {
 	private Token cacheUser(HttpServletRequest request, ResUser user) {
 		String key = UserCache.getCacheKey(request);
 		
-		Token last = (Token)this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN+user.getId());
+		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 		if(last!=null){ 
-			this.redisService.remove(RedisKey.USER_APP_AUTH_TOKEN+user.getId());
-			this.redisService.remove(RedisKey.USER_APP_AUTH_USER+last.getValue());  
-			last.setValue(key);
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
+			last.setAccessToken(key);
 		}
-		this.redisService.set(RedisKey.USER_APP_AUTH_USER+key, user); 
+		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user); 
 		Token token = new Token();
-		token.setOs(new Short(request.getHeader("os")==null?"0":request.getHeader("os")));
+		token.setClient(new Short(request.getHeader("os")==null?"0":request.getHeader("os")));
 		token.setTimestamp(new Date().getTime());
-		token.setValue(key);
-		this.redisService.set(RedisKey.USER_APP_AUTH_TOKEN+user.getId(), token); 
+		token.setAccessToken(key);
+		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token); 
 		return last;
 	}
 	/**

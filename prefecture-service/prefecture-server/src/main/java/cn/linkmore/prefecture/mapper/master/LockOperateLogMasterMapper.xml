@@ -19,7 +19,7 @@
     delete from t_lock_operate_log
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.prefecture.entity.LockOperateLog">
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.LockOperateLog" useGeneratedKeys="true" keyProperty="id">
     insert into t_lock_operate_log (id, operator_id, source, 
       stall_id, operation, lock_sn, 
       create_time, status, modify_time

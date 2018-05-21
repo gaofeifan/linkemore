@@ -47,7 +47,7 @@
   
   <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.response.ResPrefecture">
   	<id column="id" property="id" />
-  	<result column="name" property="preName" />
+  	<result column="name" property="name" />
   	<result column="leisure_stall" property="leisureStall" />
   	<result column="latitude" property="latitude" />
   	<result column="longitude" property="longitude" />
@@ -66,6 +66,11 @@
   	<result column="timely_unit" property="timelyUnit" />
   	<result column="limit_status" property="limitStatus" />
   	<result column="type" property="type" />
+  </resultMap>
+  
+  <resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
+  	<id column="id" property="id"/>
+  	<result column="name" property="name" />
   </resultMap>
   
   <sql id="Base_Column_List">
@@ -93,6 +98,9 @@
 	from v_prefecture p 
 	where p.status = #{status} and (p.type is null or p.type = 0 )
     and p.category = 0
+    <if test="cityId != null">
+		and p.city_id ={#cityId}
+	</if>
   </select>
   
   <select id="findPreByStatusAndGPS1" resultMap="ResPrefectureMap" parameterType="java.util.Map">
@@ -100,6 +108,9 @@
 	from v_prefecture p 
 	where p.status = #{status} 
     and p.category != 0
+    <if test="cityId != null">
+		and p.city_id ={#cityId}
+	</if>
   </select>
   
   <select id="findPreListByCityId" resultMap="ResPrefectureListMap" parameterType="java.util.Map">
@@ -122,5 +133,14 @@
     and p.category != 0
 	ORDER BY p.order_index DESC
   </select>
+  
+  <select id="findByIds" parameterType="java.util.List" resultMap="ResPreMap">
+    select  p.id ,p.name
+    from v_prefecture p
+    where id in
+    <foreach collection="ids" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </select> 
   
 </mapper>

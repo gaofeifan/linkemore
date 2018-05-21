@@ -18,7 +18,7 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 
-import cn.linkmore.bean.constant.SmsTemplate;
+import cn.linkmore.bean.common.Constants.SmsTemplate;
 import cn.linkmore.third.config.BeanFactory;
 import cn.linkmore.third.config.SmsConfig;
 import cn.linkmore.third.request.ReqSms;
@@ -86,15 +86,14 @@ public class SmsServiceImpl implements SmsService {
 	public boolean send(ReqSms req) {
 		boolean flag = true;
 		try {
-			IAcsClient client = beanFactory.iAcsClient();
-			
+			IAcsClient client = beanFactory.iAcsClient(); 
 			SendSmsRequest request = new SendSmsRequest(); 
 	        request.setPhoneNumbers(req.getMobile()); 
 	        request.setSignName(smsConfig.getSignName()); 
 	        request.setTemplateCode(getTemplateCode(req.getSt())); 
 	        request.setTemplateParam(JsonUtil.toJson(req.getParam())); 
 	        SendSmsResponse response = client.getAcsResponse(request);  
-			log.info("requestId:{}",response.getRequestId()); 
+			log.info("requestId:{},req:{}",response.getRequestId(),JsonUtil.toJson(req)); 
 		} catch (ClientException e) {  
 			StringBuffer sb = new StringBuffer();
 			StackTraceElement[] stacks = e.getStackTrace();  

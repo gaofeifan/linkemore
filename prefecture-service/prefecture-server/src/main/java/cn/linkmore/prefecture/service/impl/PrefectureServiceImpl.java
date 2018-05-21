@@ -19,13 +19,14 @@ import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.StrategyBase;
+import cn.linkmore.prefecture.lock.FreeLockPool;
 import cn.linkmore.prefecture.request.ReqPrefecture;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
 import cn.linkmore.prefecture.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.service.PrefectureService;
-import cn.linkmore.prefecture.util.FreeLockPool;
 import cn.linkmore.util.StringUtil;
 /**
  * Service实现类 - 车区信息
@@ -52,7 +53,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private CityClientHystrix cityClient;
 	
 	@Override
-	public ResPrefectureDetail find(Long preId) {
+	public ResPrefectureDetail findById(Long preId) {
 		ResPrefectureDetail detail = prefectureClusterMapper.findPrefectureById(preId);
 		int stallCount = stallClusterMapper.findCountByPreId(preId);
 		String lan = detail.getTimelyUnit();
@@ -67,10 +68,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 		/*Map<String,Object> param = new HashMap<String,Object>();
 		param.put("latitude", reqPrefecture.getLatitude());
 		param.put("longitude", reqPrefecture.getLongitude());
-		param.put("scale", reqPrefecture.getScale());*/
+		*/
 		
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
+		//此处cityId暂时为空，返回所有的车区信息
+		paramMap.put("cityId", null);
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		 
 		if(user!=null){
@@ -240,5 +243,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 		}
 		return bean;
+	}
+	@Override
+	public List<ResPre> findList(List<Long> ids) {
+		List<ResPre> list = this.prefectureClusterMapper.findByIds(ids);
+		return list;
 	}
 }

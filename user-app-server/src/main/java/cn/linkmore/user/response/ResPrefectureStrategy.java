@@ -1,0 +1,36 @@
+package cn.linkmore.user.response;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+/**
+ * 响应-计费策略详情
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
+@ApiModel("计费策略")
+public class ResPrefectureStrategy {
+	
+	@ApiModelProperty("免费时长")
+	private String freeMins;
+
+	@ApiModelProperty("内容描述")
+	private String content;
+	
+	public String getFreeMins() {
+		return freeMins;
+	}
+
+	public void setFreeMins(String freeMins) {
+		this.freeMins = freeMins;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+}

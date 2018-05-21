@@ -113,7 +113,7 @@ public interface UserClient {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/cache/{userId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/v2.0/cache/{userId}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUser getUserCacheKey(@PathVariable("userId") Long userId);
 

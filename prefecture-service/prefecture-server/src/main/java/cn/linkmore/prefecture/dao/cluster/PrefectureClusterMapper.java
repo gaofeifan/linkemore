@@ -3,7 +3,10 @@ package cn.linkmore.prefecture.dao.cluster;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import cn.linkmore.prefecture.entity.Prefecture;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
@@ -31,4 +34,6 @@ public interface PrefectureClusterMapper {
 	List<ResPrefectureList> findPreListByCityId(Map<String, Object> paramMap);
 	
 	List<ResPrefectureList> findPreListByCityId1(Map<String, Object> paramMap);
+
+	List<ResPre> findByIds(@Param("ids") List<Long> ids);
 }

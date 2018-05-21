@@ -13,7 +13,7 @@ public class ResPrefecture {
 	/**
 	 * 专区名称
 	 */
-	private String preName;
+	private String name;
 	/**
 	 * 空闲车位数量
 	 */
@@ -40,11 +40,11 @@ public class ResPrefecture {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getPreName() {
-		return preName;
+	public String getName() {
+		return name;
 	}
-	public void setPreName(String preName) {
-		this.preName = preName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public Integer getLeisureStall() {
 		return leisureStall;

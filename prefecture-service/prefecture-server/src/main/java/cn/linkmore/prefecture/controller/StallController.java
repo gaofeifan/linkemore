@@ -50,8 +50,9 @@ public class StallController {
 	 * @param stallId Long
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method=RequestMethod.PUT)
-	public void downlock(@RequestParam("stallId") Long stallId) {
-		 this.stallService.downlock(stallId);
+	public Boolean downlock(@RequestParam("stallId") Long stallId) {
+		boolean flag = this.stallService.downlock(stallId);
+		return flag;
 	}
 	
 	/**
@@ -60,8 +61,9 @@ public class StallController {
 	 * @param stallId Long
 	 */
 	@RequestMapping(value = "/v2.0/uplock", method=RequestMethod.PUT)
-	public void uplock(@RequestParam("stallId") Long stallId) {
-		 this.stallService.uplock(stallId);
+	public Boolean uplock(@RequestParam("stallId") Long stallId) {
+		 boolean flag = this.stallService.uplock(stallId);
+		 return flag;
 	}
 
 	/**
@@ -70,7 +72,8 @@ public class StallController {
 	 * @param stallId Long
 	 */
 	@RequestMapping(value = "/v2.0/checkout", method=RequestMethod.PUT)
-	public void checkout(@RequestParam("stallId") Long stallId) {
-		 this.stallService.checkout(stallId);
+	public Boolean checkout(@RequestParam("stallId") Long stallId) {
+		 boolean flag = this.stallService.checkout(stallId);
+		 return flag;
 	}
 }

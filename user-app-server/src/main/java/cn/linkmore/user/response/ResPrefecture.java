@@ -3,7 +3,7 @@ package cn.linkmore.user.response;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel("车区")
+@ApiModel("车区地图")
 public class ResPrefecture { 
 	@ApiModelProperty(value = "主键")
 	private Long id; 
@@ -12,13 +12,13 @@ public class ResPrefecture {
 	private String name;
 	
 	@ApiModelProperty(value = "空闲车位数量")
-	private Integer stallCount;
+	private Integer leisureStall;
 	
 	@ApiModelProperty(value = "经度")
-	private String longitude;
+	private Double longitude;
 	
 	@ApiModelProperty(value = "纬度")
-	private String latitude;
+	private Double latitude;
 
 	public Long getId() {
 		return id;
@@ -36,27 +36,27 @@ public class ResPrefecture {
 		this.name = name;
 	}
 
-	public Integer getStallCount() {
-		return stallCount;
+	public Integer getLeisureStall() {
+		return leisureStall;
 	}
 
-	public void setStallCount(Integer stallCount) {
-		this.stallCount = stallCount;
+	public void setLeisureStall(Integer leisureStall) {
+		this.leisureStall = leisureStall;
 	}
 
-	public String getLongitude() {
+	public Double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(String longitude) {
+	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
 
-	public String getLatitude() {
+	public Double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(String latitude) {
+	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
 	

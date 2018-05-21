@@ -27,7 +27,41 @@
     <result column="lock_down_time" jdbcType="TIMESTAMP" property="lockDownTime" />
     <result column="lock_down_status" jdbcType="SMALLINT" property="lockDownStatus" />
   </resultMap>
+  
+  <resultMap id="ResResultMap" type="cn.linkmore.order.response.ResUserOrder">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="pay_type" jdbcType="INTEGER" property="payType" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="plate_no" jdbcType="VARCHAR" property="plateNo" />
+    <result column="stall_image" jdbcType="VARCHAR" property="stallImage" />
+    <result column="stall_local" jdbcType="VARCHAR" property="stallLocal" />
+    <result column="stall_guidance" jdbcType="VARCHAR" property="stallGuidance" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="dock_id" jdbcType="VARCHAR" property="dockId" />
+    <result column="status_history" jdbcType="SMALLINT" property="statusHistory" />
+    <result column="user_type" jdbcType="SMALLINT" property="userType" />
+    <result column="status_time" jdbcType="TIMESTAMP" property="statusTime" />
+    <result column="lock_down_time" jdbcType="TIMESTAMP" property="lockDownTime" />
+    <result column="lock_down_status" jdbcType="SMALLINT" property="lockDownStatus" />
+  </resultMap>
+  
   <sql id="Base_Column_List">
+    id, user_id, pre_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
+    begin_time, username, end_time, plate_no, stall_image, stall_local, stall_guidance, 
+    create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
+    lock_down_status
+  </sql>
+  <sql id="Res_Column_List">
     id, user_id, pre_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
     begin_time, username, end_time, plate_no, stall_image, stall_local, stall_guidance, 
     create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
@@ -36,6 +70,18 @@
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
+    from o_orders
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findUserLatest" parameterType="java.lang.Long" resultMap="ResResultMap">
+    select 
+    <include refid="Res_Column_List" />
+    from o_orders  
+    where user_id = #{userId,jdbcType=BIGINT} order by id desc  limit 0,1
+  </select>
+  <select id="findDetail" parameterType="java.lang.Long" resultMap="ResResultMap">
+    select 
+    <include refid="Res_Column_List" />
     from o_orders
     where id = #{id,jdbcType=BIGINT}
   </select>
