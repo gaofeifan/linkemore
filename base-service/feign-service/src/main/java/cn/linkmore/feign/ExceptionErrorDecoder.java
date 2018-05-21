@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.ExceptionInfo;
@@ -12,24 +12,33 @@ import cn.linkmore.bean.exception.InternalException;
 import cn.linkmore.util.JsonUtil;
 import feign.codec.ErrorDecoder;
 
-@Configuration
+@Component
 public class ExceptionErrorDecoder implements ErrorDecoder { 
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public Exception decode(String s, feign.Response response) { 
+		Exception exception = null;
 		try {
 			if (response.body() != null) { 
 				BufferedReader reader = new BufferedReader(response.body().asReader()); 
 				String body = reader.readLine();
-				log.info("body:{}",body);
+				log.info("hello body:{}",body);
 				ExceptionInfo be = JsonUtil.toObject(body, ExceptionInfo.class); 
 				if(be.getException().contains("BusinessException")) {
-					return new BusinessException(be.getStatus(), be.getMessage(), be.getMessage());
-				} 
+					exception =  new BusinessException(be.getStatus(), be.getMessage(), be.getMessage());
+				}
+				exception =  new InternalException(be.getMessage());
 			}
-		} catch (Exception var4) { 
-			return new InternalException(var4.getMessage());
+		} catch (Exception e) {  
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement[] stackArray = e.getStackTrace();  
+	        for (int i = 0; i < stackArray.length; i++) {  
+	            StackTraceElement element = stackArray[i];  
+	            sb.append(element.toString() + "\n");  
+	        }  
+	        log.info(sb.toString());
 		}
-		return new InternalException("系统异常,请联系管理员");
+//		return feign.FeignException.errorStatus(s, response);
+		return exception;
 	} 
 }

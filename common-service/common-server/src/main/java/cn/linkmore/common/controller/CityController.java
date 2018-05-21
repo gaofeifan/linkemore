@@ -27,7 +27,7 @@ import cn.linkmore.util.JsonUtil;
  */ 
 @RestController
 @RequestMapping("/citys")
-public class CityController {
+public class CityController{
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CityService cityService;
@@ -40,14 +40,9 @@ public class CityController {
 	@RequestMapping(method=RequestMethod.GET)
 	@ResponseBody 
 	public List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size) { 
+		log.info("common citys list");
 		return this.cityService.findList(start,size);
-	}
-	
-	/*@RequestMapping(method=RequestMethod.GET)
-	@ResponseBody 
-	public ViewPage list(@RequestBody ViewPageable pageable) {
-		return this.cityService.findPage(pageable);
-	}*/
+	} 
 	 
 	@RequestMapping(method=RequestMethod.POST)
 	public void save(@RequestBody ReqCity reqCity) {

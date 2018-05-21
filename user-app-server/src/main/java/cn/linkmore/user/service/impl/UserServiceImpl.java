@@ -20,6 +20,7 @@ import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.bean.common.Constants;
+import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.SmsTemplate;
@@ -194,15 +195,15 @@ public class UserServiceImpl implements UserService {
 	private Token cacheUser(HttpServletRequest request, ResUser user) {
 		String key = UserCache.getCacheKey(request);
 		
-		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN+user.getId().toString());
 		if(last!=null){ 
-			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
-			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN+user.getId().toString());
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER+last.getAccessToken());  
 			last.setAccessToken(key);
 		}
 		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user); 
 		Token token = new Token();
-		token.setClient(new Short(request.getHeader("os")==null?"0":request.getHeader("os")));
+		token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 		token.setTimestamp(new Date().getTime());
 		token.setAccessToken(key);
 		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token); 

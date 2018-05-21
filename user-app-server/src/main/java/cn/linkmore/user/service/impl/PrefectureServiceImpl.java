@@ -68,9 +68,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return ObjectUtils.copyObject(strategy, new ResPrefectureStrategy());
 	}
 	@Override
-	public List<ResPrefectureList> findPreListByCityId(ReqPreCity rp, HttpServletRequest request) {
+	public List<ResPrefectureList> findPreListByCityId(Long cityId, HttpServletRequest request) {
 		cn.linkmore.prefecture.request.ReqCity reqCity = new cn.linkmore.prefecture.request.ReqCity();
-		reqCity.setCityId(rp.getCityId());
+		reqCity.setCityId(cityId);
 		String key = UserCache.getCacheKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER + key);
 		if(ru!=null) {

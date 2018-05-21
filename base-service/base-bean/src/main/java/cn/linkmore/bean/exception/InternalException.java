@@ -1,8 +1,9 @@
 package cn.linkmore.bean.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 
-public class InternalException extends RuntimeException {
+public class InternalException   extends HystrixBadRequestException {
 	/**
 	 * serial id
 	 */

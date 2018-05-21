@@ -12,10 +12,10 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("计费策略")
 public class ResPrefectureStrategy {
 	
-	@ApiModelProperty("免费时长")
+	@ApiModelProperty(value = "免费时长")
 	private String freeMins;
 
-	@ApiModelProperty("内容描述")
+	@ApiModelProperty(value = "内容描述")
 	private String content;
 	
 	public String getFreeMins() {

@@ -10,70 +10,39 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.linkmore.bean.view.ViewPage;
-import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.hystrix.CityClientHystrix;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.feign.FeignConfiguration;
+
 /**
  * 远程调用 - 城市信息
+ * 
  * @author liwenlong
  * @version 2.0
  *
- */ 
-@FeignClient(value = "common-server", path = "/citys", fallback=CityClientHystrix.class,configuration = FeignConfiguration.class)
+ */
+@FeignClient(value = "common-server", path = "/citys", fallback = CityClientHystrix.class, configuration = FeignConfiguration.class)
 public interface CityClient {
-	/**
-	 * 根据城市id获取对应的城市信息
-	 * @param id 主键ID
-	 * @return 城市信息
-	 */
-	@RequestMapping(value="{id}",method=RequestMethod.GET)
-	@ResponseBody 
-    ResCity find(@PathVariable("id") Long id);
-	
-	/**
-	 * 根据行政编号查询对应的城市信息
-	 * @param code 行政编号
-	 * @return
-	 */
-	@RequestMapping(value="/code",method=RequestMethod.GET)
-	@ResponseBody 
-	public ResCity findByCode(@RequestParam("code") String code);
-	
-	/**
-	 * 分页获取城市信息
-	 * @param start 起始
-	 * @param size 记录数
-	 * @return List<ResCity> 城市信息集合
-	 */
-	@RequestMapping(method=RequestMethod.GET)
-	@ResponseBody 
+
+	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	@ResponseBody
+	ResCity getById(@PathVariable("id") Long id);
+
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
 	List<ResCity> list(@RequestParam("start") Integer start, @RequestParam("size") Integer size);
-	
-	@RequestMapping(method=RequestMethod.GET)
-	@ResponseBody 
-	public ViewPage list(@RequestBody ViewPageable pageable);
-	 
-	/**
-	 * 保存城市信息
-	 * @param reqCity 城市信息
-	 */
-	@RequestMapping(method=RequestMethod.POST)
-	void save(@RequestBody ReqCity reqCity) ; 
-	
-	/**
-	 * 更新城市信息
-	 * @param reqCity 城市信息
-	 */
-	@RequestMapping(method=RequestMethod.PUT)
-	void update(@RequestBody ReqCity reqCity); 
-	
-	/**
-	 * 删除城市信息
-	 * @param id 主键
-	 */
-	@RequestMapping(value="{id}",method = RequestMethod.DELETE)
+
+	@RequestMapping(method = RequestMethod.POST)
+	void save(@RequestBody ReqCity reqCity);
+
+	@RequestMapping(method = RequestMethod.PUT)
+	void update(@RequestBody ReqCity reqCity);
+
+	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	void delete(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/code", method = RequestMethod.GET)
+	@ResponseBody
+	ResCity getByCode(@RequestParam("code") String code);
 }

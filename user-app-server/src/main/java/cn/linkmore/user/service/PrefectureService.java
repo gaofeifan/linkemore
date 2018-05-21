@@ -44,5 +44,5 @@ public interface PrefectureService {
 	 * @param request
 	 * @return
 	 */
-	public List<ResPrefectureList> findPreListByCityId(ReqPreCity rp, HttpServletRequest request);
+	public List<ResPrefectureList> findPreListByCityId(Long cityId, HttpServletRequest request);
 }

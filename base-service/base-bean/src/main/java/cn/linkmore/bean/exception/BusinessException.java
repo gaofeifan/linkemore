@@ -1,11 +1,14 @@
 package cn.linkmore.bean.exception;
+
+import com.netflix.hystrix.exception.HystrixBadRequestException;
+
 /**
  * Exception - 全局业务异常
  * @author liwenlong
  * @version 2.0
  *
  */
-public class BusinessException extends RuntimeException{
+public class BusinessException extends HystrixBadRequestException{ 
 	private static final long serialVersionUID = -4310721413425427596L;
 	/**
 	 * 错误码
@@ -16,11 +19,7 @@ public class BusinessException extends RuntimeException{
 	 */
 	private String label = StatusEnum.SERVER_EXCEPTION.label;
 	
-	private StatusEnum statusEnum;
-
-	public BusinessException() {
-		super();
-	}
+	private StatusEnum statusEnum; 
 
 	/**
 	 * 构造函数

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +30,12 @@ public class CityServiceImpl implements CityService {
 	
 	@Autowired
 	private LocateClient locateClient;
+	
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public List<ResCity> list(String longitude,String latitude) {
-		List<cn.linkmore.common.response.ResCity> list = this.cityClient.list(0, null);
+		List<cn.linkmore.common.response.ResCity> list = this.cityClient.list(0, 10);
 		List<ResCity> res = null;
 		ResCity rc = null;
 		Map<String,ResCity> rcMap = new HashMap<String,ResCity>();
@@ -43,7 +47,7 @@ public class CityServiceImpl implements CityService {
 				rc.setAdcode(re.getCode());
 				rc.setName(re.getName());
 				res.add(rc);
-				rcMap.put(re.getCode(), rc);
+				rcMap.put(re.getCode().substring(0,4), rc);
 			}
 		}
 		if (!rcMap.isEmpty()) {
@@ -51,14 +55,13 @@ public class CityServiceImpl implements CityService {
 			req.setLongitude(longitude);
 			req.setLatitude( latitude); 
 			cn.linkmore.third.response.ResLocate info = this.locateClient.get(longitude,latitude);
-			if(info!=null) {
-				rc = rcMap.get(info.getAdcode());
+			if(info!=null) { 
+				rc = rcMap.get(info.getAdcode().substring(0, 4));
 				if(rc!=null) {
 					rc.setStatus(ResCity.STATUS_CHECKED);
 				}
 			}
 		} 
 		return res;
-	}
-
+	} 
 }
