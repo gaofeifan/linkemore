@@ -61,6 +61,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		String uri = request.getRequestURI(); 
 		log.info("url:{}",uri);
 		request.getRemoteAddr();
+		log.info("openResources.contains(uri):{}",openResources.contains(uri));
 		if(openResources.contains(uri)) {
 			return true;
 		}  

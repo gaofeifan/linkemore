@@ -5,7 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.user.request.ReqPrefecture;
 import cn.linkmore.user.response.ResPrefecture;
-import cn.linkmore.user.response.ResPrefectureDetail;
 import cn.linkmore.user.response.ResPrefectureList;
 import cn.linkmore.user.response.ResPrefectureStrategy;
 
@@ -22,13 +21,7 @@ public interface PrefectureService {
 	 * @return
 	 */
 	public List<ResPrefecture> list(ReqPrefecture rp,HttpServletRequest request);
-	/**
-	 * 获取车区详情
-	 * @param preId
-	 * @param request
-	 * @return
-	 */
-	public ResPrefectureDetail findById(Long preId, HttpServletRequest request);
+	
 	/**
 	 * 获取车区计费策略
 	 * @param preId

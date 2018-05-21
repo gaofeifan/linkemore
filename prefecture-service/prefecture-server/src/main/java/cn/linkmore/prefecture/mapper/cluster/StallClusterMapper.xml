@@ -21,6 +21,13 @@
     <result column="lock_voltage" jdbcType="DOUBLE" property="lockVoltage" />
     <result column="bind_order_status" jdbcType="SMALLINT" property="bindOrderStatus" />
   </resultMap>
+  
+  <resultMap id="ResponseResultMap" type="cn.linkmore.prefecture.response.ResStall">
+    <id column="id" property="id" />
+    <result column="stall_name" property="stallName" />
+    <result column="lock_sn" property="lockSn" />
+  </resultMap>
+  
   <sql id="Base_Column_List">
     id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
     status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, 
@@ -49,6 +56,10 @@
     status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, lock_voltage
     from v_stall
     where lock_sn = #{lockSn,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findStallsByPreId" parameterType="java.lang.Long" resultType="ResponseResultMap">
+  	select id,stall_name,lock_sn from v_stall where status in(1,2) and pre_id = #{preId}
   </select>
   
 </mapper>

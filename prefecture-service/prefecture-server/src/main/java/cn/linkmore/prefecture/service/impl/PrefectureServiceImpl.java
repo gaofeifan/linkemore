@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.linkmore.lock.bean.LockBean;
+import com.linkmore.lock.factory.LockFactory;
+import com.linkmore.lock.response.ResponseMessage;
 import cn.linkmore.account.client.UserStaffClient;
-import cn.linkmore.account.client.hystrix.UserStaffClientHystrix;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.common.client.hystrix.CityClientHystrix;
@@ -19,6 +22,7 @@ import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.StrategyBase;
+import cn.linkmore.prefecture.fee.InitLockFactory;
 import cn.linkmore.prefecture.lock.FreeLockPool;
 import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.response.ResPre;
@@ -26,7 +30,9 @@ import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
 import cn.linkmore.prefecture.response.ResPrefectureStrategy;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.service.PrefectureService;
+import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.StringUtil;
 /**
  * Service实现类 - 车区信息
@@ -54,14 +60,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public ResPrefectureDetail findById(Long preId) {
-		ResPrefectureDetail detail = prefectureClusterMapper.findPrefectureById(preId);
-		int stallCount = stallClusterMapper.findCountByPreId(preId);
-		String lan = detail.getTimelyUnit();
-		detail.setStallCount(stallCount);
-		detail.setFirstHour(detail.getFirstHour());
-		detail.setTimelyLong(detail.getTimelyLong()+lan);
-		detail.setLeisureStall(freeLockPool.freeStallCount(preId).intValue());
-		return detail;
+		ResPrefectureDetail detail = new ResPrefectureDetail();
+		Prefecture pre = prefectureClusterMapper.findById(preId);
+		return ObjectUtils.copyObject(pre, detail);
 	}
 	@Override
 	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture,ResUser user) {
@@ -248,5 +249,21 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<ResPre> findList(List<Long> ids) {
 		List<ResPre> list = this.prefectureClusterMapper.findByIds(ids);
 		return list;
+	}
+	@Override
+	public Integer getStallCount(Long preId) {
+		List<ResStall> resStall = this.stallClusterMapper.findStallsByPreId(preId);
+		LockFactory lockFactory = InitLockFactory.getInstance();
+		Integer count = 0;
+		if(CollectionUtils.isNotEmpty(resStall)) {
+			for(ResStall stall : resStall) {
+				ResponseMessage<LockBean> res= lockFactory.getLockInfo(stall.getLockSn());
+				//1 表示竖起来 0 表示躺下占用
+				if(res.getData().getOpenState().equals(1)) {
+					count ++;
+				}
+			}
+		}
+		return count;
 	}
 }

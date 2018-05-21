@@ -1,5 +1,9 @@
 package cn.linkmore.prefecture.service;
 
+import java.util.List;
+
+import cn.linkmore.prefecture.response.ResStall;
+
 /**
  * Service接口 - 车位信息
  * @author jiaohanbin
@@ -11,12 +15,12 @@ public interface StallService {
 	 * 预约订单时，根据车位锁序列号查询车位
 	 * @param lockSn
 	 */
-	void order(String lockSn);
+	boolean order(String lockSn);
 	/**
 	 * 取消订单释放车位
 	 * @param stallId
 	 */
-	void cancel(Long stallId);
+	boolean cancel(Long stallId);
 	/**
 	 * 结账立场释放车位
 	 * @param stallId
@@ -35,5 +39,11 @@ public interface StallService {
 	 * @return true 车位锁降下成功 false 车位锁降下失败
 	 */
 	boolean downlock(Long stallId);
+	/**
+	 * 根据车位id查询正常状态下车位信息
+	 * @param preId
+	 * @return
+	 */
+	List<ResStall> findStallsByPreId(Long preId);
 	
 }

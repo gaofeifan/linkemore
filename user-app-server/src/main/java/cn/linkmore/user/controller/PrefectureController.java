@@ -14,7 +14,6 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.user.request.ReqPrefecture;
 import cn.linkmore.user.response.ResPrefecture;
-import cn.linkmore.user.response.ResPrefectureDetail;
 import cn.linkmore.user.response.ResPrefectureList;
 import cn.linkmore.user.response.ResPrefectureStrategy;
 import cn.linkmore.user.service.PrefectureService;
@@ -49,22 +48,7 @@ public class PrefectureController {
 		}
 		return response;
 	} 
-	
-	@ApiOperation(value = "车区详情", notes = "根据地图上车区ID查看卡片上车区信息", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<ResPrefectureDetail> findById(@RequestParam("preId") Long preId, HttpServletRequest request) {
-		ResponseEntity<ResPrefectureDetail> response = null;
-		try { 
-			ResPrefectureDetail detail = this.prefectureService.findById(preId, request);
-			response = ResponseEntity.success(detail, request);
-		} catch (BusinessException e) {
-			response = ResponseEntity.fail( e.getStatusEnum(),  request);
-		} catch (Exception e) { 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
-	} 
+ 
 	
 	@ApiOperation(value = "车区计费详情", notes = "根据车区ID车区计费策略", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/strategy", method = RequestMethod.GET)

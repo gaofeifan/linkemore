@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.prefecture.entity.Stall;
+import cn.linkmore.prefecture.response.ResStall;
 /**
  * dao 车位
  * @author jiaohanbin
@@ -36,4 +37,10 @@ public interface StallClusterMapper {
 	 * @return
 	 */
 	Stall findByLockSn(String lockSn);
+	/**
+	 * 根据车位id查询正常状态下车位信息
+	 * @param preId
+	 * @return
+	 */
+	List<ResStall> findStallsByPreId(Long preId);
 }
