@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.linkmore.lock.bean.LockBean;
@@ -50,46 +52,62 @@ public class StallServiceImpl implements StallService {
 	}
 	
 	@Override
-	public void checkout(Long stallId) {
-		Stall stall = stallClusterMapper.findById(stallId);
+	public boolean checkout(Long stallId) {
+		boolean flag = false;
 		LockFactory lockFactory = InitLockFactory.getInstance();
-		ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
-		int code = res.getMsgCode();
-		if (code == 200) {
-			stall.setLockStatus(Stall.LOCK_STATUS_UP);
-			freeLockPool.addFreeLock(stall.getPreId(), stall.getLockSn());
+		Stall stall = stallClusterMapper.findById(stallId);
+		if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
+			int code = res.getMsgCode();
+			if (code == 200) {
+				flag = true;
+				stall.setLockStatus(Stall.LOCK_STATUS_UP);
+				freeLockPool.addFreeLock(stall.getPreId(), stall.getLockSn());
+			}
+			stall.setUpdateTime(new Date());
+			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
+			stall.setStatus(Stall.STATUS_FREE);
+			this.stallMasterMapper.checkout(stall);
 		}
-		stall.setUpdateTime(new Date());
-		stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
-		stall.setStatus(Stall.STATUS_FREE);
-		this.stallMasterMapper.checkout(stall);
+		
+		return flag;
 	}
 
 	@Override
-	public void downlock(Long stallId) {
-		Stall stall = stallClusterMapper.findById(stallId);
+	public boolean downlock(Long stallId) {
+		boolean flag = true;
 		LockFactory lockFactory = InitLockFactory.getInstance();
-		ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
-		int code = res.getMsgCode();
-    	if(code!=200){
-    		 throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL); 
-    	}
-		stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
-		stallMasterMapper.lockdown(stall);
+		Stall stall = stallClusterMapper.findById(stallId);
+		if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
+			int code = res.getMsgCode();
+	    	if(code != 200){
+	    		 flag = false;
+	    		 throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL); 
+	    	}
+			stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
+			stallMasterMapper.lockdown(stall);
+		}
+		return flag;
 	}
 
 	@Override
-	public void uplock(Long stallId) {
-		Stall stall = stallClusterMapper.findById(stallId);
+	public boolean uplock(Long stallId) {
+		boolean flag = true;
 		LockFactory lockFactory = InitLockFactory.getInstance();
-		ResponseMessage<LockBean> res=lockFactory.lockUp(stall.getLockSn());
-		int code = res.getMsgCode();
-    	if(code!=200){
-    		 //此处为升锁操作
-    		 throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL); 
-    	}
-		stall.setLockStatus(Stall.LOCK_STATUS_UP);
-		stallMasterMapper.lockdown(stall);
+		Stall stall = stallClusterMapper.findById(stallId);
+		if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			ResponseMessage<LockBean> res=lockFactory.lockUp(stall.getLockSn());
+			int code = res.getMsgCode();
+			if (code != 200){
+	    		 //此处为升锁操作
+	    		 flag = false;
+	    		 throw new BusinessException(StatusEnum.ORDER_LOCKUP_FAIL); 
+	    	}
+			stall.setLockStatus(Stall.LOCK_STATUS_UP);
+			stallMasterMapper.lockdown(stall);
+		}
+		return flag;
 	}
 	
 }

@@ -3,9 +3,7 @@ package cn.linkmore.user.service.impl;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +13,11 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.request.ReqUpdateMobile;
+import cn.linkmore.account.request.ReqUpdateNickname;
+import cn.linkmore.account.request.ReqUpdateSex;
+import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
@@ -256,5 +258,33 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_FAILED);
 		} 
 	}
+	@Override
+	public void updateNickname(ReqUpdateNickname nickname) {
+		this.userClient.updateNickname(nickname);
+	}
+	@Override
+	public void updateSex(ReqUpdateSex sex) {
+		this.userClient.updateSex(sex);
+	}
+	@Override
+	public void updateVehicle(ReqUpdateVehicle req) {
+		this.userClient.updateVehicle(req);
+	}
+	@Override
+	public ResUserDetails detail(Long userId) {
+		return this.detail(userId);
+	}
+	@Override
+	public void removeWechat(Long userId) {
+		this.userClient.removeWechat(userId);
+	}
+	
+	@Override
+	public cn.linkmore.account.response.ResUser selectByMobile(String mobile) {
+		return this.userClient.selectByMobile(mobile);
+	}
+	
+	
+	
 
 }

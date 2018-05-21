@@ -19,4 +19,10 @@
     from t_base_dict
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectListByCode" resultMap="BaseResultMap">
+    select d.id, d.group_id, d.name, d.code, d.order_index,d.extra,d.create_time
+    from t_base_dict d left join t_base_dict_group dg on d.group_id = dg.id
+    where dg.code = #{code,jdbcType=VARCHAR}
+    order by d.order_index 
+  </select>
 </mapper>

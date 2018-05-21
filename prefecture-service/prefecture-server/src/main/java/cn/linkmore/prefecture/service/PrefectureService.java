@@ -23,7 +23,7 @@ public interface PrefectureService {
 	 * @param id 主键
 	 * @return
 	 */
-	ResPrefectureDetail find(Long id);
+	ResPrefectureDetail findById(Long id);
 	
 	/**
 	 * 根据当前位置获取车区列表

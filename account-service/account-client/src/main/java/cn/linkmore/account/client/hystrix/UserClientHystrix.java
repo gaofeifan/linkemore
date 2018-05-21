@@ -75,6 +75,14 @@ public class UserClientHystrix implements UserClient{
 	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans) {
 		return null;
 	}
+
+
+	@Override
+	public ResUser selectByMobile(String mobile) {
+		return null;
+	}
+
+	
 	
 }
 

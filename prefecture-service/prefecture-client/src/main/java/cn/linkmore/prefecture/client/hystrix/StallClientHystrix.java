@@ -26,21 +26,21 @@ public class StallClientHystrix implements StallClient {
 	}
 
 	@Override
-	public void downlock(Long stallId) {
+	public Boolean downlock(Long stallId) {
 		log.info("prefecture service stall downlock(Long stallId) hystrix");
-		
+		return false;
 	}
 
 	@Override
-	public void uplock(Long stallId) {
+	public Boolean uplock(Long stallId) {
 		log.info("prefecture service stall uplock(Long stallId) hystrix");
-		
+		return false;
 	}
 
 	@Override
-	public void checkout(Long stallId) {
+	public Boolean checkout(Long stallId) {
 		log.info("prefecture service stall checkout(Long stallId) hystrix");
-		
+		return false;
 	}
 	
 

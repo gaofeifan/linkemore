@@ -48,7 +48,7 @@ public class PrefectureController {
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResPrefectureDetail findById(@PathVariable("id") Long id) {
-		return this.preService.find(id);
+		return this.preService.findById(id);
 	}
 	
 	/**

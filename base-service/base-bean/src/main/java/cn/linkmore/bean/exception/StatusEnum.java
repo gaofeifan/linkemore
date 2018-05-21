@@ -71,7 +71,8 @@ public enum StatusEnum {
 	ORDER_REASON_CARNO_BUSY(8005036,"当前车牌号已在预约中，请更换车牌号重新预约"),
 	ORDER_REASON_USER_LIMIT(8005037,"无空闲车位，请重新预约"),
 	ORDER_REASON_SWITCHSTALL_ORDINARY_FAIL(8005038,"更换车位失败，请点击结账离场；若产生费用，请联系客服"),
-	ORDER_REASON_SWITCHSTALL_FAIL(8005039,"切换车位失败");
+	ORDER_REASON_SWITCHSTALL_FAIL(8005039,"切换车位失败"),
+	ORDER_LOCKUP_FAIL(8005040,"升起地锁失败！");
 	public int code;
 	public String label;
 

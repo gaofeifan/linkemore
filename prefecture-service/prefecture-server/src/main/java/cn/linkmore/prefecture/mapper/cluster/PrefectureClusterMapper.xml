@@ -47,7 +47,7 @@
   
   <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.response.ResPrefecture">
   	<id column="id" property="id" />
-  	<result column="name" property="preName" />
+  	<result column="name" property="name" />
   	<result column="leisure_stall" property="leisureStall" />
   	<result column="latitude" property="latitude" />
   	<result column="longitude" property="longitude" />

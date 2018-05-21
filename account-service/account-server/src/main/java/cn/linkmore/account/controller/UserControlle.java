@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.account.entity.User;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
@@ -21,6 +22,7 @@ import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
+import cn.linkmore.util.ObjectUtils;
 
 /**
  * 用户
@@ -124,8 +126,9 @@ public class UserControlle {
 	 * @Version  v2.0
 	 */
 	@RequestMapping(value = "/v2.0/mobile/{mobile}", method = RequestMethod.GET)
-	public void selectByMobile(@PathVariable String mobile) {
-		this.userService.selectByMobile(mobile);
+	public ResUser selectByMobile(@PathVariable String mobile) {
+		User user = this.userService.selectByMobile(mobile);
+		return ObjectUtils.copyObject(user, new ResUser());
 	}
 	
 	/**
