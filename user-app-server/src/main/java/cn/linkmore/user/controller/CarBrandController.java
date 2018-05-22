@@ -42,16 +42,4 @@ public class CarBrandController {
 		return responseEntity;
 	}
 	
-	/**
-	 * @Description  加载车辆品牌数据到redis中
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	@RequestMapping(value = "/load", method = RequestMethod.GET)
-	public ResponseEntity<?> load(HttpServletRequest request){
-		this.carBrandService.load();
-		return ResponseEntity.success(null, request);
-	}
-	
-	
 }

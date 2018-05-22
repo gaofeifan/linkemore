@@ -24,22 +24,23 @@ public class BaseDictClientHystrix implements BaseDictClient {
 
 	@Override
 	public List<ResBaseDict> selectList(@PathVariable("code") String code) {
+		log.info("common service dict  selectList(String code) hystrix");
 		return null;
 	}
 
 	@Override
 	public void save(ReqBaseDict baseDict) {
-		
+		log.info("common service dict  save(ReqBaseDict baseDict) hystrix");
 	}
 
 	@Override
 	public void update(ReqBaseDict baseDict) {
-		
+		log.info("common service dict  update(ReqBaseDict baseDict) hystrix");
 	}
 
 	@Override
 	public void update(Long id) {
-		
+		log.info("common service dict  update(Long id) hystrix");
 	}
 
 	

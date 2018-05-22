@@ -19,46 +19,53 @@ import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.response.ResVechicleMark;
 
+/**
+ * @author   GFF
+ * @Date     2018年5月22日
+ * @Version  v2.0
+ */
 @Component
 public class UserClientHystrix implements UserClient{
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	 
 	public void updateNickname(@RequestBody ReqUpdateNickname nickname) {
-		
+		log.info("account service user updateNickname(ReqUpdateNickname nickname) hystrix");
 	};
 	
 	 
 	public void updateSex(@RequestBody ReqUpdateSex reqSex) {
-		
+		log.info("account service user updateSex(ReqUpdateSex reqSex) hystrix");
 	}
 	
 	 
 	public void updateVehicle(@RequestBody ReqUpdateVehicle req) {
-		
+		log.info("account service user updateVehicle(ReqUpdateVehicle req) hystrix");
 	}
 	
 	 
 	public ResUserDetails detail(@PathVariable("userId") Long userId) {
+		log.info("account service user detail(Long userId) hystrix");
 		return null;
 	}
 	
 	 
 	public void sendCode( @RequestBody ReqBind bean) {
-		
+		log.info("account service user sendCode(ReqBind bean) hystrix");
 	}
 
 	 
 	public void updateMobile(@RequestBody ReqUpdateMobile bean) {
-		
+		log.info("account service user updateMobile( ReqUpdateMobile bean) hystrix");
 	}
 	
 	 
 	public void updateAppfans(@RequestBody ReqUserAppfans bean) {
-		
+		log.info("account service user updateAppfans( ReqUserAppfans bean) hystrix");
 	} 
 	
 	 
 	public void removeWechat(@PathVariable("userId") Long userId) { 
+		log.info("account service user removeWechat( Long userId) hystrix");
 	}
 	
 	 
@@ -68,21 +75,24 @@ public class UserClientHystrix implements UserClient{
 	}
 
 	public ResUserLogin appLogin(@PathVariable("mobile") String mobile) {
-		System.out.println("UserClientHystrix");
+		log.info("account service user appLogin( String mobile) hystrix");
 		return null;
 	}
  
 	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans) {
+		log.info("account service user wxLogin(  ReqUserAppfans appfans) hystrix");
 		return null;
 	}
 
 	@Override
 	public ResUser selectByMobile(String mobile) {
+		log.info("account service user selectByMobile(String mobile) hystrix");
 		return null;
 	}
 
 	@Override
 	public ResVechicleMark selectById(Long id) {
+		log.info("account service user selectById(Long id) hystrix");
 		return null;
 	}
 

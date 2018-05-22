@@ -96,14 +96,5 @@ public interface UserService {
 	 */
 	void removeWechat(HttpServletRequest request);
 
-	/**
-	 * @return 
-	 * @Description  根据手机号查询
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	cn.linkmore.account.response.ResUser selectByMobile(String mobile);
-
-
 
 }

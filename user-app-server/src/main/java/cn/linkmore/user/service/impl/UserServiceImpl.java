@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 	
 	private final static long SPACE = 1000L*60*30;
 	
-	private final static String TEST_MOBILE= "18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
+	private final static String TEST_MOBILE= "18510770300|18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
 
 	@Override
 	public void send(ReqAuthSend rs) {     
@@ -293,6 +293,7 @@ public class UserServiceImpl implements UserService {
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		return this.userClient.detail(ru.getId());
 	}
+	
 	@Override
 	public void removeWechat(HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
@@ -300,12 +301,4 @@ public class UserServiceImpl implements UserService {
 		this.userClient.removeWechat(ru.getId());
 	}
 	
-	@Override
-	public cn.linkmore.account.response.ResUser selectByMobile(String mobile) {
-		return this.userClient.selectByMobile(mobile);
-	}
-	
-	
-	
-
 }

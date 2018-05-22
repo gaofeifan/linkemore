@@ -2,30 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.common.dao.master.AccessDetailMasterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.AccessDetail">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="request_path" jdbcType="VARCHAR" property="requestPath" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="method" jdbcType="VARCHAR" property="method" />
-    <result column="request_param" jdbcType="VARCHAR" property="requestParam" />
-    <result column="response_data" jdbcType="VARCHAR" property="responseData" />
+    <result column="params" jdbcType="VARCHAR" property="params" />
+    <result column="returns" jdbcType="VARCHAR" property="returns" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="method_type" jdbcType="VARCHAR" property="methodType" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, request_path, method, request_param, response_data, type
+    id, user_id, path, method, params, returns, type, method_type
   </sql>
-  <delete id="deleteById" parameterType="java.lang.Integer">
+  <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_access_detail
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="cn.linkmore.common.entity.AccessDetail">
-    insert into t_access_detail (id, user_id, request_path, 
-      method, request_param, response_data, 
-      type)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{requestPath,jdbcType=VARCHAR}, 
-      #{method,jdbcType=VARCHAR}, #{requestParam,jdbcType=VARCHAR}, #{responseData,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER})
+    insert into t_access_detail (id, user_id, path, 
+      method, params, returns, 
+      type, method_type)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER}, #{path,jdbcType=VARCHAR}, 
+      #{method,jdbcType=VARCHAR}, #{params,jdbcType=VARCHAR}, #{returns,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{methodType,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="cn.linkmore.common.entity.AccessDetail">
+  <insert id="insert" parameterType="cn.linkmore.common.entity.AccessDetail">
     insert into t_access_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -34,43 +35,49 @@
       <if test="userId != null">
         user_id,
       </if>
-      <if test="requestPath != null">
-        request_path,
+      <if test="path != null">
+        path,
       </if>
       <if test="method != null">
         method,
       </if>
-      <if test="requestParam != null">
-        request_param,
+      <if test="params != null">
+        params,
       </if>
-      <if test="responseData != null">
-        response_data,
+      <if test="returns != null">
+        returns,
       </if>
       <if test="type != null">
         type,
       </if>
+      <if test="methodType != null">
+        method_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
         #{userId,jdbcType=INTEGER},
       </if>
-      <if test="requestPath != null">
-        #{requestPath,jdbcType=VARCHAR},
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
       </if>
       <if test="method != null">
         #{method,jdbcType=VARCHAR},
       </if>
-      <if test="requestParam != null">
-        #{requestParam,jdbcType=VARCHAR},
+      <if test="params != null">
+        #{params,jdbcType=VARCHAR},
       </if>
-      <if test="responseData != null">
-        #{responseData,jdbcType=VARCHAR},
+      <if test="returns != null">
+        #{returns,jdbcType=VARCHAR},
       </if>
       <if test="type != null">
         #{type,jdbcType=INTEGER},
+      </if>
+      <if test="methodType != null">
+        #{methodType,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -80,32 +87,36 @@
       <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},
       </if>
-      <if test="requestPath != null">
-        request_path = #{requestPath,jdbcType=VARCHAR},
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
       </if>
       <if test="method != null">
         method = #{method,jdbcType=VARCHAR},
       </if>
-      <if test="requestParam != null">
-        request_param = #{requestParam,jdbcType=VARCHAR},
+      <if test="params != null">
+        params = #{params,jdbcType=VARCHAR},
       </if>
-      <if test="responseData != null">
-        response_data = #{responseData,jdbcType=VARCHAR},
+      <if test="returns != null">
+        returns = #{returns,jdbcType=VARCHAR},
       </if>
       <if test="type != null">
         type = #{type,jdbcType=INTEGER},
       </if>
+      <if test="methodType != null">
+        method_type = #{methodType,jdbcType=VARCHAR},
+      </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateById" parameterType="cn.linkmore.common.entity.AccessDetail">
     update t_access_detail
     set user_id = #{userId,jdbcType=INTEGER},
-      request_path = #{requestPath,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
       method = #{method,jdbcType=VARCHAR},
-      request_param = #{requestParam,jdbcType=VARCHAR},
-      response_data = #{responseData,jdbcType=VARCHAR},
-      type = #{type,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+      params = #{params,jdbcType=VARCHAR},
+      returns = #{returns,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      method_type = #{methodType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

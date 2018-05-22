@@ -238,5 +238,12 @@ public class ObjectUtils {
 		}
 		return -1;
 	}
-
+	
+	public static Map<String,Object> toMap(Class<?> clazz){
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+		}
+		return null;
+	}
 }

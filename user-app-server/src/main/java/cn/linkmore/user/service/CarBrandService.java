@@ -13,12 +13,4 @@ public interface CarBrandService {
 	 * @Version  v2.0
 	 */
 	Object list();
-
-	/**
-	 * @Description  从第三方获取车辆品牌数据加载到redis中
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	void load();
-
 }

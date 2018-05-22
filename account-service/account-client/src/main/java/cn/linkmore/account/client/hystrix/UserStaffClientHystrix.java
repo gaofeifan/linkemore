@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.response.ResUserStaff;
 
+/**
+ * @author   GFF
+ * @Date     2018年5月22日
+ * @Version  v2.0
+ */
 @Component
 public class UserStaffClientHystrix  implements UserStaffClient{
 	
@@ -16,6 +21,7 @@ public class UserStaffClientHystrix  implements UserStaffClient{
 
 	@Override
 	public ResUserStaff selectById(@PathVariable("id")Long id) {
+		log.info("account service userstaff selectById(Long id) hystrix");
 		return null;
 	}
 

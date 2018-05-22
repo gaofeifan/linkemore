@@ -16,12 +16,13 @@ public class BaseVersionClientHystrix implements BaseVersionClient {
 
 	@Override
 	public ResVersionBean current(@PathVariable("source") Integer source) {
+		log.info("common service version  current(Integer source) hystrix");
 		return null;
 	}
 
 	@Override
 	public void report(@RequestBody ReqVersion vrb) {
-		
+		log.info("common service version report(ReqVersion vrb) hystrix");
 	}
 
 	

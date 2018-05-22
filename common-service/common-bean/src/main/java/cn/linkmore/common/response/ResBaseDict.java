@@ -1,7 +1,6 @@
 package cn.linkmore.common.response;
 
 import java.util.Date;
-
 public class ResBaseDict {
 
 	private Long id;

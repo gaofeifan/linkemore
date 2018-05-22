@@ -1,25 +1,27 @@
 package cn.linkmore.common.entity;
 
 public class AccessDetail {
-    private Integer id;
+    private Long id;
 
     private Integer userId;
 
-    private String requestPath;
+    private String path;
 
     private String method;
 
-    private String requestParam;
+    private String params;
 
-    private String responseData;
+    private String returns;
 
     private Integer type;
 
-    public Integer getId() {
+    private String methodType;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -31,12 +33,12 @@ public class AccessDetail {
         this.userId = userId;
     }
 
-    public String getRequestPath() {
-        return requestPath;
+    public String getPath() {
+        return path;
     }
 
-    public void setRequestPath(String requestPath) {
-        this.requestPath = requestPath == null ? null : requestPath.trim();
+    public void setPath(String path) {
+        this.path = path == null ? null : path.trim();
     }
 
     public String getMethod() {
@@ -47,27 +49,35 @@ public class AccessDetail {
         this.method = method == null ? null : method.trim();
     }
 
-    public String getRequestParam() {
-        return requestParam;
+    public String getParams() {
+        return params;
     }
 
-    public void setRequestParam(String requestParam) {
-        this.requestParam = requestParam == null ? null : requestParam.trim();
+    public void setParams(String params) {
+        this.params = params == null ? null : params.trim();
     }
 
-    public String getResponseData() {
-        return responseData;
+    public String getReturns() {
+        return returns;
     }
 
-    public void setResponseData(String responseData) {
-        this.responseData = responseData == null ? null : responseData.trim();
+    public void setReturns(String returns) {
+        this.returns = returns == null ? null : returns.trim();
     }
 
-	public Integer getType() {
-		return type;
-	}
+    public Integer getType() {
+        return type;
+    }
 
-	public void setType(Integer type) {
-		this.type = type;
-	}
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getMethodType() {
+        return methodType;
+    }
+
+    public void setMethodType(String methodType) {
+        this.methodType = methodType == null ? null : methodType.trim();
+    }
 }

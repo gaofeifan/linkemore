@@ -94,7 +94,7 @@ public class UserController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@ApiOperation(value="更新车牌号",notes="车牌号不能为空，用户需要登录", consumes = "application/json")
+	@ApiOperation(value="修改车辆品牌信息",notes="车牌号不能为空，用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/vehicle", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<?> updateVehicle(@RequestBody ReqUpdateVehicle vehicle,HttpServletRequest request) {
@@ -131,20 +131,4 @@ public class UserController {
 		ResponseEntity<?> response = ResponseEntity.success(null, request);
 		return response;
 	}
-	
-	/**
-	 * @Description  根据手机号查询
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	@ApiOperation(value="根据手机号查询",notes="用户需要登录", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/mobile", method = RequestMethod.GET)
-	public ResponseEntity<cn.linkmore.user.response.ResUserDetails> selectByMobile(@RequestParam("mobile") String mobile,HttpServletRequest request) {
-		ResponseEntity<cn.linkmore.user.response.ResUserDetails> response = null; 
-		ResUser user = this.userService.selectByMobile(mobile);
-		cn.linkmore.user.response.ResUserDetails details = ObjectUtils.copyObject(user, new cn.linkmore.user.response.ResUserDetails());
-		response = ResponseEntity.success(details, request);
-		return response;
-	}
-	
 }

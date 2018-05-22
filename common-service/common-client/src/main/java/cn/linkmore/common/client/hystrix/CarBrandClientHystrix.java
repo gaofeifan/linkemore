@@ -17,12 +17,13 @@ public class CarBrandClientHystrix implements CarBrandClient {
 
 	@Override
 	public Object list() {
+		log.info("common service carBrand list() hystrix");
 		return null;
 	}
 
 	@Override
 	public void load() {
-		
+		log.info("common service carBrand load() hystrix");
 	}
 
 	

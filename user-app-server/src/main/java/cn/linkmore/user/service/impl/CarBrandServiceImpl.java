@@ -22,12 +22,5 @@ public class CarBrandServiceImpl implements CarBrandService {
 	public Object list() {
 		return this.carBrandClient.list();
 	}
-
-	@Override
-	public void load() {
-		this.carBrandClient.load();
-	}
-
-	
 	
 }
