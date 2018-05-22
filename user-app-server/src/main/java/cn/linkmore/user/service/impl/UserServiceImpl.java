@@ -94,14 +94,14 @@ public class UserServiceImpl implements UserService {
 		sms.setSt(Constants.SmsTemplate.USER_APP_LOGIN_CODE);
 		boolean success = this.smsClient.send(sms);   
 		if(success){ 
-			this.redisService.set(RedisKey.USER_APP_AUTH_CODE+rs.getMobile(), code, 60*10); 
-			this.redisService.set(RedisKey.USER_APP_AUTH_MOBILE+rs.getMobile(), rs.getMobile(),1);
+			this.redisService.set(RedisKey.USER_APP_AUTH_CODE.key+rs.getMobile(), code, 60*10); 
+			this.redisService.set(RedisKey.USER_APP_AUTH_MOBILE.key+rs.getMobile(), rs.getMobile(),1);
 		}else{
 			throw new BusinessException(StatusEnum.USER_APP_SMS_FAILED);
 		} 
 	} 
 	private String getAppSmsCode(String mobile){ 
-		Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE+mobile);
+		Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+mobile);
 		String code = null;
 		if(cache==null){
 			code = String.valueOf(Math.round(Math.random() * 8999 + 1000)); 
@@ -113,14 +113,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResUser login(ReqAuthLogin rl, HttpServletRequest request) {
 		if(!(TEST_MOBILE.contains(rl.getMobile())&&"6666".equals(rl.getCode()))) {
-			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE+rl.getMobile());
+			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
 			}else {
 				if(!cache.toString().equals(rl.getCode())) {
 					throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
 				}else {
-					this.redisService.remove(RedisKey.USER_APP_AUTH_CODE+rl.getMobile());
+					this.redisService.remove(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
 				}
 			}
 		}
@@ -183,7 +183,7 @@ public class UserServiceImpl implements UserService {
 	public void bindWechat(String code, HttpServletRequest request) {
 		ResFans fans = this.appWechatClient.getFans(code); 
 		String key = UserCache.getCacheKey(request);  
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUserAppfans ruaf = new ReqUserAppfans();
 		ruaf.setCreateTime(fans.getCreateTime());
 		ruaf.setHeadurl(fans.getHeadurl());
@@ -199,10 +199,10 @@ public class UserServiceImpl implements UserService {
 	private Token cacheUser(HttpServletRequest request, ResUser user) {
 		String key = UserCache.getCacheKey(request);
 		
-		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN+user.getId().toString());
+		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId().toString());
 		if(last!=null){ 
-			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN+user.getId().toString());
-			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER+last.getAccessToken());  
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId().toString());
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
 			last.setAccessToken(key);
 		}
 		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user); 
@@ -224,18 +224,18 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	public void bindMobile(ReqMobileBind rmb, HttpServletRequest request) {
-		Object cache = this.redisService.get(RedisKey.USER_APP_USER_CODE+rmb.getMobile());
+		Object cache = this.redisService.get(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
 		if(cache==null) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
 		}else {
 			if(!cache.toString().equals(rmb.getCode())) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
 			}else {
-				this.redisService.remove(RedisKey.USER_APP_USER_CODE+rmb.getMobile());
+				this.redisService.remove(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
 			}
 		} 
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUpdateMobile rum = new ReqUpdateMobile(); 
 		rum.setMobile(rmb.getMobile());
 		rum.setUserId(ru.getId());
@@ -244,7 +244,7 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	public void send(String mobile, HttpServletRequest request) {   
-		if(this.redisService.exists(RedisKey.USER_APP_USER_MOBILE+mobile)) {
+		if(this.redisService.exists(RedisKey.USER_APP_USER_MOBILE.key+mobile)) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		} 
 		String code = getAppSmsCode(mobile);
@@ -256,8 +256,8 @@ public class UserServiceImpl implements UserService {
 		sms.setSt(SmsTemplate.USER_APP_LOGIN_CODE);
 		boolean success = this.smsClient.send(sms);   
 		if(success){ 
-			this.redisService.set(RedisKey.USER_APP_USER_CODE+mobile, code, 60*10); 
-			this.redisService.set(RedisKey.USER_APP_USER_MOBILE+mobile, mobile,1);
+			this.redisService.set(RedisKey.USER_APP_USER_CODE.key+mobile, code, 60*10); 
+			this.redisService.set(RedisKey.USER_APP_USER_MOBILE.key+mobile, mobile,1);
 		}else{
 			throw new BusinessException(StatusEnum.USER_APP_SMS_FAILED);
 		} 
@@ -265,7 +265,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateNickname(String nickname, HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUpdateNickname nick = new ReqUpdateNickname();
 		nick.setNickname(nickname);
 		nick.setUserId(ru.getId());
@@ -274,7 +274,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateSex(Integer sex, HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUpdateSex req = new ReqUpdateSex();
 		req.setSex(sex);
 		req.setUserId(ru.getId());
@@ -283,20 +283,20 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateVehicle(ReqUpdateVehicle vehicle, HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		vehicle.setUserId(ru.getId());
 		this.userClient.updateVehicle(vehicle);
 	}
 	@Override
 	public ResUserDetails detail(HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		return this.userClient.detail(ru.getId());
 	}
 	@Override
 	public void removeWechat(HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		this.userClient.removeWechat(ru.getId());
 	}
 	
