@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.security.dao.cluster.InterfaceClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.security.entity.Interface">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="clazz_id" jdbcType="BIGINT" property="clazzId" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="log_status" jdbcType="SMALLINT" property="logStatus" />
+    <result column="authorize" jdbcType="INTEGER" property="authorize" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, clazz_id, path, log_status, authorize, create_time, name
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sec_interface
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap" >
+    select id, name,clazz_id, path, authorize,log_status,create_time
+    from t_sec_interface
+  </select>
+  
+   <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select id,name, clazz_id, path, authorize,log_status,create_time
+    from t_sec_interface
+    where  1=1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="authorize!=null">  
+    and authorize = #{authorize,jdbcType=BIGINT}
+    </if>
+    <if test="clazzId!=null">  
+    and clazz_id = #{clazzId,jdbcType=BIGINT}
+    </if>
+    <if test="path!=null">  
+    and path = #{path,jdbcType=VARCHAR}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+   	from t_sec_interface where 1=1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="authorize!=null">  
+    and authorize = #{authorize,jdbcType=BIGINT}
+    </if>
+     <if test="clazzId!=null">  
+    and clazz_id = #{clazzId,jdbcType=BIGINT}
+    </if>
+    <if test="path!=null">  
+    and path = #{path,jdbcType=VARCHAR}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+  </select>
+  
+  <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_sec_interface where   
+    ${property} = #{value}  
+    and  clazz_id = #{clazzId}  
+    and id != #{id} 
+  </select>
+  
+</mapper>

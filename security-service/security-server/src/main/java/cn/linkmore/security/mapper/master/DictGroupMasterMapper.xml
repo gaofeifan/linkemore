@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.security.dao.master.DictGroupMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.security.entity.DictGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, code, order_index, create_time
+  </sql>
+  <insert id="save" parameterType="cn.linkmore.security.entity.DictGroup">
+    insert into t_base_dict_group (id, name, code, 
+      order_index, create_time)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{orderIndex,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="update" parameterType="cn.linkmore.security.entity.DictGroup">
+    update t_base_dict_group
+    set name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      order_index = #{orderIndex,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <delete id="delete" parameterType="java.util.List">
+    delete from t_base_dict_group
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </delete>  
+</mapper>

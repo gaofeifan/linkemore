@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.security.dao.cluster.PersonClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.security.entity.Person">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
+    <result column="lock_time" jdbcType="TIMESTAMP" property="lockTime" />
+    <result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
+    <result column="lock_count" jdbcType="INTEGER" property="lockCount" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, username, password, lock_status, lock_time, login_ip, lock_count, login_time, 
+    status, create_time, realname, ent_id, type
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sec_person
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>
