@@ -18,6 +18,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.user.request.ReqMobileBind;
 import cn.linkmore.user.service.UserService;
+import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 /**
@@ -110,11 +111,11 @@ public class UserController {
 	@ApiOperation(value="查询详情",notes="用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<?> detail(HttpServletRequest request) {
+	public ResponseEntity<cn.linkmore.user.response.ResUserDetails> detail(HttpServletRequest request) {
 		ResUserDetails details = this.userService.detail(request);
-		ResponseEntity<ResUserDetails> response = new ResponseEntity<>();
-		response.setData(details);
-		return response;
+		cn.linkmore.user.response.ResUserDetails object = ObjectUtils.copyObject(details, new cn.linkmore.user.response.ResUserDetails());
+		ResponseEntity<cn.linkmore.user.response.ResUserDetails> entity = ResponseEntity.success(object, request);
+		return entity;
 	}
 	
 	/**
@@ -138,11 +139,11 @@ public class UserController {
 	 */
 	@ApiOperation(value="根据手机号查询",notes="用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/mobile", method = RequestMethod.GET)
-	public ResponseEntity<?> selectByMobile(@RequestParam("mobile") String mobile,HttpServletRequest request) {
-		System.out.println(request.getSession().getId());
-		ResponseEntity<?> response = null; 
+	public ResponseEntity<cn.linkmore.user.response.ResUserDetails> selectByMobile(@RequestParam("mobile") String mobile,HttpServletRequest request) {
+		ResponseEntity<cn.linkmore.user.response.ResUserDetails> response = null; 
 		ResUser user = this.userService.selectByMobile(mobile);
-		response = ResponseEntity.success(user, request);
+		cn.linkmore.user.response.ResUserDetails details = ObjectUtils.copyObject(user, new cn.linkmore.user.response.ResUserDetails());
+		response = ResponseEntity.success(details, request);
 		return response;
 	}
 	

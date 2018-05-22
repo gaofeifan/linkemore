@@ -14,6 +14,7 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.user.service.BeanVersionService;
+import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -40,9 +41,11 @@ public class BaseVersionController {
 	@RequestMapping(value="/current",method = RequestMethod.GET)
 	@ResponseBody
 	@ApiOperation(value = "查询当前版本", notes = "来源必填 1 android 2 ios", consumes = "application/json")
-	public ResponseEntity<?> current(@RequestParam("source")Integer source,HttpServletRequest request){
+	public ResponseEntity<cn.linkmore.user.response.ResVersionBean> current(@RequestParam("source")Integer source,HttpServletRequest request){
 		ResVersionBean res = this.beanVersionService.current(source);
-		return ResponseEntity.success(res, request);
+		cn.linkmore.user.response.ResVersionBean bean = ObjectUtils.copyObject(res, new cn.linkmore.user.response.ResVersionBean());
+		ResponseEntity<cn.linkmore.user.response.ResVersionBean> responseEntity = ResponseEntity.success(bean, request);
+		return responseEntity;
 	}
 	
 	/**

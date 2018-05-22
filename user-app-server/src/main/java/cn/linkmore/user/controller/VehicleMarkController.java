@@ -1,5 +1,6 @@
 package cn.linkmore.user.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,6 +17,7 @@ import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.user.service.VehicleMarkManageService;
+import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 	
@@ -65,9 +67,15 @@ public class VehicleMarkController{
 	 */
 	@ApiOperation(value="列表list",notes="查询该用户所有车牌", consumes = "application/json")
 	@RequestMapping(value = "/v2.0", method = RequestMethod.GET)
-	public ResponseEntity<?> list(HttpServletRequest request){
+	public ResponseEntity<List<cn.linkmore.user.response.ResVechicleMark>> list(HttpServletRequest request){
 		List<ResVechicleMark> list = vehicleMarkManageService.selectResList(request);
-		return ResponseEntity.success(list, request);
+		List<cn.linkmore.user.response.ResVechicleMark> resultList = new ArrayList<>();
+		for (ResVechicleMark resVechicleMark : list) {
+			cn.linkmore.user.response.ResVechicleMark mark = ObjectUtils.copyObject(resVechicleMark, new cn.linkmore.user.response.ResVechicleMark());
+			resultList.add(mark);
+		}
+		ResponseEntity<List<cn.linkmore.user.response.ResVechicleMark>> success = ResponseEntity.success(resultList, request);
+		return success;
 	}
 	
 	
@@ -78,9 +86,11 @@ public class VehicleMarkController{
 	 */
 	@ApiOperation(value="根据id查询",notes="根据id查询车牌号详情", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/by_id", method = RequestMethod.GET)
-	public ResponseEntity<?> selectById(@RequestParam("id") Long id,HttpServletRequest request) {
+	public ResponseEntity<cn.linkmore.user.response.ResVechicleMark> selectById(@RequestParam("id") Long id,HttpServletRequest request) {
 		ResVechicleMark mark = this.vehicleMarkManageService.selectById(id);
-		return ResponseEntity.success(mark, request);
+		cn.linkmore.user.response.ResVechicleMark object = ObjectUtils.copyObject(mark, new cn.linkmore.user.response.ResVechicleMark());
+		ResponseEntity<cn.linkmore.user.response.ResVechicleMark> success = ResponseEntity.success(object, request);
+		return success;
 	}
 	
 }
