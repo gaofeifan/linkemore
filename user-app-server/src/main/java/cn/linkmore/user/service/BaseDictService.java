@@ -3,6 +3,7 @@ package cn.linkmore.user.service;
 import java.util.List;
 
 import cn.linkmore.common.response.ResBaseDict;
+import cn.linkmore.user.response.ResDonwLockError;
 
 /**
  * 数据字典操作
@@ -17,6 +18,6 @@ public interface BaseDictService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResBaseDict> selectLockDownErrorCause();
+	List<ResDonwLockError> selectLockDownErrorCause();
 
 }

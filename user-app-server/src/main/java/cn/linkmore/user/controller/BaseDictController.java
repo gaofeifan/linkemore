@@ -2,12 +2,15 @@ package cn.linkmore.user.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.common.response.ResBaseDict;
+import cn.linkmore.user.response.ResDonwLockError;
 import cn.linkmore.user.service.BaseDictService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,9 +36,10 @@ public class BaseDictController {
 	 */
 	@ApiOperation(value = "查询降锁异常原因", notes = "查询降锁异常原因", consumes = "application/json")
 	@RequestMapping(value="/lock_down",method=RequestMethod.GET)
-	public List<ResBaseDict> selectLockDownErrorCause() {
-		List<ResBaseDict> res = this.baseDictService.selectLockDownErrorCause();
-		return res;
+	public ResponseEntity<List<ResDonwLockError>> selectLockDownErrorCause(HttpServletRequest request) {
+		List<ResDonwLockError> res = this.baseDictService.selectLockDownErrorCause();
+		ResponseEntity<List<ResDonwLockError>> success = ResponseEntity.success(res, request);
+		return success;
 	}
 
 }
