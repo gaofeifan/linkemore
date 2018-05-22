@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +40,13 @@ public class StrategyBaseController {
 	 */
 	@RequestMapping(value = "/v2.0/fee", method=RequestMethod.POST)
 	public Map<String, Object> fee(@RequestBody ReqStrategy reqStrategy) {
+		log.info("strategy fee " + reqStrategy.getStrategyId());
 		StrategyBase strategyBase =  this.strategyBaseService.findById(reqStrategy.getStrategyId());
-		Map<String, Object> costMap = OrderFee.getMultipleParkingCost(strategyBase, new Date(reqStrategy.getBeginTime()), 
-				new Date(reqStrategy.getEndTime()));
+		Map<String, Object> costMap = new HashMap<String, Object>();
+		if(strategyBase != null) {
+			costMap = OrderFee.getMultipleParkingCost(strategyBase, new Date(reqStrategy.getBeginTime()), 
+					new Date(reqStrategy.getEndTime()));
+		}
 		return costMap;
 	}
 }

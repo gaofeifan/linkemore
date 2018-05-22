@@ -55,7 +55,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Override
 	public ResPrefectureStrategy findStrategyById(Long preId, HttpServletRequest request) {
 		cn.linkmore.prefecture.response.ResPrefectureStrategy strategy = this.preClient.findPreStrategy(preId);
-		return ObjectUtils.copyObject(strategy, new ResPrefectureStrategy());
+		if(strategy != null) {
+			return ObjectUtils.copyObject(strategy, new ResPrefectureStrategy());
+		}
+		return null;
 	}
 	@Override
 	public List<ResPrefectureList> findPreListByCityId(Long cityId, HttpServletRequest request) {
@@ -74,6 +77,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 			resPrefectureList.add(resPrefecture);
 		}
 		return resPrefectureList;
+	}
+
+	@Override
+	public Integer findFreeStallCount(Long preId) {
+		return this.preClient.findFreeStallCount(preId);
 	}
 
 }

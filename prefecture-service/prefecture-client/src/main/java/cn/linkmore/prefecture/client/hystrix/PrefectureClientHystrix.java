@@ -49,5 +49,12 @@ public class PrefectureClientHystrix implements PrefectureClient {
 		log.info("prefecture service pres prenames(List<Long> ids) hystrix");
 		return new ArrayList<ResPre>();
 	}
+	@Override
+	public Integer findFreeStallCount(Long preId) {
+		log.info("prefecture service pres findFreeStallCount(Long preId) hystrix");
+		return 0;
+	}
+	
+	
 
 }

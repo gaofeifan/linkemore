@@ -17,6 +17,7 @@ import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
+import cn.linkmore.account.response.ResVechicleMark;
 
 @Component
 public class UserClientHystrix implements UserClient{
@@ -66,7 +67,6 @@ public class UserClientHystrix implements UserClient{
 		return null;
 	}
 
-	 
 	public ResUserLogin appLogin(@PathVariable("mobile") String mobile) {
 		System.out.println("UserClientHystrix");
 		return null;
@@ -76,9 +76,13 @@ public class UserClientHystrix implements UserClient{
 		return null;
 	}
 
-
 	@Override
 	public ResUser selectByMobile(String mobile) {
+		return null;
+	}
+
+	@Override
+	public ResVechicleMark selectById(Long id) {
 		return null;
 	}
 

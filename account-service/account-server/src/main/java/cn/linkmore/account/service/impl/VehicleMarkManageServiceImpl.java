@@ -19,6 +19,11 @@ import cn.linkmore.account.service.VehicleMarkManageService;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.util.ObjectUtils;
+/**
+ * @author   GFF
+ * @Date     2018年5月21日
+ * @Version  v2.0
+ */
 @Service
 public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
@@ -66,6 +71,13 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	@Override
 	public List<ResVechicleMark> selectResList(Long userId) {
 		return this.vehicleMarkManageClusterMapper.selectResList(userId);
+	}
+
+	@Override
+	public ResVechicleMark selectById(Long id) {
+		VehicleMarkManage manage = this.vehicleMarkManageClusterMapper.selectById(id);
+		ResVechicleMark res = ObjectUtils.copyObject(manage, new ResVechicleMark(),new String[]{"vehUserId"},new String[] {"userId"});
+		return res;
 	}
 
 	

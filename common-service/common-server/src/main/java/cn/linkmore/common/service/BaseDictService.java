@@ -2,6 +2,7 @@ package cn.linkmore.common.service;
 
 import java.util.List;
 
+import cn.linkmore.common.request.ReqBaseDict;
 import cn.linkmore.common.response.ResBaseDict;
 
 /**
@@ -12,7 +13,33 @@ import cn.linkmore.common.response.ResBaseDict;
  */
 public interface BaseDictService {
 
+	/**
+	 * @Description  根据code查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	List<ResBaseDict> selectList(String code);
+
+	/**
+	 * @Description		新增
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void save(ReqBaseDict baseDict);
+
+	/**
+	 * @Description 	通过id删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void deleteById(Long id);
+
+	/**
+	 * @Description  通过id更新(null处理)
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateByIdSelective(ReqBaseDict baseDict);
 
 
 }

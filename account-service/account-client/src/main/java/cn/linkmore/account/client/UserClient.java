@@ -17,6 +17,7 @@ import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
+import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.feign.FeignConfiguration;
  
 /**
@@ -133,4 +134,12 @@ public interface UserClient {
 	 */
 	@RequestMapping(value="/v2.0/login",method = RequestMethod.POST)
 	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans);
+	
+	/**
+	 * @Description  根据id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
+	public ResVechicleMark selectById(@PathVariable("id") Long id);
 }

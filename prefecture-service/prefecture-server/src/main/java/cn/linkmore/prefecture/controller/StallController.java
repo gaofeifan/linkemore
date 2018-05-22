@@ -3,10 +3,13 @@ package cn.linkmore.prefecture.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.service.StallService;
 
 /**
@@ -31,8 +34,8 @@ public class StallController {
 	 * @param lockSn String
 	 */
 	@RequestMapping(value = "/v2.0/order", method=RequestMethod.PUT)
-	public void order(@RequestParam("lockSn") String lockSn) {
-		 this.stallService.order(lockSn);
+	public boolean order(@RequestParam("lockSn") String lockSn) {
+		return this.stallService.order(lockSn);
 	}
 	/**
 	 * 取消订单释放车位
@@ -40,8 +43,8 @@ public class StallController {
 	 * @param stallId Long
 	 */
 	@RequestMapping(value = "/v2.0/cancel", method=RequestMethod.PUT)
-	public void cancel(@RequestParam("stallId") Long stallId) {
-		 this.stallService.cancel(stallId);
+	public boolean cancel(@RequestParam("stallId") Long stallId) {
+		return this.stallService.cancel(stallId);
 	}
 
 	/**
@@ -75,5 +78,16 @@ public class StallController {
 	public Boolean checkout(@RequestParam("stallId") Long stallId) {
 		 boolean flag = this.stallService.checkout(stallId);
 		 return flag;
+	}
+	
+	/**
+	 * 根据车位id获取车位信息
+	 * 
+	 * @param stallId Long
+	 */
+	@RequestMapping(value = "/v2.0/{stallId}", method=RequestMethod.GET)
+	public ResStallEntity findById(@PathVariable("stallId") Long stallId) {
+		 ResStallEntity stallEntity = this.stallService.findById(stallId);
+		 return stallEntity;
 	}
 }

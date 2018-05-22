@@ -13,11 +13,15 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
+import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.lock.FreeLockPool;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
+import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.fee.InitLockFactory;
 import cn.linkmore.prefecture.service.StallService;
+import cn.linkmore.util.ObjectUtils;
 /**
  * Service实现类 - 车位信息
  * @author jiaohanbin
@@ -36,23 +40,31 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public boolean order(String lockSn) {
+		Boolean flag = false;
 		Stall stall = stallClusterMapper.findByLockSn(lockSn.trim());
 		// 更新车位状态
-		stall.setStatus(Stall.STATUS_USED);
-		stall.setLockStatus(Stall.LOCK_STATUS_UP);
-		stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
-		stallMasterMapper.order(stall);
-		return true;
+		if(stall != null) {
+			stall.setStatus(Stall.STATUS_USED);
+			stall.setLockStatus(Stall.LOCK_STATUS_UP);
+			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
+			stallMasterMapper.order(stall);
+			flag = true;
+		}
+		return flag;
 	}
 
 	@Override
 	public boolean cancel(Long stallId) {
+		Boolean flag = false;
 		Stall stall = stallClusterMapper.findById(stallId);
-		stall.setStatus(Stall.STATUS_FREE);
-		stall.setLockStatus(Stall.LOCK_STATUS_UP);
-		stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
-		stallMasterMapper.cancel(stall);
-		return true;
+		if(stall != null) {
+			stall.setStatus(Stall.STATUS_FREE);
+			stall.setLockStatus(Stall.LOCK_STATUS_UP);
+			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
+			stallMasterMapper.cancel(stall);
+			flag = true;
+		}
+		return flag;
 	}
 	
 	@Override
@@ -118,6 +130,16 @@ public class StallServiceImpl implements StallService {
 	public List<ResStall> findStallsByPreId(Long preId) {
 		List<ResStall> resStall = stallClusterMapper.findStallsByPreId(preId);
 		return resStall;
+	}
+
+	@Override
+	public ResStallEntity findById(Long stallId) {
+		ResStallEntity detail = new ResStallEntity();
+		Stall stall = stallClusterMapper.findById(stallId);
+		if(stall != null) {
+			return ObjectUtils.copyObject(stall, detail);
+		}
+		return null;
 	}
 	
 }

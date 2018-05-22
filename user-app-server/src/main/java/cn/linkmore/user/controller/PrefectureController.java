@@ -53,7 +53,7 @@ public class PrefectureController {
 	@ApiOperation(value = "车区计费详情", notes = "根据车区ID车区计费策略", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/strategy", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<ResPrefectureStrategy> findStrategyById(@RequestParam("preId") Long preId, HttpServletRequest request) {
+	public ResponseEntity<ResPrefectureStrategy> findStrategyById(@RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
 		ResponseEntity<ResPrefectureStrategy> response = null;
 		try { 
 			ResPrefectureStrategy strategy = this.prefectureService.findStrategyById(preId, request);
@@ -69,7 +69,7 @@ public class PrefectureController {
 	@ApiOperation(value = "城市车区", notes = "根据城市ID获取本市车区列表", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/city", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<ResPrefectureList>> city(@RequestParam("cityId") Long cityId, HttpServletRequest request) {
+	public ResponseEntity<List<ResPrefectureList>> city(@RequestParam(value="cityId", required=true)  Long cityId, HttpServletRequest request) {
 		ResponseEntity<List<ResPrefectureList>> response = null;
 		try { 
 			List<ResPrefectureList> list = this.prefectureService.findPreListByCityId(cityId,request);
@@ -81,5 +81,27 @@ public class PrefectureController {
 		}
 		return response;
 	} 
+	
+	/**
+	 * 根据车区id查询车区空闲车位
+	 * 
+	 * @param preId Long
+	 * @return
+	 */
+	@ApiOperation(value = "空闲车位数", notes = "根据车区ID获取空闲车位数", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/free_count", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Integer> findFreeStallCount(@RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
+		ResponseEntity<Integer> response = null ;  
+		try {
+			Integer count = this.prefectureService.findFreeStallCount(preId);
+			response = ResponseEntity.success(count, request);
+		}catch(BusinessException e){
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		}catch(Exception e){
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
 	
 }

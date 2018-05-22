@@ -1,11 +1,13 @@
 package cn.linkmore.prefecture.client;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.StallClientHystrix;
+import cn.linkmore.prefecture.response.ResStallEntity;
 /**
  * 远程调用 - 车位操作
  * @author jiaohanbin
@@ -21,14 +23,14 @@ public interface StallClient {
 	 * @param lockSn String
 	 */
 	@RequestMapping(value = "/v2.0/order", method=RequestMethod.PUT)
-	public void order(@RequestParam("lockSn") String lockSn);
+	public boolean order(@RequestParam("lockSn") String lockSn);
 	/**
 	 * 取消订单释放车位
 	 * 
 	 * @param stallId Long
 	 */
 	@RequestMapping(value = "/v2.0/cancel", method=RequestMethod.PUT)
-	public void cancel(@RequestParam("stallId") Long stallId);
+	public boolean cancel(@RequestParam("stallId") Long stallId);
 	
 	/**
 	 * 降锁操作
@@ -54,5 +56,11 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/checkout", method=RequestMethod.PUT)
 	public Boolean checkout(@RequestParam("stallId") Long stallId);
 	
-	
+	/**
+	 * 根据车位id获取车位信息
+	 * 
+	 * @param stallId Long
+	 */
+	@RequestMapping(value = "/v2.0/{stallId}", method=RequestMethod.GET)
+	public ResStallEntity findById(@PathVariable("stallId") Long stallId);
 }

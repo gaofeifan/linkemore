@@ -1,47 +1,41 @@
-package cn.linkmore.account.service;
+package cn.linkmore.user.service;
 
 import java.util.List;
 
-import cn.linkmore.account.entity.VehicleMarkManage;
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 
 /**
  * 车牌号管理
  * @author   GFF
- * @Date     2018年5月17日
+ * @Date     2018年5月21日
  * @Version  v2.0
  */
 public interface VehicleMarkManageService {
 
 	/**
-	 * @Description  根据用户id查询
+	 * @Description  根据用户查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<VehicleMarkManage> selectByUserId(Long id);
+	List<ResVechicleMark> selectResList(HttpServletRequest request);
 
 	/**
+	 * @param request 
 	 * @Description  新增
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void save(ReqVehicleMark bean);
+	void save(ReqVehicleMark bean, HttpServletRequest request);
 
 	/**
-	 * @Description  根据id删除
+	 * @Description  删除
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
 	void deleteById(Long id);
-
-	
-	/**
-	 * @Description  根据userid查询响应数据
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	List<ResVechicleMark> selectResList(Long userId);
 
 	/**
 	 * @Description  根据id查询

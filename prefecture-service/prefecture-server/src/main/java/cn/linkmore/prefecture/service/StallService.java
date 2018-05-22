@@ -3,6 +3,7 @@ package cn.linkmore.prefecture.service;
 import java.util.List;
 
 import cn.linkmore.prefecture.response.ResStall;
+import cn.linkmore.prefecture.response.ResStallEntity;
 
 /**
  * Service接口 - 车位信息
@@ -45,5 +46,11 @@ public interface StallService {
 	 * @return
 	 */
 	List<ResStall> findStallsByPreId(Long preId);
+	/**
+	 * 根据车位id查询车位信息
+	 * @param stallId
+	 * @return
+	 */
+	ResStallEntity findById(Long stallId);
 	
 }

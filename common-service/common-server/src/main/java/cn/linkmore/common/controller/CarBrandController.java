@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.common.response.ResCarBrandBean;
 import cn.linkmore.common.response.ResCarFirmBean;
 import cn.linkmore.redis.RedisService;
@@ -39,7 +40,6 @@ public class CarBrandController {
 
 	@Resource
 	private RedisService redisService;
-	public static final String CAR_BRAND_LIST = "car_brand_list";
 	//API域名
     private final static String HOST = "http://jisucxdq.market.alicloudapi.com";
 	//阿里云市场里，购买服务后的code
@@ -61,7 +61,7 @@ public class CarBrandController {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public Object list(HttpServletRequest request) {
-		return redisService.get(CAR_BRAND_LIST);
+		return redisService.get(RedisKey.COMMON_CAR_BRAND_LIST.name());
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class CarBrandController {
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Object list(){
-		Object obj = redisService.get("car_brand_list");
+		Object obj = redisService.get(RedisKey.COMMON_CAR_BRAND_LIST.name());
 		return obj;
 	}
 	
