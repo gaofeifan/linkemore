@@ -1,10 +1,9 @@
 package cn.linkmore.user.service;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.user.request.ReqPrefecture;
-import cn.linkmore.user.response.ResPrefecture;
+import cn.linkmore.user.response.ResPreCity;
 import cn.linkmore.user.response.ResPrefectureList;
 import cn.linkmore.user.response.ResPrefectureStrategy;
 
@@ -20,7 +19,7 @@ public interface PrefectureService {
 	 * @param request
 	 * @return
 	 */
-	public List<ResPrefecture> list(ReqPrefecture rp,HttpServletRequest request);
+	public List<ResPreCity> list(ReqPrefecture rp,HttpServletRequest request);
 	
 	/**
 	 * 获取车区计费策略

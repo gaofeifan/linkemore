@@ -19,6 +19,30 @@ public class ResPrefecture {
 	
 	@ApiModelProperty(value = "纬度")
 	private Double latitude;
+	
+	@ApiModelProperty(value = "车区地址")
+	private String address;
+	
+	@ApiModelProperty(value = "城市id")
+	private Long cityId;
+	
+	@ApiModelProperty(value = "首小时价格")
+	private String firstHour;
+	
+	@ApiModelProperty(value = "时间基数 15分钟等")
+	private String timelyLong;
+
+	@ApiModelProperty(value = "时间基数单位")
+	private String timelyUnit;
+
+	@ApiModelProperty(value = "免费时长")
+	private Long freeMins;
+	
+	@ApiModelProperty(value = "专区类型(0普通，1奥迪内部定制专区")
+	private Integer type;
+	
+	@ApiModelProperty(value = "是否受限")
+	private short limitStatus;
 
 	public Long getId() {
 		return id;

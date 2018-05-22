@@ -67,7 +67,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		}  
 		String key = UserCache.getCacheKey(request);  
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
-		if(ru==null) {
+		if(ru==null) {/*
 			response.setStatus(403);
 			response.setCharacterEncoding("UTF-8");  
 			response.setContentType("application/json; charset=utf-8");  
@@ -83,7 +83,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 				}
 			} 
 			return false; 
-		}
+		*/}
 		return true;
 		
 	}
