@@ -40,23 +40,31 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public boolean order(String lockSn) {
+		Boolean flag = false;
 		Stall stall = stallClusterMapper.findByLockSn(lockSn.trim());
 		// 更新车位状态
-		stall.setStatus(Stall.STATUS_USED);
-		stall.setLockStatus(Stall.LOCK_STATUS_UP);
-		stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
-		stallMasterMapper.order(stall);
-		return true;
+		if(stall != null) {
+			stall.setStatus(Stall.STATUS_USED);
+			stall.setLockStatus(Stall.LOCK_STATUS_UP);
+			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
+			stallMasterMapper.order(stall);
+			flag = true;
+		}
+		return flag;
 	}
 
 	@Override
 	public boolean cancel(Long stallId) {
+		Boolean flag = false;
 		Stall stall = stallClusterMapper.findById(stallId);
-		stall.setStatus(Stall.STATUS_FREE);
-		stall.setLockStatus(Stall.LOCK_STATUS_UP);
-		stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
-		stallMasterMapper.cancel(stall);
-		return true;
+		if(stall != null) {
+			stall.setStatus(Stall.STATUS_FREE);
+			stall.setLockStatus(Stall.LOCK_STATUS_UP);
+			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
+			stallMasterMapper.cancel(stall);
+			flag = true;
+		}
+		return flag;
 	}
 	
 	@Override
@@ -128,7 +136,10 @@ public class StallServiceImpl implements StallService {
 	public ResStallEntity findById(Long stallId) {
 		ResStallEntity detail = new ResStallEntity();
 		Stall stall = stallClusterMapper.findById(stallId);
-		return ObjectUtils.copyObject(stall, detail);
+		if(stall != null) {
+			return ObjectUtils.copyObject(stall, detail);
+		}
+		return null;
 	}
 	
 }

@@ -36,4 +36,10 @@ public interface PrefectureService {
 	 * @return
 	 */
 	public List<ResPrefectureList> findPreListByCityId(Long cityId, HttpServletRequest request);
+	/**
+	 * 根据车位id查询空闲车位数量
+	 * @param preId
+	 * @return
+	 */
+	public Integer findFreeStallCount(Long preId);
 }

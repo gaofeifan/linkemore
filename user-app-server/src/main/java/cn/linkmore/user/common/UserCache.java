@@ -5,8 +5,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import cn.linkmore.bean.common.Constants;
+
 /**
  * 缓存用户
+ * 
  * @author liwenlong
  * @version 2.0
  *

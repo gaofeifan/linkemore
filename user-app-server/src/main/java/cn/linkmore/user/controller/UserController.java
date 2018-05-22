@@ -139,6 +139,7 @@ public class UserController {
 	@ApiOperation(value="根据手机号查询",notes="用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/mobile", method = RequestMethod.GET)
 	public ResponseEntity<?> selectByMobile(@RequestParam("mobile") String mobile,HttpServletRequest request) {
+		System.out.println(request.getSession().getId());
 		ResponseEntity<?> response = null; 
 		ResUser user = this.userService.selectByMobile(mobile);
 		response = ResponseEntity.success(user, request);

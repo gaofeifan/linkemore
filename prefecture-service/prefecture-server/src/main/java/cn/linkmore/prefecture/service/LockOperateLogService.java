@@ -1,7 +1,5 @@
 package cn.linkmore.prefecture.service;
 
-import cn.linkmore.prefecture.entity.LockOperateLog;
-import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.request.ReqLockOperateLog;
 
 /**
