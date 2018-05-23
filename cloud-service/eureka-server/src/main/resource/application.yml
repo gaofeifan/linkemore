@@ -10,6 +10,10 @@ eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
     hostname: ${spring.cloud.client.ipAddress}
+  server:
+    responseCacheUpdateInvervalMs: 3000
+    responseCacheAutoExpirationInSeconds: 30
+    eviction-interval-timer-in-ms: 3000
   client:
     registerWithEureka: false
     fetchRegistry: false

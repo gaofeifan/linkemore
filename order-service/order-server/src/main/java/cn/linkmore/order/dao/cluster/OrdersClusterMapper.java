@@ -27,4 +27,17 @@ public interface OrdersClusterMapper {
 	 */
 	ResUserOrder findUserLatest(Long userId);
 
+	/**
+	 * 根据车牌查询最新订单状态
+	 * @param carno
+	 * @return
+	 */
+	Integer getLastOrderStatusByCarno(String carno);
+	/**
+	 * 查询当前用户订单数
+	 * @param userId
+	 * @return
+	 */
+	Integer userCount(Long userId);
+
 }

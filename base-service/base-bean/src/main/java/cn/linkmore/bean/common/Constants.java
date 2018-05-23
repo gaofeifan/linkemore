@@ -10,6 +10,13 @@ package cn.linkmore.bean.common;
 public class Constants {
 	public final static String ACCESS_TOKEN_HEADER_NAME = "X-Access-Auth-Token";
 
+	public enum ThirdPayType{
+		WECHAT(1),ALIPAY(2),APPLEPAY(3);
+		public int type;
+		private ThirdPayType(int type) {
+			this.type = type;
+		} 
+	}
 	public enum CouponStatus {
 		FREE(0), USED(1), EXPIRED(2);
 		public int status;
@@ -38,7 +45,7 @@ public class Constants {
 	}
 
 	public enum ClientSource {
-		WXAPP(1), ANDROID(2), IOS(3);
+		WXAPP(0), ANDROID(1), IOS(1);
 		public int source;
 
 		private ClientSource(int source) {
@@ -148,7 +155,8 @@ public class Constants {
 		COMMON_CAR_BRAND_LIST("common:car_brand:list"), 
 		COUPON_TEMPLATE_CONDITION_USETIME("coupon:temp:condition:time:"), 
 		COUPON_TEMPLATE_CONDITION_PREIDS( "coupon:temp:condition:pid:"),
-		ORDER_ASSIGN_STALL("assign_lock");
+		ORDER_ASSIGN_STALL("assign_lock"),
+		ORDER_SERIAL_NUMBER("order:serial-number:");
 		public String key;
 
 		private RedisKey(String key) {

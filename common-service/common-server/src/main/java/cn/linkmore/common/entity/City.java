@@ -1,4 +1,6 @@
 package cn.linkmore.common.entity;
+ 
+
 /**
  * Entity - 城市信息
  * @author liwenlong
@@ -14,12 +16,21 @@ public class City {
     /**
      * 城市名称
      */
-    private String cityName;
+    private String name;
 
     /**
      * 行政编号
      */
     private String adcode;
+    /**
+     * 经度 
+     */
+	private String longitude;
+	 
+	/**
+	 * 纬度
+	 */
+	private String latitude;
 
     public Long getId() {
         return id;
@@ -29,12 +40,12 @@ public class City {
         this.id = id;
     }
 
-    public String getCityName() {
-        return cityName;
+    public String getName() {
+        return name;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName == null ? null : cityName.trim();
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     public String getAdcode() {
@@ -44,4 +55,20 @@ public class City {
     public void setAdcode(String adcode) {
         this.adcode = adcode == null ? null : adcode.trim();
     }
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	} 
 }

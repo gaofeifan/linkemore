@@ -5,9 +5,11 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="city_name" jdbcType="VARCHAR" property="name" />
     <result column="adcode" jdbcType="VARCHAR" property="code" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, city_name, adcode
+    id, city_name, adcode,latitude,longitude
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

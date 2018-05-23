@@ -43,14 +43,14 @@ public class CityServiceImpl implements CityService {
 			res = new ArrayList<ResCity>();
 			for (cn.linkmore.common.response.ResCity re : list) {
 				rc = new ResCity();
-				rc.setId(re.getId());
-				rc.setAdcode(re.getCode());
+				rc.setId(re.getId()); 
 				rc.setName(re.getName());
 				res.add(rc);
 				rcMap.put(re.getCode().substring(0,4), rc);
 			}
 		}
 		if (!rcMap.isEmpty()) {
+			rc = null;
 			cn.linkmore.third.request.ReqLocate req = new cn.linkmore.third.request.ReqLocate();
 			req.setLongitude(longitude);
 			req.setLatitude( latitude); 
@@ -60,6 +60,10 @@ public class CityServiceImpl implements CityService {
 				if(rc!=null) {
 					rc.setStatus(ResCity.STATUS_CHECKED);
 				}
+			}
+			if(rc==null) {
+				rc = res.get(0);
+				rc.setStatus(2);
 			}
 		} 
 		return res;

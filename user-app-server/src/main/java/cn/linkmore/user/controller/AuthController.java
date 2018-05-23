@@ -39,6 +39,7 @@ public class AuthController {
 	public ResponseEntity<ResUser> login(@RequestBody ReqAuthLogin rl, HttpServletRequest request) {
 		ResponseEntity<ResUser> response = null; 
 		try { 
+			System.out.println(request.getSession().getId());
 			ResUser ru = this.userService.login(rl,request);
 			response = ResponseEntity.success(ru, request);
 		}catch(BusinessException e){
