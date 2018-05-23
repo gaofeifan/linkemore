@@ -21,6 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.linkmore.common.client.AccessDetailClient;
 import cn.linkmore.common.request.ReqAccessDetail;
+import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.UserService;
 import cn.linkmore.util.JsonUtil;
  	
@@ -76,6 +77,7 @@ public class AccessDetailAop {
 				result.put(types[i].getSimpleName(),json);
 			}
 		}
+		HttpServletRequest request = getRequest();
 		Map<String, String> responseJson = new HashMap<>();
 		String response = responseJson.put(obj.getClass().getSimpleName(), JsonUtil.toJson(obj));
 		ReqAccessDetail detail = new ReqAccessDetail();
@@ -85,9 +87,9 @@ public class AccessDetailAop {
 		detail.setPath(className);
 		detail.setMapping(sb.toString());
 		detail.setReturns(response);
-//		userService.ca
-//		detail.setUserId(userId);
-//		detail.setType(type);
+		ResUser user = userService.getCache(request);
+		detail.setUserId(user.getId());
+//		detail.setType(11);
 	}
 	
 	
