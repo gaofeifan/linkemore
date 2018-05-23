@@ -3,7 +3,7 @@
 <mapper namespace="cn.linkmore.common.dao.cluster.AccessDetailClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.AccessDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="method" jdbcType="VARCHAR" property="method" />
     <result column="params" jdbcType="VARCHAR" property="params" />

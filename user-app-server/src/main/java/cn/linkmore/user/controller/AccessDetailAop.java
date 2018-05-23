@@ -27,6 +27,7 @@ import cn.linkmore.common.request.ReqAccessDetail;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.UserService;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.StringUtil;
  	
 /**
  * 接口访问详情切面
@@ -102,18 +103,18 @@ public class AccessDetailAop {
 		}
 		HttpServletRequest request = getRequest();
 		Map<String, String> responseJson = new HashMap<>();
-		String response = responseJson.put(obj.getClass().getSimpleName(), JsonUtil.toJson(obj));
+		responseJson.put(obj.getClass().getSimpleName(), JsonUtil.toJson(obj));
 		ReqAccessDetail detail = new ReqAccessDetail();
 		detail.setMethod(methodName);
 		detail.setMethodType(type);
 		detail.setParams(JsonUtil.toJson(result));
 		detail.setPath(className);
 		detail.setMapping(sb.toString());
-		detail.setReturns(response);
+		detail.setReturns(JsonUtil.toJson(responseJson));
 		ResUser user = userService.getCache(request);
 		detail.setUserId(user.getId());
 		String os = request.getHeader("os");
-		if(Integer.parseInt(os) == 0) {
+		if(StringUtil.isBlank(os) || Integer.parseInt(os) == 0) {
 			detail.setType(0);
 		}else {
 			detail.setType(1);

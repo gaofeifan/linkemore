@@ -3,7 +3,7 @@
 <mapper namespace="cn.linkmore.common.dao.master.AccessDetailMasterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.AccessDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="method" jdbcType="VARCHAR" property="method" />
     <result column="params" jdbcType="VARCHAR" property="params" />
@@ -22,10 +22,10 @@
   <insert id="insert" parameterType="cn.linkmore.common.entity.AccessDetail">
     insert into t_access_detail (id, user_id, path, 
       method, params, returns, 
-      type, method_type)
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER}, #{path,jdbcType=VARCHAR}, 
+      type, method_type,mapping)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{path,jdbcType=VARCHAR}, 
       #{method,jdbcType=VARCHAR}, #{params,jdbcType=VARCHAR}, #{returns,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{methodType,jdbcType=VARCHAR})
+      #{type,jdbcType=INTEGER}, #{methodType,jdbcType=VARCHAR}, #{mapping,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.linkmore.common.entity.AccessDetail">
     insert into t_access_detail
@@ -54,13 +54,16 @@
       <if test="methodType != null">
         method_type,
       </if>
+      <if test="mapping != null">
+        mapping,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
+        #{userId,jdbcType=BIGINT},
       </if>
       <if test="path != null">
         #{path,jdbcType=VARCHAR},
@@ -80,13 +83,16 @@
       <if test="methodType != null">
         #{methodType,jdbcType=VARCHAR},
       </if>
+      <if test="mapping != null">
+        #{mapping,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByIdSelective" parameterType="cn.linkmore.common.entity.AccessDetail">
     update t_access_detail
     <set>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=INTEGER},
+        user_id = #{userId,jdbcType=BIGINT},
       </if>
       <if test="path != null">
         path = #{path,jdbcType=VARCHAR},
@@ -106,18 +112,22 @@
       <if test="methodType != null">
         method_type = #{methodType,jdbcType=VARCHAR},
       </if>
+      <if test="mapping != null">
+        mapping = #{mapping,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateById" parameterType="cn.linkmore.common.entity.AccessDetail">
     update t_access_detail
-    set user_id = #{userId,jdbcType=INTEGER},
+    set user_id = #{userId,jdbcType=BIGINT},
       path = #{path,jdbcType=VARCHAR},
       method = #{method,jdbcType=VARCHAR},
       params = #{params,jdbcType=VARCHAR},
       returns = #{returns,jdbcType=VARCHAR},
       type = #{type,jdbcType=INTEGER},
-      method_type = #{methodType,jdbcType=VARCHAR}
+      method_type = #{methodType,jdbcType=VARCHAR},
+      mapping = #{mapping,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

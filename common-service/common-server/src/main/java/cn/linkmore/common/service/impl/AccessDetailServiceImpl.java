@@ -10,6 +10,11 @@ import cn.linkmore.common.entity.AccessDetail;
 import cn.linkmore.common.request.ReqAccessDetail;
 import cn.linkmore.common.service.AccessDetailService;
 import cn.linkmore.util.ObjectUtils;
+/**
+ * @author   GFF
+ * @Date     2018年5月23日
+ * @Version  v2.0
+ */
 @Service
 public class AccessDetailServiceImpl implements AccessDetailService {
 
