@@ -3,30 +3,38 @@
 <mapper namespace="cn.linkmore.common.dao.master.CityMasterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.City">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="city_name" jdbcType="VARCHAR" property="name" />
     <result column="adcode" jdbcType="VARCHAR" property="adcode" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, city_name, adcode
+    id, city_name, adcode,latitude,longitude
   </sql> 
   <delete id="delete" parameterType="java.lang.Long">
     delete from t_city
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="save" parameterType="cn.linkmore.common.entity.City">
-    insert into t_city (id, city_name, adcode
+    insert into t_city (id, city_name, adcode,longitude,latitude
       )
-    values (#{id,jdbcType=BIGINT}, #{cityName,jdbcType=VARCHAR}, #{adcode,jdbcType=VARCHAR}
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{adcode,jdbcType=VARCHAR}, #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}
       )
   </insert> 
   <update id="update" parameterType="cn.linkmore.common.entity.City">
     update t_city
     <set>
-      <if test="cityName != null">
-        city_name = #{cityName,jdbcType=VARCHAR},
+      <if test="name != null">
+        city_name = #{name,jdbcType=VARCHAR},
       </if>
       <if test="adcode != null">
         adcode = #{adcode,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

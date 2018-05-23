@@ -2,6 +2,8 @@ package cn.linkmore.third.service.impl;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +11,13 @@ import cn.linkmore.third.config.AppWechatConfig;
 import cn.linkmore.third.response.ResFans;
 import cn.linkmore.third.service.AppWechatService;
 import cn.linkmore.third.wechat.HttpsRequest;
+import cn.linkmore.util.JsonUtil;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 @Service
 public class AppWechatServiceImpl implements AppWechatService {
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private AppWechatConfig appWechatConfig;
 	
@@ -58,6 +62,7 @@ public class AppWechatServiceImpl implements AppWechatService {
 				json = null;
 			}
 		} 
+		log.info("get wechat fans json:{}",JsonUtil.toJson(json));
 		ResFans rf = null;
 		if(json!=null) {
 			String openid = json.getString("openid"); 

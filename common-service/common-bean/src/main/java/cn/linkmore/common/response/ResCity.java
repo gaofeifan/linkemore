@@ -1,7 +1,7 @@
 package cn.linkmore.common.response;
 
 import java.util.Date;
-
+  
 /**
  * 请求响应 - 城市信息
  * @author liwenlong
@@ -25,6 +25,16 @@ public class ResCity {
 	 * 创建时间
 	 */
 	private Date createTime;
+	 
+	/**
+	 * 经度
+	 */
+	private String longitude;
+	 
+	/**
+	 * 纬度
+	 */
+	private String latitude;
 	
 	public Long getId() {
 		return id;
@@ -49,6 +59,18 @@ public class ResCity {
 	}
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+	public String getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+	public String getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
 	}
 	
 }

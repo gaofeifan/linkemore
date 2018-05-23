@@ -1,41 +1,51 @@
 package cn.linkmore.user.security;
-
-import java.util.Set;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.StatusEnum;
 
 @ControllerAdvice 
 public class AppExceptionHandle {
-	private  final Logger log = LoggerFactory.getLogger(this.getClass());
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	private  final Logger log = LoggerFactory.getLogger(this.getClass()); 
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ResponseBody
+	public ResponseEntity<?> handleBindException(MethodArgumentNotValidException e, HttpServletRequest request, HttpServletResponse response) {
+		List<FieldError> fieldErrors=e.getBindingResult().getFieldErrors();
+		String message = null;
+		if(CollectionUtils.isNotEmpty(fieldErrors)) {
+			FieldError error = fieldErrors.get(0);
+			message = error.getDefaultMessage();
+		}   
+		response.setStatus(200);
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=utf-8");
+		StatusEnum se = StatusEnum.VALID_EXCEPTION; 
+		se.label = message;
+		return ResponseEntity.fail(se, request); 
+	}
+	
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseBody
 	public ResponseEntity<?> handleValidationException(ConstraintViolationException ex, HttpServletRequest request,
-			HttpServletResponse response) {
-		Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
-		StringBuilder sb = new StringBuilder();
-		for (ConstraintViolation<?> violation : errors) {
-			sb.append(violation.getMessage() + "\n");
-		}
-		log.info("user app Api service throw valid exception:{}",sb.toString());
-		response.setStatus(400);
+			HttpServletResponse response) { 
+		response.setStatus(200);
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
-		return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request); 
+		response.setContentType("application/json; charset=utf-8"); 
+		return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request); 
 	}
 
 	@ExceptionHandler(value = Exception.class)

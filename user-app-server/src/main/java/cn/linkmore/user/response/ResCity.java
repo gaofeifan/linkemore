@@ -7,6 +7,7 @@ public class ResCity {
 	
 	public final static int STATUS_CHECKED = 1;
 	public final static int STATUS_UNCHECK = 0;
+	public final static int STATUS_ASSIGN = 2;
 	
 	@ApiModelProperty(value = "主键")
 	private Long id;
@@ -14,11 +15,14 @@ public class ResCity {
 	@ApiModelProperty(value = "名称")
 	private String name;
 	
-	@ApiModelProperty(value = "默认状态1选中，0未选中")
-	private Integer status = 0;
+	@ApiModelProperty(value = "默认状态1定位选中，0未选中，2指定选中")
+	private Integer status = 0; 
 	
-	@ApiModelProperty(value = "行政编码")
-	private String adcode;
+	@ApiModelProperty(value = "经度")
+	private String longitude;
+	
+	@ApiModelProperty(value = "纬度")
+	private String latitude;
 
 	public Long getId() {
 		return id;
@@ -44,11 +48,19 @@ public class ResCity {
 		this.status = status;
 	}
 
-	public String getAdcode() {
-		return adcode;
+	public String getLongitude() {
+		return longitude;
 	}
 
-	public void setAdcode(String adcode) {
-		this.adcode = adcode;
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
 	} 
 }

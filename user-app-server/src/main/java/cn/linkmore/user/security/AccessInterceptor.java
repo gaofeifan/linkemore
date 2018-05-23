@@ -60,13 +60,15 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			throws Exception { 
 		String uri = request.getRequestURI(); 
 		log.info("url:{}",uri);
-		request.getRemoteAddr();
-		log.info("openResources.contains(uri):{}",openResources.contains(uri));
+		String ip = request.getRemoteAddr(); 
 		if(openResources.contains(uri)) {
 			return true;
 		}  
 		String key = UserCache.getCacheKey(request);  
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		log.info("ip:{},token:{}",ip,key);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		log.info("redis key:{}",RedisKey.USER_APP_AUTH_USER.key+key);
+		log.info("token user:{}",JsonUtil.toJson(ru));
 		if(ru==null) {
 			response.setStatus(403);
 			response.setCharacterEncoding("UTF-8");  

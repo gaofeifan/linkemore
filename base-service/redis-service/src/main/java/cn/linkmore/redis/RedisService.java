@@ -267,4 +267,15 @@ public class RedisService {
 		return zset.rangeByScore(key, scoure, scoure1);
 	}
 	
+	/**
+	 * 获取自增长数
+	 * @param key 键
+	 * @param step 计步
+	 * @return
+	 */
+	public Long increment(String key,int step) {
+		Long increment = redisTemplate.opsForValue().increment(key, step);
+		return increment;
+	}
+	
 }

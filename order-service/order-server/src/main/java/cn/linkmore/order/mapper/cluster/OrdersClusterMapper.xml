@@ -85,4 +85,16 @@
     from o_orders
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="userCount" resultType="java.lang.Integer" parameterType="java.lang.Long" >
+    select count(1) 
+    from o_orders
+    where  user_id = #{userId,jdbcType=BIGINT}
+  </select>
+  <select id="getPlateLastOrderStatus" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select status
+    from o_orders
+    where  plate_no = #{carno,jdbcType=VARCHAR}
+    order by create_time desc 
+    limit 0,1
+  </select>
 </mapper>

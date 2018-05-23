@@ -35,10 +35,11 @@ zuul:
     max-total-connections: 10000
     connect-timeout-millis: 10000
     socket-timeout-millis: 60000
-  routes:
+  routes:  
     user-app-api:
       path: /user-app/**  
       serviceId: user-app-server
+      sensitiveHeaders: Authorization
     staff-app-api:
       path: /staff-app/**  
       serviceId: staff-app-server

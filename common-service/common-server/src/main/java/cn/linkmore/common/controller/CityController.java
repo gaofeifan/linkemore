@@ -47,7 +47,7 @@ public class CityController{
 	@RequestMapping(method=RequestMethod.POST)
 	public void save(@RequestBody ReqCity reqCity) {
 		City city = new City();
-		city.setCityName(reqCity.getName());
+		city.setName(reqCity.getName());
 		city.setAdcode(reqCity.getCode());
 		this.cityService.save(city);
 	}
@@ -56,7 +56,7 @@ public class CityController{
 	public void update(@RequestBody ReqCity reqCity) {
 		log.info("update city :{}",JsonUtil.toJson(reqCity)); 
 		City city = new City();
-		city.setCityName(reqCity.getName());
+		city.setName(reqCity.getName());
 		city.setAdcode(reqCity.getCode());
 		city.setId(reqCity.getId());
 		this.cityService.save(city);
