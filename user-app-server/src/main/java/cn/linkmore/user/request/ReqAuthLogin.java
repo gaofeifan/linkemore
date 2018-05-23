@@ -12,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class ReqAuthLogin {
 	@ApiModelProperty(value = "手机号，必填", required = true)
 	@NotBlank(message="手机号不能为空") 
-	@Pattern(regexp="/^(((13[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(15[0-9]{1})|(14[0-9]{1}))+\\d{8})$/", message="无效手机号") 
+	@Pattern(regexp="^(((13[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(15[0-9]{1})|(14[0-9]{1}))+\\d{8})$", message="无效手机号") 
 	private String mobile;
 	@ApiModelProperty(value = "短信验证码", required = true)
 	@Range(min=1000, max=9999,message="验证码是4位有效数字")
