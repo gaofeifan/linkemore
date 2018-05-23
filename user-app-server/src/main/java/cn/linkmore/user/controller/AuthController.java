@@ -1,8 +1,11 @@
 package cn.linkmore.user.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,7 +31,8 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags="Auth",description="授权")
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth") 
+@Validated
 public class AuthController {
 	@Autowired
 	private UserService userService;
@@ -36,17 +40,14 @@ public class AuthController {
 	@ApiOperation(value="用户登录",notes="手机号及短信验证码不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/login", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<ResUser> login(@RequestBody ReqAuthLogin rl, HttpServletRequest request) {
+	public ResponseEntity<ResUser> login(@Validated @RequestBody ReqAuthLogin rl, HttpServletRequest request) {
 		ResponseEntity<ResUser> response = null; 
-		try { 
-			System.out.println(request.getSession().getId());
+		try {  
 			ResUser ru = this.userService.login(rl,request);
 			response = ResponseEntity.success(ru, request);
-		}catch(BusinessException e){
-			e.printStackTrace();
+		}catch(BusinessException e){ 
 			response = ResponseEntity.fail(e.getStatusEnum(), request); 
-		}catch(Exception e){
-			e.printStackTrace();
+		}catch(Exception e){ 
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
@@ -55,7 +56,11 @@ public class AuthController {
 	@ApiOperation(value = "微信登录", notes = "微信登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/wx", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<ResUser> wxLogin(@RequestParam(value="code",required=true) String code, HttpServletRequest request) {
+	public ResponseEntity<ResUser> wxLogin( 
+			@RequestParam(value="code")  
+			@NotBlank(message="授权码不能为空") 
+			@Size(min =32,max=36,message="授权码为无效")
+			String code, HttpServletRequest request) {
 		ResponseEntity<ResUser> response = null;
 		try { 
 			ResUser urb = this.userService.login(code, request);
@@ -71,7 +76,7 @@ public class AuthController {
 	@ApiOperation(value="发短信验证码",notes="手机号不能为空,需要加密", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/send", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> send(@RequestBody ReqAuthSend rs, HttpServletRequest request){
+	public ResponseEntity<?> send(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
 		try {
 			this.userService.send(rs);
