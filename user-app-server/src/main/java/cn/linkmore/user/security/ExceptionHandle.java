@@ -18,7 +18,7 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.StatusEnum;
 
 @ControllerAdvice 
-public class AppExceptionHandle {
+public class ExceptionHandle {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass()); 
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
