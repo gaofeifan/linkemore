@@ -23,13 +23,13 @@ public class AccessDetailServiceImpl implements AccessDetailService {
 	public void appSave(ReqAccessDetail accessDetail) {
 		AccessDetail detail = ObjectUtils.copyObject(accessDetail, new AccessDetail());
 		detail.setType(0);
-//		this.accessDetailMasterMapper.insertSelective(detail);
+		this.accessDetailMasterMapper.insertSelective(detail);
 	}
 
 	@Override
 	public void miniSave(ReqAccessDetail accessDetail) {
 		AccessDetail detail = ObjectUtils.copyObject(accessDetail, new AccessDetail());
 		detail.setType(1);
-//		this.accessDetailMasterMapper.insertSelective(detail);
+		this.accessDetailMasterMapper.insertSelective(detail);
 	}
 }

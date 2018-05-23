@@ -28,8 +28,14 @@ import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.UserService;
 import cn.linkmore.util.JsonUtil;
  	
-/*@Configuration
-@Aspect*/
+/**
+ * 接口访问详情切面
+ * @author   GFF
+ * @Date     2018年5月23日
+ * @Version  v2.0
+ */
+@Configuration
+@Aspect
 public class AccessDetailAop {
 	
 	@Resource
@@ -37,13 +43,20 @@ public class AccessDetailAop {
 	@Resource
 	private UserService userService;
 	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	@Pointcut("execution(* cn.linkmore.user.controller..*.*(..))")
 	public void interfaceLog(){}
 
-//	@Pointcut("@annotation(aopIgnore)")
-	public void ignore(AopIgnore aopIgnore) {
-	}
-	@AfterReturning(returning = "obj", pointcut = "interfaceLog())")
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@AfterReturning(returning = "obj", pointcut = "interfaceLog()")
 	public void accessDetailAfter(JoinPoint joinPoint,Object obj){
 		Class<? extends Object> clazz = joinPoint.getTarget().getClass();
 		String className = clazz.getName();
@@ -58,6 +71,10 @@ public class AccessDetailAop {
 		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 		Method method = signature.getMethod();
 		String methodName = method.getName();
+		boolean b = method.isAnnotationPresent(AopIgnore.class);
+		if(b) {
+			return;
+		}
 		RequestMapping methodMapping = method.getAnnotation(RequestMapping.class);
 		String[] values = methodMapping.value();
 		for (String v : values) {
@@ -104,6 +121,11 @@ public class AccessDetailAop {
 		this.insert(detail);
 	}
 	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	public void insert( ReqAccessDetail detail) {
 		if(detail.getType() == 0) {
 			accessDetailClient.appSave(detail);
