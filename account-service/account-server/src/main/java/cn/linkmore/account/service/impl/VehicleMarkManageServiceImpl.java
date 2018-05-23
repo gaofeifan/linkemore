@@ -42,8 +42,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	@Override
 	@Transactional
 	public void save(ReqVehicleMark bean) {
-		ResUser user = this.userService.getUserCacheKey(bean.getUserId());
-		List<VehicleMarkManage> list = this.selectByUserId(user.getId());
+		List<VehicleMarkManage> list = this.selectByUserId(bean.getUserId());
 		if(list.size() < 4){
 			//检查车牌号是否已经存在
 			List<String> fieldVlaue = ObjectUtils.findFieldVlaue(list, "vehMark", new String[]{"vehMark"}, new String[] {bean.getVehMark()});
@@ -51,7 +50,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				throw new BusinessException(StatusEnum.ACCOUNT_PLATE_EXISTS);
 			}else{
 				VehicleMarkManage manage = new VehicleMarkManage();
-				manage.setVehUserId(user.getId().toString());
+				manage.setVehUserId(bean.getUserId().toString());
 				manage.setVehMark(bean.getVehMark());
 				manage.setCreateTime(new Date());
 				manage.setUpdateTime(new Date());

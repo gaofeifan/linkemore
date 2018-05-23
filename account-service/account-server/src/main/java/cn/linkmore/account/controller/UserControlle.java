@@ -121,29 +121,6 @@ public class UserControlle {
 	}
 	
 	/**
-	 * @Description  根据手机号查询
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	@RequestMapping(value = "/v2.0/mobile/{mobile}", method = RequestMethod.GET)
-	public ResUser selectByMobile(@PathVariable String mobile) {
-		User user = this.userService.selectByMobile(mobile);
-		return ObjectUtils.copyObject(user, new ResUser());
-	}
-	
-	/**
-	 * @Description  查询缓存数据
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	@RequestMapping(value = "/v2.0/cache/{userId}", method = RequestMethod.GET)
-	public ResUser getUserCacheKey(@PathVariable Long userId) {
-		ResUser user = this.userService.getUserCacheKey(userId);
-		log.info("getUserCacheKey = " + user.getId());
-		return user;
-	}
-	
-	/**
 	 * @Description  app登录
 	 * @Author   GFF 
 	 * @Version  v2.0

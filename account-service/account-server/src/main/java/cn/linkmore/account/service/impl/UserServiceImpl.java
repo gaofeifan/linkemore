@@ -24,13 +24,12 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
-import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
-import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
+import cn.linkmore.annotation.AopIgnore;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
@@ -70,14 +69,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateNickname(ReqUpdateNickname nickname) {
-		ResUser user = getUserCacheKey(nickname.getUserId());
-		updateByColumn("nickname", nickname.getNickname(), user.getId());
+		updateByColumn("nickname", nickname.getNickname(), nickname.getUserId());
 	}
 
 	@Override
 	public void updateSex(ReqUpdateSex sex) {
-		ResUser user = getUserCacheKey(sex.getUserId());
-		updateByColumn("sex", sex.getSex(), user.getId());
+		updateByColumn("sex", sex.getSex(), sex.getUserId());
 	}
 
 	private void updateByColumn(String column, Object value, Long id) {
@@ -89,19 +86,10 @@ public class UserServiceImpl implements UserService {
 		userMasterMapper.updateByColumn(param);
 	}
 
-	@Override
-	public ResUser getUserCacheKey(Long userId) {
-		User u = this.selectById(userId);
-		if(u != null) {
-			return ObjectUtils.copyObject(u, new ResUser());
-		}
-		return null;
-	}
 
 	@Override
 	public void updateVehicle(ReqUpdateVehicle req) {
-		ResUser user = getUserCacheKey(req.getUserId());
-		UserVechicle vechicle = userVechicleClusterMapper.selectByUserId(user.getId());
+		UserVechicle vechicle = userVechicleClusterMapper.selectByUserId(req.getUserId());
 		boolean flag = false;
 		if (vechicle == null) {
 			flag = true;
@@ -110,7 +98,7 @@ public class UserServiceImpl implements UserService {
 		object.setUpdateTime(new Date());
 		if (flag) {
 			object.setCreateTime(new Date());
-			object.setUserId(user.getId());
+			object.setUserId(req.getUserId());
 			this.userVechicleMasterMapper.insert(object);
 			return;
 		}

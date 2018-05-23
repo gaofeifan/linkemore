@@ -15,6 +15,7 @@ import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.common.UserCache;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.VehicleMarkManageService;
+import cn.linkmore.util.ObjectUtils;
 /**
  * @author   GFF
  * @Date     2018年5月21日
@@ -36,11 +37,12 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	}
 
 	@Override
-	public void save(ReqVehicleMark bean, HttpServletRequest request) {
+	public void save(cn.linkmore.user.request.ReqVehicleMark bean, HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
 		bean.setUserId(ru.getId());
-		vehicleMarkClient.create(bean);
+		ReqVehicleMark mark = ObjectUtils.copyObject(bean,new ReqVehicleMark());
+		vehicleMarkClient.create(mark);
 	}
 
 	@Override

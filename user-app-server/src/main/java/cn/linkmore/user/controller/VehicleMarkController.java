@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import cn.linkmore.user.service.VehicleMarkManageService;
 import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 	
 /**
  * 车牌号管理
@@ -43,7 +45,7 @@ public class VehicleMarkController{
 	 */
 	@ApiOperation(value="新增",notes="车牌号必填,车牌号规则校验", consumes = "application/json")
 	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
-	public ResponseEntity<?> create( @RequestBody ReqVehicleMark bean,HttpServletRequest request) {
+	public ResponseEntity<?> create( @RequestBody cn.linkmore.user.request.ReqVehicleMark bean,HttpServletRequest request) {
 		this.vehicleMarkManageService.save(bean,request);
 		return ResponseEntity.success(null, request);
 	}
@@ -55,7 +57,7 @@ public class VehicleMarkController{
 	 */
 	@ApiOperation(value="删除",notes="根据id删除", consumes = "application/json")
 	@RequestMapping(value = "/v2.0", method = RequestMethod.DELETE)
-	public ResponseEntity<?> delete(@RequestParam("id") Long id,HttpServletRequest request){
+	public ResponseEntity<?> delete(@ApiParam(value="id",required=true) @NotBlank(message="id不能为空")  @RequestParam("id") Long id,HttpServletRequest request){
 		this.vehicleMarkManageService.deleteById(id);
 		return ResponseEntity.success(null, request);
 	}
@@ -86,7 +88,7 @@ public class VehicleMarkController{
 	 */
 	@ApiOperation(value="根据id查询",notes="根据id查询车牌号详情", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/by_id", method = RequestMethod.GET)
-	public ResponseEntity<cn.linkmore.user.response.ResVechicleMark> selectById(@RequestParam("id") Long id,HttpServletRequest request) {
+	public ResponseEntity<cn.linkmore.user.response.ResVechicleMark> selectById(@NotBlank(message="id不能为空") @ApiParam(value="id",required=true) @RequestParam("id") Long id,HttpServletRequest request) {
 		ResVechicleMark mark = this.vehicleMarkManageService.selectById(id);
 		cn.linkmore.user.response.ResVechicleMark object = ObjectUtils.copyObject(mark, new cn.linkmore.user.response.ResVechicleMark());
 		ResponseEntity<cn.linkmore.user.response.ResVechicleMark> success = ResponseEntity.success(object, request);

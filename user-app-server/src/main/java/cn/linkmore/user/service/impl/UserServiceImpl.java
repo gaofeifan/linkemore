@@ -17,7 +17,6 @@ import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
-import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
@@ -40,8 +39,10 @@ import cn.linkmore.user.common.UserCache;
 import cn.linkmore.user.request.ReqAuthLogin;
 import cn.linkmore.user.request.ReqAuthSend;
 import cn.linkmore.user.request.ReqMobileBind;
+import cn.linkmore.user.request.ReqUpdateVehicle;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.UserService;
+import cn.linkmore.util.ObjectUtils;
 
 /**
  * Service实现 - 用户
@@ -264,11 +265,11 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	public void updateNickname(String nickname, HttpServletRequest request) {
-		/*String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); */
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
 		ReqUpdateNickname nick = new ReqUpdateNickname();
 		nick.setNickname(nickname);
-		nick.setUserId(2752L);
+		nick.setUserId(ru.getId());
 		this.userClient.updateNickname(nick);
 	}
 	@Override
@@ -285,7 +286,8 @@ public class UserServiceImpl implements UserService {
 		String key = UserCache.getCacheKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		vehicle.setUserId(ru.getId());
-		this.userClient.updateVehicle(vehicle);
+		cn.linkmore.account.request.ReqUpdateVehicle object = ObjectUtils.copyObject(vehicle, new cn.linkmore.account.request.ReqUpdateVehicle());
+		this.userClient.updateVehicle(object);
 	}
 	@Override
 	public ResUserDetails detail(HttpServletRequest request) {

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.common.dao.master.UnusualLogMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.UnusualLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="app_version" jdbcType="VARCHAR" property="appVersion" />
+    <result column="os_version" jdbcType="VARCHAR" property="osVersion" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="client_type" jdbcType="INTEGER" property="clientType" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, app_version, os_version, model, client_type, level, brand
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_app_unusual_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.linkmore.common.entity.UnusualLog" useGeneratedKeys="true" keyProperty="id">
+    insert into t_app_unusual_log (id, app_version, os_version, 
+      model, client_type, level, 
+      brand)
+    values (#{id,jdbcType=BIGINT}, #{appVersion,jdbcType=VARCHAR}, #{osVersion,jdbcType=VARCHAR}, 
+      #{model,jdbcType=VARCHAR}, #{clientType,jdbcType=INTEGER}, #{level,jdbcType=VARCHAR}, 
+      #{brand,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.common.entity.UnusualLog" useGeneratedKeys="true" keyProperty="id">
+    insert into t_app_unusual_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="appVersion != null">
+        app_version,
+      </if>
+      <if test="osVersion != null">
+        os_version,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="clientType != null">
+        client_type,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="brand != null">
+        brand,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="appVersion != null">
+        #{appVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="osVersion != null">
+        #{osVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="clientType != null">
+        #{clientType,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null">
+        #{brand,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.common.entity.UnusualLog">
+    update t_app_unusual_log
+    <set>
+      <if test="appVersion != null">
+        app_version = #{appVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="osVersion != null">
+        os_version = #{osVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="clientType != null">
+        client_type = #{clientType,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null">
+        brand = #{brand,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.common.entity.UnusualLog">
+    update t_app_unusual_log
+    set app_version = #{appVersion,jdbcType=VARCHAR},
+      os_version = #{osVersion,jdbcType=VARCHAR},
+      model = #{model,jdbcType=VARCHAR},
+      client_type = #{clientType,jdbcType=INTEGER},
+      level = #{level,jdbcType=VARCHAR},
+      brand = #{brand,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

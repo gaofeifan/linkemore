@@ -50,13 +50,6 @@ public interface UserService {
 	void removeWechat(Long userId);
 
 	/**
-	 * @Description  查询用户缓存
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	ResUser getUserCacheKey(Long userId);
-
-	/**
 	 * @Description  根据手机号查询
 	 * @Author   GFF 
 	 * @Version  v2.0

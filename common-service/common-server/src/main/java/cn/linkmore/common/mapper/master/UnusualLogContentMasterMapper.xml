@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.common.dao.master.UnusualLogContentMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.UnusualLogContent">
+    <id column="log_id" jdbcType="BIGINT" property="logId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    log_id, content
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_app_unusual_log_content
+    where log_id = #{logId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.linkmore.common.entity.UnusualLogContent">
+    insert into t_app_unusual_log_content (log_id, content)
+    values (#{logId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.common.entity.UnusualLogContent">
+    insert into t_app_unusual_log_content
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        log_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.common.entity.UnusualLogContent">
+    update t_app_unusual_log_content
+    <set>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.common.entity.UnusualLogContent">
+    update t_app_unusual_log_content
+    set content = #{content,jdbcType=VARCHAR}
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+</mapper>

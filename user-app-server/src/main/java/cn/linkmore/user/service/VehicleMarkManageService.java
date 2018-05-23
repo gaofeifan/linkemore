@@ -28,7 +28,7 @@ public interface VehicleMarkManageService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void save(ReqVehicleMark bean, HttpServletRequest request);
+	void save(cn.linkmore.user.request.ReqVehicleMark bean, HttpServletRequest request);
 
 	/**
 	 * @Description  删除

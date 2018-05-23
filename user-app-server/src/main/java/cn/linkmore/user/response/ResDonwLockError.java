@@ -1,21 +1,23 @@
 package cn.linkmore.user.response;
 
-import java.util.Date;
+import org.hibernate.validator.constraints.NotBlank;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 @ApiModel("降锁失败异常数据")
 public class ResDonwLockError {
-	@ApiModelProperty(value = "主键")
+	@ApiModelProperty(value = "主键",required=false)
 	private Long id;
 
-	@ApiModelProperty(value = "异常名称")
+	@ApiModelProperty(value = "异常名称",required=true)
+	@NotBlank(message="名称不能为空") 
 	private String name;
 
-	@ApiModelProperty(value = "值")
+	@ApiModelProperty(value = "值",required=true)
+	@NotBlank(message="code值不能为空") 
 	private String code;
 
-	@ApiModelProperty(value = "其他")
+	@ApiModelProperty(value = "其他",required=false)
 	private Integer extra;
 
 	public Long getId() {

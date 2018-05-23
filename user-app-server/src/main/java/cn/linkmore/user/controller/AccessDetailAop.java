@@ -10,20 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.linkmore.annotation.AopIgnore;
-import cn.linkmore.bean.common.Constants;
-import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.common.client.AccessDetailClient;
 import cn.linkmore.common.request.ReqAccessDetail;
 import cn.linkmore.user.response.ResUser;
@@ -42,14 +38,14 @@ import cn.linkmore.util.StringUtil;
 public class AccessDetailAop {
 	
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
-
+	
 	@Resource
 	private AccessDetailClient accessDetailClient;
 	@Resource
 	private UserService userService;
 	
 	/**
-	 * @Description  
+	 * @Description
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
@@ -57,8 +53,8 @@ public class AccessDetailAop {
 	public void interfaceLog(){}
 
 	/**
-	 * @Description  
-	 * @Author   GFF 
+	 * @Description
+	 * @Author   GFF 	
 	 * @Version  v2.0
 	 */
 	@AfterReturning(returning = "obj", pointcut = "interfaceLog()")
@@ -86,7 +82,7 @@ public class AccessDetailAop {
 			for (String v : values) {
 				sb.append(v);
 			}
-			String type = "";
+			String type = "" ;
 			RequestMethod[] methods = methodMapping.method();
 			for (int i = 0; i < methods.length; i++) {
 				if(methods.length-1 == i) {

@@ -1,12 +1,11 @@
 package cn.linkmore.user.service;
 
 import javax.servlet.http.HttpServletRequest;
-
-import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.user.request.ReqAuthLogin;
 import cn.linkmore.user.request.ReqAuthSend;
 import cn.linkmore.user.request.ReqMobileBind;
+import cn.linkmore.user.request.ReqUpdateVehicle;
 import cn.linkmore.user.response.ResUser;
 
 /**
@@ -80,7 +79,7 @@ public interface UserService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void updateVehicle(ReqUpdateVehicle req, HttpServletRequest request);
+	void updateVehicle(ReqUpdateVehicle vehicle, HttpServletRequest request);
 
 	/**
 	 * @Description  查询详情

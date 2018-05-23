@@ -85,12 +85,6 @@ public class UserClientHystrix implements UserClient{
 	}
 
 	@Override
-	public ResUser selectByMobile(String mobile) {
-		log.info("account service user selectByMobile(String mobile) hystrix");
-		return null;
-	}
-
-	@Override
 	public ResVechicleMark selectById(Long id) {
 		log.info("account service user selectById(Long id) hystrix");
 		return null;

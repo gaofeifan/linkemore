@@ -2,6 +2,7 @@ package cn.linkmore.user.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,17 +11,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.user.request.ReqMobileBind;
+import cn.linkmore.user.request.ReqUpdateVehicle;
 import cn.linkmore.user.service.UserService;
 import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 /**
  * Controller - 用户
  * @author liwenlong
@@ -71,7 +74,7 @@ public class UserController {
 	@ApiOperation(value="更新昵称",notes="昵称不能为空，用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/nickname", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> updateNickname(@RequestParam("nickname") String nickname,HttpServletRequest request) {
+	public ResponseEntity<?> updateNickname(@ApiParam(value="昵称",required=true) @RequestParam("nickname") String nickname,HttpServletRequest request) {
 		this.userService.updateNickname(nickname,request);
 		return new ResponseEntity<>();
 	}
@@ -84,7 +87,7 @@ public class UserController {
 	@ApiOperation(value="更新性别",notes="性别不能为空，用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/sex", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> updateSex(@RequestParam("sex") Integer sex,HttpServletRequest request) {
+	public ResponseEntity<?> updateSex(@ApiParam(value="性别",required=true) @RequestParam("sex") Integer sex,HttpServletRequest request) {
 		this.userService.updateSex(sex,request);
 		return new ResponseEntity<>();
 	}
