@@ -19,14 +19,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import cn.linkmore.annotation.AopIgnore;
+import cn.linkmore.bean.common.Constants;
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.common.client.AccessDetailClient;
 import cn.linkmore.common.request.ReqAccessDetail;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.UserService;
 import cn.linkmore.util.JsonUtil;
  	
-@Configuration
-@Aspect
+/*@Configuration
+@Aspect*/
 public class AccessDetailAop {
 	
 	@Resource
@@ -36,7 +39,10 @@ public class AccessDetailAop {
 	
 	@Pointcut("execution(* cn.linkmore.user.controller..*.*(..))")
 	public void interfaceLog(){}
-		
+
+//	@Pointcut("@annotation(aopIgnore)")
+	public void ignore(AopIgnore aopIgnore) {
+	}
 	@AfterReturning(returning = "obj", pointcut = "interfaceLog())")
 	public void accessDetailAfter(JoinPoint joinPoint,Object obj){
 		Class<? extends Object> clazz = joinPoint.getTarget().getClass();
@@ -89,15 +95,20 @@ public class AccessDetailAop {
 		detail.setReturns(response);
 		ResUser user = userService.getCache(request);
 		detail.setUserId(user.getId());
-//		detail.setType(11);
+		String os = request.getHeader("os");
+		if(Integer.parseInt(os) == 0) {
+			detail.setType(0);
+		}else {
+			detail.setType(1);
+		}
+		this.insert(detail);
 	}
-	
 	
 	public void insert( ReqAccessDetail detail) {
 		if(detail.getType() == 0) {
 			accessDetailClient.appSave(detail);
 		}else if(detail.getType() == 1){
-			accessDetailClient.appSave(detail);
+			accessDetailClient.miniSave(detail);
 		}
 	}
 	
