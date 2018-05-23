@@ -239,9 +239,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		LockFactory lockFactory = InitLockFactory.getInstance();
 		ResponseMessage<LockBean> lc = lockFactory.findAvailableLock(preDetail.getGateway());
 		List<LockBean> lockBeanList = lc.getDataList();
-		log.info("pref free stall :{}" ,lc.getDataList().size());
 		Integer count = 0;
 		if(CollectionUtils.isNotEmpty(lockBeanList) && CollectionUtils.isNotEmpty(stallList)) {
+			log.info("pref free stall:{},         -------------       stall:{}" ,JsonUtil.toJson(lc.getDataList()) , JsonUtil.toJson(stallList));
 			for(LockBean lock : lockBeanList) {
 				for(ResStall stall : stallList) {
 					if(lock.getSlaveId().equals(stall.getLockSn())) {
@@ -249,11 +249,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 						if(lock.getOpenState().equals(1)) {
 							count ++;
 						}
+						log.info("pref free stall count :{}" ,count);
 					}
 				}
 			}
 		}
-		log.info("pref free stall count :{}" ,count);
 		return count;
 	}
 }

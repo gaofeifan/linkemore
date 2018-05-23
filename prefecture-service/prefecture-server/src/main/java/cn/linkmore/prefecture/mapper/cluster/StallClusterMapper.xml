@@ -23,9 +23,9 @@
   </resultMap>
   
   <resultMap id="ResponseResultMap" type="cn.linkmore.prefecture.response.ResStall">
-    <id column="id" property="id" />
-    <result column="stall_name" property="stallName" />
-    <result column="lock_sn" property="lockSn" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
   </resultMap>
   
   <sql id="Base_Column_List">
