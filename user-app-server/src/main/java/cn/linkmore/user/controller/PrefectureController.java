@@ -15,6 +15,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.user.request.ReqPrefecture;
 import cn.linkmore.user.response.ResPreCity;
+import cn.linkmore.user.response.ResPrefectureList;
 import cn.linkmore.user.response.ResPrefectureStrategy;
 import cn.linkmore.user.service.PrefectureService;
 import io.swagger.annotations.Api;
@@ -67,19 +68,19 @@ public class PrefectureController {
 	} 
 	
 	/**
-	 * 根据车区id查询车区空闲车位
+	 * 查询车区空闲车位
 	 * 
 	 * @param preId Long
 	 * @return
 	 */
-	@ApiOperation(value = "空闲车位数", notes = "根据车区ID获取空闲车位数", consumes = "application/json")
+	@ApiOperation(value = "空闲车位数", notes = "刷新所有车区空闲车位数", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/free_count", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<Integer> findFreeStallCount(@RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
-		ResponseEntity<Integer> response = null ;  
+	public ResponseEntity<List<ResPrefectureList>> refreshFreeStall(HttpServletRequest request) {
+		ResponseEntity<List<ResPrefectureList>> response = null ;  
 		try {
-			Integer count = this.prefectureService.findFreeStallCount(preId);
-			response = ResponseEntity.success(count, request);
+			List<ResPrefectureList> list = this.prefectureService.refreshFreeStall();
+			response = ResponseEntity.success(list, request);
 		}catch(BusinessException e){
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		}catch(Exception e){

@@ -12,6 +12,21 @@
     <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
     <result column="level" jdbcType="INTEGER" property="level" />
   </resultMap>
+  
+  <resultMap id="AuthResultMap" type="cn.linkmore.security.entity.Menu" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="page_id" property="pageId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="order_index" property="orderIndex" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+  </resultMap> 
+  
+  
   <sql id="Base_Column_List">
     id, name, parent_id, status, icon, page_id, create_time, order_index, level
   </sql>
@@ -21,4 +36,86 @@
     from t_sec_menu
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findTree" resultMap="BaseResultMap">
+    select id, name, parent_id, level,status,page_id,icon,order_index,create_time
+    from t_sec_menu 
+    where level = 0 or level = 1
+  </select>
+ 
+  <select id="findAll" resultMap="BaseResultMap">
+    select id, name, parent_id, status,page_id,icon,order_index,level,create_time
+    from t_sec_menu 
+  </select>
+  
+  <select id="findList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select id, name, parent_id, status,page_id,icon,order_index,level,create_time
+    from t_sec_menu where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="parentId!=null">  
+    and parent_id = #{parentId,jdbcType=BIGINT}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if> 
+  </select>
+  
+  <select id="findPersonAuthList" resultMap="AuthResultMap" parameterType="java.lang.Long">
+    select menu.id,menu.name,menu.parent_id,menu.icon,menu.status,menu.create_time,menu.order_index,sp.page_id as page_id ,menu.level,page.path from t_sec_menu menu left join (
+	   select DISTINCT t.page_id from t_sec_role_page  t left join t_sec_person_role pr
+    on t.role_id = pr.role_id  where  pr.person_id = #{personId,jdbcType=BIGINT}  
+	) as sp on menu.page_id = sp.page_id  left JOIN t_sec_page page on menu.page_id = page.id order by menu.order_index asc
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select id, name, parent_id, status,page_id,icon,order_index,level,create_time
+    from t_sec_menu where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="parentId!=null">  
+    and parent_id = #{parentId,jdbcType=BIGINT}
+    </if> 
+    <if test="property==null">  
+     order by id desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_sec_menu where 1=1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="parentId!=null">  
+    and parent_id = #{parentId,jdbcType=BIGINT}
+    </if> 
+  </select>
+  
+  <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_sec_menu where   
+    ${property} = #{value}    
+    and id != #{id} 
+  </select>
+  
 </mapper>

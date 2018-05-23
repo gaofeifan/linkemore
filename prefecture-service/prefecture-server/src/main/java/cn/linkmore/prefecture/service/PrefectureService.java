@@ -1,8 +1,6 @@
 package cn.linkmore.prefecture.service;
 
 import java.util.List;
-
-import cn.linkmore.account.response.ResUser;
 import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
@@ -28,19 +26,10 @@ public interface PrefectureService {
 	/**
 	 * 根据当前位置获取车区列表
 	 * @param reqPrefecture
-	 * @param user
 	 * @return
 	 */
-	List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture,ResUser user);
+	List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture);
 	
-	/**
-	 * 根据城市获取车区卡片列表
-	 * @param cityId
-	 * @param user 
-	 * @param size
-	 * @return
-	 */
-	List<ResPrefectureList> findPreListByCityId(Long cityId, ResUser user);
 	/**
 	 * 根据车区id查询计费策略
 	 * @param preId
@@ -54,10 +43,9 @@ public interface PrefectureService {
 	 */
 	List<ResPre> findList(List<Long> ids);
 	/**
-	 * 根据车区id查询空闲车位数量
-	 * @param preId
+	 * 查询所有车区空闲车位
 	 * @return
 	 */
-	Integer getStallCount(Long preId);
+	List<ResPrefectureList> getStallCount();
 
 }

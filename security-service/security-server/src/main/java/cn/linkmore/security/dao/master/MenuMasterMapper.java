@@ -1,5 +1,7 @@
 package cn.linkmore.security.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.security.entity.Menu;
@@ -11,9 +13,10 @@ import cn.linkmore.security.entity.Menu;
  */
 @Mapper
 public interface MenuMasterMapper {
-    int delete(Long id);
 
     int save(Menu record);
 
     int update(Menu record);
+
+	int delete(List<Long> ids);
 }

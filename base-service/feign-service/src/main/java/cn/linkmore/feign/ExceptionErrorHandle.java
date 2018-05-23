@@ -23,9 +23,17 @@ public class ExceptionErrorHandle {
 	@ExceptionHandler(value = Exception.class)
 	@ResponseBody
 	public ExceptionInfo handle(Exception e,HttpServletRequest request, HttpServletResponse response) {
-		String uri = request.getRequestURI(); 
+		String uri = request.getRequestURI();  
+		StringBuffer sb = new StringBuffer();
+		StackTraceElement[] stackArray = e.getStackTrace();  
+        for (int i = 0; i < stackArray.length; i++) {  
+            StackTraceElement element = stackArray[i];  
+            if(element.toString().contains("cn.linkmore")) {
+            	sb.append(element.toString() + "\n");  
+            } 
+        }   
 		log.info("----******************-------");
-		log.info("micro service throw biz exception {}", e.getMessage());
+		log.info("micro service throw biz exception {}", sb.toString());
 		log.info("url:{}",uri);
 		
 		ExceptionInfo ei = new ExceptionInfo();

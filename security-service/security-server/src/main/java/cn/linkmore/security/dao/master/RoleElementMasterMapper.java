@@ -1,5 +1,7 @@
 package cn.linkmore.security.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.security.entity.RoleElement;
@@ -16,4 +18,6 @@ public interface RoleElementMasterMapper {
     int save(RoleElement record);
 
     int update(RoleElement record);
+
+	void batchSave(List<RoleElement> res);
 }

@@ -1,5 +1,7 @@
 package cn.linkmore.security.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.security.entity.Person;
@@ -16,4 +18,11 @@ public interface PersonMasterMapper {
     int save(Person record);
 
     int update(Person record);
+
+	void loginUpdate(Person db);
+
+	int delete(List<Long> ids);
+
+	void unlock(Long id);
+	
 }

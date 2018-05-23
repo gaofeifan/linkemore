@@ -81,4 +81,15 @@
     and id != #{id} 
   </select>
   
+  <select id="findPersonAuthList" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select si.id,si.name, si.clazz_id, si.path, si.authorize,si.log_status,si.create_time
+    from t_sec_interface si  inner join
+    (
+	select pe.id, pe.name, pe.interface_id, pe.status, pe.page_id, pe.label_name, pe.label_id
+    from t_sec_page_element pe inner join  
+   	( select t.element_id from t_sec_role_element  t left join t_sec_person_role pr
+    on t.role_id = pr.role_id  where  pr.person_id = #{personId,jdbcType=BIGINT} ) as element on pe.id = element.element_id
+	) as spe   on spe.interface_id = si.id
+  </select>
+  
 </mapper>

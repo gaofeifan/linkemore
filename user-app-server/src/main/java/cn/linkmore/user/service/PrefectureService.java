@@ -28,17 +28,10 @@ public interface PrefectureService {
 	 * @return
 	 */
 	public ResPrefectureStrategy findStrategyById(Long preId, HttpServletRequest request);
+	
 	/**
-	 * 根据城市id获取车区列表
-	 * @param rp
-	 * @param request
+	 * 查询所有车区空闲车位数量
 	 * @return
 	 */
-	public List<ResPrefectureList> findPreListByCityId(Long cityId, HttpServletRequest request);
-	/**
-	 * 根据车位id查询空闲车位数量
-	 * @param preId
-	 * @return
-	 */
-	public Integer findFreeStallCount(Long preId);
+	public List<ResPrefectureList> refreshFreeStall();
 }

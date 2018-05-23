@@ -26,4 +26,82 @@
     from t_sec_person
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findByUsername" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select id,type, username,realname, password, lock_status, lock_time, login_ip, lock_count, login_time, create_time,
+    status
+    from t_sec_person
+    where username = #{username,jdbcType=BIGINT} limit 0,1
+  </select>
+  
+   <select id="findList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select id,type, username,realname, password, lock_status, lock_time, login_ip, lock_count, login_time, create_time,
+    status
+    from t_sec_person
+    where  1=1 
+    <if test="username!=null">  
+    and username = #{username,jdbcType=VARCHAR}
+    </if>  
+     <if test="realname!=null">  
+    and realname = #{realname,jdbcType=VARCHAR}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>  
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
+  </select>
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select id,type, username,realname, password, lock_status, lock_time, login_ip, lock_count, login_time, create_time,
+    status
+    from t_sec_person
+    where  1=1 
+    <if test="username!=null">  
+    and username = #{username,jdbcType=VARCHAR}
+    </if>  
+    <if test="realname!=null">  
+    and realname = #{realname,jdbcType=VARCHAR}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>  
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
+     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap" >
+    select id, username, realname,password, lock_status, lock_time, login_ip, lock_count, login_time, create_time,
+    status
+    from t_sec_person
+  </select>
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_sec_person where 1=1
+    <if test="username!=null">  
+    and username = #{username,jdbcType=VARCHAR}
+    </if> 
+    <if test="realname!=null">  
+    and realname = #{realname,jdbcType=VARCHAR}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>  
+  </select>
+  
+  <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_sec_person where   
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
 </mapper>

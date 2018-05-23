@@ -15,32 +15,32 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.PageElement;
+import cn.linkmore.security.entity.Menu;
 import cn.linkmore.security.request.ReqCheck;
-import cn.linkmore.security.service.PageElementService;
+import cn.linkmore.security.service.MenuService;
 
 /**
- * Controller - 页面元素操作
+ * Controller - 菜单操作
  * 
  * @author jiaohanbin
  * @version 2.0
  *
  */
 @RestController
-@RequestMapping("/page_element")
-public class PageElementController {
+@RequestMapping("/menu")
+public class MenuController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private PageElementService pageElementService;
+	private MenuService menuService;
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(@RequestBody PageElement record){
+	public ViewMsg save(@RequestBody Menu menu){
 		ViewMsg msg = null;
 		try { 
-			this.pageElementService.save(record);
+			this.menuService.save(menu);
 			msg = new ViewMsg("保存成功",true);
 		}catch(DataException e) {
 			msg = new ViewMsg(e.getMessage(),false);
@@ -52,12 +52,12 @@ public class PageElementController {
 		 
 	}
 	
-	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/update", method = RequestMethod.PUT)
 	@ResponseBody
-	public ViewMsg update(@RequestBody PageElement record){
+	public ViewMsg update(@RequestBody Menu menu){
 		ViewMsg msg = null;
 		try {
-			this.pageElementService.update(record);
+			this.menuService.update(menu);
 			msg = new ViewMsg("保存成功",true);
 		}catch(DataException e) {
 			msg = new ViewMsg(e.getMessage(),false);
@@ -73,7 +73,7 @@ public class PageElementController {
 	public ViewMsg delete(@RequestBody List<Long> ids){ 
 		ViewMsg msg = null;
 		try {
-			this.pageElementService.delete(ids);
+			this.menuService.delete(ids);
 			msg = new ViewMsg("删除成功",true);
 		}catch(DataException e) {
 			msg = new ViewMsg(e.getMessage(),false);
@@ -88,7 +88,7 @@ public class PageElementController {
 	@ResponseBody
 	public Boolean check(@RequestBody ReqCheck reqCheck){
 		Boolean flag = true ;
-		Integer count = this.pageElementService.check(reqCheck); 
+		Integer count = this.menuService.check(reqCheck); 
 		if(count>0){
             flag = false;
         }
@@ -98,19 +98,18 @@ public class PageElementController {
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable){ 
-		return this.pageElementService.findPage(pageable); 
+		return this.menuService.findPage(pageable); 
 	} 
-	
 	
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.GET)
 	@ResponseBody
 	public Tree tree(){ 
-		return this.pageElementService.findTree();
+		return this.menuService.findTree();
 	}
 	
 	@RequestMapping(value = "/v2.0/map", method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String,Object> map(){
-		return this.pageElementService.map();
+	public Map<String,Object> map(){ 
+		return this.menuService.map();
 	}
 }

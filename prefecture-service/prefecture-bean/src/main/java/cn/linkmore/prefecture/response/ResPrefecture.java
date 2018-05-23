@@ -35,60 +35,62 @@ public class ResPrefecture {
 	 */
 	private Double longitude;
 	/**
-	 * 首小时价格
+	 * 计费价格
 	 */
-	private String firstHour;
+	private String chargePrice;
 	/**
-	 * 时间基数 15分钟等
+	 * 计费时间
 	 */
-	private String timelyLong;
+	private String chargeTime;
+	
 	/**
-	 * 时间基数单位
-	 */
-	private String timelyUnit;
-	/**
-	 * 免费时长
-	 */
-	private Long freeMins;
-	/**
-	 * 专区类型(0普通，1奥迪内部定制专区
+	 * 专区类型(0普通，1奥迪内部定制专区)
 	 */
 	private Integer type;
 	/**
 	 * 是否受限
 	 */
 	private short limitStatus;
+	/**
+	 * 网关分组编号
+	 */
+	private String gateway;
+	/**
+	 * 车区地图
+	 */
+	private String imageUrl;
 	
+	public String getChargePrice() {
+		return chargePrice;
+	}
+	public void setChargePrice(String chargePrice) {
+		this.chargePrice = chargePrice;
+	}
+	public String getChargeTime() {
+		return chargeTime;
+	}
+	public void setChargeTime(String chargeTime) {
+		this.chargeTime = chargeTime;
+	}
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	public String getGateway() {
+		return gateway;
+	}
+	public void setGateway(String gateway) {
+		this.gateway = gateway;
+	}
 	public String getAddress() {
 		return address;
 	}
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public String getFirstHour() {
-		return firstHour;
-	}
-	public void setFirstHour(String firstHour) {
-		this.firstHour = firstHour;
-	}
-	public String getTimelyLong() {
-		return timelyLong;
-	}
-	public void setTimelyLong(String timelyLong) {
-		this.timelyLong = timelyLong;
-	}
-	public String getTimelyUnit() {
-		return timelyUnit;
-	}
-	public void setTimelyUnit(String timelyUnit) {
-		this.timelyUnit = timelyUnit;
-	}
-	public Long getFreeMins() {
-		return freeMins;
-	}
-	public void setFreeMins(Long freeMins) {
-		this.freeMins = freeMins;
-	}
+	
 	public Long getCityId() {
 		return cityId;
 	}

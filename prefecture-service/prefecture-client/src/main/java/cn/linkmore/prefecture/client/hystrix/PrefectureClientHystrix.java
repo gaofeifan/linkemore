@@ -2,12 +2,10 @@ package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import cn.linkmore.prefecture.client.PrefectureClient;
-import cn.linkmore.prefecture.request.ReqCity;
 import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
@@ -34,11 +32,7 @@ public class PrefectureClientHystrix implements PrefectureClient {
 		log.info("prefecture service pres findPreStrategy(Long id) hystrix");
 		return new ResPrefectureStrategy();
 	}
-	@Override
-	public List<ResPrefectureList> findPreListByCityId(ReqCity reqCity) {
-		log.info("prefecture service pres findPreListByCityId(ReqCity reqCity) hystrix");
-		return new ArrayList<ResPrefectureList>();
-	}
+	
 	@Override
 	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture) {
 		log.info("prefecture service pres findPreListByLoc(ReqPrefecture reqPrefecture) hystrix");
@@ -50,9 +44,9 @@ public class PrefectureClientHystrix implements PrefectureClient {
 		return new ArrayList<ResPre>();
 	}
 	@Override
-	public Integer findFreeStallCount(Long preId) {
-		log.info("prefecture service pres findFreeStallCount(Long preId) hystrix");
-		return 0;
+	public List<ResPrefectureList> refreshFreeStall() {
+		log.info("prefecture service pres refreshFreeStall() hystrix");
+		return new ArrayList<ResPrefectureList>();
 	}
 	
 	
