@@ -55,7 +55,7 @@ public class CityServiceImpl implements CityService {
 			req.setLongitude(longitude);
 			req.setLatitude( latitude); 
 			cn.linkmore.third.response.ResLocate info = this.locateClient.get(longitude,latitude);
-			if(info!=null) { 
+			if(info!=null&&info.getAdcode()!=null) { 
 				rc = rcMap.get(info.getAdcode().substring(0, 4));
 				if(rc!=null) {
 					rc.setStatus(ResCity.STATUS_CHECKED);
@@ -63,7 +63,7 @@ public class CityServiceImpl implements CityService {
 			}
 			if(rc==null) {
 				rc = res.get(0);
-				rc.setStatus(2);
+				rc.setStatus(ResCity.STATUS_ASSIGN);
 			}
 		} 
 		return res;

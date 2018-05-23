@@ -15,7 +15,7 @@ public class ReqMobileBind {
 	@ApiModelProperty(value = "手机号", required = true)
 	private String mobile;
 	 
-	@Range(min=1000, max=9000,message="验证码是4位有效数字")
+	@Range(min=1000, max=9999,message="验证码是4位有效数字")
 	@NotBlank(message="验证码不能为空") 
 	@ApiModelProperty(value = "短信验证码", required = true)
 	private String code;
