@@ -10,9 +10,10 @@
     <result column="returns" jdbcType="VARCHAR" property="returns" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="method_type" jdbcType="VARCHAR" property="methodType" />
+    <result column="mapping" jdbcType="VARCHAR" property="mapping" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, path, method, params, returns, type, method_type
+    id, user_id, path, method, params, returns, type, method_type,mapping
   </sql>
   <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

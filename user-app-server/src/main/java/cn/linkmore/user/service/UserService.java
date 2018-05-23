@@ -96,5 +96,12 @@ public interface UserService {
 	 */
 	void removeWechat(HttpServletRequest request);
 
+	/**
+	 * @Description 获取用户缓存数据 
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResUser getCache(HttpServletRequest request);
+
 
 }

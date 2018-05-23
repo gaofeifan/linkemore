@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,14 +16,23 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.alibaba.fastjson.JSON;
-
+import cn.linkmore.common.client.AccessDetailClient;
+import cn.linkmore.common.request.ReqAccessDetail;
+import cn.linkmore.user.service.UserService;
 import cn.linkmore.util.JsonUtil;
  	
 @Configuration
 @Aspect
 public class AccessDetailAop {
+	
+	@Resource
+	private AccessDetailClient accessDetailClient;
+	@Resource
+	private UserService userService;
+	
 	@Pointcut("execution(* cn.linkmore.user.controller..*.*(..))")
 	public void interfaceLog(){}
 		
@@ -68,12 +78,29 @@ public class AccessDetailAop {
 		}
 		Map<String, String> responseJson = new HashMap<>();
 		String response = responseJson.put(obj.getClass().getSimpleName(), JsonUtil.toJson(obj));
-		
+		ReqAccessDetail detail = new ReqAccessDetail();
+		detail.setMethod(methodName);
+		detail.setMethodType(type);
+		detail.setParams(JsonUtil.toJson(result));
+		detail.setPath(className);
+		detail.setMapping(sb.toString());
+		detail.setReturns(response);
+//		userService.ca
+//		detail.setUserId(userId);
+//		detail.setType(type);
 	}
 	
 	
-	public String addString(String str) {
-		return null;
+	public void insert( ReqAccessDetail detail) {
+		if(detail.getType() == 0) {
+			accessDetailClient.appSave(detail);
+		}else if(detail.getType() == 1){
+			accessDetailClient.appSave(detail);
+		}
+	}
+	
+	public static HttpServletRequest getRequest() {
+		return ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 	}
 	
 }

@@ -17,6 +17,8 @@ public class AccessDetail {
 
     private String methodType;
 
+    private String mapping;
+    
     public Long getId() {
         return id;
     }
@@ -80,4 +82,14 @@ public class AccessDetail {
     public void setMethodType(String methodType) {
         this.methodType = methodType == null ? null : methodType.trim();
     }
+
+	public String getMapping() {
+		return mapping;
+	}
+
+	public void setMapping(String mapping) {
+		this.mapping = mapping;
+	}
+    
+    
 }

@@ -301,4 +301,10 @@ public class UserServiceImpl implements UserService {
 		this.userClient.removeWechat(ru.getId());
 	}
 	
+	@Override
+	public ResUser getCache(HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		return (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+	}
+	
 }

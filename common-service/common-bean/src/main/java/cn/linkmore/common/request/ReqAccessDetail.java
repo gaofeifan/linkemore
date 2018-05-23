@@ -1,65 +1,93 @@
 package cn.linkmore.common.request;
 
 public class ReqAccessDetail {
+	private Long id;
 
-	private Integer userId;
+    private Integer userId;
 
-	private String requestPath;
+    private String path;
 
-	private String method;
+    private String method;
 
-	private String requestParam;
+    private String params;
 
-	private String responseData;
+    private String returns;
 
-	private Integer type;
+    private Integer type;
 
-	public Integer getUserId() {
-		return userId;
+    private String methodType;
+
+    private String mapping;
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path == null ? null : path.trim();
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method == null ? null : method.trim();
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params == null ? null : params.trim();
+    }
+
+    public String getReturns() {
+        return returns;
+    }
+
+    public void setReturns(String returns) {
+        this.returns = returns == null ? null : returns.trim();
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getMethodType() {
+        return methodType;
+    }
+
+    public void setMethodType(String methodType) {
+        this.methodType = methodType == null ? null : methodType.trim();
+    }
+
+	public String getMapping() {
+		return mapping;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setMapping(String mapping) {
+		this.mapping = mapping;
 	}
-
-	public String getRequestPath() {
-		return requestPath;
-	}
-
-	public void setRequestPath(String requestPath) {
-		this.requestPath = requestPath;
-	}
-
-	public String getMethod() {
-		return method;
-	}
-
-	public void setMethod(String method) {
-		this.method = method;
-	}
-
-	public String getRequestParam() {
-		return requestParam;
-	}
-
-	public void setRequestParam(String requestParam) {
-		this.requestParam = requestParam;
-	}
-
-	public String getResponseData() {
-		return responseData;
-	}
-
-	public void setResponseData(String responseData) {
-		this.responseData = responseData;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
 }
