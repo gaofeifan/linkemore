@@ -17,7 +17,7 @@ import cn.linkmore.bean.exception.InternalException;
 import cn.linkmore.bean.exception.StatusEnum;
 
 @ControllerAdvice
-public class ExceptionHandle {
+public class ExceptionErrorHandle {
 	private final Logger log = LoggerFactory.getLogger(this.getClass()); 
 	
 	@ExceptionHandler(value = Exception.class)
