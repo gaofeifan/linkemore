@@ -34,11 +34,7 @@ public class PrefectureClientHystrix implements PrefectureClient {
 		log.info("prefecture service pres findPreStrategy(Long id) hystrix");
 		return new ResPrefectureStrategy();
 	}
-	@Override
-	public List<ResPrefectureList> findPreListByCityId(ReqCity reqCity) {
-		log.info("prefecture service pres findPreListByCityId(ReqCity reqCity) hystrix");
-		return new ArrayList<ResPrefectureList>();
-	}
+	
 	@Override
 	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture) {
 		log.info("prefecture service pres findPreListByLoc(ReqPrefecture reqPrefecture) hystrix");
@@ -50,9 +46,9 @@ public class PrefectureClientHystrix implements PrefectureClient {
 		return new ArrayList<ResPre>();
 	}
 	@Override
-	public Integer findFreeStallCount(Long preId) {
-		log.info("prefecture service pres findFreeStallCount(Long preId) hystrix");
-		return 0;
+	public List<ResPrefectureList> refreshFreeStall() {
+		log.info("prefecture service pres refreshFreeStall() hystrix");
+		return new ArrayList<ResPrefectureList>();
 	}
 	
 	

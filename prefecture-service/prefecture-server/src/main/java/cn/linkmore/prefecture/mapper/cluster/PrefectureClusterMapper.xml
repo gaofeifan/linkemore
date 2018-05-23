@@ -32,45 +32,19 @@
     <result column="gateway" jdbcType="VARCHAR" property="gateway" />
   </resultMap>
   
-  <resultMap id="ResPrefectureDetailMap" type="cn.linkmore.prefecture.response.ResPrefectureDetail">
-  	<id column="id" property="id"/>
-  	<result column="name" property="name" />
-  	<result column="leisure_stall" property="leisureStall" />
-  	<result column="address" property="address" />
-  	<result column="first_hour" property="firstHour" />
-  	<result column="timely_Long" property="timelyLong" />
-  	<result column="free_mins" property="freeMins" />
-  	<result column="timely_unit" property="timelyUnit" />
-  	<result column="limit_status" property="limitStatus" />
-  	<result column="type" property="type" />
-  </resultMap>
-  
   <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.response.ResPrefecture">
-  	<id column="id" property="id" />
-  	<result column="name" property="name" />
-  	<result column="city_id" property="cityId" />
-  	<result column="latitude" property="latitude" />
-  	<result column="longitude" property="longitude" />
-  	<result column="type" property="type" />
-  	<result column="limit_status" property="limitStatus" />
-  	<result column="address" property="address" />
-  	<result column="first_hour" property="firstHour" />
-  	<result column="timely_Long" property="timelyLong" />
-  	<result column="free_mins" property="freeMins" />
-  	<result column="timely_unit" property="timelyUnit" />
-  </resultMap>
-  
-  <resultMap id="ResPrefectureListMap" type="cn.linkmore.prefecture.response.ResPrefectureList">
-  	<id column="id" property="id"/>
-  	<result column="name" property="name" />
-  	<result column="leisure_stall" property="leisureStall" />
-  	<result column="address" property="address" />
-  	<result column="first_hour" property="firstHour" />
-  	<result column="timely_Long" property="timelyLong" />
-  	<result column="free_mins" property="freeMins" />
-  	<result column="timely_unit" property="timelyUnit" />
-  	<result column="limit_status" property="limitStatus" />
-  	<result column="type" property="type" />
+  	<id column="id" jdbcType="BIGINT" property="id" />
+  	<result column="name" jdbcType="VARCHAR" property="name" />
+  	<result column="city_id" jdbcType="BIGINT" property="cityId" />
+  	<result column="latitude" jdbcType="DECIMAL" property="latitude" />
+  	<result column="longitude" jdbcType="DECIMAL" property="longitude" />
+  	<result column="type" jdbcType="SMALLINT" property="type" />
+  	<result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+  	<result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+  	<result column="address" jdbcType="VARCHAR" property="address" />
+  	<result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
+  	<result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
+  	<result column="gateway" jdbcType="VARCHAR" property="gateway" />
   </resultMap>
   
   <resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
@@ -91,17 +65,10 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
-  <select id="findPrefectureById" resultMap="ResPrefectureDetailMap" parameterType="java.lang.Long">
-  	select p.id,p.name,p.address,b.free_mins,b.timely_unit,p.charge_price first_hour,p.charge_time timely_Long,p.type,p.limit_status
-	from v_prefecture p 
-	LEFT JOIN v_strategy_base b on b.id = p.strategy_id
-	where p.id = #{id}
-  </select>
-  
   <select id="findPreByStatusAndGPS" resultMap="ResPrefectureMap" parameterType="java.util.Map">
-    select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,b.free_mins,b.timely_unit,p.charge_price first_hour,
-  		p.charge_time timely_Long
-	from v_prefecture p LEFT JOIN v_strategy_base b on b.id = p.strategy_id
+    select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
+  		p.charge_time,p.gateway,p.image_url
+	from v_prefecture p 
 	where p.status = #{status} and (p.type is null or p.type = 0 )
     and p.category = 0
     <if test="cityId != null">
@@ -110,35 +77,14 @@
   </select>
   
   <select id="findPreByStatusAndGPS1" resultMap="ResPrefectureMap" parameterType="java.util.Map">
-    select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,b.free_mins,b.timely_unit,p.charge_price first_hour,
-  		p.charge_time timely_Long
-	from v_prefecture p LEFT JOIN v_strategy_base b on b.id = p.strategy_id
+    select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
+  		p.charge_time,p.gateway,p.image_url
+	from v_prefecture p
 	where p.status = #{status} 
     and p.category != 0
     <if test="cityId != null">
 		and p.city_id ={#cityId}
 	</if>
-  </select>
-  
-  <select id="findPreListByCityId" resultMap="ResPrefectureListMap" parameterType="java.util.Map">
-  	select p.id,p.name,p.address,b.free_mins,b.timely_unit,p.charge_price first_hour,
-  		p.charge_time timely_Long,p.type,p.limit_status
-	from v_prefecture p 
-	LEFT JOIN v_strategy_base b on b.id = p.strategy_id
-	where p.status = #{status} and p.city_id = #{cityId}
-	and (p.type is null or p.type = 0 )
-    and p.category = 0
-	ORDER BY p.order_index DESC
-  </select>
-  
-  <select id="findPreListByCityId1" resultMap="ResPrefectureListMap" parameterType="java.util.Map">
-  	select p.id,p.name,p.address,b.free_mins,b.timely_unit,p.charge_price first_hour,
-  		p.charge_time timely_Long,p.type,p.limit_status
-	from v_prefecture p 
-	LEFT JOIN v_strategy_base b on b.id = p.strategy_id
-	where p.status = #{status} and p.city_id = #{cityId} 
-    and p.category != 0
-	ORDER BY p.order_index DESC
   </select>
   
   <select id="findByIds" parameterType="java.util.List" resultMap="ResPreMap">

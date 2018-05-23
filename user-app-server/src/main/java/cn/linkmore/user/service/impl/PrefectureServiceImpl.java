@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,28 +78,21 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}
 		return null;
 	}
-	@Override
-	public List<ResPrefectureList> findPreListByCityId(Long cityId, HttpServletRequest request) {
-		cn.linkmore.prefecture.request.ReqCity reqCity = new cn.linkmore.prefecture.request.ReqCity();
-		reqCity.setCityId(cityId);
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER + key);
-		if(ru!=null) {
-			reqCity.setUserId(ru.getId());
-		}
-		List<cn.linkmore.prefecture.response.ResPrefectureList> preList = this.preClient.findPreListByCityId(reqCity);
-		List<ResPrefectureList> resPrefectureList = new ArrayList<ResPrefectureList>();
-		ResPrefectureList resPrefecture = null;
-		for(int i=0;i<preList.size();i++) {
-			resPrefecture = ObjectUtils.copyObject(preList.get(i), new ResPrefectureList());
-			resPrefectureList.add(resPrefecture);
-		}
-		return resPrefectureList;
-	}
 
 	@Override
-	public Integer findFreeStallCount(Long preId) {
-		return this.preClient.findFreeStallCount(preId);
+	public List<ResPrefectureList> refreshFreeStall() {
+		List<ResPrefectureList> resPrefectureList = new ArrayList<ResPrefectureList>();
+		ResPrefectureList resPrefecture = null;
+		List<cn.linkmore.prefecture.response.ResPrefectureList> resPreList = this.preClient.refreshFreeStall();
+		if(CollectionUtils.isNotEmpty(resPreList)) {
+			for(cn.linkmore.prefecture.response.ResPrefectureList res : resPreList) {
+				resPrefecture = new ResPrefectureList();
+				resPrefecture.setId(res.getId());
+				resPrefecture.setLeisureStall(res.getLeisureStall());
+				resPrefectureList.add(resPrefecture);
+			}
+		}
+		return resPrefectureList;
 	}
 
 }

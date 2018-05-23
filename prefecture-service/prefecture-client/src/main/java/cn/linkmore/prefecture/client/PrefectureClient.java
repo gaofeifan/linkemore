@@ -54,15 +54,6 @@ public interface PrefectureClient {
 	@ResponseBody
 	public ResPrefectureStrategy findPreStrategy(@PathVariable("preId") Long preId);
 	
-	/**
-	 * 根据城市id查询车区卡片列表
-	 * 
-	 * @param reqCity ReqCity
-	 * @return
-	 */
-	@RequestMapping(value = "/v2.0/city", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResPrefectureList> findPreListByCityId(@RequestBody ReqCity reqCity);
 	
 	/**
 	 * 根据位置查询车区地图
@@ -82,5 +73,5 @@ public interface PrefectureClient {
 	 */
 	@RequestMapping(value = "/v2.0/free_count", method = RequestMethod.GET)
 	@ResponseBody
-	public Integer findFreeStallCount(@RequestParam("preId") Long preId);
+	public List<ResPrefectureList> refreshFreeStall();
 }

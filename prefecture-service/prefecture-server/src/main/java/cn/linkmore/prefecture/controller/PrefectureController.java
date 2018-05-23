@@ -37,8 +37,7 @@ public class PrefectureController {
 
 	@Autowired
 	private PrefectureService preService;
-	@Autowired
-	private UserClient userClient;
+	
 
 	/**
 	 * 根据主键查询详情
@@ -73,22 +72,7 @@ public class PrefectureController {
 	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPrefecture> findPreListByLoc(@RequestBody ReqPrefecture reqPrefecture) {
-		ResUser resUser = userClient.getUserCacheKey(reqPrefecture.getUserId());
-		return this.preService.findPreListByLoc(reqPrefecture, resUser);
-	}
-
-	/**
-	 * 根据城市id查询车区卡片列表
-	 * 
-	 * @param reqCity ReqCity
-	 * @return
-	 */
-	@RequestMapping(value = "/v2.0/city", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResPrefectureList> findPreListByCityId(@RequestBody ReqCity reqCity) {
-		ResUser resUser = userClient.getUserCacheKey(reqCity.getUserId());
-		List<ResPrefectureList> preList = this.preService.findPreListByCityId(reqCity.getCityId(), resUser);
-		return preList;
+		return this.preService.findPreListByLoc(reqPrefecture);
 	}
 
 	/**
@@ -104,16 +88,16 @@ public class PrefectureController {
 		return resPreStrategy;
 	}
 	/**
-	 * 根据车区id查询车区空闲车位
+	 * 查询车区空闲车位
 	 * 
 	 * @param preId Long
 	 * @return
 	 */
 	@RequestMapping(value = "/v2.0/free_count", method = RequestMethod.GET)
 	@ResponseBody
-	public Integer findFreeStallCount(@RequestParam("preId") Long preId) {
-		Integer count = preService.getStallCount(preId);
-		return count;
+	public List<ResPrefectureList> refreshFreeStall() {
+		List<ResPrefectureList> resPrefectureList = preService.getStallCount();
+		return resPrefectureList;
 	}
 	
 }

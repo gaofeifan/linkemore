@@ -26,18 +26,15 @@ public class ResPrefecture {
 	@ApiModelProperty(value = "城市id")
 	private Long cityId;
 	
-	@ApiModelProperty(value = "首小时价格")
-	private String firstHour;
+	@ApiModelProperty(value = "计费时间")
+	private String chargeTime;
 	
-	@ApiModelProperty(value = "时间基数 15分钟等")
-	private String timelyLong;
+	@ApiModelProperty(value = "计费价格")
+	private String chargePrice;
 
-	@ApiModelProperty(value = "时间基数单位")
-	private String timelyUnit;
+	@ApiModelProperty(value = "车区地图")
+	private String imageUrl;
 
-	@ApiModelProperty(value = "免费时长")
-	private Long freeMins;
-	
 	@ApiModelProperty(value = "专区类型(0普通，1奥迪内部定制专区")
 	private Integer type;
 	
@@ -100,38 +97,6 @@ public class ResPrefecture {
 		this.cityId = cityId;
 	}
 
-	public String getFirstHour() {
-		return firstHour;
-	}
-
-	public void setFirstHour(String firstHour) {
-		this.firstHour = firstHour;
-	}
-
-	public String getTimelyLong() {
-		return timelyLong;
-	}
-
-	public void setTimelyLong(String timelyLong) {
-		this.timelyLong = timelyLong;
-	}
-
-	public String getTimelyUnit() {
-		return timelyUnit;
-	}
-
-	public void setTimelyUnit(String timelyUnit) {
-		this.timelyUnit = timelyUnit;
-	}
-
-	public Long getFreeMins() {
-		return freeMins;
-	}
-
-	public void setFreeMins(Long freeMins) {
-		this.freeMins = freeMins;
-	}
-
 	public Integer getType() {
 		return type;
 	}
@@ -146,6 +111,29 @@ public class ResPrefecture {
 
 	public void setLimitStatus(short limitStatus) {
 		this.limitStatus = limitStatus;
+	}
+
+	public String getChargeTime() {
+		return chargeTime;
+	}
+
+	public void setChargeTime(String chargeTime) {
+		this.chargeTime = chargeTime;
+	}
+
+	public String getChargePrice() {
+		return chargePrice;
+	}
+
+	public void setChargePrice(String chargePrice) {
+		this.chargePrice = chargePrice;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	} 
-	
 }

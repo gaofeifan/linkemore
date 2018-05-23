@@ -1,27 +1,26 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 import cn.linkmore.account.client.UserStaffClient;
-import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserStaff;
-import cn.linkmore.common.client.hystrix.CityClientHystrix;
-import cn.linkmore.common.response.ResCity;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.fee.InitLockFactory;
-import cn.linkmore.prefecture.lock.FreeLockPool;
 import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
@@ -40,7 +39,7 @@ import cn.linkmore.util.ObjectUtils;
  */
 @Service
 public class PrefectureServiceImpl implements PrefectureService {
-	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private StallClusterMapper stallClusterMapper;
 	@Autowired
@@ -48,11 +47,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private StrategyBaseClusterMapper strategyBaseClusterMapper;
 	@Autowired
-	private FreeLockPool freeLockPool;
-	@Autowired
 	private UserStaffClient userStaff;
-	@Autowired
-	private CityClientHystrix cityClient;
 	
 	@Override
 	public ResPrefectureDetail findById(Long preId) {
@@ -64,14 +59,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return null;
 	}
 	@Override
-	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture,ResUser user) {
+	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture) {
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
 		//此处cityId暂时为空，返回所有的车区信息
 		paramMap.put("cityId", null);
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
-		if(user!=null){
-			ResUserStaff us = this.userStaff.selectById(user.getId());
+		if(reqPrefecture.getUserId()!=null){
+			ResUserStaff us = this.userStaff.selectById(reqPrefecture.getUserId());
 			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
 				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
 				if(preList1!=null){
@@ -84,46 +79,13 @@ public class PrefectureServiceImpl implements PrefectureService {
 			} 
 		}
 		for(ResPrefecture prb: preList){ 
-			prb.setLeisureStall(freeLockPool.freeStallCount(prb.getId()).intValue()); 
+			prb.setChargeTime(prb.getChargeTime() + "分钟");
+			prb.setChargePrice(prb.getChargePrice() + "元");
+			prb.setLeisureStall(getFreeStall(prb.getId())); 
 		}
 		return preList;
 	}
 	
-	@Override
-	public List<ResPrefectureList> findPreListByCityId(Long cityId,ResUser user) {
-		Map<String,Object> paramMap = new HashMap<>();
-		//如果传城市id为-1 获取杭州的专区数据
-		if(cityId == -1){
-			ResCity city = this.cityClient.getByCode("330100");
-			paramMap.put("cityId", city.getId());
-		}else{
-			paramMap.put("cityId", cityId);
-		}
-		paramMap.put("status", 0);
-		
-		String lan = "分钟";
-		List<ResPrefectureList> list = prefectureClusterMapper.findPreListByCityId(paramMap);
-		if(user!=null){
-			ResUserStaff us = this.userStaff.selectById(user.getId());
-			if(us!=null&&us.getStatus().intValue()==ResUserStaff.STATUS_ON.intValue()){
-				List<ResPrefectureList> list1 = prefectureClusterMapper.findPreListByCityId1(paramMap);
-				if(list1!=null){ 
-					if(list!=null){
-						list.addAll(list1);
-					}else{
-						list = list1;
-					}
-				} 
-			}
-		}
-		for(ResPrefectureList resPrefecture:list){
-			int stallCount = stallClusterMapper.findCountByPreId(resPrefecture.getId());
-			resPrefecture.setStallCount(stallCount);
-			resPrefecture.setTimelyLong(resPrefecture.getTimelyLong() + lan);
-			resPrefecture.setLeisureStall(freeLockPool.freeStallCount(resPrefecture.getId()).intValue());
-		}
-		return list;
-	}
 	@Override
 	public ResPrefectureStrategy getPreStrategy(Long preId) {
 		String mins = "分钟";
@@ -243,8 +205,33 @@ public class PrefectureServiceImpl implements PrefectureService {
 		List<ResPre> list = this.prefectureClusterMapper.findByIds(ids);
 		return list;
 	}
+	
 	@Override
-	public Integer getStallCount(Long preId) {
+	public List<ResPrefectureList> getStallCount() {
+		Map<String,Object> paramMap = new HashMap<String,Object>();
+		paramMap.put("status", 0);
+		//此处cityId暂时为空，返回所有的车区信息
+		paramMap.put("cityId", null);
+		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
+		log.info("================"+preList.size());
+		List<ResPrefectureList> list = new ArrayList<ResPrefectureList>();
+		ResPrefectureList pre = null;
+		if(CollectionUtils.isNotEmpty(preList)) {
+			for(ResPrefecture resPre:preList) {
+				pre = new ResPrefectureList();
+				pre.setId(resPre.getId());
+				pre.setLeisureStall(getFreeStall(resPre.getId()));
+				list.add(pre);
+			}
+		}
+		return list;
+	}
+	/**
+	 * 根据车区id查询所有空闲车位
+	 * @param preId
+	 * @return
+	 */
+	public Integer getFreeStall(Long preId) {
 		Prefecture preDetail = this.prefectureClusterMapper.findById(preId);
 		List<ResStall> stallList = this.stallClusterMapper.findStallsByPreId(preId);
 		LockFactory lockFactory = InitLockFactory.getInstance();
