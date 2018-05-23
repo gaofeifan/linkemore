@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.CouponType;
@@ -39,6 +40,7 @@ import cn.linkmore.util.JsonUtil;
  * @version 2.0
  *
  */
+@Service
 public class CouponServiceImpl implements CouponService {
 	
 	@Autowired
@@ -88,7 +90,7 @@ public class CouponServiceImpl implements CouponService {
 			crb.setTimeLimit(cc.getAvailableTime().shortValue()); 
 			if(cc.getAvailablePrefecture().shortValue()>0){
 				 String redis = null;
-				 redis = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_PREIDS+cc.getId().toString());  
+				 redis = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_PREIDS.key+cc.getId().toString());  
 				 if(StringUtils.isNotBlank(redis)){
 					 String[] preids = redis.split(",");
 					 crb.setPrefectures(preids);
@@ -98,7 +100,7 @@ public class CouponServiceImpl implements CouponService {
 				 } 
 			}
 			if(cc.getAvailableTime().shortValue()>0){ 
-				json = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_USETIME+cc.getId().toString());
+				json = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_USETIME.key+cc.getId().toString());
 				if(cc.getAvailableTime().shortValue()==WEEK_TIME){
 					ResWeekTime wb = JsonUtil.toObject(json, ResWeekTime.class);
 					crb.setWtb(wb);
@@ -275,7 +277,7 @@ public class CouponServiceImpl implements CouponService {
 			crb.setPreLimit(cc.getAvailablePrefecture().shortValue());
 			crb.setTimeLimit(cc.getAvailableTime().shortValue()); 
 			if(cc.getAvailablePrefecture().shortValue()>0){ 
-				 String redis = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_PREIDS+cc.getId().toString());
+				 String redis = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_PREIDS.key+cc.getId().toString());
 				 if(StringUtils.isNotBlank(redis)){
 					 String[] preids = redis.split(",");
 					 crb.setPrefectures(preids);
@@ -285,7 +287,7 @@ public class CouponServiceImpl implements CouponService {
 				 } 
 			}
 			if(cc.getAvailableTime().shortValue()>0){
-				json = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_USETIME+cc.getId().toString());
+				json = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_USETIME.key+cc.getId().toString());
 				if(cc.getAvailableTime().shortValue()==WEEK_TIME){
 					ResWeekTime wb = JsonUtil.toObject(json, ResWeekTime.class);
 					crb.setWtb(wb);

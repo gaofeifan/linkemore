@@ -47,8 +47,8 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			add("/auth/v2.0/send");
 			add("/order/v2.0/current"); 
 			add("/error");
-			add("/prefectures/v2.0/list"); 
-			add("/prefectures/v2.0/detail");
+			add("/prefectures/v2.0/map"); 
+			add("/prefectures/v2.0/free_count"); 
 			add("/prefectures/v2.0/strategy");
 			add("/citys/v2.0/list");  
 		}
