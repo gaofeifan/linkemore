@@ -58,7 +58,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			resPrefectureList = new ArrayList<ResPrefecture>();
 			List<cn.linkmore.prefecture.response.ResPrefecture> resList = map.get(cityId);
 			for(int i=0; i< resList.size();i++) {
-				resPrefecture = ObjectUtils.copyObject(preList.get(i), new ResPrefecture());
+				resPrefecture = ObjectUtils.copyObject(resList.get(i), new ResPrefecture());
 				resPrefectureList.add(resPrefecture);
 			}
 			resPreCity.setCityId(cityId);
