@@ -24,7 +24,7 @@ public class Demo {
 	public static void main(String[] args) {
 		LockFactory lockFactory = InitLockFactory.getInstance();
 		ResponseMessage<LockBean> res = lockFactory.findAvailableLock("15");
-		System.out.println(res.getDataList().get(0).getOpenState());
+		System.out.println(res.getDataList().size());
 		/*
 		LockFactory lockFactory = InitLockFactory.getInstance();
 		ResponseMessage<LockBean> res=lockFactory.lockDown("FF6F31BEBDB5");

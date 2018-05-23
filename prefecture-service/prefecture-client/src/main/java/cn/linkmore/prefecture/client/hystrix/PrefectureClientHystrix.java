@@ -2,12 +2,10 @@ package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import cn.linkmore.prefecture.client.PrefectureClient;
-import cn.linkmore.prefecture.request.ReqCity;
 import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;

@@ -29,6 +29,7 @@ import cn.linkmore.prefecture.response.ResPrefectureList;
 import cn.linkmore.prefecture.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.service.PrefectureService;
+import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 
 /**
@@ -65,6 +66,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		//此处cityId暂时为空，返回所有的车区信息
 		paramMap.put("cityId", null);
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
+		log.info("pre loc:{}",JsonUtil.toJson(preList));
 		if(reqPrefecture.getUserId()!=null){
 			ResUserStaff us = this.userStaff.selectById(reqPrefecture.getUserId());
 			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
@@ -213,7 +215,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		//此处cityId暂时为空，返回所有的车区信息
 		paramMap.put("cityId", null);
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
-		log.info("================"+preList.size());
+		log.info("get_stall_count pre size :{}", preList.size());
 		List<ResPrefectureList> list = new ArrayList<ResPrefectureList>();
 		ResPrefectureList pre = null;
 		if(CollectionUtils.isNotEmpty(preList)) {
@@ -237,6 +239,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		LockFactory lockFactory = InitLockFactory.getInstance();
 		ResponseMessage<LockBean> lc = lockFactory.findAvailableLock(preDetail.getGateway());
 		List<LockBean> lockBeanList = lc.getDataList();
+		log.info("pref free stall :{}" ,lc.getDataList().size());
 		Integer count = 0;
 		if(CollectionUtils.isNotEmpty(lockBeanList) && CollectionUtils.isNotEmpty(stallList)) {
 			for(LockBean lock : lockBeanList) {
@@ -250,6 +253,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			}
 		}
+		log.info("pref free stall count :{}" ,count);
 		return count;
 	}
 }
