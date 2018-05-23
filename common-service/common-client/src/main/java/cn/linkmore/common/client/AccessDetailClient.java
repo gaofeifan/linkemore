@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import cn.linkmore.common.client.hystrix.AccessDetailClientHystrix;
 import cn.linkmore.common.request.ReqAccessDetail;
 import cn.linkmore.feign.FeignConfiguration;
 /**
@@ -13,7 +14,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "common-server", path = "/access_detail", fallback=AccessDetailClient.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "/access_detail", fallback=AccessDetailClientHystrix.class,configuration = FeignConfiguration.class)
 public interface AccessDetailClient {
 	
 	/**
