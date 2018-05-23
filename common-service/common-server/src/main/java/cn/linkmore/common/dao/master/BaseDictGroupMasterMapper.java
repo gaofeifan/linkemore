@@ -3,6 +3,12 @@ package cn.linkmore.common.dao.master;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.common.entity.BaseDictGroup;
+/**
+ * 
+ * @author   GFF
+ * @Date     2018年5月23日
+ * @Version  v2.0
+ */
 @Mapper
 public interface BaseDictGroupMasterMapper {
     int deleteById(Long id);

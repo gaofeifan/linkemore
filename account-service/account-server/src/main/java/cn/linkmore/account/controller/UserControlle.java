@@ -140,4 +140,14 @@ public class UserControlle {
 	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans) {
 		return userAppfansService.wxLogin(appfans);
 	}
+	/**
+	 * @Description  根据id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/v2.0/{id}",method = RequestMethod.GET)
+	public ResUser selectById(@PathVariable("id") Long id) {
+		User user = userService.selectById(id);
+		return ObjectUtils.copyObject(user, new ResUser());
+	}
 }

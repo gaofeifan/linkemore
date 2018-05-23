@@ -5,11 +5,27 @@ import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.account.entity.UserAppfans;
 import feign.Param;
+/**
+ * 用户微信(读)
+ * @author   GFF
+ * @Date     2018年5月23日
+ * @Version  v2.0
+ */
 @Mapper
 public interface UserAppfansClusterMapper {
 
+    /**
+     * @Description  根据id查询
+     * @Author   GFF 
+     * @Version  v2.0
+     */
     UserAppfans selectById(String id);
 
+	/**
+	 * @Description  根据用户id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	UserAppfans selectByUserId(@Param("userId")Long userId);
 
 
