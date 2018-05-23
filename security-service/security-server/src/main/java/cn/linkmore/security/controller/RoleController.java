@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.exception.DataException;
@@ -15,37 +16,36 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.PageElement;
+import cn.linkmore.security.entity.Role;
 import cn.linkmore.security.request.ReqCheck;
-import cn.linkmore.security.service.PageElementService;
+import cn.linkmore.security.service.RoleService;
 
 /**
- * Controller - 页面元素操作
+ * Controller - 角色操作
  * 
  * @author jiaohanbin
  * @version 2.0
  *
  */
 @RestController
-@RequestMapping("/page_element")
-public class PageElementController {
+@RequestMapping("/role")
+public class RoleController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private PageElementService pageElementService;
+	private RoleService roleService;
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(@RequestBody PageElement record){
+	public ViewMsg save(@RequestBody Role role){
 		ViewMsg msg = null;
-		try { 
-			this.pageElementService.save(record);
+		try {
+			this.roleService.save(role);
 			msg = new ViewMsg("保存成功",true);
 		}catch(DataException e) {
 			msg = new ViewMsg(e.getMessage(),false);
 		}catch(Exception e) {
-			e.printStackTrace();
 			msg = new ViewMsg("保存失败",false);
 		}
 		return msg;
@@ -54,15 +54,14 @@ public class PageElementController {
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update(@RequestBody PageElement record){
+	public ViewMsg update(@RequestBody Role role){
 		ViewMsg msg = null;
 		try {
-			this.pageElementService.update(record);
+			this.roleService.update(role);
 			msg = new ViewMsg("保存成功",true);
 		}catch(DataException e) {
 			msg = new ViewMsg(e.getMessage(),false);
 		}catch(Exception e) {
-			e.printStackTrace();
 			msg = new ViewMsg("保存失败",false);
 		}
 		return msg;
@@ -73,7 +72,7 @@ public class PageElementController {
 	public ViewMsg delete(@RequestBody List<Long> ids){ 
 		ViewMsg msg = null;
 		try {
-			this.pageElementService.delete(ids);
+			this.roleService.delete(ids);
 			msg = new ViewMsg("删除成功",true);
 		}catch(DataException e) {
 			msg = new ViewMsg(e.getMessage(),false);
@@ -88,7 +87,7 @@ public class PageElementController {
 	@ResponseBody
 	public Boolean check(@RequestBody ReqCheck reqCheck){
 		Boolean flag = true ;
-		Integer count = this.pageElementService.check(reqCheck); 
+		Integer count = this.roleService.check(reqCheck); 
 		if(count>0){
             flag = false;
         }
@@ -97,20 +96,35 @@ public class PageElementController {
 	
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewPage list(@RequestBody ViewPageable pageable){ 
-		return this.pageElementService.findPage(pageable); 
-	} 
-	
+	public ViewPage list(@RequestBody ViewPageable pageable){
+		return this.roleService.findPage(pageable); 
+	}  
 	
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.GET)
 	@ResponseBody
 	public Tree tree(){ 
-		return this.pageElementService.findTree();
+		return this.roleService.findTree();
 	}
 	
-	@RequestMapping(value = "/v2.0/map", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/resource", method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String,Object> map(){
-		return this.pageElementService.map();
+	public Map<String,Object> resource(@RequestParam("id") Long id){ 
+		return this.roleService.resource(id);
+	}
+	
+	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.GET)
+	@ResponseBody
+	public ViewMsg bind(@RequestParam("id") Long id,@RequestParam("pids") String pids,@RequestParam("eids") String eids){ 
+		ViewMsg msg = null;
+		try {
+			this.roleService.bind(id,pids,eids);
+			msg = new ViewMsg("绑定成功",true);
+		}catch(DataException e) {
+			msg = new ViewMsg(e.getMessage(),false);
+		}catch(Exception e) {
+			e.printStackTrace();
+			msg = new ViewMsg("绑定失败",false);
+		}
+		return msg;
 	}
 }

@@ -43,5 +43,11 @@ public interface InterfaceClusterMapper {
 	 * @return
 	 */
 	List<Interface> findAll();
+	/**
+	 * 查找用户授权列表
+	 * @param id
+	 * @return
+	 */
+	List<Interface> findPersonAuthList(Long id);
 
 }

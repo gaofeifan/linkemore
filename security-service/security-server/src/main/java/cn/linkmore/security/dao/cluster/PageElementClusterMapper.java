@@ -26,5 +26,6 @@ public interface PageElementClusterMapper {
 
 	List<PageElement> findPage(Map<String, Object> param);
 
+	List<PageElement> findAll();
 
 }

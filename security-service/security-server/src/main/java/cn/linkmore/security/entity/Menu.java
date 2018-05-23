@@ -1,13 +1,14 @@
 package cn.linkmore.security.entity;
 
 import java.util.Date;
+import java.util.List;
 /**
  * 菜单
  * @author jiaohanbin
  * @version 2.0
  *
  */
-public class Menu {
+public class Menu implements Comparable<Menu>{
 	/**
 	 * 主键
 	 */
@@ -44,8 +45,30 @@ public class Menu {
      * 层级
      */
     private Integer level;
+    /**
+     * 子节点
+     */
+    private List<Menu> children	;
+    
+    private String path;
 
-    public Long getId() {
+    public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public List<Menu> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<Menu> children) {
+		this.children = children;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -116,4 +139,9 @@ public class Menu {
     public void setLevel(Integer level) {
         this.level = level;
     }
+
+	@Override
+	public int compareTo(Menu menu) {
+		 return this.orderIndex.compareTo(menu.orderIndex); 
+	}
 }

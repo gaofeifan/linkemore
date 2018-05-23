@@ -1,5 +1,7 @@
 package cn.linkmore.security.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.security.entity.Role;
@@ -11,9 +13,10 @@ import cn.linkmore.security.entity.Role;
  */
 @Mapper
 public interface RoleMasterMapper {
-    int delete(Long id);
 
     int save(Role record);
 
     int update(Role record);
+
+	int delete(List<Long> ids);
 }

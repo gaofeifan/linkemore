@@ -1,5 +1,8 @@
 package cn.linkmore.security.dao.cluster;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.security.entity.RoleElement;
@@ -13,5 +16,7 @@ import cn.linkmore.security.entity.RoleElement;
 public interface RoleElementClusterMapper {
 
     RoleElement findById(Long id);
+
+	List<RoleElement> findList(Map<String, Object> param);
 
 }

@@ -103,7 +103,7 @@
     on t.role_id = pr.role_id  where  pr.person_id = #{personId,jdbcType=BIGINT} ) as element on pe.id = element.element_id 
   </select>
   
-  <select id="findAuthElementList" resultMap="AuthResultMap"  parameterType="java.util.List"  >
+  <select id="findReqAuthElementList" resultMap="AuthResultMap"  parameterType="java.util.List"  >
    	 select e.label_name,e.label_id ,p.path,p.id,e.interface_id  from t_sec_page p 
    	 inner join t_sec_page_element e on p.id = e.page_id 
   </select>

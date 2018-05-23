@@ -1,5 +1,7 @@
 package cn.linkmore.security.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.security.entity.RolePage;
@@ -16,4 +18,6 @@ public interface RolePageMasterMapper {
     int save(RolePage record);
 
     int update(RolePage record);
+
+	void batchSave(List<RolePage> rps);
 }
