@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.security.dao.cluster.PageElementClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.security.entity.PageElement">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="interface_id" jdbcType="BIGINT" property="interfaceId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="page_id" jdbcType="BIGINT" property="pageId" />
+    <result column="label_name" jdbcType="VARCHAR" property="labelName" />
+    <result column="label_id" jdbcType="VARCHAR" property="labelId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  <resultMap id="AuthResultMap" type="cn.linkmore.security.response.ReqAuthElement" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="path" property="path" jdbcType="VARCHAR" />  
+    <result column="label_name" property="labelName" jdbcType="VARCHAR" />
+    <result column="label_id" property="labelId" jdbcType="VARCHAR" /> 
+    <result column="interface_id" property="interfaceId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, interface_id, status, page_id, label_name, label_id, create_time
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sec_page_element
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap" >
+     select id, name, interface_id, status, page_id, label_name, label_id,create_time
+    from t_sec_page_element
+  </select>
+  
+   <select id="findList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select id, name, interface_id, status, page_id, label, labelId
+    from t_sec_page_element where 1=1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="pageId!=null">  
+    and page_id = #{pageId,jdbcType=BIGINT}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if> 
+  </select>
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select id, name, interface_id, status, page_id, label_name, label_id,create_time
+   	from t_sec_page_element where 1=1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="pageId!=null">  
+    and page_id = #{pageId,jdbcType=BIGINT}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if> 
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_sec_page_element where 1=1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="pageId!=null">  
+    and page_id = #{pageId,jdbcType=BIGINT}
+    </if> 
+  </select>
+  
+  <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_sec_page_element where 
+    ${property} = #{value}  
+    and id != #{id} 
+    and page_id = #{pageId}
+  </select>
+  
+  <select id="findAuthList" resultMap="BaseResultMap"  parameterType="java.lang.Long"  >
+   	select pe.id, pe.name, pe.interface_id, pe.status, pe.page_id, pe.label_name, pe.label_id
+    from t_sec_page_element pe left join 
+    (select t.element_id from t_sec_role_element  t left join t_sec_person_role pr
+    on t.role_id = pr.role_id  where  pr.person_id = #{personId,jdbcType=BIGINT} ) as element on pe.id = element.element_id 
+  </select>
+  
+  <select id="findAuthElementList" resultMap="AuthResultMap"  parameterType="java.util.List"  >
+   	 select e.label_name,e.label_id ,p.path,p.id,e.interface_id  from t_sec_page p 
+   	 inner join t_sec_page_element e on p.id = e.page_id 
+  </select>
+</mapper>

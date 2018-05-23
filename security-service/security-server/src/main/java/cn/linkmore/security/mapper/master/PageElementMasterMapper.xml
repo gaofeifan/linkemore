@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.security.dao.master.PageElementMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.security.entity.PageElement">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="interface_id" jdbcType="BIGINT" property="interfaceId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="page_id" jdbcType="BIGINT" property="pageId" />
+    <result column="label_name" jdbcType="VARCHAR" property="labelName" />
+    <result column="label_id" jdbcType="VARCHAR" property="labelId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, interface_id, status, page_id, label_name, label_id, create_time
+  </sql>
+   <delete id="delete" parameterType="java.util.List" >
+    delete from t_sec_page_element
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.security.entity.PageElement">
+    insert into t_sec_page_element (id, name, interface_id, 
+      status, page_id, label_name, 
+      label_id, create_time)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{interfaceId,jdbcType=BIGINT}, 
+      #{status,jdbcType=INTEGER}, #{pageId,jdbcType=BIGINT}, #{labelName,jdbcType=VARCHAR}, 
+      #{labelId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="update" parameterType="cn.linkmore.security.entity.PageElement">
+    update t_sec_page_element
+    set name = #{name,jdbcType=VARCHAR},
+      interface_id = #{interfaceId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      page_id = #{pageId,jdbcType=BIGINT},
+      label_name = #{labelName,jdbcType=VARCHAR},
+      label_id = #{labelId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

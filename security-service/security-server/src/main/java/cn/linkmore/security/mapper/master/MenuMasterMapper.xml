@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.security.dao.master.MenuMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.security.entity.Menu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="page_id" jdbcType="BIGINT" property="pageId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, parent_id, status, icon, page_id, create_time, order_index, level
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_sec_menu
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.security.entity.Menu">
+    insert into t_sec_menu (id, name, parent_id, 
+      status, icon, page_id, 
+      create_time, order_index, level
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, 
+      #{status,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, #{pageId,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{orderIndex,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="update" parameterType="cn.linkmore.security.entity.Menu">
+    update t_sec_menu
+    set name = #{name,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      icon = #{icon,jdbcType=VARCHAR},
+      page_id = #{pageId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      order_index = #{orderIndex,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

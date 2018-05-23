@@ -15,6 +15,14 @@ public class ResPrefecture {
 	 */
 	private String name;
 	/**
+	 * 车区地址
+	 */
+	private String address;
+	/**
+	 * 城市id
+	 */
+	private Long cityId;
+	/**
 	 * 空闲车位数量
 	 */
 	private Integer leisureStall;
@@ -27,13 +35,66 @@ public class ResPrefecture {
 	 */
 	private Double longitude;
 	/**
-	 * 专区类型(0普通，1奥迪内部定制专区)
+	 * 首小时价格
+	 */
+	private String firstHour;
+	/**
+	 * 时间基数 15分钟等
+	 */
+	private String timelyLong;
+	/**
+	 * 时间基数单位
+	 */
+	private String timelyUnit;
+	/**
+	 * 免费时长
+	 */
+	private Long freeMins;
+	/**
+	 * 专区类型(0普通，1奥迪内部定制专区
 	 */
 	private Integer type;
 	/**
 	 * 是否受限
 	 */
 	private short limitStatus;
+	
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getFirstHour() {
+		return firstHour;
+	}
+	public void setFirstHour(String firstHour) {
+		this.firstHour = firstHour;
+	}
+	public String getTimelyLong() {
+		return timelyLong;
+	}
+	public void setTimelyLong(String timelyLong) {
+		this.timelyLong = timelyLong;
+	}
+	public String getTimelyUnit() {
+		return timelyUnit;
+	}
+	public void setTimelyUnit(String timelyUnit) {
+		this.timelyUnit = timelyUnit;
+	}
+	public Long getFreeMins() {
+		return freeMins;
+	}
+	public void setFreeMins(Long freeMins) {
+		this.freeMins = freeMins;
+	}
+	public Long getCityId() {
+		return cityId;
+	}
+	public void setCityId(Long cityId) {
+		this.cityId = cityId;
+	}
 	public Long getId() {
 		return id;
 	}

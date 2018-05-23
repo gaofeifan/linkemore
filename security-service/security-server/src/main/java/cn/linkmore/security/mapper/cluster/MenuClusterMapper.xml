@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.security.dao.cluster.MenuClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.security.entity.Menu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="page_id" jdbcType="BIGINT" property="pageId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, parent_id, status, icon, page_id, create_time, order_index, level
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sec_menu
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>
