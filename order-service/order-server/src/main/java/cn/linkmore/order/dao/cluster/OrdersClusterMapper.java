@@ -40,4 +40,11 @@ public interface OrdersClusterMapper {
 	 */
 	Integer userCount(Long userId);
 
+	/**
+	 * 查询车位最新订单
+	 * @param stallId
+	 * @return
+	 */
+	ResUserOrder findStallLatest(Long stallId);
+
 }

@@ -94,7 +94,7 @@ public class FreeLockPool {
 	 */
 	public String getFreeLock(Long pid) {
 		// 该专区所有可用锁
-		return redisService.pop(FREE_LOKC_KEY + pid);
+		return (String) redisService.pop(FREE_LOKC_KEY + pid);
 	}
 
 	/**

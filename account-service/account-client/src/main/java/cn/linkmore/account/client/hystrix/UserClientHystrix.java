@@ -90,7 +90,10 @@ public class UserClientHystrix implements UserClient{
 		return null;
 	}
 
-	
+	@Override
+	public void order(@PathVariable("id")Long id) {
+		log.info("account service user order(Long id) hystrix"); 
+	}
 	
 }
 

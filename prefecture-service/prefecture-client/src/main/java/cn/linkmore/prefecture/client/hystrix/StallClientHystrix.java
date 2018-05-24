@@ -3,6 +3,8 @@ package cn.linkmore.prefecture.client.hystrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.response.ResStallEntity;
 /**
@@ -16,9 +18,8 @@ public class StallClientHystrix implements StallClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public boolean order(String lockSn) {
-		log.info("prefecture service stall order(String lockSn) hystrix");
-		return false;
+	public void order(Long id) {
+		log.info("prefecture service stall order(String lockSn) hystrix"); 
 	}
 
 	@Override
@@ -49,5 +50,9 @@ public class StallClientHystrix implements StallClient {
 	public ResStallEntity findById(Long stallId) {
 		log.info("prefecture service stall findById(Long stallId) hystrix");
 		return new ResStallEntity();
+	}
+	public ResStallEntity findByLock(@PathVariable("sn") String sn) {
+		log.info("prefecture service stall findByLock(String sn) hystrix");
+		return null;
 	}
 }

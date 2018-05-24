@@ -42,6 +42,10 @@ public class BaseDictClientHystrix implements BaseDictClient {
 	public void update(Long id) {
 		log.info("common service dict  update(Long id) hystrix");
 	}
-
+	@Override
+	public ResBaseDict find(@PathVariable("id") Long id) {
+		log.info("common service dict  detail(Long id) hystrix");
+		return null;
+	}
 	
 }

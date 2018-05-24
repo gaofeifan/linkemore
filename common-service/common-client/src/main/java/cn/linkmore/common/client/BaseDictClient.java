@@ -31,4 +31,11 @@ public interface BaseDictClient {
 	
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public void update(@PathVariable("id") Long id);
+	/**
+	 * 根据id查询
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/{id}/",method=RequestMethod.GET)
+	public ResBaseDict find(@PathVariable("id") Long id);
 }

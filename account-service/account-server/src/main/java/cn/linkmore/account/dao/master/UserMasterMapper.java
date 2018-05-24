@@ -72,4 +72,10 @@ public interface UserMasterMapper {
 
 	void insert(ResUser user);
 
+	/**
+	 * 更新订单数
+	 * @param param
+	 */
+	void orderUpdate(Map<String, Object> param);
+
 }

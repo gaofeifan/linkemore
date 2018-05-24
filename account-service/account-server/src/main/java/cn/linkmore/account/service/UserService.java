@@ -105,4 +105,10 @@ public interface UserService {
 	 */
 	void updateAppfans(ReqUserAppfans bean);
 
+	/**
+	 * 更新用户下单数
+	 * @param id
+	 */
+	void order(Long id);
+
 }

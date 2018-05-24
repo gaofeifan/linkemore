@@ -11,7 +11,7 @@
     <result column="extra" jdbcType="INTEGER" property="extra" />
   </resultMap>
   <resultMap id="ResBaseResultMap" type="cn.linkmore.common.response.ResBaseDict">
-    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="id" jdbcType="BIGINT" property="id" />
     <result column="group_id" jdbcType="BIGINT" property="groupId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
@@ -20,6 +20,9 @@
     <result column="extra" jdbcType="INTEGER" property="extra" />
   </resultMap>
   <sql id="Base_Column_List">
+    id, group_id, name, code, order_index, create_time, extra
+  </sql>
+  <sql id="Res_Column_List">
     id, group_id, name, code, order_index, create_time, extra
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -33,5 +36,11 @@
     from t_base_dict d left join t_base_dict_group dg on d.group_id = dg.id
     where dg.code = #{code,jdbcType=VARCHAR}
     order by d.order_index 
+  </select>
+  <select id="find" parameterType="java.lang.Long" resultMap="ResBaseResultMap">
+    select 
+    <include refid="Res_Column_List" />
+    from t_base_dict
+    where id = #{id,jdbcType=BIGINT}
   </select>
 </mapper>

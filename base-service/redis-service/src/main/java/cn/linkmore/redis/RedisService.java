@@ -32,8 +32,8 @@ public class RedisService {
 	 * @param key
 	 * @return
 	 */
-	public String pop(String key) {
-		return (String) redisTemplate.opsForSet().pop(key);
+	public Object pop(String key) {
+		return  redisTemplate.opsForSet().pop(key);
 	}
 	/**
 	 * 获取set集中中长度

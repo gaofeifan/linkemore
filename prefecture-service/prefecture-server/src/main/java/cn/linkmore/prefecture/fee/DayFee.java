@@ -22,10 +22,7 @@ import cn.linkmore.prefecture.entity.StrategyBase;
  */
 public class DayFee {
 	public final static String DAY_START = "00:00:00";
-	public final static String DAY_END = "24:00:00";
-	
-	public final static boolean DAY= true;
-	public final static boolean NIGHT = false;
+	public final static String DAY_END = "24:00:00"; 
 	
 	public static Map<String,Object> getBilling(StrategyBase base, Date startDate, Date stopDate){ 
 		Map<String,Object> map = new HashMap<String,Object>();
