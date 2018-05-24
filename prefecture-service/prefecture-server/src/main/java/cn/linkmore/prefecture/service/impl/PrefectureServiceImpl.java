@@ -68,7 +68,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		log.info("pre loc:{}",JsonUtil.toJson(preList));
 		if(reqPrefecture.getUserId()!=null){
-			ResUserStaff us = this.userStaff.selectById(reqPrefecture.getUserId());
+			ResUserStaff us = this.userStaff.findById(reqPrefecture.getUserId());
 			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
 				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
 				if(preList1!=null){
