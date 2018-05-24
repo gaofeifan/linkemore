@@ -12,8 +12,6 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="veh_user_id" jdbcType="VARCHAR" property="userId" />
     <result column="veh_mark" jdbcType="VARCHAR" property="vehMark" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, veh_user_id, veh_mark, create_time, update_time
@@ -28,12 +26,12 @@
     select 
     <include refid="Base_Column_List" />
     from v_vehicle_mark_manage
-    where user_id = #{userId,jdbcType=BIGINT}
+    where veh_user_id = #{userId}
   </select>
   <select id="findResList" resultType="cn.linkmore.account.response.ResVechicleMark">
     select 
-   		veh_mark as vehMark ,id 
+   		veh_mark vehMark ,id 
     from v_vehicle_mark_manage
-    where user_id = #{userId,jdbcType=BIGINT}
+    where veh_user_id = #{userId}
   </select>
 </mapper>

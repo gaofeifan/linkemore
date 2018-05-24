@@ -14,6 +14,7 @@ import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.common.UserCache;
 import cn.linkmore.user.response.ResUser;
+import cn.linkmore.user.service.UserService;
 import cn.linkmore.user.service.VehicleMarkManageService;
 import cn.linkmore.util.ObjectUtils;
 /**
@@ -28,11 +29,12 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	private VehicleMarkClient vehicleMarkClient;
 	@Resource
 	private RedisService redisService;
+	@Resource
+	private UserService userService;
 	@Override
 	public List<ResVechicleMark> selectResList(HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
-		List<ResVechicleMark> list = vehicleMarkClient.list(ru.getId());
+		ResUser user = userService.getCache(request);
+		List<ResVechicleMark> list = vehicleMarkClient.list(user.getId());
 		return list;
 	}
 
@@ -52,7 +54,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	public ResVechicleMark selectById(Long id) {
-		return this.selectById(id);
+		return this.vehicleMarkClient.findById(id);
 	}
 
 	

@@ -75,7 +75,7 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> updateNickname(@ApiParam(value="昵称",required=true) @NotBlank(message="昵称不能为空") @RequestParam("nickname") String nickname,HttpServletRequest request) {
 		this.userService.updateNickname(nickname,request);
-		return new ResponseEntity<>();
+		return ResponseEntity.success(null, request);
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class UserController {
 	}
 	
 	/**
-	 * @Description  更新车牌号
+	 * @Description  修改车辆品牌信息
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
@@ -101,7 +101,7 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> updateVehicle(@RequestBody ReqUpdateVehicle vehicle,HttpServletRequest request) {
 		this.userService.updateVehicle(vehicle,request);
-		return new ResponseEntity<>();
+		return ResponseEntity.success(null, request);
 	}
 	
 	

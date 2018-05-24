@@ -50,6 +50,6 @@ public interface VehicleMarkClient {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/by_id/{id}", method = RequestMethod.GET)
 	public ResVechicleMark findById(@PathVariable("id") Long id);
 }
