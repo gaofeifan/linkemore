@@ -17,4 +17,69 @@
     from t_sec_role
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findAll" resultMap="BaseResultMap" >
+    <include refid="Base_Column_List" />
+    from t_sec_role
+  </select>
+  <select id="findList" resultMap="BaseResultMap"  parameterType="java.util.HashMap" >
+    select id, name,code, status,create_time
+    from t_sec_role where 1=1 
+     <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="code!=null">  
+    and code = #{code,jdbcType=INTEGER}
+    </if>  
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>  
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
+  </select>
+  <select id="findPage" resultMap="BaseResultMap"  parameterType="java.util.HashMap" >
+    select id, name, code,status,create_time
+    from t_sec_role where 1=1 
+     <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="code!=null">  
+    and code = #{code,jdbcType=INTEGER}
+    </if>  
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>  
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_sec_role where 1=1 
+     <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="code!=null">  
+    and code = #{code,jdbcType=INTEGER}
+    </if>  
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if>  
+  </select>
+  
+  <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_sec_role where   
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
+  
 </mapper>

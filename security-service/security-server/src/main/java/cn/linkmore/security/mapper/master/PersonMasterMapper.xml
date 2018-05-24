@@ -20,11 +20,19 @@
     id, username, password, lock_status, lock_time, login_ip, lock_count, login_time, 
     status, create_time, realname, ent_id, type
   </sql>
-  <delete id="delete" parameterType="java.lang.Long">
+  <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_sec_person
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.security.entity.Person">
+  
+  <delete id="delete" parameterType="java.util.List" >
+    delete from t_sec_person
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </delete>
+  <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.linkmore.security.entity.Person">
     insert into t_sec_person (id, username, password, 
       lock_status, lock_time, login_ip, 
       lock_count, login_time, status, 
@@ -50,6 +58,31 @@
       realname = #{realname,jdbcType=VARCHAR},
       ent_id = #{entId,jdbcType=BIGINT},
       type = #{type,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updatePassword" parameterType="cn.linkmore.security.entity.Person" >
+    update t_sec_person
+    set  password = #{password,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <update id="loginUpdate" parameterType="cn.linkmore.security.entity.Person" >
+    update t_sec_person
+    set  
+      lock_status = #{lockStatus,jdbcType=INTEGER},
+      lock_time = #{lockTime,jdbcType=TIMESTAMP},
+      login_ip = #{loginIp,jdbcType=VARCHAR},
+      lock_count = #{lockCount,jdbcType=INTEGER},
+      login_time = #{loginTime,jdbcType=TIMESTAMP} 
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="unlock" parameterType="java.lang.Long" >
+    update t_sec_person
+    set  
+      lock_status = 0,
+      lock_count = 0
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
