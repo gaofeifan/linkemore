@@ -3,9 +3,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -13,9 +15,11 @@ import cn.linkmore.security.dao.cluster.ClazzClusterMapper;
 import cn.linkmore.security.dao.master.ClazzMasterMapper;
 import cn.linkmore.security.entity.Clazz;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqClazz;
 import cn.linkmore.security.response.ResClazz;
 import cn.linkmore.security.service.ClazzService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 
 
 /**
@@ -56,15 +60,18 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public void save(Clazz clazz) {
+	public int save(ReqClazz reqClazz) {
+		Clazz clazz = new Clazz();
+		clazz = ObjectUtils.copyObject(reqClazz, clazz);
 		clazz.setCreateTime(new Date());
-		this.clazzMasterMapper.save(clazz);
+		return this.clazzMasterMapper.save(clazz);
 	}
 	
 	@Override
-	public Clazz update(Clazz clazz) {
-		this.clazzMasterMapper.update(clazz);
-		return clazz;
+	public int update(ReqClazz reqClazz) {
+		Clazz clazz = new Clazz();
+		clazz = ObjectUtils.copyObject(reqClazz, clazz);
+		return this.clazzMasterMapper.update(clazz);
 	}
 
 	@Override
