@@ -1,5 +1,7 @@
 package cn.linkmore.user.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 
@@ -20,10 +22,11 @@ public interface BeanVersionService {
 	ResVersionBean current(Integer source);
 
 	/**
+	 * @param request 
 	 * @Description  上报版本
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void report(ReqVersion vrb);
+	void report(ReqVersion vrb, HttpServletRequest request);
 
 }

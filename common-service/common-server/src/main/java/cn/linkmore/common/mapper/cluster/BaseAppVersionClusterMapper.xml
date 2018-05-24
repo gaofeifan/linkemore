@@ -15,7 +15,6 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <resultMap id="ResBaseResultMap" type="cn.linkmore.common.response.ResVersionBean">
-    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="code" jdbcType="BIGINT" property="versionCode" />
     <result column="name" jdbcType="VARCHAR" property="versionName" />

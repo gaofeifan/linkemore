@@ -58,7 +58,7 @@ public class BaseVersionController {
 	@RequestMapping(value="/report",method = RequestMethod.POST)
 	@ApiOperation(value = "上报用户版本", notes = "上报用户版本", consumes = "application/json")
 	public ResponseEntity<?> report(@RequestBody ReqVersion vrb,HttpServletRequest request){
-		this.beanVersionService.report(vrb);
+		this.beanVersionService.report(vrb,request);
 		return ResponseEntity.success(null, request);
 	}
 }

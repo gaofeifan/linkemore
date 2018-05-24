@@ -98,24 +98,22 @@ public class AccessDetailAop {
 			Class<?>[] types = signature.getParameterTypes();
 			for (int i = 0; i < types.length; i++) {
 				if (args[i] instanceof HttpServletRequest) {
-					result.put(types[i].getSimpleName(), "request");
+//					result.put(types[i].getSimpleName(), "request");
 				} else if (args[i] instanceof HttpServletResponse) {
-					result.put(types[i].getSimpleName(), "response");
+//					result.put(types[i].getSimpleName(), "response");
 				} else {
 					String json = JsonUtil.toJson(args[i]);
 					result.put(types[i].getSimpleName(), json);
 				}
 			}
 			HttpServletRequest request = getRequest();
-			Map<String, String> responseJson = new HashMap<>();
-			responseJson.put(obj.getClass().getSimpleName(), JsonUtil.toJson(obj));
 			ReqAccessDetail detail = new ReqAccessDetail();
 			detail.setMethod(methodName);
 			detail.setMethodType(type);
 			detail.setParams(JsonUtil.toJson(result));
 			detail.setPath(className);
 			detail.setMapping(sb.toString());
-			detail.setReturns(JsonUtil.toJson(responseJson));
+			detail.setReturns(JsonUtil.toJson(obj));
 			ResUser user = userService.getCache(request);
 			detail.setUserId(user.getId());
 			String os = request.getHeader("os");
@@ -123,7 +121,7 @@ public class AccessDetailAop {
 				detail.setType(0);
 				accessDetailClient.appSave(detail);
 			} else {
-				detail.setType(1);
+				detail.setType(Integer.parseInt(os));
 				accessDetailClient.miniSave(detail);
 			}
 		} catch (Exception e) {

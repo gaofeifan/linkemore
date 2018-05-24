@@ -1,5 +1,7 @@
 package cn.linkmore.common.entity;
 
+import java.util.Date;
+
 public class AccessDetail {
     private Long id;
 
@@ -18,6 +20,8 @@ public class AccessDetail {
     private String methodType;
 
     private String mapping;
+    
+    private Date createTime;
     
     public Long getId() {
         return id;
@@ -90,6 +94,12 @@ public class AccessDetail {
 	public void setMapping(String mapping) {
 		this.mapping = mapping;
 	}
-    
-    
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 }

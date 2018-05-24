@@ -51,7 +51,7 @@ public class BaseVersionController {
 	 * @Author  	 GFF 
 	 * @Version  	 v2.0
 	 */
-	@RequestMapping(value="/report",method = RequestMethod.GET)
+	@RequestMapping(value="/report",method = RequestMethod.POST)
 	public void report(@RequestBody ReqVersion vrb){
 		this.beanVersionService.report(vrb);
 	}
