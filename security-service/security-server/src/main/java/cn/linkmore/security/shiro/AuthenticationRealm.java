@@ -18,10 +18,12 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import cn.linkmore.security.entity.Person;
-import cn.linkmore.security.response.ReqAuthElement;
+import cn.linkmore.security.response.ResAuthElement;
+import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.service.MenuService;
 import cn.linkmore.security.service.PageElementService;
 import cn.linkmore.security.service.PersonService;
+import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.PasswordUtil;
 
 /**
@@ -55,7 +57,7 @@ public class AuthenticationRealm extends AuthorizingRealm {
 		String ip = authenticationToken.getHost();
 		 
 		if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
-			Person person = this.personService.findByUsername(username); 
+			ResPerson person = this.personService.findByUsername(username); 
 			if (person == null) {
 				throw new UnknownAccountException();
 			}
@@ -74,7 +76,10 @@ public class AuthenticationRealm extends AuthorizingRealm {
 					person.setLockCount(0);
 					person.setLockStatus(0); 
 					person.setPassword(null);
-					personService.update(person);
+					
+					Person p = new Person();
+					p = ObjectUtils.copyObject(person, p);
+					personService.update(p);
 				} else {
 					throw new LockedAccountException();
 				}
@@ -88,7 +93,9 @@ public class AuthenticationRealm extends AuthorizingRealm {
 				}
 				person.setLockCount(loginFailureCount);
 				person.setPassword(null);
-				personService.update(person);
+				Person p = new Person();
+				p = ObjectUtils.copyObject(person, p);
+				personService.update(p);
 				throw new IncorrectCredentialsException();
 			}
 			person.setLoginIp(ip);
@@ -96,7 +103,9 @@ public class AuthenticationRealm extends AuthorizingRealm {
 			person.setLockCount(0);
 			try{
 				person.setPassword(null);
-				personService.update(person); 
+				Person p = new Person();
+				p = ObjectUtils.copyObject(person, p);
+				personService.update(p);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -105,7 +114,7 @@ public class AuthenticationRealm extends AuthorizingRealm {
 			this.menuService.cachePersonAuthList(); 
 			List<String> authorities = this.personService.findAuthList(new Principal(person.getId(), username )); 
 			currentPerson.getSession().setAttribute("authorities", authorities);
-			List<ReqAuthElement> maps = this.pageElementService.findReqAuthElementList();
+			List<ResAuthElement> maps = this.pageElementService.findResAuthElementList();
 			currentPerson.getSession().setAttribute("authelement", maps);
 			return new SimpleAuthenticationInfo(new Principal(person.getId(), username ), password, getName());
 		}

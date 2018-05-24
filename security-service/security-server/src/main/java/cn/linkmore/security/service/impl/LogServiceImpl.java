@@ -9,7 +9,7 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.dao.cluster.LogClusterMapper;
-import cn.linkmore.security.entity.Log;
+import cn.linkmore.security.response.ResLog;
 import cn.linkmore.security.service.LogService;
 import cn.linkmore.util.DomainUtil;
 
@@ -45,7 +45,7 @@ public class LogServiceImpl implements LogService {
 		Integer count = this.logClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<Log> list = this.logClusterMapper.findPage(param);
+		List<ResLog> list = this.logClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 }

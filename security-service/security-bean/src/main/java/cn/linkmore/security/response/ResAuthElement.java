@@ -1,11 +1,11 @@
 package cn.linkmore.security.response;
 /**
- * 授权元素
+ * 响应-授权元素
  * @author jiaohanbin
  * @version 2.0
  *
  */
-public class ReqAuthElement {
+public class ResAuthElement {
 
 	private Long id;
 	private String path;

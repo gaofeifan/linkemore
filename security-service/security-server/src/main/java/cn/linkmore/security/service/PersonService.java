@@ -1,12 +1,15 @@
 package cn.linkmore.security.service;
 
 import java.util.List;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.entity.Person;
-import cn.linkmore.security.entity.PersonRole;
-import cn.linkmore.security.entity.Role;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqPerson;
+import cn.linkmore.security.response.ResPerson;
+import cn.linkmore.security.response.ResPersonRole;
+import cn.linkmore.security.response.ResRole;
 import cn.linkmore.security.shiro.Principal;
 
 /**
@@ -21,7 +24,7 @@ public interface PersonService {
 	 * @param username
 	 * @return
 	 */
-	Person findByUsername(String username);
+	ResPerson findByUsername(String username);
 
 	/**
 	 * 分页查询
@@ -49,7 +52,7 @@ public interface PersonService {
 	 * @param person
 	 * @return
 	 */
-	void loginUpdate(Person person);
+	void loginUpdate(ReqPerson person);
 
 	/**
 	 * 记录检验
@@ -84,13 +87,13 @@ public interface PersonService {
 	 * @param id
 	 * @return
 	 */
-	List<PersonRole> personRoleList(Long id);
+	List<ResPersonRole> personRoleList(Long id);
 	
 	/**
 	 * 启用的所有角色信息
 	 * @return
 	 */
-	List<Role> roleList();
+	List<ResRole> roleList();
 	
 	/**
 	 * 用户绑定角色
@@ -101,6 +104,6 @@ public interface PersonService {
 
 
 
-	void updatePassword(Person person, String oldPassword, String password);
+	void updatePassword(ReqPerson person, String oldPassword, String password);
 
 }

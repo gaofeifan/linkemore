@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.security.entity.PersonRole;
+import cn.linkmore.security.response.ResPersonRole;
 /**
  * 账户角色
  * @author jiaohanbin
@@ -14,8 +14,8 @@ import cn.linkmore.security.entity.PersonRole;
 @Mapper
 public interface PersonRoleClusterMapper {
 
-    PersonRole findById(Long id);
+	ResPersonRole findById(Long id);
 
-	List<PersonRole> findListById(Long id);
+	List<ResPersonRole> findListById(Long id);
 
 }

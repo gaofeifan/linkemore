@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -17,13 +19,14 @@ import cn.linkmore.security.dao.cluster.InterfaceClusterMapper;
 import cn.linkmore.security.dao.cluster.PageClusterMapper;
 import cn.linkmore.security.dao.cluster.PageElementClusterMapper;
 import cn.linkmore.security.dao.master.PageElementMasterMapper;
-import cn.linkmore.security.entity.Clazz;
-import cn.linkmore.security.entity.Dict;
-import cn.linkmore.security.entity.Interface;
-import cn.linkmore.security.entity.Page;
 import cn.linkmore.security.entity.PageElement;
 import cn.linkmore.security.request.ReqCheck;
-import cn.linkmore.security.response.ReqAuthElement;
+import cn.linkmore.security.response.ResAuthElement;
+import cn.linkmore.security.response.ResClazz;
+import cn.linkmore.security.response.ResDict;
+import cn.linkmore.security.response.ResInterface;
+import cn.linkmore.security.response.ResPage;
+import cn.linkmore.security.response.ResPageElement;
 import cn.linkmore.security.service.PageElementService;
 import cn.linkmore.util.DomainUtil;
 
@@ -57,12 +60,12 @@ public class PageElementServiceImpl implements PageElementService {
 	
 	@Override
 	public Tree findTree(){
-		List< Page> list =  this.pageClusterMapper.findAll();
-		List<Dict> dicts = this.dictClusterMapper.findByGroupCode("security-page-category");
+		List<ResPage> list =  this.pageClusterMapper.findAll();
+		List<ResDict> dicts = this.dictClusterMapper.findByGroupCode("security-page-category");
 		List<Tree> trees = new ArrayList<Tree>();
 		Map<Long,Tree> treeMap = new HashMap<Long,Tree>();
 		Tree tree  =null;
-		for(Dict di:dicts) { 
+		for(ResDict di:dicts) { 
 			tree = new Tree(); 
 			tree.setId(di.getId().toString());
 			tree.setName(di.getName());
@@ -75,7 +78,7 @@ public class PageElementServiceImpl implements PageElementService {
 			treeMap.put(di.getId(), tree);
 		} 
 		Tree child = null;
-		for(Page page:list) {
+		for(ResPage page:list) {
 			tree = treeMap.get(page.getCategoryId().longValue());
 			if(tree==null) {
 				continue;
@@ -119,7 +122,7 @@ public class PageElementServiceImpl implements PageElementService {
 		Integer count = this.pageElementClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<PageElement> list = this.pageElementClusterMapper.findPage(param);
+		List<ResPageElement> list = this.pageElementClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
@@ -153,9 +156,9 @@ public class PageElementServiceImpl implements PageElementService {
 	
 	@Override
 	public Map<String,Object> map() {
-		List<Dict> dicts = this.dictClusterMapper.findByGroupCode("security-clazz-category");
-		List<Clazz> clazzs = this.clazzClusterMapper.findAll(); 
-		List<Interface> records = this.interfaceClusterMapper.findAll();
+		List<ResDict> dicts = this.dictClusterMapper.findByGroupCode("security-clazz-category");
+		List<ResClazz> clazzs = this.clazzClusterMapper.findAll(); 
+		List<ResInterface> records = this.interfaceClusterMapper.findAll();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("category", dicts);
 		map.put("clazz", clazzs);
@@ -164,7 +167,7 @@ public class PageElementServiceImpl implements PageElementService {
 	}
 
 	@Override
-	public List<ReqAuthElement> findReqAuthElementList() { 
-		return this.pageElementClusterMapper.findReqAuthElementList(); 
+	public List<ResAuthElement> findResAuthElementList() { 
+		return this.pageElementClusterMapper.findResAuthElementList(); 
 	}
 }

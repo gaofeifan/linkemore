@@ -4,11 +4,13 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import cn.linkmore.security.dao.cluster.InterfaceClusterMapper;
-import cn.linkmore.security.entity.Interface;
+import cn.linkmore.security.response.ResInterface;
 
 
  
@@ -34,10 +36,10 @@ public class FilterChainService{
  
 	public Map<String,String> getFilterChainMap() throws Exception { 
 		 
-		List<Interface> list = this.interfaceClusterMapper.findAll();
+		List<ResInterface> list = this.interfaceClusterMapper.findAll();
         Map<String,String> section = new HashMap<String,String>(); 
         if(list!=null&&list.size()>0)
-        for(Interface re:list){
+        for(ResInterface re:list){
         	if(StringUtils.isNotEmpty(re.getPath())&&re.getAuthorize()==1){
         		section.put(re.getPath(),  MessageFormat.format(PERMISSION_STRING,re.getId()));
         	}

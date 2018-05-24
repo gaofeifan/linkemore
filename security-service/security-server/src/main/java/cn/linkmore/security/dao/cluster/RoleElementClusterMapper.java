@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.security.entity.RoleElement;
+import cn.linkmore.security.response.ResRoleElement;
 /**
  * 角色元素
  * @author jiaohanbin
@@ -15,8 +15,8 @@ import cn.linkmore.security.entity.RoleElement;
 @Mapper
 public interface RoleElementClusterMapper {
 
-    RoleElement findById(Long id);
+    ResRoleElement findById(Long id);
 
-	List<RoleElement> findList(Map<String, Object> param);
+	List<ResRoleElement> findList(Map<String, Object> param);
 
 }

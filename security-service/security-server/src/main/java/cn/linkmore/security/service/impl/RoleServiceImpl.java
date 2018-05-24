@@ -23,13 +23,15 @@ import cn.linkmore.security.dao.master.PageElementMasterMapper;
 import cn.linkmore.security.dao.master.RoleElementMasterMapper;
 import cn.linkmore.security.dao.master.RoleMasterMapper;
 import cn.linkmore.security.dao.master.RolePageMasterMapper;
-import cn.linkmore.security.entity.Dict;
-import cn.linkmore.security.entity.Page;
-import cn.linkmore.security.entity.PageElement;
 import cn.linkmore.security.entity.Role;
 import cn.linkmore.security.entity.RoleElement;
 import cn.linkmore.security.entity.RolePage;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.response.ResDict;
+import cn.linkmore.security.response.ResPage;
+import cn.linkmore.security.response.ResPageElement;
+import cn.linkmore.security.response.ResRoleElement;
+import cn.linkmore.security.response.ResRolePage;
 import cn.linkmore.security.service.RoleService;
 import cn.linkmore.util.DomainUtil;
 
@@ -124,13 +126,13 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public Tree findTree() {
-		List< Page> list =  this.pageClusterMapper.findAll();
-		List<PageElement> pes= this.pageElementClusterMapper.findAll(); 
-		List<Dict> dicts = this.dictClusterMapper.findByGroupCode("security-page-category");
+		List<ResPage> list =  this.pageClusterMapper.findAll();
+		List<ResPageElement> pes= this.pageElementClusterMapper.findAll(); 
+		List<ResDict> dicts = this.dictClusterMapper.findByGroupCode("security-page-category");
 		List<Tree> trees = new ArrayList<Tree>();
 		Map<Long,Tree> treeMap = new HashMap<Long,Tree>();
 		Tree tree  =null;
-		for(Dict di:dicts) { 
+		for(ResDict di:dicts) { 
 			tree = new Tree(); 
 			tree.setId("d"+di.getId().toString());
 			tree.setName(di.getName());
@@ -144,7 +146,7 @@ public class RoleServiceImpl implements RoleService {
 		} 
 		Tree child = null;
 		Map<Long,Tree> childMap = new HashMap<Long,Tree>();
-		for(Page page:list) {
+		for(ResPage page:list) {
 			tree = treeMap.get(page.getCategoryId());
 			if(tree==null) {
 				continue;
@@ -160,7 +162,7 @@ public class RoleServiceImpl implements RoleService {
 			tree.getChildren().add(child);
 			childMap.put(page.getId(), child);
 		}
-		for(PageElement pe:pes) {
+		for(ResPageElement pe:pes) {
 			tree = childMap.get(pe.getPageId());
 			if(tree==null) {
 				continue;
@@ -191,8 +193,8 @@ public class RoleServiceImpl implements RoleService {
 	public Map<String, Object> resource(Long id) { 
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("roleId", id);
-		List<RoleElement> res = this.roleElementClusterMapper.findList(param);
-		List<RolePage> rps = this.rolePageClusterMapper.findList(param);
+		List<ResRoleElement> res = this.roleElementClusterMapper.findList(param);
+		List<ResRolePage> rps = this.rolePageClusterMapper.findList(param);
 		param.put("res", res);
 		param.put("rps", rps);
 		return param;

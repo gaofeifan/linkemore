@@ -8,7 +8,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.entity.PageElement;
 import cn.linkmore.security.request.ReqCheck;
-import cn.linkmore.security.response.ReqAuthElement;
+import cn.linkmore.security.response.ResAuthElement;
 
 /**
  * Service接口 - 页面元素信息
@@ -69,6 +69,6 @@ public interface PageElementService {
 	 * @param ids
 	 * @return
 	 */
-	List<ReqAuthElement> findReqAuthElementList();
+	List<ResAuthElement> findResAuthElementList();
 
 }

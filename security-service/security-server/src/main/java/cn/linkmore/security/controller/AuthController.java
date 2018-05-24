@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.security.entity.Person;
+import cn.linkmore.security.request.ReqPerson;
+import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.service.PersonService;
 import cn.linkmore.util.JsonUtil;
 
@@ -141,7 +143,7 @@ public class AuthController {
 			@RequestParam("password") String password) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Subject subject = SecurityUtils.getSubject();
-		Person person = (Person) subject.getSession().getAttribute("person");
+		ReqPerson person = (ReqPerson) subject.getSession().getAttribute("person");
 		try {
 			this.personService.updatePassword(person, oldPassword, password);
 			map.put("update", true);

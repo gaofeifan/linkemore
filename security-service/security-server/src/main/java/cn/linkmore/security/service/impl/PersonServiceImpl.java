@@ -18,15 +18,18 @@ import cn.linkmore.security.dao.cluster.PersonRoleClusterMapper;
 import cn.linkmore.security.dao.cluster.RoleClusterMapper;
 import cn.linkmore.security.dao.master.PersonMasterMapper;
 import cn.linkmore.security.dao.master.PersonRoleMasterMapper;
-import cn.linkmore.security.entity.Interface;
-import cn.linkmore.security.entity.Page;
 import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.entity.PersonRole;
-import cn.linkmore.security.entity.Role;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqPerson;
+import cn.linkmore.security.response.ResInterface;
+import cn.linkmore.security.response.ResPerson;
+import cn.linkmore.security.response.ResPersonRole;
+import cn.linkmore.security.response.ResRole;
 import cn.linkmore.security.service.PersonService;
 import cn.linkmore.security.shiro.Principal;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.PasswordUtil;
 
 /**
@@ -57,8 +60,8 @@ public class PersonServiceImpl implements PersonService {
 	
 
 	@Override
-	public Person findByUsername(String username) {
-		Person person = null;
+	public ResPerson findByUsername(String username) {
+		ResPerson person = null;
 		if(StringUtils.isNotBlank(username)) {
 			person = this.personClusterMapper.findByUsername(username);
 		}
@@ -84,7 +87,7 @@ public class PersonServiceImpl implements PersonService {
 		Integer count = this.personClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<Page> list = this.personClusterMapper.findPage(param);
+		List<ResPerson> list = this.personClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
@@ -103,26 +106,29 @@ public class PersonServiceImpl implements PersonService {
 	
 	@Override
 	public Person update(Person person) {
-		Person db = this.personClusterMapper.findById(person.getId());
+		ResPerson db = this.personClusterMapper.findById(person.getId());
 		db.setRealname(person.getRealname());
 		db.setStatus(person.getStatus());
 		if(StringUtils.isNotBlank(person.getPassword())) {
 			db.setPassword(PasswordUtil.encode(person.getPassword()));
 		}
-		this.personMasterMapper.update(db);
+		person = ObjectUtils.copyObject(db, person);
+		this.personMasterMapper.update(person);
 		return person;
 	}
 	
 	@Override
-	public void updatePassword(Person person,String oldPassword,String newPassword){
-		Person db = this.personClusterMapper.findById(person.getId());
+	public void updatePassword(ReqPerson person,String oldPassword,String newPassword){
+		ResPerson db = this.personClusterMapper.findById(person.getId());
 		if(StringUtils.isBlank(oldPassword) || StringUtils.isBlank(newPassword)){
 			throw new RuntimeException("密码不能为空");
 		}
 		if(StringUtils.isNotBlank(db.getPassword())){
 			if(PasswordUtil.checkPassword(oldPassword, db.getPassword())){
 				db.setPassword(PasswordUtil.encode(newPassword));
-				this.personMasterMapper.update(db);
+				Person p = new Person();
+				p = ObjectUtils.copyObject(db, p);
+				this.personMasterMapper.update(p);
 				Subject subject = SecurityUtils.getSubject();
 				subject.getSession().removeAttribute("person");
 				subject.logout();
@@ -133,14 +139,17 @@ public class PersonServiceImpl implements PersonService {
 	}
 	
 	@Override
-	public void loginUpdate(Person person) {
-		Person db = this.personClusterMapper.findById(person.getId());
+	public void loginUpdate(ReqPerson person) {
+		ResPerson db = this.personClusterMapper.findById(person.getId());
 		db.setLockCount(person.getLockCount());
 		db.setLockStatus(person.getLockStatus());
 		db.setLockTime(person.getLockTime());
 		db.setLoginIp(person.getLoginIp());
 		db.setLoginTime(person.getLoginTime()); 
-		this.personMasterMapper.loginUpdate(db); 
+		
+		Person p = new Person();
+		p = ObjectUtils.copyObject(db, p);
+		this.personMasterMapper.loginUpdate(p); 
 	}
 
 	@Override
@@ -164,9 +173,9 @@ public class PersonServiceImpl implements PersonService {
 	
 	@Override
 	public List<String> findAuthList(Principal principal) { 
-		List<Interface> list = this.interfaceClusterMapper.findPersonAuthList(principal.getId());
+		List<ResInterface> list = this.interfaceClusterMapper.findPersonAuthList(principal.getId());
 		List<String> as = new ArrayList<String>();
-		for(Interface i:list) {
+		for(ResInterface i:list) {
 			as.add(i.getId().toString()); 
 		}
 		return as;
@@ -174,14 +183,13 @@ public class PersonServiceImpl implements PersonService {
 	
 	
 	@Override
-	public List<PersonRole> personRoleList(Long id){ 
+	public List<ResPersonRole> personRoleList(Long id){ 
 		return this.personRoleClusterMapper.findListById(id);
-		
 	}
 	
 	
 	@Override
-	public List<Role> roleList(){
+	public List<ResRole> roleList(){
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("status", 1);
 		return this.roleClusterMapper.findList(param);

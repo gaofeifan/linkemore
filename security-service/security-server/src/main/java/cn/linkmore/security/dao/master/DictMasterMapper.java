@@ -1,9 +1,15 @@
 package cn.linkmore.security.dao.master;
 
 import java.util.List;
-
+import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.security.entity.Dict;
-
+/**
+ * 字典详情
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
+@Mapper
 public interface DictMasterMapper {
     /**
 	 * 新增

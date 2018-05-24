@@ -2,10 +2,8 @@ package cn.linkmore.security.dao.cluster;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
-
-import cn.linkmore.security.entity.Interface;
+import cn.linkmore.security.response.ResInterface;
 /**
  * 接口
  * @author jiaohanbin
@@ -19,7 +17,7 @@ public interface InterfaceClusterMapper {
 	 * @param id
 	 * @return
 	 */
-    Interface findById(Long id);
+    ResInterface findById(Long id);
     /**
      * 检验字段
      * @param param
@@ -31,7 +29,7 @@ public interface InterfaceClusterMapper {
 	 * @param param
 	 * @return
 	 */
-	List<Interface> findPage(Map<String, Object> param);
+	List<ResInterface> findPage(Map<String, Object> param);
 	/**
 	 * 查询总数
 	 * @param param
@@ -42,12 +40,12 @@ public interface InterfaceClusterMapper {
 	 * 查询所有接口
 	 * @return
 	 */
-	List<Interface> findAll();
+	List<ResInterface> findAll();
 	/**
 	 * 查找用户授权列表
 	 * @param id
 	 * @return
 	 */
-	List<Interface> findPersonAuthList(Long id);
+	List<ResInterface> findPersonAuthList(Long id);
 
 }

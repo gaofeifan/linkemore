@@ -38,49 +38,20 @@ public class RoleController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(@RequestBody Role role){
-		ViewMsg msg = null;
-		try {
-			this.roleService.save(role);
-			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			msg = new ViewMsg("保存失败",false);
-		}
-		return msg;
-		 
+	public void save(@RequestBody Role role){
+		this.roleService.save(role);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update(@RequestBody Role role){
-		ViewMsg msg = null;
-		try {
-			this.roleService.update(role);
-			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			msg = new ViewMsg("保存失败",false);
-		}
-		return msg;
+	public void update(@RequestBody Role role){
+		this.roleService.update(role);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg delete(@RequestBody List<Long> ids){ 
-		ViewMsg msg = null;
-		try {
-			this.roleService.delete(ids);
-			msg = new ViewMsg("删除成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("删除失败",false);
-		}
-		return msg;
+	public void delete(@RequestBody List<Long> ids){ 
+		this.roleService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
@@ -114,17 +85,7 @@ public class RoleController {
 	
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.GET)
 	@ResponseBody
-	public ViewMsg bind(@RequestParam("id") Long id,@RequestParam("pids") String pids,@RequestParam("eids") String eids){ 
-		ViewMsg msg = null;
-		try {
-			this.roleService.bind(id,pids,eids);
-			msg = new ViewMsg("绑定成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("绑定失败",false);
-		}
-		return msg;
+	public void bind(@RequestParam("id") Long id,@RequestParam("pids") String pids,@RequestParam("eids") String eids){ 
+		this.roleService.bind(id,pids,eids);
 	}
 }

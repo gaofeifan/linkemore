@@ -3,9 +3,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -13,6 +15,7 @@ import cn.linkmore.security.dao.cluster.PageClusterMapper;
 import cn.linkmore.security.dao.master.PageMasterMapper;
 import cn.linkmore.security.entity.Page;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.response.ResPage;
 import cn.linkmore.security.service.PageService;
 import cn.linkmore.util.DomainUtil;
 
@@ -50,7 +53,7 @@ public class PageServiceImpl implements PageService {
 		Integer count = this.pageClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<Page> list = this.pageClusterMapper.findPage(param);
+		List<ResPage> list = this.pageClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 

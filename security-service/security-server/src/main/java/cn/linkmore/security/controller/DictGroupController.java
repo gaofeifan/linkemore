@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import cn.linkmore.bean.exception.DataException;
-import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.entity.DictGroup;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqDictGroup;
 import cn.linkmore.security.service.DictGroupService;
+import cn.linkmore.util.ObjectUtils;
 
 /**
  * Controller - 字典分组操作
@@ -35,50 +35,24 @@ public class DictGroupController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(@RequestBody DictGroup record){
-		ViewMsg msg = null;
-		try {
-			this.dictGroupService.save(record);
-			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("保存失败",false);
-		}
-		return msg;
-		 
+	public void save(@RequestBody ReqDictGroup reqDictGroup){
+		DictGroup dictGroup = new DictGroup();
+		dictGroup = ObjectUtils.copyObject(reqDictGroup, dictGroup);
+		this.dictGroupService.save(dictGroup);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update(@RequestBody DictGroup record){
-		ViewMsg msg = null;
-		try {
-			this.dictGroupService.update(record);
-			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			msg = new ViewMsg("保存失败",false);
-		}
-		return msg;
+	public void update(@RequestBody ReqDictGroup reqDictGroup){
+		DictGroup dictGroup = new DictGroup();
+		dictGroup = ObjectUtils.copyObject(reqDictGroup, dictGroup);
+		this.dictGroupService.update(dictGroup);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg delete(@RequestBody List<Long> ids){ 
-		ViewMsg msg = null;
-		try {
-			this.dictGroupService.delete(ids);
-			msg = new ViewMsg("删除成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("删除失败",false);
-		}
-		return msg;
+	public void delete(@RequestBody List<Long> ids){ 
+		this.dictGroupService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

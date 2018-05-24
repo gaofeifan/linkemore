@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.security.entity.Page;
+import cn.linkmore.security.response.ResPage;
 /**
  * 页面
  * @author jiaohanbin
@@ -27,7 +28,7 @@ public interface PageClusterMapper {
 	 * @param param
 	 * @return
 	 */
-	List<Page> findPage(Map<String, Object> param);
+	List<ResPage> findPage(Map<String, Object> param);
 	/**
 	 * 校验字段
 	 * @param param
@@ -38,6 +39,6 @@ public interface PageClusterMapper {
 	 * 查询所有页面
 	 * @return
 	 */
-	List<Page> findAll();
+	List<ResPage> findAll();
 
 }

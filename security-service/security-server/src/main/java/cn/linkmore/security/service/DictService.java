@@ -6,6 +6,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.entity.Dict;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.response.ResDict;
 
 /**
  * Service接口 - 字典信息
@@ -54,5 +55,5 @@ public interface DictService {
 	 * @param code
 	 * @return
 	 */
-	List<Dict> findByGroupCode(String code);
+	List<ResDict> findByGroupCode(String code);
 }

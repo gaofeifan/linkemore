@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.security.entity.Log;
+import cn.linkmore.security.response.ResLog;
 /**
  * 日志
  * @author jiaohanbin
@@ -15,7 +15,7 @@ import cn.linkmore.security.entity.Log;
 @Mapper
 public interface LogClusterMapper {
 	
-    Log findById(Long id);
+    ResLog findById(Long id);
     /**
      * 总数
      * @param param
@@ -27,6 +27,6 @@ public interface LogClusterMapper {
 	 * @param param
 	 * @return
 	 */
-	List<Log> findPage(Map<String, Object> param);
+	List<ResLog> findPage(Map<String, Object> param);
 
 }
