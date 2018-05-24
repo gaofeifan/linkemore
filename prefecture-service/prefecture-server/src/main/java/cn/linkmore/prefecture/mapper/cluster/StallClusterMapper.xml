@@ -55,7 +55,7 @@
     select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
     status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, lock_voltage
     from v_stall
-    where lock_sn = #{lockSn,jdbcType=VARCHAR}
+    where lock_sn = #{lockSn,jdbcType=VARCHAR} limit 0,1
   </select>
   
   <select id="findStallsByPreId" parameterType="java.lang.Long" resultMap="ResponseResultMap">

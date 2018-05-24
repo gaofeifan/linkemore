@@ -30,7 +30,7 @@
     delete from t_acc_charge_record
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.order.entity.ChargeRecord">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.ChargeRecord">
     insert into t_acc_charge_record (id, code, mobile, 
       account_id, package_id, package_amount, 
       charge_amount, description, create_time, 

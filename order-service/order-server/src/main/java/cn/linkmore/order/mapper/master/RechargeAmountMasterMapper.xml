@@ -16,7 +16,7 @@
     delete from t_acc_recharge_amount
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.order.entity.RechargeAmount">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.RechargeAmount">
     insert into t_acc_recharge_amount (id, payment, gift, 
       order_index, checked, status
       )

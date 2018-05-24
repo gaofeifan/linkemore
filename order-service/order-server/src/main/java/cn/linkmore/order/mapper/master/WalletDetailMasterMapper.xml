@@ -17,7 +17,7 @@
     delete from t_acc_wallet_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.order.entity.WalletDetail">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.WalletDetail">
     insert into t_acc_wallet_detail (id, account_id, amount, 
       source, type, create_time, 
       account_amount)

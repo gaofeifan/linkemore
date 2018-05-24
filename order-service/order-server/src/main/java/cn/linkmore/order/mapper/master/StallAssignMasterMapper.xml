@@ -21,7 +21,7 @@
     id, staff_id, staff_name, carno, status, order_id, order_no, create_time, cancel_time, 
     order_time, pre_id, stall_id, stall_name, lock_sn
   </sql> 
-  <insert id="save" parameterType="cn.linkmore.order.entity.StallAssign">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.StallAssign">
     insert into t_admin_stall_assign (id, staff_id, staff_name, 
       carno, status, order_id, 
       order_no, create_time, cancel_time, 

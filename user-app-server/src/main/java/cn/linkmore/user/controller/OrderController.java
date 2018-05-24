@@ -45,8 +45,10 @@ public class OrderController {
 			this.orderService.create(rb, request);
 			response = ResponseEntity.success(null, request);
 		} catch (BusinessException e) {
+			e.printStackTrace();
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) {
+			e.printStackTrace();
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;

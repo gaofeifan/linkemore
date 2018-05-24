@@ -1,6 +1,7 @@
 package cn.linkmore.redis;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -226,6 +227,15 @@ public class RedisService {
 	public void add(String key, Object value) {
 		SetOperations<String, Object> set = redisTemplate.opsForSet();
 		set.add(key, value);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void addAll(String key, Set<Object> values) {
+		SetOperations<String, Object> set = redisTemplate.opsForSet(); 
+		Iterator<Object> it = values.iterator();
+		while (it.hasNext()) {
+			set.add(key, it.next());
+		} 
 	}
 
 	/**

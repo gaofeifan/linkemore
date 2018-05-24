@@ -1,5 +1,7 @@
 package cn.linkmore.order.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.order.request.ReqOrderCreate;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
+import cn.linkmore.util.JsonUtil;
 /**
  * Controller - 订单
  * @author liwenlong
@@ -23,10 +26,13 @@ public class OrdersController {
 	
 	@Autowired
 	private OrdersService ordersService;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	 
 	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
 	@ResponseBody
 	public void create(@RequestBody ReqOrderCreate roc){
+		log.info("order create :{}",JsonUtil.toJson(roc));
 		this.ordersService.create(roc);
 	}
 	

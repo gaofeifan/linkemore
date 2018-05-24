@@ -26,7 +26,7 @@
     delete from t_acc_account
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.order.entity.Account">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.Account">
     insert into t_acc_account (id, amount, usable_amount, 
       frozen_amount, recharge_amount, rechage_payment_amount, 
       status, order_amount, order_payment_amount, 

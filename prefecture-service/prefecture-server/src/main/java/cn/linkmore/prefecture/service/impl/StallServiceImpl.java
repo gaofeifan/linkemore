@@ -6,25 +6,25 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.LockStatus;
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
-import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.Stall;
-import cn.linkmore.prefecture.lock.FreeLockPool;
-import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.prefecture.fee.InitLockFactory;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
-import cn.linkmore.prefecture.fee.InitLockFactory;
 import cn.linkmore.prefecture.service.StallService;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.ObjectUtils;
 /**
  * Service实现类 - 车位信息
@@ -40,7 +40,7 @@ public class StallServiceImpl implements StallService {
 	@Autowired
 	private StallClusterMapper stallClusterMapper;
 	@Autowired
-	private FreeLockPool freeLockPool;
+	private RedisService redisService;
 
 	@Override
 	public void order(Long id) { 
@@ -76,8 +76,8 @@ public class StallServiceImpl implements StallService {
 			int code = res.getMsgCode();
 			if (code == 200) {
 				flag = true;
-				stall.setLockStatus(Stall.LOCK_STATUS_UP);
-				freeLockPool.addFreeLock(stall.getPreId(), stall.getLockSn());
+				stall.setLockStatus(Stall.LOCK_STATUS_UP); 
+				this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key +stall.getPreId(), stall.getLockSn());
 			}
 			stall.setUpdateTime(new Date());
 			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);

@@ -188,8 +188,11 @@ public class OrdersServiceImpl implements OrdersService {
 			 */
 			
 			// 以下为预约流程
-			if("".equals(lockSn)) {    
-				lockSn = (String)redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + orc.getPrefectureId());
+			if("".equals(lockSn)) {  
+				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + orc.getPrefectureId());
+				if(sn!=null) {
+					lockSn = sn.toString();
+				} 
 			}
 			
 			if (StringUtils.isEmpty(lockSn)) {
@@ -219,9 +222,9 @@ public class OrdersServiceImpl implements OrdersService {
 			// 初始化支付类型为账户支付
 			o.setPayType(OrderPayType.ACCOUNT.type); 
 			o.setPreId(orc.getPrefectureId());
-
+			log.info("order:{}",lockSn);
 			stall = this.stallClient.findByLock(lockSn.trim());
-
+			log.info("order :{}",JsonUtil.toJson(stall));
 			if (stall == null || stall.getStatus().intValue() != StallStatus.FREE.status) {
 				resetRedis = false;
 				bookingStatus =(short) OperateStatus.FAILURE.status;
@@ -298,7 +301,7 @@ public class OrdersServiceImpl implements OrdersService {
 			StackTraceElement[] stackArray = e.getStackTrace();
 			for (int i = 0; i < stackArray.length; i++) {
 				StackTraceElement element = stackArray[i];
-				if (element.toString().indexOf("com.pabei") >= 0) {
+				if (element.toString().indexOf("cn.linkmore") >= 0) {
 					sb.append(element.toString() + "\n");
 				}
 			}
@@ -312,7 +315,7 @@ public class OrdersServiceImpl implements OrdersService {
 			StackTraceElement[] stackArray = e.getStackTrace();
 			for (int i = 0; i < stackArray.length; i++) {
 				StackTraceElement element = stackArray[i];
-				if (element.toString().indexOf("com.pabei") >= 0) {
+				if (element.toString().indexOf("cn.linkmore") >= 0) {
 					sb.append(element.toString() + "\n");
 				}
 			}
@@ -326,7 +329,7 @@ public class OrdersServiceImpl implements OrdersService {
 			StackTraceElement[] stackArray = e.getStackTrace();
 			for (int i = 0; i < stackArray.length; i++) {
 				StackTraceElement element = stackArray[i];
-				if (element.toString().indexOf("com.pabei") >= 0) {
+				if (element.toString().indexOf("cn.linkmore") >= 0) {
 					sb.append(element.toString() + "\n");
 				}
 			}

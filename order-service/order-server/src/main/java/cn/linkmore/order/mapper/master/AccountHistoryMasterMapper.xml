@@ -29,7 +29,7 @@
     delete from t_acc_account_history
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.order.entity.AccountHistory">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.AccountHistory">
     insert into t_acc_account_history (id, account_id, amount, 
       usable_amount, frozen_amount, recharge_amount, 
       rechage_payment_amount, accType, status, 

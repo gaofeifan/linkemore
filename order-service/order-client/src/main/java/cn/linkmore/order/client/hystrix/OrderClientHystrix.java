@@ -1,5 +1,7 @@
 package cn.linkmore.order.client.hystrix;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +15,10 @@ import cn.linkmore.order.response.ResUserOrder;
 @Component
 public class OrderClientHystrix implements OrderClient {
 	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	public void create(@RequestBody ReqOrderCreate roc){
+		log.info("order client create failure hystrix");
 		throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
 	}
 	

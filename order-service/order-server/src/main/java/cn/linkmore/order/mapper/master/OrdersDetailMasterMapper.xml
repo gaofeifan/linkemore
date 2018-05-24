@@ -37,7 +37,7 @@
     delete from o_orders_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.order.entity.OrdersDetail">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.OrdersDetail">
     insert into o_orders_detail (id, ord_no, ord_detail_no, 
       ord_name, park_name, stall_name, 
       latitude, longitude, trade_id, 
