@@ -44,4 +44,12 @@ public interface VehicleMarkClient {
 	 */
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable("id") Long id);
+	
+	/**
+	 * @Description  根据id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
+	public ResVechicleMark findById(@PathVariable("id") Long id);
 }

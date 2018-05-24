@@ -35,6 +35,12 @@ public class VehicleMarkClientHystrix  implements VehicleMarkClient{
 	public void delete(@PathVariable("id") Long id) {
 		log.info("account service VechicleMark delete() Long id) hystrix");
 	}
+
+	@Override
+	public ResVechicleMark findById(@PathVariable("id") Long id) {
+		log.info("account service VechicleMark findById() Long id) hystrix");
+		return null;
+	}
 	
 }
 
