@@ -1,6 +1,6 @@
 package cn.linkmore.security.response;
 /**
- * 请求账户角色
+ * 响应账户角色
  * @author jiaohanbin
  * @version 2.0
  *

@@ -3,7 +3,12 @@ package cn.linkmore.security.dao.cluster;
 import java.util.List;
 import java.util.Map;
 import cn.linkmore.security.response.ResDictGroup;
-
+/**
+ * 字典分组
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public interface DictGroupClusterMapper {
 	/**
 	 * 查询实体

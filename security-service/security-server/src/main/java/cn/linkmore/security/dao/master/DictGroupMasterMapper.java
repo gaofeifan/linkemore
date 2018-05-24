@@ -1,6 +1,12 @@
 package cn.linkmore.security.dao.master;
 
 import java.util.List;
+/**
+ * 字典分组
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.security.entity.DictGroup;

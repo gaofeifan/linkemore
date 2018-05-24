@@ -9,7 +9,6 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.dao.cluster.LogClusterMapper;
-import cn.linkmore.security.entity.Log;
 import cn.linkmore.security.response.ResLog;
 import cn.linkmore.security.service.LogService;
 import cn.linkmore.util.DomainUtil;
