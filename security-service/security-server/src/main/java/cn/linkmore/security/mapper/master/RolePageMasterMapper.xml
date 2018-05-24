@@ -11,7 +11,7 @@
   </sql>
   <delete id="delete" parameterType="java.lang.Long">
     delete from t_sec_role_page
-    where id = #{id,jdbcType=BIGINT}
+    where role_id = #{roleId,jdbcType=BIGINT}
   </delete>
   <insert id="save" parameterType="cn.linkmore.security.entity.RolePage">
     insert into t_sec_role_page (id, page_id, role_id
@@ -25,4 +25,11 @@
       role_id = #{roleId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <insert id="batchSave"  parameterType="java.util.List"> 
+    insert into t_sec_role_page (id, role_id, page_id) values  
+    <foreach collection="list" item="item" index="index" separator=",">  
+	     (#{item.id,jdbcType=BIGINT},#{item.roleId,jdbcType=BIGINT}, #{item.pageId,jdbcType=BIGINT})
+    </foreach> 
+  </insert> 
 </mapper>

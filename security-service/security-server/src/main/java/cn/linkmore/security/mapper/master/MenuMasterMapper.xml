@@ -15,9 +15,13 @@
   <sql id="Base_Column_List">
     id, name, parent_id, status, icon, page_id, create_time, order_index, level
   </sql>
-  <delete id="delete" parameterType="java.lang.Long">
+  
+  <delete id="delete" parameterType="java.util.List">
     delete from t_sec_menu
-    where id = #{id,jdbcType=BIGINT}
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
   </delete>
   <insert id="save" parameterType="cn.linkmore.security.entity.Menu">
     insert into t_sec_menu (id, name, parent_id, 
