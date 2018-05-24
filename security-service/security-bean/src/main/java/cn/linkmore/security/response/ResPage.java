@@ -2,7 +2,7 @@ package cn.linkmore.security.response;
 
 import java.util.Date;
 /**
- * 请求页面
+ * 响应页面
  * @author jiaohanbin
  * @version 2.0
  *

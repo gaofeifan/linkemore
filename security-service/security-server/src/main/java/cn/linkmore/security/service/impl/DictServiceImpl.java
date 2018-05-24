@@ -15,7 +15,6 @@ import cn.linkmore.security.dao.cluster.DictClusterMapper;
 import cn.linkmore.security.dao.cluster.DictGroupClusterMapper;
 import cn.linkmore.security.dao.master.DictMasterMapper;
 import cn.linkmore.security.entity.Dict;
-import cn.linkmore.security.entity.DictGroup;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.response.ResDict;
 import cn.linkmore.security.response.ResDictGroup;

@@ -3,7 +3,7 @@ package cn.linkmore.security.response;
 import java.util.Date;
 import java.util.List;
 /**
- * 请求菜单
+ * 响应菜单
  * @author jiaohanbin
  * @version 2.0
  *
