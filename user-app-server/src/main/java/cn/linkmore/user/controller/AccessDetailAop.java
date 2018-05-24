@@ -62,68 +62,72 @@ public class AccessDetailAop {
 	 * @Version v2.0
 	 */
 	@AfterReturning(returning = "obj", pointcut = "interfaceLog()")
-	public void accessDetailAfter(JoinPoint joinPoint, Object obj) throws RuntimeException {
-		Class<? extends Object> clazz = joinPoint.getTarget().getClass();
-		String className = clazz.getName();
-		RequestMapping mapping = clazz.getAnnotation(RequestMapping.class);
-		String[] value = mapping.value();
-		StringBuilder sb = new StringBuilder();
-		for (String v : value) {
-			sb.append(v);
-		}
-		Map<String, String> result = new HashMap<>();
-		Object[] args = joinPoint.getArgs();
-		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-		Method method = signature.getMethod();
-		String methodName = method.getName();
-		boolean b = method.isAnnotationPresent(AopIgnore.class);
-		if (b) {
-			return;
-		}
-		RequestMapping methodMapping = method.getAnnotation(RequestMapping.class);
-		String[] values = methodMapping.value();
-		for (String v : values) {
-			sb.append(v);
-		}
-		String type = "";
-		RequestMethod[] methods = methodMapping.method();
-		for (int i = 0; i < methods.length; i++) {
-			if (methods.length - 1 == i) {
-				type += methods[i].name();
-			} else {
-				type += methods[i].name() + ",";
+	public void accessDetailAfter(JoinPoint joinPoint, Object obj) {
+		try {
+			Class<? extends Object> clazz = joinPoint.getTarget().getClass();
+			String className = clazz.getName();
+			RequestMapping mapping = clazz.getAnnotation(RequestMapping.class);
+			String[] value = mapping.value();
+			StringBuilder sb = new StringBuilder();
+			for (String v : value) {
+				sb.append(v);
 			}
-		}
-		Class<?>[] types = signature.getParameterTypes();
-		for (int i = 0; i < types.length; i++) {
-			if (args[i] instanceof HttpServletRequest) {
-				result.put(types[i].getSimpleName(), "request");
-			} else if (args[i] instanceof HttpServletResponse) {
-				result.put(types[i].getSimpleName(), "response");
-			} else {
-				String json = JsonUtil.toJson(args[i]);
-				result.put(types[i].getSimpleName(), json);
+			Map<String, String> result = new HashMap<>();
+			Object[] args = joinPoint.getArgs();
+			MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+			Method method = signature.getMethod();
+			String methodName = method.getName();
+			boolean b = method.isAnnotationPresent(AopIgnore.class);
+			if (b) {
+				return;
 			}
+			RequestMapping methodMapping = method.getAnnotation(RequestMapping.class);
+			String[] values = methodMapping.value();
+			for (String v : values) {
+				sb.append(v);
+			}
+			String type = "";
+			RequestMethod[] methods = methodMapping.method();
+			for (int i = 0; i < methods.length; i++) {
+				if (methods.length - 1 == i) {
+					type += methods[i].name();
+				} else {
+					type += methods[i].name() + ",";
+				}
+			}
+			Class<?>[] types = signature.getParameterTypes();
+			for (int i = 0; i < types.length; i++) {
+				if (args[i] instanceof HttpServletRequest) {
+					result.put(types[i].getSimpleName(), "request");
+				} else if (args[i] instanceof HttpServletResponse) {
+					result.put(types[i].getSimpleName(), "response");
+				} else {
+					String json = JsonUtil.toJson(args[i]);
+					result.put(types[i].getSimpleName(), json);
+				}
+			}
+			HttpServletRequest request = getRequest();
+			Map<String, String> responseJson = new HashMap<>();
+			responseJson.put(obj.getClass().getSimpleName(), JsonUtil.toJson(obj));
+			ReqAccessDetail detail = new ReqAccessDetail();
+			detail.setMethod(methodName);
+			detail.setMethodType(type);
+			detail.setParams(JsonUtil.toJson(result));
+			detail.setPath(className);
+			detail.setMapping(sb.toString());
+			detail.setReturns(JsonUtil.toJson(responseJson));
+			ResUser user = userService.getCache(request);
+			detail.setUserId(user.getId());
+			String os = request.getHeader("os");
+			if (StringUtil.isBlank(os) || Integer.parseInt(os) == 0) {
+				detail.setType(0);
+				accessDetailClient.appSave(detail);
+			} else {
+				detail.setType(1);
+				accessDetailClient.miniSave(detail);
+			}
+		} catch (NumberFormatException e) {
 		}
-		HttpServletRequest request = getRequest();
-		Map<String, String> responseJson = new HashMap<>();
-		responseJson.put(obj.getClass().getSimpleName(), JsonUtil.toJson(obj));
-		ReqAccessDetail detail = new ReqAccessDetail();
-		detail.setMethod(methodName);
-		detail.setMethodType(type);
-		detail.setParams(JsonUtil.toJson(result));
-		detail.setPath(className);
-		detail.setMapping(sb.toString());
-		detail.setReturns(JsonUtil.toJson(responseJson));
-		ResUser user = userService.getCache(request);
-		detail.setUserId(user.getId());
-		String os = request.getHeader("os");
-		if (StringUtil.isBlank(os) || Integer.parseInt(os) == 0) {
-			detail.setType(0);
-		} else {
-			detail.setType(1);
-		}
-		this.insert(detail);
 	}
 
 	/**
@@ -132,11 +136,7 @@ public class AccessDetailAop {
 	 * @Version v2.0
 	 */
 	public void insert(ReqAccessDetail detail) {
-		if (detail.getType() == 0) {
-			accessDetailClient.appSave(detail);
-		} else if (detail.getType() == 1) {
-			accessDetailClient.miniSave(detail);
-		}
+		
 	}
 
 	/**

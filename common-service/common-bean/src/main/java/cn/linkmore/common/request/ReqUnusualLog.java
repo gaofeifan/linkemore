@@ -59,7 +59,7 @@ public class ReqUnusualLog {
 	}
 
 	public void setAppVersion(String appVersion) {
-		this.appVersion = appVersion == null ? null : appVersion.trim();
+		this.appVersion = appVersion;
 	}
 
 	public String getOsVersion() {
@@ -67,7 +67,7 @@ public class ReqUnusualLog {
 	}
 
 	public void setOsVersion(String osVersion) {
-		this.osVersion = osVersion == null ? null : osVersion.trim();
+		this.osVersion = osVersion;
 	}
 
 	public String getModel() {
@@ -75,7 +75,7 @@ public class ReqUnusualLog {
 	}
 
 	public void setModel(String model) {
-		this.model = model == null ? null : model.trim();
+		this.model = model;
 	}
 
 	public Integer getClientType() {
@@ -91,7 +91,7 @@ public class ReqUnusualLog {
 	}
 
 	public void setLevel(String level) {
-		this.level = level == null ? null : level.trim();
+		this.level = level;
 	}
 
 	public String getBrand() {
@@ -99,7 +99,7 @@ public class ReqUnusualLog {
 	}
 
 	public void setBrand(String brand) {
-		this.brand = brand == null ? null : brand.trim();
+		this.brand = brand;
 	}
 
 	public String getContent() {
@@ -109,6 +109,7 @@ public class ReqUnusualLog {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
 	
 	
 }

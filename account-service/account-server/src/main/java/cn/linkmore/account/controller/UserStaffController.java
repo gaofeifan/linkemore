@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.account.entity.UserStaff;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.service.UserStaffService;
 import cn.linkmore.util.ObjectUtils;

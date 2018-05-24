@@ -40,8 +40,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	public void save(cn.linkmore.user.request.ReqVehicleMark bean, HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ResUser ru = this.userService.getCache(request);
 		bean.setUserId(ru.getId());
 		ReqVehicleMark mark = ObjectUtils.copyObject(bean,new ReqVehicleMark());
 		vehicleMarkClient.create(mark);

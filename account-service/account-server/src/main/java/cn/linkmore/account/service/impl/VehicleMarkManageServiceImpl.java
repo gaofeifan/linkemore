@@ -42,10 +42,10 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	@Transactional
 	public void save(ReqVehicleMark bean) {
 		List<VehicleMarkManage> list = this.findByUserId(bean.getUserId());
-		if(list.size() < 4){
+		if(list.size() < 3){
 			//检查车牌号是否已经存在
 			List<String> fieldVlaue = ObjectUtils.findFieldVlaue(list, "vehMark", new String[]{"vehMark"}, new String[] {bean.getVehMark()});
-			if(fieldVlaue.size() > 0){
+			if(fieldVlaue != null && fieldVlaue.size() > 0){
 				throw new BusinessException(StatusEnum.ACCOUNT_PLATE_EXISTS);
 			}else{
 				VehicleMarkManage manage = new VehicleMarkManage();
