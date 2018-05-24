@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.StallClientHystrix;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -23,7 +24,7 @@ public interface StallClient {
 	 * @param lockSn String
 	 */
 	@RequestMapping(value = "/v2.0/order", method=RequestMethod.PUT)
-	public boolean order(@RequestParam("lockSn") String lockSn);
+	public void order(@RequestParam("id") Long id);
 	/**
 	 * 取消订单释放车位
 	 * 
@@ -63,4 +64,11 @@ public interface StallClient {
 	 */
 	@RequestMapping(value = "/v2.0/{stallId}", method=RequestMethod.GET)
 	public ResStallEntity findById(@PathVariable("stallId") Long stallId);
+	/**
+	 * 根据锁编号获取车位信息
+	 * @param sn 锁编号
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/lock/{sn}", method=RequestMethod.GET)
+	public ResStallEntity findByLock(@PathVariable("sn") String sn);
 }

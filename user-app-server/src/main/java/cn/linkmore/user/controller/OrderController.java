@@ -1,19 +1,20 @@
 package cn.linkmore.user.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Min;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.user.request.ReqBooking;
+import cn.linkmore.user.request.ReqOrderStall;
 import cn.linkmore.user.response.ResOrder;
 import cn.linkmore.user.service.OrderService;
 import io.swagger.annotations.Api;
@@ -38,14 +39,10 @@ public class OrderController {
 	@ApiOperation(value = "预约下单", notes = "车区ID不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/create", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> create(
-			@RequestParam(value = "prefectureId", required = true) 
-			@Min(value = 1, message = "车区ID为有数字") 
-			Long prefectureId,
-			HttpServletRequest request) {
+	public ResponseEntity<?> create(@Validated @RequestBody ReqBooking rb, HttpServletRequest request) {
 		ResponseEntity<?> response = null;
 		try {
-			this.orderService.create(prefectureId, request);
+			this.orderService.create(rb, request);
 			response = ResponseEntity.success(null, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
@@ -74,14 +71,11 @@ public class OrderController {
 	@ApiOperation(value = "降下地锁", notes = "降下预约车位地锁[异步操作]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/down", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> downLock(
-			@RequestParam("stallId")
-			@Min(value = 1, message = "车位ID为有数字") 
-			Long stallId, 
+	public ResponseEntity<?> downLock( @Validated @RequestBody ReqOrderStall ros, 
 			HttpServletRequest request) {
 		ResponseEntity<ResOrder> response = null;
 		try {
-			this.orderService.down(stallId, request);
+			this.orderService.down(ros, request);
 			response = ResponseEntity.success(null, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);

@@ -41,5 +41,12 @@ public interface BaseDictService {
 	 */
 	void updateByIdSelective(ReqBaseDict baseDict);
 
+	/**
+	 * 根据ID查询
+	 * @param id
+	 * @return
+	 */
+	ResBaseDict find(Long id);
+
 
 }

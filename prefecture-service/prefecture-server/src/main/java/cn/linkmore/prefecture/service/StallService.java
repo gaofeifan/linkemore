@@ -14,9 +14,9 @@ import cn.linkmore.prefecture.response.ResStallEntity;
 public interface StallService {
 	/**
 	 * 预约订单时，根据车位锁序列号查询车位
-	 * @param lockSn
+	 * @param id
 	 */
-	boolean order(String lockSn);
+	void order(Long id);
 	/**
 	 * 取消订单释放车位
 	 * @param stallId
@@ -52,5 +52,11 @@ public interface StallService {
 	 * @return
 	 */
 	ResStallEntity findById(Long stallId);
+	/**
+	 * 根据锁编号查询车位
+	 * @param sn 编号
+	 * @return
+	 */
+	ResStallEntity findByLock(String sn);
 	
 }

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -21,26 +22,37 @@ import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.OperateStatus;
+import cn.linkmore.bean.common.Constants.OrderPayType;
 import cn.linkmore.bean.common.Constants.OrderStatus;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.Constants.StallAssignStatus;
+import cn.linkmore.bean.common.Constants.StallStatus;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.common.client.BaseDictClient;
+import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
+import cn.linkmore.order.dao.cluster.StallAssignClusterMapper;
 import cn.linkmore.order.dao.master.BookingMasterMapper;
+import cn.linkmore.order.dao.master.OrdersDetailMasterMapper;
 import cn.linkmore.order.dao.master.OrdersMasterMapper;
+import cn.linkmore.order.dao.master.StallAssignMasterMapper;
 import cn.linkmore.order.entity.Booking;
 import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.OrdersDetail;
+import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderCreate;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.JsonUtil;
@@ -63,6 +75,8 @@ public class OrdersServiceImpl implements OrdersService {
 	@Autowired
 	private OrdersClusterMapper ordersClusterMapper;
 	@Autowired
+	private OrdersDetailMasterMapper ordersDetailMasterMapper;
+	@Autowired
 	private OrdersMasterMapper orderMasterMapper; 
 	
 	@Autowired
@@ -70,6 +84,18 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	@Autowired
 	private VehicleMarkClient vehicleMarkClient;
+	
+//	@Autowired
+//	private FreeLockPool freeLockPool;
+	
+	@Autowired
+	private StallAssignMasterMapper stallAssignMasterMapper;
+	
+	@Autowired
+	private StallAssignClusterMapper stallAssignClusterMapper;
+	
+	@Autowired
+	private BaseDictClient baseDictClient;
 	
 	@Autowired
 	private RedisService redisService;
@@ -79,6 +105,9 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	@Autowired
 	private UserClient userClient;
+	
+	@Autowired
+	private DockingClient dockingClient;
 	
 	
 	public boolean checkCarFree(String carno) {
@@ -92,12 +121,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 		}
 		return flag;
-	}
-	
-	public static void main(String[] args) {
-		Double t = Math.pow(10,6);
-		System.out.println(t.toString());
-	}
+	} 
 	
 	private String getOrderNumber() {
 		Date day = new Date();
@@ -106,24 +130,25 @@ public class OrdersServiceImpl implements OrdersService {
 		Double t = Math.pow(10,5);
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
-		return t.intValue()+1;
+		number.append(t.intValue()+increment);
+		return number.toString();
 	}
 	
 	@Async
 	public void create(ReqOrderCreate orc) { 
-		Stall stall = null;
+		ResStallEntity stall = null;
 		Orders o = null;
 		boolean resetRedis = true;
 		short failureReason = 0;
 		short bookingStatus = 0;
 		try {
-			
+			ResUser ru = this.userClient.findById(orc.getUserId());
 			if (null == orc.getUserId() || null == orc.getPrefectureId() || null == orc.getPlateId()) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = Booking.REASON_EXCEPTION;
 				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
 			}
-			ResVechicleMark  vehicleMark = null;// vehicleMarkClient.find(orc.getPlateId());
+			ResVechicleMark  vehicleMark =  vehicleMarkClient.findById(orc.getPlateId());
 
 			if (!this.checkCarFree(vehicleMark.getVehMark())) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
@@ -133,7 +158,7 @@ public class OrdersServiceImpl implements OrdersService {
 			// 指定车位锁
 			String key = RedisKey.ORDER_ASSIGN_STALL.key;
 			String lockSn = "";
-			Set<Object> set = freeLockPool.redisSetOper(key); 
+			Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key); 
 			String vehMark = vehicleMark.getVehMark();
 			boolean assign = false;
 			for (Object obj : set) {
@@ -146,8 +171,8 @@ public class OrdersServiceImpl implements OrdersService {
 					map.put("lockSn", lockSn);
 					map.put("plate", vm);
 					map.put("preId", orc.getPrefectureId().toString());
-					String val = JSON.toJSON(map).toString();
-					freeLockPool.redisSetOper(1, key, val);
+					String val = JSON.toJSON(map).toString(); 
+					this.redisService.remove(key, val);
 					assign = true;
 					log.info("use the admin assign stall:{},plate:{}",lockSn,vehicleMark.getVehMark());
 					break;
@@ -163,30 +188,26 @@ public class OrdersServiceImpl implements OrdersService {
 			 */
 			
 			// 以下为预约流程
-			if("".equals(lockSn)) {  
-				if(pre.getCategory().shortValue()==Prefecture.CATEGORY_SHARE){ 
-					lockSn = this.getShareStall(preId);
-				}else{
-					lockSn = freeLockPool.getFreeLock(preId);
-				}  
+			if("".equals(lockSn)) {    
+				lockSn = (String)redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + orc.getPrefectureId());
 			}
 			
 			if (StringUtils.isEmpty(lockSn)) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = Booking.REASON_STALL_NONE;
-				throw new BusinessException(Msg.REASON_STALL_NONE);
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);
 			}
 			// 根据lockSn获取车位
 			log.info("lock,{}", lockSn);
 			
 			
 			o = new Orders();
-			o.setOrderNo(codeService.getOrderRecordCode());
-			o.setUserType(0);
+			o.setOrderNo(this.getOrderNumber());
+			o.setUserType((short)0);
 			Date current = new Date();
 			o.setPlateNo(vehicleMark.getVehMark());
-			o.setUsername(u.getUsername());
-			o.setActualAmount(0.0);
+			o.setUsername(ru.getUsername());
+			o.setActualAmount(new BigDecimal(0.0d));
 			o.setBeginTime(current);
 			o.setCreateTime(current);
 			o.setUpdateTime(current);
@@ -196,54 +217,48 @@ public class OrdersServiceImpl implements OrdersService {
 			
 			// 支付类型1免费2优惠券3账户
 			// 初始化支付类型为账户支付
-			o.setPayType(PayType.);
+			o.setPayType(OrderPayType.ACCOUNT.type); 
+			o.setPreId(orc.getPrefectureId());
 
-			o.setPreId(preId);
+			stall = this.stallClient.findByLock(lockSn.trim());
 
-			stall = stallMapper.getByLockSn(lockSn.trim());
-
-			if (stall == null || stall.getStatus().intValue() != 1) {
+			if (stall == null || stall.getStatus().intValue() != StallStatus.FREE.status) {
 				resetRedis = false;
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = Booking.REASON_STALL_EXCEPTION;
-				log.info("{} create order error with {}", u.getUsername(), JsonUtils.toJson(stall));
-				throw new BusinessException(Msg.REASON_STALL_EXCEPTION);
+				log.info("{} create order error with {}", ru.getUsername(), JsonUtil.toJson(stall));
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_EXCEPTION);
 			}
-			Orders latest = findStallLatestOrder(stall.getId());
+			ResUserOrder latest = this.ordersClusterMapper.findStallLatest(stall.getId());
 			if (latest != null && latest.getStatus().intValue() == 1) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = Booking.REASON_STALL_ORDERED;
 				resetRedis = false;
-				log.info("{} create order error latest order {} is unpaid with stall  ", u.getUsername(),
+				log.info("{} create order error latest order {} is unpaid with stall  ", ru.getUsername(),
 						JsonUtil.toJson(latest), JsonUtil.toJson(stall));
-				throw new BusinessException(Msg.REASON_STALL_ORDERED);
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
 			}
-			log.info("{} create order with{}", u.getUsername(), JsonUtil.toJson(stall));
-
+			log.info("{} create order with{}", ru.getUsername(), JsonUtil.toJson(stall)); 
 			o.setStallId(stall.getId());
 			o.setStatus(OrderStatus.UNPAID.value);
 			o.setTotalAmount(new BigDecimal(0.0D));
 			o.setUserId(orc.getUserId());
 			o.setUsername(o.getUsername());
 
-			// 更新车位状态
-			stall.setStatus(Stall.STATUS_USED);
-			stall.setLockStatus(Stall.LOCK_STATUS_UP);
-			stall.setBindOrderStatus();
+			// 更新车位状态 
 			// 订单详情
 			OrdersDetail od = new OrdersDetail();
-			od.setAccountId(u.getId());
+			od.setAccountId(ru.getId());
 			od.setBeginTime(current);
 			od.setCouponsMoney(new BigDecimal(0.0D));
 			od.setCreateTime(current);
 			od.setDayFee(new BigDecimal(0.0D));
 			od.setDayTime(0);
 			od.setNightFee(new BigDecimal(0.0D));
-			od.setNightTime(0);
-			//Prefecture prefecture = prefectureMapper.selectByPrimaryKey(preId);
+			od.setNightTime(0); 
 			Long dictId = pre.getBaseDictId();
 			if (null != dictId) {
-				Dict dict = dictMapper.selectByPrimaryKey(dictId);
+				ResBaseDict dict = this.baseDictClient.find(dictId);
 				if (null != dict) {
 					o.setDockId(dict.getCode());
 				}
@@ -257,19 +272,22 @@ public class OrdersServiceImpl implements OrdersService {
 			o.setStallGuidance(pre.getAddress() + stall.getStallName());
 			this.orderMasterMapper.save(o);
 			od.setOrderId(o.getId());
-			ordersDetailMapper.insert(od);
-			stallMapper.order(stall);
-			o.setOrdersDetail(od); 
+			ordersDetailMasterMapper.save(od);
+			this.stallClient.order(stall.getId()); 
 			bookingStatus = (short)OperateStatus.SUCCESS.status;
 			failureReason = Booking.REASON_NONE;   
-			User db  = this.userMapper.selectByPrimaryKey(u.getId());
-			Map<String,Object> param = new HashMap<String,Object>();
-			param.put("id", db.getId());
-			param.put("orderCount", db.getOrderCount()==null?1:db.getOrderCount()+1);
-			this.userMapper.createOrder(param);
+			this.userClient.order(ru.getId());
 			if(assign){
 				log.info("use the admin assign stall:{},orderNo:{}",lockSn,o.getOrderNo());
-				this.updateAssign(lockSn, o.getId(), o.getOrderNo());
+				StallAssign sa = stallAssignClusterMapper.findByLockSn(lockSn); 
+				if(sa!=null&&sa.getStatus().intValue()==StallAssignStatus.FREE.status) {
+					sa.setLockSn(lockSn);
+					sa.setOrderId(o.getId());
+					sa.setOrderNo(o.getOrderNo());
+					sa.setOrderTime(o.getCreateTime());
+					sa.setStatus((short)StallAssignStatus.ORDER.status);
+					stallAssignMasterMapper.orderUpdate(sa);
+				} 
 			}
 			if (StringUtils.isNotBlank(o.getDockId())) { 
 				Thread thread = new ProduceBookThread(o);
@@ -285,8 +303,8 @@ public class OrdersServiceImpl implements OrdersService {
 				}
 			}
 			log.info(sb.toString());
-			if (null != stall && resetRedis) {
-				freeLockPool.addFreeLock(stall.getPreId(), stall.getLockSn());
+			if (null != stall && resetRedis) { 
+				this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key +stall.getPreId(), stall.getLockSn());
 			}
 			throw e;
 		} catch (RuntimeException e) {
@@ -299,8 +317,8 @@ public class OrdersServiceImpl implements OrdersService {
 				}
 			}
 			log.info(sb.toString());
-			if (null != stall && resetRedis) {
-				freeLockPool.addFreeLock(stall.getPreId(), stall.getLockSn());
+			if (null != stall && resetRedis) { 
+				this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key +stall.getPreId(), stall.getLockSn());
 			}
 			throw e;
 		} catch (Exception e) {
@@ -313,14 +331,40 @@ public class OrdersServiceImpl implements OrdersService {
 				}
 			}
 			log.info(sb.toString());
-			if (null != stall && resetRedis) {
-				freeLockPool.addFreeLock(stall.getPreId(), stall.getLockSn());
+			if (null != stall && resetRedis) { 
+				this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key +stall.getPreId(), stall.getLockSn());
 			}
 			throw new RuntimeException("异常");
 		} finally {
-			Thread thread = new BookingThread(preId, u.getId(), bookingStatus, failureReason);
+			Thread thread = new BookingThread(orc.getPrefectureId(), orc.getUserId(), bookingStatus, failureReason);
 			thread.start();
 		} 
+	}
+	public ResUserOrder findStallLatestOrder(Long stallId) {
+		return this.ordersClusterMapper.findStallLatest(stallId); 
+	}
+	class ProduceBookThread extends Thread {
+		private Orders order;
+
+		public ProduceBookThread(Orders order) {
+			this.order = order;
+		} 
+		public void run() {
+			try { 
+				cn.linkmore.third.request.ReqOrder ro = new cn.linkmore.third.request.ReqOrder();
+				ro.setActualAmount(order.getActualAmount().doubleValue());
+				ro.setBeginTime(order.getBeginTime());
+				ro.setDockId(order.getDockId());
+				ro.setOrderNo(order.getOrderNo());
+				ro.setStatus(order.getStatus());
+				ro.setEndTime(order.getEndTime());
+				ro.setPreId(order.getPreId());
+				ro.setPlateNo(order.getPlateNo());
+				dockingClient.order(ro);
+			} catch (Exception e) {
+				log.info("call park producer error with booking msg");
+			}
+		}
 	}
 	class BookingThread extends Thread {
 		private Long preId;

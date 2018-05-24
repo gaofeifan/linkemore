@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.account.entity.User;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
@@ -22,7 +21,6 @@ import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
-import cn.linkmore.util.ObjectUtils;
 
 /**
  * 用户
@@ -149,5 +147,13 @@ public class UserControlle {
 	public ResUser findById(@PathVariable("id") Long id) {
 		ResUser user = userService.findById(id);
 		return user;
+	}
+	/**
+	 * 更新用户下单数
+	 * @param id
+	 */
+	@RequestMapping(value="/v2.0/order",method = RequestMethod.POST)
+	public void order(@PathVariable("id")Long id) {
+		 this.userService.order(id);
 	}
 }

@@ -79,6 +79,12 @@
     from o_orders  
     where user_id = #{userId,jdbcType=BIGINT} order by id desc  limit 0,1
   </select>
+   <select id="findStallLatest" parameterType="java.lang.Long" resultMap="ResResultMap">
+    select 
+    <include refid="Res_Column_List" />
+    from o_orders  
+    where stall_id = #{stallId,jdbcType=BIGINT} order by id desc  limit 0,1
+  </select>
   <select id="findDetail" parameterType="java.lang.Long" resultMap="ResResultMap">
     select 
     <include refid="Res_Column_List" />

@@ -49,5 +49,10 @@ public class BaseDictController {
 		this.baseDictService.deleteById(id);
 	}
 	
+	@RequestMapping(value="/{id}/",method=RequestMethod.GET)
+	public ResBaseDict find(@PathVariable("id") Long id) {
+		return this.baseDictService.find(id);
+	}
+	
 
 }

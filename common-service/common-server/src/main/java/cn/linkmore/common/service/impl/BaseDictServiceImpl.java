@@ -51,6 +51,11 @@ public class BaseDictServiceImpl implements BaseDictService {
 		BaseDict dict = ObjectUtils.copyObject(baseDict, new BaseDict());
 		this.baseDictMasterMapper.updateByIdSelective(dict);
 	}
+
+	@Override
+	public ResBaseDict find(Long id) {
+		return this.baseDictClusterMapper.find(id);
+	}
 	
 	
 }

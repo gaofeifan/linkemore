@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.master.StallAssignMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.order.entity.StallAssign">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="staff_id" jdbcType="BIGINT" property="staffId" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+    <result column="carno" jdbcType="VARCHAR" property="carno" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="cancel_time" jdbcType="TIMESTAMP" property="cancelTime" />
+    <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, staff_id, staff_name, carno, status, order_id, order_no, create_time, cancel_time, 
+    order_time, pre_id, stall_id, stall_name, lock_sn
+  </sql> 
+  <insert id="save" parameterType="cn.linkmore.order.entity.StallAssign">
+    insert into t_admin_stall_assign (id, staff_id, staff_name, 
+      carno, status, order_id, 
+      order_no, create_time, cancel_time, 
+      order_time, pre_id, stall_id, 
+      stall_name, lock_sn)
+    values (#{id,jdbcType=BIGINT}, #{staffId,jdbcType=BIGINT}, #{staffName,jdbcType=VARCHAR}, 
+      #{carno,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{orderId,jdbcType=BIGINT}, 
+      #{orderNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{cancelTime,jdbcType=TIMESTAMP}, 
+      #{orderTime,jdbcType=TIMESTAMP}, #{preId,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, 
+      #{stallName,jdbcType=VARCHAR}, #{lockSn,jdbcType=VARCHAR})
+  </insert>   
+  <update id="orderUpdate" parameterType="cn.linkmore.order.entity.StallAssign">
+    update t_admin_stall_assign
+    set  
+      status = #{status,jdbcType=SMALLINT},
+      order_id = #{orderId,jdbcType=BIGINT},
+      order_no = #{orderNo,jdbcType=VARCHAR}, 
+      order_time = #{orderTime,jdbcType=TIMESTAMP},  
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="cancelUpdate" parameterType="cn.linkmore.order.entity.StallAssign">
+    update t_admin_stall_assign
+    set  
+      status = #{status,jdbcType=SMALLINT}, 
+      cancel_time = #{cancelTime,jdbcType=TIMESTAMP},  
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -30,7 +30,6 @@ import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
-import cn.linkmore.annotation.AopIgnore;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
@@ -263,6 +262,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateLoginTime(Map<String, Object> param) {
 		this.userMasterMapper.updateLoginTime(param);
+	}
+
+	@Override
+	public void order(Long id) {
+		ResUser user = this.userClusterMapper.findById(id);
+		if(user!=null) {
+			user.setOrderCount(user.getOrderCount()==null?1:user.getOrderCount()+1);
+			Map<String,Object> param = new HashMap<String,Object>();
+			param.put("id", user.getId());
+			param.put("orderCount", user.getOrderCount());
+			this.userMasterMapper.orderUpdate(param);
+		}
+		
 	}
 
 }

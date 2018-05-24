@@ -2,6 +2,8 @@ package cn.linkmore.user.service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.linkmore.user.request.ReqBooking;
+import cn.linkmore.user.request.ReqOrderStall;
 import cn.linkmore.user.response.ResOrder;
 
 /**
@@ -17,7 +19,7 @@ public interface OrderService {
 	 * @param prefectureId 专区ID
 	 * @param request
 	 */
-	void create(Long prefectureId, HttpServletRequest request);
+	void create(ReqBooking rb, HttpServletRequest request);
 
 	/**
 	 * 查询用户订单
@@ -28,9 +30,9 @@ public interface OrderService {
 	
 	/**
 	 * 降下地锁
-	 * @param stallId
+	 * @param ros
 	 * @param request
 	 */
-	void down(Long stallId,HttpServletRequest request);
+	void down(ReqOrderStall ros,HttpServletRequest request);
 
 }

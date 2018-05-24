@@ -34,8 +34,8 @@ public class StallController {
 	 * @param lockSn String
 	 */
 	@RequestMapping(value = "/v2.0/order", method=RequestMethod.PUT)
-	public boolean order(@RequestParam("lockSn") String lockSn) {
-		return this.stallService.order(lockSn);
+	public void order(@RequestParam("id") Long id) {
+		this.stallService.order(id);
 	}
 	/**
 	 * 取消订单释放车位
@@ -88,6 +88,12 @@ public class StallController {
 	@RequestMapping(value = "/v2.0/{stallId}", method=RequestMethod.GET)
 	public ResStallEntity findById(@PathVariable("stallId") Long stallId) {
 		 ResStallEntity stallEntity = this.stallService.findById(stallId);
+		 return stallEntity;
+	}
+	
+	@RequestMapping(value = "/v2.0/lock/{sn}", method=RequestMethod.GET)
+	public ResStallEntity findByLock(@PathVariable("sn") String sn) {
+		ResStallEntity stallEntity = this.stallService.findByLock(sn);
 		 return stallEntity;
 	}
 }

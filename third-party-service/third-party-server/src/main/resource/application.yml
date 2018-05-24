@@ -1,6 +1,8 @@
 base:
   service-url: https://api.linkmoreparking.cn/callback
   online: false
+docking:
+  order-url: http://192.168.1.172:8086/order/orderDeal
 server:
   port: 8000 
 spring:

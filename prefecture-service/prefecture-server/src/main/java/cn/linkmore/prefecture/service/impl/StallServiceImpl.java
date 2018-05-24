@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
+
+import cn.linkmore.bean.common.Constants.BindOrderStatus;
+import cn.linkmore.bean.common.Constants.LockStatus;
+import cn.linkmore.bean.common.Constants.StallStatus;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
@@ -39,18 +43,13 @@ public class StallServiceImpl implements StallService {
 	private FreeLockPool freeLockPool;
 
 	@Override
-	public boolean order(String lockSn) {
-		Boolean flag = false;
-		Stall stall = stallClusterMapper.findByLockSn(lockSn.trim());
-		// 更新车位状态
-		if(stall != null) {
-			stall.setStatus(Stall.STATUS_USED);
-			stall.setLockStatus(Stall.LOCK_STATUS_UP);
-			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
-			stallMasterMapper.order(stall);
-			flag = true;
-		}
-		return flag;
+	public void order(Long id) { 
+		Stall stall = new Stall();
+		stall.setId(id); 
+		stall.setStatus(StallStatus.USED.status);
+		stall.setLockStatus(LockStatus.UP.status);
+		stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
+		stallMasterMapper.order(stall); 
 	}
 
 	@Override
@@ -136,6 +135,16 @@ public class StallServiceImpl implements StallService {
 	public ResStallEntity findById(Long stallId) {
 		ResStallEntity detail = new ResStallEntity();
 		Stall stall = stallClusterMapper.findById(stallId);
+		if(stall != null) {
+			return ObjectUtils.copyObject(stall, detail);
+		}
+		return null;
+	}
+
+	@Override
+	public ResStallEntity findByLock(String sn) {
+		ResStallEntity detail = new ResStallEntity();
+		Stall stall = this.stallClusterMapper.findByLockSn(sn);
 		if(stall != null) {
 			return ObjectUtils.copyObject(stall, detail);
 		}

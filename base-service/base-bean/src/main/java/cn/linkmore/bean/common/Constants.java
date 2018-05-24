@@ -10,6 +10,28 @@ package cn.linkmore.bean.common;
 public class Constants {
 	public final static String ACCESS_TOKEN_HEADER_NAME = "X-Access-Auth-Token";
 
+	public enum OrderPayType{
+		FREE(1),COUPON(2),ACCOUNT(3);
+		public int type;
+		private OrderPayType(int type) {
+			this.type = type;
+		}
+	} 
+	public enum StallStatus{
+		FREE(1),USED(2),OUTLINE(4);
+		public int status;
+		private StallStatus(int status) {
+			this.status = status;
+		}
+	}
+	public enum StallAssignStatus{
+		FREE(0),CANCEL(1),ORDER(2);
+		public int status;
+		private StallAssignStatus(int status) {
+			this.status = status;
+		}
+	}
+	
 	public enum ThirdPayType{
 		WECHAT(1),ALIPAY(2),APPLEPAY(3);
 		public int type;
@@ -78,11 +100,11 @@ public class Constants {
 
 	public enum BindOrderStatus {
 		FREE(0, "正常"), SUSPENDED(1, "挂起"), CLOSED(2, "关闭");
-		public int code;
+		public int status;
 		public String label;
 
-		private BindOrderStatus(int code, String label) {
-			this.code = code;
+		private BindOrderStatus(int status, String label) {
+			this.status = status;
 			this.label = label;
 		}
 	}
@@ -106,6 +128,13 @@ public class Constants {
 		private OperateStatus(int status, String label) {
 			this.status = status;
 			this.label = label;
+		}
+	}
+	public enum LockStatus{
+		UP(1),DOWN(2); 
+		public int status;
+		private LockStatus(int status) {
+			this.status = status;
 		}
 	}
 
@@ -156,7 +185,8 @@ public class Constants {
 		COUPON_TEMPLATE_CONDITION_USETIME("coupon:temp:condition:time:"), 
 		COUPON_TEMPLATE_CONDITION_PREIDS( "coupon:temp:condition:pid:"),
 		ORDER_ASSIGN_STALL("assign_lock"),
-		ORDER_SERIAL_NUMBER("order:serial-number:");
+		ORDER_SERIAL_NUMBER("order:serial_number:"),
+		PREFECTURE_FREE_STALL("prefecture:free_stall:");
 		public String key;
 
 		private RedisKey(String key) {

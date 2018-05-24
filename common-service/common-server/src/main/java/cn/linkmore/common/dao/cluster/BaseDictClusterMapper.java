@@ -29,4 +29,11 @@ public interface BaseDictClusterMapper {
 	 */
 	List<ResBaseDict> findListByCode(@Param("code")String code);
 
+	/**
+	 * 根据ID查询
+	 * @param id
+	 * @return
+	 */
+	ResBaseDict find(Long id);
+
 }

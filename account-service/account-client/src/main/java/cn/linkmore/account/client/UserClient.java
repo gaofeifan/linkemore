@@ -125,4 +125,10 @@ public interface UserClient {
 	 */
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
 	public ResUser findById(@PathVariable("id") Long id);
+	/**
+	 * 用户下单
+	 * @param id
+	 */
+	@RequestMapping(value = "/v2.0/order/{id}", method = RequestMethod.POST)
+	public void order(@PathVariable("id")Long id);
 }

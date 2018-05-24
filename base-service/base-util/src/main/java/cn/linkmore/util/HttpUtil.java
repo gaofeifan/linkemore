@@ -6,6 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Map;
 
+/**
+ * 工具 - 请求处理
+ * 
+ * @author liwenlong
+ *
+ */
 public class HttpUtil {
 	/**
 	 * 发送GET请求
@@ -100,6 +106,44 @@ public class HttpUtil {
 			httpConn.setDoOutput(true);
 			out = new PrintWriter(httpConn.getOutputStream());
 			out.write(params);
+			out.flush();
+			in = new BufferedReader(new InputStreamReader(httpConn.getInputStream(), "UTF-8"));
+			String line;
+			while ((line = in.readLine()) != null) {
+				result += line;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (out != null) {
+					out.close();
+				}
+				if (in != null) {
+					in.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public static String sendJson(String url, String json) {
+		String result = ""; 
+		BufferedReader in = null;
+		PrintWriter out = null;
+		try {
+			java.net.URL connURL = new java.net.URL(url);
+			java.net.HttpURLConnection httpConn = (java.net.HttpURLConnection) connURL.openConnection();
+			httpConn.setRequestProperty("Content-Type", "application/json");
+			httpConn.setRequestProperty("Accept", "*/*");
+			httpConn.setRequestProperty("Connection", "Keep-Alive");
+			httpConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)");
+			httpConn.setDoInput(true);
+			httpConn.setDoOutput(true);
+			out = new PrintWriter(httpConn.getOutputStream());
+			out.write(json);
 			out.flush();
 			in = new BufferedReader(new InputStreamReader(httpConn.getInputStream(), "UTF-8"));
 			String line;
