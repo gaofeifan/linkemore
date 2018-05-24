@@ -19,11 +19,12 @@ import cn.linkmore.security.dao.cluster.DictClusterMapper;
 import cn.linkmore.security.dao.cluster.MenuClusterMapper;
 import cn.linkmore.security.dao.cluster.PageClusterMapper;
 import cn.linkmore.security.dao.master.MenuMasterMapper;
-import cn.linkmore.security.entity.Dict;
 import cn.linkmore.security.entity.Menu;
-import cn.linkmore.security.entity.Page;
 import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.response.ResDict;
+import cn.linkmore.security.response.ResMenu;
+import cn.linkmore.security.response.ResPage;
 import cn.linkmore.security.service.MenuService;
 import cn.linkmore.util.DomainUtil;
 
@@ -51,18 +52,18 @@ public class MenuServiceImpl implements MenuService {
 	
 	@Override
 	public Tree findTree(){
-		List<Menu> list =  this.menuClusterMapper.findTree();
+		List<ResMenu> list =  this.menuClusterMapper.findTree();
 		Tree tree = null; 
-		List<Menu> fs = new ArrayList<Menu>();
-		List<Menu> ss = null; 
-		Map<Long,List<Menu>> map = new HashMap<Long,List<Menu>>();
-		for(Menu menu:list) {
+		List<ResMenu> fs = new ArrayList<ResMenu>();
+		List<ResMenu> ss = null; 
+		Map<Long,List<ResMenu>> map = new HashMap<Long,List<ResMenu>>();
+		for(ResMenu menu:list) {
 			if(menu.getParentId()==0) {
 				fs.add(menu);
 			}else {
 				ss = map.get(menu.getParentId());
 				if(ss==null) {
-					ss = new ArrayList<Menu>();
+					ss = new ArrayList<ResMenu>();
 					map.put(menu.getParentId(), ss);
 				}
 				ss.add(menu);
@@ -71,7 +72,7 @@ public class MenuServiceImpl implements MenuService {
 		Tree child = null;
 		List<Tree> children = null;
 		List<Tree> pchildren = new ArrayList<Tree>();
-		for(Menu menu:fs) {
+		for(ResMenu menu:fs) {
 			tree = new Tree();
 			tree.setName(menu.getName());
 			tree.setId(menu.getId().toString());
@@ -82,7 +83,7 @@ public class MenuServiceImpl implements MenuService {
 			if(ss!=null) {
 				tree.setIsParent(true);
 				children = new ArrayList<Tree>();
-				for(Menu s:ss) {
+				for(ResMenu s:ss) {
 					child = new Tree();
 					child.setName(s.getName());
 					child.setId(s.getId().toString());
@@ -127,7 +128,7 @@ public class MenuServiceImpl implements MenuService {
 		Integer count = this.menuClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<Menu> list = this.menuClusterMapper.findPage(param);
+		List<ResMenu> list = this.menuClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
@@ -161,9 +162,9 @@ public class MenuServiceImpl implements MenuService {
 	@Override
 	public Map<String,Object> map() {
 		Map<String,Object> param = new HashMap<String,Object>(); 
-		List<Dict> dicts = this.dictClusterMapper.findByGroupCode("security-page-category");
+		List<ResDict> dicts = this.dictClusterMapper.findByGroupCode("security-page-category");
 		param.put("category", dicts);
-		List<Page> pages = this.pageClusterMapper.findAll();
+		List<ResPage> pages = this.pageClusterMapper.findAll();
 		param.put("page", pages);
 		return param;
 	}
@@ -173,29 +174,29 @@ public class MenuServiceImpl implements MenuService {
 		Subject subject = SecurityUtils.getSubject();
 		Person person = (Person)subject.getSession().getAttribute("person");  
 		
-		List<Menu> list = this.menuClusterMapper.findPersonAuthList(person.getId());
-		List<Menu> tms = new ArrayList<Menu>(); 
+		List<ResMenu> list = this.menuClusterMapper.findPersonAuthList(person.getId());
+		List<ResMenu> tms = new ArrayList<ResMenu>(); 
 		 
-		Map<Long,Menu> fm = new HashMap<Long,Menu>();
-		Map<Long,Menu> sm = new HashMap<Long,Menu>(); 
-		Map<Long,Menu> pm = new HashMap<Long,Menu>();
-		for(Menu menu:list) {
+		Map<Long,ResMenu> fm = new HashMap<Long,ResMenu>();
+		Map<Long,ResMenu> sm = new HashMap<Long,ResMenu>(); 
+		Map<Long,ResMenu> pm = new HashMap<Long,ResMenu>();
+		for(ResMenu menu:list) {
 			if(menu.getLevel().intValue()==2&&menu.getPageId()!=null) {
 				tms.add(menu);
 			}else if(menu.getLevel().intValue()==1&&menu.getPageId()!=null) { 
-				menu.setChildren(new ArrayList<Menu>()); 
+				menu.setChildren(new ArrayList<ResMenu>()); 
 				sm.put(menu.getId(), menu);
 				pm.put(menu.getId(), menu);
 			}else if(menu.getLevel().intValue()==1) {
-				menu.setChildren(new ArrayList<Menu>()); 
+				menu.setChildren(new ArrayList<ResMenu>()); 
 				sm.put(menu.getId(), menu);
 			}else if(menu.getLevel().intValue()==0) {
-				menu.setChildren(new ArrayList<Menu>());
+				menu.setChildren(new ArrayList<ResMenu>());
 				fm.put(menu.getId(), menu); 
 			} 
 		}
-		Menu parent = null;  
-		for(Menu menu:tms) {
+		ResMenu parent = null;  
+		for(ResMenu menu:tms) {
 			parent =  sm.get(menu.getParentId());
 			if(parent!=null) {
 				parent.getChildren().add(menu);
@@ -203,9 +204,9 @@ public class MenuServiceImpl implements MenuService {
 			}
 		} 
 		Set<Long> keys = pm.keySet();
-		Menu top = null;
-		Set<Menu> topSet = new HashSet<Menu>();
-		Map<Long,Menu> topMap = new HashMap<Long,Menu>();
+		ResMenu top = null;
+		Set<ResMenu> topSet = new HashSet<ResMenu>();
+		Map<Long,ResMenu> topMap = new HashMap<Long,ResMenu>();
 		for(Long key:keys) {
 			parent = pm.get(key);
 			top = fm.get(parent.getParentId());
@@ -215,7 +216,7 @@ public class MenuServiceImpl implements MenuService {
 				topMap.put(top.getId(), top);
 			}
 		}
-		List<Menu> fs = new ArrayList<Menu>();
+		List<ResMenu> fs = new ArrayList<ResMenu>();
 		fs.addAll(topSet);
 		subject.getSession().setAttribute("top_menu_list", fs);
 		subject.getSession().setAttribute("top_menu_map", topMap);

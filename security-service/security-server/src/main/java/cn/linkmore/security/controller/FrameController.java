@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.security.entity.Person;
-import cn.linkmore.security.response.ReqAuthElement;
+import cn.linkmore.security.response.ResAuthElement;
 
 /**
  * Controller - 权限模块 - 框架
@@ -61,12 +61,12 @@ public class FrameController {
 	@ResponseBody
 	public List<Dom> authElement() throws IOException {
 		Subject subject = SecurityUtils.getSubject();
-		List<ReqAuthElement> aes = (List<ReqAuthElement>)subject.getSession().getAttribute("authelement");  
+		List<ResAuthElement> aes = (List<ResAuthElement>)subject.getSession().getAttribute("authelement");  
 		List<String> ids = (List<String>)subject.getSession().getAttribute("authorities"); 
 		Dom dom = null;
 		List<Dom> list = new ArrayList<Dom>();
 		Map<Long,Dom> dmap = new HashMap<Long,Dom>(); 
-		for(ReqAuthElement ae:aes){
+		for(ResAuthElement ae:aes){
 			Element e = new Element();
 			e.setLabelId(ae.getLabelId());
 			e.setLabelName(ae.getLabelName()); 

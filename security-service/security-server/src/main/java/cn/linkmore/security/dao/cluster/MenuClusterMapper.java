@@ -2,10 +2,8 @@ package cn.linkmore.security.dao.cluster;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
-
-import cn.linkmore.security.entity.Menu;
+import cn.linkmore.security.response.ResMenu;
 /**
  * 菜单
  * @author jiaohanbin
@@ -15,16 +13,16 @@ import cn.linkmore.security.entity.Menu;
 @Mapper
 public interface MenuClusterMapper {
 
-    Menu findById(Long id);
+	ResMenu findById(Long id);
 
-	List<Menu> findTree();
+	List<ResMenu> findTree();
 
 	Integer count(Map<String, Object> param);
 
-	List<Menu> findPage(Map<String, Object> param);
+	List<ResMenu> findPage(Map<String, Object> param);
 
 	Integer check(Map<String, Object> param);
 
-	List<Menu> findPersonAuthList(Long id);
+	List<ResMenu> findPersonAuthList(Long id);
 
 }

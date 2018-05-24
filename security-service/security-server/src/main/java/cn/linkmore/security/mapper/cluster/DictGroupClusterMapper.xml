@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.security.dao.cluster.DictGroupClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.security.entity.DictGroup">
+  <resultMap id="BaseResultMap" type="cn.linkmore.security.response.ResDictGroup">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />

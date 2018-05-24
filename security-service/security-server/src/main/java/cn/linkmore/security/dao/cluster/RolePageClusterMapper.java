@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.security.entity.RolePage;
+import cn.linkmore.security.response.ResRolePage;
 /**
  * 角色页面
  * @author jiaohanbin
@@ -15,8 +15,8 @@ import cn.linkmore.security.entity.RolePage;
 @Mapper
 public interface RolePageClusterMapper {
 	
-    RolePage findById(Long id);
+    ResRolePage findById(Long id);
 
-	List<RolePage> findList(Map<String, Object> param);
+	List<ResRolePage> findList(Map<String, Object> param);
     
 }

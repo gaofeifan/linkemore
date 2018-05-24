@@ -1,5 +1,10 @@
 package cn.linkmore.security.request;
-
+/**
+ * 请求校验字段
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 public class ReqCheck {
 	/**
 	 * 属性

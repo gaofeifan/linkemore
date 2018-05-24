@@ -2,11 +2,10 @@ package cn.linkmore.security.dao.cluster;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
-
 import cn.linkmore.security.entity.Role;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.response.ResRole;
 /**
  * 角色
  * @author jiaohanbin
@@ -16,9 +15,9 @@ import cn.linkmore.security.request.ReqCheck;
 @Mapper
 public interface RoleClusterMapper {
 
-    Role findById(Long id);
+    ResRole findById(Long id);
 
-	List<Role> findList(Map<String, Object> param);
+	List<ResRole> findList(Map<String, Object> param);
 
 	Integer check(ReqCheck reqCheck);
 

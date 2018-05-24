@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -16,10 +15,11 @@ import cn.linkmore.security.dao.cluster.ClazzClusterMapper;
 import cn.linkmore.security.dao.cluster.DictClusterMapper;
 import cn.linkmore.security.dao.cluster.InterfaceClusterMapper;
 import cn.linkmore.security.dao.master.InterfaceMasterMapper;
-import cn.linkmore.security.entity.Clazz;
-import cn.linkmore.security.entity.Dict;
 import cn.linkmore.security.entity.Interface;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.response.ResClazz;
+import cn.linkmore.security.response.ResDict;
+import cn.linkmore.security.response.ResInterface;
 import cn.linkmore.security.service.InterfaceService;
 import cn.linkmore.util.DomainUtil;
 
@@ -61,7 +61,7 @@ public class InterfaceServiceImpl implements InterfaceService {
 		Integer count = this.interfaceClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<Interface> list = this.interfaceClusterMapper.findPage(param);
+		List<ResInterface> list = this.interfaceClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
@@ -93,12 +93,12 @@ public class InterfaceServiceImpl implements InterfaceService {
 
 	@Override
 	public Tree findTree() {
-		List<Clazz> list =  this.clazzClusterMapper.findAll();
-		List<Dict> dicts = this.dictClusterMapper.findByGroupCode("security-clazz-category");
+		List<ResClazz> list =  this.clazzClusterMapper.findAll();
+		List<ResDict> dicts = this.dictClusterMapper.findByGroupCode("security-clazz-category");
 		List<Tree> trees = new ArrayList<Tree>();
 		Map<Long,Tree> treeMap = new HashMap<Long,Tree>();
 		Tree tree = null;
-		for(Dict di:dicts) { 
+		for(ResDict di:dicts) { 
 			tree = new Tree(); 
 			tree.setId(di.getId().toString());
 			tree.setName(di.getName());
@@ -120,7 +120,7 @@ public class InterfaceServiceImpl implements InterfaceService {
 		tree.setChildren(new ArrayList<Tree>());
 		trees.add(tree); 
 		Tree child = null;
-		for(Clazz clazz:list) {
+		for(ResClazz clazz:list) {
 			tree = treeMap.get(clazz.getPackageId());
 			if(tree==null) {
 				continue;

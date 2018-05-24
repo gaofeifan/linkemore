@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.security.entity.PageElement;
-import cn.linkmore.security.response.ReqAuthElement;
+import cn.linkmore.security.response.ResAuthElement;
+import cn.linkmore.security.response.ResPageElement;
 /**
  * 页面元素
  * @author jiaohanbin
@@ -16,16 +16,16 @@ import cn.linkmore.security.response.ReqAuthElement;
 @Mapper
 public interface PageElementClusterMapper {
 
-    PageElement findById(Long id);
+    ResPageElement findById(Long id);
 
-	List<ReqAuthElement> findReqAuthElementList();
+	List<ResAuthElement> findResAuthElementList();
 
 	Integer check(Map<String, Object> param);
 
 	Integer count(Map<String, Object> param);
 
-	List<PageElement> findPage(Map<String, Object> param);
+	List<ResPageElement> findPage(Map<String, Object> param);
 
-	List<PageElement> findAll();
+	List<ResPageElement> findAll();
 
 }

@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.Tree;
-import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.entity.PageElement;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqPageElement;
 import cn.linkmore.security.service.PageElementService;
+import cn.linkmore.util.ObjectUtils;
 
 /**
  * Controller - 页面元素操作
@@ -37,51 +37,25 @@ public class PageElementController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(@RequestBody PageElement record){
-		ViewMsg msg = null;
-		try { 
-			this.pageElementService.save(record);
-			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("保存失败",false);
-		}
-		return msg;
+	public void save(@RequestBody ReqPageElement reqPageElement){
+		PageElement pageElement = new PageElement();
+		pageElement = ObjectUtils.copyObject(reqPageElement, pageElement);
+		this.pageElementService.save(pageElement);
 		 
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update(@RequestBody PageElement record){
-		ViewMsg msg = null;
-		try {
-			this.pageElementService.update(record);
-			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("保存失败",false);
-		}
-		return msg;
+	public void update(@RequestBody ReqPageElement reqPageElement){
+		PageElement pageElement = new PageElement();
+		pageElement = ObjectUtils.copyObject(reqPageElement, pageElement);
+		this.pageElementService.update(pageElement);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg delete(@RequestBody List<Long> ids){ 
-		ViewMsg msg = null;
-		try {
-			this.pageElementService.delete(ids);
-			msg = new ViewMsg("删除成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("删除失败",false);
-		}
-		return msg;
+	public void delete(@RequestBody List<Long> ids){ 
+		this.pageElementService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

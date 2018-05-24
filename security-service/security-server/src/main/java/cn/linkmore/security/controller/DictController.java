@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.Tree;
-import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.entity.Dict;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqDict;
+import cn.linkmore.security.response.ResDict;
 import cn.linkmore.security.service.DictService;
+import cn.linkmore.util.ObjectUtils;
 
 /**
  * Controller - 字典操作
@@ -37,50 +38,24 @@ public class DictController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(@RequestBody Dict record){
-		ViewMsg msg = null;
-		try {
-			this.dictService.save(record);
-			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("保存失败",false);
-		}
-		return msg;
-		 
+	public void save(@RequestBody ReqDict reqDict){
+		Dict dict = new Dict();
+		dict = ObjectUtils.copyObject(reqDict, dict);
+		this.dictService.save(dict);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update(@RequestBody Dict record){
-		ViewMsg msg = null;
-		try {
-			this.dictService.update(record);
-			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			msg = new ViewMsg("保存失败",false);
-		}
-		return msg;
+	public void update(@RequestBody ReqDict reqDict){
+		Dict dict = new Dict();
+		dict = ObjectUtils.copyObject(reqDict, dict);
+		this.dictService.update(dict);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg delete(@RequestBody List<Long> ids){ 
-		ViewMsg msg = null;
-		try {
-			this.dictService.delete(ids);
-			msg = new ViewMsg("删除成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("删除失败",false);
-		}
-		return msg;
+	public void delete(@RequestBody List<Long> ids){ 
+		this.dictService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
@@ -102,7 +77,7 @@ public class DictController {
 	
 	@RequestMapping(value = "/v2.0/group_list", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Dict> groupList(@RequestParam("code") String code){
+	public List<ResDict> groupList(@RequestParam("code") String code){
 		return this.dictService.findByGroupCode(code);
 	} 
 	

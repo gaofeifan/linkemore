@@ -14,6 +14,7 @@ import cn.linkmore.security.dao.cluster.DictGroupClusterMapper;
 import cn.linkmore.security.dao.master.DictGroupMasterMapper;
 import cn.linkmore.security.entity.DictGroup;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.response.ResDictGroup;
 import cn.linkmore.security.service.DictGroupService;
 import cn.linkmore.util.DomainUtil;
 
@@ -59,7 +60,7 @@ public class DictGroupServiceImpl implements DictGroupService {
 		Integer count = this.dictGroupClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<DictGroup> list = this.dictGroupClusterMapper.findPage(param);
+		List<ResDictGroup> list = this.dictGroupClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 

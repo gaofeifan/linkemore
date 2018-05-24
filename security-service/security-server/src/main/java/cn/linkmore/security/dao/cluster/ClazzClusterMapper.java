@@ -2,9 +2,8 @@ package cn.linkmore.security.dao.cluster;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
-import cn.linkmore.security.entity.Clazz;
+import cn.linkmore.security.response.ResClazz;
 /**
  * 类
  * @author jiaohanbin
@@ -18,7 +17,7 @@ public interface ClazzClusterMapper {
 	 * @param id
 	 * @return
 	 */
-    Clazz findById(Long id);
+    ResClazz findById(Long id);
     /**
      * 查询总数
      * @param param
@@ -30,7 +29,7 @@ public interface ClazzClusterMapper {
 	 * @param param
 	 * @return
 	 */
-	List<Clazz> findPage(Map<String, Object> param);
+	List<ResClazz> findPage(Map<String, Object> param);
 	/**
 	 * 检查是否存在
 	 * @param param
@@ -41,6 +40,6 @@ public interface ClazzClusterMapper {
 	 * 返回所有的类
 	 * @return
 	 */
-	List<Clazz> findAll();
+	List<ResClazz> findAll();
 
 }

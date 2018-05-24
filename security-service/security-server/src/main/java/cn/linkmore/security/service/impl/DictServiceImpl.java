@@ -16,8 +16,9 @@ import cn.linkmore.security.dao.cluster.DictGroupClusterMapper;
 import cn.linkmore.security.dao.master.DictMasterMapper;
 import cn.linkmore.security.entity.Dict;
 import cn.linkmore.security.entity.DictGroup;
-import cn.linkmore.security.entity.Interface;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.response.ResDict;
+import cn.linkmore.security.response.ResDictGroup;
 import cn.linkmore.security.service.DictService;
 import cn.linkmore.util.DomainUtil;
 
@@ -57,7 +58,7 @@ public class DictServiceImpl implements DictService {
 		Integer count = this.dictClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<Interface> list = this.dictClusterMapper.findPage(param);
+		List<ResDict> list = this.dictClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
@@ -92,7 +93,7 @@ public class DictServiceImpl implements DictService {
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("property", "order_index");
 		param.put("direction", "asc");
-		List<DictGroup> list =  this.dictGroupClusterMapper.findList(param);
+		List<ResDictGroup> list =  this.dictGroupClusterMapper.findList(param);
 		List<Tree> trees = new ArrayList<Tree>();
 		Tree root = new Tree();
 		root.setName("数据字典分类树");
@@ -104,7 +105,7 @@ public class DictServiceImpl implements DictService {
 		root.setChildren(trees);
 		Tree tree = null;
 		List<Tree> children = new ArrayList<Tree>();
-		for(DictGroup dg:list) {
+		for(ResDictGroup dg:list) {
 			tree = new Tree();
 			tree.setName(dg.getName());
 			tree.setCode(dg.getCode());
@@ -118,7 +119,7 @@ public class DictServiceImpl implements DictService {
 	}
 
 	@Override
-	public List<Dict> findByGroupCode(String code) {
+	public List<ResDict> findByGroupCode(String code) {
 		return this.dictClusterMapper.findByGroupCode(code);
 	}
 }

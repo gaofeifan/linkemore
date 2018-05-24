@@ -13,6 +13,7 @@ import cn.linkmore.security.dao.cluster.ClazzClusterMapper;
 import cn.linkmore.security.dao.master.ClazzMasterMapper;
 import cn.linkmore.security.entity.Clazz;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.response.ResClazz;
 import cn.linkmore.security.service.ClazzService;
 import cn.linkmore.util.DomainUtil;
 
@@ -50,7 +51,7 @@ public class ClazzServiceImpl implements ClazzService {
 		Integer count = this.clazzClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<Clazz> list = this.clazzClusterMapper.findPage(param);
+		List<ResClazz> list = this.clazzClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
