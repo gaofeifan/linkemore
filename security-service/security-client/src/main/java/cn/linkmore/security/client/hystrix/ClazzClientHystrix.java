@@ -20,29 +20,32 @@ public class ClazzClientHystrix implements ClazzClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public void save(ReqClazz clazz) {
-		log.info("clazz save");
+	public int save(ReqClazz clazz) {
+		log.info("clazz save hystrix");
+		return 0;
 	}
 
 	@Override
-	public void update(ReqClazz reqClazz) {
-		log.info("clazz update");
+	public int update(ReqClazz reqClazz) {
+		log.info("clazz update hystrix");
+		return 0;
 	}
 
 	@Override
-	public void delete(List<Long> ids) {
-		log.info("clazz delete");
+	public int delete(List<Long> ids) {
+		log.info("clazz delete hystrix");
+		return 0;
 	}
 
 	@Override
 	public Boolean check(ReqCheck reqCheck) {
-		log.info("clazz check");
+		log.info("clazz check hystrix");
 		return false;
 	}
 
 	@Override
 	public ViewPage list(ViewPageable pageable) {
-		log.info("clazz list");
+		log.info("clazz list hystrix");
 		return null;
 	}
 

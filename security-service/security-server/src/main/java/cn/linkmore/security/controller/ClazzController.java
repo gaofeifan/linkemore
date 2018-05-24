@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.druid.support.json.JSONUtils;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Clazz;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqClazz;
 import cn.linkmore.security.service.ClazzService;
-import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.JsonUtil;
 
 /**
  * Controller - 类操作
@@ -34,24 +36,23 @@ public class ClazzController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqClazz reqClazz){
-		Clazz clazz = new Clazz();
-		clazz = ObjectUtils.copyObject(reqClazz, clazz);
-		this.clazzService.save(clazz);
+	public int save(@RequestBody ReqClazz reqClazz){
+		log.info("..........save:{}",JsonUtil.toJson(reqClazz));
+		return this.clazzService.save(reqClazz);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.PUT)
 	@ResponseBody
-	public void update(@RequestBody ReqClazz reqClazz){
-		Clazz clazz = new Clazz();
-		clazz = ObjectUtils.copyObject(reqClazz, clazz);
-		this.clazzService.update(clazz);
+	public int update(@RequestBody ReqClazz reqClazz){
+		log.info("..........update:{}",JsonUtil.toJson(reqClazz));
+		return this.clazzService.update(reqClazz);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids){ 
-		this.clazzService.delete(ids);
+	public int delete(@RequestBody List<Long> ids){ 
+		log.info("..........delete:{}",JsonUtil.toJson(ids));
+		return this.clazzService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
@@ -59,6 +60,7 @@ public class ClazzController {
 	public Boolean check(@RequestBody ReqCheck reqCheck){
 		Boolean flag = true ;
 		Integer count = this.clazzService.check(reqCheck); 
+		log.info("..........check:{}",JsonUtil.toJson(count));
 		if(count>0){
             flag = false;
         }
@@ -68,6 +70,8 @@ public class ClazzController {
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable){
+		log.info("..........list:{}",this.clazzService.findPage(pageable).getList().size());
+		
 		return this.clazzService.findPage(pageable); 
 	} 
 }

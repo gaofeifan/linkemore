@@ -1,10 +1,10 @@
-package cn.linkmore.security.service;
+package cn.linkmore.ops.service;
 
 import java.util.List;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.request.ReqCheck;
-import cn.linkmore.security.request.ReqClazz;
+import cn.linkmore.ops.request.ReqCheck;
+import cn.linkmore.ops.request.ReqClazz;
 
 /**
  * Service接口 - 类信息
@@ -49,5 +49,5 @@ public interface ClazzService {
 	 * @param reqCheck
 	 * @return
 	 */
-	Integer check(ReqCheck reqCheck);
+	Boolean check(ReqCheck reqCheck);
 }
