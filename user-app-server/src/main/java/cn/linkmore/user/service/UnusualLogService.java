@@ -1,7 +1,5 @@
 package cn.linkmore.user.service;
 
-import cn.linkmore.common.request.ReqUnusualLog;
-
 /**
  * app异常日志上报接口
  * @author   GFF

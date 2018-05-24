@@ -3,21 +3,23 @@ package cn.linkmore.common.entity;
 import java.util.Date;
 
 /**
- * 数据字典分组(新)
+ * 数据字典(老)
  * @author   GFF
  * @Date     2018年5月24日
  * @Version  v2.0
  */
-public class BaseDictGroup {
+public class Dict {
     private Long id;
+
+    private Long groupId;
 
     private String name;
 
     private String code;
 
-    private Integer orderIndex;
-
     private Date createTime;
+
+    private Date updateTime;
 
     public Long getId() {
         return id;
@@ -25,6 +27,14 @@ public class BaseDictGroup {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 
     public String getName() {
@@ -43,19 +53,19 @@ public class BaseDictGroup {
         this.code = code == null ? null : code.trim();
     }
 
-    public Integer getOrderIndex() {
-        return orderIndex;
-    }
-
-    public void setOrderIndex(Integer orderIndex) {
-        this.orderIndex = orderIndex;
-    }
-
     public Date getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

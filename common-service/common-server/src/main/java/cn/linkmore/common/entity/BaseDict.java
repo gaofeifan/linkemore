@@ -2,6 +2,12 @@ package cn.linkmore.common.entity;
 
 import java.util.Date;
 
+/**
+ * 数据字典(新)
+ * @author   GFF
+ * @Date     2018年5月24日
+ * @Version  v2.0
+ */
 public class BaseDict {
     private Long id;
 

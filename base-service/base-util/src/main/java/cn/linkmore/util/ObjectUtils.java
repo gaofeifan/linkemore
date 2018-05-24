@@ -11,11 +11,13 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.linkmore.annotation.GColumn;
 
 public class ObjectUtils {
-
+	private static final Logger log = LoggerFactory.getLogger(ObjectUtils.class);
 	/**
 	 * @Description  
 	 * @Author   GFF 
@@ -28,6 +30,7 @@ public class ObjectUtils {
 	 */
 	public static final List<String> findFieldVlaue(List<?> list , String fieldName , String[] properts,Object[] values){
 		if((properts != null && values != null) && (properts.length != values.length)){
+			log.error("数据长度不一样");
 			throw new RuntimeException("查询字段与值长度不一");
 		}
 		if(list.size() != 0){
@@ -182,7 +185,7 @@ public class ObjectUtils {
 	public static <T,E> T copyObject(E source,T target,String[] fields,String[] replaceField,String[] excludeField) {
 		if(fields != null && replaceField != null) {
 			if(fields.length != replaceField.length) {
-				throw new RuntimeException("属性元素数量不相等");
+				throw new RuntimeException("元素数量不相等");
 			}
 		}
 		Class<E> sourceC = (Class<E>) source.getClass();

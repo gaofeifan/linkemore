@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.common.entity.AccessDetail;
 
 /**
- * 接口访问详情
+ * 接口访问详情(写)
  * @author   GFF
  * @Date     2018年5月23日
  * @Version  v2.0

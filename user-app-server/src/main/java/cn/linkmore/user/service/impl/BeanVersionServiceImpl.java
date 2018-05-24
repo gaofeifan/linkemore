@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.common.client.BaseVersionClient;
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
-import cn.linkmore.user.controller.BaseVersionController;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.BeanVersionService;
 import cn.linkmore.user.service.UserService;
+import cn.linkmore.util.ObjectUtils;
 /**
  * 版本管理接口
  * @author   GFF
@@ -33,10 +33,11 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 	}
 
 	@Override
-	public void report(ReqVersion vrb,HttpServletRequest request) {
+	public void report(cn.linkmore.user.request.ReqVersion vrb,HttpServletRequest request) {
 		ResUser user = userService.getCache(request);
 		vrb.setUserId(user.getId());
-		this.baseVersionClient.report(vrb);
+		ReqVersion version = ObjectUtils.copyObject(vrb, new ReqVersion());
+		this.baseVersionClient.report(version);
 	}
 	
 	

@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import cn.linkmore.common.entity.BaseAppVersion;
 import cn.linkmore.common.response.ResVersionBean;
 /**
+ * app版本管理(读)
  * @author   GFF
  * @Date     2018年5月23日
  * @Version  v2.0

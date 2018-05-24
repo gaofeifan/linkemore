@@ -11,7 +11,7 @@ import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.service.BaseDictService;
 
 /**
- * 数据词典
+ * 数据词典(新)
  * @author   GFF
  * @Date     2018年5月18日
  * @Version  v2.0

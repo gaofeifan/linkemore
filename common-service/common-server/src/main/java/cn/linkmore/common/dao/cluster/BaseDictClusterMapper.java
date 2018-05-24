@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import cn.linkmore.common.entity.BaseDict;
 import cn.linkmore.common.response.ResBaseDict;
 /**
+ * 数据字词mapper(读)
  * @author   GFF
  * @Date     2018年5月23日
  * @Version  v2.0

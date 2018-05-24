@@ -115,7 +115,7 @@ public class CarBrandController {
 					}
 				}
 			}
- 	    	redisService.set("car_brand_list", JSON.toJSON(resultList));
+ 	    	redisService.set(RedisKey.COMMON_CAR_BRAND_LIST.name(), JSON.toJSON(resultList));
  	    	//将成功状态存入redis
  	    	redisService.set("car_brand_status", 0);
 	    	msg.put("message", true);

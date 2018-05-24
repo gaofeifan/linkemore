@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.user.service.BeanVersionService;
 import cn.linkmore.util.ObjectUtils;
@@ -57,7 +56,7 @@ public class BaseVersionController {
 	 */
 	@RequestMapping(value="/report",method = RequestMethod.POST)
 	@ApiOperation(value = "上报用户版本", notes = "上报用户版本", consumes = "application/json")
-	public ResponseEntity<?> report(@RequestBody ReqVersion vrb,HttpServletRequest request){
+	public ResponseEntity<?> report(@RequestBody cn.linkmore.user.request.ReqVersion vrb,HttpServletRequest request){
 		this.beanVersionService.report(vrb,request);
 		return ResponseEntity.success(null, request);
 	}
