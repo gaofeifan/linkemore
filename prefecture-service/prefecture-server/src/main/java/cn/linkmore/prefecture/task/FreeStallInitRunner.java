@@ -41,8 +41,8 @@ public class FreeStallInitRunner implements ApplicationRunner {
 		log.info("free stall init ");
 		List<Long> preIds = this.prefectureClusterMapper.findPreIdList();
 		List<Stall> list = this.stallClusterMapper.findByStatus(StallStatus.FREE.status);
-		Map<Long, Set<String>> map = new HashMap<Long, Set<String>>();
-		Set<String> sns = null;
+		Map<Long, Set<Object>> map = new HashMap<Long, Set<Object>>();
+		Set<Object> sns = null;
 		for (Stall stall : list) {
 			sns = map.get(stall.getPreId());
 			if (sns == null) {
@@ -55,7 +55,7 @@ public class FreeStallInitRunner implements ApplicationRunner {
 		for (Long key : keys) {
 			preIds.remove(key);
 			redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key+key);
-			redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + key, map.get(key).toArray());
+			redisService.addAll(RedisKey.PREFECTURE_FREE_STALL.key + key, map.get(key));
 		}
 		for(Long id:preIds) {
 			redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key+id);

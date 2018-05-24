@@ -25,7 +25,7 @@
     delete from t_acc_recharge_record
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.order.entity.RechargeRecord">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.RechargeRecord">
     insert into t_acc_recharge_record (id, code, account_id, 
       package_id, package_amount, payment_amount, 
       status, pay_status, pay_type, 

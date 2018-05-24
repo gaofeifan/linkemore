@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 
 @ControllerAdvice
@@ -60,7 +61,12 @@ public class ExceptionHandle {
             StackTraceElement element = stackArray[i];  
             sb.append(element.toString() + "\n");  
         }   
-		log.info("user app Api service throw valid exception:{}",sb.toString());
-		return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request); 
+		log.info("user app Api service throw  exception:{}",sb.toString());
+		StatusEnum se = StatusEnum.SERVER_EXCEPTION;
+		if (e instanceof BusinessException) {
+			BusinessException b = (BusinessException) e; 
+			se = b.getStatusEnum();
+		}
+		return ResponseEntity.fail(se, request); 
 	}
 }

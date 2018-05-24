@@ -21,7 +21,7 @@
     delete from t_acc_trade_record
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.order.entity.TradeRecord">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.TradeRecord">
     insert into t_acc_trade_record (id, account_id, type, 
       trade_amount, payment_amount, biz_id, 
       code, trade_id, create_time, 

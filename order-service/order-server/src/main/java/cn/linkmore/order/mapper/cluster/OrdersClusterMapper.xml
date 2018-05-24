@@ -41,10 +41,7 @@
     <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-    <result column="plate_no" jdbcType="VARCHAR" property="plateNo" />
-    <result column="stall_image" jdbcType="VARCHAR" property="stallImage" />
-    <result column="stall_local" jdbcType="VARCHAR" property="stallLocal" />
-    <result column="stall_guidance" jdbcType="VARCHAR" property="stallGuidance" />
+    <result column="plate_no" jdbcType="VARCHAR" property="plateNo" /> 
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="dock_id" jdbcType="VARCHAR" property="dockId" />
@@ -63,7 +60,7 @@
   </sql>
   <sql id="Res_Column_List">
     id, user_id, pre_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
-    begin_time, username, end_time, plate_no, stall_image, stall_local, stall_guidance, 
+    begin_time, username, end_time, plate_no,
     create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
     lock_down_status
   </sql>

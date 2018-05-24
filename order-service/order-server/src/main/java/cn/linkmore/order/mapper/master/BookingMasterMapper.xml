@@ -19,7 +19,7 @@
     delete from t_acc_booking
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.order.entity.Booking">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.Booking">
     insert into t_acc_booking (id, pre_id, user_id, 
       day, status, first, 
       source, reason, create_time

@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void create(ReqBooking rb, HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
 		ReqOrderCreate roc = new ReqOrderCreate();
 		roc.setPrefectureId(rb.getPrefectureId());
 		roc.setPlateId(rb.getPlateId());
