@@ -16,5 +16,5 @@ public interface AccessDetailClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    AccessDetail selectById(Integer id);
+    AccessDetail findById(Integer id);
 }

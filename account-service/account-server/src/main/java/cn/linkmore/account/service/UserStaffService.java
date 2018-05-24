@@ -1,6 +1,6 @@
 package cn.linkmore.account.service;
 
-import cn.linkmore.account.entity.UserStaff;
+import cn.linkmore.account.response.ResUserStaff;
 
 /**
  * 用户
@@ -15,6 +15,6 @@ public interface UserStaffService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	UserStaff findById(Long userId);
+	ResUserStaff findById(Long userId);
 
 }

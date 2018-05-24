@@ -29,8 +29,8 @@ public class BaseDictController {
 	 * @Version  v2.0
 	 */
 	@RequestMapping(value="/{code}",method=RequestMethod.GET)
-	public List<ResBaseDict> selectList(@PathVariable("code") String code ) {
-		List<ResBaseDict> res = this.baseDictService.selectList(code);
+	public List<ResBaseDict> findList(@PathVariable("code") String code ) {
+		List<ResBaseDict> res = this.baseDictService.findList(code);
 		return res;
 	}
 	

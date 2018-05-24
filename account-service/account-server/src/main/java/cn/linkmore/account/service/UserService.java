@@ -54,14 +54,14 @@ public interface UserService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	User selectByMobile(String mobile);
+	ResUser findByMobile(String mobile);
 
 	/**
 	 * @Description  根据id查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	User selectById(Long userId);
+	ResUser findById(Long userId);
 
 	/**
 	 * @Description  更新用户昵称

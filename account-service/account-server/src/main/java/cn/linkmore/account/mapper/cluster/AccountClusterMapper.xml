@@ -22,7 +22,7 @@
     status, order_amount, order_payment_amount, gift_amount, gift_total_amount, create_time, 
     update_time, acc_type
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_acc_account

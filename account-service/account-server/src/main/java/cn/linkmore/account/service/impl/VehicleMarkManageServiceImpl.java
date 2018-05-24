@@ -12,7 +12,6 @@ import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
 import cn.linkmore.account.entity.VehicleMarkManage;
 import cn.linkmore.account.request.ReqVehicleMark;
-import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.account.service.VehicleMarkManageService;
@@ -35,14 +34,14 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	private UserService userService;
 	
 	@Override
-	public List<VehicleMarkManage> selectByUserId(Long userId) {
-		return this.vehicleMarkManageClusterMapper.selectByUserId(userId);
+	public List<VehicleMarkManage> findByUserId(Long userId) {
+		return this.vehicleMarkManageClusterMapper.findByUserId(userId);
 	}
 
 	@Override
 	@Transactional
 	public void save(ReqVehicleMark bean) {
-		List<VehicleMarkManage> list = this.selectByUserId(bean.getUserId());
+		List<VehicleMarkManage> list = this.findByUserId(bean.getUserId());
 		if(list.size() < 4){
 			//检查车牌号是否已经存在
 			List<String> fieldVlaue = ObjectUtils.findFieldVlaue(list, "vehMark", new String[]{"vehMark"}, new String[] {bean.getVehMark()});
@@ -68,15 +67,14 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	}
 
 	@Override
-	public List<ResVechicleMark> selectResList(Long userId) {
-		return this.vehicleMarkManageClusterMapper.selectResList(userId);
+	public List<ResVechicleMark> findResList(Long userId) {
+		return this.vehicleMarkManageClusterMapper.findResList(userId);
 	}
 
 	@Override
-	public ResVechicleMark selectById(Long id) {
-		VehicleMarkManage manage = this.vehicleMarkManageClusterMapper.selectById(id);
-		ResVechicleMark res = ObjectUtils.copyObject(manage, new ResVechicleMark(),new String[]{"vehUserId"},new String[] {"userId"});
-		return res;
+	public ResVechicleMark findById(Long id) {
+		ResVechicleMark manage = this.vehicleMarkManageClusterMapper.findById(id);
+		return manage;
 	}
 
 	

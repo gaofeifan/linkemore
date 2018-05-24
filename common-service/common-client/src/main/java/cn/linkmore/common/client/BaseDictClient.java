@@ -21,7 +21,7 @@ import cn.linkmore.feign.FeignConfiguration;
 @FeignClient(value = "common-server", path = "/dict", fallback=BaseDictClientHystrix.class,configuration = FeignConfiguration.class)
 public interface BaseDictClient {
 	@RequestMapping(value="/{code}",method=RequestMethod.GET)
-	public List<ResBaseDict> selectList(@PathVariable("code") String code);
+	public List<ResBaseDict> findList(@PathVariable("code") String code);
 	
 	@RequestMapping(method=RequestMethod.POST)
 	public void save(@RequestBody ReqBaseDict baseDict);

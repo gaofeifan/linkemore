@@ -28,8 +28,8 @@ public class ReqUnusualLog {
 	/**
 	 * os版本
 	 */
-	@ApiModelProperty(value="os版本 必填",required=true)
-	@NotBlank(message="os版本不能为空") 
+	@ApiModelProperty(value="os版本（系统版本号） 必填",required=true)
+	@NotBlank(message="os版本（系统版本号）不能为空") 
 	private String osVersion;
 
 	/**

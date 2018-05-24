@@ -1,6 +1,8 @@
 package cn.linkmore.common.response;
 
 import java.io.Serializable;
+
+import javax.annotation.Generated;
 /**
  * @Description  版本响应bean  
  * @author  GFF

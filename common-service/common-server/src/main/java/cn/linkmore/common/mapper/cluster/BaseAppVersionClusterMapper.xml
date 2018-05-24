@@ -14,14 +14,29 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  <resultMap id="ResBaseResultMap" type="cn.linkmore.common.response.ResVersionBean">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="code" jdbcType="BIGINT" property="versionCode" />
+    <result column="name" jdbcType="VARCHAR" property="versionName" />
+    <result column="url" jdbcType="VARCHAR" property="downloadUrl" />
+    <result column="update_status" jdbcType="INTEGER" property="mustUpdate" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, version, code, name, status, url, type, update_status, create_time, description, 
     update_time
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_base_app_version
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findByTypeAnStatus" resultMap="ResBaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_app_version
+    where type = #{appType} and status= #{status}
   </select>
 </mapper>

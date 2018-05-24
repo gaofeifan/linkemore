@@ -18,7 +18,7 @@ public interface BaseDictService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResBaseDict> selectList(String code);
+	List<ResBaseDict> findList(String code);
 
 	/**
 	 * @Description		新增

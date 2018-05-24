@@ -19,7 +19,7 @@ public interface CommonClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	public List<Map<String,Object>> selectList(Common common);
+	public List<Map<String,Object>> findList(Common common);
 
 	/**
 	 * @Description  

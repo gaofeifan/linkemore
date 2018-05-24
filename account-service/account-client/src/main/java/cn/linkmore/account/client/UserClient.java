@@ -124,5 +124,5 @@ public interface UserClient {
 	 * @Version  v2.0
 	 */
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
-	public ResUser selectById(@PathVariable("id") Long id);
+	public ResUser findById(@PathVariable("id") Long id);
 }

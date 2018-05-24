@@ -34,24 +34,57 @@
     <result column="order_count" jdbcType="INTEGER" property="orderCount" />
     <result column="complete_order_count" jdbcType="INTEGER" property="completeOrderCount" />
   </resultMap>
+  <resultMap id="ResBaseResultMap" type="cn.linkmore.account.response.ResUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="sex" jdbcType="SMALLINT" property="sex" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="user_type" jdbcType="VARCHAR" property="userType" />
+    <result column="enterprise_name" jdbcType="VARCHAR" property="enterpriseName" />
+    <result column="ent_admin_name" jdbcType="VARCHAR" property="entAdminName" />
+    <result column="industry" jdbcType="VARCHAR" property="industry" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="wechat" jdbcType="VARCHAR" property="wechat" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="hobby_brand_id" jdbcType="BIGINT" property="hobbyBrandId" />
+    <result column="is_app_register" jdbcType="SMALLINT" property="isAppRegister" />
+    <result column="is_wechat_bind" jdbcType="SMALLINT" property="isWechatBind" />
+    <result column="app_register_time" jdbcType="TIMESTAMP" property="appRegisterTime" />
+    <result column="wechat_bind_time" jdbcType="TIMESTAMP" property="wechatBindTime" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="login_count" jdbcType="INTEGER" property="loginCount" />
+    <result column="order_count" jdbcType="INTEGER" property="orderCount" />
+    <result column="complete_order_count" jdbcType="INTEGER" property="completeOrderCount" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, username, password, nickname, sex, status, user_type, enterprise_name, ent_admin_name, 
     industry, parent_id, mobile, province, city, address, email, wechat, qq, icon, last_login_time, 
     create_time, update_time, hobby_brand_id, is_app_register, is_wechat_bind, app_register_time, 
     wechat_bind_time, type, login_count, order_count, complete_order_count
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="ResBaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectResUserById" resultType="cn.linkmore.account.response.ResUserDetails">
+  <select id="findResUserById" resultType="cn.linkmore.account.response.ResUserDetails">
     select 
     uv.model brandModel,uv.brand_id brandId,u.sex,u.nickname,u.mobile,u.id
     from t_user_vehicle uv INNER JOIN t_user u ON u.id = uv.user_id AND u.id = #{userId}
   </select>
-  <select id="selectByMobile" resultMap="BaseResultMap">
+  <select id="findByMobile" resultMap="ResBaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user

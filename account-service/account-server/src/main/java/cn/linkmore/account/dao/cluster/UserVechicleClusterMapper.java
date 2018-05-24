@@ -17,13 +17,13 @@ public interface UserVechicleClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    UserVechicle selectById(Long id);
+    UserVechicle findById(Long id);
 
     /**
      * @Description  根据用户id查询
      * @Author   GFF 
      * @Version  v2.0
      */
-    UserVechicle selectByUserId(Long userId);
+    UserVechicle findByUserId(Long userId);
 
 }

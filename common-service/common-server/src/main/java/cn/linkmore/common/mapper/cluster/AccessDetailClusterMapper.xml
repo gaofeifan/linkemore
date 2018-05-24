@@ -15,7 +15,7 @@
   <sql id="Base_Column_List">
     id, user_id, path, method, params, returns, type, method_type,mapping
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_access_detail

@@ -20,8 +20,8 @@ public class UserStaffClientHystrix  implements UserStaffClient{
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public ResUserStaff selectById(@PathVariable("id")Long id) {
-		log.info("account service userstaff selectById(Long id) hystrix");
+	public ResUserStaff findById(@PathVariable("id")Long id) {
+		log.info("account service userstaff findById(Long id) hystrix");
 		return null;
 	}
 

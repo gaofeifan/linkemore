@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.view.ViewOrder.Direction;
+import cn.linkmore.common.dao.cluster.BaseAppVersionClusterMapper;
 import cn.linkmore.common.dao.cluster.UserVersionClusterMapper;
 import cn.linkmore.common.dao.master.UserVersionMasterMapper;
 import cn.linkmore.common.entity.BaseAppVersion;
@@ -33,25 +34,16 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 	private UserVersionClusterMapper versionClusterMapper;
 	@Resource
 	private UserVersionMasterMapper versionMasterMapper;
-	
+	@Resource
+	private BaseAppVersionClusterMapper baseAppVersionClusterMapper;
 	
 	@Override
 	public ResVersionBean currentAppVersion(Integer appType) {
-		Common common = new Common(BaseAppVersion.class);
-		common.createCriteria().equals("type", appType).equals("status", 1);
-		common.addOrderBy("code", Direction.desc);
-		common.addLimit(0, 1);
-		List<BaseAppVersion> list = selectList(common);
-		if(list != null && list.size() == 1) {
-			String[] field = {"url","updateStatus","code","name"};
-			String[] fieldR = {"downloadUrl","mustUpdate","versionCode","versionName"};
-			ResVersionBean bean = ObjectUtils.copyObject(list.get(0), new ResVersionBean(), field, fieldR);
-			return bean;
-		}
-		return null;
+		List<ResVersionBean> res = this.baseAppVersionClusterMapper.findByTypeAnStatus(appType,1);
+		return res.get(0);
 	}
 	
-	public List<BaseAppVersion> selectList(Common common){
+	public List<BaseAppVersion> findList(Common common){
 		@SuppressWarnings("unchecked")
 		List<BaseAppVersion> list = (List<BaseAppVersion>) commonService.selectList(common );
 		return list;
@@ -60,7 +52,7 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 	@Override
 	public void report(ReqVersion vrb) {
 		boolean falg = false;
-		UserVersion version = this.versionClusterMapper.selectById(vrb.getUserId());
+		UserVersion version = this.versionClusterMapper.findById(vrb.getUserId());
 		if(version != null) {
 			falg = true;
 		}

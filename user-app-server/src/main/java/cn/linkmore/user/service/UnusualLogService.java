@@ -15,6 +15,6 @@ public interface UnusualLogService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void insert(ReqUnusualLog unusualLog);
+	void insert(cn.linkmore.user.request.ReqUnusualLog unusualLog);
 
 }

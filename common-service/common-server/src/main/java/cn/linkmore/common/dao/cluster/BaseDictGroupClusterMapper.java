@@ -15,6 +15,6 @@ public interface BaseDictGroupClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    BaseDictGroup selectById(Long id);
+    BaseDictGroup findById(Long id);
 
 }

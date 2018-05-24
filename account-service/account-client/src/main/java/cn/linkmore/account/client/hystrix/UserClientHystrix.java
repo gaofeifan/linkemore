@@ -85,8 +85,8 @@ public class UserClientHystrix implements UserClient{
 	}
 
 	@Override
-	public ResUser selectById(Long id) {
-		log.info("account service user selectById(Long id) hystrix");
+	public ResUser findById(Long id) {
+		log.info("account service user findById(Long id) hystrix");
 		return null;
 	}
 

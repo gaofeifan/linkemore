@@ -2,7 +2,7 @@ package cn.linkmore.account.dao.cluster;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.account.entity.UserStaff;
+import cn.linkmore.account.response.ResUserStaff;
 /**
  * 
  * @author   GFF
@@ -16,5 +16,5 @@ public interface UserStaffClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    UserStaff findById(Long id);
+    ResUserStaff findById(Long id);
 }

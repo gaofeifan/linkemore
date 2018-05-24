@@ -265,11 +265,10 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	public void updateNickname(String nickname, HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
+		ResUser cache = getCache(request);
 		ReqUpdateNickname nick = new ReqUpdateNickname();
 		nick.setNickname(nickname);
-		nick.setUserId(ru.getId());
+		nick.setUserId(cache.getId());
 		this.userClient.updateNickname(nick);
 	}
 	@Override

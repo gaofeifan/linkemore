@@ -30,14 +30,9 @@ public class BaseDictServiceImpl implements BaseDictService {
 	private BaseDictMasterMapper baseDictMasterMapper;
 
 	@Override
-	public List<ResBaseDict> selectList(String code) {
-		List<BaseDict> list = this.baseDictClusterMapper.selectListByCode(code);
-		List<ResBaseDict> ress = new ArrayList<>();
-		for (BaseDict dict : list) {
-			ResBaseDict baseDict = ObjectUtils.copyObject(dict, new ResBaseDict());
-			ress.add(baseDict);
-		}
-		return ress;
+	public List<ResBaseDict> findList(String code) {
+		List<ResBaseDict> list = this.baseDictClusterMapper.findListByCode(code);
+		return list;
 	}
 
 	@Override

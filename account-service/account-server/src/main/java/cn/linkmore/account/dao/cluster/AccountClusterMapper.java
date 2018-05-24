@@ -18,6 +18,6 @@ public interface AccountClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    Account selectById(Long id);
+    Account findById(Long id);
 
 }

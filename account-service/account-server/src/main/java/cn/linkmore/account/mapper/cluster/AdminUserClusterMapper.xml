@@ -13,7 +13,7 @@
   <sql id="Base_Column_List">
     id, cellphone, realname, create_time, update_time, login_time, status
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_admin_user

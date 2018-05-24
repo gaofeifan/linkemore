@@ -16,5 +16,5 @@ public interface AdminAuthClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    AdminAuth selectById(Long id);
+    AdminAuth findById(Long id);
 }

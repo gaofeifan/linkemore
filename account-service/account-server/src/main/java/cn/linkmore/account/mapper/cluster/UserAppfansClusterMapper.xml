@@ -11,16 +11,26 @@
     <result column="register_status" jdbcType="SMALLINT" property="registerStatus" />
     <result column="unionid" jdbcType="VARCHAR" property="unionid" />
   </resultMap>
+  <resultMap id="ResBaseResultMap" type="cn.linkmore.account.response.ResUserAppfans">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="headurl" jdbcType="VARCHAR" property="headurl" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="register_status" jdbcType="SMALLINT" property="registerStatus" />
+    <result column="unionid" jdbcType="VARCHAR" property="unionid" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, nickname, headurl, user_id, status, create_time, register_status, unionid
   </sql>
-  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user_appfans
     where id = #{id,jdbcType=VARCHAR}
   </select>
-  <select id="selectByUserId" resultMap="BaseResultMap">
+  <select id="findByUserId" resultMap="ResBaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user_appfans

@@ -55,7 +55,7 @@ public class VehicleMarkController{
 	 */
 	@RequestMapping(value = "/v2.0/{userId}", method = RequestMethod.GET)
 	public List<ResVechicleMark> list(@PathVariable("userId")Long userId){
-		return vehicleMarkManageService.selectResList(userId);
+		return vehicleMarkManageService.findResList(userId);
 	}
 	
 	/**
@@ -64,8 +64,8 @@ public class VehicleMarkController{
 	 * @Version  v2.0
 	 */
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
-	public ResVechicleMark selectById(@PathVariable("id") Long id) {
-		return this.vehicleMarkManageService.selectById(id);
+	public ResVechicleMark findById(@PathVariable("id") Long id) {
+		return this.vehicleMarkManageService.findById(id);
 	}
 	
 	

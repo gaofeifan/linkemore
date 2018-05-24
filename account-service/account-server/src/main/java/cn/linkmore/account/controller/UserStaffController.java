@@ -33,7 +33,7 @@ public class UserStaffController {
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserStaff selectById(@PathVariable("id") Long id) {
-		UserStaff staff = this.userStaffService.findById(id);
+		ResUserStaff staff = this.userStaffService.findById(id);
 		if(staff != null) {
 			return ObjectUtils.copyObject(staff, new ResUserStaff());
 		}

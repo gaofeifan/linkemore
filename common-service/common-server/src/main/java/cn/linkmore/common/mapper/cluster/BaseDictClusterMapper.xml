@@ -10,16 +10,25 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="extra" jdbcType="INTEGER" property="extra" />
   </resultMap>
+  <resultMap id="ResBaseResultMap" type="cn.linkmore.common.response.ResBaseDict">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="group_id" jdbcType="BIGINT" property="groupId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="extra" jdbcType="INTEGER" property="extra" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, group_id, name, code, order_index, create_time, extra
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_base_dict
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectListByCode" resultMap="BaseResultMap">
+  <select id="findListByCode" resultMap="ResBaseResultMap">
     select d.id, d.group_id, d.name, d.code, d.order_index,d.extra,d.create_time
     from t_base_dict d left join t_base_dict_group dg on d.group_id = dg.id
     where dg.code = #{code,jdbcType=VARCHAR}

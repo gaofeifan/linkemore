@@ -18,5 +18,5 @@ public interface UnusualLogClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    UnusualLog selectById(Long logId);
+    UnusualLog findById(Long logId);
 }

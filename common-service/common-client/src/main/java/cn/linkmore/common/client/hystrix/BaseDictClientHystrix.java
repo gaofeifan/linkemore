@@ -23,8 +23,8 @@ public class BaseDictClientHystrix implements BaseDictClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public List<ResBaseDict> selectList(@PathVariable("code") String code) {
-		log.info("common service dict  selectList(String code) hystrix");
+	public List<ResBaseDict> findList(@PathVariable("code") String code) {
+		log.info("common service dict  findList(String code) hystrix");
 		return null;
 	}
 

@@ -146,8 +146,8 @@ public class UserControlle {
 	 * @Version  v2.0
 	 */
 	@RequestMapping(value="/v2.0/{id}",method = RequestMethod.GET)
-	public ResUser selectById(@PathVariable("id") Long id) {
-		User user = userService.selectById(id);
-		return ObjectUtils.copyObject(user, new ResUser());
+	public ResUser findById(@PathVariable("id") Long id) {
+		ResUser user = userService.findById(id);
+		return user;
 	}
 }

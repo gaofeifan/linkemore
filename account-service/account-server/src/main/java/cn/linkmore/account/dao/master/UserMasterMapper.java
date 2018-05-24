@@ -3,9 +3,9 @@ package cn.linkmore.account.dao.master;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import cn.linkmore.account.entity.User;
+import cn.linkmore.account.response.ResUser;
 /**
  * 用户(写)
  * @author   GFF
@@ -69,5 +69,7 @@ public interface UserMasterMapper {
 	 * @Version  v2.0
 	 */
 	void updateMobile(Map<String, Object> param);
+
+	void insert(ResUser user);
 
 }

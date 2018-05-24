@@ -25,7 +25,7 @@ public class CommonService {
 	@Autowired
 	private CommonClusterMapper commonClusterMapper;
 	public List<?> selectList(Common common){
-		List<Map<String,Object>> list = this.commonClusterMapper.selectList(common);
+		List<Map<String,Object>> list = this.commonClusterMapper.findList(common);
 		return ObjectUtils.getListBean(list, common.getClazz());
 	}
 

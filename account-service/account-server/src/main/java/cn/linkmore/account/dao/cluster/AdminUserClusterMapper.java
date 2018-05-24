@@ -18,6 +18,6 @@ public interface AdminUserClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    AdminUser selectById(Long id);
+    AdminUser findById(Long id);
 
 }

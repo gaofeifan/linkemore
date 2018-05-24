@@ -13,7 +13,7 @@
   <sql id="Base_Column_List">
     id, app_version, os_version, model, client_type, level, brand
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_app_unusual_log

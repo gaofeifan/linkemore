@@ -17,14 +17,14 @@ public interface UserAppfansService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	UserAppfans selectById(String id);
+	UserAppfans findById(String id);
 
 	/**
 	 * @Description  根据用户id查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResUserAppfans selectByUserId(Long userId);
+	ResUserAppfans findByUserId(Long userId);
 
 	/**
 	 * @Description  新增(null处理)

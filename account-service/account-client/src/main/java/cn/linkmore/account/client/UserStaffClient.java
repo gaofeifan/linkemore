@@ -22,5 +22,5 @@ public interface UserStaffClient {
 	 * @Version  v2.0
 	 */
 	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.GET)
-	public ResUserStaff selectById(@PathVariable("id") Long id);
+	public ResUserStaff findById(@PathVariable("id") Long id);
 }

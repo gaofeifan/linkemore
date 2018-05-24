@@ -8,7 +8,7 @@
   <sql id="Base_Column_List">
     log_id, content
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_app_unusual_log_content

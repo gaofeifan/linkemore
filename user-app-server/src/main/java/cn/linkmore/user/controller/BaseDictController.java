@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.user.response.ResDonwLockError;
 import cn.linkmore.user.service.BaseDictService;
 import io.swagger.annotations.Api;

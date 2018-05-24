@@ -20,7 +20,7 @@ public interface VehicleMarkManageService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<VehicleMarkManage> selectByUserId(Long id);
+	List<VehicleMarkManage> findByUserId(Long id);
 
 	/**
 	 * @Description  新增
@@ -42,13 +42,13 @@ public interface VehicleMarkManageService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResVechicleMark> selectResList(Long userId);
+	List<ResVechicleMark> findResList(Long userId);
 
 	/**
 	 * @Description  根据id查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResVechicleMark selectById(Long id);
+	ResVechicleMark findById(Long id);
 
 }

@@ -9,7 +9,7 @@
   <sql id="Base_Column_List">
     id, user_id, auth_id
   </sql>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_admin_user_auth

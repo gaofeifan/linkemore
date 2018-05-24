@@ -24,6 +24,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateVehicle(ReqUpdateVehicle req) {
-		UserVechicle vechicle = userVechicleClusterMapper.selectByUserId(req.getUserId());
+		UserVechicle vechicle = userVechicleClusterMapper.findByUserId(req.getUserId());
 		boolean flag = false;
 		if (vechicle == null) {
 			flag = true;
@@ -107,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ResUserDetails detail(Long userId) {
-		List<ResUserDetails> list = this.userClusterMapper.selectResUserById(userId);
+		List<ResUserDetails> list = this.userClusterMapper.findResUserById(userId);
 		if (list.size() == 1) {
 			ResUserDetails res = (ResUserDetails) list.get(0);
 			if (res != null) {
@@ -140,7 +141,7 @@ public class UserServiceImpl implements UserService {
 					res.setBrandModel(brandModel);
 				}
 			}
-			ResUserAppfans af = this.userAppfansService.selectByUserId(userId);
+			ResUserAppfans af = this.userAppfansService.findByUserId(userId);
 			if (af != null && af.getStatus().shortValue() == 1) {
 				res.setWechatId(af.getId());
 				res.setWechatUrl(af.getHeadurl());
@@ -153,7 +154,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateMobile(ReqUpdateMobile bean) {
-		User user = this.selectByMobile(bean.getMobile());
+		ResUser user = this.findByMobile(bean.getMobile());
 		if (user == null) {
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("id", bean.getUserId());
@@ -167,8 +168,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateAppfans(ReqUserAppfans bean) {
-		User user = this.selectById(bean.getUserId());
-		UserAppfans fans = this.userAppfansService.selectById(bean.getId());
+		ResUser user = this.findById(bean.getUserId());
+		UserAppfans fans = this.userAppfansService.findById(bean.getId());
 		if (fans == null) {
 			fans = new UserAppfans();
 			fans.setId(bean.getId());
@@ -199,20 +200,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User selectByMobile(String mobile) {
-		return this.userClusterMapper.selectByMobile(mobile);
+	public ResUser findByMobile(String mobile) {
+		return this.userClusterMapper.findByMobile(mobile);
 	}
 
 	@Override
-	public User selectById(Long userId) {
-		return this.userClusterMapper.selectById(userId);
+	public ResUser findById(Long userId) {
+		return this.userClusterMapper.findById(userId);
 	}
 
 	@Override
 	public ResUserLogin appLogin(String mobile) {
-		User user = this.selectByMobile(mobile);
+		ResUser user = this.findByMobile(mobile);
 		if (user == null) {
-			user = new User();
+			user = new ResUser();
 			user.setMobile(mobile);
 			user.setUsername(mobile);
 			user.setPassword("");
@@ -258,7 +259,7 @@ public class UserServiceImpl implements UserService {
 	public void insertSelective(User user) {
 		this.userMasterMapper.insertSelective(user);
 	}
-
+	
 	@Override
 	public void updateLoginTime(Map<String, Object> param) {
 		this.userMasterMapper.updateLoginTime(param);

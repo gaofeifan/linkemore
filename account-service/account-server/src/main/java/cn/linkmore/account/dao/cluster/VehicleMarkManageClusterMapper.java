@@ -21,20 +21,20 @@ public interface VehicleMarkManageClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    VehicleMarkManage selectById(Long id);
+    ResVechicleMark findById(Long id);
 
 	/**
 	 * @Description  根据用户id查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<VehicleMarkManage> selectByUserId(@Param("userId")Long userId);
+	List<VehicleMarkManage> findByUserId(@Param("userId")Long userId);
 
 	/**
 	 * @Description  查询列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResVechicleMark> selectResList(@Param("userId")Long userId);
+	List<ResVechicleMark> findResList(@Param("userId")Long userId);
 
 }
