@@ -126,7 +126,7 @@ public class AccessDetailAop {
 				detail.setType(1);
 				accessDetailClient.miniSave(detail);
 			}
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 		}
 	}
 
