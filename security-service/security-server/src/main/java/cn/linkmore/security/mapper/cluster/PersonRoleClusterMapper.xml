@@ -15,4 +15,10 @@
     from t_sec_person_role
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findListById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, role_id, person_id
+    from t_sec_person_role 
+    where person_id = #{personId,jdbcType=BIGINT}
+  </select> 
 </mapper>

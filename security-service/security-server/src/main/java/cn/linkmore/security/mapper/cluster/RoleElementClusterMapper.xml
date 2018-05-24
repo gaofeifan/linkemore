@@ -15,4 +15,12 @@
     from t_sec_role_element
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select id, role_id, element_id
+    from t_sec_role_element where 1 =1 
+    <if test="roleId!=null">  
+    and role_id = #{roleId,jdbcType=INTEGER}
+    </if>
+  </select>
 </mapper>

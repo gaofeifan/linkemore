@@ -9,10 +9,12 @@
   <sql id="Base_Column_List">
     id, role_id, person_id
   </sql>
-  <delete id="delete" parameterType="java.lang.Long">
+  
+   <delete id="delete" parameterType="java.lang.Long" >
     delete from t_sec_person_role
-    where id = #{id,jdbcType=BIGINT}
+    where person_id = #{personId,jdbcType=BIGINT}
   </delete>
+  
   <insert id="save" parameterType="cn.linkmore.security.entity.PersonRole">
     insert into t_sec_person_role (id, role_id, person_id
       )
