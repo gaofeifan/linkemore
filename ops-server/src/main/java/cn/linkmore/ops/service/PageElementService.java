@@ -58,7 +58,10 @@ public interface PageElementService {
 	 * @return
 	 */ 
 	Tree findTree();
-
+	/**
+	 * 集合
+	 * @return
+	 */
 	Map<String, Object> map();
 	
 	/**
