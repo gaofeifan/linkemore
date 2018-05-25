@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.request.ReqCheck;
@@ -33,7 +31,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags = "Page", description = "页面")
 @RestController
-@RequestMapping("/dict")
+@RequestMapping("/page")
 public class PageController {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired

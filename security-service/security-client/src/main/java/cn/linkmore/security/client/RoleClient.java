@@ -12,7 +12,7 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
-import cn.linkmore.security.client.hystrix.DictClientHystrix;
+import cn.linkmore.security.client.hystrix.RoleClientHystrix;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqRole;
 /**
@@ -21,7 +21,7 @@ import cn.linkmore.security.request.ReqRole;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "security-server", path = "/role", fallback=DictClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "security-server", path = "/role", fallback=RoleClientHystrix.class,configuration = FeignConfiguration.class)
 public interface RoleClient {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
