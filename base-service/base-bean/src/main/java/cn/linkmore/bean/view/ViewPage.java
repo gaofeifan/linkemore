@@ -34,6 +34,10 @@ public class ViewPage  implements Serializable {
 		this.totalPages = (total-1)/pageSize + 1;
 	}
 	
+	public ViewPage() {
+		
+	}
+	
 	public Integer getTotal() {
 		return total;
 	}

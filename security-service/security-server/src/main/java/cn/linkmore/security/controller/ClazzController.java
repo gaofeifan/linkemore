@@ -67,8 +67,8 @@ public class ClazzController {
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable){
-		log.info("..........list:{}",this.clazzService.findPage(pageable).getList().size());
-		
-		return this.clazzService.findPage(pageable); 
+		ViewPage vp = this.clazzService.findPage(pageable); 
+		log.info("..........list.size:{}"+vp.getTotal());
+		return vp;
 	} 
 }
