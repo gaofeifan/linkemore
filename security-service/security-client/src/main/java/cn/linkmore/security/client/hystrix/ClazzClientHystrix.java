@@ -46,7 +46,7 @@ public class ClazzClientHystrix implements ClazzClient {
 	@Override
 	public ViewPage list(ViewPageable pageable) {
 		log.info("clazz list hystrix");
-		return null;
+		return new ViewPage(0,0,null);
 	}
 
 }
