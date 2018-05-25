@@ -1,11 +1,10 @@
-package cn.linkmore.security.service;
+package cn.linkmore.ops.service;
 
 import java.util.List;
-
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.request.ReqCheck;
-import cn.linkmore.security.request.ReqDictGroup;
+import cn.linkmore.ops.request.ReqCheck;
+import cn.linkmore.ops.request.ReqDictGroup;
 
 /**
  * Service接口 - 字典分类信息
@@ -26,7 +25,7 @@ public interface DictGroupService {
 	 * @param reqCheck
 	 * @return
 	 */
-	Integer check(ReqCheck reqCheck);
+	Boolean check(ReqCheck reqCheck);
 	/**
 	 * 批量删除
 	 * @param ids

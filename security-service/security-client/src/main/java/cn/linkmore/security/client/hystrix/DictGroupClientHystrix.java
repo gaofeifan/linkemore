@@ -20,18 +20,21 @@ public class DictGroupClientHystrix implements DictGroupClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public void save(ReqDictGroup dict) {
+	public int save(ReqDictGroup dict) {
 		log.info("dict save");
+		return 0;
 	}
 
 	@Override
-	public void update(ReqDictGroup reqClazz) {
+	public int update(ReqDictGroup reqClazz) {
 		log.info("dict update");
+		return 0;
 	}
 
 	@Override
-	public void delete(List<Long> ids) {
+	public int delete(List<Long> ids) {
 		log.info("dict delete");
+		return 0;
 	}
 
 	@Override

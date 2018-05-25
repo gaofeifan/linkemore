@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -14,9 +16,11 @@ import cn.linkmore.security.dao.cluster.DictGroupClusterMapper;
 import cn.linkmore.security.dao.master.DictGroupMasterMapper;
 import cn.linkmore.security.entity.DictGroup;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqDictGroup;
 import cn.linkmore.security.response.ResDictGroup;
 import cn.linkmore.security.service.DictGroupService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 
 /**
  * Service实现类 -权限模块 - 字典分类信息
@@ -65,15 +69,18 @@ public class DictGroupServiceImpl implements DictGroupService {
 	}
 
 	@Override
-	public void save(DictGroup record) {
-		record.setCreateTime(new Date());
-		this.dictGroupMasterMapper.save(record);
+	public int save(ReqDictGroup resDictGroup) {
+		DictGroup dictGroup = new DictGroup();
+		dictGroup = ObjectUtils.copyObject(resDictGroup, dictGroup);
+		dictGroup.setCreateTime(new Date());
+		return this.dictGroupMasterMapper.save(dictGroup);
 	}
 	
 	@Override
-	public DictGroup update(DictGroup record) {
-		this.dictGroupMasterMapper.update(record);
-		return record;
+	public int update(ReqDictGroup resDictGroup) {
+		DictGroup dictGroup = new DictGroup();
+		dictGroup = ObjectUtils.copyObject(resDictGroup, dictGroup);
+		return this.dictGroupMasterMapper.update(dictGroup);
 	}
 
 	@Override

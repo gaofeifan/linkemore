@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -16,10 +18,12 @@ import cn.linkmore.security.dao.cluster.DictGroupClusterMapper;
 import cn.linkmore.security.dao.master.DictMasterMapper;
 import cn.linkmore.security.entity.Dict;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqDict;
 import cn.linkmore.security.response.ResDict;
 import cn.linkmore.security.response.ResDictGroup;
 import cn.linkmore.security.service.DictService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 
 
 /**
@@ -62,15 +66,18 @@ public class DictServiceImpl implements DictService {
 	}
 
 	@Override
-	public void save(Dict dict) {
+	public int save(ReqDict reqDict) {
+		Dict dict = new Dict();
+		dict = ObjectUtils.copyObject(reqDict, dict);
 		dict.setCreateTime(new Date());
-		this.dictMasterMapper.save(dict);
+		return this.dictMasterMapper.save(dict);
 	}
 	
 	@Override
-	public Dict update(Dict dict) {
-		this.dictMasterMapper.update(dict);
-		return dict;
+	public int update(ReqDict reqDict) {
+		Dict dict = new Dict();
+		dict = ObjectUtils.copyObject(reqDict, dict);
+		return this.dictMasterMapper.update(dict);
 	}
 
 	@Override

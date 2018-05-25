@@ -38,18 +38,14 @@ public class DictController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqDict reqDict){
-		Dict dict = new Dict();
-		dict = ObjectUtils.copyObject(reqDict, dict);
-		this.dictService.save(dict);
+	public int save(@RequestBody ReqDict reqDict){
+		return this.dictService.save(reqDict);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqDict reqDict){
-		Dict dict = new Dict();
-		dict = ObjectUtils.copyObject(reqDict, dict);
-		this.dictService.update(dict);
+	public int update(@RequestBody ReqDict reqDict){
+		return this.dictService.update(reqDict);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)

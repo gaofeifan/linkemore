@@ -35,24 +35,20 @@ public class DictGroupController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqDictGroup reqDictGroup){
-		DictGroup dictGroup = new DictGroup();
-		dictGroup = ObjectUtils.copyObject(reqDictGroup, dictGroup);
-		this.dictGroupService.save(dictGroup);
+	public int save(@RequestBody ReqDictGroup reqDictGroup){
+		return this.dictGroupService.save(reqDictGroup);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqDictGroup reqDictGroup){
-		DictGroup dictGroup = new DictGroup();
-		dictGroup = ObjectUtils.copyObject(reqDictGroup, dictGroup);
-		this.dictGroupService.update(dictGroup);
+	public int update(@RequestBody ReqDictGroup reqDictGroup){
+		return this.dictGroupService.update(reqDictGroup);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids){ 
-		this.dictGroupService.delete(ids);
+	public int delete(@RequestBody List<Long> ids){ 
+		return this.dictGroupService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
