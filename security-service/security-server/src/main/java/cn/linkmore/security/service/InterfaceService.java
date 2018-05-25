@@ -5,8 +5,8 @@ import java.util.List;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Interface;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqInterface;
 
 /**
  * Service接口 - 接口信息
@@ -29,7 +29,7 @@ public interface InterfaceService {
 	 * 
 	 * @param inter
 	 */
-	void save(Interface inter);
+	int save(ReqInterface inter);
 
 	/**
 	 * 更新
@@ -37,7 +37,7 @@ public interface InterfaceService {
 	 * @param inter
 	 * @return
 	 */
-	Interface update(Interface inter);
+	int update(ReqInterface inter);
 
 	/**
 	 * 批量删除

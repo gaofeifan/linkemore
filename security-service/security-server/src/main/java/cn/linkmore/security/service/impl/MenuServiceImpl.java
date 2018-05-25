@@ -6,11 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -22,11 +24,13 @@ import cn.linkmore.security.dao.master.MenuMasterMapper;
 import cn.linkmore.security.entity.Menu;
 import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqMenu;
 import cn.linkmore.security.response.ResDict;
 import cn.linkmore.security.response.ResMenu;
 import cn.linkmore.security.response.ResPage;
 import cn.linkmore.security.service.MenuService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 
 
 /**
@@ -133,16 +137,18 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Override
-	public void save(Menu menu) {
+	public int save(ReqMenu reqMenu) {
+		Menu menu = new Menu();
+		menu = ObjectUtils.copyObject(reqMenu, menu);
 		menu.setCreateTime(new Date());
-		this.menuMasterMapper.save(menu);
-		
+		return this.menuMasterMapper.save(menu);
 	}
 	
 	@Override
-	public Menu update(Menu menu) {
-		this.menuMasterMapper.update(menu);
-		return menu;
+	public int update(ReqMenu reqMenu) {
+		Menu menu = new Menu();
+		menu = ObjectUtils.copyObject(reqMenu, menu);
+		return this.menuMasterMapper.update(menu);
 	}
 
 	@Override

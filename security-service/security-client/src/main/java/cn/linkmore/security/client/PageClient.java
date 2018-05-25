@@ -23,15 +23,15 @@ public interface PageClient {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqPage reqPage);
+	public int save(@RequestBody ReqPage reqPage);
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqPage reqPage);
+	public int update(@RequestBody ReqPage reqPage);
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids);
+	public int delete(@RequestBody List<Long> ids);
 	
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

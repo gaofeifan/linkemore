@@ -24,18 +24,21 @@ public class RoleClientHystrix implements RoleClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public void save(ReqRole role) {
+	public int save(ReqRole role) {
 		log.info("role save");
+		return 0;
 	}
 
 	@Override
-	public void update(ReqRole role) {
+	public int update(ReqRole role) {
 		log.info("role update");
+		return 0;
 	}
 
 	@Override
-	public void delete(List<Long> ids) {
+	public int delete(List<Long> ids) {
 		log.info("role delete");
+		return 0;
 	}
 
 	@Override

@@ -27,15 +27,15 @@ public interface MenuClient {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqMenu reqMenu);
+	public int save(@RequestBody ReqMenu reqMenu);
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqMenu reqMenu);
+	public int update(@RequestBody ReqMenu reqMenu);
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids);
+	public int delete(@RequestBody List<Long> ids);
 	
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

@@ -23,18 +23,21 @@ public class MenuClientHystrix implements MenuClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public void save(ReqMenu reqMenu) {
+	public int save(ReqMenu reqMenu) {
 		log.info("menu save");
+		return 0;
 	}
 
 	@Override
-	public void update(ReqMenu reqMenu) {
+	public int update(ReqMenu reqMenu) {
 		log.info("menu update");
+		return 0;
 	}
 
 	@Override
-	public void delete(List<Long> ids) {
+	public int delete(List<Long> ids) {
 		log.info("menu delete");
+		return 0;
 	}
 
 	@Override

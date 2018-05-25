@@ -4,11 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -27,6 +25,7 @@ import cn.linkmore.security.entity.Role;
 import cn.linkmore.security.entity.RoleElement;
 import cn.linkmore.security.entity.RolePage;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqRole;
 import cn.linkmore.security.response.ResDict;
 import cn.linkmore.security.response.ResPage;
 import cn.linkmore.security.response.ResPageElement;
@@ -34,6 +33,7 @@ import cn.linkmore.security.response.ResRoleElement;
 import cn.linkmore.security.response.ResRolePage;
 import cn.linkmore.security.service.RoleService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 
 
 /**
@@ -72,9 +72,6 @@ public class RoleServiceImpl implements RoleService {
 	@Autowired
 	private RoleElementMasterMapper roleElementMasterMapper;
 	
-	@Autowired
-	private PageElementMasterMapper  pageElementMasterMapper;
-	
 	@Override
 	public ViewPage findPage(ViewPageable pageable) { 
 		Map<String,Object> param = new HashMap<String,Object>(); 
@@ -99,15 +96,18 @@ public class RoleServiceImpl implements RoleService {
 	}
 
 	@Override
-	public void save(Role role) {
+	public int save(ReqRole reqRole) {
+		Role role = new Role();
+		role = ObjectUtils.copyObject(reqRole, role);
 		role.setCreateTime(new Date());
-		this.roleMasterMapper.save(role);
+		return this.roleMasterMapper.save(role);
 	}
 	
 	@Override
-	public Role update(Role role) {
-		this.roleMasterMapper.update(role);
-		return role;
+	public int update(ReqRole reqRole) {
+		Role role = new Role();
+		role = ObjectUtils.copyObject(reqRole, role);
+		return this.roleMasterMapper.update(role);
 	}
 
 	@Override

@@ -20,18 +20,21 @@ public class PageClientHystrix implements PageClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public void save(ReqPage page) {
+	public int save(ReqPage page) {
 		log.info("page save");
+		return 0;
 	}
 
 	@Override
-	public void update(ReqPage page) {
+	public int update(ReqPage page) {
 		log.info("page update");
+		return 0;
 	}
 
 	@Override
-	public void delete(List<Long> ids) {
+	public int delete(List<Long> ids) {
 		log.info("page delete");
+		return 0;
 	}
 
 	@Override

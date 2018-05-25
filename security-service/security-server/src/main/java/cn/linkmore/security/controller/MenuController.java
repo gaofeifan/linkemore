@@ -37,24 +37,20 @@ public class MenuController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqMenu reqMenu){
-		Menu menu = new Menu();
-		menu = ObjectUtils.copyObject(reqMenu, menu);
-		this.menuService.save(menu);
+	public int save(@RequestBody ReqMenu reqMenu){
+		return this.menuService.save(reqMenu);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.PUT)
 	@ResponseBody
-	public void update(@RequestBody ReqMenu reqMenu){
-		Menu menu = new Menu();
-		menu = ObjectUtils.copyObject(reqMenu, menu);
-		this.menuService.update(menu);
+	public int update(@RequestBody ReqMenu reqMenu){
+		return this.menuService.update(reqMenu);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids){ 
-		this.menuService.delete(ids);
+	public int delete(@RequestBody List<Long> ids){ 
+		return this.menuService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

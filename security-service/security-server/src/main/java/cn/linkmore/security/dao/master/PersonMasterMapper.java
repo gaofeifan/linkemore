@@ -19,10 +19,10 @@ public interface PersonMasterMapper {
 
     int update(Person record);
 
-	void loginUpdate(Person db);
+	int loginUpdate(Person db);
 
 	int delete(List<Long> ids);
 
-	void unlock(Long id);
+	int unlock(Long id);
 	
 }

@@ -5,8 +5,8 @@ import java.util.Map;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Menu;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqMenu;
 
 /**
  * Service接口 - 权限模块  - 菜单信息
@@ -27,14 +27,14 @@ public interface MenuService {
 	 * 保存信息
 	 * @param menu
 	 */
-	void save(Menu menu);
+	int save(ReqMenu menu);
 	
 	/**
 	 * 更新信息
 	 * @param menu
 	 * @return
 	 */
-	Menu update(Menu menu);
+	int update(ReqMenu menu);
 	
 	
 	/**

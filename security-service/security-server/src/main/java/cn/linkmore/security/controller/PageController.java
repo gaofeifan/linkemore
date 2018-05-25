@@ -35,18 +35,14 @@ public class PageController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqPage reqPage){
-		Page page = new Page();
-		page = ObjectUtils.copyObject(reqPage, page);
-		this.pageService.save(page);
+	public int save(@RequestBody ReqPage reqPage){
+		return this.pageService.save(reqPage);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqPage reqPage){
-		Page page = new Page();
-		page = ObjectUtils.copyObject(reqPage, page);
-		this.pageService.update(page);
+	public int update(@RequestBody ReqPage reqPage){
+		return this.pageService.update(reqPage);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)

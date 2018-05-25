@@ -18,6 +18,7 @@ import cn.linkmore.security.dao.cluster.PersonRoleClusterMapper;
 import cn.linkmore.security.dao.cluster.RoleClusterMapper;
 import cn.linkmore.security.dao.master.PersonMasterMapper;
 import cn.linkmore.security.dao.master.PersonRoleMasterMapper;
+import cn.linkmore.security.entity.Page;
 import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.entity.PersonRole;
 import cn.linkmore.security.request.ReqCheck;
@@ -92,7 +93,9 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public void save(Person person) {
+	public int save(ReqPerson reqPerson) {
+		Person person = new Person();
+		person = ObjectUtils.copyObject(reqPerson, person);
 		person.setCreateTime(new Date());
 		person.setPassword(PasswordUtil.encode(person.getPassword()));
 		person.setLockCount(0);
@@ -101,11 +104,13 @@ public class PersonServiceImpl implements PersonService {
 		person.setLoginIp("");
 		person.setType(1); 
 		person.setLoginTime(new Date());
-		this.personMasterMapper.save(person);
+		return this.personMasterMapper.save(person);
 	}
 	
 	@Override
-	public Person update(Person person) {
+	public int update(ReqPerson reqPerson) {
+		Person person = new Person();
+		person = ObjectUtils.copyObject(reqPerson, person);
 		ResPerson db = this.personClusterMapper.findById(person.getId());
 		db.setRealname(person.getRealname());
 		db.setStatus(person.getStatus());
@@ -113,8 +118,7 @@ public class PersonServiceImpl implements PersonService {
 			db.setPassword(PasswordUtil.encode(person.getPassword()));
 		}
 		person = ObjectUtils.copyObject(db, person);
-		this.personMasterMapper.update(person);
-		return person;
+		return this.personMasterMapper.update(person);
 	}
 	
 	@Override
@@ -139,7 +143,7 @@ public class PersonServiceImpl implements PersonService {
 	}
 	
 	@Override
-	public void loginUpdate(ReqPerson person) {
+	public int loginUpdate(ReqPerson person) {
 		ResPerson db = this.personClusterMapper.findById(person.getId());
 		db.setLockCount(person.getLockCount());
 		db.setLockStatus(person.getLockStatus());
@@ -149,7 +153,7 @@ public class PersonServiceImpl implements PersonService {
 		
 		Person p = new Person();
 		p = ObjectUtils.copyObject(db, p);
-		this.personMasterMapper.loginUpdate(p); 
+		return this.personMasterMapper.loginUpdate(p); 
 	}
 
 	@Override

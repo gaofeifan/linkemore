@@ -37,25 +37,20 @@ public class PageElementController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqPageElement reqPageElement){
-		PageElement pageElement = new PageElement();
-		pageElement = ObjectUtils.copyObject(reqPageElement, pageElement);
-		this.pageElementService.save(pageElement);
-		 
+	public int save(@RequestBody ReqPageElement reqPageElement){
+		return this.pageElementService.save(reqPageElement);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqPageElement reqPageElement){
-		PageElement pageElement = new PageElement();
-		pageElement = ObjectUtils.copyObject(reqPageElement, pageElement);
-		this.pageElementService.update(pageElement);
+	public int update(@RequestBody ReqPageElement reqPageElement){
+		return this.pageElementService.update(reqPageElement);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids){ 
-		this.pageElementService.delete(ids);
+	public int delete(@RequestBody List<Long> ids){ 
+		return this.pageElementService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

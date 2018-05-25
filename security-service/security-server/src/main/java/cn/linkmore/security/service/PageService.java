@@ -3,8 +3,8 @@ package cn.linkmore.security.service;
 import java.util.List;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Page;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqPage;
 
 /**
  * Service接口 - 页面信息
@@ -26,14 +26,14 @@ public interface PageService {
 	 * 保存
 	 * @param page
 	 */
-	void save(Page page);
+	int save(ReqPage page);
 
 	/**
 	 * 更新
 	 * @param page
 	 * @return
 	 */
-	Page update(Page page);
+	int update(ReqPage page);
 
 	/**
 	 * 记录检验

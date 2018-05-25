@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -17,11 +19,13 @@ import cn.linkmore.security.dao.cluster.InterfaceClusterMapper;
 import cn.linkmore.security.dao.master.InterfaceMasterMapper;
 import cn.linkmore.security.entity.Interface;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqInterface;
 import cn.linkmore.security.response.ResClazz;
 import cn.linkmore.security.response.ResDict;
 import cn.linkmore.security.response.ResInterface;
 import cn.linkmore.security.service.InterfaceService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 
 
 /**
@@ -66,15 +70,18 @@ public class InterfaceServiceImpl implements InterfaceService {
 	}
 
 	@Override
-	public void save(Interface inter) {
+	public int save(ReqInterface reqInter) {
+		Interface inter = new Interface();
+		inter = ObjectUtils.copyObject(reqInter, inter);
 		inter.setCreateTime(new Date());
-		this.interfaceMasterMapper.save(inter);
+		return this.interfaceMasterMapper.save(inter);
 	}
 	
 	@Override
-	public Interface update(Interface inter) {
-		this.interfaceMasterMapper.update(inter);
-		return inter;
+	public int update(ReqInterface reqInter) {
+		Interface inter = new Interface();
+		inter = ObjectUtils.copyObject(reqInter, inter);
+		return this.interfaceMasterMapper.update(inter);
 	}
 
 	@Override

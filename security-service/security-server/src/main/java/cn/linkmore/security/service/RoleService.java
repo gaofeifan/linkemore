@@ -5,8 +5,8 @@ import java.util.Map;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Role;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqRole;
 
 /**
  * Service接口 - 权限模块 - 角色信息
@@ -27,14 +27,14 @@ public interface RoleService {
 	 * 保存
 	 * @param role
 	 */
-	void save(Role role);
+	int save(ReqRole reqRole);
 
 	/**
 	 * 更新
 	 * @param role
 	 * @return
 	 */
-	Role update(Role role);
+	int update(ReqRole reqRole);
 
 	/**
 	 * 记录检验

@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Interface;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqInterface;
 import cn.linkmore.security.service.InterfaceService;
-import cn.linkmore.util.ObjectUtils;
 
 /**
  * Controller - 接口操作
@@ -36,24 +34,20 @@ public class InterfaceController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqInterface reqItf){
-		Interface inter = new Interface();
-		inter = ObjectUtils.copyObject(reqItf, inter);
-		this.interfaceService.save(inter);
+	public int save(@RequestBody ReqInterface reqItf){
+		return this.interfaceService.save(reqItf);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqInterface reqItf){
-		Interface inter = new Interface();
-		inter = ObjectUtils.copyObject(reqItf, inter);
-		this.interfaceService.update(inter);
+	public int update(@RequestBody ReqInterface reqItf){
+		return this.interfaceService.update(reqItf);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids){ 
-		this.interfaceService.delete(ids);
+	public int delete(@RequestBody List<Long> ids){ 
+		return this.interfaceService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

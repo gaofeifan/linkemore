@@ -21,18 +21,21 @@ public class InterfaceClientHystrix implements InterfaceClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public void save(ReqInterface reqInterface) {
+	public int save(ReqInterface reqInterface) {
 		log.info("interface save");
+		return 0;
 	}
 
 	@Override
-	public void update(ReqInterface reqInterface) {
+	public int update(ReqInterface reqInterface) {
 		log.info("interface update");
+		return 0;
 	}
 
 	@Override
-	public void delete(List<Long> ids) {
+	public int delete(List<Long> ids) {
 		log.info("interface delete");
+		return 0;
 	}
 
 	@Override

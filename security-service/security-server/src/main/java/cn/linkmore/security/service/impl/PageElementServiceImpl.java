@@ -21,6 +21,7 @@ import cn.linkmore.security.dao.cluster.PageElementClusterMapper;
 import cn.linkmore.security.dao.master.PageElementMasterMapper;
 import cn.linkmore.security.entity.PageElement;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqPageElement;
 import cn.linkmore.security.response.ResAuthElement;
 import cn.linkmore.security.response.ResClazz;
 import cn.linkmore.security.response.ResDict;
@@ -29,6 +30,7 @@ import cn.linkmore.security.response.ResPage;
 import cn.linkmore.security.response.ResPageElement;
 import cn.linkmore.security.service.PageElementService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 
 
 /**
@@ -127,16 +129,18 @@ public class PageElementServiceImpl implements PageElementService {
 	}
 
 	@Override
-	public void save(PageElement record) {
-		record.setCreateTime(new Date());
-		this.pageElementMasterMapper.save(record);
-		
+	public int save(ReqPageElement reqPageElement) {
+		PageElement pageElement = new PageElement();
+		pageElement = ObjectUtils.copyObject(reqPageElement, pageElement);
+		pageElement.setCreateTime(new Date());
+		return this.pageElementMasterMapper.save(pageElement);
 	}
 	
 	@Override
-	public PageElement update(PageElement record) {
-		this.pageElementMasterMapper.update(record);
-		return record;
+	public int update(ReqPageElement reqPageElement) {
+		PageElement pageElement = new PageElement();
+		pageElement = ObjectUtils.copyObject(reqPageElement, pageElement);
+		return this.pageElementMasterMapper.update(pageElement);
 	}
 
 	@Override

@@ -22,18 +22,21 @@ public class PageElementClientHystrix implements PageElementClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public void save(ReqPageElement page) {
+	public int save(ReqPageElement page) {
 		log.info("pageElement save");
+		return 0;
 	}
 
 	@Override
-	public void update(ReqPageElement page) {
+	public int update(ReqPageElement page) {
 		log.info("pageElement update");
+		return 0;
 	}
 
 	@Override
-	public void delete(List<Long> ids) {
+	public int delete(List<Long> ids) {
 		log.info("pageElement delete");
+		return 0;
 	}
 
 	@Override

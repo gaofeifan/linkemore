@@ -27,15 +27,15 @@ public interface PersonClient {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqPerson reqPerson);
+	public int save(@RequestBody ReqPerson reqPerson);
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqPerson reqPerson);
+	public int update(@RequestBody ReqPerson reqPerson);
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids);
+	public int delete(@RequestBody List<Long> ids);
 	
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.Tree;
-import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Role;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqRole;
 import cn.linkmore.security.service.RoleService;
 
 /**
@@ -38,20 +36,20 @@ public class RoleController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody Role role){
-		this.roleService.save(role);
+	public int save(@RequestBody ReqRole reqRole){
+		return this.roleService.save(reqRole);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody Role role){
-		this.roleService.update(role);
+	public int update(@RequestBody ReqRole reqRole){
+		return this.roleService.update(reqRole);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids){ 
-		this.roleService.delete(ids);
+	public int delete(@RequestBody List<Long> ids){ 
+		return this.roleService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

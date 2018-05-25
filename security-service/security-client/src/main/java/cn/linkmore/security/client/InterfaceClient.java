@@ -26,15 +26,15 @@ public interface InterfaceClient {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqInterface reqInterface);
+	public int save(@RequestBody ReqInterface reqInterface);
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqInterface reqInterface);
+	public int update(@RequestBody ReqInterface reqInterface);
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids);
+	public int delete(@RequestBody List<Long> ids);
 	
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

@@ -17,7 +17,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import cn.linkmore.security.entity.Person;
+import cn.linkmore.security.request.ReqPerson;
 import cn.linkmore.security.response.ResAuthElement;
 import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.service.MenuService;
@@ -76,8 +76,7 @@ public class AuthenticationRealm extends AuthorizingRealm {
 					person.setLockCount(0);
 					person.setLockStatus(0); 
 					person.setPassword(null);
-					
-					Person p = new Person();
+					ReqPerson p = new ReqPerson();
 					p = ObjectUtils.copyObject(person, p);
 					personService.update(p);
 				} else {
@@ -93,7 +92,7 @@ public class AuthenticationRealm extends AuthorizingRealm {
 				}
 				person.setLockCount(loginFailureCount);
 				person.setPassword(null);
-				Person p = new Person();
+				ReqPerson p = new ReqPerson();
 				p = ObjectUtils.copyObject(person, p);
 				personService.update(p);
 				throw new IncorrectCredentialsException();
@@ -103,7 +102,7 @@ public class AuthenticationRealm extends AuthorizingRealm {
 			person.setLockCount(0);
 			try{
 				person.setPassword(null);
-				Person p = new Person();
+				ReqPerson p = new ReqPerson();
 				p = ObjectUtils.copyObject(person, p);
 				personService.update(p);
 			}catch(Exception e){

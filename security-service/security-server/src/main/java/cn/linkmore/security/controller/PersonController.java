@@ -38,19 +38,14 @@ public class PersonController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public void save(@RequestBody ReqPerson reqPerson){
-		Person person = new Person();
-		person = ObjectUtils.copyObject(reqPerson, person);
-		this.personService.save(person);
-		 
+	public int save(@RequestBody ReqPerson reqPerson){
+		return this.personService.save(reqPerson);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public void update(@RequestBody ReqPerson reqPerson){
-		Person person = new Person();
-		person = ObjectUtils.copyObject(reqPerson, person);
-		this.personService.update(person);
+	public int update(@RequestBody ReqPerson reqPerson){
+		return this.personService.update(reqPerson);
 	}
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)

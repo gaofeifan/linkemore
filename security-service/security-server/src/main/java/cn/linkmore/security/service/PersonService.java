@@ -4,7 +4,6 @@ import java.util.List;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPerson;
 import cn.linkmore.security.response.ResPerson;
@@ -37,14 +36,14 @@ public interface PersonService {
 	 * 保存
 	 * @param person
 	 */
-	void save(Person person);
+	int save(ReqPerson reqPerson);
 
 	/**
 	 * 更新
 	 * @param person
 	 * @return
 	 */
-	Person update(Person person);
+	int update(ReqPerson reqPerson);
 	
 	
 	/**
@@ -52,7 +51,7 @@ public interface PersonService {
 	 * @param person
 	 * @return
 	 */
-	void loginUpdate(ReqPerson person);
+	int loginUpdate(ReqPerson person);
 
 	/**
 	 * 记录检验

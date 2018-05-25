@@ -14,10 +14,13 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.dao.cluster.PageClusterMapper;
 import cn.linkmore.security.dao.master.PageMasterMapper;
 import cn.linkmore.security.entity.Page;
+import cn.linkmore.security.entity.PageElement;
 import cn.linkmore.security.request.ReqCheck;
+import cn.linkmore.security.request.ReqPage;
 import cn.linkmore.security.response.ResPage;
 import cn.linkmore.security.service.PageService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 
 /**
  * Service实现类 -权限模块 - 页面信息
@@ -58,15 +61,18 @@ public class PageServiceImpl implements PageService {
 	}
 
 	@Override
-	public void save(Page page) {
+	public int save(ReqPage reqPage) {
+		Page page = new Page();
+		page = ObjectUtils.copyObject(reqPage, page);
 		page.setCreateTime(new Date());
-		this.pageMasterMapper.save(page);
+		return this.pageMasterMapper.save(page);
 	}
 	
 	@Override
-	public Page update(Page page) {
-		this.pageMasterMapper.update(page);
-		return page;
+	public int update(ReqPage reqPage) {
+		Page page = new Page();
+		page = ObjectUtils.copyObject(reqPage, page);
+		return this.pageMasterMapper.update(page);
 	}
 
 	@Override
