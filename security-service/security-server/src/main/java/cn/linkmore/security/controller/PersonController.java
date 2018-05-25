@@ -1,6 +1,7 @@
 package cn.linkmore.security.controller;
 
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +11,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPerson;
 import cn.linkmore.security.response.ResPersonRole;
 import cn.linkmore.security.response.ResRole;
 import cn.linkmore.security.service.PersonService;
-import cn.linkmore.util.ObjectUtils;
 
 /**
  * Controller - 账户信息

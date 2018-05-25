@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.request.ReqPerson;
-import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.service.PersonService;
 import cn.linkmore.util.JsonUtil;
 

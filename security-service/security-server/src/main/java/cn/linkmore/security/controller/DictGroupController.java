@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.DictGroup;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqDictGroup;
 import cn.linkmore.security.service.DictGroupService;
-import cn.linkmore.util.ObjectUtils;
 
 /**
  * Controller - 字典分组操作

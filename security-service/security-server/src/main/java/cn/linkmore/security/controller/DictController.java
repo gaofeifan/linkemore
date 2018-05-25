@@ -13,12 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.Dict;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqDict;
 import cn.linkmore.security.response.ResDict;
 import cn.linkmore.security.service.DictService;
-import cn.linkmore.util.ObjectUtils;
 
 /**
  * Controller - 字典操作

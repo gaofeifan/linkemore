@@ -18,7 +18,6 @@ import cn.linkmore.security.dao.cluster.PersonRoleClusterMapper;
 import cn.linkmore.security.dao.cluster.RoleClusterMapper;
 import cn.linkmore.security.dao.master.PersonMasterMapper;
 import cn.linkmore.security.dao.master.PersonRoleMasterMapper;
-import cn.linkmore.security.entity.Page;
 import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.entity.PersonRole;
 import cn.linkmore.security.request.ReqCheck;

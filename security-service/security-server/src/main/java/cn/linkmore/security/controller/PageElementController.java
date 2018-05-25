@@ -2,6 +2,7 @@ package cn.linkmore.security.controller;
 
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.entity.PageElement;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPageElement;
 import cn.linkmore.security.service.PageElementService;
-import cn.linkmore.util.ObjectUtils;
 
 /**
  * Controller - 页面元素操作
