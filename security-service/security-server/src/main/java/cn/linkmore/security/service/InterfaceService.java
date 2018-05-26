@@ -7,6 +7,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqInterface;
+import cn.linkmore.security.response.ResInterface;
 
 /**
  * Service接口 - 接口信息
@@ -58,4 +59,10 @@ public interface InterfaceService {
 	 * @return
 	 */ 
 	Tree findTree();
+	
+	/**
+	 * 查询所有接口
+	 * @return
+	 */
+	List<ResInterface> findAll();
 }

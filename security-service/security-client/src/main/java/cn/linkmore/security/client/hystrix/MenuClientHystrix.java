@@ -64,4 +64,9 @@ public class MenuClientHystrix implements MenuClient {
 		return null;
 	}
 
+	@Override
+	public void cachePersonAuthList() {
+		log.info("menu cachePersonAuthList");
+	}
+
 }

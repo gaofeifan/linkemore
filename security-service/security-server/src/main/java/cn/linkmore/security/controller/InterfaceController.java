@@ -15,6 +15,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqInterface;
+import cn.linkmore.security.response.ResInterface;
 import cn.linkmore.security.service.InterfaceService;
 
 /**
@@ -72,5 +73,11 @@ public class InterfaceController {
 	@ResponseBody
 	public Tree tree(){ 
 		return this.interfaceService.findTree();
+	}
+	
+	@RequestMapping(value = "/v2.0/findAll", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResInterface> findAll(){ 
+		return this.interfaceService.findAll();
 	}
 }

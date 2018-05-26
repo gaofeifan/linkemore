@@ -151,4 +151,9 @@ public class InterfaceServiceImpl implements InterfaceService {
 		root.setChildren(trees);
 		return root;
 	}
+
+	@Override
+	public List<ResInterface> findAll() {
+		return this.interfaceClusterMapper.findAll();
+	}
 }
