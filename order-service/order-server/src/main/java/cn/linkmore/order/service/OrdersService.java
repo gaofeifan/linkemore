@@ -1,6 +1,8 @@
 package cn.linkmore.order.service;
 
 import cn.linkmore.order.request.ReqOrderCreate;
+import cn.linkmore.order.request.ReqOrderDown;
+import cn.linkmore.order.request.ReqOrderSwitch;
 import cn.linkmore.order.response.ResUserOrder;
 
 /**
@@ -33,8 +35,14 @@ public interface OrdersService {
 
 	/**
 	 * 降下地锁
-	 * @param id
+	 * @param rod
 	 */
-	void down(Long id);
+	void down( ReqOrderDown rod);
+
+	/**
+	 * 切换车位
+	 * @param ros
+	 */
+	void switchStall(ReqOrderSwitch ros);
 
 }

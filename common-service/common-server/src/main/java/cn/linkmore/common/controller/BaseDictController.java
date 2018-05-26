@@ -1,14 +1,20 @@
 package cn.linkmore.common.controller;
 import java.util.List;
+
 import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import cn.linkmore.common.request.ReqBaseDict;
 import cn.linkmore.common.response.ResBaseDict;
+import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.common.service.BaseDictService;
+import cn.linkmore.common.service.DictService;
 
 /**
  * 数据词典(新)
@@ -22,6 +28,9 @@ public class BaseDictController {
 	
 	@Resource
 	private BaseDictService baseDictService;
+	
+	@Autowired
+	private DictService dictService;
 	
 	/**
 	 * @Description  通过code查询数据
@@ -52,6 +61,11 @@ public class BaseDictController {
 	@RequestMapping(value="/{id}/",method=RequestMethod.GET)
 	public ResBaseDict find(@PathVariable("id") Long id) {
 		return this.baseDictService.find(id);
+	}
+	
+	@RequestMapping(value="/old/{id}/",method=RequestMethod.GET)
+	public ResOldDict findOld(@PathVariable("id") Long id) {
+		return this.dictService.find(id);
 	}
 	
 

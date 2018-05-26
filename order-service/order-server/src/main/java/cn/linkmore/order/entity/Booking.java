@@ -7,14 +7,7 @@ import java.util.Date;
  * @version 2.0
  *
  */
-public class Booking {
-	public static final Short REASON_NONE = 0;
-	public static final short REASON_EXCEPTION = 1;
-	public static final short REASON_STALL_NONE = 2;
-	public static final short REASON_STALL_EXCEPTION = 3;
-	public static final short REASON_STALL_ORDERED = 4;
-	public static final short REASON_CARNO_BUSY = 5;
-	public static final short REASON_USER_LIMIT = 6;
+public class Booking { 
 	
     private Long id;
 

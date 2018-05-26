@@ -9,10 +9,25 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  <resultMap id="ResResultMap" type="cn.linkmore.common.response.ResOldDict">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="group_id" jdbcType="BIGINT" property="groupId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, group_id, name, code, create_time, update_time
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from base_dict
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="find" parameterType="java.lang.Long" resultMap="ResResultMap">
     select 
     <include refid="Base_Column_List" />
     from base_dict

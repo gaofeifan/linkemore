@@ -21,19 +21,20 @@ import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResVechicleMark;
+import cn.linkmore.bean.common.Constants.DownLockStatus;
 import cn.linkmore.bean.common.Constants.OperateStatus;
+import cn.linkmore.bean.common.Constants.OrderFailureReason;
 import cn.linkmore.bean.common.Constants.OrderPayType;
 import cn.linkmore.bean.common.Constants.OrderStatus;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallAssignStatus;
 import cn.linkmore.bean.common.Constants.StallStatus;
-import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.common.client.BaseDictClient;
-import cn.linkmore.common.response.ResBaseDict;
+import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.cluster.StallAssignClusterMapper;
 import cn.linkmore.order.dao.master.BookingMasterMapper;
@@ -45,6 +46,8 @@ import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.OrdersDetail;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderCreate;
+import cn.linkmore.order.request.ReqOrderDown;
+import cn.linkmore.order.request.ReqOrderSwitch;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.PrefectureClient;
@@ -142,17 +145,24 @@ public class OrdersServiceImpl implements OrdersService {
 		short failureReason = 0;
 		short bookingStatus = 0;
 		try {
+			ResUserOrder ruo  = this.ordersClusterMapper.findUserLatest(orc.getUserId());
+			if(ruo.getStatus().intValue()==OrderStatus.UNPAID.value||ruo.getStatus().intValue()==OrderStatus.SUSPENDED.value) {
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short)OrderFailureReason.UNPAID.value;
+				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
+			} 
+			
 			ResUser ru = this.userClient.findById(orc.getUserId());
 			if (null == orc.getUserId() || null == orc.getPrefectureId() || null == orc.getPlateId()) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
-				failureReason = Booking.REASON_EXCEPTION;
+				failureReason = (short)OrderFailureReason.EXCEPTION.value;
 				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
 			}
 			ResVechicleMark  vehicleMark =  vehicleMarkClient.findById(orc.getPlateId());
 
 			if (!this.checkCarFree(vehicleMark.getVehMark())) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
-				failureReason = Booking.REASON_CARNO_BUSY;
+				failureReason = (short)OrderFailureReason.CARNO_BUSY.value;
 				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY);
 			}
 			// 指定车位锁
@@ -197,7 +207,7 @@ public class OrdersServiceImpl implements OrdersService {
 			
 			if (StringUtils.isEmpty(lockSn)) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
-				failureReason = Booking.REASON_STALL_NONE;
+				failureReason = (short)OrderFailureReason.STALL_NONE.value;
 				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);
 			}
 			// 根据lockSn获取车位
@@ -228,14 +238,14 @@ public class OrdersServiceImpl implements OrdersService {
 			if (stall == null || stall.getStatus().intValue() != StallStatus.FREE.status) {
 				resetRedis = false;
 				bookingStatus =(short) OperateStatus.FAILURE.status;
-				failureReason = Booking.REASON_STALL_EXCEPTION;
+				failureReason = (short)OrderFailureReason.STALL_EXCEPTION.value;
 				log.info("{} create order error with {}", ru.getUsername(), JsonUtil.toJson(stall));
 				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_EXCEPTION);
 			}
 			ResUserOrder latest = this.ordersClusterMapper.findStallLatest(stall.getId());
 			if (latest != null && latest.getStatus().intValue() == 1) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
-				failureReason = Booking.REASON_STALL_ORDERED;
+				failureReason = (short)OrderFailureReason.STALL_ORDERED.value;
 				resetRedis = false;
 				log.info("{} create order error latest order {} is unpaid with stall  ", ru.getUsername(),
 						JsonUtil.toJson(latest), JsonUtil.toJson(stall));
@@ -261,7 +271,7 @@ public class OrdersServiceImpl implements OrdersService {
 			od.setNightTime(0); 
 			Long dictId = pre.getBaseDictId();
 			if (null != dictId) {
-				ResBaseDict dict = this.baseDictClient.find(dictId);
+				ResOldDict dict = this.baseDictClient.findOld(dictId);
 				if (null != dict) {
 					o.setDockId(dict.getCode());
 				}
@@ -278,7 +288,7 @@ public class OrdersServiceImpl implements OrdersService {
 			ordersDetailMasterMapper.save(od);
 			this.stallClient.order(stall.getId()); 
 			bookingStatus = (short)OperateStatus.SUCCESS.status;
-			failureReason = Booking.REASON_NONE;   
+			failureReason = (short)OrderFailureReason.NONE.value;   
 			this.userClient.order(ru.getId());
 			if(assign){
 				log.info("use the admin assign stall:{},orderNo:{}",lockSn,o.getOrderNo());
@@ -296,6 +306,14 @@ public class OrdersServiceImpl implements OrdersService {
 				Thread thread = new ProduceBookThread(o);
 				thread.start();
 			}
+			Map<String,Object> param = new HashMap<String,Object>();
+			param.put("orderId", o.getId());
+			param.put("orderNo", o.getOrderNo());
+			param.put("preName", pre.getName());
+			param.put("stallName", stall.getStallName());
+			param.put("stallId", o.getStallId());
+			param.put("startTime", o.getCreateTime());
+			param.put("status", o.getStatus()); 
 		} catch (BusinessException e) {
 			StringBuffer sb = new StringBuffer();
 			StackTraceElement[] stackArray = e.getStackTrace();
@@ -340,7 +358,14 @@ public class OrdersServiceImpl implements OrdersService {
 			throw new RuntimeException("异常");
 		} finally {
 			Thread thread = new BookingThread(orc.getPrefectureId(), orc.getUserId(), bookingStatus, failureReason);
-			thread.start();
+			thread.start();  
+			String content = "订单预约失败";  
+			Boolean status = false;
+			if(bookingStatus==OperateStatus.SUCCESS.status) {
+				content = "订单预约成功";  
+				status = true;
+			}  
+			push(orc.getUserId().toString(),"车位预约通知",content,PushType.ORDER_CREATE_NOTICE,status);
 		} 
 	}
 	public ResUserOrder findStallLatestOrder(Long stallId) {
@@ -403,7 +428,13 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 	@Override
 	public ResUserOrder latest(Long userId) {
-		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(userId); 
+		ResUserOrder orders = null;
+		try {
+			orders = this.ordersClusterMapper.findUserLatest(userId); 
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		return orders;
 	}
 	@Override
@@ -411,45 +442,61 @@ public class OrdersServiceImpl implements OrdersService {
 		ResUserOrder orders = this.ordersClusterMapper.findDetail(orderId); 
 		return orders;
 	}
+	/**
+	 * 推送消息
+	 * @param uid 
+	 * @param title
+	 * @param content
+	 * @param type
+	 * @param res
+	 */
 	@Async
-	private void push(String uid,String title,String content,PushType type,ResponseEntity<?> res) {
-		Token token = (Token)this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN+uid.toString());
+	private void push(String uid,String title,String content,PushType type,Boolean status) {
+		Token token = (Token)this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key+uid.toString());
 		ReqPush rp = new ReqPush();
 		rp.setAlias(uid);
 		rp.setTitle(title); 
 		rp.setContent(content);
 		rp.setClient(token.getClient());
 		rp.setType(type);
-		rp.setData(JsonUtil.toJson(res)); 
+		rp.setData(status.toString()); 
 		this.pushClient.push(rp);
 	}
 	
 	@Override
 	@Async
-	public void down(Long id) {
-		ResUserOrder order = this.ordersClusterMapper.findDetail(id);
-		Boolean flag = false; 
-		ResponseEntity<?> response = null;
-		StatusEnum se = null;
-		if(order.getStatus()==OrderStatus.UNPAID.value) {
+	public void down(ReqOrderDown rod) {
+		ResUserOrder order = this.ordersClusterMapper.findDetail(rod.getOrderId());
+		Boolean flag = false;    
+		if(rod.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value) {
 			flag = this.stallClient.downlock(order.getStallId()); 
-		} else {
-			se = StatusEnum.ORDER_LOCKDOWN_UNPAY;
-		}
-		Map<String,Object> param = new HashMap<String,Object>();
-		if(flag) {
-			response =  ResponseEntity.success(null, null); 
-		}else {
-			if(se!=null) {
-				response = ResponseEntity.fail(se, null);
-			}else {
-				response = ResponseEntity.fail(StatusEnum.ORDER_LOCKDOWN_FAIL, null);
-			} 
+			Map<String,Object> param = new HashMap<String,Object>(); 
+			param.put("lockDownStatus",flag?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
+			param.put("lockDownTime", new Date());
+			param.put("orderId", order.getId());
+			this.orderMasterMapper.updateLockStatus(param); 
 		} 
-		param.put("lockDownStatus",flag?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
-		param.put("lockDownTime", new Date());
-		param.put("orderId", order.getId());
-		this.orderMasterMapper.updateLockStatus(param);
-		this.push(order.getUserId().toString(), "预约降锁通知",flag? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, response);
+		
+		this.push(order.getUserId().toString(), "预约降锁通知",flag? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, flag);
+	}
+
+	 
+
+	@Override
+	@Async
+	public void switchStall(ReqOrderSwitch ros) {
+		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
+		Boolean flag = false;
+		if(order.getStatus().intValue()==OrderStatus.UNPAID.value&&order.getLockDownStatus()!=null&&order.getLockDownStatus()==DownLockStatus.FAILURE.status) {
+			Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
+			if(sn!=null) {
+				ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
+				order.setStallId(stall.getId());
+				order.setStallName(stall.getStallName());
+			}  
+			
+			
+		}
+		this.push(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.LOCK_DOWN_NOTICE, flag);
 	}
 }

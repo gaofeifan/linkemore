@@ -15,6 +15,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.user.request.ReqBooking;
 import cn.linkmore.user.request.ReqOrderStall;
+import cn.linkmore.user.request.ReqSwitch;
 import cn.linkmore.user.response.ResOrder;
 import cn.linkmore.user.service.OrderService;
 import io.swagger.annotations.Api;
@@ -39,7 +40,7 @@ public class OrderController {
 	@ApiOperation(value = "预约下单", notes = "车区ID不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/create", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> create(@Validated @RequestBody ReqBooking rb, HttpServletRequest request) {
+	public ResponseEntity<?> create(@RequestBody ReqBooking rb, HttpServletRequest request) {
 		ResponseEntity<?> response = null;
 		try {
 			this.orderService.create(rb, request);
@@ -53,6 +54,23 @@ public class OrderController {
 		}
 		return response;
 	}
+	@ApiOperation(value = "切换车位", notes = "原因ID不能为空，备注可为空", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/switch", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> switchStall(@Validated @RequestBody ReqSwitch rs, HttpServletRequest request) {
+		ResponseEntity<?> response = null;
+		try {
+			this.orderService.switchStall(rs, request);
+			response = ResponseEntity.success(null, request);
+		} catch (BusinessException e) {
+			e.printStackTrace();
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
 
 	@ApiOperation(value = "当前订单", notes = "结账离场[组织数据,计算费用，计算时长]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/current", method = RequestMethod.GET)
@@ -63,8 +81,10 @@ public class OrderController {
 			ResOrder order = this.orderService.current(request);
 			response = ResponseEntity.success(order, request);
 		} catch (BusinessException e) {
+			e.printStackTrace();
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) {
+			e.printStackTrace();
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;

@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.user.request.ReqBooking;
 import cn.linkmore.user.request.ReqOrderStall;
+import cn.linkmore.user.request.ReqSwitch;
 import cn.linkmore.user.response.ResOrder;
 
 /**
@@ -34,5 +35,12 @@ public interface OrderService {
 	 * @param request
 	 */
 	void down(ReqOrderStall ros,HttpServletRequest request);
+
+	/**
+	 * 切换车位
+	 * @param rs
+	 * @param request
+	 */
+	void switchStall(ReqSwitch rs, HttpServletRequest request);
 
 }

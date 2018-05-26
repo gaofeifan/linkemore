@@ -70,7 +70,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		log.info("redis key:{}",RedisKey.USER_APP_AUTH_USER.key+key);
 		log.info("token user:{}",JsonUtil.toJson(ru));
 		if(ru==null) {
-			response.setStatus(403);
+			response.setStatus(200);
 			response.setCharacterEncoding("UTF-8");  
 			response.setContentType("application/json; charset=utf-8");  
 			PrintWriter  pw = null;

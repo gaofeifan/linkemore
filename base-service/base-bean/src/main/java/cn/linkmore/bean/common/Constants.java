@@ -74,6 +74,14 @@ public class Constants {
 			this.source = source;
 		}
 	}
+	
+	public enum OrderFailureReason{
+		NONE( 0),EXCEPTION (1),	STALL_NONE( 2),	STALL_EXCEPTION( 3),STALL_ORDERED ( 4),	CARNO_BUSY ( 5),USER_LIMIT ( 6),UNPAID(7);
+		public int value;
+		private OrderFailureReason(int value) {
+			this.value = value;
+		}
+	}
 
 	public enum OrderStatus {
 		UNPAID(1, "未支付"), PAID(2, "已支付"), COMPLETED(3, "已完成"), CANCELLED(4, "已取消"), SUSPENDED(6, "已挂起"), CLOSED(7,
@@ -85,6 +93,15 @@ public class Constants {
 			this.value = value;
 			this.label = label;
 		}
+	}
+	
+	public enum DownLockStatus{
+		NONE(0),SUCCESS(1),FAILURE(2);
+		public int status;
+		private DownLockStatus(int status) {
+			this.status = status;
+		}
+		
 	}
 
 	public enum OrderStatusHistory {
@@ -163,11 +180,12 @@ public class Constants {
 	}
 
 	public enum PushType {
-		USER_APP_LOGOUT_NOTICE(0, "USER_APP_LOGOUT_NOTICE"), ORDER_CREATE_NOTICE(1,
-				"ORDER_CREATE_NOTICE"), LOCK_DOWN_NOTICE(1, "LOCK_DOWN_NOTICE");
+		USER_APP_LOGOUT_NOTICE(0, "USER_APP_LOGOUT_NOTICE"), 
+		ORDER_CREATE_NOTICE(1,"ORDER_CREATE_NOTICE"), 
+		LOCK_DOWN_NOTICE(2, "LOCK_DOWN_NOTICE"),
+		ORDER_SWITCH_STALL(3,"ORDER_SWITCH_STALL");
 		public int type;
-		public String id;
-
+		public String id; 
 		private PushType(int type, String id) {
 			this.id = id;
 			this.type = type;

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import cn.linkmore.common.client.hystrix.BaseDictClientHystrix;
 import cn.linkmore.common.request.ReqBaseDict;
 import cn.linkmore.common.response.ResBaseDict;
+import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.feign.FeignConfiguration;
 /**
  * 数据词典
@@ -38,4 +39,11 @@ public interface BaseDictClient {
 	 */
 	@RequestMapping(value="/{id}/",method=RequestMethod.GET)
 	public ResBaseDict find(@PathVariable("id") Long id);
+	/**
+	 * 根据id查询老字典
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/old/{id}/",method=RequestMethod.GET)
+	public ResOldDict findOld(@PathVariable("id") Long id);
 }

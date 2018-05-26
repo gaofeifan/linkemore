@@ -234,26 +234,31 @@ public class PrefectureServiceImpl implements PrefectureService {
 	 * @return
 	 */
 	public Integer getFreeStall(Long preId) {
-		Prefecture preDetail = this.prefectureClusterMapper.findById(preId);
+//		Prefecture preDetail = this.prefectureClusterMapper.findById(preId);
 		List<ResStall> stallList = this.stallClusterMapper.findStallsByPreId(preId);
-		LockFactory lockFactory = InitLockFactory.getInstance();
-		ResponseMessage<LockBean> lc = lockFactory.findAvailableLock(preDetail.getGateway());
-		List<LockBean> lockBeanList = lc.getDataList();
-		Integer count = 0;
-		if(CollectionUtils.isNotEmpty(lockBeanList) && CollectionUtils.isNotEmpty(stallList)) {
-			log.info("pref free stall:{},         -------------       stall:{}" ,JsonUtil.toJson(lc.getDataList()) , JsonUtil.toJson(stallList));
-			for(LockBean lock : lockBeanList) {
-				for(ResStall stall : stallList) {
-					if(lock.getSlaveId().equals(stall.getLockSn())) {
-						//1 表示竖起来 0 表示躺下被占用
-						if(lock.getOpenState().equals(1)) {
-							count ++;
-						}
-						log.info("pref free stall count :{}" ,count);
-					}
-				}
-			}
+		int count = 0;
+		if(stallList!=null) {
+			count = stallList.size();
 		}
 		return count;
+//		LockFactory lockFactory = InitLockFactory.getInstance();
+//		ResponseMessage<LockBean> lc = lockFactory.findAvailableLock(preDetail.getGateway());
+//		List<LockBean> lockBeanList = lc.getDataList();
+//		Integer count = 0;
+//		if(CollectionUtils.isNotEmpty(lockBeanList) && CollectionUtils.isNotEmpty(stallList)) {
+//			log.info("pref free stall:{},         -------------       stall:{}" ,JsonUtil.toJson(lc.getDataList()) , JsonUtil.toJson(stallList));
+//			for(LockBean lock : lockBeanList) {
+//				for(ResStall stall : stallList) {
+//					if(lock.getSlaveId().equals(stall.getLockSn())) {
+//						//1 表示竖起来 0 表示躺下被占用
+//						if(lock.getOpenState().equals(1)) {
+//							count ++;
+//						}
+//						log.info("pref free stall count :{}" ,count);
+//					}
+//				}
+//			}
+//		}
+//		return count;
 	}
 }

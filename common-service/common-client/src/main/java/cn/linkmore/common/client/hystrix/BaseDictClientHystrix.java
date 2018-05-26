@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.request.ReqBaseDict;
 import cn.linkmore.common.response.ResBaseDict;
+import cn.linkmore.common.response.ResOldDict;
 
 /**
  * 数据词典容错
@@ -44,7 +45,13 @@ public class BaseDictClientHystrix implements BaseDictClient {
 	}
 	@Override
 	public ResBaseDict find(@PathVariable("id") Long id) {
-		log.info("common service dict  detail(Long id) hystrix");
+		log.info("common service dict  find(Long id) hystrix");
+		return null;
+	}
+
+	@Override
+	public ResOldDict findOld(Long id) { 
+		log.info("common service old dict  findOld(Long id) hystrix");
 		return null;
 	}
 	

@@ -5,17 +5,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.bean.common.Constants.OrderStatus;
 import cn.linkmore.bean.common.Constants.RedisKey;
-import cn.linkmore.bean.exception.BusinessException;
-import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.request.ReqOrderCreate;
+import cn.linkmore.order.request.ReqOrderDown;
+import cn.linkmore.order.request.ReqOrderSwitch;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.common.UserCache;
 import cn.linkmore.user.request.ReqBooking;
 import cn.linkmore.user.request.ReqOrderStall;
+import cn.linkmore.user.request.ReqSwitch;
 import cn.linkmore.user.response.ResOrder;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.OrderService;
@@ -49,30 +49,39 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public ResOrder current(HttpServletRequest request) { 
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key);
-		ResUserOrder ruo =  this.orderClient.userLatest(ru.getId()); 
-		ResOrder order = new ResOrder();
-		order.copy(ruo);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		ResUserOrder ruo =  this.orderClient.last(ru.getId()); 
+		ResOrder order = null;
+		if(ruo!=null) {
+			order = new ResOrder();
+			order.copy(ruo);
+		}
+		
 		return order;
 	}
 
 	@Override
 	public void down(ReqOrderStall ros, HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER+key); 
-		ResUserOrder ruo = this.orderClient.detail(ros.getOrderId());
-		if(ruo!=null) { 
-			if(ru.getId().intValue()!=ruo.getUserId().intValue()||ruo.getStallId().intValue()!=ros.getStallId().intValue()) {
-				throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
-			}
-			if(ruo.getStatus()!=OrderStatus.UNPAID.value) {
-				throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_UNPAY);
-			}
-			this.orderClient.down(ruo.getId());
-		}else {
-			throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
-		}
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);  
+		ReqOrderDown rod = new ReqOrderDown();
+		rod.setOrderId(ros.getOrderId());
+		rod.setStallId(ros.getStallId());
+		rod.setUserId(ru.getId());
+		this.orderClient.down(rod);
 		
+	}
+
+	@Override
+	public void switchStall(ReqSwitch rs, HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		ReqOrderSwitch ros = new ReqOrderSwitch();
+		ros.setCauseId(rs.getCauseId());
+		ros.setOrderId(rs.getOrderId());
+		ros.setRemark(rs.getRemark());
+		ros.setUserId(ru.getId());
+		this.orderClient.switchStall(ros);
 	}
 
 }
