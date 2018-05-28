@@ -1,11 +1,14 @@
 package cn.linkmore.security.client;
 
 import java.util.List;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -54,6 +57,6 @@ public interface InterfaceClient {
 
 	@RequestMapping(value = "/v2.0/person_auth_list", method = RequestMethod.GET)
 	@ResponseBody
-	public List<ResInterface> findPersonAuthList(Long id);
+	public List<ResInterface> findPersonAuthList(@RequestParam("id") Long id);
 	
 }

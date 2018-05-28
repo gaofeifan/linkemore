@@ -7,6 +7,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.bean.view.Tree;
@@ -57,6 +58,6 @@ public interface MenuClient {
 
 	@RequestMapping(value = "/v2.0/person_auth_list", method = RequestMethod.GET)
 	@ResponseBody
-	public List<ResMenu> findPersonAuthList(Long id);
+	public List<ResMenu> findPersonAuthList(@RequestParam("id") Long id);
 	
 }

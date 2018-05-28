@@ -17,6 +17,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPageElement;
+import cn.linkmore.security.response.ResAuthElement;
 import cn.linkmore.security.service.PageElementService;
 
 /**
@@ -81,5 +82,11 @@ public class PageElementController {
 	@ResponseBody
 	public Map<String,Object> map(){
 		return this.pageElementService.map();
+	}
+	
+	@RequestMapping(value = "/v2.0/res_auth_element", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResAuthElement> findResAuthElementList(){
+		return this.pageElementService.findResAuthElementList();
 	}
 }
