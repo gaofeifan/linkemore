@@ -16,6 +16,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPerson;
+import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.response.ResPersonRole;
 import cn.linkmore.security.response.ResRole;
 import cn.linkmore.security.service.PersonService;
@@ -89,6 +90,12 @@ public class PersonController {
 	public List<ResPersonRole> personRolList(@RequestParam("id") Long id){
 		return this.personService.personRoleList(id);
 	}  
+	
+	@RequestMapping(value = "/v2.0/username", method = RequestMethod.GET)
+	@ResponseBody
+	public ResPerson findByUsername(@RequestParam("username") String username) {
+		return this.personService.findByUsername(username);
+	}
 	
 	
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.GET)

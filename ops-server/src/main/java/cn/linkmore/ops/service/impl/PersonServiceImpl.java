@@ -65,7 +65,9 @@ public class PersonServiceImpl implements PersonService {
 	public ResPerson findByUsername(String username) {
 		ResPerson resPerson = new ResPerson();
 		cn.linkmore.security.response.ResPerson person = this.personClient.findByUsername(username);
-		resPerson = ObjectUtils.copyObject(person, resPerson);
+		if(person != null) {
+			resPerson = ObjectUtils.copyObject(person, resPerson);
+		}
 		return resPerson;
 	}
 
