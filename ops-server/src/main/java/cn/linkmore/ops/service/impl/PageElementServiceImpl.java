@@ -9,9 +9,9 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.request.ReqCheck;
 import cn.linkmore.ops.request.ReqPageElement;
-import cn.linkmore.ops.response.ResAuthElement;
 import cn.linkmore.ops.service.PageElementService;
 import cn.linkmore.security.client.PageElementClient;
+import cn.linkmore.security.response.ResAuthElement;
 import cn.linkmore.util.ObjectUtils;
 
 /**
@@ -73,8 +73,7 @@ public class PageElementServiceImpl implements PageElementService {
 	 */
 	@Override
 	public List<ResAuthElement> findResAuthElementList() {
-		List<cn.linkmore.security.response.ResAuthElement> authList = new ArrayList<cn.linkmore.security.response.ResAuthElement>();
-		return null;
+		return this.pageElementClient.findResAuthElementList();
 	}
 	
 	

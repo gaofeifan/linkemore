@@ -66,4 +66,10 @@ public class InterfaceClientHystrix implements InterfaceClient {
 		return new ArrayList<ResInterface>();
 	}
 
+	@Override
+	public List<ResInterface> findPersonAuthList(Long id) {
+		log.info("interface findPersonAuthList");
+		return new ArrayList<ResInterface>();
+	}
+
 }

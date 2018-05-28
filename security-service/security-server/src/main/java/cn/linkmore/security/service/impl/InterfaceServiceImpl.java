@@ -4,11 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -155,5 +153,10 @@ public class InterfaceServiceImpl implements InterfaceService {
 	@Override
 	public List<ResInterface> findAll() {
 		return this.interfaceClusterMapper.findAll();
+	}
+
+	@Override
+	public List<ResInterface> findPersonAuthList(Long id) {
+		return this.interfaceClusterMapper.findPersonAuthList(id);
 	}
 }

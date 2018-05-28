@@ -7,6 +7,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqMenu;
+import cn.linkmore.security.response.ResMenu;
 
 /**
  * Service接口 - 权限模块  - 菜单信息
@@ -63,6 +64,6 @@ public interface MenuService {
 	 * 获取用户授权菜单 
 	 * @return
 	 */
-	public void cachePersonAuthList();
+	public List<ResMenu> findPersonAuthList(Long id);
 
 }

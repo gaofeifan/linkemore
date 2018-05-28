@@ -1,5 +1,4 @@
 package cn.linkmore.security.service.impl;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.security.dao.cluster.InterfaceClusterMapper;
 import cn.linkmore.security.dao.cluster.PersonClusterMapper;
 import cn.linkmore.security.dao.cluster.PersonRoleClusterMapper;
 import cn.linkmore.security.dao.cluster.RoleClusterMapper;
@@ -22,12 +20,10 @@ import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.entity.PersonRole;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPerson;
-import cn.linkmore.security.response.ResInterface;
 import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.response.ResPersonRole;
 import cn.linkmore.security.response.ResRole;
 import cn.linkmore.security.service.PersonService;
-import cn.linkmore.security.shiro.Principal;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.PasswordUtil;
@@ -43,11 +39,9 @@ public class PersonServiceImpl implements PersonService {
 
 	@Autowired
 	private PersonClusterMapper personClusterMapper;
-	@Autowired
-	private PersonMasterMapper personMasterMapper;
 	
 	@Autowired
-	private InterfaceClusterMapper interfaceClusterMapper;
+	private PersonMasterMapper personMasterMapper;
 	
 	@Autowired
 	private RoleClusterMapper roleClusterMapper;
@@ -57,7 +51,6 @@ public class PersonServiceImpl implements PersonService {
 	
 	@Autowired
 	private PersonRoleClusterMapper personRoleClusterMapper;
-	
 
 	@Override
 	public ResPerson findByUsername(String username) {
@@ -173,17 +166,6 @@ public class PersonServiceImpl implements PersonService {
 		param.put("id", reqCheck.getId());
 		return this.personClusterMapper.check(reqCheck); 
 	}
-	
-	@Override
-	public List<String> findAuthList(Principal principal) { 
-		List<ResInterface> list = this.interfaceClusterMapper.findPersonAuthList(principal.getId());
-		List<String> as = new ArrayList<String>();
-		for(ResInterface i:list) {
-			as.add(i.getId().toString()); 
-		}
-		return as;
-	}
-	
 	
 	@Override
 	public List<ResPersonRole> personRoleList(Long id){ 

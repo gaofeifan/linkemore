@@ -1,7 +1,6 @@
 package cn.linkmore.security.service;
 
 import java.util.List;
-
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.request.ReqCheck;
@@ -9,7 +8,6 @@ import cn.linkmore.security.request.ReqPerson;
 import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.response.ResPersonRole;
 import cn.linkmore.security.response.ResRole;
-import cn.linkmore.security.shiro.Principal;
 
 /**
  * Service接口 -权限模块- 后台用户
@@ -66,14 +64,6 @@ public interface PersonService {
 	 * @return
 	 */
 	int delete(List<Long> ids);  
-
-	/**
-	 * 获取登录人的权限列表
-	 * @param principal
-	 * @return
-	 */
-	List<String> findAuthList(Principal principal);
-
 
 	/**
 	 * 解除锁定

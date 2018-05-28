@@ -7,7 +7,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.request.ReqCheck;
 import cn.linkmore.ops.request.ReqPageElement;
-import cn.linkmore.ops.response.ResAuthElement;
+import cn.linkmore.security.response.ResAuthElement;
 
 /**
  * Service接口 - 页面元素信息

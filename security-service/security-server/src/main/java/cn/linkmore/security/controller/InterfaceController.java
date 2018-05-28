@@ -80,4 +80,10 @@ public class InterfaceController {
 	public List<ResInterface> findAll(){ 
 		return this.interfaceService.findAll();
 	}
+	
+	@RequestMapping(value = "/v2.0/person_auth_list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResInterface> findPersonAuthList(Long id){ 
+		return this.interfaceService.findPersonAuthList(id);
+	}
 }
