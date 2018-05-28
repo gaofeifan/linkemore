@@ -1,20 +1,20 @@
 package cn.linkmore.ops.service.impl;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.request.ReqCheck;
 import cn.linkmore.ops.request.ReqPerson;
-import cn.linkmore.ops.response.Principal;
 import cn.linkmore.ops.response.ResPerson;
 import cn.linkmore.ops.response.ResPersonRole;
 import cn.linkmore.ops.response.ResRole;
 import cn.linkmore.ops.service.PersonService;
-import cn.linkmore.security.client.InterfaceClient;
+import cn.linkmore.ops.shiro.Principal;
 import cn.linkmore.security.client.PersonClient;
-import cn.linkmore.security.client.RoleClient;
 import cn.linkmore.util.ObjectUtils;
 
 /**
@@ -63,8 +63,10 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public ResPerson findByUsername(String username) {
-		
-		return null;
+		ResPerson resPerson = new ResPerson();
+		cn.linkmore.security.response.ResPerson person = this.personClient.findByUsername(username);
+		resPerson = ObjectUtils.copyObject(person, resPerson);
+		return resPerson;
 	}
 
 	@Override

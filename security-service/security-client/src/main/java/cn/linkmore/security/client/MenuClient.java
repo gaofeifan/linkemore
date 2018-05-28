@@ -53,6 +53,10 @@ public interface MenuClient {
 	@RequestMapping(value = "/v2.0/map", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String,Object> map();
+
+	@RequestMapping(value = "/v2.0/person_auth_list", method = RequestMethod.GET)
+	@ResponseBody
+	public void cachePersonAuthList();
 	
 	
 	

@@ -9,6 +9,8 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.client.PersonClient;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPerson;
+import cn.linkmore.security.request.ReqPrincipal;
+import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.response.ResPersonRole;
 import cn.linkmore.security.response.ResRole;
 /**
@@ -70,6 +72,18 @@ public class PersonClientHystrix implements PersonClient {
 	@Override
 	public List<ResPersonRole> personRolList(Long id) {
 		log.info("person personRolList");
+		return null;
+	}
+
+	@Override
+	public ResPerson findByUsername(String username) {
+		log.info("person findByUsername");
+		return null;
+	}
+
+	@Override
+	public List<String> findAuthList(ReqPrincipal principal) {
+		log.info("person findAuthList");
 		return null;
 	}
 

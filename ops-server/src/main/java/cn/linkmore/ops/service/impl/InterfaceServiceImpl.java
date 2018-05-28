@@ -1,4 +1,5 @@
 package cn.linkmore.ops.service.impl;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.request.ReqCheck;
 import cn.linkmore.ops.request.ReqInterface;
+import cn.linkmore.ops.response.ResInterface;
 import cn.linkmore.ops.service.InterfaceService;
 import cn.linkmore.security.client.InterfaceClient;
 import cn.linkmore.util.ObjectUtils;
@@ -59,6 +61,19 @@ public class InterfaceServiceImpl implements InterfaceService {
 	@Override
 	public Tree findTree() {
 		return this.interfaceClient.tree();
+	}
+
+	@Override
+	public List<ResInterface> findAll() {
+		List<ResInterface> resInterfaceList = new ArrayList<ResInterface>();
+		ResInterface resInter = null;
+		List<cn.linkmore.security.response.ResInterface> interList = this.interfaceClient.findAll();
+		for(cn.linkmore.security.response.ResInterface inter :interList) {
+			resInter = new ResInterface();
+			resInter = ObjectUtils.copyObject(inter, resInter);
+			resInterfaceList.add(resInter);
+		}
+		return resInterfaceList;
 	}
 	
 }

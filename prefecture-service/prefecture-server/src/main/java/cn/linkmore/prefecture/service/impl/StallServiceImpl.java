@@ -6,11 +6,9 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
-
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.LockStatus;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -20,7 +18,6 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
 import cn.linkmore.prefecture.entity.Stall;
-import cn.linkmore.prefecture.fee.InitLockFactory;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.service.StallService;
@@ -41,7 +38,9 @@ public class StallServiceImpl implements StallService {
 	private StallClusterMapper stallClusterMapper;
 	@Autowired
 	private RedisService redisService;
-
+	@Autowired
+	private LockFactory lockFactory;
+	
 	@Override
 	public void order(Long id) { 
 		Stall stall = new Stall();
@@ -69,7 +68,6 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean checkout(Long stallId) {
 		boolean flag = false;
-		LockFactory lockFactory = InitLockFactory.getInstance();
 		Stall stall = stallClusterMapper.findById(stallId);
 		if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
@@ -91,7 +89,6 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean downlock(Long stallId) {
 		boolean flag = true;
-		LockFactory lockFactory = InitLockFactory.getInstance();
 		Stall stall = stallClusterMapper.findById(stallId);
 		if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
@@ -109,7 +106,6 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean uplock(Long stallId) {
 		boolean flag = true;
-		LockFactory lockFactory = InitLockFactory.getInstance();
 		Stall stall = stallClusterMapper.findById(stallId);
 		if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			ResponseMessage<LockBean> res=lockFactory.lockUp(stall.getLockSn());

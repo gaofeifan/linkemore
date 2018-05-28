@@ -11,6 +11,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.client.PageElementClient;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPageElement;
+import cn.linkmore.security.response.ResAuthElement;
 /**
  * 远程调用实现 - 类信息
  * @author jiaohanbin
@@ -60,6 +61,12 @@ public class PageElementClientHystrix implements PageElementClient {
 	@Override
 	public Tree tree() {
 		log.info("pageElement tree");
+		return null;
+	}
+
+	@Override
+	public List<ResAuthElement> findResAuthElementList() {
+		log.info("pageElement findResAuthElementList");
 		return null;
 	}
 

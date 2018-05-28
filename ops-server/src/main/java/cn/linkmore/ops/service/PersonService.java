@@ -5,10 +5,10 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.request.ReqCheck;
 import cn.linkmore.ops.request.ReqPerson;
-import cn.linkmore.ops.response.Principal;
 import cn.linkmore.ops.response.ResPerson;
 import cn.linkmore.ops.response.ResPersonRole;
 import cn.linkmore.ops.response.ResRole;
+import cn.linkmore.ops.shiro.Principal;
 
 /**
  * Service接口 -权限模块- 后台用户

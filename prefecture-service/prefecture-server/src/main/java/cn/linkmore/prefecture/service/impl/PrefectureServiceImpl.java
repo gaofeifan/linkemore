@@ -20,7 +20,6 @@ import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.StrategyBase;
-import cn.linkmore.prefecture.fee.InitLockFactory;
 import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;

@@ -74,7 +74,11 @@ redis:
   pool-min-idle: 5
   test-while-idle: true
   test-on-borrow: true
-  test-on-create: true 
+  test-on-create: true
   sentinel-master: ppyxmaster
   sentinel-nodes: 192.168.1.61:26379 
+  
+lock:
+  huaqing-url: http://plockopen.huaching.com/api
+  linkmore-url: http://192.168.1.81:8081
     

@@ -16,6 +16,7 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.security.client.hystrix.PageElementClientHystrix;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPageElement;
+import cn.linkmore.security.response.ResAuthElement;
 /**
  * 远程调用 - 页面元素
  * @author jiaohanbin
@@ -53,4 +54,8 @@ public interface PageElementClient {
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.GET)
 	@ResponseBody
 	public Tree tree();
+	
+	@RequestMapping(value = "/v2.0/res_auth_element", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResAuthElement> findResAuthElementList();
 }

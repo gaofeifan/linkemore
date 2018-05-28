@@ -14,6 +14,8 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.security.client.hystrix.PersonClientHystrix;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqPerson;
+import cn.linkmore.security.request.ReqPrincipal;
+import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.response.ResPersonRole;
 import cn.linkmore.security.response.ResRole;
 /**
@@ -61,5 +63,13 @@ public interface PersonClient {
 	@RequestMapping(value = "/v2.0/person_role_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPersonRole> personRolList(@RequestParam("id") Long id);
+	
+	@RequestMapping(value = "/v2.0/username", method = RequestMethod.GET)
+	@ResponseBody
+	public ResPerson findByUsername(@RequestParam("username") String username);
+
+	@RequestMapping(value = "/v2.0/auth_list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> findAuthList(ReqPrincipal principal);
 	
 }
