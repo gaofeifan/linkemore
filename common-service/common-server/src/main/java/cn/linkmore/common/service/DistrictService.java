@@ -2,6 +2,7 @@ package cn.linkmore.common.service;
 
 import java.util.List;
 
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.entity.District;
@@ -49,5 +50,12 @@ public interface DistrictService {
 	 * @return
 	 */
 	Integer check(String property, String value, Long id);
+
+	/**
+	 * @Description  查询树桩数据
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Tree findTree();
 
 }

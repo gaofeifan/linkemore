@@ -107,6 +107,11 @@ public class CityServiceImpl implements CityService {
 		this.cityMasterMapper.deleteIds(ids); 
 	}
 	
+	@Override
+	public List<City> findList(Map<String, Object> param) {
+		return null;
+	}
+	
 	
 	
 	

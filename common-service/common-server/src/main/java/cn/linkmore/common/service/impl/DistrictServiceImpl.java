@@ -1,5 +1,6 @@
 package cn.linkmore.common.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,13 +9,16 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.dao.cluster.DistrictClusterMapper;
 import cn.linkmore.common.dao.master.DistrictMasterMapper;
+import cn.linkmore.common.entity.City;
 import cn.linkmore.common.entity.District;
 import cn.linkmore.common.response.ResDistrict;
+import cn.linkmore.common.service.CityService;
 import cn.linkmore.common.service.DistrictService;
 import cn.linkmore.util.EntityUtil;
 /**
@@ -31,7 +35,10 @@ public class DistrictServiceImpl implements DistrictService {
 	
 	@Autowired
 	private DistrictMasterMapper districtMasterMapper;
-
+	
+	@Autowired
+	private CityService cityService;
+	
 	public ResDistrict find(Long id) {
 		return this.districtClusterMapper.findById(id);
 	}
@@ -81,5 +88,36 @@ public class DistrictServiceImpl implements DistrictService {
 	public int delete(List<Long> ids) {
 		return 0; 
 	}
+	@Override
+	public Tree findTree() {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", "city_name");
+		param.put("direction", "asc");
+		List<City> list =  this.cityService.findList(param);
+		List<Tree> trees = new ArrayList<Tree>();
+		Tree root = new Tree();
+		root.setName("城市信息树");
+		root.setId("0");
+		root.setIsParent(false);
+		root.setCode("0");
+		root.setOpen(true);
+		root.setmId("0"); 
+		root.setChildren(trees);
+		Tree tree = null;
+		List<Tree> children = new ArrayList<Tree>();
+		for(City city:list) {
+			tree = new Tree();
+			tree.setName(city.getName());
+			tree.setCode(city.getId().toString());
+			tree.setmId(city.getId().toString());
+			tree.setId(city.getId().toString());
+			tree.setIsParent(false); 
+			children.add(tree);
+		}
+		root.setChildren(children);
+		return root;
+	}
+	
+	
 	
 }

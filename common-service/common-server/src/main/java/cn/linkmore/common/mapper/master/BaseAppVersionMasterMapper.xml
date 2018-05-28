@@ -22,7 +22,24 @@
     delete from t_base_app_version
     where id = #{id,jdbcType=BIGINT}
   </delete>
+   <delete id="deleteAppById" parameterType="java.util.List" >
+    delete from t_base_app_version
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </delete>
   <insert id="insert" parameterType="cn.linkmore.common.entity.BaseAppVersion">
+    insert into t_base_app_version (id, version, code, 
+      name, status, url, 
+      type, update_status, create_time, 
+      description, update_time)
+    values (#{id,jdbcType=BIGINT}, #{version,jdbcType=VARCHAR}, #{code,jdbcType=BIGINT}, 
+      #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{updateStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{description,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertReq" parameterType="cn.linkmore.common.request.ReqAppVersion">
     insert into t_base_app_version (id, version, code, 
       name, status, url, 
       type, update_status, create_time, 
@@ -142,6 +159,20 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateById" parameterType="cn.linkmore.common.entity.BaseAppVersion">
+    update t_base_app_version
+    set version = #{version,jdbcType=VARCHAR},
+      code = #{code,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      update_status = #{updateStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      description = #{description,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateReq" parameterType="cn.linkmore.common.request.ReqAppVersion">
     update t_base_app_version
     set version = #{version,jdbcType=VARCHAR},
       code = #{code,jdbcType=BIGINT},

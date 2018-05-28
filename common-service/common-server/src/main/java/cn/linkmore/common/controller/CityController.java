@@ -2,6 +2,7 @@ package cn.linkmore.common.controller;
 
 import java.util.List;
 
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -93,8 +93,6 @@ public class CityController{
 		try {
 			this.cityService.deleteIds(ids);
 			msg = new ViewMsg("删除成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
 		}catch(Exception e) {
 			e.printStackTrace();
 			msg = new ViewMsg("删除失败",false);

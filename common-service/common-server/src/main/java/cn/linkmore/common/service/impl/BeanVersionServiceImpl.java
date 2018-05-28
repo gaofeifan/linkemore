@@ -1,23 +1,32 @@
 package cn.linkmore.common.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.bean.view.ViewOrder.Direction;
+import cn.linkmore.bean.view.ViewFilter;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.dao.cluster.BaseAppVersionClusterMapper;
 import cn.linkmore.common.dao.cluster.UserVersionClusterMapper;
+import cn.linkmore.common.dao.master.BaseAppVersionMasterMapper;
 import cn.linkmore.common.dao.master.UserVersionMasterMapper;
 import cn.linkmore.common.entity.BaseAppVersion;
 import cn.linkmore.common.entity.Common;
 import cn.linkmore.common.entity.UserVersion;
+import cn.linkmore.common.request.ReqAppVersion;
+import cn.linkmore.common.request.ReqCheck;
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.service.BeanVersionService;
 import cn.linkmore.common.service.CommonService;
+import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 /**
  * 版本实现类
@@ -36,6 +45,8 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 	private UserVersionMasterMapper versionMasterMapper;
 	@Resource
 	private BaseAppVersionClusterMapper baseAppVersionClusterMapper;
+	@Resource
+	private BaseAppVersionMasterMapper baseAppVersionMasterMapper;
 	
 	@Override
 	public ResVersionBean currentAppVersion(Integer appType) {
@@ -63,8 +74,79 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 			return;
 		}
 		this.versionMasterMapper.insert(version);
-		
 	}
+
+	@Override
+	public void saveApp(ReqAppVersion version) {
+		this.baseAppVersionMasterMapper.insertReq(version);
+	}
+
+	@Override
+	public void updateApp(ReqAppVersion version) {
+		this.baseAppVersionMasterMapper.updateReq(version);
+	}
+
+	@Override
+	public void deleteAppById(List<Long> ids) {
+		this.baseAppVersionMasterMapper.deleteAppById(ids);
+	}
+
+	@Override
+	public ViewPage findPage(ViewPageable pageable) {
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		List<ViewFilter> filters = pageable.getFilters();
+		if(StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if(filters!=null&&filters.size()>0) {
+			for(ViewFilter filter:filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.baseAppVersionClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<BaseAppVersion> list = this.baseAppVersionClusterMapper.findPage(param);
+		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+
+	@Override
+	public Integer check(ReqCheck check) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", check.getProperty());
+		param.put("value", check.getValue());
+		param.put("id", check.getId());
+		return this.baseAppVersionClusterMapper.check(param); 
+	}
+
+	@Override
+	public ViewPage findUserPage(ViewPageable pageable) {
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		List<ViewFilter> filters = pageable.getFilters();
+		if(StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if(filters!=null&&filters.size()>0) {
+			for(ViewFilter filter:filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.versionClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<UserVersion> list = this.versionClusterMapper.findPage(param);
+		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+	
+	
 	
 	
 	

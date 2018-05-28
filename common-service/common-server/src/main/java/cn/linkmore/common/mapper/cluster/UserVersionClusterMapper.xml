@@ -25,4 +25,35 @@
     from t_user_version
     where user_id = #{userId,jdbcType=BIGINT}
   </select>
+   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Ops_Column_List" />
+    from t_user_version uv left join t_user u on uv.user_id = u.id
+    where 1 = 1  
+   	<if test="username!=null">  
+   	and u.mobile = #{username,jdbcType=VARCHAR}
+    </if> 
+    <if test="client!=null">  
+   	and uv.client = #{client,jdbcType=SMALLINT}
+    </if> 
+    <if test="property==null">  
+     order by uv.commit_time desc
+    </if>
+    <if test="property!=null">  
+    order by  uv.${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_user_version uv left join t_user u on uv.user_id = u.id
+    where 1= 1 
+    <if test="username!=null">  
+   	and u.mobile = #{username,jdbcType=VARCHAR}
+    </if> 
+    <if test="client!=null">  
+   	and uv.client = #{client,jdbcType=SMALLINT}
+    </if>   
+  </select>
 </mapper>

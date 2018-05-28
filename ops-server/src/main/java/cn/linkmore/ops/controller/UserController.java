@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONArray;
 
+import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.response.ResPageUser;
@@ -50,8 +51,9 @@ public class UserController {
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	@ResponseBody
-	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
-		return this.userService.findPage(pageable);
+	public ResponseEntity<ViewPage> list(HttpServletRequest request, ViewPageable pageable) {
+		ViewPage viewPage = this.userService.findPage(pageable);
+		return ResponseEntity.success(viewPage, request);
 	}
 
 	@SuppressWarnings("unchecked")

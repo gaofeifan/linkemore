@@ -38,4 +38,47 @@
     from t_base_app_version
     where type = #{appType} and status= #{status}
   </select>
+  <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select id, version, code, name, status, url, type, update_status, 
+    create_time, description, update_time
+    from t_base_app_version
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="code!=null">  
+    and code = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=VARCHAR}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+   <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_base_app_version
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="code!=null">  
+    and code = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=VARCHAR}
+    </if> 
+  </select>
+   <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_base_app_version
+    where 
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
 </mapper>

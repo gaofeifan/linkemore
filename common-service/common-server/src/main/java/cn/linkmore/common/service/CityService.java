@@ -1,6 +1,7 @@
 package cn.linkmore.common.service;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -86,5 +87,12 @@ public interface CityService {
 	 * @Version  v2.0
 	 */
 	void deleteIds(List<Long> ids);
+
+	/**
+	 * @Description	根据条件查询  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<City> findList(Map<String, Object> param);
 
 }
