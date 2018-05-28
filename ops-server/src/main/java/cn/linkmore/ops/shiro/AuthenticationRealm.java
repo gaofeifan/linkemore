@@ -17,13 +17,12 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import cn.linkmore.ops.request.ReqPerson;
-import cn.linkmore.ops.response.ResAuthElement;
 import cn.linkmore.ops.response.ResPerson;
 import cn.linkmore.ops.service.MenuService;
 import cn.linkmore.ops.service.PageElementService;
 import cn.linkmore.ops.service.PersonService;
+import cn.linkmore.security.response.ResAuthElement;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.PasswordUtil;
 

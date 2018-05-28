@@ -65,4 +65,10 @@ public interface InterfaceService {
 	 * @return
 	 */
 	List<ResInterface> findAll();
+	/**
+	 * 查询人员权限
+	 * @param id
+	 * @return
+	 */
+	List<ResInterface> findPersonAuthList(Long id);
 }

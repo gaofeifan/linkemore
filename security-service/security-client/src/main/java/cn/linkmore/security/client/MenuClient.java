@@ -16,6 +16,7 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.security.client.hystrix.MenuClientHystrix;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqMenu;
+import cn.linkmore.security.response.ResMenu;
 /**
  * 远程调用 - 菜单
  * @author jiaohanbin
@@ -56,8 +57,6 @@ public interface MenuClient {
 
 	@RequestMapping(value = "/v2.0/person_auth_list", method = RequestMethod.GET)
 	@ResponseBody
-	public void cachePersonAuthList();
-	
-	
+	public List<ResMenu> findPersonAuthList(Long id);
 	
 }

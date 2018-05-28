@@ -2,17 +2,11 @@ package cn.linkmore.security.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -22,7 +16,6 @@ import cn.linkmore.security.dao.cluster.MenuClusterMapper;
 import cn.linkmore.security.dao.cluster.PageClusterMapper;
 import cn.linkmore.security.dao.master.MenuMasterMapper;
 import cn.linkmore.security.entity.Menu;
-import cn.linkmore.security.entity.Person;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqMenu;
 import cn.linkmore.security.response.ResDict;
@@ -176,55 +169,8 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Override
-	public void cachePersonAuthList() {
-		Subject subject = SecurityUtils.getSubject();
-		Person person = (Person)subject.getSession().getAttribute("person");  
-		
-		List<ResMenu> list = this.menuClusterMapper.findPersonAuthList(person.getId());
-		List<ResMenu> tms = new ArrayList<ResMenu>(); 
-		 
-		Map<Long,ResMenu> fm = new HashMap<Long,ResMenu>();
-		Map<Long,ResMenu> sm = new HashMap<Long,ResMenu>(); 
-		Map<Long,ResMenu> pm = new HashMap<Long,ResMenu>();
-		for(ResMenu menu:list) {
-			if(menu.getLevel().intValue()==2&&menu.getPageId()!=null) {
-				tms.add(menu);
-			}else if(menu.getLevel().intValue()==1&&menu.getPageId()!=null) { 
-				menu.setChildren(new ArrayList<ResMenu>()); 
-				sm.put(menu.getId(), menu);
-				pm.put(menu.getId(), menu);
-			}else if(menu.getLevel().intValue()==1) {
-				menu.setChildren(new ArrayList<ResMenu>()); 
-				sm.put(menu.getId(), menu);
-			}else if(menu.getLevel().intValue()==0) {
-				menu.setChildren(new ArrayList<ResMenu>());
-				fm.put(menu.getId(), menu); 
-			} 
-		}
-		ResMenu parent = null;  
-		for(ResMenu menu:tms) {
-			parent =  sm.get(menu.getParentId());
-			if(parent!=null) {
-				parent.getChildren().add(menu);
-				pm.put(parent.getId(), parent);
-			}
-		} 
-		Set<Long> keys = pm.keySet();
-		ResMenu top = null;
-		Set<ResMenu> topSet = new HashSet<ResMenu>();
-		Map<Long,ResMenu> topMap = new HashMap<Long,ResMenu>();
-		for(Long key:keys) {
-			parent = pm.get(key);
-			top = fm.get(parent.getParentId());
-			if(top!=null) {
-				top.getChildren().add(parent);
-				topSet.add(top);
-				topMap.put(top.getId(), top);
-			}
-		}
-		List<ResMenu> fs = new ArrayList<ResMenu>();
-		fs.addAll(topSet);
-		subject.getSession().setAttribute("top_menu_list", fs);
-		subject.getSession().setAttribute("top_menu_map", topMap);
+	public List<ResMenu> findPersonAuthList(Long id) {
+		List<ResMenu> list = this.menuClusterMapper.findPersonAuthList(id);
+		return list;
 	}
 }

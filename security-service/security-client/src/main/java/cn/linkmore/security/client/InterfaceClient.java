@@ -51,5 +51,9 @@ public interface InterfaceClient {
 	@RequestMapping(value = "/v2.0/findAll", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ResInterface> findAll();
+
+	@RequestMapping(value = "/v2.0/person_auth_list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResInterface> findPersonAuthList(Long id);
 	
 }

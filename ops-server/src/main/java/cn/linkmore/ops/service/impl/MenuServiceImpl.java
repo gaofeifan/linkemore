@@ -1,7 +1,13 @@
 package cn.linkmore.ops.service.impl;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +16,8 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.request.ReqCheck;
 import cn.linkmore.ops.request.ReqMenu;
+import cn.linkmore.security.response.ResMenu;
+import cn.linkmore.ops.response.ResPerson;
 import cn.linkmore.ops.service.MenuService;
 import cn.linkmore.security.client.MenuClient;
 import cn.linkmore.util.ObjectUtils;
@@ -70,7 +78,54 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public void cachePersonAuthList() {
-		
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+		List<ResMenu> list = this.menuClient.findPersonAuthList(person.getId());
+		List<ResMenu> tms = new ArrayList<ResMenu>(); 
+		 
+		Map<Long,ResMenu> fm = new HashMap<Long,ResMenu>();
+		Map<Long,ResMenu> sm = new HashMap<Long,ResMenu>(); 
+		Map<Long,ResMenu> pm = new HashMap<Long,ResMenu>();
+		for(ResMenu menu:list) {
+			if(menu.getLevel().intValue()==2&&menu.getPageId()!=null) {
+				tms.add(menu);
+			}else if(menu.getLevel().intValue()==1&&menu.getPageId()!=null) { 
+				menu.setChildren(new ArrayList<ResMenu>()); 
+				sm.put(menu.getId(), menu);
+				pm.put(menu.getId(), menu);
+			}else if(menu.getLevel().intValue()==1) {
+				menu.setChildren(new ArrayList<ResMenu>()); 
+				sm.put(menu.getId(), menu);
+			}else if(menu.getLevel().intValue()==0) {
+				menu.setChildren(new ArrayList<ResMenu>());
+				fm.put(menu.getId(), menu); 
+			} 
+		}
+		ResMenu parent = null;  
+		for(ResMenu menu:tms) {
+			parent =  sm.get(menu.getParentId());
+			if(parent!=null) {
+				parent.getChildren().add(menu);
+				pm.put(parent.getId(), parent);
+			}
+		} 
+		Set<Long> keys = pm.keySet();
+		ResMenu top = null;
+		Set<ResMenu> topSet = new HashSet<ResMenu>();
+		Map<Long,ResMenu> topMap = new HashMap<Long,ResMenu>();
+		for(Long key:keys) {
+			parent = pm.get(key);
+			top = fm.get(parent.getParentId());
+			if(top!=null) {
+				top.getChildren().add(parent);
+				topSet.add(top);
+				topMap.put(top.getId(), top);
+			}
+		}
+		List<ResMenu> fs = new ArrayList<ResMenu>();
+		fs.addAll(topSet);
+		subject.getSession().setAttribute("top_menu_list", fs);
+		subject.getSession().setAttribute("top_menu_map", topMap);
 	}
 	
 	

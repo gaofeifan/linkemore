@@ -12,6 +12,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.client.MenuClient;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqMenu;
+import cn.linkmore.security.response.ResMenu;
 /**
  * 远程调用实现 - 类信息
  * @author jiaohanbin
@@ -65,8 +66,9 @@ public class MenuClientHystrix implements MenuClient {
 	}
 
 	@Override
-	public void cachePersonAuthList() {
-		log.info("menu cachePersonAuthList");
+	public List<ResMenu> findPersonAuthList(Long id) {
+		log.info("menu findPersonAuthList");
+		return null;
 	}
 
 }

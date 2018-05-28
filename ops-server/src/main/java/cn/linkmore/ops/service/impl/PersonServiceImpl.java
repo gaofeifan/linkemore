@@ -14,7 +14,9 @@ import cn.linkmore.ops.response.ResPersonRole;
 import cn.linkmore.ops.response.ResRole;
 import cn.linkmore.ops.service.PersonService;
 import cn.linkmore.ops.shiro.Principal;
+import cn.linkmore.security.client.InterfaceClient;
 import cn.linkmore.security.client.PersonClient;
+import cn.linkmore.security.response.ResInterface;
 import cn.linkmore.util.ObjectUtils;
 
 /**
@@ -28,6 +30,9 @@ public class PersonServiceImpl implements PersonService {
 
 	@Autowired
 	private PersonClient personClient;
+	
+	@Autowired
+	private InterfaceClient interClient;
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
@@ -78,8 +83,12 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public List<String> findAuthList(Principal principal) {
-		
-		return null;
+		List<ResInterface> list = this.interClient.findPersonAuthList(principal.getId());
+		List<String> as = new ArrayList<String>();
+		for(ResInterface i:list) {
+			as.add(i.getId().toString()); 
+		}
+		return as;
 	}
 
 	@Override

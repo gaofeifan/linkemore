@@ -17,7 +17,6 @@ import cn.linkmore.security.dao.cluster.PageElementClusterMapper;
 import cn.linkmore.security.dao.cluster.RoleClusterMapper;
 import cn.linkmore.security.dao.cluster.RoleElementClusterMapper;
 import cn.linkmore.security.dao.cluster.RolePageClusterMapper;
-import cn.linkmore.security.dao.master.PageElementMasterMapper;
 import cn.linkmore.security.dao.master.RoleElementMasterMapper;
 import cn.linkmore.security.dao.master.RoleMasterMapper;
 import cn.linkmore.security.dao.master.RolePageMasterMapper;
