@@ -108,8 +108,8 @@ public class CityServiceImpl implements CityService {
 	}
 	
 	@Override
-	public List<City> findList(Map<String, Object> param) {
-		return null;
+	public List<ResCity> findList(Map<String, Object> param) {
+		return this.cityClusterMapper.findPage(param);
 	}
 	
 	

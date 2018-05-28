@@ -17,6 +17,8 @@ import cn.linkmore.common.dao.cluster.DistrictClusterMapper;
 import cn.linkmore.common.dao.master.DistrictMasterMapper;
 import cn.linkmore.common.entity.City;
 import cn.linkmore.common.entity.District;
+import cn.linkmore.common.request.ReqCity;
+import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.response.ResDistrict;
 import cn.linkmore.common.service.CityService;
 import cn.linkmore.common.service.DistrictService;
@@ -86,6 +88,7 @@ public class DistrictServiceImpl implements DistrictService {
 	
 	@Override
 	public int delete(List<Long> ids) {
+		this.districtMasterMapper.deleteIds(ids);
 		return 0; 
 	}
 	@Override
@@ -93,7 +96,7 @@ public class DistrictServiceImpl implements DistrictService {
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("property", "city_name");
 		param.put("direction", "asc");
-		List<City> list =  this.cityService.findList(param);
+		List<ResCity> list = this.cityService.findList(param);
 		List<Tree> trees = new ArrayList<Tree>();
 		Tree root = new Tree();
 		root.setName("城市信息树");
@@ -105,7 +108,7 @@ public class DistrictServiceImpl implements DistrictService {
 		root.setChildren(trees);
 		Tree tree = null;
 		List<Tree> children = new ArrayList<Tree>();
-		for(City city:list) {
+		for(ResCity city:list) {
 			tree = new Tree();
 			tree.setName(city.getName());
 			tree.setCode(city.getId().toString());

@@ -3,6 +3,10 @@ package cn.linkmore.common.client;
 import java.util.List;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
@@ -27,41 +31,53 @@ public interface DistrictClient {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void delete(List<Long> ids);
+	@RequestMapping(method = RequestMethod.DELETE)
+	@ResponseBody
+	void delete(@RequestBody List<Long> ids);
 
 	/**
 	 * @Description  更新
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void update(ReqDistrict district);
+	@RequestMapping(method = RequestMethod.PUT)
+	@ResponseBody
+	void update(@RequestBody ReqDistrict district);
 
 	/**
 	 * @Description  新增
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void save(ReqDistrict district);
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	void save(@RequestBody ReqDistrict district);
 
 	/**
 	 * @Description  校验
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	Boolean check(ReqCheck object);
+	@RequestMapping(value="/check",method = RequestMethod.POST)
+	@ResponseBody
+	Boolean check(@RequestBody ReqCheck object);
 
 	/**
 	 * @Description  分页查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ViewPage findPage(ViewPageable pageable);
+	@RequestMapping(value="/page",method = RequestMethod.POST)
+	@ResponseBody
+	ViewPage findPage(@RequestBody ViewPageable pageable);
 
 	/**
 	 * @Description 查询树桩结构数据 
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
+	@RequestMapping(value="/tree",method = RequestMethod.GET)
+	@ResponseBody
 	Tree findTree();
 
 }

@@ -93,6 +93,6 @@ public interface CityService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<City> findList(Map<String, Object> param);
+	List<ResCity> findList(Map<String, Object> param);
 
 }

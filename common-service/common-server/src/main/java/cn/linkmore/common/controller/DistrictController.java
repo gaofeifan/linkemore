@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.view.Tree;
@@ -42,7 +43,9 @@ public class DistrictController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	public void delete(List<Long> ids) {
+	@RequestMapping(method = RequestMethod.DELETE)
+	@ResponseBody
+	public void delete(@RequestBody List<Long> ids) {
 		this.districtService.delete(ids);
 	}
 
@@ -51,7 +54,9 @@ public class DistrictController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	public void update(ReqDistrict district) {
+	@RequestMapping(method = RequestMethod.PUT)
+	@ResponseBody
+	public void update(@RequestBody ReqDistrict district) {
 		District object = ObjectUtils.copyObject(district, new District());
 		this.districtService.update(object);
 	}
@@ -61,7 +66,9 @@ public class DistrictController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	public void save(ReqDistrict district) {
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	public void save(@RequestBody ReqDistrict district) {
 		District object = ObjectUtils.copyObject(district, new District());
 		this.districtService.save(object);
 	}
@@ -71,7 +78,9 @@ public class DistrictController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	public Boolean check(ReqCheck object) {
+	@RequestMapping(value="/check",method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean check(@RequestBody ReqCheck object) {
 		Boolean flag = true ;
 		Integer count = this.districtService.check(object.getProperty(), object.getValue(), object.getId());
 		if(count > 0){
@@ -85,7 +94,9 @@ public class DistrictController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	public ViewPage findPage(ViewPageable pageable) {
+	@RequestMapping(value="/page",method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage findPage(@RequestBody ViewPageable pageable) {
 		ViewPage page = this.districtService.findPage(pageable);
 		return page;
 	}
@@ -95,6 +106,8 @@ public class DistrictController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
+	@RequestMapping(value="/tree",method = RequestMethod.GET)
+	@ResponseBody
 	public Tree findTree() {
 		Tree tree= this.districtService.findTree();
 		return tree;

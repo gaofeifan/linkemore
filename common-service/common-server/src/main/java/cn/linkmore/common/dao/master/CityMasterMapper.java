@@ -42,5 +42,5 @@ public interface CityMasterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void deleteIds(List<Long> ids); 
+	void deleteIds(List<Long> ids);
 }

@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import cn.linkmore.bean.common.ResponseEntity;
+import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseVersionClient;
@@ -20,6 +21,7 @@ import cn.linkmore.util.ObjectUtils;
  * @Date     2018年5月28日
  * @Version  v2.0
  */
+@Service
 public class BaseVersionServiceImpl implements BaseVersionService {
 
 	@Resource
