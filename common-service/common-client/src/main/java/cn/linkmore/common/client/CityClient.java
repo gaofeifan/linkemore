@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.hystrix.CityClientHystrix;
+import cn.linkmore.common.request.ReqCheck;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.feign.FeignConfiguration;
@@ -45,4 +48,16 @@ public interface CityClient {
 	@RequestMapping(value = "/code", method = RequestMethod.GET)
 	@ResponseBody
 	ResCity getByCode(@RequestParam("code") String code);
+
+	@RequestMapping(method = RequestMethod.DELETE)
+	@ResponseBody
+	void deleteIds(@RequestBody List<Long> ids);
+
+	@RequestMapping(value = "/check", method = RequestMethod.POST)
+	@ResponseBody
+	Boolean check(@RequestBody ReqCheck check);
+
+	@RequestMapping(value = "/page", method = RequestMethod.GET)
+	@ResponseBody
+	ViewPage findPage(@RequestBody ViewPageable pageable);
 }

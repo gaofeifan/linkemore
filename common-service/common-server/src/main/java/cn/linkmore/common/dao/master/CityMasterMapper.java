@@ -1,5 +1,7 @@
 package cn.linkmore.common.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.common.entity.City;
@@ -33,5 +35,12 @@ public interface CityMasterMapper {
 	 * @param record 城市信息
 	 * @return 更新条数
 	 */
-	int update(City record); 
+	int update(City record);
+
+	/**
+	 * @Description  批量删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void deleteIds(List<Long> ids); 
 }

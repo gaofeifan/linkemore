@@ -18,6 +18,8 @@ import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.response.ResVechicleMark;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 
 /**
  * @author   GFF
@@ -94,6 +96,15 @@ public class UserClientHystrix implements UserClient{
 	public void order(@PathVariable("id")Long id) {
 		log.info("account service user order(Long id) hystrix"); 
 	}
+
+
+	@Override
+	public ViewPage findPage(@RequestBody ViewPageable pageable) {
+		log.info("account service ViewPage findPage(ViewPageable pageable) hystrix"); 
+		return null;
+	}
+	
+	
 	
 }
 

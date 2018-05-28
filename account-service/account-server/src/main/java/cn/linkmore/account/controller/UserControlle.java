@@ -21,6 +21,8 @@ import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 
 /**
  * 用户
@@ -155,5 +157,15 @@ public class UserControlle {
 	@RequestMapping(value="/v2.0/order",method = RequestMethod.POST)
 	public void order(@PathVariable("id")Long id) {
 		 this.userService.order(id);
+	}
+	
+	/**
+	 * @Description	查询list  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/page", method = RequestMethod.POST)
+	public ViewPage findPage(@RequestBody ViewPageable pageable) {
+		return this.userService.findPage(pageable);
 	}
 }

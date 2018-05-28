@@ -95,4 +95,19 @@ public class CityServiceImpl implements CityService {
 		param.put("id", id);
 		return this.cityClusterMapper.exists(param);
 	}
+	
+	@Override
+	public Integer check(String property, String value, Long id) {
+		Integer count = this.cityClusterMapper.check(property, value, id); 
+        return count;
+	}
+	
+	@Override
+	public void deleteIds(List<Long> ids) {
+		this.cityMasterMapper.deleteIds(ids); 
+	}
+	
+	
+	
+	
 }

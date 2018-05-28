@@ -12,6 +12,8 @@ import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 
 /**
  * 用户接口
@@ -110,5 +112,12 @@ public interface UserService {
 	 * @param id
 	 */
 	void order(Long id);
+
+	/**
+	 * @Description  查询用户数据分页查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ViewPage findPage(ViewPageable pageable);
 
 }

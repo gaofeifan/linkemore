@@ -67,6 +67,18 @@
     <result column="order_count" jdbcType="INTEGER" property="orderCount" />
     <result column="complete_order_count" jdbcType="INTEGER" property="completeOrderCount" />
   </resultMap>
+  <resultMap id="ListUserMap" type="cn.linkmore.account.response.ResPageUser" > 
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="nickName" property="nickName" />
+    <result column="mobile" property="mobile" />
+    <result column="cityName" property="cityName" />
+    <result column="orderCount" property="orderCount" />
+    <result column="loginTime" property="loginTime" />
+    <result column="ordersTime" property="ordersTime" />
+    <result column="userStatus" property="userStatus" />
+    <result column="plateNo" property="plateNo" />
+  </resultMap>
+  
   <sql id="Base_Column_List">
     id, username, password, nickname, sex, status, user_type, enterprise_name, ent_admin_name, 
     industry, parent_id, mobile, province, city, address, email, wechat, qq, icon, last_login_time, 
@@ -90,4 +102,110 @@
     from t_user
     where mobile = #{mobile}
   </select>
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="ListUserMap">
+    SELECT
+    u.id,u.nickname nickName,u.mobile,cy.city_name cityName,u.order_count orderCount,u.last_login_time loginTime,o.create_time ordersTime,u.status userStatus,o.plate_no plateNO
+    FROM
+        t_user u
+    LEFT JOIN (
+        SELECT
+            c.*
+        FROM
+            o_orders c,
+            (
+                SELECT
+                    a.user_id uid,
+                    max(a.create_time) maxtime
+                FROM
+                    o_orders a
+                GROUP BY
+                    uid
+            ) b
+        WHERE
+            c.user_id = b.uid
+        AND c.create_time = b.maxtime
+    ) o ON u.id = o.user_id
+    LEFT JOIN v_prefecture p ON o.pre_id = p.id 
+    LEFT JOIN t_city cy ON p.city_id = cy.id
+    where u.user_type = 1
+    <if test="ordersCount!=null">  
+    and u.order_count = #{ordersCount}
+    </if>
+    <if test="nature ==1 ">  
+    and u.app_register_time is not null and u.wechat_bind_time is not null
+    </if>
+    <if test="nature ==2 ">  
+    and u.status = 4
+    </if>
+    
+    <if test="nickname!=null">  
+    and nickname like #{nickname,jdbcType=VARCHAR}
+    </if> 
+    <if test="mobile!=null">  
+    and mobile = #{mobile,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=VARCHAR}
+    </if> 
+    <if test="plateNo!=null">  
+    and o.plate_no= #{plateNo,jdbcType=VARCHAR}
+    </if>  
+    <if test="property==null">  
+    order by u.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+  SELECT count(1)
+    FROM
+        t_user u
+    LEFT JOIN (
+        SELECT
+            c.*
+        FROM
+            o_orders c,
+            (
+                SELECT
+                    a.user_id uid,
+                    max(a.create_time) maxtime
+                FROM
+                    o_orders a
+                GROUP BY
+                    uid
+            ) b
+        WHERE
+            c.user_id = b.uid
+        AND c.create_time = b.maxtime
+    ) o ON u.id = o.user_id
+    LEFT JOIN v_prefecture p ON o.pre_id = p.id 
+    LEFT JOIN t_city cy ON p.city_id = cy.id
+    where u.user_type = 1
+    <if test="ordersCount!=null">  
+    and u.order_count = #{ordersCount}
+    </if>
+    <if test="nature ==1 ">  
+    and u.app_register_time is not null and u.wechat_bind_time is not null
+    </if>
+    <if test="nature ==2 ">  
+    and u.status = 4
+    </if>
+    <if test="nickname!=null">  
+    and nickname like #{nickname,jdbcType=VARCHAR}
+    </if> 
+    <if test="mobile!=null">  
+    and mobile = #{mobile,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=VARCHAR}
+    </if> 
+    <if test="plateNo!=null">  
+    and o.plate_no= #{plateNo,jdbcType=VARCHAR}
+    </if>  
+  </select>
+  
 </mapper>

@@ -1,10 +1,12 @@
 package cn.linkmore.account.dao.cluster;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 /**
@@ -36,5 +38,19 @@ public interface UserClusterMapper {
 	 * @Version  v2.0
 	 */
 	ResUser findByMobile(@Param("mobile")String mobile);
+
+	/**
+	 * @Description  根据条件查询总数
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer count(Map<String, Object> param);
+
+	/**
+	 * @Description  根据条件分页查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPageUser> findPage(Map<String, Object> param);
 
 }

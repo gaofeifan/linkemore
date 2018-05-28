@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
@@ -24,6 +25,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
@@ -32,8 +34,12 @@ import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.bean.view.ViewFilter;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.SmsClient;
+import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 
 /**
@@ -274,7 +280,31 @@ public class UserServiceImpl implements UserService {
 			param.put("orderCount", user.getOrderCount());
 			this.userMasterMapper.orderUpdate(param);
 		}
-		
 	}
+
+	@Override
+	public ViewPage findPage(ViewPageable pageable) {
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		List<ViewFilter> filters = pageable.getFilters();
+		if(StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if(filters!=null&&filters.size()>0) {
+			for(ViewFilter filter:filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.userClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<ResPageUser> list = this.userClusterMapper.findPage(param);
+		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+	
+	
 
 }

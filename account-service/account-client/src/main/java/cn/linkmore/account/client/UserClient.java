@@ -17,7 +17,8 @@ import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
-import cn.linkmore.account.response.ResVechicleMark;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
  
 /**
@@ -131,4 +132,12 @@ public interface UserClient {
 	 */
 	@RequestMapping(value = "/v2.0/order/{id}", method = RequestMethod.POST)
 	public void order(@PathVariable("id")Long id);
+
+	/**
+	 * @Description	查询list  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/page", method = RequestMethod.POST)
+	public ViewPage findPage(@RequestBody ViewPageable pageable);
 }

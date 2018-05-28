@@ -35,6 +35,7 @@
 		<commons.lang.version>2.6</commons.lang.version>
 		<linkmore-lock-sdk.version>0.0.5-Releases</linkmore-lock-sdk.version>
 		<shiro.version>1.2.3</shiro.version>
+		<poi.version>3.15</poi.version>
 	</properties>   
   	<modules>
   		<module>cloud-service</module>

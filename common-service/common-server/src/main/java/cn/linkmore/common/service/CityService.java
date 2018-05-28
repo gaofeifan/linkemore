@@ -73,4 +73,18 @@ public interface CityService {
 	 */
 	Integer exists(String property,String value,Long id);
 
+	/**
+	 * @Description  校验
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer check(String property, String value, Long id);
+
+	/**
+	 * @Description  批量删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void deleteIds(List<Long> ids);
+
 }

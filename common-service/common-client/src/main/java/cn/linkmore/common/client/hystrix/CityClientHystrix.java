@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.CityClient;
+import cn.linkmore.common.request.ReqCheck;
 import cn.linkmore.common.request.ReqCity;
 import cn.linkmore.common.response.ResCity;
 
@@ -49,6 +52,25 @@ public class CityClientHystrix implements CityClient {
 	public ResCity getByCode(String code) {
 		log.info("common service citys getByCode(Long code) hystrix");
 		return new ResCity();
+	}
+
+	@Override
+	public void deleteIds(@RequestBody List<Long> ids) {
+		log.info("common service citys deleteIds(List<Long> ids) hystrix");
+	}
+
+	@Override
+	public Boolean check(@RequestBody ReqCheck check) {
+		log.info("common service citys check(ReqCheck check) hystrix");
+		return null;
+	}
+
+	@Override
+	public ViewPage findPage(@RequestBody ViewPageable pageable) {
+		log.info("common service citys findPage(ViewPageable pageable) hystrix");
+		return null;
 	};
+	
+	
 
 }

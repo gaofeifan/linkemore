@@ -68,5 +68,11 @@
     ${property} = #{value}  
     and id != #{id} 
   </select>
-  
+    <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_city
+    where 
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
 </mapper>
