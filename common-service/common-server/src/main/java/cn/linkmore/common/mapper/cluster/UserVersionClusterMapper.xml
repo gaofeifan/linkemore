@@ -13,6 +13,9 @@
   <sql id="Base_Column_List">
     user_id, client, model, os_version, uuid, version, commit_time
   </sql>
+   <sql id="Ops_Column_List">
+    uv.user_id, uv.client, uv.model, uv.os_version, uv.uuid, uv.version, uv.commit_time,u.mobile username
+  </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
