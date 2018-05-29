@@ -78,6 +78,7 @@ public class InterfaceController {
 	@RequestMapping(value = "/v2.0/findAll", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ResInterface> findAll(){ 
+		log.info("query find all");
 		return this.interfaceService.findAll();
 	}
 	
