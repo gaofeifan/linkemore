@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.ops.response.ResPerson;
-import cn.linkmore.security.request.ReqMenu;
 import cn.linkmore.security.response.ResAuthElement;
+import cn.linkmore.security.response.ResMenu;
 import io.swagger.annotations.Api;
 
 /**
@@ -47,11 +47,11 @@ public class FrameController {
 	@ResponseBody
 	public List<Menu> topMenu() throws IOException {
 		Subject subject = SecurityUtils.getSubject();
-		List<cn.linkmore.ops.request.ReqMenu> menus = (List<cn.linkmore.ops.request.ReqMenu>)subject.getSession().getAttribute("top_menu_list"); 
+		List<ResMenu> menus = (List<ResMenu>)subject.getSession().getAttribute("top_menu_list"); 
 		Collections.sort(menus);
 		List<Menu> list = new ArrayList<Menu>();
 		Menu menu = null;
-		for(cn.linkmore.ops.request.ReqMenu m:menus) {
+		for(ResMenu m:menus) {
 			menu = new Menu(m.getName(), m.getIcon(), m.getId().toString());
 			list.add(menu);
 		}  
@@ -93,17 +93,17 @@ public class FrameController {
 		Menu child = null;
 		List<Menu> children = null; 
 		Subject subject = SecurityUtils.getSubject();
-		Map<Long,ReqMenu> topMap = (Map<Long,ReqMenu>)subject.getSession().getAttribute("top_menu_map"); 
-		ReqMenu top = topMap.get(pid);
+		Map<Long,ResMenu> topMap = (Map<Long,ResMenu>)subject.getSession().getAttribute("top_menu_map"); 
+		ResMenu top = topMap.get(pid);
 		Collections.sort(top.getChildren());
-		for(ReqMenu m:top.getChildren()) {
+		for(ResMenu m:top.getChildren()) {
 			if(m.getChildren()==null||m.getChildren().size()<=0) {
 				menu = new Menu(m.getName(), m.getIcon(), false, m.getPath()); 
 			}else {
 				menu = new Menu(m.getName(), m.getIcon(), true, null); 
 				children = new ArrayList<Menu>(); 
 				Collections.sort(m.getChildren());
-				for(ReqMenu mm:m.getChildren()) {
+				for(ResMenu mm:m.getChildren()) {
 					child = new Menu(mm.getName(), mm.getIcon(), false, mm.getPath());
 					children.add(child);
 				}

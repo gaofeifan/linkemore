@@ -82,10 +82,6 @@ public class MenuServiceImpl implements MenuService {
 	public void cachePersonAuthList() {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
-		/*if(person == null) {
-			person = new ResPerson();
-			person.setId(3L);
-		}*/
 		List<ResMenu> list = this.menuClient.findPersonAuthList(person.getId());
 		List<ResMenu> tms = new ArrayList<ResMenu>(); 
 		 
