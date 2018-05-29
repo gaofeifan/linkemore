@@ -153,7 +153,7 @@ public class AuthController {
 			@RequestParam("password") String password) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Subject subject = SecurityUtils.getSubject();
-		ReqPerson person = (ReqPerson) subject.getSession().getAttribute("person");
+		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
 		try {
 			this.personService.updatePassword(person, oldPassword, password);
 			map.put("update", true);

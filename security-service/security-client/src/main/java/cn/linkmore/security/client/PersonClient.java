@@ -72,4 +72,8 @@ public interface PersonClient {
 	@ResponseBody
 	public List<String> findAuthList(ReqPrincipal principal);
 	
+	@RequestMapping(value = "/v2.0/update_password", method = RequestMethod.POST)
+	@ResponseBody
+	void updatePassword(@RequestBody ReqPerson person, @RequestParam("oldPassword") String oldPassword,@RequestParam("password") String password);
+	
 }

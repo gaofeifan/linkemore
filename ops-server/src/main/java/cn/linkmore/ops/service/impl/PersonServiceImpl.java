@@ -128,8 +128,10 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public void updatePassword(ReqPerson person, String oldPassword, String password) {
-		
+	public void updatePassword(ResPerson resPerson, String oldPassword, String password) {
+		cn.linkmore.security.request.ReqPerson person = new cn.linkmore.security.request.ReqPerson();
+		person = ObjectUtils.copyObject(resPerson, person);
+		this.personClient.updatePassword(person, oldPassword, password);
 	}
 	
 }
