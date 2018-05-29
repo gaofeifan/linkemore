@@ -68,10 +68,10 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public ResPerson findByUsername(String username) {
-		ResPerson resPerson = new ResPerson();
+		ResPerson resPerson = null;
 		cn.linkmore.security.response.ResPerson person = this.personClient.findByUsername(username);
 		if(person != null) {
-			resPerson = ObjectUtils.copyObject(person, resPerson);
+			resPerson = ObjectUtils.copyObject(person, new ResPerson());
 		}
 		return resPerson;
 	}
