@@ -43,7 +43,7 @@ public class AuthController {
 	private PersonService personService;
 
 	@ApiOperation(value = "登录", notes = "登录", consumes = "application/json")
-	@RequestMapping(value = "/login")
+	@RequestMapping(value = "/login",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Subject subject = SecurityUtils.getSubject();
