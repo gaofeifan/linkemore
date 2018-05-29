@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +33,9 @@ import cn.linkmore.util.ObjectUtils;
 @Service
 public class MenuServiceImpl implements MenuService {
 
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private MenuClient menuClient;
-
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		return this.menuClient.list(pageable);
@@ -80,6 +82,10 @@ public class MenuServiceImpl implements MenuService {
 	public void cachePersonAuthList() {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+		/*if(person == null) {
+			person = new ResPerson();
+			person.setId(3L);
+		}*/
 		List<ResMenu> list = this.menuClient.findPersonAuthList(person.getId());
 		List<ResMenu> tms = new ArrayList<ResMenu>(); 
 		 
@@ -126,6 +132,13 @@ public class MenuServiceImpl implements MenuService {
 		fs.addAll(topSet);
 		subject.getSession().setAttribute("top_menu_list", fs);
 		subject.getSession().setAttribute("top_menu_map", topMap);
+	}
+
+	@Override
+	public List<ResMenu> findPersonAuthList(Long id) {
+		List<ResMenu> list = this.menuClient.findPersonAuthList(id);
+		log.info("menu service impl list {}",list.size());
+		return list;
 	}
 	
 	

@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import cn.linkmore.ops.response.ResAuthElement;
 import cn.linkmore.ops.response.ResPerson;
+import cn.linkmore.security.request.ReqMenu;
+import cn.linkmore.security.response.ResAuthElement;
 import io.swagger.annotations.Api;
 
 /**
@@ -30,7 +31,6 @@ import io.swagger.annotations.Api;
 @RequestMapping("/admin/frame")
 public class FrameController {
 	 
-
 	@RequestMapping(value = "/success", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> success() {
@@ -93,17 +93,17 @@ public class FrameController {
 		Menu child = null;
 		List<Menu> children = null; 
 		Subject subject = SecurityUtils.getSubject();
-		Map<Long,cn.linkmore.ops.request.ReqMenu> topMap = (Map<Long,cn.linkmore.ops.request.ReqMenu>)subject.getSession().getAttribute("top_menu_map"); 
-		cn.linkmore.ops.request.ReqMenu top = topMap.get(pid);
+		Map<Long,ReqMenu> topMap = (Map<Long,ReqMenu>)subject.getSession().getAttribute("top_menu_map"); 
+		ReqMenu top = topMap.get(pid);
 		Collections.sort(top.getChildren());
-		for(cn.linkmore.ops.request.ReqMenu m:top.getChildren()) {
+		for(ReqMenu m:top.getChildren()) {
 			if(m.getChildren()==null||m.getChildren().size()<=0) {
 				menu = new Menu(m.getName(), m.getIcon(), false, m.getPath()); 
 			}else {
 				menu = new Menu(m.getName(), m.getIcon(), true, null); 
 				children = new ArrayList<Menu>(); 
 				Collections.sort(m.getChildren());
-				for(cn.linkmore.ops.request.ReqMenu mm:m.getChildren()) {
+				for(ReqMenu mm:m.getChildren()) {
 					child = new Menu(mm.getName(), mm.getIcon(), false, mm.getPath());
 					children.add(child);
 				}

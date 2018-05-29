@@ -2,7 +2,9 @@ package cn.linkmore.ops.controller;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -21,6 +24,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.request.ReqCheck;
 import cn.linkmore.ops.request.ReqMenu;
 import cn.linkmore.ops.service.MenuService;
+import cn.linkmore.security.response.ResMenu;
 import cn.linkmore.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -158,12 +162,13 @@ public class MenuController {
 	@ApiOperation(value = "菜单权限", notes = "菜单权限", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/person_auth_list", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<Map<String,Object>> cachePersonAuthList(@RequestParam("id") Long id,HttpServletRequest request) {
-		ResponseEntity<Map<String,Object>> response = null;
+	public ResponseEntity<List<ResMenu>> cachePersonAuthList(@RequestParam("id") Long id,HttpServletRequest request) {
+		ResponseEntity<List<ResMenu>> response = null;
 		try {
+			List<ResMenu> list = this.menuService.findPersonAuthList(id);
 			this.menuService.cachePersonAuthList();
 			log.info("ops-cachePersonAuthList...list:{}");
-			response = ResponseEntity.success(null, request);
+			response = ResponseEntity.success(list, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) {
