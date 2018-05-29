@@ -49,23 +49,24 @@ public class PrefectureServiceImpl implements PrefectureService {
 			reqPre.setUserId(ru.getId());
 		}
 		List<cn.linkmore.prefecture.response.ResPrefecture> preList = this.preClient.findPreListByLoc(reqPre);
-		Map<Long, List<cn.linkmore.prefecture.response.ResPrefecture>> map = preList.stream().collect(Collectors.groupingBy(cn.linkmore.prefecture.response.ResPrefecture::getCityId));
-
+		log.info("preList total size,{}",preList.size());
+		List<ResPrefecture> resPrefectureList = new ArrayList<ResPrefecture>();
+		ResPrefecture resPrefecture = null;
+		for(int i=0; i< preList.size();i++) {
+			resPrefecture = ObjectUtils.copyObject(preList.get(i), new ResPrefecture());
+			resPrefectureList.add(resPrefecture);
+		}
+		Map<Long, List<ResPrefecture>> map = resPrefectureList.stream().collect(Collectors.groupingBy(ResPrefecture::getCityId));
+		
 		List<ResPreCity> resPreCityList = new ArrayList<ResPreCity>();
 		ResPreCity resPreCity = null;
-		ResPrefecture resPrefecture = null;
-		List<ResPrefecture> resPrefectureList = null;
 		for(Long cityId : map.keySet()){
 			resPreCity = new ResPreCity();
-			resPrefectureList = new ArrayList<ResPrefecture>();
-			List<cn.linkmore.prefecture.response.ResPrefecture> resList = map.get(cityId);
-			for(int i=0; i< resList.size();i++) {
-				resPrefecture = ObjectUtils.copyObject(resList.get(i), new ResPrefecture());
-				resPrefectureList.add(resPrefecture);
-			}
 			resPreCity.setCityId(cityId);
-			resPreCity.setPrefectures(resPrefectureList);
+			List<ResPrefecture> prefecturelist = map.get(cityId);
+			resPreCity.setPrefectures(prefecturelist);
 			resPreCityList.add(resPreCity);
+			log.info("cityId:{},city pre list size:{}",cityId,prefecturelist.size());
 		}
 		return resPreCityList;
 	}
