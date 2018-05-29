@@ -27,11 +27,11 @@ import io.swagger.annotations.Api;
  */
 @Api(tags = "Frame", description = "框架")
 @RestController
-@RequestMapping("/frame")
+@RequestMapping("/admin/frame")
 public class FrameController {
 	 
 
-	@RequestMapping(value = "/v2.0/success", method = RequestMethod.GET)
+	@RequestMapping(value = "/success", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> success() {
 		Subject subject = SecurityUtils.getSubject();
@@ -43,7 +43,7 @@ public class FrameController {
 		return map;
 	}
 
-	@RequestMapping(value = "/v2.0/top_menu", method = RequestMethod.GET)
+	@RequestMapping(value = "/top_menu", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Menu> topMenu() throws IOException {
 		Subject subject = SecurityUtils.getSubject();
@@ -57,7 +57,7 @@ public class FrameController {
 		}  
 		return list;
 	}
-	@RequestMapping(value = "/v2.0/auth_element", method = RequestMethod.GET)
+	@RequestMapping(value = "/auth_element", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Dom> authElement() throws IOException {
 		Subject subject = SecurityUtils.getSubject();
@@ -85,7 +85,7 @@ public class FrameController {
 		return list;
 	}
 
-	@RequestMapping(value = "/v2.0/left_menu", method = RequestMethod.GET)
+	@RequestMapping(value = "/left_menu", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Menu> leftMenu(@RequestParam("pid") Long pid) throws IOException {
 		List<Menu> list = new ArrayList<Menu>();

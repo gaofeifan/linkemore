@@ -43,13 +43,12 @@ public class AuthController {
 	private PersonService personService;
 
 	@ApiOperation(value = "登录", notes = "登录", consumes = "application/json")
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
 	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
 		Map<String, Object> map = new HashMap<String, Object>();
-
 		if (person != null) {
 			map.put("login", true);
 			map.put("token", "hello kitty");

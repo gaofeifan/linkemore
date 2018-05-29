@@ -13,7 +13,7 @@
     <result column="level" jdbcType="INTEGER" property="level" />
   </resultMap>
   
-  <resultMap id="AuthResultMap" type="cn.linkmore.security.entity.Menu" >
+  <resultMap id="AuthResultMap" type="cn.linkmore.security.response.ResMenu" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="icon" property="icon" jdbcType="VARCHAR" />

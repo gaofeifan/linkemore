@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.common.ResponseEntity;
@@ -146,6 +147,23 @@ public class MenuController {
 			Map<String,Object> map= this.menuService.map();
 			log.info("ops-server...list:{}",JsonUtil.toJson(map));
 			response = ResponseEntity.success(map, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	
+	@ApiOperation(value = "菜单权限", notes = "菜单权限", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/person_auth_list", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String,Object>> cachePersonAuthList(@RequestParam("id") Long id,HttpServletRequest request) {
+		ResponseEntity<Map<String,Object>> response = null;
+		try {
+			this.menuService.cachePersonAuthList();
+			log.info("ops-cachePersonAuthList...list:{}");
+			response = ResponseEntity.success(null, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) {

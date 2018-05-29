@@ -110,7 +110,7 @@ public class AuthenticationRealm extends AuthorizingRealm {
 			}
 			Subject currentPerson = SecurityUtils.getSubject();
 			currentPerson.getSession().setAttribute("person", person);
-			//this.menuService.cachePersonAuthList(); 
+			this.menuService.cachePersonAuthList(); 
 			
 			List<String> authorities = this.personService.findAuthList(new Principal(person.getId(), username )); 
 			currentPerson.getSession().setAttribute("authorities", authorities);
