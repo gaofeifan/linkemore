@@ -7,12 +7,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class CustomCorsConfiguration extends WebMvcConfigurerAdapter {
 
-	/*@Override
+	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-		.allowedOrigins("http://localhost", "*")
+		.allowedOrigins("http://192.168.1.199", "*")
 		.allowedMethods("GET", "POST", "DELETE", "PUT", "OPTIONS")
 		.allowCredentials(true).maxAge(3600);
-	}*/
+	}
 
 }

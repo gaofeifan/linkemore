@@ -43,7 +43,7 @@ public class FrameController {
 		return map;
 	}
 
-	@RequestMapping(value = "/top_menu", method = RequestMethod.GET)
+	@RequestMapping(value = "/top_menu", method = RequestMethod.POST)
 	@ResponseBody
 	public List<Menu> topMenu() throws IOException {
 		Subject subject = SecurityUtils.getSubject();
@@ -57,7 +57,7 @@ public class FrameController {
 		}  
 		return list;
 	}
-	@RequestMapping(value = "/auth_element", method = RequestMethod.GET)
+	@RequestMapping(value = "/auth_element", method = RequestMethod.POST)
 	@ResponseBody
 	public List<Dom> authElement() throws IOException {
 		Subject subject = SecurityUtils.getSubject();
@@ -85,7 +85,7 @@ public class FrameController {
 		return list;
 	}
 
-	@RequestMapping(value = "/left_menu", method = RequestMethod.GET)
+	@RequestMapping(value = "/left_menu", method = RequestMethod.POST)
 	@ResponseBody
 	public List<Menu> leftMenu(@RequestParam("pid") Long pid) throws IOException {
 		List<Menu> list = new ArrayList<Menu>();
