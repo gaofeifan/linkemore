@@ -45,8 +45,8 @@ public class PageController {
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids){ 
-		this.pageService.delete(ids);
+	public int delete(@RequestBody List<Long> ids){ 
+		return this.pageService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
