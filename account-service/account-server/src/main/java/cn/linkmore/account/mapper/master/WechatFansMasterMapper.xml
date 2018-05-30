@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.WechatFansMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.WechatFans">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="subscribe_status" jdbcType="INTEGER" property="subscribeStatus" />
+    <result column="subscribe_time" jdbcType="VARCHAR" property="subscribeTime" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="headimagurl" jdbcType="VARCHAR" property="headimagurl" />
+    <result column="adcode" jdbcType="VARCHAR" property="adcode" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="unionid" jdbcType="VARCHAR" property="unionid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, subscribe_status, subscribe_time, nickname, sex, uid, create_time, update_time, 
+    headimagurl, adcode, city, district, unionid
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.String">
+    delete from t_wx_fans
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.account.entity.WechatFans">
+    insert into t_wx_fans (id, subscribe_status, subscribe_time, 
+      nickname, sex, uid, 
+      create_time, update_time, headimagurl, 
+      adcode, city, district, 
+      unionid)
+    values (#{id,jdbcType=VARCHAR}, #{subscribeStatus,jdbcType=INTEGER}, #{subscribeTime,jdbcType=VARCHAR}, 
+      #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{uid,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{headimagurl,jdbcType=VARCHAR}, 
+      #{adcode,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, 
+      #{unionid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="saveReq" parameterType="cn.linkmore.account.request.ReqWechatFans">
+    insert into t_wx_fans (id, subscribe_status, subscribe_time, 
+      nickname, sex, uid, 
+      create_time, update_time, headimagurl, 
+      adcode, city, district, 
+      unionid)
+    values (#{id,jdbcType=VARCHAR}, #{subscribeStatus,jdbcType=INTEGER}, #{subscribeTime,jdbcType=VARCHAR}, 
+      #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{uid,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{headimagurl,jdbcType=VARCHAR}, 
+      #{adcode,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, 
+      #{unionid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.account.entity.WechatFans">
+    insert into t_wx_fans
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="subscribeStatus != null">
+        subscribe_status,
+      </if>
+      <if test="subscribeTime != null">
+        subscribe_time,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="headimagurl != null">
+        headimagurl,
+      </if>
+      <if test="adcode != null">
+        adcode,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="district != null">
+        district,
+      </if>
+      <if test="unionid != null">
+        unionid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="subscribeStatus != null">
+        #{subscribeStatus,jdbcType=INTEGER},
+      </if>
+      <if test="subscribeTime != null">
+        #{subscribeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="headimagurl != null">
+        #{headimagurl,jdbcType=VARCHAR},
+      </if>
+      <if test="adcode != null">
+        #{adcode,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null">
+        #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="unionid != null">
+        #{unionid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.WechatFans">
+    update t_wx_fans
+    <set>
+      <if test="subscribeStatus != null">
+        subscribe_status = #{subscribeStatus,jdbcType=INTEGER},
+      </if>
+      <if test="subscribeTime != null">
+        subscribe_time = #{subscribeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="headimagurl != null">
+        headimagurl = #{headimagurl,jdbcType=VARCHAR},
+      </if>
+      <if test="adcode != null">
+        adcode = #{adcode,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null">
+        district = #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="unionid != null">
+        unionid = #{unionid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.WechatFans">
+    update t_wx_fans
+    set subscribe_status = #{subscribeStatus,jdbcType=INTEGER},
+      subscribe_time = #{subscribeTime,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      uid = #{uid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      headimagurl = #{headimagurl,jdbcType=VARCHAR},
+      adcode = #{adcode,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      district = #{district,jdbcType=VARCHAR},
+      unionid = #{unionid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateReq" parameterType="cn.linkmore.account.request.ReqWechatFans">
+    update t_wx_fans
+    set subscribe_status = #{subscribeStatus,jdbcType=INTEGER},
+      subscribe_time = #{subscribeTime,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      uid = #{uid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      headimagurl = #{headimagurl,jdbcType=VARCHAR},
+      adcode = #{adcode,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      district = #{district,jdbcType=VARCHAR},
+      unionid = #{unionid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

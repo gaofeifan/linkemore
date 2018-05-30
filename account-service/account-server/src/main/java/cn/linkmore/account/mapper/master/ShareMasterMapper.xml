@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.ShareMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.Share">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="subject_id" jdbcType="BIGINT" property="subjectId" />
+    <result column="source" jdbcType="INTEGER" property="source" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, subject_id, source, create_time
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_biz_share
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.account.entity.Share">
+    insert into t_biz_share (id, user_id, subject_id, 
+      source, create_time)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{subjectId,jdbcType=BIGINT}, 
+      #{source,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.account.entity.Share">
+    insert into t_biz_share
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="subjectId != null">
+        subject_id,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="subjectId != null">
+        #{subjectId,jdbcType=BIGINT},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.Share">
+    update t_biz_share
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="subjectId != null">
+        subject_id = #{subjectId,jdbcType=BIGINT},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.Share">
+    update t_biz_share
+    set user_id = #{userId,jdbcType=BIGINT},
+      subject_id = #{subjectId,jdbcType=BIGINT},
+      source = #{source,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

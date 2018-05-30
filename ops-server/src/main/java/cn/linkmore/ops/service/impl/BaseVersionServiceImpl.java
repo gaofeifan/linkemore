@@ -65,5 +65,4 @@ public class BaseVersionServiceImpl implements BaseVersionService {
 		return page;
 	}
 
-	
 }

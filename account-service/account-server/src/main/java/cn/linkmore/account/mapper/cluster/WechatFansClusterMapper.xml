@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.WechatFansClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.WechatFans">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="subscribe_status" jdbcType="INTEGER" property="subscribeStatus" />
+    <result column="subscribe_time" jdbcType="VARCHAR" property="subscribeTime" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="headimagurl" jdbcType="VARCHAR" property="headimagurl" />
+    <result column="adcode" jdbcType="VARCHAR" property="adcode" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="unionid" jdbcType="VARCHAR" property="unionid" />
+  </resultMap>
+  <resultMap id="ResBaseResultMap" type="cn.linkmore.account.response.ResWechatFans">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="subscribe_status" jdbcType="INTEGER" property="subscribeStatus" />
+    <result column="subscribe_time" jdbcType="VARCHAR" property="subscribeTime" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="headimagurl" jdbcType="VARCHAR" property="headimagurl" />
+    <result column="adcode" jdbcType="VARCHAR" property="adcode" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="district" jdbcType="VARCHAR" property="district" />
+    <result column="unionid" jdbcType="VARCHAR" property="unionid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, subscribe_status, subscribe_time, nickname, sex, uid, create_time, update_time, 
+    headimagurl, adcode, city, district, unionid
+  </sql>
+  <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_wx_fans
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+   <select id="findExportList" parameterType="cn.linkmore.account.request.ReqWechatFansExcel" resultMap="ResBaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_wx_fans
+    where 1 = 1
+    <if test="nickname!=null">  
+    and nickname like #{nickname,jdbcType=VARCHAR}
+    </if>    
+    <if test="binduid!=null">  
+    and uid is not null
+    </if>   
+    <if test="bindnull!=null">  
+    and uid is null
+    </if>   
+   	<if test="startTime!=null">  
+    <![CDATA[and create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>    
+     order by create_time desc 
+  </select>
+  
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_wx_fans
+    where 1 = 1
+    <if test="nickname!=null">  
+    and nickname like #{nickname,jdbcType=VARCHAR}
+    </if>    
+    <if test="binduid!=null">  
+    and uid is not null
+    </if>   
+    <if test="bindnull!=null">  
+    and uid is null
+    </if>   
+   	<if test="startTime!=null">  
+    <![CDATA[and create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_wx_fans
+    where 1= 1
+    <if test="nickname!=null">  
+    and nickname like #{nickname,jdbcType=VARCHAR}
+    </if> 
+    <if test="binduid!=null">  
+    and uid is not null
+    </if>   
+    <if test="bindnull!=null">  
+    and uid is null
+    </if>   
+    <if test="startTime!=null">  
+    <![CDATA[and create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if> 
+  </select>
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.ShareClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.Share">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="subject_id" jdbcType="BIGINT" property="subjectId" />
+    <result column="source" jdbcType="INTEGER" property="source" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+    <resultMap id="ResponseResultMap" type="cn.linkmore.account.response.ResShare">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="source" jdbcType="INTEGER" property="source" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="receive_num" jdbcType="BIGINT" property="receiveNum" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, subject_id, source, create_time
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_share
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select count(1)
+	FROM t_biz_share s
+	LEFT JOIN t_biz_subject sub on sub.id = s.subject_id 
+    where 1 = 1
+    <if test="source!=null">  
+    and s.source = #{source,jdbcType=INTEGER}
+    </if>
+    
+    <if test="title!=null">  
+    and sub.title like #{title,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="ResponseResultMap">
+    select s.id,sub.title,s.source,u.username,s.create_time,COUNT(r.id) receive_num 
+	FROM t_biz_share s
+	LEFT JOIN t_biz_subject sub on sub.id = s.subject_id 
+	LEFT JOIN t_user u ON u.id = s.user_id
+	LEFT JOIN t_biz_receive r on r.share_id = s.id
+    where 1 = 1
+    <if test="source!=null">  
+    and s.source = #{source,jdbcType=INTEGER}
+    </if>
+    
+    <if test="title!=null">  
+    and sub.title like #{title,jdbcType=VARCHAR}
+    </if> 
+    
+    group by s.id
+    
+    <if test="receiveNum==null">  
+    order by s.create_time desc
+    </if>
+    <if test="receiveNum==0">  
+    order by receive_num asc
+    </if>
+    
+    <if test="receiveNum != null and receiveNum != 0">  
+    order by receive_num desc
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+</mapper>
