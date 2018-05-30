@@ -18,6 +18,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.request.ReqCheck;
 import cn.linkmore.ops.request.ReqInterface;
+import cn.linkmore.ops.response.ResInterface;
 import cn.linkmore.ops.service.InterfaceService;
 import cn.linkmore.util.JsonUtil;
 import io.swagger.annotations.Api;
@@ -128,6 +129,23 @@ public class InterfaceController {
 			Tree tree= this.interfaceService.findTree();
 			log.info("ops-server...list:{}",JsonUtil.toJson(tree));
 			response = ResponseEntity.success(tree, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	
+	@ApiOperation(value = "查询所有接口信息", notes = "查询所有接口信息", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/findAll", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResInterface>> findAll(HttpServletRequest request) {
+		ResponseEntity<List<ResInterface>> response = null;
+		try {
+			List<ResInterface> interfaceList = this.interfaceService.findAll();
+			log.info("ops-server...list:{}",JsonUtil.toJson(interfaceList));
+			response = ResponseEntity.success(interfaceList, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) {

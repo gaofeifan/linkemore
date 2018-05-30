@@ -1,5 +1,6 @@
 package cn.linkmore.security.client.hystrix;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,8 +68,8 @@ public class MenuClientHystrix implements MenuClient {
 
 	@Override
 	public List<ResMenu> findPersonAuthList(Long id) {
-		log.info("menu findPersonAuthList");
-		return null;
+		log.info("menu findPersonAuthList id{}",id);
+		return new ArrayList<ResMenu>();
 	}
 
 }

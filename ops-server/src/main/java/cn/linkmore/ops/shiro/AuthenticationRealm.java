@@ -16,7 +16,12 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.ops.request.ReqPerson;
 import cn.linkmore.ops.response.ResPerson;
 import cn.linkmore.ops.service.MenuService;
@@ -33,7 +38,7 @@ import cn.linkmore.util.PasswordUtil;
  * @version 1.0
  */
 public class AuthenticationRealm extends AuthorizingRealm {
-
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private PersonService personService;   
 	
@@ -110,7 +115,8 @@ public class AuthenticationRealm extends AuthorizingRealm {
 			}
 			Subject currentPerson = SecurityUtils.getSubject();
 			currentPerson.getSession().setAttribute("person", person);
-			//this.menuService.cachePersonAuthList(); 
+			log.info("session {}",JSON.toJSON(currentPerson.getSession().getAttribute("person")));
+			this.menuService.cachePersonAuthList(); 
 			
 			List<String> authorities = this.personService.findAuthList(new Principal(person.getId(), username )); 
 			currentPerson.getSession().setAttribute("authorities", authorities);

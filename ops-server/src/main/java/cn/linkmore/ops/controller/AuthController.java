@@ -16,13 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import cn.linkmore.ops.request.ReqPerson;
 import cn.linkmore.ops.response.ResPerson;
 import cn.linkmore.ops.service.PersonService;
-/*import cn.linkmore.security.entity.Person;
-import cn.linkmore.security.request.ReqPerson;
-import cn.linkmore.security.service.PersonService;*/
 import cn.linkmore.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,13 +38,12 @@ public class AuthController {
 	private PersonService personService;
 
 	@ApiOperation(value = "登录", notes = "登录", consumes = "application/json")
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	@RequestMapping(value = "/login",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
 		Map<String, Object> map = new HashMap<String, Object>();
-
 		if (person != null) {
 			map.put("login", true);
 			map.put("token", "hello kitty");
@@ -154,7 +148,7 @@ public class AuthController {
 			@RequestParam("password") String password) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Subject subject = SecurityUtils.getSubject();
-		ReqPerson person = (ReqPerson) subject.getSession().getAttribute("person");
+		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
 		try {
 			this.personService.updatePassword(person, oldPassword, password);
 			map.put("update", true);

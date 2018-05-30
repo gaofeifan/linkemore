@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import cn.linkmore.ops.response.ResAuthElement;
 import cn.linkmore.ops.response.ResPerson;
+import cn.linkmore.security.response.ResAuthElement;
+import cn.linkmore.security.response.ResMenu;
 import io.swagger.annotations.Api;
 
 /**
@@ -27,11 +28,10 @@ import io.swagger.annotations.Api;
  */
 @Api(tags = "Frame", description = "框架")
 @RestController
-@RequestMapping("/frame")
+@RequestMapping("/admin/frame")
 public class FrameController {
 	 
-
-	@RequestMapping(value = "/v2.0/success", method = RequestMethod.GET)
+	@RequestMapping(value = "/success", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> success() {
 		Subject subject = SecurityUtils.getSubject();
@@ -43,21 +43,21 @@ public class FrameController {
 		return map;
 	}
 
-	@RequestMapping(value = "/v2.0/top_menu", method = RequestMethod.GET)
+	@RequestMapping(value = "/top_menu", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Menu> topMenu() throws IOException {
 		Subject subject = SecurityUtils.getSubject();
-		List<cn.linkmore.ops.request.ReqMenu> menus = (List<cn.linkmore.ops.request.ReqMenu>)subject.getSession().getAttribute("top_menu_list"); 
+		List<ResMenu> menus = (List<ResMenu>)subject.getSession().getAttribute("top_menu_list"); 
 		Collections.sort(menus);
 		List<Menu> list = new ArrayList<Menu>();
 		Menu menu = null;
-		for(cn.linkmore.ops.request.ReqMenu m:menus) {
+		for(ResMenu m:menus) {
 			menu = new Menu(m.getName(), m.getIcon(), m.getId().toString());
 			list.add(menu);
 		}  
 		return list;
 	}
-	@RequestMapping(value = "/v2.0/auth_element", method = RequestMethod.GET)
+	@RequestMapping(value = "/auth_element", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Dom> authElement() throws IOException {
 		Subject subject = SecurityUtils.getSubject();
@@ -85,7 +85,7 @@ public class FrameController {
 		return list;
 	}
 
-	@RequestMapping(value = "/v2.0/left_menu", method = RequestMethod.GET)
+	@RequestMapping(value = "/left_menu", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Menu> leftMenu(@RequestParam("pid") Long pid) throws IOException {
 		List<Menu> list = new ArrayList<Menu>();
@@ -93,17 +93,17 @@ public class FrameController {
 		Menu child = null;
 		List<Menu> children = null; 
 		Subject subject = SecurityUtils.getSubject();
-		Map<Long,cn.linkmore.ops.request.ReqMenu> topMap = (Map<Long,cn.linkmore.ops.request.ReqMenu>)subject.getSession().getAttribute("top_menu_map"); 
-		cn.linkmore.ops.request.ReqMenu top = topMap.get(pid);
+		Map<Long,ResMenu> topMap = (Map<Long,ResMenu>)subject.getSession().getAttribute("top_menu_map"); 
+		ResMenu top = topMap.get(pid);
 		Collections.sort(top.getChildren());
-		for(cn.linkmore.ops.request.ReqMenu m:top.getChildren()) {
+		for(ResMenu m:top.getChildren()) {
 			if(m.getChildren()==null||m.getChildren().size()<=0) {
 				menu = new Menu(m.getName(), m.getIcon(), false, m.getPath()); 
 			}else {
 				menu = new Menu(m.getName(), m.getIcon(), true, null); 
 				children = new ArrayList<Menu>(); 
 				Collections.sort(m.getChildren());
-				for(cn.linkmore.ops.request.ReqMenu mm:m.getChildren()) {
+				for(ResMenu mm:m.getChildren()) {
 					child = new Menu(mm.getName(), mm.getIcon(), false, mm.getPath());
 					children.add(child);
 				}

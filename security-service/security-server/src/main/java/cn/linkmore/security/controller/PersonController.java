@@ -104,4 +104,10 @@ public class PersonController {
 		String[] array = ids.split(",");
 		this.personService.bind(id,array);
 	}
+	
+	@RequestMapping(value = "/v2.0/update_password", method = RequestMethod.POST)
+	@ResponseBody
+	public void updatePassword(@RequestBody ReqPerson reqPerson,@RequestParam("oldPassword") String oldPassword,@RequestParam("password") String password){
+		this.personService.updatePassword(reqPerson, oldPassword, password);
+	}
 }
