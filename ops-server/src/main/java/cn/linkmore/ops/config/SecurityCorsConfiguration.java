@@ -33,7 +33,7 @@ public class SecurityCorsConfiguration {
 	        // 对响应头进行CORS授权
 	        MyCorsRegistration corsRegistration = new MyCorsRegistration("*");
 	        List<String> allowedOrigins = new ArrayList<>();
-	        allowedOrigins.add("http://localhost");
+	        allowedOrigins.add("http://192.168.1.199");
 	        String[] objects = allowedOrigins.toArray(new String[allowedOrigins.size()]);
 
 	        corsRegistration
