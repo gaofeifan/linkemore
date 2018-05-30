@@ -93,7 +93,7 @@ public class AuthController {
 	}
 	
 	@ApiOperation(value = "成功", notes = "成功", consumes = "application/json")
-	@RequestMapping(value = "/success", method = RequestMethod.GET)
+	@RequestMapping(value = "/success", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> success() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -106,7 +106,7 @@ public class AuthController {
 	}
 
 	@ApiOperation(value = "403", notes = "403", consumes = "application/json")
-	@RequestMapping(value = "/403", method = RequestMethod.GET)
+	@RequestMapping(value = "/403", method = RequestMethod.POST)
 	@ResponseBody
 	public void unauth(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -129,7 +129,7 @@ public class AuthController {
 	}
 
 	@ApiOperation(value = "退出", notes = "退出", consumes = "application/json")
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	@RequestMapping(value = "/logout", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> logout() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
