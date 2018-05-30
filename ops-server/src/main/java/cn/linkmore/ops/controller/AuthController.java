@@ -16,13 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import cn.linkmore.ops.request.ReqPerson;
 import cn.linkmore.ops.response.ResPerson;
 import cn.linkmore.ops.service.PersonService;
-/*import cn.linkmore.security.entity.Person;
-import cn.linkmore.security.request.ReqPerson;
-import cn.linkmore.security.service.PersonService;*/
 import cn.linkmore.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
