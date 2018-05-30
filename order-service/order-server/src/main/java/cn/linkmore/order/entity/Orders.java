@@ -104,6 +104,14 @@ public class Orders {
      * 降锁状态:null未操作，0失败，1成功
      */
     private Short lockDownStatus;
+    
+    /**
+     * 计费策略ID
+     */
+    private Long strategyId;
+    
+    private  Date switchTime;
+    private Short switchStatus;
 
     public Long getId() {
         return id;
@@ -296,4 +304,29 @@ public class Orders {
     public void setLockDownStatus(Short lockDownStatus) {
         this.lockDownStatus = lockDownStatus;
     }
+
+	public Long getStrategyId() {
+		return strategyId;
+	}
+
+	public void setStrategyId(Long strategyId) {
+		this.strategyId = strategyId;
+	}
+
+	public Date getSwitchTime() {
+		return switchTime;
+	}
+
+	public void setSwitchTime(Date switchTime) {
+		this.switchTime = switchTime;
+	}
+
+	public Short getSwitchStatus() {
+		return switchStatus;
+	}
+
+	public void setSwitchStatus(Short switchStatus) {
+		this.switchStatus = switchStatus;
+	}
+    
 }

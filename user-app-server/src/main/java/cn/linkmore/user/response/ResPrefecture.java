@@ -40,6 +40,9 @@ public class ResPrefecture {
 	
 	@ApiModelProperty(value = "是否受限")
 	private short limitStatus;
+	
+	@ApiModelProperty(value = "距离")
+	private String distance;
 
 	public Long getId() {
 		return id;
@@ -135,5 +138,14 @@ public class ResPrefecture {
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
 	} 
+	
 }

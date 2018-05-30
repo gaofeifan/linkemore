@@ -1,5 +1,6 @@
 package cn.linkmore.user.response;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import cn.linkmore.order.response.ResUserOrder;
@@ -16,6 +17,14 @@ public class ResOrder {
 	private Long prefectureId;
 	@ApiModelProperty(value = "车位名称")
 	private String stallName;
+	@ApiModelProperty(value = "车位导航图")
+	private String guideImage;
+	@ApiModelProperty(value = "车位导航说明")
+	private String guideRemark;
+	@ApiModelProperty(value = "车区经度")
+	private BigDecimal preLongitude;
+	@ApiModelProperty(value = "车区纬度")
+	private BigDecimal preLatitude; 
 	@ApiModelProperty(value = "车区名称")
 	private String prefectureName;
 	@ApiModelProperty(value = "车区地址")
@@ -29,13 +38,15 @@ public class ResOrder {
 	@ApiModelProperty(value = "结束时间")
 	private Date endTime;
 	@ApiModelProperty(value = "停车费用")
-	private String totalAmount;
+	private BigDecimal totalAmount;
 	@ApiModelProperty(value = "支付类型")
 	private Short payType;
 	@ApiModelProperty(value = "实际费用")
-	private String actualAmount; 
+	private BigDecimal actualAmount; 
 	@ApiModelProperty(value = "订单状态[1预约中,3已结账,6已挂起]")
-	private Short status; 
+	private Short status;  
+	@ApiModelProperty(value = "蓝牙地址串用")
+	private String bluetooth;
 	public Long getId() {
 		return id;
 	}
@@ -85,10 +96,10 @@ public class ResOrder {
 	public void setParkingTime(Integer parkingTime) {
 		this.parkingTime = parkingTime;
 	}
-	public String getTotalAmount() {
+	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
-	public void setTotalAmount(String totalAmount) {
+	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 	public Short getStatus() {
@@ -115,11 +126,35 @@ public class ResOrder {
 	public void setPayType(Short payType) {
 		this.payType = payType;
 	}
-	public String getActualAmount() {
+	public BigDecimal getActualAmount() {
 		return actualAmount;
 	}
-	public void setActualAmount(String actualAmount) {
+	public void setActualAmount(BigDecimal actualAmount) {
 		this.actualAmount = actualAmount;
+	} 
+	public String getGuideImage() {
+		return guideImage;
+	}
+	public void setGuideImage(String guideImage) {
+		this.guideImage = guideImage;
+	}
+	public String getGuideRemark() {
+		return guideRemark;
+	}
+	public void setGuideRemark(String guideRemark) {
+		this.guideRemark = guideRemark;
+	}
+	public BigDecimal getPreLongitude() {
+		return preLongitude;
+	}
+	public void setPreLongitude(BigDecimal preLongitude) {
+		this.preLongitude = preLongitude;
+	}
+	public BigDecimal getPreLatitude() {
+		return preLatitude;
+	}
+	public void setPreLatitude(BigDecimal preLatitude) {
+		this.preLatitude = preLatitude;
 	}
 	public void copy(ResUserOrder ruo) {
 		this.setStartTime(ruo.getCreateTime());
@@ -136,7 +171,15 @@ public class ResOrder {
 		this.setStallId(ruo.getStallId());
 		this.setStatus(ruo.getStatus().shortValue());
 		this.setStallName(ruo.getStallName());
-		this.setPrefectureName(ruo.getPreName());
-		
+		this.setPrefectureName(ruo.getPreName());  
+		this.setTotalAmount(ruo.getTotalAmount());
 	}
+	public String getBluetooth() {
+		return bluetooth;
+	}
+	public void setBluetooth(String bluetooth) {
+		this.bluetooth = bluetooth;
+	}
+	 
+	
 }

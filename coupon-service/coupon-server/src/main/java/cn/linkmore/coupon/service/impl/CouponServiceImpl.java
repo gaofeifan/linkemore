@@ -366,7 +366,7 @@ public class CouponServiceImpl implements CouponService {
 				ucrbs.add(ucrb);
 			} 
 		}   
-		ResUserOrder orders = this.orderClient.userLatest(userId);  
+		ResUserOrder orders = this.orderClient.last(userId);  
 		Date stopDate = new Date();
 		if(orders.getStatus().intValue() == Constants.OrderStatus.SUSPENDED.value){
 			stopDate = orders.getEndTime();

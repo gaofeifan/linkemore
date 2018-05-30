@@ -1,5 +1,7 @@
 package cn.linkmore.order.client.hystrix;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -42,5 +44,10 @@ public class OrderClientHystrix implements OrderClient {
 	 
 	public void down(@RequestBody ReqOrderDown rod){
 		log.info("down stall :{}",JsonUtil.toJson(rod)); 
+	}
+
+	public List<ResUserOrder> list(@RequestParam("userId") Long userId,@RequestParam("start") Long start){
+		log.info("user  order list userId:{},start:{}",userId,start); 
+		return null;
 	} 
 }

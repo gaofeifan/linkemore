@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,6 +53,8 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
+import cn.linkmore.prefecture.client.StrategyBaseClient;
+import cn.linkmore.prefecture.request.ReqStrategy;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
@@ -88,8 +91,8 @@ public class OrdersServiceImpl implements OrdersService {
 	@Autowired
 	private VehicleMarkClient vehicleMarkClient;
 	
-//	@Autowired
-//	private FreeLockPool freeLockPool;
+	@Autowired
+	private StrategyBaseClient strategyBaseClient;
 	
 	@Autowired
 	private StallAssignMasterMapper stallAssignMasterMapper;
@@ -146,7 +149,7 @@ public class OrdersServiceImpl implements OrdersService {
 		short bookingStatus = 0;
 		try {
 			ResUserOrder ruo  = this.ordersClusterMapper.findUserLatest(orc.getUserId());
-			if(ruo.getStatus().intValue()==OrderStatus.UNPAID.value||ruo.getStatus().intValue()==OrderStatus.SUSPENDED.value) {
+			if(ruo!=null&&(ruo.getStatus().intValue()==OrderStatus.UNPAID.value||ruo.getStatus().intValue()==OrderStatus.SUSPENDED.value)) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.UNPAID.value;
 				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
@@ -188,14 +191,7 @@ public class OrdersServiceImpl implements OrdersService {
 					break;
 				}
 			}
-			log.info("lockSn:{}",lockSn);
-			//type大于0 说明是特定专区订单
-			ResPrefectureDetail pre = prefectureClient.findById(orc.getPrefectureId());
-			
-			/**
-			 * 添加共享车位DEMO
-			 * 因车位是降下
-			 */
+			log.info("lockSn:{}",lockSn); 
 			
 			// 以下为预约流程
 			if("".equals(lockSn)) {  
@@ -213,7 +209,7 @@ public class OrdersServiceImpl implements OrdersService {
 			// 根据lockSn获取车位
 			log.info("lock,{}", lockSn);
 			
-			
+			ResPrefectureDetail pre = prefectureClient.findById(orc.getPrefectureId()); 
 			o = new Orders();
 			o.setOrderNo(this.getOrderNumber());
 			o.setUserType((short)0);
@@ -226,7 +222,7 @@ public class OrdersServiceImpl implements OrdersService {
 			o.setUpdateTime(current);
 			// o.setDockId(dockId);
 			o.setEndTime(current);
-			
+			o.setStrategyId(pre.getStrategyId());
 			
 			// 支付类型1免费2优惠券3账户
 			// 初始化支付类型为账户支付
@@ -282,7 +278,7 @@ public class OrdersServiceImpl implements OrdersService {
 			od.setParkName(pre.getName());
 			od.setUpdateTime(current);
 			o.setStallLocal(pre.getName() + stall.getStallName());
-			o.setStallGuidance(pre.getAddress() + stall.getStallName());
+			o.setStallGuidance(pre.getAddress() + stall.getStallName()); 
 			this.orderMasterMapper.save(o);
 			od.setOrderId(o.getId());
 			ordersDetailMasterMapper.save(od);
@@ -430,7 +426,22 @@ public class OrdersServiceImpl implements OrdersService {
 	public ResUserOrder latest(Long userId) {
 		ResUserOrder orders = null;
 		try {
-			orders = this.ordersClusterMapper.findUserLatest(userId); 
+			orders = this.ordersClusterMapper.findUserLatest(userId);  
+			ReqStrategy rs = new ReqStrategy();
+			rs.setBeginTime(orders.getCreateTime().getTime());
+			rs.setStrategyId(orders.getStrategyId());
+			if(orders.getStatus().intValue()==OrderStatus.SUSPENDED.value) {
+				rs.setEndTime(orders.getStatusTime().getTime());
+			}else {
+				rs.setEndTime(new Date().getTime());
+			}
+			Map<String,Object> map = strategyBaseClient.fee(rs);
+			if(map!=null) {
+				Object object = map.get("totalAmount");
+				if(object!=null) {
+					orders.setTotalAmount(new BigDecimal(object.toString()));
+				}
+			} 
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -468,6 +479,7 @@ public class OrdersServiceImpl implements OrdersService {
 	public void down(ReqOrderDown rod) {
 		ResUserOrder order = this.ordersClusterMapper.findDetail(rod.getOrderId());
 		Boolean flag = false;    
+		Boolean switchStatus = false;
 		if(rod.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value) {
 			flag = this.stallClient.downlock(order.getStallId()); 
 			Map<String,Object> param = new HashMap<String,Object>(); 
@@ -475,9 +487,23 @@ public class OrdersServiceImpl implements OrdersService {
 			param.put("lockDownTime", new Date());
 			param.put("orderId", order.getId());
 			this.orderMasterMapper.updateLockStatus(param); 
+			log.info("stall downing :{}",flag);
+			if(!flag) {
+				if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId())) {
+					switchStatus = true;
+				}else {
+					this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), 1);
+				}
+				
+			}else {
+				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
+			}
 		} 
-		
-		this.push(order.getUserId().toString(), "预约降锁通知",flag? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, flag);
+		if(switchStatus) {
+			this.push(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
+		}else {
+			this.push(order.getUserId().toString(), "预约降锁通知",flag? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, flag);
+		} 
 	}
 
 	 
@@ -491,12 +517,30 @@ public class OrdersServiceImpl implements OrdersService {
 			Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
 			if(sn!=null) {
 				ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
-				order.setStallId(stall.getId());
-				order.setStallName(stall.getStallName());
-			}  
-			
-			
+				if(stall.getStatus().intValue()==StallStatus.FREE.status) {
+					order.setStallId(stall.getId());
+					order.setStallName(stall.getStallName());
+					Map<String,Object> param = new HashMap<String,Object>();
+					param.put("id", order.getId());
+					param.put("stallId", stall.getId());
+					param.put("stallName", stall.getStallName());
+					param.put("switchTime", new Date());
+					param.put("switchStatus", 1);
+					this.orderMasterMapper.updateSwitch(param);
+					this.stallClient.order(stall.getId()); 
+					flag = true;
+				} 
+			}   
 		}
-		this.push(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.LOCK_DOWN_NOTICE, flag);
+		this.push(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
+	}
+
+	@Override
+	public List<ResUserOrder> list(Long userId, Long start) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("userId", userId);
+		param.put("start", start);
+		List<ResUserOrder> list = this.ordersClusterMapper.findUserList(param);
+		return list;
 	}
 }

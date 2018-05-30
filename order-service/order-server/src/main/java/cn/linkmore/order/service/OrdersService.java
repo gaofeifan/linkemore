@@ -1,5 +1,7 @@
 package cn.linkmore.order.service;
 
+import java.util.List;
+
 import cn.linkmore.order.request.ReqOrderCreate;
 import cn.linkmore.order.request.ReqOrderDown;
 import cn.linkmore.order.request.ReqOrderSwitch;
@@ -44,5 +46,13 @@ public interface OrdersService {
 	 * @param ros
 	 */
 	void switchStall(ReqOrderSwitch ros);
+
+	/**
+	 * 订单列表
+	 * @param userId 
+	 * @param start
+	 * @return
+	 */
+	List<ResUserOrder> list(Long userId, Long start);
 
 }

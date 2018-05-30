@@ -26,8 +26,7 @@ public class ReqSwitch {
 	@NotBlank(message="原因ID不能为空") 
 	private Long causeId;
 	
-	@ApiModelProperty(value = "其它原因", required = true)
-	@Size(min=3, max=100,message="其它原因不要超过100个字") 
+	@ApiModelProperty(value = "其它原因", required = true) 
 	private String remark;
 	public Long getOrderId() {
 		return orderId;

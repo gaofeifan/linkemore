@@ -50,7 +50,10 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			add("/prefectures/v2.0/map"); 
 			add("/prefectures/v2.0/free_count"); 
 			add("/prefectures/v2.0/strategy");
-			add("/citys/v2.0/list");  
+			add("/citys/v2.0/list"); 
+			add("/callback/v2.0/alipay");
+			add("/callback/v2.0/weixin");
+			add("/callback/v2.0/apple");
 		}
 	}; 
 	@Autowired
@@ -66,9 +69,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		}  
 		String key = UserCache.getCacheKey(request);  
 		log.info("ip:{},token:{}",ip,key);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-		log.info("redis key:{}",RedisKey.USER_APP_AUTH_USER.key+key);
-		log.info("token user:{}",JsonUtil.toJson(ru));
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);  
 		if(ru==null) {
 			response.setStatus(200);
 			response.setCharacterEncoding("UTF-8");  

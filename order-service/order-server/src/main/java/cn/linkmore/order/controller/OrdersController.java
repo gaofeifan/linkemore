@@ -1,5 +1,7 @@
 package cn.linkmore.order.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,13 @@ public class OrdersController {
 	public ResUserOrder last(@RequestParam("userId") Long userId){
 		log.info("latest order :{}",userId);
 		return this.ordersService.latest(userId);
+	}
+	
+	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResUserOrder> list(@RequestParam("userId") Long userId,@RequestParam("start") Long start){
+		log.info("latest order :{}",userId);
+		return this.ordersService.list(userId,start);
 	}
 	
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
