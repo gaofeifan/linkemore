@@ -1,6 +1,6 @@
 package cn.linkmore.prefecture.response;
 /**
- * 响应-车区列表
+ * 响应-APP车区列表
  * @author jiaohanbin
  * @version 2.0
  *
