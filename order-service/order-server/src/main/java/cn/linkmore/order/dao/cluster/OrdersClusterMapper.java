@@ -1,5 +1,8 @@
 package cn.linkmore.order.dao.cluster;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.order.entity.Orders;
@@ -46,5 +49,12 @@ public interface OrdersClusterMapper {
 	 * @return
 	 */
 	ResUserOrder findStallLatest(Long stallId);
+	
+	/**
+	 * 查询用户订单列表
+	 * @param param
+	 * @return
+	 */
+	List<ResUserOrder> findUserList(Map<String,Object> param);
 
 }

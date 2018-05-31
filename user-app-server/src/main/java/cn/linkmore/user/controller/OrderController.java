@@ -1,12 +1,17 @@
 package cn.linkmore.user.controller;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Min;
+
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +22,7 @@ import cn.linkmore.user.request.ReqBooking;
 import cn.linkmore.user.request.ReqOrderStall;
 import cn.linkmore.user.request.ReqSwitch;
 import cn.linkmore.user.response.ResOrder;
+import cn.linkmore.user.response.ResOrderDetail;
 import cn.linkmore.user.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,7 +34,7 @@ import io.swagger.annotations.ApiOperation;
  * @version 2.0
  *
  */
-@Api(tags = "Order", description = "订单")
+@Api(tags = "Order", description = "车位预约")
 @RestController
 @RequestMapping("/orders")
 @Validated
@@ -57,7 +63,7 @@ public class OrderController {
 	@ApiOperation(value = "切换车位", notes = "原因ID不能为空，备注可为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/switch", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> switchStall(@Validated @RequestBody ReqSwitch rs, HttpServletRequest request) {
+	public ResponseEntity<?> switchStall( @RequestBody ReqSwitch rs, HttpServletRequest request) {
 		ResponseEntity<?> response = null;
 		try {
 			this.orderService.switchStall(rs, request);
@@ -89,11 +95,49 @@ public class OrderController {
 		}
 		return response;
 	}
+	
+	@ApiOperation(value = "用户已完成订单列表", notes = "订单列表[起始请从0开始每页10条记录]", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResOrder>> list(@RequestParam("start") Long start,HttpServletRequest request) {
+		ResponseEntity<List<ResOrder>> response = null;
+		try {
+			List<ResOrder> orders = this.orderService.list(start,request);
+			response = ResponseEntity.success(orders, request);
+		} catch (BusinessException e) {
+			e.printStackTrace();
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	@ApiOperation(value = "订单详情", notes = "订单详情[订单ID须为数字]", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<ResOrderDetail> detail(
+			@NotBlank(message="订单号不能为空") 
+			@Min(value=0,message="订单ID为大于0的长整数")
+			@RequestParam("orderId") Long orderId,HttpServletRequest request) {
+		ResponseEntity<ResOrderDetail> response = null;
+		try {
+			ResOrderDetail od = this.orderService.detail(orderId,request);
+			response = ResponseEntity.success(od, request);
+		} catch (BusinessException e) {
+			e.printStackTrace();
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
 
 	@ApiOperation(value = "降下地锁", notes = "降下预约车位地锁[异步操作]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/down", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> downLock( @Validated @RequestBody ReqOrderStall ros, 
+	public ResponseEntity<?> downLock(@RequestBody ReqOrderStall ros, 
 			HttpServletRequest request) {
 		ResponseEntity<ResOrder> response = null;
 		try {

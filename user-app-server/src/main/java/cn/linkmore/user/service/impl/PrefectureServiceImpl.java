@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.redis.RedisService;
@@ -24,6 +25,7 @@ import cn.linkmore.user.response.ResPrefectureList;
 import cn.linkmore.user.response.ResPrefectureStrategy;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.PrefectureService;
+import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.ObjectUtils;
 /**
  * Service实现 - 车区
@@ -54,6 +56,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		ResPrefecture resPrefecture = null;
 		for(int i=0; i< preList.size();i++) {
 			resPrefecture = ObjectUtils.copyObject(preList.get(i), new ResPrefecture());
+			resPrefecture.setDistance(MapUtil.getDistance(resPrefecture.getLatitude(), resPrefecture.getLongitude(), new Double(rp.getLatitude()), new Double(rp.getLongitude())));
 			resPrefectureList.add(resPrefecture);
 		}
 		Map<Long, List<ResPrefecture>> map = resPrefectureList.stream().collect(Collectors.groupingBy(ResPrefecture::getCityId));

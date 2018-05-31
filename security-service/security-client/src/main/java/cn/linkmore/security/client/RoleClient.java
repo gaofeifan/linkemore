@@ -45,15 +45,15 @@ public interface RoleClient {
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable);
 	
-	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
 	@ResponseBody
 	public Tree tree();
 	
-	@RequestMapping(value = "/v2.0/resource", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/resource", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String,Object> resource(@RequestParam("id") Long id);
 	
-	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.POST)
 	@ResponseBody
 	public void bind(@RequestParam("id") Long id,@RequestParam("pids") String pids,@RequestParam("eids") String eids);
 	

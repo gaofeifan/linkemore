@@ -4,21 +4,23 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import cn.linkmore.ops.response.ResInterface;
-import cn.linkmore.ops.service.InterfaceService;
+
+import cn.linkmore.ops.security.response.ResInterface;
+import cn.linkmore.ops.security.service.InterfaceService;
 
 
  
 /**
  * Service实现类 - 受控资源.
  * <p><br>
- * @author liwenlong
- * @version 1.0.0, 2014年4月11日
+ * @author jiaohanbin
+ * @version 2.0.0, 2014年4月11日
  */ 
 
 @Component

@@ -23,13 +23,12 @@
   </insert>
   
   <update id="update" parameterType="cn.linkmore.security.entity.Interface">
-    update t_sec_interface
-    set clazz_id = #{clazzId,jdbcType=BIGINT},
+     update t_sec_interface
+    set
       path = #{path,jdbcType=VARCHAR},
-      log_status = #{logStatus,jdbcType=SMALLINT},
+      name = #{name,jdbcType=VARCHAR},
       authorize = #{authorize,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      name = #{name,jdbcType=VARCHAR}
+      log_status = #{logStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

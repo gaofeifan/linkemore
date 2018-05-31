@@ -21,8 +21,7 @@
     update t_base_dict_group
     set name = #{name,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},
-      order_index = #{orderIndex,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      order_index = #{orderIndex,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

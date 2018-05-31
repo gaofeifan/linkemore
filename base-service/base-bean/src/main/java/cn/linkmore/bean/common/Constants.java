@@ -183,7 +183,8 @@ public class Constants {
 		USER_APP_LOGOUT_NOTICE(0, "USER_APP_LOGOUT_NOTICE"), 
 		ORDER_CREATE_NOTICE(1,"ORDER_CREATE_NOTICE"), 
 		LOCK_DOWN_NOTICE(2, "LOCK_DOWN_NOTICE"),
-		ORDER_SWITCH_STALL(3,"ORDER_SWITCH_STALL");
+		ORDER_SWITCH_RESULT_NOTICE(3,"ORDER_SWITCH_RESULT_NOTICE"),
+		ORDER_SWITCH_STATUS_NOTICE(4,"ORDER_SWITCH_STATUS_NOTICE");
 		public int type;
 		public String id; 
 		private PushType(int type, String id) {
@@ -204,6 +205,7 @@ public class Constants {
 		COUPON_TEMPLATE_CONDITION_PREIDS( "coupon:temp:condition:pid:"),
 		ORDER_ASSIGN_STALL("assign_lock"),
 		ORDER_SERIAL_NUMBER("order:serial_number:"),
+		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
 		PREFECTURE_FREE_STALL("prefecture:free_stall:");
 		public String key;
 

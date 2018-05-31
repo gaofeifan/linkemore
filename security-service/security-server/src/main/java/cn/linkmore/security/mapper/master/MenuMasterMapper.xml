@@ -35,14 +35,11 @@
   </insert>
   <update id="update" parameterType="cn.linkmore.security.entity.Menu">
     update t_sec_menu
-    set name = #{name,jdbcType=VARCHAR},
-      parent_id = #{parentId,jdbcType=BIGINT},
-      status = #{status,jdbcType=INTEGER},
-      icon = #{icon,jdbcType=VARCHAR},
+    set name = #{name,jdbcType=VARCHAR}, 
       page_id = #{pageId,jdbcType=BIGINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
+      icon = #{icon,jdbcType=VARCHAR},
       order_index = #{orderIndex,jdbcType=INTEGER},
-      level = #{level,jdbcType=INTEGER}
+      status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

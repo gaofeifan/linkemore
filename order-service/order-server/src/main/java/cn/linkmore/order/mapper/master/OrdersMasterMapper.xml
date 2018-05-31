@@ -5,6 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
+     <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="pay_type" jdbcType="INTEGER" property="payType" />
@@ -26,12 +27,14 @@
     <result column="status_time" jdbcType="TIMESTAMP" property="statusTime" />
     <result column="lock_down_time" jdbcType="TIMESTAMP" property="lockDownTime" />
     <result column="lock_down_status" jdbcType="SMALLINT" property="lockDownStatus" />
+    <result column="switch_time" jdbcType="TIMESTAMP" property="switchTime" />
+    <result column="switch_status" jdbcType="SMALLINT" property="switchStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, pre_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
+    id, user_id, pre_id,strategy_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
     begin_time, username, end_time, plate_no, stall_image, stall_local, stall_guidance, 
     create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
-    lock_down_status
+    lock_down_status,switch_time,switch_status
   </sql>
   <delete id="delete" parameterType="java.lang.Long">
     delete from o_orders
@@ -45,7 +48,7 @@
       plate_no, stall_image, stall_local, 
       stall_guidance, create_time, update_time, 
       dock_id, status_history, user_type, 
-      status_time, lock_down_time, lock_down_status
+      status_time, lock_down_time, lock_down_status,strategy_id,switch_status
       )
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{preId,jdbcType=BIGINT}, 
       #{stallId,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{payType,jdbcType=INTEGER}, 
@@ -54,7 +57,8 @@
       #{plateNo,jdbcType=VARCHAR}, #{stallImage,jdbcType=VARCHAR}, #{stallLocal,jdbcType=VARCHAR}, 
       #{stallGuidance,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{dockId,jdbcType=VARCHAR}, #{statusHistory,jdbcType=SMALLINT}, #{userType,jdbcType=SMALLINT}, 
-      #{statusTime,jdbcType=TIMESTAMP}, #{lockDownTime,jdbcType=TIMESTAMP}, #{lockDownStatus,jdbcType=SMALLINT}
+      #{statusTime,jdbcType=TIMESTAMP}, #{lockDownTime,jdbcType=TIMESTAMP}, 
+      #{lockDownStatus,jdbcType=SMALLINT},#{strategyId,jdbcType=BIGINT} ,#{switchStatus,jdbcType=SMALLINT}
       )
   </insert>
   
@@ -90,6 +94,15 @@
     set  
       lock_down_time = #{lockDownTime,jdbcType=TIMESTAMP},
       lock_down_status = #{lockDownStatus,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateSwitch" parameterType="java.util.HashMap">
+    update o_orders
+    set  
+      stall_id = #{stallId,jdbcType=BIGINT} ,
+      stall_name = #{stallName,jdbcType=BIGINT} ,
+      switch_time = #{switchTime,jdbcType=TIMESTAMP},
+      switch_status = #{switchStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

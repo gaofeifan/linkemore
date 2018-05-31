@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 	
 	private final static long SPACE = 1000L*60*30;
 	
-	private final static String TEST_MOBILE= "18510770300|18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
+	private final static String TEST_MOBILE= "18010161135|18510770300|18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
 
 	@Override
 	public void send(ReqAuthSend rs) {     

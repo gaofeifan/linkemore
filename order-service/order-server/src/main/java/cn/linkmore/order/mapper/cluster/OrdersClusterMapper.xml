@@ -6,6 +6,7 @@
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="pay_type" jdbcType="INTEGER" property="payType" />
     <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
@@ -26,12 +27,15 @@
     <result column="status_time" jdbcType="TIMESTAMP" property="statusTime" />
     <result column="lock_down_time" jdbcType="TIMESTAMP" property="lockDownTime" />
     <result column="lock_down_status" jdbcType="SMALLINT" property="lockDownStatus" />
+    <result column="switch_time" jdbcType="TIMESTAMP" property="switchTime" />
+    <result column="switch_status" jdbcType="SMALLINT" property="switchStatus" />
   </resultMap>
   
   <resultMap id="ResResultMap" type="cn.linkmore.order.response.ResUserOrder">
     <result column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="pay_type" jdbcType="INTEGER" property="payType" />
@@ -50,19 +54,21 @@
     <result column="status_time" jdbcType="TIMESTAMP" property="statusTime" />
     <result column="lock_down_time" jdbcType="TIMESTAMP" property="lockDownTime" />
     <result column="lock_down_status" jdbcType="SMALLINT" property="lockDownStatus" />
+    <result column="switch_time" jdbcType="TIMESTAMP" property="switchTime" />
+    <result column="switch_status" jdbcType="SMALLINT" property="switchStatus" />
   </resultMap>
   
   <sql id="Base_Column_List">
     id, user_id, pre_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
     begin_time, username, end_time, plate_no, stall_image, stall_local, stall_guidance, 
     create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
-    lock_down_status
+    lock_down_status,switch_status,switch_time,strategy_id
   </sql>
   <sql id="Res_Column_List">
     id, user_id, pre_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
     begin_time, username, end_time, plate_no,
     create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
-    lock_down_status
+    lock_down_status,switch_status,switch_time,strategy_id
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -76,6 +82,17 @@
     from o_orders  
     where user_id = #{userId,jdbcType=BIGINT} order by id desc  limit 0,1
   </select>
+  
+  <select id="findUserList" parameterType="java.util.Map" resultMap="ResResultMap">
+    select 
+    <include refid="Res_Column_List" />
+    from o_orders  
+    where user_id = #{userId,jdbcType=BIGINT} 
+    and status = 3 
+    order by id desc   
+    limit #{start,jdbcType=BIGINT},10
+  </select>
+  
    <select id="findStallLatest" parameterType="java.lang.Long" resultMap="ResResultMap">
     select 
     <include refid="Res_Column_List" />

@@ -47,17 +47,9 @@
   <update id="update" parameterType="cn.linkmore.security.entity.Person">
     update t_sec_person
     set username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      lock_status = #{lockStatus,jdbcType=INTEGER},
-      lock_time = #{lockTime,jdbcType=TIMESTAMP},
-      login_ip = #{loginIp,jdbcType=VARCHAR},
-      lock_count = #{lockCount,jdbcType=INTEGER},
-      login_time = #{loginTime,jdbcType=TIMESTAMP},
-      status = #{status,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       realname = #{realname,jdbcType=VARCHAR},
-      ent_id = #{entId,jdbcType=BIGINT},
-      type = #{type,jdbcType=INTEGER}
+      password = #{password,jdbcType=VARCHAR}, 
+      status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

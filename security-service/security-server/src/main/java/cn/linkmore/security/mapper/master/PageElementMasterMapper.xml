@@ -36,8 +36,7 @@
       status = #{status,jdbcType=INTEGER},
       page_id = #{pageId,jdbcType=BIGINT},
       label_name = #{labelName,jdbcType=VARCHAR},
-      label_id = #{labelId,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      label_id = #{labelId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

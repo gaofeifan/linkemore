@@ -1,11 +1,14 @@
 package cn.linkmore.user.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.user.request.ReqBooking;
 import cn.linkmore.user.request.ReqOrderStall;
 import cn.linkmore.user.request.ReqSwitch;
 import cn.linkmore.user.response.ResOrder;
+import cn.linkmore.user.response.ResOrderDetail;
 
 /**
  * Service接口 - 预约
@@ -42,5 +45,21 @@ public interface OrderService {
 	 * @param request
 	 */
 	void switchStall(ReqSwitch rs, HttpServletRequest request);
+
+	/**
+	 * 分页显示 
+	 * @param start 起始以0为始
+	 * @param request
+	 * @return
+	 */
+	List<ResOrder> list(Long start, HttpServletRequest request);
+
+	/**
+	 * 订单详情
+	 * @param orderId 订单ID
+	 * @param request 请求
+	 * @return
+	 */
+	ResOrderDetail detail(Long orderId, HttpServletRequest request);
 
 }

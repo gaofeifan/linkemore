@@ -41,7 +41,7 @@ public class MenuController {
 		return this.menuService.save(reqMenu);
 	}
 	
-	@RequestMapping(value = "/v2.0/update", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
 	public int update(@RequestBody ReqMenu reqMenu){
 		return this.menuService.update(reqMenu);

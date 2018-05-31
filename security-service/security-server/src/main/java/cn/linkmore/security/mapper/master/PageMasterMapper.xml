@@ -32,8 +32,7 @@
     set name = #{name,jdbcType=VARCHAR},
       path = #{path,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      category_id = #{categoryId,jdbcType=INTEGER}
+      category_id = #{categoryId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

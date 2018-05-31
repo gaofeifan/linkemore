@@ -1,5 +1,7 @@
 package cn.linkmore.order.client;
 
+import java.util.List;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,4 +58,14 @@ public interface OrderClient {
 	 */
 	@RequestMapping(value = "/v2.0/down", method = RequestMethod.PUT) 
 	void down(@RequestBody ReqOrderDown rod);
+	
+	/**
+	 * 根据userId查询对应已完成订单[10条一页]
+	 * @param userId 用户ID
+	 * @param start 起始为0
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResUserOrder> list(@RequestParam("userId") Long userId,@RequestParam("start") Long start);
 }

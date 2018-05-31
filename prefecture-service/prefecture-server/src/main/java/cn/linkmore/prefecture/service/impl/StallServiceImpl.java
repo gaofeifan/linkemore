@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.linkmore.lock.bean.LockBean;
@@ -40,6 +42,8 @@ public class StallServiceImpl implements StallService {
 	private RedisService redisService;
 	@Autowired
 	private LockFactory lockFactory;
+	
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
 	public void order(Long id) { 
@@ -88,17 +92,17 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public boolean downlock(Long stallId) {
-		boolean flag = true;
+		boolean flag = false;
 		Stall stall = stallClusterMapper.findById(stallId);
 		if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
 			int code = res.getMsgCode();
-	    	if(code != 200){
-	    		 flag = false;
-	    		 throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL); 
+	    	if(code == 200){ 
+	    		flag = true;
+	    		stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
+				stallMasterMapper.lockdown(stall);
 	    	}
-			stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
-			stallMasterMapper.lockdown(stall);
+			
 		}
 		return flag;
 	}

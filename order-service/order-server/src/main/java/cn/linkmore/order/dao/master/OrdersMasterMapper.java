@@ -19,4 +19,10 @@ public interface OrdersMasterMapper {
      * @return
      */
 	int updateLockStatus(Map<String, Object> param);
+
+	/**
+	 * 切换车位
+	 * @param param
+	 */
+	void updateSwitch(Map<String, Object> param);
 }
