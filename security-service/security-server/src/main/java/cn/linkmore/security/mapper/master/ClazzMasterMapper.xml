@@ -21,9 +21,8 @@
   <update id="update" parameterType="cn.linkmore.security.entity.Clazz">
     update t_sec_clazz
     set name = #{name,jdbcType=VARCHAR},
-      package_id = #{packageId,jdbcType=BIGINT},
       path = #{path,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      package_id = #{packageId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

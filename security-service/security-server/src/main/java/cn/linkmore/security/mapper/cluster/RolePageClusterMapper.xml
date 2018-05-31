@@ -20,7 +20,7 @@
     select id, role_id, page_id
     from t_sec_role_page where 1=1
     <if test="roleId!=null">  
-    and role_id = #{roleId,jdbcType=INTEGER}
+    and role_id = #{roleId,jdbcType=BIGINT}
     </if>
   </select>
 </mapper>

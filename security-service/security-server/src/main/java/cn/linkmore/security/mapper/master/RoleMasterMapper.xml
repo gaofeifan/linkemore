@@ -15,7 +15,7 @@
     delete from t_sec_role
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.linkmore.security.entity.Role">
+  <insert id="save" parameterType="cn.linkmore.security.entity.Role">
     insert into t_sec_role (id, name, status, 
       create_time, code)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
@@ -24,9 +24,8 @@
   <update id="update" parameterType="cn.linkmore.security.entity.Role">
     update t_sec_role
     set name = #{name,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      code = #{code,jdbcType=VARCHAR}
+      code = #{code,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

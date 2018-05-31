@@ -51,8 +51,8 @@ public class PersonController {
 	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids){ 
-		this.personService.delete(ids);
+	public int delete(@RequestBody List<Long> ids){ 
+		return this.personService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)

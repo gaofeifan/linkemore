@@ -28,7 +28,6 @@
       name = #{name,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},
       order_index = #{orderIndex,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       extra = #{extra,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>

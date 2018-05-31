@@ -23,7 +23,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		String ip = request.getRemoteAddr(); 
 		log.info("url: {}, ip: {} ,origin: {}",uri,ip,request.getHeader("Origin"));
 		
-		response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT");
 		response.setHeader("Access-Control-Allow-Headers", "X-Access-Auth-Token, Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With");
 		response.setHeader("Access-Control-Allow-Credentials", "true");

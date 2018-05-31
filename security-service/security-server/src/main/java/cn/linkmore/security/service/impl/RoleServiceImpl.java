@@ -5,8 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -43,6 +48,8 @@ import cn.linkmore.util.ObjectUtils;
  */
 @Service
 public class RoleServiceImpl implements RoleService {
+	
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private RoleClusterMapper roleClusterMapper;
@@ -126,8 +133,11 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public Tree findTree() {
 		List<ResPage> list =  this.pageClusterMapper.findAll();
+		log.info("page list size,{}",list.size());
 		List<ResPageElement> pes= this.pageElementClusterMapper.findAll(); 
+		log.info("page element list size,{}",pes.size());
 		List<ResDict> dicts = this.dictClusterMapper.findByGroupCode("security-page-category");
+		log.info("dicts list size,{}",dicts.size());
 		List<Tree> trees = new ArrayList<Tree>();
 		Map<Long,Tree> treeMap = new HashMap<Long,Tree>();
 		Tree tree  =null;
@@ -143,10 +153,12 @@ public class RoleServiceImpl implements RoleService {
 			trees.add(tree); 
 			treeMap.put(di.getId(), tree);
 		} 
+		log.info("dict tree map,{}",JSON.toJSON(treeMap));
 		Tree child = null;
 		Map<Long,Tree> childMap = new HashMap<Long,Tree>();
 		for(ResPage page:list) {
-			tree = treeMap.get(page.getCategoryId());
+			//因为category在数据库中是int类型，java对应类型为Integer,原ops服务中设置为Long，所以此处需要进行转化处理
+			tree = treeMap.get(page.getCategoryId().longValue());
 			if(tree==null) {
 				continue;
 			}
@@ -185,6 +197,7 @@ public class RoleServiceImpl implements RoleService {
 		root.setOpen(true);
 		root.setmId("0"); 
 		root.setChildren(trees);
+		log.info("root tree map,{}",JSON.toJSON(root));
 		return root;
 	}
 
