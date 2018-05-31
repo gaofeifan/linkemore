@@ -1,6 +1,6 @@
 package cn.linkmore.prefecture.request;
 /**
- * 请求车区
+ * APP请求车区参数
  * @author jiaohanbin
  * @version 2.0
  *
