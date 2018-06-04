@@ -14,7 +14,7 @@ import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.security.response.ResPersonRole;
 import cn.linkmore.security.response.ResRole;
 /**
- * 远程调用实现 - 类信息
+ * 远程调用实现 - 账户信息
  * @author jiaohanbin
  * @version 2.0
  *
@@ -90,6 +90,12 @@ public class PersonClientHystrix implements PersonClient {
 	@Override
 	public void updatePassword(ReqPerson person, String oldPassword, String password) {
 		log.info("person updatePassword");
+	}
+
+	@Override
+	public ResPerson findById(Long id) {
+		log.info("person findById");
+		return null;
 	}
 
 }
