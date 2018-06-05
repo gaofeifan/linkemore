@@ -30,14 +30,14 @@ public interface UserClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResUserDetails> findResUserById(@Param("userId") Long userId);
+	List<ResUserDetails> findResUserById( Long userId);
 
 	/**
 	 * @Description  根据手机号查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResUser findByMobile(@Param("mobile")String mobile);
+	ResUser findByMobile(String mobile);
 
 	/**
 	 * @Description  根据条件查询总数

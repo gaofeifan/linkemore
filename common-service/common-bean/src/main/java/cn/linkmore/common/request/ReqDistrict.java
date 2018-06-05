@@ -47,7 +47,6 @@ public class ReqDistrict {
 	}
 	public void setCityId(Long cityId) {
 		this.cityId = cityId;
-	}  
-	
+	}
 	
 }

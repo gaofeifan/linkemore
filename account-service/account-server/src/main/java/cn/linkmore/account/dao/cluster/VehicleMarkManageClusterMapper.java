@@ -27,13 +27,13 @@ public interface VehicleMarkManageClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<VehicleMarkManage> findByUserId(@Param("userId")Long userId);
+	List<VehicleMarkManage> findByUserId(Long userId);
 
 	/**
 	 * @Description  查询列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResVechicleMark> findResList(@Param("userId")Long userId);
+	List<ResVechicleMark> findResList(Long userId);
 
 }

@@ -22,13 +22,13 @@
     from v_vehicle_mark_manage
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="findByUserId"  resultMap="BaseResultMap">
+  <select id="findByUserId" parameterType="java.lang.Long"  resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from v_vehicle_mark_manage
     where veh_user_id = #{userId}
   </select>
-  <select id="findResList" resultType="cn.linkmore.account.response.ResVechicleMark">
+  <select id="findResList" parameterType="java.lang.Long" resultType="cn.linkmore.account.response.ResVechicleMark">
     select 
    		veh_mark vehMark ,id 
     from v_vehicle_mark_manage

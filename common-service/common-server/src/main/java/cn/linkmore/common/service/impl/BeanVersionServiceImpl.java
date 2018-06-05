@@ -50,7 +50,10 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 	
 	@Override
 	public ResVersionBean currentAppVersion(Integer appType) {
-		List<ResVersionBean> res = this.baseAppVersionClusterMapper.findByTypeAnStatus(appType,1);
+		Map<String, Object> map = new HashMap<>();
+		map.put("appType", appType);
+		map.put("status", 1);
+		List<ResVersionBean> res = this.baseAppVersionClusterMapper.findByTypeAnStatus(map);
 		return res.get(0);
 	}
 	

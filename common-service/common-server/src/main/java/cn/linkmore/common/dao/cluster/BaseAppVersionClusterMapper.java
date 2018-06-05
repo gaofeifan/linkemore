@@ -30,7 +30,7 @@ public interface BaseAppVersionClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResVersionBean> findByTypeAnStatus(@Param("appType")Integer appType,@Param("status") Integer status);
+	List<ResVersionBean> findByTypeAnStatus(Map<String, Object> param);
 
 	/**
 	 * @Description  分页查询
@@ -52,4 +52,5 @@ public interface BaseAppVersionClusterMapper {
 	 * @Version  v2.0
 	 */
 	Integer check(Map<String, Object> param);
+
 }

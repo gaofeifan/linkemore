@@ -32,7 +32,7 @@
     from t_base_app_version
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="findByTypeAnStatus" resultMap="ResBaseResultMap">
+  <select id="findByTypeAnStatus" parameterType="java.util.HashMap" resultMap="ResBaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_base_app_version
