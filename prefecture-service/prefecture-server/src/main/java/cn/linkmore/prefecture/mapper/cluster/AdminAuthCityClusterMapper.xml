@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.AdminAuthCityClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.AdminAuthCity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="auth_id" jdbcType="BIGINT" property="authId" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, auth_id, city_id
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_admin_auth_city
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>

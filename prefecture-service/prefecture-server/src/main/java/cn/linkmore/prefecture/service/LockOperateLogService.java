@@ -1,6 +1,12 @@
 package cn.linkmore.prefecture.service;
 
+import java.util.List;
+
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqLockOperateLog;
+import cn.linkmore.prefecture.request.ReqLockOperateLogExcel;
+import cn.linkmore.prefecture.response.ResLockOperateLog;
 
 /**
  * Service接口 - 锁操作信息
@@ -14,6 +20,16 @@ public interface LockOperateLogService {
 	 * @param id
 	 * @return
 	 */
-	void save(ReqLockOperateLog reqLock);
+	int save(ReqLockOperateLog reqLock);
+	
+	int delete(List<Long> ids);
+	
+	int update(ReqLockOperateLog reqLock);
+
+	ViewPage findPage(ViewPageable pageable);
+
+	List<ResLockOperateLog> findListById(Long id);
+
+	List<ResLockOperateLog> exportList(ReqLockOperateLogExcel bean);
 	
 }

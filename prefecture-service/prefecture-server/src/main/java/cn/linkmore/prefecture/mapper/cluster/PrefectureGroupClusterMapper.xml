@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.PrefectureGroupClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.response.ResPrefectureGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="pre_ids" jdbcType="VARCHAR" property="preIds" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
+  
+  <resultMap id="GroupResultMap" type="cn.linkmore.prefecture.response.ResPrefectureGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="pre_ids" jdbcType="VARCHAR" property="preIds" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, name, pre_ids, content, operator_id, create_time, update_time, status
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_prefecture_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="getPreGroupSelect" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select id,name,status
+    from t_prefecture_group where status = #{status} 
+  </select>
+  
+  <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_prefecture_group where   
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_prefecture_group
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name}
+    </if>
+    <if test="status!=null">  
+    and status = #{status} 
+    </if> 
+  </select>
+  
+  <select id="findPage" resultMap="GroupResultMap" parameterType="java.util.HashMap" >
+    select p.id, p.name, p.pre_ids, p.content, p.create_time,p.update_time, p.status, s.username operator
+	from t_prefecture_group p 
+	left join t_sec_person s on p.operator_id = s.id 
+	where 1=1 
+    <if test="name!=null">  
+    and p.name like #{name}
+    </if>
+    <if test="status!=null">  
+    and p.status = #{status}
+    </if> 
+    <if test="startTime!=null">
+    <![CDATA[and p.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">
+    <![CDATA[and p.create_time <= #{endTime,jdbcType=VARCHAR}]]>
+    </if> 
+    GROUP BY p.id 
+    <if test="property==null">  
+    order by p.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by ${property} ${direction}
+    </if>
+    limit  #{start},#{pageSize}
+  </select>
+</mapper>

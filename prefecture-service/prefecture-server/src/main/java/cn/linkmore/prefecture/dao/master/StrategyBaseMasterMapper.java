@@ -1,4 +1,6 @@
 package cn.linkmore.prefecture.dao.master;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.prefecture.entity.StrategyBase;
 /**
@@ -9,12 +11,6 @@ import cn.linkmore.prefecture.entity.StrategyBase;
  */
 @Mapper
 public interface StrategyBaseMasterMapper {
-	/**
-	 * 删除id对应的信息
-	 * @param id 主键
-	 * @return  删除条数
-	 */
-	int delete(Long id);
 
 	/**
 	 * 保存信息
@@ -28,5 +24,12 @@ public interface StrategyBaseMasterMapper {
 	 * @param record 车位信息
 	 * @return 更新条数
 	 */
-	int update(StrategyBase record); 
+	int update(StrategyBase record);
+	
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	int delete(List<Long> ids); 
 }

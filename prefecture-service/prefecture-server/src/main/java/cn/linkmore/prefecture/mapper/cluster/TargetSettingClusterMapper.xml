@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.TargetSettingClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.response.ResTargetSetting">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="day_user_count" jdbcType="INTEGER" property="dayUserCount" />
+    <result column="day_order_count" jdbcType="INTEGER" property="dayOrderCount" />
+    <result column="mounth_order_count" jdbcType="INTEGER" property="mounthOrderCount" />
+    <result column="mounth_user_count" jdbcType="INTEGER" property="mounthUserCount" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="operator_name" jdbcType="VARCHAR" property="operatorName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, prefecture_id, enterprise_id, day_user_count, day_order_count, mounth_order_count, 
+    mounth_user_count, operator_id, operator_name, create_time, remark
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_pre_target_setting
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select  
+    <include refid="Base_Column_List" />
+    from t_biz_pre_target_setting where 1 = 1 
+    <if test="prefectureId!=null">  
+    and prefecture_id = #{prefectureId,jdbcType=BIGINT}
+    </if>  
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select  
+    <include refid="Base_Column_List" />
+    from t_biz_pre_target_setting where 1 = 1 
+    <if test="prefectureId!=null">  
+    and prefecture_id = #{prefectureId,jdbcType=BIGINT}
+    </if>  
+    <if test="property==null">  
+     order by id desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_biz_pre_target_setting where 1=1
+    <if test="prefectureId!=null">  
+    and prefecture_id = #{prefectureId,jdbcType=BIGINT}
+    </if>  
+  </select>
+  
+  <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_biz_pre_target_setting where   
+    ${property} = #{value}    
+    and id != #{id} 
+  </select>
+  
+</mapper>

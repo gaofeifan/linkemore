@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.TargetDayClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.response.ResTargetDay">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+    <result column="setting_id" jdbcType="BIGINT" property="settingId" />
+    <result column="mounth_id" jdbcType="BIGINT" property="mounthId" />
+    <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" />
+    <result column="target_order_count" jdbcType="INTEGER" property="targetOrderCount" />
+    <result column="current_order_count" jdbcType="INTEGER" property="currentOrderCount" />
+    <result column="target_user_count" jdbcType="INTEGER" property="targetUserCount" />
+    <result column="current_user_count" jdbcType="INTEGER" property="currentUserCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  
+  <resultMap id="UserAmountResultMap" type="cn.linkmore.prefecture.response.ResPreUserAmount">
+    <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" /> 
+    <result column="user_count" jdbcType="BIGINT" property="userCount" /> 
+  </resultMap> 
+  
+  <resultMap id="MounthAmountResultMap" type="cn.linkmore.prefecture.response.ResPreMounthAmount">
+    <result column="mounth_id" jdbcType="BIGINT" property="mounthId" /> 
+    <result column="user_count" jdbcType="BIGINT" property="userCount" /> 
+    <result column="order_count" jdbcType="BIGINT" property="orderCount" /> 
+  </resultMap> 
+  
+   <resultMap id="OrderAmountResultMap" type="cn.linkmore.prefecture.response.ResPreOrderAmount">
+    <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" /> 
+    <result column="order_count" jdbcType="BIGINT" property="orderCount" /> 
+  </resultMap> 
+  
+  
+  
+  
+  <sql id="Base_Column_List">
+    id, day, setting_id, mounth_id, prefecture_id, target_order_count, current_order_count, 
+    target_user_count, current_user_count, create_time, update_time
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_pre_day_target
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select  
+    <include refid="Base_Column_List" />
+    from t_biz_pre_day_target where 1 = 1 
+    <if test="mounthId!=null">  
+    and mounth_id = #{mounthId,jdbcType=BIGINT}
+    </if> 
+    <if test="day!=null">  
+    and day like #{day,jdbcType=VARCHAR}
+    </if>  
+    <if test="property==null">  
+     order by id desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_biz_pre_day_target where 1 = 1 
+    <if test="mounthId!=null">  
+    and mounth_id = #{mounthId,jdbcType=BIGINT}
+    </if> 
+    <if test="day!=null">  
+    and day like #{day,jdbcType=VARCHAR}
+    </if>  
+  </select> 
+  
+  <select id="findDayList" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_pre_day_target
+    where day = #{day,jdbcType=VARCHAR}
+  </select> 
+  
+  <select id="findMounthAmount" parameterType="java.util.Map" resultMap="MounthAmountResultMap">
+   	select t.mounth_id, sum(t.current_order_count) order_count,sum(t.current_user_count) user_count 
+   	from t_biz_pre_day_target t 
+   	where t.mounth_id in
+   	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>
+    group by t.mounth_id
+  </select>
+  
+  <select id="findPrefectureUserAmount" parameterType="java.util.Map" resultMap="UserAmountResultMap">
+   select count(1) user_count,pu.pre_id prefecture_id from (
+		select DISTINCT c.user_id ,ct.pre_id from c_coupon c 
+		inner join t_coupon_template ct on ct.id = c.template_id
+		where ct.pre_id is not null and c.create_time  BETWEEN #{startDay,jdbcType=VARCHAR} and #{endDay,jdbcType=VARCHAR}
+		 group by c.user_id
+	) pu group by pu.pre_id 
+  </select>
+  
+  <select id="findPrefectureOrderAmount" parameterType="java.util.Map" resultMap="OrderAmountResultMap">
+    select count(1) order_count,o.pre_id prefecture_id from o_orders o 
+	where  o.status in(3,6) and (unix_timestamp(o.end_time)-unix_timestamp(o.create_time))/60 > 15 
+	and o.create_time   BETWEEN #{startDay,jdbcType=VARCHAR} and #{endDay,jdbcType=VARCHAR} group by o.pre_id
+  </select>
+  
+  
+  
+  
+</mapper>

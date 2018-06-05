@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.prefecture.entity.StallOperateLog;
@@ -11,8 +13,8 @@ import cn.linkmore.prefecture.entity.StallOperateLog;
  */
 @Mapper
 public interface StallOperateLogMasterMapper {
-    int delete(Long id);
-
+	int delete(List<Long> ids);
+	
     int save(StallOperateLog record);
 
     int update(StallOperateLog record);

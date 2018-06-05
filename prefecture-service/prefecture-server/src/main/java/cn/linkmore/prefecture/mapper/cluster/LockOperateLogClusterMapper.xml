@@ -12,6 +12,19 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="modify_time" jdbcType="INTEGER" property="modifyTime" />
   </resultMap>
+  
+  <resultMap id="LogResultMap" type="cn.linkmore.prefecture.response.ResLockOperateLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="source" jdbcType="SMALLINT" property="source" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="operation" jdbcType="SMALLINT" property="operation" />
+    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, operator_id, source, stall_id, operation, lock_sn, create_time, status, modify_time
   </sql>
@@ -20,6 +33,86 @@
     <include refid="Base_Column_List" />
     from t_lock_operate_log
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_lock_operate_log
+    where 1 = 1
+    <if test="source!=null">  
+    and source = #{source}
+    </if> 
+    <if test="operation!=null">  
+    and operation = #{operation} 
+    </if> 
+    <if test="status!=null">  
+    and status = #{status} 
+    </if> 
+    <if test="startTime!=null">
+    and create_time &gt;= #{startTime} 
+    </if> 
+    <if test="endTime!=null">
+    and create_time &lt;= #{endTime}
+    </if> 
+  </select>
+  
+  <select id="findPage" resultMap="LogResultMap" parameterType="java.util.HashMap" >
+	select o.id, o.operator_id, o.source, o.stall_id, o.operation, o.lock_sn, o.create_time, 
+	o.status,s.stall_name,u.realname as operator
+	from t_lock_operate_log o 
+	left join t_admin_user u on o.operator_id = u.id
+	left join v_stall s on o.stall_id = s.id 
+	where 1=1 
+    <if test="id!=null">  
+    and o.id = #{id}
+    </if> 
+    <if test="source!=null">  
+    and o.source = #{source}
+    </if> 
+    <if test="operation!=null">  
+    and o.operation = #{operation} 
+    </if> 
+    <if test="status!=null">  
+    and o.status = #{status} 
+    </if> 
+    <if test="startTime!=null">
+    and o.create_time &gt;= #{startTime} 
+    </if> 
+    <if test="endTime!=null">
+    and o.create_time &lt;= #{endTime}
+    </if>
+    <if test="property==null">  
+    order by o.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start},#{pageSize}
+  </select>
+  
+  <select id="findExportList" resultMap="LogResultMap" parameterType="java.util.HashMap" >
+	select o.id, o.operator_id, o.source, o.stall_id, o.operation, o.lock_sn, o.create_time, 
+	o.status,s.stall_name,u.realname as operator
+	from t_lock_operate_log o 
+	left join t_admin_user u on o.operator_id = u.id
+	left join v_stall s on o.stall_id = s.id 
+	where 1=1 
+    <if test="source!=null">  
+    and o.source = #{source}
+    </if> 
+    <if test="operation!=null">  
+    and o.operation = #{operation} 
+    </if> 
+    <if test="status!=null">  
+    and o.status = #{status} 
+    </if> 
+    <if test="startTime!=null">
+    and o.create_time &gt;= #{startTime} 
+    </if> 
+    <if test="endTime!=null">
+    and o.create_time &lt;= #{endTime}
+    </if>
+    order by o.create_time desc
   </select>
   
 </mapper>

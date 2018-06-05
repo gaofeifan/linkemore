@@ -26,6 +26,32 @@
     <result column="is_flexed" jdbcType="INTEGER" property="isFlexed" />
     <result column="first_hour_long" jdbcType="INTEGER" property="firstHourLong" />
   </resultMap>
+  
+  <resultMap id="ResResultMap" type="cn.linkmore.prefecture.response.ResStrategyBase">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="begin_time" jdbcType="CHAR" property="beginTime" />
+    <result column="free_mins" jdbcType="INTEGER" property="freeMins" />
+    <result column="end_time" jdbcType="CHAR" property="endTime" />
+    <result column="first_hour" jdbcType="DECIMAL" property="firstHour" />
+    <result column="base_price" jdbcType="DECIMAL" property="basePrice" />
+    <result column="night_price" jdbcType="DECIMAL" property="nightPrice" />
+    <result column="timely_long" jdbcType="INTEGER" property="timelyLong" />
+    <result column="night_timely_long" jdbcType="INTEGER" property="nightTimelyLong" />
+    <result column="timely_unit" jdbcType="CHAR" property="timelyUnit" />
+    <result column="top_daily" jdbcType="INTEGER" property="topDaily" />
+    <result column="top_day" jdbcType="INTEGER" property="topDay" />
+    <result column="top_night" jdbcType="INTEGER" property="topNight" />
+    <result column="creator" jdbcType="CHAR" property="creator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_prepaid_pay" jdbcType="INTEGER" property="isPrepaidPay" />
+    <result column="flex_detail" jdbcType="VARCHAR" property="flexDetail" />
+    <result column="is_flexed" jdbcType="INTEGER" property="isFlexed" />
+    <result column="first_hour_long" jdbcType="INTEGER" property="firstHourLong" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, type, name, begin_time, free_mins, end_time, first_hour, base_price, night_price, 
     timely_long, night_timely_long, timely_unit, top_daily, top_day, top_night, creator, 
@@ -36,6 +62,66 @@
     <include refid="Base_Column_List" />
     from v_strategy_base
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findPage" resultMap="ResResultMap"   parameterType="java.util.HashMap" >
+  	select 
+	<include refid="Base_Column_List" />
+    from v_strategy_base
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=INTEGER}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="findList" resultMap="ResResultMap"   parameterType="java.util.HashMap" >
+  	select 
+	<include refid="Base_Column_List" />
+    from v_strategy_base
+    where 1 = 1 
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=INTEGER}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if> 
+    <if test="property==null">  
+    order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from v_strategy_base
+    where 1= 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=INTEGER}
+    </if> 
+  </select>
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from v_strategy_base
+    where 
+    ${property} = #{value}  
+    and id != #{id} 
   </select>
   
 </mapper>

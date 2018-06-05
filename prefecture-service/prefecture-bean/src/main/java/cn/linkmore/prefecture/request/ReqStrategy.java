@@ -1,7 +1,7 @@
 package cn.linkmore.prefecture.request;
 
 /**
- * 请求城市id
+ * 请求策略
  * @author jiaohanbin
  * @version 2.0
  *

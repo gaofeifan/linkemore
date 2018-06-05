@@ -31,10 +31,14 @@
     timely_long, night_timely_long, timely_unit, top_daily, top_day, top_night, creator, 
     create_time, update_time, status, is_prepaid_pay, flex_detail, is_flexed, first_hour_long
   </sql>
-  <delete id="delete" parameterType="java.lang.Long">
+  <delete id="delete" parameterType="java.util.List">
     delete from v_strategy_base
-    where id = #{id,jdbcType=BIGINT}
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
   </delete>
+  
   <insert id="save" parameterType="cn.linkmore.prefecture.entity.StrategyBase">
     insert into v_strategy_base (id, type, name, 
       begin_time, free_mins, end_time, 
@@ -71,12 +75,10 @@
       top_day = #{topDay,jdbcType=INTEGER},
       top_night = #{topNight,jdbcType=INTEGER},
       creator = #{creator,jdbcType=CHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER},
       is_prepaid_pay = #{isPrepaidPay,jdbcType=INTEGER},
       flex_detail = #{flexDetail,jdbcType=VARCHAR},
-      is_flexed = #{isFlexed,jdbcType=INTEGER},
       first_hour_long = #{firstHourLong,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.TargetSettingMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.TargetSetting">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="day_user_count" jdbcType="INTEGER" property="dayUserCount" />
+    <result column="day_order_count" jdbcType="INTEGER" property="dayOrderCount" />
+    <result column="mounth_order_count" jdbcType="INTEGER" property="mounthOrderCount" />
+    <result column="mounth_user_count" jdbcType="INTEGER" property="mounthUserCount" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="operator_name" jdbcType="VARCHAR" property="operatorName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, prefecture_id, enterprise_id, day_user_count, day_order_count, mounth_order_count, 
+    mounth_user_count, operator_id, operator_name, create_time, remark
+  </sql>
+  <delete id="delete" parameterType="java.util.List">
+    delete from t_biz_pre_target_setting
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.TargetSetting">
+    insert into t_biz_pre_target_setting (id, prefecture_id, enterprise_id, 
+      day_user_count, day_order_count, mounth_order_count, 
+      mounth_user_count, operator_id, operator_name, 
+      create_time, remark)
+    values (#{id,jdbcType=BIGINT}, #{prefectureId,jdbcType=BIGINT}, #{enterpriseId,jdbcType=BIGINT}, 
+      #{dayUserCount,jdbcType=INTEGER}, #{dayOrderCount,jdbcType=INTEGER}, #{mounthOrderCount,jdbcType=INTEGER}, 
+      #{mounthUserCount,jdbcType=INTEGER}, #{operatorId,jdbcType=BIGINT}, #{operatorName,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <update id="update" parameterType="cn.linkmore.prefecture.entity.TargetSetting">
+    update t_biz_pre_target_setting
+    set 
+      day_user_count = #{dayUserCount,jdbcType=INTEGER},
+      day_order_count = #{dayOrderCount,jdbcType=INTEGER},
+      mounth_order_count = #{mounthOrderCount,jdbcType=INTEGER},
+      mounth_user_count = #{mounthUserCount,jdbcType=INTEGER} 
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -127,7 +127,7 @@ public class RoleServiceImpl implements RoleService {
 		param.put("property", reqCheck.getProperty());
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
-		return this.roleClusterMapper.check(reqCheck); 
+		return this.roleClusterMapper.check(param);
 	}
 
 	@Override

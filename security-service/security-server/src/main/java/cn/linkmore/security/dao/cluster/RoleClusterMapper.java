@@ -19,7 +19,7 @@ public interface RoleClusterMapper {
 
 	List<ResRole> findList(Map<String, Object> param);
 
-	Integer check(ReqCheck reqCheck);
+	Integer check(Map<String, Object> param);
 
 	List<Role> findPage(Map<String, Object> param);
 

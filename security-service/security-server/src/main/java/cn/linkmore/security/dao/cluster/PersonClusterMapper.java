@@ -22,6 +22,6 @@ public interface PersonClusterMapper {
 
 	List<ResPerson> findPage(Map<String, Object> param);
 
-	Integer check(ReqCheck reqCheck);
+	Integer check(Map<String, Object> param);
 
 }

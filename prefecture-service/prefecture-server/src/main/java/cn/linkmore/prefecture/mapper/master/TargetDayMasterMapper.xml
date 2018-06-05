@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.TargetDayMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.TargetDay">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+    <result column="setting_id" jdbcType="BIGINT" property="settingId" />
+    <result column="mounth_id" jdbcType="BIGINT" property="mounthId" />
+    <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" />
+    <result column="target_order_count" jdbcType="INTEGER" property="targetOrderCount" />
+    <result column="current_order_count" jdbcType="INTEGER" property="currentOrderCount" />
+    <result column="target_user_count" jdbcType="INTEGER" property="targetUserCount" />
+    <result column="current_user_count" jdbcType="INTEGER" property="currentUserCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, day, setting_id, mounth_id, prefecture_id, target_order_count, current_order_count, 
+    target_user_count, current_user_count, create_time, update_time
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_biz_pre_day_target
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.linkmore.prefecture.entity.TargetDay">
+    insert into t_biz_pre_day_target (id, day, setting_id, 
+      mounth_id, prefecture_id, target_order_count, 
+      current_order_count, target_user_count, current_user_count, 
+      create_time, update_time)
+    values (#{id,jdbcType=BIGINT}, #{day,jdbcType=VARCHAR}, #{settingId,jdbcType=BIGINT}, 
+      #{mounthId,jdbcType=BIGINT}, #{prefectureId,jdbcType=BIGINT}, #{targetOrderCount,jdbcType=INTEGER}, 
+      #{currentOrderCount,jdbcType=INTEGER}, #{targetUserCount,jdbcType=INTEGER}, #{currentUserCount,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="batchSave"  useGeneratedKeys="true" keyProperty="id"   parameterType="java.util.List"> 
+     insert into t_biz_pre_day_target (id, day, setting_id, 
+      mounth_id, prefecture_id, target_order_count, 
+      current_order_count, target_user_count, current_user_count, 
+      create_time,update_time)
+    values 
+    <foreach collection="list" item="item" index="index" separator=",">  
+	  (#{item.id,jdbcType=BIGINT}, #{item.day,jdbcType=VARCHAR}, #{item.settingId,jdbcType=BIGINT}, 
+      #{item.mounthId,jdbcType=BIGINT}, #{item.prefectureId,jdbcType=BIGINT}, #{item.targetOrderCount,jdbcType=INTEGER}, 
+      #{item.currentOrderCount,jdbcType=INTEGER}, #{item.targetUserCount,jdbcType=INTEGER}, #{item.currentUserCount,jdbcType=INTEGER}, 
+      #{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP})
+    </foreach> 
+  </insert>
+  
+  <update id="batchUpdate" parameterType="java.util.List">
+    update t_biz_pre_day_target
+    set 
+      current_order_count =
+    	<foreach collection="list" item="item" index="index" separator=" " open="case ID" close="end">
+		when #{item.id} then #{item.currentOrderCount,jdbcType=INTEGER}  
+		</foreach> 
+	  ,current_user_count = 
+	 	<foreach collection="list" item="item" index="index" separator=" " open="case ID" close="end">
+		when #{item.id} then #{item.currentUserCount,jdbcType=INTEGER} 
+		</foreach> 
+	  ,update_time = 
+	 	<foreach collection="list" item="item" index="index" separator=" " open="case ID" close="end">
+	  when #{item.id} then #{item.updateTime,jdbcType=TIMESTAMP}
+	 	</foreach> 
+    where id in 
+    <foreach collection="list" index="index" item="item" 
+        separator="," open="(" close=")">
+        #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+</mapper>

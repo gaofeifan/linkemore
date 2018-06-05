@@ -1,6 +1,6 @@
 package cn.linkmore.prefecture.response;
 /**
- * 响应-计费策略详情
+ * 响应-APP计费策略详情
  * @author jiaohanbin
  * @version 2.0
  *

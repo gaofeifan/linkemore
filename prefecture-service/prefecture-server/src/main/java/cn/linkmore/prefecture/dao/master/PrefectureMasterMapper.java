@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.prefecture.entity.Prefecture;
@@ -11,12 +13,6 @@ import cn.linkmore.prefecture.entity.Prefecture;
  */
 @Mapper
 public interface PrefectureMasterMapper {
-    /**
-	 * 删除id对应的信息
-	 * @param id 主键
-	 * @return  删除条数
-	 */
-	int delete(Long id);
 
 	/**
 	 * 保存信息
@@ -30,6 +26,13 @@ public interface PrefectureMasterMapper {
 	 * @param record 专区信息
 	 * @return 更新条数
 	 */
-	int update(Prefecture record); 
+	int update(Prefecture record);
+	
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	int delete(List<Long> ids); 
     
 }

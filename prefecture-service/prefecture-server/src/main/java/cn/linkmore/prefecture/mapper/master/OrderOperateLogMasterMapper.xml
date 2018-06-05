@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.OrderOperateLogMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.OrderOperateLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="source" jdbcType="SMALLINT" property="source" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="operation" jdbcType="SMALLINT" property="operation" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="remark_id" jdbcType="BIGINT" property="remarkId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_id, operator_id, source, stall_id, operation, remark, create_time, status, 
+    remark_id
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_order_operate_log
+    where id in 
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.OrderOperateLog">
+    insert into t_order_operate_log (id, order_id, operator_id, 
+      source, stall_id, operation, 
+      remark, create_time, status, 
+      remark_id)
+    values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{operatorId,jdbcType=BIGINT}, 
+      #{source,jdbcType=SMALLINT}, #{stallId,jdbcType=BIGINT}, #{operation,jdbcType=SMALLINT}, 
+      #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{remarkId,jdbcType=BIGINT})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.prefecture.entity.OrderOperateLog">
+    update t_order_operate_log
+    set order_id = #{orderId,jdbcType=BIGINT},
+      operator_id = #{operatorId,jdbcType=BIGINT},
+      source = #{source,jdbcType=SMALLINT},
+      stall_id = #{stallId,jdbcType=BIGINT},
+      operation = #{operation,jdbcType=SMALLINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      remark_id = #{remarkId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
