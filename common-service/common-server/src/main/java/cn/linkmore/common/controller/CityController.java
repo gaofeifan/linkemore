@@ -66,7 +66,7 @@ public class CityController{
 		city.setName(reqCity.getName());
 		city.setAdcode(reqCity.getCode());
 		city.setId(reqCity.getId());
-		this.cityService.save(city);
+		this.cityService.update(city);
 	}
 	 
 	@RequestMapping(value="{id}",method = RequestMethod.DELETE)
@@ -111,9 +111,9 @@ public class CityController{
         return flag;
 	}
 	
-	@RequestMapping(value = "/page", method = RequestMethod.GET)
+	@RequestMapping(value = "/page", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewPage list(HttpServletRequest request,@RequestBody ViewPageable pageable){
-		return this.cityService.findPage(pageable); 
+	public ViewPage list(@RequestBody ViewPageable pageable){
+		return this.cityService.findPage(pageable);
 	} 
 }

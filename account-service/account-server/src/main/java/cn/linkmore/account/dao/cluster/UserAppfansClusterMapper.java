@@ -27,7 +27,7 @@ public interface UserAppfansClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResUserAppfans findByUserId(@Param("userId")Long userId);
+	ResUserAppfans findByUserId(Long userId);
 
 
 }

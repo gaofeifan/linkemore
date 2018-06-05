@@ -1,103 +1,69 @@
 package cn.linkmore.common.controller;
-
 import java.util.List;
-
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.common.request.ReqCheck;
+import cn.linkmore.common.request.ReqTimingSchedule;
+import cn.linkmore.common.service.TimingScheduleService;
+import cn.linkmore.util.CronUtils;
 /**
  * @Description   定时调度任务
  * @author  GFF
  * @Date     2018年3月16日
  *
  */
-@Controller
-@RequestMapping("/admin/base/task")
+@RestController
+@RequestMapping("/task")
 public class TimingScheduleController {
 	
-/*	@Autowired
+	@Autowired
 	private TimingScheduleService timingScheduleService;
 	
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg add(TimingSchedule timingSchedule){
-		ViewMsg msg = null;
-		try {
-			this.timingScheduleService.save(timingSchedule);
-			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("保存失败",false);
-		}
-		return msg;
-		
+	public void add(@RequestBody ReqTimingSchedule timingSchedule){
+		this.timingScheduleService.save(timingSchedule);
 	} 
 	
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.PUT)
 	@ResponseBody
-	public ViewMsg update(TimingSchedule timingSchedule){
-		ViewMsg msg = null;
-		try {
-			this.timingScheduleService.update(timingSchedule);
-			msg = new ViewMsg("更新成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("更新失败",false);
-		}
-		return msg;
+	public void update(@RequestBody ReqTimingSchedule timingSchedule){
+		this.timingScheduleService.update(timingSchedule);
 	} 
 	
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewPage list(HttpServletRequest request,ViewPageable pageable){
+	public ViewPage list(@RequestBody ViewPageable pageable){
 		return this.timingScheduleService.findPage(pageable); 
-		
 	} 
 	
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.DELETE)
 	@ResponseBody
-	public ViewMsg delete(@RequestBody List<Integer> ids){
-		ViewMsg msg = null;
-		try {
-			for (Integer id : ids) {
-				this.timingScheduleService.delete(id);
-			}
-			msg = new ViewMsg("删除成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
-		}catch(Exception e) {
-			e.printStackTrace();
-			msg = new ViewMsg("删除失败",false);
-		}
-		return msg;
-		
-		
+	public void delete(@RequestBody List<Long> ids){
+		this.timingScheduleService.deleteIds(ids);
 	} 
 	
 	@RequestMapping(value = "/check", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean check(String property,String value,Long id ){
+	public Boolean check(@RequestBody ReqCheck check){
 		Boolean flag = true ;
-		Integer count = this.timingScheduleService.check(property, value, id); 
+		Integer count = this.timingScheduleService.check(check.getProperty(), check.getValue(), check.getId()); 
 		if(count>0){
             flag = false;
         }
         return flag;
 	}
 	
-	@RequestMapping(value = "/checkCron", method = RequestMethod.POST)
+	@RequestMapping(value = "/check_ron/{cron}", method = RequestMethod.GET)
 	@ResponseBody
-	public Boolean checkCron(String cron){
+	public Boolean checkCron(@PathVariable("cron") String cron){
 		try {
 			new CronUtils(cron, null).checkCron(cron);
 			return true;
@@ -105,5 +71,5 @@ public class TimingScheduleController {
 			return false;
 		}
 	}
-	*/
+	
 }

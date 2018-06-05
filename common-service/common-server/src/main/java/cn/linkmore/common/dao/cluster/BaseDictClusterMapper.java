@@ -28,7 +28,7 @@ public interface BaseDictClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResBaseDict> findListByCode(@Param("code")String code);
+	List<ResBaseDict> findListByCode(String code);
 
 	/**
 	 * 根据ID查询

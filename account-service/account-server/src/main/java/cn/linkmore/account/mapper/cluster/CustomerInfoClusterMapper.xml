@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.CustomerInfoClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.CustomerInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="admin_id" jdbcType="BIGINT" property="adminId" />
+    <result column="sex_name" jdbcType="VARCHAR" property="sexName" />
+    <result column="sex" jdbcType="BIGINT" property="sex" />
+    <result column="age_name" jdbcType="VARCHAR" property="ageName" />
+    <result column="age" jdbcType="BIGINT" property="age" />
+    <result column="child_age_name" jdbcType="VARCHAR" property="childAgeName" />
+    <result column="child_age" jdbcType="VARCHAR" property="childAge" />
+    <result column="model_name" jdbcType="VARCHAR" property="modelName" />
+    <result column="model" jdbcType="INTEGER" property="model" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="car_colour_name" jdbcType="VARCHAR" property="carColourName" />
+    <result column="car_colour" jdbcType="BIGINT" property="carColour" />
+    <result column="car_dis_name" jdbcType="VARCHAR" property="carDisName" />
+    <result column="car_dis" jdbcType="BIGINT" property="carDis" />
+    <result column="stop_cause_name" jdbcType="VARCHAR" property="stopCauseName" />
+    <result column="stop_cause" jdbcType="BIGINT" property="stopCause" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="child_num" jdbcType="SMALLINT" property="childNum" />
+    <result column="child_exist" jdbcType="SMALLINT" property="childExist" />
+    <result column="user_plate_num" jdbcType="VARCHAR" property="userPlateNum" />
+  </resultMap>
+   <resultMap id="BaseResultMapRes" type="cn.linkmore.account.response.ResCustomerInfoExport">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="cellphone" jdbcType="VARCHAR" property="operator" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="sex_name" jdbcType="VARCHAR" property="sex" />
+    <result column="age_name" jdbcType="VARCHAR" property="age" />
+    <result column="child_age_name" jdbcType="VARCHAR" property="childAge" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandModel" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="car_colour_name" jdbcType="VARCHAR" property="carColor" />
+    <result column="car_dis_name" jdbcType="VARCHAR" property="carDis" />
+    <result column="stop_cause_name" jdbcType="VARCHAR" property="stopCause" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="child_num" jdbcType="BIGINT" property="childNum" />
+    <result column="plateNo" jdbcType="VARCHAR" property="plateNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, admin_id, sex_name, sex, age_name, age, child_age_name, child_age, model_name, 
+    model, brand_name, brand_id, car_colour_name, car_colour, car_dis_name, car_dis, 
+    stop_cause_name, stop_cause, create_time, update_time, child_num, child_exist, user_plate_num
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_acc_customer_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+   <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+   from t_acc_customer_info c
+		LEFT JOIN t_admin_user s on c.admin_id = s.id 
+		LEFT JOIN t_user u on c.id = u.id 
+		where 1 = 1
+    <if test="operator!=null">
+		AND s.realname LIKE #{operator}
+	</if>
+    <if test="createTime!=null">
+    <![CDATA[and DATE_FORMAT(c.create_time,'%Y-%m-%d') >= #{createTime}]]>
+    </if> 
+    <if test="endTime!=null">
+    <![CDATA[and DATE_FORMAT(c.create_time,'%Y-%m-%d') <= #{endTime}]]>
+    </if> 
+  </select>
+  <select id="findPage" resultMap="BaseResultMapRes" parameterType="java.util.HashMap" >
+  select s.cellphone,s.realname,c.id,u.username,c.sex_name,c.age_name,c.child_num,c.child_age_name,
+		c.model_name,c.brand_name,c.car_colour_name,c.car_dis_name,c.stop_cause_name,c.create_time,c.user_plate_num
+		from t_acc_customer_info c
+		LEFT JOIN t_admin_user s on c.admin_id = s.id 
+		LEFT JOIN t_user u on c.id = u.id 
+		where 1 = 1
+    <if test="operator!=null">
+		AND s.cellphone = #{operator}
+	</if>
+    <if test="createTime!=null">
+    <![CDATA[and DATE_FORMAT(c.create_time,'%Y-%m-%d') >= #{createTime}]]>
+    </if> 
+    <if test="endTime!=null">
+    <![CDATA[and DATE_FORMAT(c.create_time,'%Y-%m-%d') <= #{endTime}]]>
+    </if> 
+      <if test="property==null">  
+    order by c.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="getExportList" resultMap="BaseResultMapRes" parameterType="cn.linkmore.account.request.ReqCustomerInfoExport" >
+  select s.cellphone ,s.realname,c.id,u.username,c.sex_name ,c.age_name ,c.child_num ,c.child_age_name ,
+   c.model_name ,CONCAT(c.brand_name ,'-', c.model_name) brand_name,c.car_colour_name ,c.car_dis_name ,c.stop_cause_name ,c.create_time,c.user_plate_num plateNo
+		from t_acc_customer_info c 
+		LEFT JOIN t_admin_user s on c.admin_id = s.id 
+		LEFT JOIN t_user u on c.id = u.id
+		where 1 = 1
+    <if test="operator!=null">
+		AND s.cellphone = #{operator}
+	</if>
+    <if test="startTime!=null">
+    <![CDATA[and c.create_time >= #{startTime}]]>
+    </if> 
+    <if test="endTime!=null">
+    <![CDATA[and c.create_time <= #{endTime}]]>
+    </if> 
+     <if test="property==null">  
+    order by c.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+  </select>
+</mapper>

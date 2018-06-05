@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.ReceiveClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.Receive">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="share_id" jdbcType="BIGINT" property="shareId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="grant_id" jdbcType="BIGINT" property="grantId" />
+    <result column="subject_id" jdbcType="BIGINT" property="subjectId" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+  </resultMap>
+   <resultMap id="ResponseResultMap" type="cn.linkmore.account.response.ResReceive">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="share_id" jdbcType="BIGINT" property="shareId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="used_count" jdbcType="BIGINT" property="usedCount" />
+    <result column="total_num" jdbcType="BIGINT" property="totalNum" />
+    <result column="used_amount" jdbcType="DECIMAL" property="usedAmount" />
+    <result column="combo_name" jdbcType="VARCHAR" property="comboName" />
+    <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
+    <result column="face_amount" jdbcType="DECIMAL" property="faceAmount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, share_id, user_id, create_time, update_time, grant_id, subject_id, open_id, amount
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_receive
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select count(1) from ( 
+		select count(1)
+		FROM t_biz_receive r
+		LEFT JOIN t_biz_subject sub on sub.id = r.subject_id 
+	    join t_user u join c_coupon c where (u.id = r.user_id) 
+	    and (c.coupon_grant_id = r.grant_id)
+	<if test="type!=null">  
+    and sub.type = #{type,jdbcType=INTEGER}
+    </if>
+    
+    <if test="title!=null">  
+    and sub.title like #{title,jdbcType=VARCHAR}
+    </if> 
+    
+    <if test="username!=null">  
+    and u.username like #{username,jdbcType=VARCHAR}
+    </if> 
+    
+    <if test="usage == 0">
+    	AND (case c.status when 0 then 0 when 1 then 1 else 0 end) = 0
+    </if>
+    <if test="usage == 1">
+    	AND (case c.status when 0 then 0 when 1 then 1 else 0 end) >= 1
+    </if>
+	 group by r.id) c
+  </select>
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="ResponseResultMap">
+    select r.id,r.share_id,sub.title,sub.type,r.create_time,u.username,
+	sum(case c.status when 0 then 0 when 1 then 1 else 0 end) AS used_count,
+	sum(case c.status when 0 then 0 when 1 then c.face_amount end) AS used_amount,
+	sum(case c.status when 0 then 1 when 1 then 1 when 2 then 0 end) AS total_num 
+	from t_biz_receive r left join t_biz_subject sub on(sub.id = r.subject_id) 
+	join t_user u join c_coupon c where (u.id = r.user_id) 
+	and (c.coupon_grant_id = r.grant_id) 
+	
+	<if test="shareId!=null">  
+    and r.share_id = #{shareId,jdbcType=INTEGER}
+    </if>
+	
+    <if test="type!=null">  
+    and sub.type = #{type,jdbcType=INTEGER}
+    </if>
+    
+    <if test="title!=null">  
+    and sub.title like #{title,jdbcType=VARCHAR}
+    </if> 
+    
+    <if test="username!=null">  
+    and u.username like #{username,jdbcType=VARCHAR}
+    </if> 
+    
+    <if test="usage == 0">
+    	AND (case c.status when 0 then 0 when 1 then 1 else 0 end) = 0
+    </if>
+    <if test="usage == 1">
+    	AND (case c.status when 0 then 0 when 1 then 1 else 0 end) >= 1
+    </if>
+    GROUP BY r.id
+    ORDER BY r.create_time DESC
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="detailCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    SELECT count(*)
+		FROM t_biz_receive r 
+		LEFT JOIN t_user u on u.id = r.user_id 
+		LEFT JOIN t_biz_subject sub on sub.id = r.subject_id 
+		LEFT JOIN c_combo c on c.id = sub.combo_id 
+		LEFT JOIN c_coupon cc on cc.coupon_grant_id = r.grant_id and cc.status &lt; 2 where 1 = 1 
+		and r.id = #{receiveId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="findDetailPage" parameterType="java.util.HashMap" resultMap="ResponseResultMap">
+    SELECT sub.title,c.name as combo_name,cc.face_amount,cc.valid_time,cc.status,u.username
+		FROM t_biz_receive r 
+		LEFT JOIN t_user u on u.id = r.user_id 
+		LEFT JOIN t_biz_subject sub on sub.id = r.subject_id 
+		LEFT JOIN c_combo c on c.id = sub.combo_id 
+		LEFT JOIN c_coupon cc on cc.coupon_grant_id = r.grant_id and cc.status &lt; 2 where 1 = 1 
+		and r.id = #{receiveId,jdbcType=INTEGER}
+	ORDER BY cc.status,cc.valid_time DESC 
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+</mapper>

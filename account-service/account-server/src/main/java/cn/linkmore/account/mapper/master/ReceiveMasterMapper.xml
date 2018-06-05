@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.ReceiveMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.Receive">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="share_id" jdbcType="BIGINT" property="shareId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="grant_id" jdbcType="BIGINT" property="grantId" />
+    <result column="subject_id" jdbcType="BIGINT" property="subjectId" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+  </resultMap>
+ 
+  <sql id="Base_Column_List">
+    id, share_id, user_id, create_time, update_time, grant_id, subject_id, open_id, amount
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_biz_receive
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.account.entity.Receive">
+    insert into t_biz_receive (id, share_id, user_id, 
+      create_time, update_time, grant_id, 
+      subject_id, open_id, amount
+      )
+    values (#{id,jdbcType=BIGINT}, #{shareId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{grantId,jdbcType=BIGINT}, 
+      #{subjectId,jdbcType=BIGINT}, #{openId,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.account.entity.Receive">
+    insert into t_biz_receive
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="shareId != null">
+        share_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="grantId != null">
+        grant_id,
+      </if>
+      <if test="subjectId != null">
+        subject_id,
+      </if>
+      <if test="openId != null">
+        open_id,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="shareId != null">
+        #{shareId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="grantId != null">
+        #{grantId,jdbcType=BIGINT},
+      </if>
+      <if test="subjectId != null">
+        #{subjectId,jdbcType=BIGINT},
+      </if>
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.Receive">
+    update t_biz_receive
+    <set>
+      <if test="shareId != null">
+        share_id = #{shareId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="grantId != null">
+        grant_id = #{grantId,jdbcType=BIGINT},
+      </if>
+      <if test="subjectId != null">
+        subject_id = #{subjectId,jdbcType=BIGINT},
+      </if>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.Receive">
+    update t_biz_receive
+    set share_id = #{shareId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      grant_id = #{grantId,jdbcType=BIGINT},
+      subject_id = #{subjectId,jdbcType=BIGINT},
+      open_id = #{openId,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,5 +1,7 @@
 package cn.linkmore.user.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Pattern;
 

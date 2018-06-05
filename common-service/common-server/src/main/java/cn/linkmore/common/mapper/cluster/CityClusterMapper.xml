@@ -4,7 +4,9 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.common.response.ResCity">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="city_name" jdbcType="VARCHAR" property="name" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
     <result column="adcode" jdbcType="VARCHAR" property="code" />
+    <result column="adcode" jdbcType="VARCHAR" property="adcode" />
     <result column="longitude" jdbcType="VARCHAR" property="longitude" />
     <result column="latitude" jdbcType="VARCHAR" property="latitude" />
   </resultMap>
@@ -41,13 +43,15 @@
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   
-  <select id="findList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
-  	select
-	<include refid="Base_Column_List" />
-    from t_city 
-    limit  #{start,jdbcType=INTEGER} 
-    <if test="size!=null">  
-    ,#{size,jdbcType=INTEGER}
+   <select id="findList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select id, adcode,city_name 
+    from t_city
+    where 1 = 1
+    <if test="cityName!=null">  
+    and city_name like #{cityName,jdbcType=VARCHAR}
+    </if> 
+	<if test="adcode!=null">  
+    and adcode like #{adcode,jdbcType=VARCHAR}
     </if> 
   </select>
   

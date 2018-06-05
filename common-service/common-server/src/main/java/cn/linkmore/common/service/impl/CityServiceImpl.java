@@ -109,10 +109,6 @@ public class CityServiceImpl implements CityService {
 	
 	@Override
 	public List<ResCity> findList(Map<String, Object> param) {
-		return this.cityClusterMapper.findPage(param);
+		return this.cityClusterMapper.findList(param);
 	}
-	
-	
-	
-	
 }

@@ -30,7 +30,7 @@
     from t_user_appfans
     where id = #{id,jdbcType=VARCHAR}
   </select>
-  <select id="findByUserId" resultMap="ResBaseResultMap">
+  <select id="findByUserId" parameterType="java.lang.Long" resultMap="ResBaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user_appfans

@@ -1,14 +1,23 @@
 package cn.linkmore.util;
 
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author leihe@uworks.cc
  */
 public class StringUtil {
+	
+	public static final String EQUALS = " = ";
+	public static final String IN = " in ";
+	public static final String LIKE = " like ";
+	public static final String DATE = " DATE ";
 
   /**
    * <pre>
@@ -124,6 +133,35 @@ public class StringUtil {
       }
     }
     return String.valueOf(code);
+  }
+  
+
+  public static String joinSql(Map<String,Object> map){
+	  StringBuilder sb = new StringBuilder();
+		Set<Entry<String,Object>> set = map.entrySet();
+		for (Entry<String, Object> entry : set) {
+			if(entry.getKey().contains(" <= ")){
+				entry.getKey().replaceAll(" <= ", "<![CDATA[ <= ]]>");
+			}else if(entry.getKey().contains(" >= ")){
+				entry.getKey().replaceAll(" >= ", "<![CDATA[ >= ]]>");
+			}else if(entry.getKey().contains(" > ")){
+				entry.getKey().replaceAll(" > ", "<![CDATA[ > ]]>");
+			}else if(entry.getKey().contains(" < ")){
+				entry.getKey().replaceAll(" < ", "<![CDATA[ < ]]>");
+			}
+			if(entry.getKey().contains(IN)){
+				String[] strs = (String[]) entry.getValue();
+				String string = StringUtils.join(strs, ",");
+				sb.append("AND "+entry.getKey() + "(" +string+")");
+			}else if(entry.getKey().contains(LIKE)){
+				sb.append("AND "+entry.getKey() + "%"+entry.getValue().toString()+"%");
+			}else if(entry.getKey().contains(EQUALS)){
+				sb.append("AND "+entry.getKey() + entry.getValue());
+			}else{
+				sb.append("AND "+entry.getKey()+ entry.getValue());
+			}
+		}
+		return sb.toString();
   }
 
 }
