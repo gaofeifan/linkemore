@@ -1,7 +1,5 @@
 package cn.linkmore.prefecture.request;
 
-import java.util.Date;
-
 /**
  * 请求锁操作信息
  * @author jiaohanbin

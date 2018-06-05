@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.OrderOperateLogClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.response.ResOrderOperateLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="source" jdbcType="SMALLINT" property="source" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="operation" jdbcType="SMALLINT" property="operation" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="remark_id" jdbcType="BIGINT" property="remarkId" />
+  </resultMap>
+  
+  
+  <resultMap id="LogResultMap" type="cn.linkmore.prefecture.response.ResOrderOperateLogEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="source" jdbcType="SMALLINT" property="source" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="operation" jdbcType="SMALLINT" property="operation" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_id, operator_id, source, stall_id, operation, remark, create_time, status, 
+    remark_id
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_operate_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_order_operate_log l
+    left join o_orders o on l.order_id = o.id 
+    left join v_stall s on l.stall_id = s.id 
+    where 1 = 1
+    <if test="orderNo!=null">  
+    and o.order_no like #{orderNo} 
+    </if> 
+    <if test="stallName!=null">  
+    and s.stall_name like #{stallName} 
+    </if> 
+    <if test="source!=null">  
+    and l.source = #{source}
+    </if> 
+    <if test="operation!=null">  
+    and l.operation = #{operation} 
+    </if> 
+    <if test="status!=null">  
+    and l.status = #{status} 
+    </if> 
+    <if test="startTime!=null">
+    and l.create_time &gt;= #{startTime} 
+    </if> 
+    <if test="endTime!=null">
+    and l.create_time &lt;= #{endTime}
+    </if> 
+  </select>
+  
+  <select id="findPage" resultMap="LogResultMap"   parameterType="java.util.HashMap" >
+  	select l.id, l.order_id, l.operator_id, l.source, l.stall_id, l.operation, l.remark, 
+  	l.create_time, l.status,o.order_no,s.stall_name,u.realname as operator 
+	from t_order_operate_log l
+    left join o_orders o on l.order_id = o.id 
+    left join v_stall s on l.stall_id = s.id 
+    left join t_admin_user u on l.operator_id = u.id 
+	where 1=1 
+    <if test="id!=null">  
+    and l.id = #{id}
+    </if> 
+    <if test="orderNo!=null">  
+    and o.order_no like #{orderNo} 
+    </if> 
+    <if test="stallName!=null">  
+    and s.stall_name like #{stallName} 
+    </if> 
+    <if test="source!=null">  
+    and l.source = #{source}
+    </if> 
+    <if test="operation!=null">  
+    and l.operation = #{operation} 
+    </if> 
+    <if test="status!=null">  
+    and l.status = #{status} 
+    </if> 
+    <if test="startTime!=null">
+    and l.create_time &gt;= #{startTime} 
+    </if> 
+    <if test="endTime!=null">
+    and l.create_time &lt;= #{endTime}
+    </if>
+    <if test="property==null">  
+    order by l.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start},#{pageSize}
+  </select>
+  
+  <select id="findExcelList" resultMap="LogResultMap"   parameterType="java.util.HashMap" >
+  	select l.id, l.order_id, l.operator_id, l.source, l.stall_id, l.operation, l.remark, 
+  	l.create_time, l.status,o.order_no,s.stall_name,u.realname as operator 
+	from t_order_operate_log l
+    left join o_orders o on l.order_id = o.id 
+    left join v_stall s on l.stall_id = s.id 
+    left join t_admin_user u on l.operator_id = u.id 
+	where 1=1 
+    <if test="orderNo!=null">  
+    and o.order_no like #{orderNo} 
+    </if> 
+    <if test="stallName!=null">  
+    and s.stall_name like #{stallName} 
+    </if> 
+    <if test="source!=null">  
+    and l.source = #{source}
+    </if> 
+    <if test="operation!=null">  
+    and l.operation = #{operation} 
+    </if> 
+    <if test="status!=null">  
+    and l.status = #{status} 
+    </if> 
+    <if test="startTime!=null">
+    and l.create_time &gt;= #{startTime} 
+    </if> 
+    <if test="endTime!=null">
+    and l.create_time &lt;= #{endTime}
+    </if>
+    order by l.create_time desc
+  </select>
+  
+  
+  
+  
+</mapper>

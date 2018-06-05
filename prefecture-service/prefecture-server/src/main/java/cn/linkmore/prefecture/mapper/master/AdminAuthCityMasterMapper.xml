@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.AdminAuthCityMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.AdminAuthCity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="auth_id" jdbcType="BIGINT" property="authId" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, auth_id, city_id
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_admin_auth_city
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.AdminAuthCity">
+    insert into t_admin_auth_city (id, auth_id, city_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{authId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT}
+      )
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.prefecture.entity.AdminAuthCity">
+    update t_admin_auth_city
+    set auth_id = #{authId,jdbcType=BIGINT},
+      city_id = #{cityId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <delete id="deleteByAuthId" parameterType="java.lang.Long">
+    delete from t_admin_auth_city
+    where auth_id = #{id,jdbcType=BIGINT}
+  </delete>
+</mapper>

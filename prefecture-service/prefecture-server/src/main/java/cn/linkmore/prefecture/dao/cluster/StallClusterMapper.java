@@ -43,4 +43,21 @@ public interface StallClusterMapper {
 	 * @return
 	 */
 	List<ResStall> findStallsByPreId(Long preId);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 查找所有的车位
+	 * @return
+	 */
+	List<Stall> findAll();
+	
+	List<ResStall> findTreeList(List<Long> stallIds);
 }

@@ -2,12 +2,22 @@ package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.client.PrefectureClient;
+import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefecture;
+import cn.linkmore.prefecture.request.ReqPrefectureEntity;
 import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResPreExcel;
+import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
@@ -47,6 +57,46 @@ public class PrefectureClientHystrix implements PrefectureClient {
 	public List<ResPrefectureList> refreshFreeStall() {
 		log.info("prefecture service pres refreshFreeStall() hystrix");
 		return new ArrayList<ResPrefectureList>();
+	}
+	@Override
+	public ViewPage list(ViewPageable pageable) {
+		log.info("prefecture service pres list(ViewPageable pageable) hystrix");
+		return null;
+	}
+	@Override
+	public int delete(List<Long> ids) {
+		log.info("prefecture service pres delete(List<Long> ids) hystrix");
+		return 0;
+	}
+	@Override
+	public Boolean check(ReqCheck reqCheck) {
+		log.info("prefecture service pres check(reqCheck) hystrix");
+		return false;
+	}
+	@Override
+	public List<ResPreList> selectList() {
+		log.info("prefecture service pres selectList() hystrix");
+		return new ArrayList<ResPreList>();
+	}
+	@Override
+	public int save(ReqPrefectureEntity prefecture) {
+		log.info("prefecture service pres save(prefecture) hystrix");
+		return 0;
+	}
+	@Override
+	public int update(ReqPrefectureEntity prefecture) {
+		log.info("prefecture service pres update(prefecture) hystrix");
+		return 0;
+	}
+	@Override
+	public List<Map<String, Object>> findListByCityId(Long cityId) {
+		log.info("prefecture service pres findListByCityId(prefecture) hystrix");
+		return new ArrayList<Map<String, Object>>();
+	}
+	@Override
+	public List<ResPreExcel> exportList(ReqPreExcel reqPreExcel) {
+		log.info("prefecture service pres exportList(prefecture) hystrix");
+		return new ArrayList<ResPreExcel>();
 	}
 	
 	

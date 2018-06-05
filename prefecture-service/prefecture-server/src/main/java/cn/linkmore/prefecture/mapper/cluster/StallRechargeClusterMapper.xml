@@ -7,6 +7,16 @@
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+  
+   <resultMap id="LogResultMap" type="cn.linkmore.prefecture.response.ResStallRecharge">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, operator_id, stall_id, create_time
   </sql>
@@ -15,6 +25,72 @@
     <include refid="Base_Column_List" />
     from t_stall_recharge
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_stall_recharge r
+    left join v_stall s on r.stall_id = s.id
+    where 1 = 1
+    <if test="stallName!=null">  
+    and s.stall_name like #{stallName}
+    </if> 
+    <if test="lockSn!=null">  
+    and s.lock_sn like #{lockSn} 
+    </if> 
+    <if test="startTime!=null">
+    and r.create_time &gt;= #{startTime} 
+    </if> 
+    <if test="endTime!=null">
+    and r.create_time &lt;= #{endTime}
+    </if> 
+  </select>
+  
+  <select id="findPage" resultMap="LogResultMap"   parameterType="java.util.HashMap" >
+	select r.id, r.operator_id, r.stall_id, r.create_time,s.stall_name,s.lock_sn,u.realname as operator
+	from t_stall_recharge r 
+	left join t_admin_user u on r.operator_id = u.id
+	left join v_stall s on r.stall_id = s.id 
+	where 1=1 
+    <if test="stallName!=null">  
+    and s.stall_name like #{stallName}
+    </if> 
+    <if test="lockSn!=null">  
+    and s.lock_sn like #{lockSn} 
+    </if>  
+    <if test="startTime!=null">
+    and r.create_time &gt;= #{startTime} 
+    </if> 
+    <if test="endTime!=null">
+    and r.create_time &lt;= #{endTime}
+    </if>
+    <if test="property==null">  
+    order by r.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start},#{pageSize}
+  </select>
+  <select id="findExcelList" resultMap="LogResultMap"   parameterType="java.util.HashMap" >
+	select r.id, r.operator_id, r.stall_id, r.create_time,s.stall_name,s.lock_sn,u.realname as operator
+	from t_stall_recharge r 
+	left join t_admin_user u on r.operator_id = u.id
+	left join v_stall s on r.stall_id = s.id 
+	where 1=1 
+    <if test="stallName!=null">  
+    and s.stall_name like #{stallName}
+    </if> 
+    <if test="lockSn!=null">  
+    and s.lock_sn like #{lockSn} 
+    </if>  
+    <if test="startTime!=null">
+    and r.create_time &gt;= #{startTime} 
+    </if> 
+    <if test="endTime!=null">
+    and r.create_time &lt;= #{endTime}
+    </if>
+    order by r.create_time desc
   </select>
  
 </mapper>

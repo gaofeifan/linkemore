@@ -2,32 +2,44 @@ package cn.linkmore.prefecture.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.linkmore.lock.bean.LockBean;
-import com.linkmore.lock.factory.LockFactory;
-import com.linkmore.lock.response.ResponseMessage;
+
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.response.ResUserStaff;
+import cn.linkmore.bean.view.Tree;
+import cn.linkmore.bean.view.ViewFilter;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
+import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.StrategyBase;
+import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefecture;
+import cn.linkmore.prefecture.request.ReqPrefectureEntity;
 import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResPreExcel;
+import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
 import cn.linkmore.prefecture.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.service.PrefectureService;
+import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 
@@ -47,16 +59,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private StrategyBaseClusterMapper strategyBaseClusterMapper;
 	@Autowired
+	private PrefectureMasterMapper prefectureMasterMapper;
+	@Autowired
 	private UserStaffClient userStaff;
 	
 	@Override
 	public ResPrefectureDetail findById(Long preId) {
-		ResPrefectureDetail detail = new ResPrefectureDetail();
-		Prefecture pre = prefectureClusterMapper.findById(preId);
-		if(pre != null) {
-			return ObjectUtils.copyObject(pre, detail);
-		}
-		return null;
+		ResPrefectureDetail detail = prefectureClusterMapper.findById(preId);
+		return detail;
 	}
 	@Override
 	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture) {
@@ -97,7 +107,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		String total = "共";
 		
 		ResPrefectureStrategy bean = null;
-		Prefecture prefecture = prefectureClusterMapper.findById(preId);
+		ResPrefectureDetail prefecture = prefectureClusterMapper.findById(preId);
 		if(prefecture != null){
 			bean = new ResPrefectureStrategy();
 			StrategyBase strategyBase = strategyBaseClusterMapper.findById(prefecture.getStrategyId());
@@ -233,31 +243,121 @@ public class PrefectureServiceImpl implements PrefectureService {
 	 * @return
 	 */
 	public Integer getFreeStall(Long preId) {
-//		Prefecture preDetail = this.prefectureClusterMapper.findById(preId);
 		List<ResStall> stallList = this.stallClusterMapper.findStallsByPreId(preId);
 		int count = 0;
 		if(stallList!=null) {
 			count = stallList.size();
 		}
 		return count;
-//		LockFactory lockFactory = InitLockFactory.getInstance();
-//		ResponseMessage<LockBean> lc = lockFactory.findAvailableLock(preDetail.getGateway());
-//		List<LockBean> lockBeanList = lc.getDataList();
-//		Integer count = 0;
-//		if(CollectionUtils.isNotEmpty(lockBeanList) && CollectionUtils.isNotEmpty(stallList)) {
-//			log.info("pref free stall:{},         -------------       stall:{}" ,JsonUtil.toJson(lc.getDataList()) , JsonUtil.toJson(stallList));
-//			for(LockBean lock : lockBeanList) {
-//				for(ResStall stall : stallList) {
-//					if(lock.getSlaveId().equals(stall.getLockSn())) {
-//						//1 表示竖起来 0 表示躺下被占用
-//						if(lock.getOpenState().equals(1)) {
-//							count ++;
-//						}
-//						log.info("pref free stall count :{}" ,count);
-//					}
-//				}
-//			}
-//		}
-//		return count;
 	}
+	@Override
+	public ViewPage findPage(ViewPageable pageable) { 
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		List<ViewFilter> filters = pageable.getFilters();
+		if(StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if(filters!=null&&filters.size()>0) {
+			for(ViewFilter filter:filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.prefectureClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<ResPreExcel> list = this.prefectureClusterMapper.findPage(param);
+		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+	
+	@Override
+	public List<Map<String, Object>> findByCity(Long cityId) {
+		List<Map<String, Object>> res = new ArrayList<>();
+		Map<String, Object> re = null;
+		List<ResPre> list = prefectureClusterMapper.findListByCityId(cityId);
+		re = new HashMap<>();
+		re.put("id", -1);
+		re.put("name", "停车场名称");
+		res.add(re);
+		for (ResPre p : list) {
+			re = new HashMap<>();
+			re.put("id", p.getId());
+			re.put("name", p.getName());
+			res.add(re);
+		}
+		return res;
+	}
+	@Override
+	public List<ResPreExcel> exportList(ReqPreExcel reqPreExcel) {
+		return this.prefectureClusterMapper.findExportList();
+	}
+	
+	@Override
+	public Integer check(ReqCheck reqCheck) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", reqCheck.getProperty());
+		param.put("value", reqCheck.getValue());
+		param.put("id", reqCheck.getId());
+		return this.prefectureClusterMapper.check(param);
+	}
+	
+	@Override
+	public List<ResPreList> findSelectList() {
+		return this.prefectureClusterMapper.findSelectList();
+	}
+	
+	@Override
+	public int delete(List<Long> ids) {
+		return this.prefectureMasterMapper.delete(ids);
+	}
+	
+	@Override
+	public int save(ReqPrefectureEntity reqPre) {
+		Prefecture pre = new Prefecture();
+		pre = ObjectUtils.copyObject(reqPre, pre);
+		pre.setCreateTime(new Date());
+		return this.prefectureMasterMapper.save(pre);
+	}
+	
+	@Override
+	public int update(ReqPrefectureEntity reqPre) {
+		Prefecture pre = new Prefecture();
+		pre = ObjectUtils.copyObject(reqPre, pre);
+		pre.setCreateTime(new Date());
+		return this.prefectureMasterMapper.update(pre);
+	}
+	@Override
+	public Tree findTree() {
+		Map<String, Object> param = new HashMap<>();
+		param.put("status", "0");
+		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
+		Tree tree = null;
+		List<Tree> rtrees = new ArrayList<Tree>();
+		Map<Long, Tree> ttreeMap = new HashMap<>();
+		for (ResPre pre : preList) {
+			tree = new Tree();
+			tree.setId("" + pre.getId());
+			tree.setName(pre.getName());
+			tree.setIsParent(false);
+			tree.setCode(pre.getId().toString());
+			tree.setmId(pre.getId().toString());
+			tree.setOpen(true);
+			tree.setChildren(new ArrayList<Tree>());
+			rtrees.add(tree);
+			ttreeMap.put(pre.getId(), tree);
+		}
+		Tree root = new Tree();
+		root.setName("车区树");
+		root.setId("0");
+		root.setIsParent(false);
+		root.setCode("0");
+		root.setOpen(true);
+		root.setmId("0");
+		root.setChildren(rtrees);
+		return root;
+	}
+	
 }
