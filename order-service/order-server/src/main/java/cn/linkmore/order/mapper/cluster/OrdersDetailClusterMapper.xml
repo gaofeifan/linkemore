@@ -39,5 +39,10 @@
     from o_orders_detail
     where id = #{id,jdbcType=BIGINT}
   </select>
-  
+  <select id="findByOrderId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from o_orders_detail
+    where order_id = #{orderId,jdbcType=BIGINT}
+  </select>
 </mapper>

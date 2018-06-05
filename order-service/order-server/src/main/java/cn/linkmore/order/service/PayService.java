@@ -34,4 +34,12 @@ public interface PayService {
 	 */
 	Boolean verify(Long orderId, Long userId);
 
+	/**
+	 * 支付回调
+	 * @param json
+	 * @param source
+	 * @return
+	 */
+	Boolean callback(String json, Integer source);
+
 }

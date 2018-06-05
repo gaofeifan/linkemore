@@ -178,4 +178,18 @@ public class AccountHistory {
     public void setAccType(Integer accType) {
         this.accType = accType;
     }
+    public void copy(Account account){
+		this.accountId = account.getId();
+		this.orderAmount = account.getOrderAmount();
+		this.orderPaymentAmount = account.getOrderPaymentAmount();
+		this.rechagePaymentAmount = account.getRechagePaymentAmount();
+		this.rechargeAmount = account.getRechargeAmount();
+		this.giftTotalAmount = account.getGiftTotalAmount();
+		this.giftAmount = account.getGiftAmount();
+		this.amount = account.getAmount();
+		this.accType = account.getAccType();
+		this.status = account.getStatus()	;
+		this.frozenAmount = account.getFrozenAmount();
+		this.usableAmount = account.getUsableAmount();
+	}
 }

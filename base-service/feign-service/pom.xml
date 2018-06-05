@@ -23,12 +23,12 @@
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-util</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -42,5 +42,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	 
 </project>

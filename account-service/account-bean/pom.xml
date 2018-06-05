@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-util</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

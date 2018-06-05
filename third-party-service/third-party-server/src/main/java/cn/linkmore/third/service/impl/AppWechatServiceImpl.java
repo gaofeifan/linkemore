@@ -1,13 +1,20 @@
 package cn.linkmore.third.service.impl;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
+import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.third.config.AppWechatConfig;
+import cn.linkmore.third.pay.PayConstants;
+import cn.linkmore.third.pay.wxpay.WeixinPay;
+import cn.linkmore.third.request.ReqAppWechatOrder;
+import cn.linkmore.third.response.ResAppWechatOrder;
 import cn.linkmore.third.response.ResFans;
 import cn.linkmore.third.service.AppWechatService;
 import cn.linkmore.third.wechat.HttpsRequest;
@@ -79,6 +86,12 @@ public class AppWechatServiceImpl implements AppWechatService {
 			rf.setRegisterStatus((short)0); 
 		} 
 		return rf;
+	}
+
+	@Override
+	public ResAppWechatOrder order(ReqAppWechatOrder wechat) throws JDOMException, IOException {
+		return WeixinPay.orderPay(wechat.getAddress(), wechat.getNumber(),
+				PayConstants.BODY_ORDER, wechat.getAmount()); 
 	} 
 }
 

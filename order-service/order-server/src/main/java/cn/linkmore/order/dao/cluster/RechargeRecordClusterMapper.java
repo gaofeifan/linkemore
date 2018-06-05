@@ -8,4 +8,6 @@ public interface RechargeRecordClusterMapper {
 
     RechargeRecord findById(Integer id);
 
+	RechargeRecord findByNumber(String number);
+
 }

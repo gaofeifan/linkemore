@@ -5,7 +5,7 @@ spring:
     name: user-app-server
   boot: 
     admin:
-      url: http://192.168.1.64:6002 
+      url: http://192.168.1.220:6002 
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -15,10 +15,14 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.64:6003/eureka/ 
+      defaultZone: http://192.168.1.220:6003/eureka/,http://192.168.1.223:6003/eureka/
 feign:
   hystrix:
-    enabled: true  
+    enabled: true
+
+security:
+  basic:
+    enabled: false 
 
 swagger:
   enable: true
@@ -30,11 +34,11 @@ swagger:
   
   
 redis:
-  host: 192.168.1.63
-  port: 7001
+  host: 192.168.1.218
+  port: 6379
   database: 1
   timeout: 5000
-  password: ppyx!@#
+  password: ppyx1234
   pool-max-active: 500
   pool-max-wait: -1
   pool-max-idle: 100
@@ -42,5 +46,5 @@ redis:
   test-while-idle: true
   test-on-borrow: true
   test-on-create: true 
-  sentinel-master: ppyxmaster
-  sentinel-nodes: 192.168.1.61:26379  
+  sentinel-master: mymaster
+  sentinel-nodes: 192.168.1.219:26379  

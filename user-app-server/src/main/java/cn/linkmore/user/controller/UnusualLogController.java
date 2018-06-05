@@ -19,8 +19,8 @@ import io.swagger.annotations.ApiOperation;
  * @Date     2018年5月11日
  */
 @RestController
-@RequestMapping("/app_logs")
-@Api(tags="app_logs",description="APP异常日志上报")
+@RequestMapping("/exception-logs")
+@Api(tags="Exception logs",description="APP异常日志上报")
 public class UnusualLogController {
 	
 	@Resource
@@ -32,10 +32,10 @@ public class UnusualLogController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/upload", method = RequestMethod.POST)
 	@ResponseBody
 	@ApiOperation(value="新增异常日志上报",notes="新增异常日志上报", consumes = "application/json")
-	public void insert(@RequestBody ReqUnusualLog unusualLog) {
+	public void upload(@RequestBody ReqUnusualLog unusualLog) {
 		this.unusualLogService.insert(unusualLog);
 	}
 

@@ -8,4 +8,10 @@ public interface CompanyTradeRecordClusterMapper {
 
     CompanyTradeRecord findById(Integer id);
 
+    /**
+     * 最近
+     * @return
+     */
+	CompanyTradeRecord findLast();
+
 }

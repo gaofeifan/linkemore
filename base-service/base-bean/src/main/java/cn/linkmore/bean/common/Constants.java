@@ -10,6 +10,32 @@ package cn.linkmore.bean.common;
 public class Constants {
 	public final static String ACCESS_TOKEN_HEADER_NAME = "X-Access-Auth-Token";
 
+	
+	public enum TradeType{
+		//-1消费[未付款],0消费[账户余额],1消费[订单充值],2账户充值[订单充值],3账户充值[用户充值]
+		ORDER_NONE_PAY(-1),
+		ORDER_ACCOUNT_PAY(0),
+		ORDER_RECHARGE_PAY ( 1),
+		ORDER_RECHARGE (2),
+		USER_RECHARGE ( 3); 
+		public int type;
+		private TradeType(int type) {
+			this.type = type;
+		}
+		
+	}
+	
+	public enum TradePayType{
+		ACCOUNT(0),
+		ALIPAY( 1),
+		WECHAT ( 2), 
+		APPLE (3);
+		public int type;
+		private TradePayType(int type) {
+			this.type = type;
+		}
+	}
+	
 	public enum OrderPayType{
 		FREE(1),COUPON(2),ACCOUNT(3);
 		public int type;
@@ -184,7 +210,8 @@ public class Constants {
 		ORDER_CREATE_NOTICE(1,"ORDER_CREATE_NOTICE"), 
 		LOCK_DOWN_NOTICE(2, "LOCK_DOWN_NOTICE"),
 		ORDER_SWITCH_RESULT_NOTICE(3,"ORDER_SWITCH_RESULT_NOTICE"),
-		ORDER_SWITCH_STATUS_NOTICE(4,"ORDER_SWITCH_STATUS_NOTICE");
+		ORDER_SWITCH_STATUS_NOTICE(4,"ORDER_SWITCH_STATUS_NOTICE"),
+		ORDER_COMPLETE_NOTICE(5,"ORDER_COMPLETE_NOTICE");
 		public int type;
 		public String id; 
 		private PushType(int type, String id) {
@@ -204,7 +231,9 @@ public class Constants {
 		COUPON_TEMPLATE_CONDITION_USETIME("coupon:temp:condition:time:"), 
 		COUPON_TEMPLATE_CONDITION_PREIDS( "coupon:temp:condition:pid:"),
 		ORDER_ASSIGN_STALL("assign_lock"),
-		ORDER_SERIAL_NUMBER("order:serial_number:"),
+		ORDER_SERIAL_NUMBER("order:order:serial_number:"),
+		ORDER_TRADE_SERIAL_NUMBER("order:trade:serial_number:"),
+		ORDER_RECHARGE_SERIAL_NUMBER("order:recharge:serial_number:"),
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
 		PREFECTURE_FREE_STALL("prefecture:free_stall:");
 		public String key;

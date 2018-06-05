@@ -24,6 +24,7 @@ import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 /**
  * Service实现类 - 车位信息
@@ -76,6 +77,7 @@ public class StallServiceImpl implements StallService {
 		if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
 			int code = res.getMsgCode();
+			log.info("lock msg:{}",JsonUtil.toJson(res));
 			if (code == 200) {
 				flag = true;
 				stall.setLockStatus(Stall.LOCK_STATUS_UP); 
@@ -94,8 +96,11 @@ public class StallServiceImpl implements StallService {
 	public boolean downlock(Long stallId) {
 		boolean flag = false;
 		Stall stall = stallClusterMapper.findById(stallId);
+		log.info("stall:{}",JsonUtil.toJson(stall));
 		if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("download");
 			ResponseMessage<LockBean> res=lockFactory.lockDown(stall.getLockSn());
+			log.info("res:{}",JsonUtil.toJson(res));
 			int code = res.getMsgCode();
 	    	if(code == 200){ 
 	    		flag = true;

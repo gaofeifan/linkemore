@@ -1,13 +1,14 @@
 package cn.linkmore.third.request;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class ReqOrder {
 	private String orderNo;
 	private Date beginTime;
 	private Date endTime;
-	private Double totalAmount;
-	private Double actualAmount;
+	private BigDecimal totalAmount;
+	private BigDecimal actualAmount;
 	private String plateNo;
 	private Long preId;
 	private String dockId;
@@ -30,16 +31,16 @@ public class ReqOrder {
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-	public Double getTotalAmount() {
+	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
-	public void setTotalAmount(Double totalAmount) {
+	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-	public Double getActualAmount() {
+	public BigDecimal getActualAmount() {
 		return actualAmount;
 	}
-	public void setActualAmount(Double actualAmount) {
+	public void setActualAmount(BigDecimal actualAmount) {
 		this.actualAmount = actualAmount;
 	}
 	public String getPlateNo() {

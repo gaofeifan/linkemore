@@ -4,23 +4,23 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("确认支付")
-public class ResPayConfirm {
+public class ResPayConfirm { 
 	@ApiModelProperty(value = "支付金额")
-	private String amount;
+	private Double amount;
 	@ApiModelProperty(value = "流水号")
 	private String number;
 	@ApiModelProperty(value = "支付分类[0账户余额，1支付宝，2微信，3银联]")
 	private Short payType;
 	@ApiModelProperty(value = "支付宝支付")
-	private ResPayAlipay alipay;
+	private String alipay;
 	@ApiModelProperty(value = "微信支付")
 	private ResPayWeixin weixin;
 	@ApiModelProperty(value = "苹果支付")
-	private ResPayApple apple;
-	public String getAmount() {
+	private String apple;
+	public Double getAmount() {
 		return amount;
 	}
-	public void setAmount(String amount) {
+	public void setAmount(Double amount) {
 		this.amount = amount;
 	}  
 	public String getNumber() {
@@ -35,10 +35,10 @@ public class ResPayConfirm {
 	public void setPayType(Short payType) {
 		this.payType = payType;
 	}
-	public ResPayAlipay getAlipay() {
+	public String getAlipay() {
 		return alipay;
 	}
-	public void setAlipay(ResPayAlipay alipay) {
+	public void setAlipay(String alipay) {
 		this.alipay = alipay;
 	}
 	public ResPayWeixin getWeixin() {
@@ -47,10 +47,10 @@ public class ResPayConfirm {
 	public void setWeixin(ResPayWeixin weixin) {
 		this.weixin = weixin;
 	}
-	public ResPayApple getApple() {
+	public String getApple() {
 		return apple;
 	}
-	public void setApple(ResPayApple apple) {
+	public void setApple(String apple) {
 		this.apple = apple;
 	} 
 }

@@ -1,5 +1,6 @@
 package cn.linkmore.user.response;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
@@ -23,12 +24,12 @@ public class ResPayCheckout {
 	private Integer parkingTime;
 	@ApiModelProperty(value = "停车券数量")
 	private Integer couponCount;
-	@ApiModelProperty(value = "本次推荐支付类型")
+	@ApiModelProperty(value = "支付分类[0账户余额，1支付宝，2微信，3银联]")
 	private Short payType;
 	@ApiModelProperty(value = "订单总额")
-	private String totalAmount;
+	private BigDecimal totalAmount;
 	@ApiModelProperty(value = "账户余额")
-	private String accountAmount;
+	private BigDecimal accountAmount;
 	public Long getOrderId() {
 		return orderId;
 	}
@@ -83,16 +84,16 @@ public class ResPayCheckout {
 	public void setPayType(Short payType) {
 		this.payType = payType;
 	}
-	public String getTotalAmount() {
+	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
-	public void setTotalAmount(String totalAmount) {
+	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-	public String getAccountAmount() {
+	public BigDecimal getAccountAmount() {
 		return accountAmount;
 	}
-	public void setAccountAmount(String accountAmount) {
+	public void setAccountAmount(BigDecimal accountAmount) {
 		this.accountAmount = accountAmount;
 	} 
 }

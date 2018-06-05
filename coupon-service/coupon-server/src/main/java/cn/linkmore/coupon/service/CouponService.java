@@ -2,6 +2,7 @@ package cn.linkmore.coupon.service;
 
 import java.util.List;
 
+import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
 
 /**
@@ -26,5 +27,18 @@ public interface CouponService {
 	 * @return
 	 */
 	List<ResCoupon> userOrderEnableList(Long userId, Long orderId);
+
+	/**
+	 * 根据ID查询
+	 * @param id
+	 * @return
+	 */
+	ResCoupon find(Long id);
+
+	/**
+	 * 消费停车券
+	 * @param rcp
+	 */
+	void pay(ReqCouponPay rcp);
 
 }

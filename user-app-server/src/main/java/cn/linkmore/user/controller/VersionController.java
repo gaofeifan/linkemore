@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiParam;
 @Api(tags="Versions",description="版本管理")
 @RestController
 @RequestMapping("/versions")
-public class BaseVersionController {
+public class VersionController {
 	
 	@Resource
 	private BeanVersionService beanVersionService;
@@ -39,7 +39,7 @@ public class BaseVersionController {
 	 * @Version  v2.0
 	 * @param  source 请求来源 1 Android 2 IOS
 	 */
-	@RequestMapping(value="/current",method = RequestMethod.GET)
+	@RequestMapping(value="/v2.0/current",method = RequestMethod.GET)
 	@ResponseBody
 	@ApiOperation(value = "查询当前版本", notes = "来源必填 1 android 2 ios", consumes = "application/json")
 	public ResponseEntity<cn.linkmore.user.response.ResVersionBean> current(@ApiParam(value="来源" ,required=true) @NotBlank(message="来源不能为空") @RequestParam("source")Integer source,HttpServletRequest request){
@@ -54,7 +54,7 @@ public class BaseVersionController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value="/report",method = RequestMethod.POST)
+	@RequestMapping(value="/v2.0/report",method = RequestMethod.POST)
 	@ApiOperation(value = "上报用户版本", notes = "上报用户版本", consumes = "application/json")
 	public ResponseEntity<?> report(@RequestBody cn.linkmore.user.request.ReqVersion vrb,HttpServletRequest request){
 		this.beanVersionService.report(vrb,request);

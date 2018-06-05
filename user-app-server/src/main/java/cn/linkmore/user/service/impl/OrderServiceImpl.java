@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
 			ResStallEntity stall = this.stallClient.findById(order.getStallId());
 			if(stall!=null) {
 				order.setStallName(stall.getStallName());
-				order.setBluetooth("E0FE28BF8161|DAB57585F519|E6B0C368D285");
+				order.setBluetooth("E0FE28BF8161|DAB57585F519|E6B0C368D285|");
 			}
 		}
 		

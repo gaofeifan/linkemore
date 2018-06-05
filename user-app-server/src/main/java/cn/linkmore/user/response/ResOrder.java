@@ -3,6 +3,7 @@ package cn.linkmore.user.response;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import cn.linkmore.bean.common.Constants.OrderStatus;
 import cn.linkmore.order.response.ResUserOrder;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -161,11 +162,11 @@ public class ResOrder {
 		this.setId(ruo.getId());
 		Date start = ruo.getCreateTime();
 		Date end = new Date(); 
-		if(ruo.getStatusHistory()!=null) {
+		if(ruo.getStatus()==OrderStatus.SUSPENDED.value) {
 			end = ruo.getStatusTime(); 
 		}
 		this.setEndTime(end);
-		this.setParkingTime(new Long((end.getTime()-start.getTime())/(60*1000)).intValue());
+		this.setParkingTime(new Long((end.getTime()-start.getTime())/(60*1000L)).intValue());
 		this.setPlateNumber(ruo.getPlateNo());
 		this.setPrefectureId(ruo.getPreId());
 		this.setStallId(ruo.getStallId());
