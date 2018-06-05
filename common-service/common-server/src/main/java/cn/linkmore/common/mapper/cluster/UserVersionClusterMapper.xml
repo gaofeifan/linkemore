@@ -8,6 +8,7 @@
     <result column="os_version" jdbcType="VARCHAR" property="osVersion" />
     <result column="uuid" jdbcType="VARCHAR" property="uuid" />
     <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="commit_time" jdbcType="TIMESTAMP" property="commitTime" />
   </resultMap>
   <sql id="Base_Column_List">

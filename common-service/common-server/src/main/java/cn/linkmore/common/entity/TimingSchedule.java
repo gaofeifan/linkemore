@@ -45,7 +45,7 @@ public class TimingSchedule {
 	/**
 	 *  描述
 	 */ 
-	private String desc;
+	private String description;
 	
 	/**
 	 *  状态
@@ -100,14 +100,6 @@ public class TimingSchedule {
 		this.cron = cron;
 	}
 
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
 	public Integer getStatus() {
 		return status;
 	}
@@ -116,11 +108,14 @@ public class TimingSchedule {
 		this.status = status;
 	}
 
-	@Override
-	public String toString() {
-		return "TimingSchedule [id=" + id + ", name=" + name + ", path=" + path + ", methodName=" + methodName
-				+ ", cron=" + cron + ", desc=" + desc + ", status=" + status + "]";
+	public String getDescription() {
+		return description;
 	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 
 
 

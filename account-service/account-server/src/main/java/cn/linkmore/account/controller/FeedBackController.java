@@ -29,10 +29,11 @@ public class FeedBackController {
 	private FeedbackService feedbackService;
 
 
-	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/page", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable) {
-		return this.feedbackService.findPage(pageable);
+		ViewPage page = this.feedbackService.findPage(pageable);
+		return page;
 	}
 
 	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)

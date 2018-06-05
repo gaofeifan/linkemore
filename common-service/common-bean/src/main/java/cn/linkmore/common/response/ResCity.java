@@ -19,6 +19,14 @@ public class ResCity {
 	/**
 	 * 名称
 	 */
+	private String cityName;
+	/**
+	 * 行政编码
+	 */
+	private String adcode;
+	/**
+	 * 名称
+	 */
 	private String name;
 	
 	/**
@@ -72,5 +80,19 @@ public class ResCity {
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
+	public String getCityName() {
+		return cityName;
+	}
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+	public String getAdcode() {
+		return adcode;
+	}
+	public void setAdcode(String adcode) {
+		this.adcode = adcode;
+	}
+	
+	
 	
 }

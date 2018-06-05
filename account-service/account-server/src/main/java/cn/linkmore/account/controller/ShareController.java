@@ -25,7 +25,7 @@ public class ShareController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/page", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/page", method = RequestMethod.POST)
 	public ViewPage list( ViewPageable pageable) {
 		return shareService.findPage(pageable);
 	}

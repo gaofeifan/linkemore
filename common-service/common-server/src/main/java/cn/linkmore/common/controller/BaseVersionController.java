@@ -80,12 +80,12 @@ public class BaseVersionController {
 	}
 	
 	/**
-	 * @Description  更新app版本
+	 * @Description  删除app版本
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
-	public void deleteAppById(@PathVariable("id") List<Long> ids) {
+	@RequestMapping(method = RequestMethod.DELETE)
+	public void deleteAppById(@RequestBody List<Long> ids) {
 		this.beanVersionService.deleteAppById(ids);
 	}
 	

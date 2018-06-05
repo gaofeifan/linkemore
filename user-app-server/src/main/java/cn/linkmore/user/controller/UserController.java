@@ -1,5 +1,7 @@
 package cn.linkmore.user.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Pattern;
 
@@ -132,5 +134,9 @@ public class UserController {
 		this.userService.removeWechat(request);
 		ResponseEntity<?> response = ResponseEntity.success(null, request);
 		return response;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(new Date().getTime());
 	}
 }

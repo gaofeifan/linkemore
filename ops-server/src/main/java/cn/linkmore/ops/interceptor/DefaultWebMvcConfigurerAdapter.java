@@ -22,7 +22,7 @@ public class DefaultWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
   @Override
   public void addInterceptors(InterceptorRegistry registry) { 
       AccessInterceptor logInterceptor = applicationContext.getBean(AccessInterceptor.class);
-      //registry.addInterceptor(logInterceptor);
+      registry.addInterceptor(logInterceptor);
   }
   
 }

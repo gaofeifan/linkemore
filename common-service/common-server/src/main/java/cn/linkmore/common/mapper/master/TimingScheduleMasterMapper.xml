@@ -7,11 +7,11 @@
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="method_name" jdbcType="VARCHAR" property="methodName" />
     <result column="cron" jdbcType="VARCHAR" property="cron" />
-    <result column="desc" jdbcType="VARCHAR" property="desc" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, path, method_name, cron, desc, status
+    id, name, path, method_name, cron, description, status
   </sql>
   <delete id="delete" parameterType="java.lang.Long">
     delete from t_timing_schedule
@@ -26,18 +26,18 @@
   </delete>
   <insert id="save" parameterType="cn.linkmore.common.entity.TimingSchedule">
     insert into t_timing_schedule (id, name, path, 
-      method_name, cron, desc, 
+      method_name, cron, description, 
       status)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, 
-      #{methodName,jdbcType=VARCHAR}, #{cron,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, 
+      #{methodName,jdbcType=VARCHAR}, #{cron,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER})
   </insert>
   <insert id="saveReq" parameterType="cn.linkmore.common.request.ReqTimingSchedule">
     insert into t_timing_schedule (id, name, path, 
-      method_name, cron, desc, 
+      method_name, cron, description, 
       status)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, 
-      #{methodName,jdbcType=VARCHAR}, #{cron,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, 
+      #{methodName,jdbcType=VARCHAR}, #{cron,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER})
   </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.common.entity.TimingSchedule">
@@ -58,8 +58,8 @@
       <if test="cron != null">
         cron,
       </if>
-      <if test="desc != null">
-        desc,
+      <if test="description != null">
+        description,
       </if>
       <if test="status != null">
         status,
@@ -81,8 +81,8 @@
       <if test="cron != null">
         #{cron,jdbcType=VARCHAR},
       </if>
-      <if test="desc != null">
-        #{desc,jdbcType=VARCHAR},
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
@@ -105,7 +105,7 @@
         cron = #{cron,jdbcType=VARCHAR},
       </if>
       <if test="desc != null">
-        desc = #{desc,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
@@ -119,7 +119,7 @@
       path = #{path,jdbcType=VARCHAR},
       method_name = #{methodName,jdbcType=VARCHAR},
       cron = #{cron,jdbcType=VARCHAR},
-      desc = #{desc,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -129,7 +129,7 @@
       path = #{path,jdbcType=VARCHAR},
       method_name = #{methodName,jdbcType=VARCHAR},
       cron = #{cron,jdbcType=VARCHAR},
-      desc = #{desc,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>

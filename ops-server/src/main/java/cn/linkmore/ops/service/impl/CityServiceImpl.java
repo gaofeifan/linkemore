@@ -22,13 +22,13 @@ public class CityServiceImpl implements CityService {
 	
 	@Override
 	public void save(ReqCity record) {
-		cn.linkmore.common.request.ReqCity city = ObjectUtils.copyObject(record, new cn.linkmore.common.request.ReqCity());
+		cn.linkmore.common.request.ReqCity city = ObjectUtils.copyObject(record, new cn.linkmore.common.request.ReqCity(),new String[]{"adcode","cityName"},new String[]{"code","name"});
 		this.cityClient.save(city);
 	}
 
 	@Override
 	public void update(ReqCity record) {
-		cn.linkmore.common.request.ReqCity city = ObjectUtils.copyObject(record, new cn.linkmore.common.request.ReqCity());
+		cn.linkmore.common.request.ReqCity city = ObjectUtils.copyObject(record, new cn.linkmore.common.request.ReqCity(),new String[]{"adcode","cityName"},new String[]{"code","name"});
 		this.cityClient.update(city);
 		
 	}

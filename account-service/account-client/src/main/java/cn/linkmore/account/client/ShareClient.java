@@ -19,7 +19,7 @@ import cn.linkmore.feign.FeignConfiguration;
 @FeignClient(value = "account-server", path = "/share", fallback=ShareClientHystrix.class,configuration = FeignConfiguration.class)
 public interface ShareClient {
 	
-	@RequestMapping(value = "/page", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/page", method = RequestMethod.POST)
 	public ViewPage list(@RequestBody ViewPageable pageable);
 	
 }

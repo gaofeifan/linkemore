@@ -57,7 +57,7 @@ public interface CityClient {
 	@ResponseBody
 	Boolean check(@RequestBody ReqCheck check);
 
-	@RequestMapping(value = "/page", method = RequestMethod.GET)
+	@RequestMapping(value = "/page", method = RequestMethod.POST)
 	@ResponseBody
 	ViewPage findPage(@RequestBody ViewPageable pageable);
 }

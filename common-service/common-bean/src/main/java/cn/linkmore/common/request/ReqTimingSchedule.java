@@ -1,5 +1,9 @@
 package cn.linkmore.common.request;
 
+import cn.linkmore.annotation.Cron;
+import cn.linkmore.annotation.MethodName;
+import cn.linkmore.annotation.Path;
+import cn.linkmore.annotation.TaskId;
 
 /**
  * 
@@ -11,6 +15,7 @@ public class ReqTimingSchedule {
 	/**
 	 *  id
 	 */ 
+	@TaskId
 	private Long id;
 	
 	/**
@@ -21,22 +26,25 @@ public class ReqTimingSchedule {
 	/**
 	 * 	路径
 	 */ 
+	@Path
 	private String path;
 	
 	/**
 	 *  调用方法的名称
 	 */ 
+	@MethodName
 	private String methodName;
 	
 	/**
 	 *  任务时间
 	 */ 
+	@Cron
 	private String cron;
 	
 	/**
 	 *  描述
 	 */ 
-	private String desc;
+	private String description;
 	
 	/**
 	 *  状态
@@ -84,12 +92,12 @@ public class ReqTimingSchedule {
 		this.cron = cron;
 	}
 
-	public String getDesc() {
-		return desc;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Integer getStatus() {

@@ -292,8 +292,7 @@ public class UserServiceImpl implements UserService {
 		if(filters!=null&&filters.size()>0) {
 			for(ViewFilter filter:filters) {
 				param.put(filter.getProperty(), filter.getValue());
-			}
-		}
+			}		}
 		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
 			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
 			param.put("direction", pageable.getOrderDirection());

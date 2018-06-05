@@ -78,11 +78,13 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 
 	@Override
 	public void saveApp(ReqAppVersion version) {
+		version.setCreateTime(new Date());
 		this.baseAppVersionMasterMapper.insertReq(version);
 	}
 
 	@Override
 	public void updateApp(ReqAppVersion version) {
+		version.setUpdateTime(new Date());
 		this.baseAppVersionMasterMapper.updateReq(version);
 	}
 

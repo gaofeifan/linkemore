@@ -8,6 +8,8 @@ public class UserVersion {
     private Short client;
 
     private String model;
+    
+    private String username;
 
     private String osVersion;
 
@@ -72,4 +74,13 @@ public class UserVersion {
     public void setCommitTime(Date commitTime) {
         this.commitTime = commitTime;
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+    
 }

@@ -61,11 +61,11 @@ public interface BaseVersionClient {
 	public void updateApp(@RequestBody ReqAppVersion version);
 	
 	/**
-	 * @Description  更新app版本
+	 * @Description  删除app版本
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value="/{id}",method = RequestMethod.DELETE)
+	@RequestMapping(method = RequestMethod.DELETE)
 	public void deleteAppById(@RequestBody List<Long> ids);
 	
 	/**

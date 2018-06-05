@@ -25,16 +25,16 @@ import cn.linkmore.feign.FeignConfiguration;
  */
 @FeignClient(value = "account-server", path = "/wechat_fans", fallback = WechatFansClientHystrix.class, configuration = FeignConfiguration.class)
 public interface WechatFansClient {
-	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable);
 
-	@RequestMapping(value = "/export", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
 	public List<ResWechatFans> exportList(@RequestBody ReqWechatFansExcel bean);
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0",method = RequestMethod.POST)
 	public void save(@RequestBody ReqWechatFans bean);
 
-	@RequestMapping(method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0",method = RequestMethod.PUT)
 	public void update(@RequestBody ReqWechatFans bean);
 }

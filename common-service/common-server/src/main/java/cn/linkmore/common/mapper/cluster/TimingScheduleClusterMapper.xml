@@ -7,11 +7,11 @@
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="method_name" jdbcType="VARCHAR" property="methodName" />
     <result column="cron" jdbcType="VARCHAR" property="cron" />
-    <result column="desc" jdbcType="VARCHAR" property="desc" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, path, method_name, cron, desc, status
+    id, name, path, method_name, cron, description, status
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -30,7 +30,7 @@
    	 and status = #{status,jdbcType=INTEGER}
     </if> 
   </select>
-  
+    	
   <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
   	select *
     from t_timing_schedule where 1=1

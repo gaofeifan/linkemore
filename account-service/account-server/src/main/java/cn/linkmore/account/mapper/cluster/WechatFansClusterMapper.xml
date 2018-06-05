@@ -41,7 +41,7 @@
     from t_wx_fans
     where id = #{id,jdbcType=VARCHAR}
   </select>
-   <select id="findExportList" parameterType="cn.linkmore.account.request.ReqWechatFansExcel" resultMap="ResBaseResultMap">
+   <select id="exportList" parameterType="cn.linkmore.account.request.ReqWechatFansExcel" resultMap="ResBaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_wx_fans
