@@ -10,15 +10,5 @@
 	</parent>
 	<artifactId>order-bean</artifactId>
 	<name>order-bean</name>
-	<url>http://www.linkmoreparking.com</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<url>http://www.linkmoreparking.com</url> 
 </project>

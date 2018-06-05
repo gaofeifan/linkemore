@@ -22,6 +22,16 @@
     order_amount, order_payment_amount, gift_amount, gift_total_amount, trade_id, create_time, 
     update_time, recharge_payment_amount
   </sql>
+  
+  
+  
+  <select id="findLast" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_acc_company_trade_record 
+    order by id desc limit 0,1
+  </select>
+  
   <select id="findById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

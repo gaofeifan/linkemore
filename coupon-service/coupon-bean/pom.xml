@@ -10,15 +10,12 @@
 	</parent>
 	<artifactId>coupon-bean</artifactId>
 	<name>coupon-bean</name>
-	<url>http://www.linkmoreparking.com</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<url>http://www.linkmoreparking.com</url> 
 	<dependencies>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

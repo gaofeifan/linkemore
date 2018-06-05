@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.common.Constants;
+import cn.linkmore.bean.common.Constants.CouponStatus;
 import cn.linkmore.bean.common.Constants.CouponType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.coupon.dao.cluster.CouponClusterMapper;
 import cn.linkmore.coupon.dao.cluster.TemplateConditionClusterMapper;
 import cn.linkmore.coupon.dao.master.CouponMasterMapper;
 import cn.linkmore.coupon.entity.TemplateCondition;
+import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCondition;
 import cn.linkmore.coupon.response.ResCoupon;
 import cn.linkmore.coupon.response.ResCouponPrefecture;
@@ -402,5 +404,22 @@ public class CouponServiceImpl implements CouponService {
 			this.parseDiscount(discountList, totalAmount);
 		}   
 		return list; 
+	}
+
+	@Override
+	public ResCoupon find(Long id) {
+		return this.couponClusterMapper.findById(id); 
+	}
+
+	@Override
+	public void pay(ReqCouponPay rcp) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("status", CouponStatus.USED.status);
+		param.put("updateTime", new Date().getTime());
+		param.put("id", rcp.getCouponId());
+		param.put("orderAmount", rcp.getOrderAmount());
+		param.put("usedAmount", rcp.getUsedAmount());
+		this.couponMasterMapper.payUpdate(param);
+		
 	}
 }

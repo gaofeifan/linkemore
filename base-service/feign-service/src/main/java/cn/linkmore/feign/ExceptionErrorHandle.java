@@ -28,9 +28,7 @@ public class ExceptionErrorHandle {
 		StackTraceElement[] stackArray = e.getStackTrace();  
         for (int i = 0; i < stackArray.length; i++) {  
             StackTraceElement element = stackArray[i];  
-            if(element.toString().contains("cn.linkmore")) {
-            	sb.append(element.toString() + "\n");  
-            } 
+            sb.append(element.toString() + "\n");   
         }   
 		log.info("----******************-------");
 		log.info("micro service throw biz exception {}", sb.toString());

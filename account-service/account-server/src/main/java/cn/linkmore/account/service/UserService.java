@@ -120,4 +120,10 @@ public interface UserService {
 	 */
 	ViewPage findPage(ViewPageable pageable);
 
+	/**
+	 * 结账更新单数
+	 * @param id
+	 */
+	void checkout(Long id);
+
 }

@@ -103,6 +103,11 @@ public class ResUserOrder {
      * 计费ID
      */
     private Long strategyId;
+    
+    private  Date switchTime;
+    
+    
+    private Short switchStatus;
 
     public Long getId() {
         return id;
@@ -294,5 +299,23 @@ public class ResUserOrder {
 
 	public void setStallName(String stallName) {
 		this.stallName = stallName;
+	}
+
+	public Date getSwitchTime() {
+		return switchTime;
+	}
+
+	public void setSwitchTime(Date switchTime) {
+		this.switchTime = switchTime;
+	}
+
+	public Short getSwitchStatus() {
+		return switchStatus;
+	}
+
+	public void setSwitchStatus(Short switchStatus) {
+		this.switchStatus = switchStatus;
 	} 
+	
+	
 }

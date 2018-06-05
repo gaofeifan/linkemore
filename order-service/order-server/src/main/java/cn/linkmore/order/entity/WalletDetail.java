@@ -4,6 +4,13 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class WalletDetail {
+	public static final Short SOURCE_ALIPAY = 1;
+	public static final Short SOURCE_WECHAT = 2;
+	public static final Short SOURCE_GIFT= 3;
+	
+	public static final Short TYPE_CONSUME = 1;
+	public static final Short TYPE_RECHARGE = 2;
+	
     private Long id;
 
     private Long accountId;

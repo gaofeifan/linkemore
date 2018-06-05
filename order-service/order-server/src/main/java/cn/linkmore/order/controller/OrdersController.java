@@ -40,7 +40,7 @@ public class OrdersController {
 	} 
 	@RequestMapping(value = "/v2.0/switch", method = RequestMethod.PUT) 
 	public void switchStall(@RequestBody ReqOrderSwitch ros){
-		log.info("order create :{}",JsonUtil.toJson(ros));
+		log.info("order switch :{}",JsonUtil.toJson(ros));
 		this.ordersService.switchStall(ros);
 	} 
 	

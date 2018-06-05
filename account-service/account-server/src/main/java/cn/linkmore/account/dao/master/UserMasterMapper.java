@@ -78,4 +78,10 @@ public interface UserMasterMapper {
 	 */
 	void orderUpdate(Map<String, Object> param);
 
+	/**
+	 * 更新订单数
+	 * @param param
+	 */
+	void checkoutUpdate(Map<String, Object> param);
+
 }

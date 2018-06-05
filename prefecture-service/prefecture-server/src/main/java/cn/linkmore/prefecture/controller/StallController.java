@@ -54,8 +54,8 @@ public class StallController {
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method=RequestMethod.PUT)
 	public Boolean downlock(@RequestParam("stallId") Long stallId) {
-		boolean flag = this.stallService.downlock(stallId);
-		return flag;
+		log.info("downlock:{} 。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。",stallId);
+		return this.stallService.downlock(stallId);
 	}
 	
 	/**

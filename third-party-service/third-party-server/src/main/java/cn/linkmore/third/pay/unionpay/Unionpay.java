@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.linkmore.third.config.UnionPayConfig;
-import cn.linkmore.third.request.ReqUnionPay; 
+import cn.linkmore.third.request.ReqApplePay; 
 
 /**
  * 银联支付
@@ -17,7 +17,7 @@ import cn.linkmore.third.request.ReqUnionPay;
 public class Unionpay {  
 	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 	
-	public static String create(ReqUnionPay rup,  UnionPayConfig unionpayConfig){  
+	public static String create(ReqApplePay rup,  UnionPayConfig unionpayConfig){  
 		SDKConfig.init(unionpayConfig); 
 		String path = "/gateway/api/appTransReq.do";
 		Map<String, String> map = new HashMap<String, String>(); 
@@ -31,7 +31,7 @@ public class Unionpay {
 		map.put("accessType", "0");
 		map.put("merId", unionpayConfig.getMerId());
 		map.put("backUrl", unionpayConfig.getLocalServiceUrl()+"/pay_order/apple_async_callback");
-		map.put("orderId", rup.getCode());
+		map.put("orderId", rup.getNumber());
 		map.put("currencyCode", "156");
 		map.put("txnAmt",new Long(rup.getAmount().longValue()*100).toString());
 		map.put("txnTime", sdf.format(rup.getTimestramp()));
@@ -58,15 +58,12 @@ public class Unionpay {
 		config.setOnline(false);
 		config.setUnionServiceUrl("https://gateway.test.95516.com");
 		config.setRootCertPath("cert/acp_test_root.cer"); 
-		ReqUnionPay rup = new ReqUnionPay();
-		rup.setAmount(1.5);
-		rup.setTimestramp(new Date().getTime());
-		rup.setCode("2018030910000004");
-		create(rup,config);
+//		ReqApplePay rup = new ReqApplePay("2018030910000004",1.5D,new Date().getTime()); 
+//		create(rup,config);
 		
 	}
 	
-	public static boolean query(ReqUnionPay rup,UnionPayConfig unionPayConfig){ 
+	public static boolean query(ReqApplePay rup,UnionPayConfig unionPayConfig){ 
 		SDKConfig.init(unionPayConfig);
 		String path = "/gateway/api/queryTrans.do";
 		Map<String, String> map = new HashMap<String, String>(); 
@@ -78,7 +75,7 @@ public class Unionpay {
 		map.put("bizType", "000000");
 		map.put("accessType", "0");
 		map.put("merId", unionPayConfig.getMerId()); 
-		map.put("orderId", rup.getCode()); 
+		map.put("orderId", rup.getNumber()); 
 		map.put("txnTime", sdf.format(new Date(rup.getTimestramp()))); 
 		Map<String, String> reqData = AcpService.sign(map,"UTF-8"); 
 		Map<String,String> respData =   AcpService.post(reqData, unionPayConfig.getUnionServiceUrl()+path, "UTF-8");  

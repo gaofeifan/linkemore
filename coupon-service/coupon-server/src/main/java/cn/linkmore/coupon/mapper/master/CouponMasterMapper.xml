@@ -81,4 +81,14 @@
       condition_amount = #{conditionAmount,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
+   <update id="payUpdate" parameterType="java.util.Map">
+    update c_coupon
+    set 
+      status = #{status,jdbcType=SMALLINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      order_amount = #{orderAmount,jdbcType=DECIMAL}, 
+      used_amount = #{usedAmount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
 </mapper>

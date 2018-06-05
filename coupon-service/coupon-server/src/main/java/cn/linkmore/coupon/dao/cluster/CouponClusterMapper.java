@@ -1,8 +1,9 @@
 package cn.linkmore.coupon.dao.cluster;
 
-import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
-import cn.linkmore.coupon.entity.Coupon;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import cn.linkmore.coupon.response.ResCoupon;
 
 @Mapper
@@ -12,7 +13,7 @@ public interface CouponClusterMapper {
 	 * @param id Long
 	 * @return
 	 */
-    Coupon findById(Long id);
+	ResCoupon findById(Long id);
 
     /**
      * 根据用户ID查询其可用券

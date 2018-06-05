@@ -59,9 +59,18 @@ public class UserController {
 	@RequestMapping(value = "/v2.0/sms", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> sms(@RequestParam(value="mobile" ,required=true) String mobile,HttpServletRequest request){
-		ResponseEntity<?> response = null; 
-		this.userService.send(mobile,request);
-		return response;
+		ResponseEntity<?> response = null;  
+		try {
+			this.userService.send(mobile,request);
+			response = ResponseEntity.success(null, request);
+		}catch(BusinessException e){
+			e.printStackTrace();
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		}catch(Exception e){
+			e.printStackTrace();
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response; 
 	}
 	
 

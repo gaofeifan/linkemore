@@ -20,9 +20,9 @@ import io.swagger.annotations.ApiOperation;
  * @author  GFF
  * @Date     2018年5月11日
  */
-@Api(tags="Car_brands",description="车辆品牌")
+@Api(tags="Vehicle brands",description="车辆品牌")
 @RestController
-@RequestMapping("/car_brands")
+@RequestMapping("/vehicle-brands")
 public class CarBrandController {
 
 	@Resource
@@ -35,7 +35,7 @@ public class CarBrandController {
 	 * @Version  v2.0
 	 */
 	@ApiOperation(value="查询车牌品牌数据list",notes="查询list", consumes = "application/json")
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value="/v2.0/list", method = RequestMethod.GET)
 	public ResponseEntity<?> list(HttpServletRequest request) {
 		Object object = carBrandService.list();
 		ResponseEntity<Object> responseEntity = ResponseEntity.success(object, request);

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jdom.JDOMException;
 
 import cn.linkmore.third.pay.PayConstants;
+import cn.linkmore.third.response.ResAppWechatOrder;
 
 public class WeixinPay {
 	 
@@ -27,7 +28,7 @@ public class WeixinPay {
 	 * @throws JDOMException
 	 * @throws IOException
 	 */
-	public static Map<String, Object> orderPay(String remoteAddress, String orderCommonNo, String body,
+	public static ResAppWechatOrder orderPay(String remoteAddress, String orderCommonNo, String body,
 			double totalFee) throws JDOMException, IOException{ 
 		BigDecimal bg = new BigDecimal(totalFee*100);
 		int payprice = bg.setScale(2, BigDecimal.ROUND_HALF_UP).intValue(); 
@@ -49,22 +50,27 @@ public class WeixinPay {
 		// 调用统一接口返回的值XML转换为map格式
 		Map<String, String> map = XMLUtil.doXMLParse(result); 
 		
-		Map<String,Object> m = new HashMap<>();
+		ResAppWechatOrder order = null;
+		
 		if (map!=null&&map.get("return_code").equals("SUCCESS")&&map.get("result_code").equals("SUCCESS")) {
 			SortedMap<String, Object> wxPayParamMap = new TreeMap<String, Object>();
 			wxPayParamMap.put("appid", PayConstants.WX_APPID);
 			wxPayParamMap.put("partnerid", PayConstants.MCHID);
 			wxPayParamMap.put("prepayid", map.get("prepay_id"));
 			wxPayParamMap.put("package", "Sign=WXPay");
-			wxPayParamMap.put("noncestr", PaySign.create_nonce_str());
-			wxPayParamMap.put("timestamp", PaySign.create_timestamp());
+			order = new ResAppWechatOrder();
+			order.setNoncestr(PaySign.create_nonce_str());
+			order.setTimestamp(PaySign.create_timestamp());
+			wxPayParamMap.put("noncestr", order.getNoncestr());
+			wxPayParamMap.put("timestamp",order.getTimestamp());
 			String paySign = PaySign.createSign(wxPayParamMap);// 支付得到的签名
-			wxPayParamMap.put("sign", paySign);
-			m.put("order", wxPayParamMap);
-		} else {
-			m.put("order", null);
-		}
-		return m;
+			wxPayParamMap.put("sign", paySign);  
+			order.setAppid(PayConstants.WX_APPID);
+			order.setPartnerid(PayConstants.MCHID);
+			order.setPrepayid(map.get("prepay_id")); 
+			order.setSign(paySign);
+		} 
+		return order;
 	}
 	
 	public static Map<String, Object> rechargePay(String remoteAddress, String orderCommonNo, String body,

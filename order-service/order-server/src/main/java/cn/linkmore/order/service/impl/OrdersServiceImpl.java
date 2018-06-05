@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -139,8 +141,9 @@ public class OrdersServiceImpl implements OrdersService {
 		number.append(t.intValue()+increment);
 		return number.toString();
 	}
-	
+	private static Set<Long> ORDER_USER_SET = new HashSet<Long>();
 	@Async
+	@Transactional(rollbackFor = RuntimeException.class)
 	public void create(ReqOrderCreate orc) { 
 		ResStallEntity stall = null;
 		Orders o = null;
@@ -148,6 +151,14 @@ public class OrdersServiceImpl implements OrdersService {
 		short failureReason = 0;
 		short bookingStatus = 0;
 		try {
+			synchronized(this) {
+				if(ORDER_USER_SET.contains(orc.getUserId())){
+					bookingStatus = (short) OperateStatus.FAILURE.status;
+					failureReason = (short)OrderFailureReason.UNPAID.value;
+					throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
+				}
+				ORDER_USER_SET.add(orc.getUserId());
+			} 
 			ResUserOrder ruo  = this.ordersClusterMapper.findUserLatest(orc.getUserId());
 			if(ruo!=null&&(ruo.getStatus().intValue()==OrderStatus.UNPAID.value||ruo.getStatus().intValue()==OrderStatus.SUSPENDED.value)) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
@@ -353,6 +364,7 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			throw new RuntimeException("异常");
 		} finally {
+			ORDER_USER_SET.remove(orc.getUserId());
 			Thread thread = new BookingThread(orc.getPrefectureId(), orc.getUserId(), bookingStatus, failureReason);
 			thread.start();  
 			String content = "订单预约失败";  
@@ -376,7 +388,8 @@ public class OrdersServiceImpl implements OrdersService {
 		public void run() {
 			try { 
 				cn.linkmore.third.request.ReqOrder ro = new cn.linkmore.third.request.ReqOrder();
-				ro.setActualAmount(order.getActualAmount().doubleValue());
+				ro.setActualAmount(order.getActualAmount());
+				ro.setTotalAmount(order.getTotalAmount());
 				ro.setBeginTime(order.getBeginTime());
 				ro.setDockId(order.getDockId());
 				ro.setOrderNo(order.getOrderNo());
@@ -476,12 +489,13 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	@Override
 	@Async
+	@Transactional(rollbackFor = RuntimeException.class)
 	public void down(ReqOrderDown rod) {
 		ResUserOrder order = this.ordersClusterMapper.findDetail(rod.getOrderId());
 		Boolean flag = false;    
 		Boolean switchStatus = false;
 		if(rod.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value) {
-			flag = this.stallClient.downlock(order.getStallId()); 
+			flag = this.stallClient.downlock(order.getStallId());  
 			Map<String,Object> param = new HashMap<String,Object>(); 
 			param.put("lockDownStatus",flag?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
 			param.put("lockDownTime", new Date());
@@ -510,13 +524,16 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	@Async
+	@Transactional(rollbackFor = RuntimeException.class)
 	public void switchStall(ReqOrderSwitch ros) {
 		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
 		Boolean flag = false;
-		if(order.getStatus().intValue()==OrderStatus.UNPAID.value&&order.getLockDownStatus()!=null&&order.getLockDownStatus()==DownLockStatus.FAILURE.status) {
+		if(order.getStatus().intValue()==OrderStatus.UNPAID.value) {
 			Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
+			log.info("get switch stall sn:{}",sn);
 			if(sn!=null) {
 				ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
+				log.info("switch stall:{}",JsonUtil.toJson(stall));
 				if(stall.getStatus().intValue()==StallStatus.FREE.status) {
 					order.setStallId(stall.getId());
 					order.setStallName(stall.getStallName());
