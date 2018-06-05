@@ -164,7 +164,7 @@ public class PersonServiceImpl implements PersonService {
 		param.put("property", reqCheck.getProperty());
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
-		return this.personClusterMapper.check(reqCheck); 
+		return this.personClusterMapper.check(param); 
 	}
 	
 	@Override
@@ -191,5 +191,10 @@ public class PersonServiceImpl implements PersonService {
 			pr.setRoleId(Long.valueOf(rid));
 			this.personRoleMasterMapper.save(pr);
 		}
+	}
+
+	@Override
+	public ResPerson findById(Long id) {
+		return this.personClusterMapper.findById(id);
 	}
 }

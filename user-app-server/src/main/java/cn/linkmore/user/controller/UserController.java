@@ -144,8 +144,4 @@ public class UserController {
 		ResponseEntity<?> response = ResponseEntity.success(null, request);
 		return response;
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(new Date().getTime());
-	}
 }

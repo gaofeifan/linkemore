@@ -22,6 +22,12 @@ public interface PersonService {
 	 * @return
 	 */
 	ResPerson findByUsername(String username);
+	/**
+	 * 根据主键查找用户信息
+	 * @param id
+	 * @return
+	 */
+	ResPerson findById(Long id);
 
 	/**
 	 * 分页查询

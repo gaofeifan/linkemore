@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.TargetMounthClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.response.ResTargetMounth">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="mounth" jdbcType="VARCHAR" property="mounth" />
+    <result column="setting_id" jdbcType="BIGINT" property="settingId" />
+    <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" />
+    <result column="current_order_count" jdbcType="INTEGER" property="currentOrderCount" />
+    <result column="current_user_count" jdbcType="INTEGER" property="currentUserCount" />
+    <result column="target_user_count" jdbcType="INTEGER" property="targetUserCount" />
+    <result column="target_order_count" jdbcType="INTEGER" property="targetOrderCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mounth, setting_id, prefecture_id, current_order_count, current_user_count, target_user_count, 
+    target_order_count, create_time, update_time
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_pre_mounth_target
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select  
+    <include refid="Base_Column_List" />
+    from t_biz_pre_mounth_target where 1 = 1 
+    <if test="prefectureId!=null">  
+    and prefecture_id = #{prefectureId,jdbcType=BIGINT}
+    </if> 
+    <if test="mounth!=null">  
+    and mounth like #{mounth,jdbcType=VARCHAR}
+    </if>  
+    <if test="property==null">  
+     order by id desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_biz_pre_mounth_target where 1=1
+    <if test="prefectureId!=null">  
+    and prefecture_id = #{prefectureId,jdbcType=BIGINT}
+    </if>  
+    <if test="mounth!=null">  
+    and mounth like #{mounth,jdbcType=VARCHAR}
+    </if>  
+  </select>
+  
+  <select id="findMounthList" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_pre_mounth_target
+    where mounth = #{mounth,jdbcType=VARCHAR}
+  </select> 
+  
+</mapper>

@@ -110,4 +110,10 @@ public class PersonController {
 	public void updatePassword(@RequestBody ReqPerson reqPerson,@RequestParam("oldPassword") String oldPassword,@RequestParam("password") String password){
 		this.personService.updatePassword(reqPerson, oldPassword, password);
 	}
+	
+	@RequestMapping(value = "/v2.0/id", method = RequestMethod.GET)
+	@ResponseBody
+	public ResPerson findById(@RequestParam("id") Long id) {
+		return this.personService.findById(id);
+	}
 }

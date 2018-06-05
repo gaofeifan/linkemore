@@ -10,9 +10,12 @@
   <sql id="Base_Column_List">
     id, operator_id, stall_id, create_time
   </sql>
-  <delete id="delete" parameterType="java.lang.Long">
+  <delete id="delete" parameterType="java.util.List">
     delete from t_stall_recharge
-    where id = #{id,jdbcType=BIGINT}
+    where id in 
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>
   </delete>
   <insert id="save" parameterType="cn.linkmore.prefecture.entity.StallRecharge">
     insert into t_stall_recharge (id, operator_id, stall_id, 
@@ -24,7 +27,6 @@
     update t_stall_recharge
     set operator_id = #{operatorId,jdbcType=BIGINT},
       stall_id = #{stallId,jdbcType=BIGINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

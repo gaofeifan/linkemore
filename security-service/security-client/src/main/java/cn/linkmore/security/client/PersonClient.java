@@ -76,4 +76,7 @@ public interface PersonClient {
 	@ResponseBody
 	void updatePassword(@RequestBody ReqPerson person, @RequestParam("oldPassword") String oldPassword,@RequestParam("password") String password);
 	
+	@RequestMapping(value = "/v2.0/id", method = RequestMethod.GET)
+	@ResponseBody
+	public ResPerson findById(@RequestParam("id") Long id);
 }

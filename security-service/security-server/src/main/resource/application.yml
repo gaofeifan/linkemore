@@ -61,10 +61,10 @@ cluster-db:
   max-pool-prepared-statement-per-connection-size: 20 
   filters: stat,wall,slf4j 
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 
-  
+
 security:
   basic:
-    enabled: false  
+    enabled: false
     
 redis:
   host: 192.168.1.218
@@ -81,4 +81,3 @@ redis:
   test-on-create: true 
   sentinel-master: mymaster
   sentinel-nodes: 192.168.1.219:26379 
-    
