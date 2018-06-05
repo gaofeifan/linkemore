@@ -34,8 +34,8 @@ public class PrefectureController {
 	@Autowired
 	private PrefectureService prefectureService;
 	
-	@ApiOperation(value = "车区地图", notes = "根据城市ID及经伟度得到周边车区列表[因车区数量少，现为全部车区]", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/map", method = RequestMethod.POST)
+	@ApiOperation(value = "地图车区列表", notes = "根据城市ID及经伟度得到周边车区列表[因车区数量少，现为全部车区]", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/map/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<List<ResPreCity>> list(@RequestBody ReqPrefecture rp, HttpServletRequest request) {
 		ResponseEntity<List<ResPreCity>> response = null;
@@ -74,7 +74,7 @@ public class PrefectureController {
 	 * @return
 	 */
 	@ApiOperation(value = "空闲车位数", notes = "刷新所有车区空闲车位数", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/free_count", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/free/list", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<ResPrefectureList>> refreshFreeStall(HttpServletRequest request) {
 		ResponseEntity<List<ResPrefectureList>> response = null ;  

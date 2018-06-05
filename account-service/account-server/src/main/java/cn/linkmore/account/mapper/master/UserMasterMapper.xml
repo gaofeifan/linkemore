@@ -418,4 +418,10 @@
       order_count = #{orderCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="checkoutUpdate" parameterType="java.util.Map" >
+    update t_user
+    set   
+      complete_order_count = #{completeOrderCount,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

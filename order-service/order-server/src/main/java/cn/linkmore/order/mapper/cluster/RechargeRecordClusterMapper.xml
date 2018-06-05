@@ -20,7 +20,15 @@
   <sql id="Base_Column_List">
     id, code, account_id, package_id, package_amount, payment_amount, status, pay_status, 
     pay_type, pay_time, create_time, serial_number, update_time, order_id
-  </sql>
+  </sql> 
+  
+  <select id="findByNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_acc_recharge_record
+    where code = #{number,jdbcType=VARCHAR} limit 0,1
+  </select>
+  
   <select id="findById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

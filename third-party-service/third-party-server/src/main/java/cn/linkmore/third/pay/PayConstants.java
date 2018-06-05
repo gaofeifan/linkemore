@@ -1,5 +1,8 @@
 package cn.linkmore.third.pay;
 
+import cn.linkmore.third.config.BaseConfig;
+import cn.linkmore.util.SpringUtil;
+
 public class PayConstants {
 	
 	public static final String BODY_ORDER = "凌猫停车-订单消费";
@@ -27,36 +30,24 @@ public class PayConstants {
 	public static final String DEVICE_INFO = "";
 	static {
 		try { 
-//			PayConfig payConfig = SpringUtil.getBean(PayConfig.class);
-//			server = payConfig.getServer();
+			BaseConfig baseConfig = SpringUtil.getBean(BaseConfig.class);
+			server = baseConfig.getServiceUrl();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public static String getAppOrderApplePayUrl(){
-		return server+"/pay_order/apple_callback";
-	}
-	
+	 
 	public static String getOrderAsyncApplePayUrl(){
-		return server+"/pay_order/apple_async_callback";
+		return server+"/callback/v2.0/apple/order";
 	}
 	 
 	public static String getOrderAsyncWechatUrl(){
-		return server+"/pay_order/wechat_async_callback";
+		return server+"/callback/v2.0/wechat/order";
 	} 
 	
 	public static String getRechargeAsyncWechatUrl(){
-		return server+"/recharge/wechat_async_callback";
-	} 
-	 
-	public static String getAppOrderWechatUrl(){
-		return server+"/pay_order/wechat_callback";
+		return server+"/callback/v2.0/wechat/recharge";
 	}  
-	
-	public static String getAppRechargeWechatUrl(){
-		return server+"/recharge/wechat_callback";
-	} 
 
 	//交易类型(微信app支付)
 	public static final String TRADE_TYPE_APP = "APP";
@@ -134,21 +125,10 @@ public class PayConstants {
 	 * @return
 	 */
 	public static String getOrderAsyncAlipayUrl(){
-		return server +"/pay_order/alipay_async_callback";
+		return server +"/callback/v2.0/alipay/order";
 	}
 	
 	public static String getRechargeAsyncAlipayUrl(){
-		return server+"/recharge/alipay_async_callback";
-	}
-	
-	/**
-	 * 支付宝同步回调
-	 * @return
-	 */
-	public static String getAppOrderAlipayUrl(){
-		return server+"/pay_order/alipay_callback";
+		return server+"/callback/v2.0/alipay/recharge";
 	} 
-	public static String getAppRechargeAlipayUrl(){
-		return server+"/recharge/alipay_callback";
-	}
 }

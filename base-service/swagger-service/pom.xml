@@ -10,10 +10,7 @@
 	</parent>
 	<artifactId>swagger-service</artifactId>
 	<name>swagger-service</name>
-	<url>http://maven.apache.org</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<url>http://maven.apache.org</url> 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -39,5 +36,5 @@
 			<artifactId>byte-buddy</artifactId>
 			<version>${bytebuddy.version}</version>
 		</dependency>
-	</dependencies>
+	</dependencies> 
 </project>

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.account.client.hystrix.UserClientHystrix;
@@ -130,8 +131,14 @@ public interface UserClient {
 	 * 用户下单
 	 * @param id
 	 */
-	@RequestMapping(value = "/v2.0/order/{id}", method = RequestMethod.POST)
-	public void order(@PathVariable("id")Long id);
+	@RequestMapping(value="/v2.0/order",method = RequestMethod.POST)
+	public void order(@RequestParam("id")Long id);
+	/**
+	 * 用户结账
+	 * @param id
+	 */
+	@RequestMapping(value="/v2.0/checkout",method = RequestMethod.POST)
+	public void checkout(@RequestParam("id")Long id);
 
 	/**
 	 * @Description	查询list  

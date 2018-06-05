@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.request.ReqBind;
@@ -17,7 +18,6 @@ import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
-import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 
@@ -93,10 +93,14 @@ public class UserClientHystrix implements UserClient{
 	}
 
 	@Override
-	public void order(@PathVariable("id")Long id) {
-		log.info("account service user order(Long id) hystrix"); 
+	public void order(@RequestParam("id")Long id) {
+		 log.info("account service user order(Long id) hystrix");
 	}
-
+	
+	@Override
+	public void checkout(@RequestParam("id")Long id) {
+		log.info("account service user checkout(Long id) hystrix");
+	}
 
 	@Override
 	public ViewPage findPage(@RequestBody ViewPageable pageable) {

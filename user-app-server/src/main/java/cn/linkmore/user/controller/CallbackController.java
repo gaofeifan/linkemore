@@ -3,10 +3,14 @@ package cn.linkmore.user.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.user.service.PayService;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
@@ -20,18 +24,27 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/callback")
 public class CallbackController {
-	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.POST)
+	
+	@Autowired
+	private PayService payService;
+	
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	@RequestMapping(value = "/v2.0/wechat/order", method = RequestMethod.POST)
 	public void wechat(HttpServletResponse response, HttpServletRequest request) {
-
+		log.info("wechat  async callback");
+		this.payService.wechatOrderNotice(response,request);
 	}
 
-	@RequestMapping(value = "/v2.0/alipay", consumes = { "application/x-www-form-urlencoded;charset=utf-8" })
+	@RequestMapping(value = "/v2.0/alipay/order", consumes = { "application/x-www-form-urlencoded;charset=utf-8" })
 	public void alipay(HttpServletResponse response, HttpServletRequest request) {
-		 
+		log.info("alipay async callback");
+		this.payService.alipayOrderNotice(response,request);
 	}
 	
-	@RequestMapping(value ="/v2.0/apple")
+	@RequestMapping(value ="/v2.0/apple/order")
 	public void apple(HttpServletResponse response,HttpServletRequest request){  
-    	 
+		log.info("apple async callback");
+		this.payService.appleOrderNotice(response,request);
 	}
 }

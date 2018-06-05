@@ -21,8 +21,8 @@ import io.swagger.annotations.ApiOperation;
  * @Version  v2.0
  */
 @RestController
-@Api(tags="dict",description="数据字典")
-@RequestMapping(value="/dict")
+@Api(tags="Dict",description="数据字典")
+@RequestMapping(value="/dicts")
 public class BaseDictController {
 	
 	@Resource
@@ -34,7 +34,7 @@ public class BaseDictController {
 	 * @Version  v2.0
 	 */
 	@ApiOperation(value = "查询降锁异常原因", notes = "查询降锁异常原因", consumes = "application/json")
-	@RequestMapping(value="/lock_down",method=RequestMethod.GET)
+	@RequestMapping(value="/v2.0/cause/switch",method=RequestMethod.GET)
 	public ResponseEntity<List<ResDonwLockError>> selectLockDownErrorCause(HttpServletRequest request) {
 		List<ResDonwLockError> res = this.baseDictService.selectLockDownErrorCause();
 		ResponseEntity<List<ResDonwLockError>> success = ResponseEntity.success(res, request);

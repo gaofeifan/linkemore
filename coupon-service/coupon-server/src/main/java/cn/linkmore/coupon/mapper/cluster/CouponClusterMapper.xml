@@ -54,9 +54,9 @@
     condition_amount
   </sql>
   
-  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="ResResultMap">
     select 
-    <include refid="Base_Column_List" />
+    <include refid="Res_Column_List" />
     from c_coupon
     where id = #{id,jdbcType=BIGINT}
   </select>

@@ -1,15 +1,18 @@
 package cn.linkmore.third.request;
 
-public class ReqUnionPay {
-	private String code;
+public class ReqApplePay {
+	private String number;
 	private Double amount;
-	private Long timestramp;
-	public String getCode() {
-		return code;
+	private Long timestramp; 
+	
+	public String getNumber() {
+		return number;
 	}
-	public void setCode(String code) {
-		this.code = code;
+
+	public void setNumber(String number) {
+		this.number = number;
 	}
+
 	public Double getAmount() {
 		return amount;
 	}

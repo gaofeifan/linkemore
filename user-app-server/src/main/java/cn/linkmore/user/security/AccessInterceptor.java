@@ -44,16 +44,15 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			add("/v2/api-docs");
 			add("/auth/v2.0/login");
 			add("/auth/v2.0/wx");
-			add("/auth/v2.0/send");
-			add("/order/v2.0/current"); 
+			add("/auth/v2.0/send"); 
 			add("/error");
-			add("/prefectures/v2.0/map"); 
-			add("/prefectures/v2.0/free_count"); 
+			add("/prefectures/v2.0/map/list"); 
+			add("/prefectures/v2.0/free/list"); 
 			add("/prefectures/v2.0/strategy");
 			add("/citys/v2.0/list"); 
-			add("/callback/v2.0/alipay");
-			add("/callback/v2.0/weixin");
-			add("/callback/v2.0/apple");
+			add("/callback/v2.0/wechat/order");
+			add("/callback/v2.0/alipay/order");
+			add("/callback/v2.0/apple/order");
 		}
 	}; 
 	@Autowired

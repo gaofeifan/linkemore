@@ -36,42 +36,42 @@
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>mysql-service</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency> 
 		 <dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>redis-service</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency> 
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-util</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency> 
         <dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>coupon-bean</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>account-client</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>prefecture-client</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>order-client</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 

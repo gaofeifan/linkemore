@@ -281,6 +281,18 @@ public class UserServiceImpl implements UserService {
 			this.userMasterMapper.orderUpdate(param);
 		}
 	}
+	
+	@Override
+	public void checkout(Long id) {
+		ResUser user = this.userClusterMapper.findById(id);
+		if(user!=null) {
+			user.setCompleteOrderCount(user.getCompleteOrderCount()==null?1:user.getCompleteOrderCount()+1);
+			Map<String,Object> param = new HashMap<String,Object>();
+			param.put("id", user.getId());
+			param.put("completeOrderCount", user.getCompleteOrderCount());
+			this.userMasterMapper.checkoutUpdate(param);
+		}
+	}
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {

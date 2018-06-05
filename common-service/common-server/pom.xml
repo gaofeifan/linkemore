@@ -10,7 +10,7 @@
 	</parent>
 	<artifactId>common-server</artifactId>
 	<name>common-server</name>
-	<url>http://maven.apache.org</url> 
+	<url>http://www.linkmoreparking.com</url> 
 	<dependencies>
 		<dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -57,32 +57,32 @@
         <dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>mysql-service</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency> 
 		 <dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>redis-service</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency> 
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>feign-service</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency> 
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-util</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>common-bean</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency> 
 	</dependencies>
 

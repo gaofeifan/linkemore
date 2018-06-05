@@ -18,7 +18,7 @@ public class ReqAuthSend {
 	private String mobile;
 	
 	@ApiModelProperty(value = "时间戳，必填", required = true)
-	@Range(min=1526992926, max=1607702400,message="时间戳不匹配")
+	@Range(min=1528113385546L, max=1614513496045L,message="时间戳不匹配")
 	private Long timestamp;
 	
 	@ApiModelProperty(value = "加密字符串，必填", required = true)

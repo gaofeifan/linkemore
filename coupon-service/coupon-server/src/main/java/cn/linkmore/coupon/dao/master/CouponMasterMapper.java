@@ -1,6 +1,9 @@
 package cn.linkmore.coupon.dao.master;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
+
 import cn.linkmore.coupon.entity.Coupon;
 @Mapper
 public interface CouponMasterMapper {
@@ -23,4 +26,12 @@ public interface CouponMasterMapper {
 	 * @param record 优惠券信息
 	 * @return 更新条数
 	 */
-	int update(Coupon record); }
+	int update(Coupon record);
+
+	/**
+	 * 消费更新
+	 * @param param
+	 */
+	int payUpdate(Map<String,Object> param);
+	
+}

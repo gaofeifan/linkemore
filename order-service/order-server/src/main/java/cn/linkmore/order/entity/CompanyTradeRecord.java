@@ -148,4 +148,13 @@ public class CompanyTradeRecord {
     public void setRechargePaymentAmount(Double rechargePaymentAmount) {
         this.rechargePaymentAmount = rechargePaymentAmount;
     }
+    public void copy(CompanyTradeRecord record){
+		 this.orderAmount = record.getOrderAmount();
+		 this.orderPaymentAmount = record.getOrderPaymentAmount();
+		 this.frozenAmount = record.getFrozenAmount();
+		 this.totalAmount = record.getTotalAmount();
+		 this.rechargeAmount = record.getRechargeAmount();
+		 this.rechargePaymentAmount = record.getRechargePaymentAmount();
+		 this.usableAmount = record.getUsableAmount(); 
+	}
 }
