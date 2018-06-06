@@ -46,6 +46,7 @@ public interface LockOperateLogClient {
 	 * 导出
 	 */
 	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
+	@ResponseBody
 	public List<ResLockOperateLog> export(@RequestBody ReqLockOperateLogExcel bean);
 	
 }

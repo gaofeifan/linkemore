@@ -1,6 +1,9 @@
 package cn.linkmore.prefecture.client.hystrix;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -9,6 +12,8 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.client.OrderOperateLogClient;
 import cn.linkmore.prefecture.request.ReqOrderOperateLogExcel;
 import cn.linkmore.prefecture.response.ResOrderOperateLogEntity;
+import cn.linkmore.prefecture.response.ResPreList;
+import cn.linkmore.prefecture.response.ResStall;
 /**
  * 远程调用实现 - 锁操作日志信息
  * @author jiaohanbin
@@ -34,6 +39,7 @@ public class OrderOperateLogClientHystrix implements OrderOperateLogClient {
 	@Override
 	public List<ResOrderOperateLogEntity> export(ReqOrderOperateLogExcel bean) {
 		log.info("prefecture service order_operate export() hystrix");
-		return null;
+		return new ArrayList<ResOrderOperateLogEntity>();
 	}
+
 }

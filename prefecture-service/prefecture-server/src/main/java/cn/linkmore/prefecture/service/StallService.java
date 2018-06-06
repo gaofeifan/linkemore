@@ -1,7 +1,14 @@
 package cn.linkmore.prefecture.service;
 
 import java.util.List;
+import java.util.Map;
 
+import cn.linkmore.bean.view.Tree;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.entity.Stall;
+import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 
@@ -58,5 +65,69 @@ public interface StallService {
 	 * @return
 	 */
 	ResStallEntity findByLock(String sn);
+	
+	/**
+	 * 查询树
+	 * 
+	 * @return
+	 */
+	Tree findTree();
+
+	/**
+	 * 查询分页
+	 * 
+	 * @param pageable
+	 * @return
+	 */
+	ViewPage findPage(ViewPageable pageable);
+
+	/**
+	 * 保存
+	 * 
+	 * @param stall
+	 */
+	int save(ReqStall stall);
+
+	/**
+	 * 修改
+	 * 
+	 * @param stall
+	 */
+	int update(ReqStall stall);
+
+	/**
+	 * 校验名称
+	 * 
+	 * @param name
+	 * @return
+	 */
+	int check(ReqCheck reqCheck);
+
+	/**
+	 * 绑定车位锁
+	 * 
+	 * @param stall
+	 */
+	int bind(ReqStall stall);
+
+	/**
+	 * 上下线修改
+	 * 
+	 * @param stall
+	 */
+	int updateStatus(ReqStall stall);
+
+	/**
+	 * 查询列表
+	 * 
+	 * @param param
+	 * @return
+	 */
+	List<ResStall> findList(Map<String, Object> param);
+
+	/**
+	 * 保存并绑定
+	 */
+	void saveAndBind(Long preId, String stallName, String sn);
 	
 }

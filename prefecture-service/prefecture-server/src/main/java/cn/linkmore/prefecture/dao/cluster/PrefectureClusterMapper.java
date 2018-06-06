@@ -44,7 +44,7 @@ public interface PrefectureClusterMapper {
 
 	Integer check(Map<String, Object> param);
 
-	List<Prefecture> findAll();
+	List<ResPrefectureDetail> findAll();
 	
 	
 }

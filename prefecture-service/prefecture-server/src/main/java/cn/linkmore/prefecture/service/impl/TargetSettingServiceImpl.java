@@ -38,10 +38,6 @@ public class TargetSettingServiceImpl implements TargetSettingService {
 	private TargetSettingClusterMapper targetSettingClusterMapper;
 	@Autowired
 	private TargetSettingMasterMapper targetSettingMasterMapper;
-	@Autowired
-	private TargetDayClusterMapper targetDayClusterMapper;
-	@Autowired
-	private TargetMounthClusterMapper targetMonthClusterMapper;
 	
 	private Logger log = LoggerFactory.getLogger(getClass()); 
 	

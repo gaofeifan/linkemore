@@ -132,6 +132,6 @@ public class LockOperateLogServiceImpl implements LockOperateLogService {
 
 	@Override
 	public List<ResLockOperateLog> exportList(ReqLockOperateLogExcel bean) {
-		return this.lockOperateLogClusterMapper.exportList(bean);
+		return this.lockOperateLogClusterMapper.findExportList(bean);
 	}
 }

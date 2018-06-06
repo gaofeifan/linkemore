@@ -39,6 +39,7 @@ public interface StallOperateLogClient {
 	 * 导出
 	 */
 	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
+	@ResponseBody
 	public List<ResStallOperateLog> export(@RequestBody ReqStallOperateLogExcel bean);
 	
 }

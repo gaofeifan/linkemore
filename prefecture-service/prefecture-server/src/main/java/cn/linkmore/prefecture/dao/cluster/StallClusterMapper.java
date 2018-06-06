@@ -1,7 +1,7 @@
 package cn.linkmore.prefecture.dao.cluster;
 
 import java.util.List;
-
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.response.ResStall;
@@ -60,4 +60,13 @@ public interface StallClusterMapper {
 	List<Stall> findAll();
 	
 	List<ResStall> findTreeList(List<Long> stallIds);
+	
+	int check(Map<String, Object> param);
+	
+	Integer count(Map<String, Object> param);
+	
+	List<Stall> findPage(Map<String, Object> param);
+	
+	List<ResStall> findList(Map<String, Object> param);
+	
 }
