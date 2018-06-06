@@ -105,6 +105,17 @@ public class Orders {
      */
     private Short lockDownStatus;
     
+    private String preName;
+    
+    
+    private String stallName;
+    
+    private Long couponId;
+    
+    private BigDecimal couponAmount; 
+    
+    private Long tradeId;
+    
     /**
      * 计费策略ID
      */
@@ -328,5 +339,44 @@ public class Orders {
 	public void setSwitchStatus(Short switchStatus) {
 		this.switchStatus = switchStatus;
 	}
-    
+
+	public String getPreName() {
+		return preName;
+	}
+
+	public void setPreName(String preName) {
+		this.preName = preName;
+	}
+
+	public String getStallName() {
+		return stallName;
+	}
+
+	public void setStallName(String stallName) {
+		this.stallName = stallName;
+	}
+
+	public Long getCouponId() {
+		return couponId;
+	}
+
+	public void setCouponId(Long couponId) {
+		this.couponId = couponId;
+	}
+
+	public BigDecimal getCouponAmount() {
+		return couponAmount;
+	}
+
+	public void setCouponAmount(BigDecimal couponAmount) {
+		this.couponAmount = couponAmount;
+	} 
+
+	public Long getTradeId() {
+		return tradeId;
+	}
+
+	public void setTradeId(Long tradeId) {
+		this.tradeId = tradeId;
+	}  
 }

@@ -20,7 +20,7 @@ import cn.linkmore.util.ObjectUtils;
 @Service
 public class BaseDictServiceImpl implements BaseDictService {
 
-	public static final String DOWN_LOCK_ERROR_CAUSE = "";
+	public static final String DOWN_LOCK_ERROR_CAUSE = "cause_down";
 
 	@Resource
 	private BaseDictClient baseDictClient;

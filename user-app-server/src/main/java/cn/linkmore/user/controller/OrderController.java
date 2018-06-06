@@ -21,6 +21,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.user.request.ReqBooking;
 import cn.linkmore.user.request.ReqOrderStall;
 import cn.linkmore.user.request.ReqSwitch;
+import cn.linkmore.user.response.ResCheckedOrder;
 import cn.linkmore.user.response.ResOrder;
 import cn.linkmore.user.response.ResOrderDetail;
 import cn.linkmore.user.service.OrderService;
@@ -99,10 +100,10 @@ public class OrderController {
 	@ApiOperation(value = "用户已完成订单列表", notes = "订单列表[起始请从0开始每页10条记录]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<ResOrder>> list(@RequestParam("start") Long start,HttpServletRequest request) {
-		ResponseEntity<List<ResOrder>> response = null;
+	public ResponseEntity<List<ResCheckedOrder>> list(@RequestParam("start") Long start,HttpServletRequest request) {
+		ResponseEntity<List<ResCheckedOrder>> response = null;
 		try {
-			List<ResOrder> orders = this.orderService.list(start,request);
+			List<ResCheckedOrder> orders = this.orderService.list(start,request);
 			response = ResponseEntity.success(orders, request);
 		} catch (BusinessException e) {
 			e.printStackTrace();

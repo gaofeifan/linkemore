@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.user.request.ReqBooking;
 import cn.linkmore.user.request.ReqOrderStall;
 import cn.linkmore.user.request.ReqSwitch;
+import cn.linkmore.user.response.ResCheckedOrder;
 import cn.linkmore.user.response.ResOrder;
 import cn.linkmore.user.response.ResOrderDetail;
 
@@ -52,7 +53,7 @@ public interface OrderService {
 	 * @param request
 	 * @return
 	 */
-	List<ResOrder> list(Long start, HttpServletRequest request);
+	List<ResCheckedOrder> list(Long start, HttpServletRequest request);
 
 	/**
 	 * 订单详情

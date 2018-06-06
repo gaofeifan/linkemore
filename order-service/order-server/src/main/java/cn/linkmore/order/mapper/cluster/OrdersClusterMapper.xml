@@ -5,7 +5,9 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" /> 
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="pay_type" jdbcType="INTEGER" property="payType" />
@@ -29,21 +31,27 @@
     <result column="lock_down_status" jdbcType="SMALLINT" property="lockDownStatus" />
     <result column="switch_time" jdbcType="TIMESTAMP" property="switchTime" />
     <result column="switch_status" jdbcType="SMALLINT" property="switchStatus" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="coupon_id" jdbcType="BIGINT" property="couponId" />
+    <result column="coupon_amount" jdbcType="DECIMAL" property="couponAmount" /> 
+    <result column="trade_id" jdbcType="BIGINT" property="tradeId" />
   </resultMap>
   
   <resultMap id="ResResultMap" type="cn.linkmore.order.response.ResUserOrder">
     <result column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="pay_type" jdbcType="INTEGER" property="payType" />
     <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
     <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
     <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" /> 
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="plate_no" jdbcType="VARCHAR" property="plateNo" /> 
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -56,19 +64,23 @@
     <result column="lock_down_status" jdbcType="SMALLINT" property="lockDownStatus" />
     <result column="switch_time" jdbcType="TIMESTAMP" property="switchTime" />
     <result column="switch_status" jdbcType="SMALLINT" property="switchStatus" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" /> 
+    <result column="coupon_id" jdbcType="BIGINT" property="couponId" />
+    <result column="coupon_amount" jdbcType="DECIMAL" property="couponAmount" />  
+    <result column="trade_id" jdbcType="BIGINT" property="tradeId" />
   </resultMap>
   
   <sql id="Base_Column_List">
-    id, user_id, pre_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
+    id, user_id, pre_id,pre_name, stall_id,stall_name, order_no, pay_type, total_amount, actual_amount, status, 
     begin_time, username, end_time, plate_no, stall_image, stall_local, stall_guidance, 
     create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
-    lock_down_status,switch_status,switch_time,strategy_id
+    lock_down_status,switch_status,switch_time,strategy_id,coupon_id,coupon_amount,pay_time
   </sql>
   <sql id="Res_Column_List">
-    id, user_id, pre_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
+    id, user_id, pre_id,pre_name, stall_id, stall_name,order_no, pay_type, total_amount, actual_amount, status, 
     begin_time, username, end_time, plate_no,
     create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
-    lock_down_status,switch_status,switch_time,strategy_id
+    lock_down_status,switch_status,switch_time,strategy_id,pay_time,coupon_amount
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

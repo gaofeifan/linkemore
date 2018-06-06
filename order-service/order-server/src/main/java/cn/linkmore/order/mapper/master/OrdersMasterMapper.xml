@@ -5,12 +5,16 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
-     <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="pay_type" jdbcType="INTEGER" property="payType" />
     <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
     <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="coupon_id" jdbcType="BIGINT" property="couponId" />
+    <result column="coupon_amount" jdbcType="DECIMAL" property="couponAmount" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
     <result column="username" jdbcType="VARCHAR" property="username" />
@@ -28,21 +32,22 @@
     <result column="lock_down_time" jdbcType="TIMESTAMP" property="lockDownTime" />
     <result column="lock_down_status" jdbcType="SMALLINT" property="lockDownStatus" />
     <result column="switch_time" jdbcType="TIMESTAMP" property="switchTime" />
+     <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
     <result column="switch_status" jdbcType="SMALLINT" property="switchStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, pre_id,strategy_id, stall_id, order_no, pay_type, total_amount, actual_amount, status, 
+    id, user_id, pre_id,pre_name,strategy_id, stall_id,stall_name, order_no, pay_type, total_amount, actual_amount, status, 
     begin_time, username, end_time, plate_no, stall_image, stall_local, stall_guidance, 
     create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
-    lock_down_status,switch_time,switch_status
+    lock_down_status,switch_time,switch_status,coupon_id,coupon_amount,pay_time
   </sql>
   <delete id="delete" parameterType="java.lang.Long">
     delete from o_orders
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.Orders">
-    insert into o_orders (id, user_id, pre_id, 
-      stall_id, order_no, pay_type, 
+    insert into o_orders (id, user_id, pre_id,pre_name, 
+      stall_id,stall_name, order_no, pay_type, 
       total_amount, actual_amount, status, 
       begin_time, username, end_time, 
       plate_no, stall_image, stall_local, 
@@ -50,8 +55,8 @@
       dock_id, status_history, user_type, 
       status_time, lock_down_time, lock_down_status,strategy_id,switch_status
       )
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{preId,jdbcType=BIGINT}, 
-      #{stallId,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{payType,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{preId,jdbcType=BIGINT},  #{preName,jdbcType=VARCHAR},
+      #{stallId,jdbcType=BIGINT},  #{stallName,jdbcType=VARCHAR},#{orderNo,jdbcType=VARCHAR}, #{payType,jdbcType=INTEGER}, 
       #{totalAmount,jdbcType=DECIMAL}, #{actualAmount,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, 
       #{beginTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, #{endTime,jdbcType=TIMESTAMP}, 
       #{plateNo,jdbcType=VARCHAR}, #{stallImage,jdbcType=VARCHAR}, #{stallLocal,jdbcType=VARCHAR}, 
@@ -65,7 +70,7 @@
   <update id="update" parameterType="cn.linkmore.order.entity.Orders">
     update o_orders
     set user_id = #{userId,jdbcType=BIGINT},
-      pre_id = #{preId,jdbcType=BIGINT},
+      pre_id = #{preId,jdbcType=BIGINT}, 
       stall_id = #{stallId,jdbcType=BIGINT},
       order_no = #{orderNo,jdbcType=VARCHAR},
       pay_type = #{payType,jdbcType=INTEGER},
@@ -93,6 +98,9 @@
     update o_orders
     set  
       lock_down_time = #{lockDownTime,jdbcType=TIMESTAMP},
+      <if test="beginTime==null"> 
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
       lock_down_status = #{lockDownStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -103,6 +111,25 @@
       stall_name = #{stallName,jdbcType=BIGINT} ,
       switch_time = #{switchTime,jdbcType=TIMESTAMP},
       switch_status = #{switchStatus,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateConfirm" parameterType="java.util.HashMap">
+    update o_orders
+    set  
+      total_amount = #{totalAmount,jdbcType=DECIMAL},
+      actual_amount = #{actualAmount,jdbcType=DECIMAL},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      pay_type = #{payType,jdbcType=INTEGER},
+      coupon_id = #{couponId,jdbcType=BIGINT},
+      coupon_amount = #{couponAmount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updatePayment" parameterType="java.util.HashMap">
+    update o_orders
+    set   
+      pay_time = #{payTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER} 
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

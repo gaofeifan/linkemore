@@ -24,7 +24,6 @@ import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResVechicleMark;
-import cn.linkmore.bean.common.Constants.DownLockStatus;
 import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.OrderFailureReason;
 import cn.linkmore.bean.common.Constants.OrderPayType;
@@ -41,12 +40,10 @@ import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.cluster.StallAssignClusterMapper;
 import cn.linkmore.order.dao.master.BookingMasterMapper;
-import cn.linkmore.order.dao.master.OrdersDetailMasterMapper;
 import cn.linkmore.order.dao.master.OrdersMasterMapper;
 import cn.linkmore.order.dao.master.StallAssignMasterMapper;
 import cn.linkmore.order.entity.Booking;
 import cn.linkmore.order.entity.Orders;
-import cn.linkmore.order.entity.OrdersDetail;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderCreate;
 import cn.linkmore.order.request.ReqOrderDown;
@@ -81,9 +78,7 @@ public class OrdersServiceImpl implements OrdersService {
 	private StallClient stallClient;
 	
 	@Autowired
-	private OrdersClusterMapper ordersClusterMapper;
-	@Autowired
-	private OrdersDetailMasterMapper ordersDetailMasterMapper;
+	private OrdersClusterMapper ordersClusterMapper; 
 	@Autowired
 	private OrdersMasterMapper orderMasterMapper; 
 	
@@ -142,6 +137,7 @@ public class OrdersServiceImpl implements OrdersService {
 		return number.toString();
 	}
 	private static Set<Long> ORDER_USER_SET = new HashSet<Long>();
+	
 	@Async
 	@Transactional(rollbackFor = RuntimeException.class)
 	public void create(ReqOrderCreate orc) { 
@@ -220,25 +216,7 @@ public class OrdersServiceImpl implements OrdersService {
 			// 根据lockSn获取车位
 			log.info("lock,{}", lockSn);
 			
-			ResPrefectureDetail pre = prefectureClient.findById(orc.getPrefectureId()); 
-			o = new Orders();
-			o.setOrderNo(this.getOrderNumber());
-			o.setUserType((short)0);
-			Date current = new Date();
-			o.setPlateNo(vehicleMark.getVehMark());
-			o.setUsername(ru.getUsername());
-			o.setActualAmount(new BigDecimal(0.0d));
-			o.setBeginTime(current);
-			o.setCreateTime(current);
-			o.setUpdateTime(current);
-			// o.setDockId(dockId);
-			o.setEndTime(current);
-			o.setStrategyId(pre.getStrategyId());
-			
-			// 支付类型1免费2优惠券3账户
-			// 初始化支付类型为账户支付
-			o.setPayType(OrderPayType.ACCOUNT.type); 
-			o.setPreId(orc.getPrefectureId());
+			ResPrefectureDetail pre = prefectureClient.findById(orc.getPrefectureId());  
 			log.info("order:{}",lockSn);
 			stall = this.stallClient.findByLock(lockSn.trim());
 			log.info("order :{}",JsonUtil.toJson(stall));
@@ -259,40 +237,42 @@ public class OrdersServiceImpl implements OrdersService {
 				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
 			}
 			log.info("{} create order with{}", ru.getUsername(), JsonUtil.toJson(stall)); 
+			o = new Orders();
+			o.setOrderNo(this.getOrderNumber());
+			o.setUserType((short)0);
+			Date current = new Date();
+			o.setPlateNo(vehicleMark.getVehMark());
+			o.setUsername(ru.getUsername());
+			o.setActualAmount(new BigDecimal(0.0d)); 
+			o.setBeginTime(current);
+			o.setCreateTime(current);
+			o.setUpdateTime(current); 
+			o.setEndTime(current);
+			o.setStrategyId(pre.getStrategyId());  
+			// 支付类型1免费2优惠券3账户
+			// 初始化支付类型为账户支付
+			o.setPayType(OrderPayType.FREE.type); 
+			o.setPreId(orc.getPrefectureId());
 			o.setStallId(stall.getId());
+			o.setPreName(pre.getName());
+			o.setStallName(stall.getStallName());
 			o.setStatus(OrderStatus.UNPAID.value);
 			o.setTotalAmount(new BigDecimal(0.0D));
 			o.setUserId(orc.getUserId());
 			o.setUsername(o.getUsername());
 
 			// 更新车位状态 
-			// 订单详情
-			OrdersDetail od = new OrdersDetail();
-			od.setAccountId(ru.getId());
-			od.setBeginTime(current);
-			od.setCouponsMoney(new BigDecimal(0.0D));
-			od.setCreateTime(current);
-			od.setDayFee(new BigDecimal(0.0D));
-			od.setDayTime(0);
-			od.setNightFee(new BigDecimal(0.0D));
-			od.setNightTime(0); 
+			// 订单详情 
 			Long dictId = pre.getBaseDictId();
 			if (null != dictId) {
 				ResOldDict dict = this.baseDictClient.findOld(dictId);
 				if (null != dict) {
 					o.setDockId(dict.getCode());
 				}
-			}
-			od.setOrdNo(o.getOrderNo());
-			od.setStallName(stall.getStallName());
-			od.setStrategyId(pre.getStrategyId());
-			od.setParkName(pre.getName());
-			od.setUpdateTime(current);
+			} 
 			o.setStallLocal(pre.getName() + stall.getStallName());
 			o.setStallGuidance(pre.getAddress() + stall.getStallName()); 
-			this.orderMasterMapper.save(o);
-			od.setOrderId(o.getId());
-			ordersDetailMasterMapper.save(od);
+			this.orderMasterMapper.save(o); 
 			this.stallClient.order(stall.getId()); 
 			bookingStatus = (short)OperateStatus.SUCCESS.status;
 			failureReason = (short)OrderFailureReason.NONE.value;   
@@ -312,15 +292,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if (StringUtils.isNotBlank(o.getDockId())) { 
 				Thread thread = new ProduceBookThread(o);
 				thread.start();
-			}
-			Map<String,Object> param = new HashMap<String,Object>();
-			param.put("orderId", o.getId());
-			param.put("orderNo", o.getOrderNo());
-			param.put("preName", pre.getName());
-			param.put("stallName", stall.getStallName());
-			param.put("stallId", o.getStallId());
-			param.put("startTime", o.getCreateTime());
-			param.put("status", o.getStatus()); 
+			} 
 		} catch (BusinessException e) {
 			StringBuffer sb = new StringBuffer();
 			StackTraceElement[] stackArray = e.getStackTrace();

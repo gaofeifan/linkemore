@@ -19,7 +19,7 @@ public class ReqAuthSend {
 	
 	@ApiModelProperty(value = "时间戳，必填", required = true)
 	@Range(min=1528113385546L, max=1614513496045L,message="时间戳不匹配")
-	private Long timestamp;
+	private String timestamp;
 	
 	@ApiModelProperty(value = "加密字符串，必填", required = true)
 	@Size(min=32, max=32,message="token长度为32位有效字符串") 
@@ -36,10 +36,10 @@ public class ReqAuthSend {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	public Long getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(Long timestamp) {
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}   
 }

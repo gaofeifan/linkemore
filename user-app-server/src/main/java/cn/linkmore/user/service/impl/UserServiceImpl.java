@@ -42,6 +42,7 @@ import cn.linkmore.user.request.ReqMobileBind;
 import cn.linkmore.user.request.ReqUpdateVehicle;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.UserService;
+import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 
 /**
@@ -72,14 +73,17 @@ public class UserServiceImpl implements UserService {
 	
 	private final static long SPACE = 1000L*60*30;
 	
-	private final static String TEST_MOBILE= "18010161135|18510770300|18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
+	private final static String TEST_MOBILE= "18511509492|18801243820|18010161135|18510770300|18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
 
 	@Override
 	public void send(ReqAuthSend rs) {     
+		log.info("send:{}",JsonUtil.toJson(rs));
+		log.info("token:{}",DigestUtils.md5Hex(rs.getMobile()+rs.getTimestamp()+"v2.0"));
 		if(!DigestUtils.md5Hex(rs.getMobile()+rs.getTimestamp()+"v2.0").equals(rs.getToken())) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
-		}
-		long space = new Date().getTime()-rs.getTimestamp(); 
+		} 
+		long space = new Date().getTime()-new Long(rs.getTimestamp()).longValue(); 
+		log.info("space:{},SPACE:{} verify:{}",space,SPACE,space>SPACE||space<-SPACE);
 		if(space>SPACE||space<-SPACE) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		}

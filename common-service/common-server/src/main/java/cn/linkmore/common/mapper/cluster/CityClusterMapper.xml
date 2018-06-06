@@ -44,7 +44,8 @@
   </select>
   
    <select id="findList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
-  	select id, adcode,city_name 
+  	select  
+	<include refid="Base_Column_List" />
     from t_city
     where 1 = 1
     <if test="cityName!=null">  
