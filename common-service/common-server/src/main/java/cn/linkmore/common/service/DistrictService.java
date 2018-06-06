@@ -6,6 +6,7 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.entity.District;
+import cn.linkmore.common.response.ResDistrict;
 
 /**
  * Service接口 - 区域信息
@@ -57,5 +58,12 @@ public interface DistrictService {
 	 * @Version  v2.0
 	 */
 	Tree findTree();
+	
+	/**
+	 * 根据城市id查询区域列表
+	 * @param cityId
+	 * @return
+	 */
+	List<ResDistrict> findSelectListByCityId(Long cityId);
 
 }

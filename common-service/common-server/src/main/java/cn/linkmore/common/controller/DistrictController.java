@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +16,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.entity.District;
 import cn.linkmore.common.request.ReqCheck;
 import cn.linkmore.common.request.ReqDistrict;
+import cn.linkmore.common.response.ResDistrict;
 import cn.linkmore.common.service.DistrictService;
 import cn.linkmore.util.ObjectUtils;
 
@@ -104,7 +106,12 @@ public class DistrictController {
 	public Tree findTree() {
 		Tree tree= this.districtService.findTree();
 		return tree;
-		
+	}
+	
+	@RequestMapping(value="/select_list",method = RequestMethod.GET)
+	@ResponseBody
+	List<ResDistrict> findSelectListByCityId(@RequestParam("cityId") Long cityId){
+		return this.districtService.findSelectListByCityId(cityId);
 	}
 
 }

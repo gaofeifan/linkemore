@@ -1,5 +1,6 @@
 package cn.linkmore.common.client.hystrix;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.DistrictClient;
 import cn.linkmore.common.request.ReqCheck;
 import cn.linkmore.common.request.ReqDistrict;
+import cn.linkmore.common.response.ResDistrict;
 
 @Component
 public class DistrictClientHystrix implements DistrictClient {
@@ -50,5 +52,11 @@ public class DistrictClientHystrix implements DistrictClient {
 	public Tree findTree() {
 		log.info("common service district findTree() hystrix");
 		return null;
+	}
+
+	@Override
+	public List<ResDistrict> findSelectListByCityId(Long cityId) {
+		log.info("common service district findSelectListByCityId() hystrix");
+		return new ArrayList<ResDistrict>();
 	}
 }

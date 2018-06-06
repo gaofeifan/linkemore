@@ -78,10 +78,5 @@
     ${property} = #{value}
     and id != #{id} 
   </select>
-  <select id="findDistrictByCityId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, district_name, city_id
-    from t_district
-    where city_id = #{cityId}
-  </select>
   
 </mapper>

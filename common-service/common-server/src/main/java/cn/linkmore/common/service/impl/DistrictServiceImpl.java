@@ -118,7 +118,11 @@ public class DistrictServiceImpl implements DistrictService {
 		root.setChildren(children);
 		return root;
 	}
-	
-	
+	@Override
+	public List<ResDistrict> findSelectListByCityId(Long cityId) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("cityId", cityId);
+		return this.districtClusterMapper.findList(param);
+	}
 	
 }
