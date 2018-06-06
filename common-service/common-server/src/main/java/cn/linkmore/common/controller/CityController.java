@@ -1,7 +1,8 @@
 package cn.linkmore.common.controller;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -115,5 +116,15 @@ public class CityController{
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable){
 		return this.cityService.findPage(pageable);
+	} 
+	
+	@RequestMapping(value = "/select_list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResCity> findSelectList(){
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", "city_name");
+		param.put("direction", "asc");
+		List<ResCity> list = this.cityService.findList(param);
+		return list;
 	} 
 }

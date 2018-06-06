@@ -60,4 +60,8 @@ public interface CityClient {
 	@RequestMapping(value = "/page", method = RequestMethod.POST)
 	@ResponseBody
 	ViewPage findPage(@RequestBody ViewPageable pageable);
+	
+	@RequestMapping(value = "/select_list", method = RequestMethod.POST)
+	@ResponseBody
+	List<ResCity> findSelectList();
 }
