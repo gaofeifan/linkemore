@@ -1,5 +1,7 @@
 package cn.linkmore.common.dao.cluster;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.common.entity.Dict;
@@ -25,4 +27,6 @@ public interface DictClusterMapper {
 	 * @return
 	 */
 	ResOldDict find(Long id);
+	
+	List<ResOldDict> findBillSystemList();
 }

@@ -68,5 +68,14 @@ public class BaseDictController {
 		return this.dictService.find(id);
 	}
 	
+	/**
+	 * 查询老字典计费系统下拉列表
+	 * @return
+	 */
+	@RequestMapping(value="/old/bill_system_list/",method=RequestMethod.GET)
+	public List<ResOldDict> findBillSystemList(){
+		return this.dictService.findBillSystemList();
+	}
+	
 
 }

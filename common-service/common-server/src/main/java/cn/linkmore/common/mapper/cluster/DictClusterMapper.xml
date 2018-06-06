@@ -33,4 +33,10 @@
     from base_dict
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findBillSystemList" resultMap="ResResultMap">
+    select t.id,t.name,t.code,t.create_time,t.update_time,t.group_id 
+    from base_dict t left join base_dict_group g on t.group_id=g.id 
+    where g.code='billSystem'
+  </select>
 </mapper>
