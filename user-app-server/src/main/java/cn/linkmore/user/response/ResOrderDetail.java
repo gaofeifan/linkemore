@@ -3,6 +3,8 @@ package cn.linkmore.user.response;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.linkmore.order.response.ResUserOrder;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -122,7 +124,7 @@ public class ResOrderDetail{
 	public void setActualAmount(BigDecimal actualAmount) {
 		this.actualAmount = actualAmount;
 	}
-	
+	@JsonIgnore
 	public void copy(ResUserOrder ruo) { 
 		this.setPrefectureName(ruo.getPreName());
 		this.setPlateNumber(ruo.getPlateNo());

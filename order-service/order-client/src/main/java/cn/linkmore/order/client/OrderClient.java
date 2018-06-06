@@ -3,7 +3,6 @@ package cn.linkmore.order.client;
 import java.util.List;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,7 +49,7 @@ public interface OrderClient {
 	 */
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
 	@ResponseBody
-	ResUserOrder detail(@PathVariable("id") Long id);
+	ResUserOrder detail(@RequestParam("id") Long id);
 	
 	/**
 	 * 降下地锁

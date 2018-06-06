@@ -3,6 +3,8 @@ package cn.linkmore.user.response;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.linkmore.bean.common.Constants.OrderStatus;
 import cn.linkmore.order.response.ResUserOrder;
 import io.swagger.annotations.ApiModel;
@@ -157,6 +159,7 @@ public class ResOrder {
 	public void setPreLatitude(BigDecimal preLatitude) {
 		this.preLatitude = preLatitude;
 	}
+	@JsonIgnore
 	public void copy(ResUserOrder ruo) {
 		this.setStartTime(ruo.getCreateTime());
 		this.setId(ruo.getId());

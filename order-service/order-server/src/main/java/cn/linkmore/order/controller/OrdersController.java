@@ -60,7 +60,7 @@ public class OrdersController {
 	
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
 	@ResponseBody
-	public ResUserOrder detail(@PathVariable("id") Long id){
+	public ResUserOrder detail(@RequestParam("id") Long id){
 		log.info("detail order :{}",id);
 		return this.ordersService.detail(id);
 	}

@@ -3,8 +3,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,13 +13,8 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.entity.District;
-import cn.linkmore.common.request.ReqBaseDict;
 import cn.linkmore.common.request.ReqCheck;
 import cn.linkmore.common.request.ReqDistrict;
-import cn.linkmore.common.response.ResBaseDict;
-import cn.linkmore.common.response.ResOldDict;
-import cn.linkmore.common.service.BaseDictService;
-import cn.linkmore.common.service.DictService;
 import cn.linkmore.common.service.DistrictService;
 import cn.linkmore.util.ObjectUtils;
 

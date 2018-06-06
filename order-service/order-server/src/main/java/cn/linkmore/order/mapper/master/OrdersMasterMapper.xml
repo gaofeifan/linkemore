@@ -129,6 +129,7 @@
     set   
       pay_time = #{payTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
+      trade_id = #{tradeId,jdbcType=BIGINT},
       status = #{status,jdbcType=INTEGER} 
     where id = #{id,jdbcType=BIGINT}
   </update>

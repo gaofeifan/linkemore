@@ -31,12 +31,10 @@ import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
 import cn.linkmore.order.dao.cluster.AccountClusterMapper;
-import cn.linkmore.order.dao.cluster.AccountHistoryClusterMapper;
 import cn.linkmore.order.dao.cluster.CompanyTradeRecordClusterMapper;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.cluster.RechargeRecordClusterMapper;
 import cn.linkmore.order.dao.cluster.TradeRecordClusterMapper;
-import cn.linkmore.order.dao.cluster.WalletDetailClusterMapper;
 import cn.linkmore.order.dao.master.AccountHistoryMasterMapper;
 import cn.linkmore.order.dao.master.AccountMasterMapper;
 import cn.linkmore.order.dao.master.CompanyTradeRecordMasterMapper;
@@ -588,6 +586,7 @@ public class PayServiceImpl implements PayService {
 		param.put("status", OrderStatus.COMPLETED.value);
 		param.put("updateTime",current);
 		param.put("payTime", current);
+		param.put("tradeId", payTradeRecord.getId());
 		this.orderMasterMapper.updatePayment(param); 
 		// 3.更新优惠券信息
 		if (null != order.getCouponId()) { 

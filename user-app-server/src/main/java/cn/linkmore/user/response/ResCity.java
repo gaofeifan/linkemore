@@ -63,4 +63,6 @@ public class ResCity {
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	} 
+	
+	
 }

@@ -225,7 +225,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	private void updateCache(HttpServletRequest request, ResUser user){
 		String key = UserCache.getCacheKey(request);
-		this.redisService.set(RedisKey.USER_APP_AUTH_USER+key, user); 
+		this.redisService.set(RedisKey.USER_APP_AUTH_USER.key+key, user); 
 	}
 	@Override
 	public void bindMobile(ReqMobileBind rmb, HttpServletRequest request) {
