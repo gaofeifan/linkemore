@@ -1,6 +1,8 @@
 package cn.linkmore.account.client.hystrix;
 
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
@@ -105,6 +108,13 @@ public class UserClientHystrix implements UserClient{
 	@Override
 	public ViewPage findPage(@RequestBody ViewPageable pageable) {
 		log.info("account service ViewPage findPage(ViewPageable pageable) hystrix"); 
+		return null;
+	}
+
+
+	@Override
+	public List<ResPageUser> export(ViewPageable pageable) {
+		log.info("account service List<ResPageUser> export(ViewPageable pageable) hystrix"); 
 		return null;
 	}
 	

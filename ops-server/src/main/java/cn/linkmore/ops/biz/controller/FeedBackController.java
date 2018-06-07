@@ -53,7 +53,7 @@ public class FeedBackController {
 	}
 	
 	@RequestMapping(value = "/export", method = RequestMethod.POST)
-	public void export(@RequestBody ReqFeedBack bean,HttpServletResponse response){ 
+	public void export( ReqFeedBack bean,HttpServletResponse response){ 
 		List<ResFeedBack> list = this.feedBackService.exportList(bean);
 		InputStream is = null;
 		ByteArrayOutputStream baos = null;

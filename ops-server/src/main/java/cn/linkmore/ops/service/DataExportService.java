@@ -19,8 +19,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.response.ResCustomerInfoExport;
-import cn.linkmore.account.response.ResWalletDetailExport;
 import cn.linkmore.ops.biz.service.UserService;
+import cn.linkmore.order.response.ResWalletDetailExport;
 
 /**
  * 数据导出处理

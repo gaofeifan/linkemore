@@ -30,7 +30,7 @@
   </select>
   <select id="findResList" parameterType="java.lang.Long" resultType="cn.linkmore.account.response.ResVechicleMark">
     select 
-   		veh_mark vehMark ,id 
+   		veh_mark vehMark ,id,veh_user_id userId
     from v_vehicle_mark_manage
     where veh_user_id = #{userId}
   </select>

@@ -7,10 +7,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
 import cn.linkmore.account.entity.VehicleMarkManage;
+import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.UserService;
@@ -62,8 +64,15 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	@Transactional
-	public void deleteById(Long id) {
-		this.vehicleMarkManageMasterMapper.deleteById(id);
+	public void deleteById( ReqVehMarkIdAndUserId v) {
+		List<ResVechicleMark> list = this.findResList(v.getUserId());
+		for (ResVechicleMark resVechicleMark : list) {
+			if(resVechicleMark.getId().equals(v.getVehMarkId())) {
+				this.vehicleMarkManageMasterMapper.deleteById(v.getVehMarkId());
+				return;
+			}
+		}
+		throw new RuntimeException("该账户下没有此车牌号");
 	}
 
 	@Override
@@ -72,9 +81,8 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	}
 
 	@Override
-	public ResVechicleMark findById(Long id) {
-		ResVechicleMark manage = this.vehicleMarkManageClusterMapper.findById(id);
-		return manage;
+	public ResVechicleMark findById(Long v) {
+		return this.vehicleMarkManageClusterMapper.findById(v);
 	}
 
 	

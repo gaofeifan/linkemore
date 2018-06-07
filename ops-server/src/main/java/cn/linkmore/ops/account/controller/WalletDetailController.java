@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.account.request.ReqWalletDetailExport;
-import cn.linkmore.account.response.ResWalletDetailExport;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.account.service.WalletDetailService;
 import cn.linkmore.ops.controller.FileBaseController;
 import cn.linkmore.ops.service.DataExportService;
+import cn.linkmore.order.request.ReqWalletDetailExport;
+import cn.linkmore.order.response.ResWalletDetailExport;
 import io.swagger.annotations.Api;
 
 @Api(value = "充值明细", produces = "application/json")
@@ -39,7 +39,8 @@ public class WalletDetailController extends FileBaseController{
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	public ViewPage walletDetailList(HttpServletRequest request,ViewPageable pageable){
-		return this.walletDetailService.getDetailList(pageable);
+		ViewPage page = this.walletDetailService.getDetailList(pageable);
+		return page;
 	}
 	/**
 	 * 导出

@@ -110,11 +110,6 @@
     <if test="endTime!=null">
     <![CDATA[and c.create_time <= #{endTime}]]>
     </if> 
-     <if test="property==null">  
     order by c.create_time desc
-    </if>
-    <if test="property!=null">  
-    order by  ${property} ${direction}
-    </if>
   </select>
 </mapper>

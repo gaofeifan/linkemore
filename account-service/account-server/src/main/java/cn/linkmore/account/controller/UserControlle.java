@@ -1,5 +1,7 @@
 package cn.linkmore.account.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
@@ -173,5 +176,15 @@ public class UserControlle {
 	@RequestMapping(value = "/v2.0/page", method = RequestMethod.POST)
 	public ViewPage findPage(@RequestBody ViewPageable pageable) {
 		return this.userService.findPage(pageable);
+	}
+	
+	/**
+	 * @Description	导出
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
+	public List<ResPageUser> export(@RequestBody ViewPageable pageable) {
+		return this.userService.export(pageable);
 	}
 }

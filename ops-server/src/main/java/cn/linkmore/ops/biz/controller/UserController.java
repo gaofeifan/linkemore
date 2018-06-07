@@ -1,6 +1,7 @@
 package cn.linkmore.ops.biz.controller;
 
 import java.io.BufferedInputStream;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,11 +26,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 
+import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.UserService;
-import cn.linkmore.ops.response.ResPageUser;
 import cn.linkmore.ops.utils.ExcelUtil;
 import io.swagger.annotations.Api;
 
@@ -56,8 +57,7 @@ public class UserController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/export", method = RequestMethod.POST)
 	public void export(ViewPageable pageable, HttpServletResponse response) {
-		ViewPage viewPage = userService.findPage(pageable);
-		List<ResPageUser> list = (List<ResPageUser>) viewPage.getList();
+		List<cn.linkmore.account.response.ResPageUser> list = userService.export(pageable);
 		InputStream is = null;
 		ByteArrayOutputStream baos = null;
 		ServletOutputStream sos = null;

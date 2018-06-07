@@ -70,6 +70,11 @@
 			<artifactId>security-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>order-bean</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 			<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
