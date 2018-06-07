@@ -183,6 +183,9 @@ public class ObjectUtils {
 	 * @Return   source  原数据  target新数据  fields 原数据中的字段  replaceField 替换的字段
 	 */
 	public static <T,E> T copyObject(E source,T target,String[] fields,String[] replaceField,String[] excludeField) {
+		if(source == null ) {
+			return null;
+		}
 		if(fields != null && replaceField != null) {
 			if(fields.length != replaceField.length) {
 				throw new RuntimeException("元素数量不相等");

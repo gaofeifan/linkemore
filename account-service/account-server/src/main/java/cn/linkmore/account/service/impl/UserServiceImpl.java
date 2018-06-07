@@ -98,6 +98,7 @@ public class UserServiceImpl implements UserService {
 		UserVechicle vechicle = userVechicleClusterMapper.findByUserId(req.getUserId());
 		boolean flag = false;
 		if (vechicle == null) {
+			vechicle = new UserVechicle();
 			flag = true;
 		}
 		UserVechicle object = ObjectUtils.copyObject(req, vechicle);
@@ -115,8 +116,9 @@ public class UserServiceImpl implements UserService {
 	public ResUserDetails detail(Long userId) {
 		List<ResUserDetails> list = this.userClusterMapper.findResUserById(userId);
 		if (list.size() == 1) {
+			UserVechicle vechicle = this.userVechicleClusterMapper.findByUserId(list.get(0).getId());
 			ResUserDetails res = (ResUserDetails) list.get(0);
-			if (res != null) {
+			if (res != null && vechicle != null) {
 				Object carObj = redisService.get(CAR_BRAND_LIST);
 				if (null != carObj) {
 					// 拼装返回 车辆品牌-型号
@@ -124,13 +126,13 @@ public class UserServiceImpl implements UserService {
 					int num = 0;
 					for (Object carBrand : (List) carObj) {
 						Map m = (Map) carBrand;
-						if (m.get("id").toString().equals(res.getBrandModel())) {
+						if (m.get("id").toString().equals(vechicle.getBrandId().toString())) {
 							brandModel = brandModel + m.get("name");
 							for (Object carFirm : (List) m.get("childlist")) {
 								Map m2 = (Map) carFirm;
 								for (Object carModel : (List) m2.get("carlist")) {
 									Map m3 = (Map) carModel;
-									if (m3.get("id").toString().equals(res.getBrandModel())) {
+									if (m3.get("id").toString().equals(vechicle.getModel().toString())) {
 										brandModel = brandModel + "-" + m3.get("fullname");
 										num++;
 										break;
@@ -164,7 +166,7 @@ public class UserServiceImpl implements UserService {
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("id", bean.getUserId());
 			param.put("updateTime", new Date());
-			param.put("mobile",bean.getMobile());
+			param.put("username",bean.getMobile());
 			this.userMasterMapper.updateMobile(param);
 		} else {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
@@ -314,6 +316,25 @@ public class UserServiceImpl implements UserService {
 		param.put("pageSize", pageable.getPageSize());
 		List<ResPageUser> list = this.userClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+	
+	@Override
+	public List<ResPageUser> export(ViewPageable pageable) {
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		List<ViewFilter> filters = pageable.getFilters();
+		if(StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if(filters!=null&&filters.size()>0) {
+			for(ViewFilter filter:filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}		}
+		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		List<ResPageUser> list = this.userClusterMapper.export(param);
+		return list; 
 	}
 	
 	

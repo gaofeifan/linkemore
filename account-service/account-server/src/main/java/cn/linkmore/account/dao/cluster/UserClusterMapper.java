@@ -53,4 +53,11 @@ public interface UserClusterMapper {
 	 */
 	List<ResPageUser> findPage(Map<String, Object> param);
 
+	/**
+	 * @Description  导出数据
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPageUser> export(Map<String, Object> param);
+
 }

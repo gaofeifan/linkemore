@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.master.WalletBannerMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.order.entity.WalletBanner">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="order_index" jdbcType="SMALLINT" property="orderIndex" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, image, path, status, order_index, create_time
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_biz_wallet_banner
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.order.entity.WalletBanner">
+    insert into t_biz_wallet_banner (id, image, path, 
+      status, order_index, create_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{image,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, 
+      #{status,jdbcType=SMALLINT}, #{orderIndex,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="saveReq" parameterType="cn.linkmore.order.request.ReqWalletBanner">
+    insert into t_biz_wallet_banner (id, image, path, 
+      status, order_index, create_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{image,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, 
+      #{status,jdbcType=SMALLINT}, #{orderIndex,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.order.entity.WalletBanner">
+    insert into t_biz_wallet_banner
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="image != null">
+        image,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="orderIndex != null">
+        order_index,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="image != null">
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="orderIndex != null">
+        #{orderIndex,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.order.entity.WalletBanner">
+    update t_biz_wallet_banner
+    <set>
+      <if test="image != null">
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="orderIndex != null">
+        order_index = #{orderIndex,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.order.entity.WalletBanner">
+    update t_biz_wallet_banner
+    set image = #{image,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT},
+      order_index = #{orderIndex,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateColumnValue">
+    update t_biz_wallet_banner
+    set ${column} = ${status}
+    where id = #{bid}
+  </update>
+</mapper>

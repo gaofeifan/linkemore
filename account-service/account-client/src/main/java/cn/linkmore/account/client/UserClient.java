@@ -1,5 +1,7 @@
 package cn.linkmore.account.client;
 
+import java.util.List;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +17,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
@@ -147,4 +150,12 @@ public interface UserClient {
 	 */
 	@RequestMapping(value = "/v2.0/page", method = RequestMethod.POST)
 	public ViewPage findPage(@RequestBody ViewPageable pageable);
+	
+	/**
+	 * @Description	导出
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
+	public List<ResPageUser> export(@RequestBody ViewPageable pageable);
 }

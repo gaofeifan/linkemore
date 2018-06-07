@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.common.dao.cluster.BaseAttachmentClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.BaseAttachment">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="suffix" jdbcType="VARCHAR" property="suffix" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="size" jdbcType="INTEGER" property="size" />
+    <result column="source" jdbcType="SMALLINT" property="source" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, suffix, type, size, source, create_time
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_attachment
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+   <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select id, name, suffix, type, size, source, create_time
+    from t_base_attachment
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=SMALLINT}
+    </if>
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="findList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select id, name, order_index,create_time
+    from t_base_attachment
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=SMALLINT}
+    </if>
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
+  </select>
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_base_attachment
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=SMALLINT}
+    </if>
+  </select>
+</mapper>
