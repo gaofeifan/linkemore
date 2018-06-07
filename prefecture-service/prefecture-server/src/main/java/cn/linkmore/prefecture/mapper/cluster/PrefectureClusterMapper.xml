@@ -180,7 +180,7 @@
   
   <select id="findPage" resultMap="ResPreExcelMap"   parameterType="java.util.HashMap" >
   	select p.id,p.name,p.date_contract,p.valid_time,p.order_index,p.status,p.type,COUNT(stall.id) stall_total,
-	s.name strategyName,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit,p.category
+	s.name strategy_name,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit,p.category
 	from v_prefecture p 
 	LEFT JOIN v_stall stall on p.id=stall.pre_id 
 	LEFT JOIN v_strategy_base s on p.strategy_id = s.id
@@ -234,7 +234,7 @@
   
   <select id="findExportList" resultMap="ResPreExcelMap"   parameterType="java.util.HashMap" >
   	select p.id,p.name,p.date_contract,p.valid_time,p.order_index,p.status,COUNT(stall.id) stall_total,
-	s.name strategyName,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit
+	s.name strategy_name,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit
 	from v_prefecture p 
 	LEFT JOIN v_stall stall on p.id=stall.pre_id 
 	LEFT JOIN v_strategy_base s on p.strategy_id = s.id

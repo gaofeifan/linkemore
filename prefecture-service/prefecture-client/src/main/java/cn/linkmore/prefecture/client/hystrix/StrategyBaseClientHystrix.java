@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.client.hystrix;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import cn.linkmore.prefecture.client.StrategyBaseClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStrategy;
 import cn.linkmore.prefecture.request.ReqStrategyBase;
+import cn.linkmore.prefecture.response.ResFeeStrategy;
+import cn.linkmore.prefecture.response.ResStrategyBase;
 /**
  * 远程调用实现 - 计费策略信息
  * @author jiaohanbin
@@ -56,5 +59,17 @@ public class StrategyBaseClientHystrix implements StrategyBaseClient {
 	public ViewPage list(ViewPageable pageable) {
 		log.info("prefecture service strategy list(ViewPageable pageable) hystrix");
 		return null;
+	}
+
+	@Override
+	public List<ResStrategyBase> findList() {
+		log.info("prefecture service strategy findList() hystrix");
+		return new ArrayList<ResStrategyBase>();
+	}
+
+	@Override
+	public List<ResFeeStrategy> findSelectList() {
+		log.info("prefecture service strategy findSelectList() hystrix");
+		return new ArrayList<ResFeeStrategy>();
 	}
 }

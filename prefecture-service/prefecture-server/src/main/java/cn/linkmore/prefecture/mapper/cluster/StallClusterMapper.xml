@@ -98,4 +98,53 @@
     </if>
   </select>
   
+   <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT count(1) FROM v_stall l
+	WHERE l.pre_id = #{preId}
+    and l.stall_name = #{stallName}
+    <if test="id!=null">  
+    and l.id != #{id}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT count(1) FROM v_stall l
+	WHERE l.pre_id = #{preId}
+    <if test="status!=null">  
+    and l.status = #{status}
+    </if>
+    <if test="stallName!=null">  
+    and l.stall_name like #{stallName}
+    </if>
+    <if test="lockSn!=null">  
+    and l.lock_sn like #{lockSn}
+    </if>
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+	*
+	FROM
+		v_stall l
+	WHERE
+	l.pre_id = #{preId}
+    <if test="status!=null">  
+    and l.status = #{status}
+    </if>
+    <if test="stallName!=null">  
+    and l.stall_name like #{stallName}
+    </if>
+    <if test="lockSn!=null">  
+    and l.lock_sn like #{lockSn}
+    </if>
+    <if test="property==null">  
+     order by l.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  l.${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
 </mapper>

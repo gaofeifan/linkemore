@@ -177,12 +177,6 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public Tree findTree() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<ViewFilter> filters = pageable.getFilters();
@@ -255,7 +249,7 @@ public class StallServiceImpl implements StallService {
 		lock.setStallId(stall.getId());
 		stall.setUpdateTime(now);
 		StallLock stallLock = new StallLock();
-		stallLock = ObjectUtils.copyObject(stall, stallLock);
+		stallLock = ObjectUtils.copyObject(lock, stallLock);
 		stallLockMasterMapper.updateBind(stallLock);
 		
 		Stall sta = new Stall();
@@ -329,6 +323,6 @@ public class StallServiceImpl implements StallService {
 		lock.setPrefectureId(stall.getPreId());
 		lock.setBindTime(now);
 		lock.setStallId(stall.getId());
-		stallLockMasterMapper.updateBind(lock);
+	    stallLockMasterMapper.updateBind(lock);
 	}
 }

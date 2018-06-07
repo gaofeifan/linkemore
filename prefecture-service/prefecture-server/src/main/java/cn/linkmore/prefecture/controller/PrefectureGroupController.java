@@ -61,9 +61,18 @@ public class PrefectureGroupController {
 	/**
 	 * 启用
 	 */
-	@RequestMapping(value = "/v2.0/start", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids) {
+		return this.preGroupService.start(ids);
+	}
+	
+	/**
+	 * 启用
+	 */
+	@RequestMapping(value = "/v2.0/start", method = RequestMethod.POST)
+	@ResponseBody
+	public int start(@RequestBody List<Long> ids) {
 		return this.preGroupService.start(ids);
 	}
 	/**

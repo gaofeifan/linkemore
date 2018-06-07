@@ -20,6 +20,8 @@ import cn.linkmore.prefecture.fee.OrderFee;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStrategy;
 import cn.linkmore.prefecture.request.ReqStrategyBase;
+import cn.linkmore.prefecture.response.ResFeeStrategy;
+import cn.linkmore.prefecture.response.ResStrategyBase;
 import cn.linkmore.prefecture.service.StrategyBaseService;
 
 /**
@@ -112,5 +114,31 @@ public class StrategyBaseController {
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable) {
 		return this.strategyBaseService.findPage(pageable);
+	}
+	
+	/**
+	 * 列表
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/find_list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStrategyBase> findList(){
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("status", 1);
+		return this.strategyBaseService.findList(param);
+	}
+	
+	/**
+	 * 计费策略下拉列表
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/select_list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResFeeStrategy> findSelectList() {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("status", 1);
+		return this.strategyBaseService.findSelectList(param);
 	}
 }
