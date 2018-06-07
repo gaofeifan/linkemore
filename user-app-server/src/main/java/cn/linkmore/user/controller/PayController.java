@@ -16,6 +16,7 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.user.request.ReqPayConfirm;
+import cn.linkmore.user.response.ResOrderDetail;
 import cn.linkmore.user.response.ResPayCheckout;
 import cn.linkmore.user.response.ResPayConfirm;
 import cn.linkmore.user.service.PayService;
@@ -72,11 +73,11 @@ public class PayController {
 	@ApiOperation(value = "校验支付", notes = "校验支付[订单ID不为空]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/verify", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<?> verify(@RequestParam("orderId") Long orderId, HttpServletRequest request) {
-		ResponseEntity<?> response = null;
+	public ResponseEntity<ResOrderDetail> verify(@RequestParam("orderId") Long orderId, HttpServletRequest request) {
+		ResponseEntity<ResOrderDetail> response = null;
 		try { 
-			this.payService.verify(orderId,request);
-			response = ResponseEntity.success(null, request);
+			ResOrderDetail detail = this.payService.verify(orderId,request);
+			response = ResponseEntity.success(detail, request);
 		} catch (BusinessException e) { 
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) { 

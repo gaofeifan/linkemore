@@ -140,4 +140,19 @@ public class ResCoupon {
 		this.conditionAmount = conditionAmount;
 	}  
 	
+	public void copy(cn.linkmore.coupon.response.ResCoupon res) {
+		this.setConditionAmount(res.getConditionAmount());
+		this.setConditionId(res.getConditionId());
+		this.setCreateTime(res.getCreateTime());
+		this.setValidTime(res.getValidTime());
+		this.setDiscount(res.getDiscount());
+		this.setFaceAmount(res.getFaceAmount());
+		this.setName(res.getName());
+		this.setPreLimit(res.getPreLimit());
+		this.setPreName(res.getPreName());
+		this.setPreNameList(res.getPreNameList());
+		this.setId(res.getId());
+		this.setType(res.getType());
+	}
+	
 }
