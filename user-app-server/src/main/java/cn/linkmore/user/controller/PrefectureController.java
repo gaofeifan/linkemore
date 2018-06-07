@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,7 +38,7 @@ public class PrefectureController {
 	@ApiOperation(value = "地图车区列表", notes = "根据城市ID及经伟度得到周边车区列表[因车区数量少，现为全部车区]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/map/list", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<List<ResPreCity>> list(@RequestBody ReqPrefecture rp, HttpServletRequest request) {
+	public ResponseEntity<List<ResPreCity>> list(@Validated @RequestBody ReqPrefecture rp, HttpServletRequest request) {
 		ResponseEntity<List<ResPreCity>> response = null;
 		try { 
 			List<ResPreCity> list = this.prefectureService.list(rp, request);
@@ -54,7 +55,7 @@ public class PrefectureController {
 	@ApiOperation(value = "车区计费详情", notes = "根据车区ID车区计费策略", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/strategy", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<ResPrefectureStrategy> findStrategyById(@RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
+	public ResponseEntity<ResPrefectureStrategy> findStrategyById(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
 		ResponseEntity<ResPrefectureStrategy> response = null;
 		try { 
 			ResPrefectureStrategy strategy = this.prefectureService.findStrategyById(preId, request);
