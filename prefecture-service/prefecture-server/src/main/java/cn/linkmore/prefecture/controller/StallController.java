@@ -77,7 +77,7 @@ public class StallController {
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method = RequestMethod.PUT)
 	public Boolean downlock(@RequestParam("stallId") Long stallId) {
-		log.info("downlock:{} 。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。", stallId);
+		log.info("downlock:{} .......................................", stallId);
 		return this.stallService.downlock(stallId);
 	}
 
@@ -218,5 +218,11 @@ public class StallController {
 			}
 		}
 		return 0;
+	}
+	
+	@RequestMapping(value = "/v2.0/save_bind", method = RequestMethod.POST)
+	@ResponseBody
+	public void saveAndBind(@RequestParam("preId") Long preId,@RequestParam("stallName") String stallName,@RequestParam("sn") String sn) {
+		this.stallService.saveAndBind(preId, stallName, sn);
 	}
 }

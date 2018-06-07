@@ -73,9 +73,7 @@ public class StallLockServiceImpl implements StallLockService {
 
 	@Override
 	public int checkSn(String sn) {
-		Map<String, Object> param = new HashMap<>();
-		param.put("sn", sn);
-		return this.stallLockClient.checkSn(param);
+		return this.stallLockClient.checkSn(sn);
 	}
 
 	@Override

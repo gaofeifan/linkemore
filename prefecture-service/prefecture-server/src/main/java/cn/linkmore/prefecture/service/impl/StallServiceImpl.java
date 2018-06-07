@@ -310,7 +310,7 @@ public class StallServiceImpl implements StallService {
 		StallLock lock = new StallLock();
 		lock.setSn(sn);
 		lock.setCreateTime(now);
-		this.stallLockMasterMapper.insertAndGetId(lock);
+		this.stallLockMasterMapper.save(lock);
 		ReqStall stall = new ReqStall();
 		stall.setStallName(stallName);
 		stall.setLockStatus(null);

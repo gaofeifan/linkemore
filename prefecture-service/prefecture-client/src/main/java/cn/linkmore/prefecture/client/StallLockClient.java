@@ -56,7 +56,7 @@ public interface StallLockClient {
 	
 	@RequestMapping(value = "/v2.0/check_sn", method = RequestMethod.POST)
 	@ResponseBody
-	public int checkSn(@RequestBody Map<String, Object> param);
+	public int checkSn(@RequestParam("sn") String sn);
 	
 	@RequestMapping(value = "/v2.0/check_former_sn", method = RequestMethod.POST)
 	@ResponseBody

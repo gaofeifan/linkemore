@@ -66,7 +66,7 @@ public class StallLockClientHystrix implements StallLockClient {
 	}
 
 	@Override
-	public int checkSn(Map<String, Object> param) {
+	public int checkSn(String sn) {
 		log.info("prefecture service stall_lock checkSn() hystrix");
 		return 0;
 	}
