@@ -1,4 +1,4 @@
-package cn.linkmore.account.client.hystrix;
+package cn.linkmore.order.client.hystrix;
 
 import java.util.List;
 
@@ -6,12 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import cn.linkmore.account.client.WalletBannerClient;
-import cn.linkmore.account.request.ReqUpdateStatus;
-import cn.linkmore.account.request.ReqWalletBanner;
-import cn.linkmore.account.response.ResWalletBanner;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.order.client.WalletBannerClient;
+import cn.linkmore.order.request.ReqUpdateStatus;
+import cn.linkmore.order.request.ReqWalletBanner;
+import cn.linkmore.order.response.ResWalletBanner;
 /**
  * 钱包管理--容错
  * @author   GFF

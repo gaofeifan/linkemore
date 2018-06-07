@@ -1,4 +1,4 @@
-package cn.linkmore.account.response;
+package cn.linkmore.order.response;
 
 import java.math.BigDecimal;
 import java.util.Date;

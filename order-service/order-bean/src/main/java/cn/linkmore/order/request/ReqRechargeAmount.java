@@ -1,4 +1,4 @@
-package cn.linkmore.account.request;
+package cn.linkmore.order.request;
 
 import java.math.BigDecimal;
 

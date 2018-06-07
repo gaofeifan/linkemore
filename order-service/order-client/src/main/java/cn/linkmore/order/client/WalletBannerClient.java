@@ -1,4 +1,4 @@
-package cn.linkmore.account.client;
+package cn.linkmore.order.client;
 
 import java.util.List;
 
@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import cn.linkmore.account.client.hystrix.WalletBannerClientHystrix;
-import cn.linkmore.account.request.ReqUpdateStatus;
-import cn.linkmore.account.request.ReqWalletBanner;
-import cn.linkmore.account.response.ResWalletBanner;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
+import cn.linkmore.order.client.hystrix.WalletBannerClientHystrix;
+import cn.linkmore.order.request.ReqUpdateStatus;
+import cn.linkmore.order.request.ReqWalletBanner;
+import cn.linkmore.order.response.ResWalletBanner;
  
 /**
  * 分享记录
@@ -21,7 +21,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "account-server", path = "/banner", fallback=WalletBannerClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "order-server", path = "/banner", fallback=WalletBannerClientHystrix.class,configuration = FeignConfiguration.class)
 public interface WalletBannerClient {
 
 	@RequestMapping(value = "/v2.0" ,method = RequestMethod.POST)

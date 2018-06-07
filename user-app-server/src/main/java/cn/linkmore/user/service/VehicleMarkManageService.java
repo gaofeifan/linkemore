@@ -30,17 +30,18 @@ public interface VehicleMarkManageService {
 	void save(cn.linkmore.user.request.ReqVehicleMark bean, HttpServletRequest request);
 
 	/**
+	 * @param request 
 	 * @Description  删除
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void deleteById(Long id);
+	void deleteById(Long id, HttpServletRequest request);
 
 	/**
 	 * @Description  根据id查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResVechicleMark selectById(Long id);
+	ResVechicleMark selectById(Long id, HttpServletRequest request);
 
 }

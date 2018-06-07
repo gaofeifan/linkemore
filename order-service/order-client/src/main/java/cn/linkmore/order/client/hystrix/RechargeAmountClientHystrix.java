@@ -1,15 +1,15 @@
-package cn.linkmore.account.client.hystrix;
+package cn.linkmore.order.client.hystrix;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import cn.linkmore.account.client.RechargeAmountClient;
-import cn.linkmore.account.request.ReqRechargeAmount;
-import cn.linkmore.account.request.RequpdateColumnValue;
-import cn.linkmore.account.response.ResRechargeAmount;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.order.client.RechargeAmountClient;
+import cn.linkmore.order.request.ReqRechargeAmount;
+import cn.linkmore.order.request.RequpdateColumnValue;
+import cn.linkmore.order.response.ResRechargeAmount;
 
 /**
  * 充值面额--远程调用

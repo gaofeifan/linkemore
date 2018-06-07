@@ -1,5 +1,8 @@
 package cn.linkmore.ops.biz.service;
 
+import java.util.List;
+
+import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 
@@ -18,5 +21,7 @@ public interface UserService {
 	 * @Version  v2.0
 	 */
 	ViewPage findPage(ViewPageable pageable);
+
+	List<ResPageUser> export(ViewPageable pageable);
 
 }

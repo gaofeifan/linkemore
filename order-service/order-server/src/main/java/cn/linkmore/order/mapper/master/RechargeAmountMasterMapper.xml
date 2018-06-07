@@ -16,7 +16,7 @@
     delete from t_acc_recharge_amount
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.RechargeAmount">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.request.ReqRechargeAmount">
     insert into t_acc_recharge_amount (id, payment, gift, 
       order_index, checked, status
       )
@@ -33,5 +33,10 @@
       checked = #{checked,jdbcType=BIT},
       status = #{status,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateColumnValue" parameterType="cn.linkmore.order.request.ReqUpdateSql">
+    update t_acc_recharge_amount
+    set ${column} = ${columnValue}
+    where 1=1  ${sql}
   </update>
 </mapper>

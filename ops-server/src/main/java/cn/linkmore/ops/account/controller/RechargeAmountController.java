@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.account.request.ReqRechargeAmount;
-import cn.linkmore.account.response.ResRechargeAmount;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.account.service.RechargeAmountService;
+import cn.linkmore.order.request.ReqRechargeAmount;
+import cn.linkmore.order.response.ResRechargeAmount;
 import io.swagger.annotations.Api;
 
 /**
@@ -142,8 +142,6 @@ public class RechargeAmountController {
 	public ViewMsg updateData( ReqRechargeAmount bean , HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
-			ResRechargeAmount amount =  amountService.queryDetail(bean.getId());
-    		String db = amount.toString();
     		amountService.updateData(bean);
     		msg = new ViewMsg("操作成功",true);
     	} catch (RuntimeException e) {

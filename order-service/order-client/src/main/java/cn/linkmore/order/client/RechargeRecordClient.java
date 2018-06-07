@@ -1,4 +1,4 @@
-package cn.linkmore.account.client;
+package cn.linkmore.order.client;
 
 import java.util.List;
 
@@ -6,13 +6,14 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.linkmore.account.client.hystrix.RechargeRecordClientHystrix;
-import cn.linkmore.account.request.ReqRechargeRecordExcel;
-import cn.linkmore.account.response.ResRechargeRecordExcel;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
+import cn.linkmore.order.client.hystrix.RechargeRecordClientHystrix;
+import cn.linkmore.order.request.ReqRechargeRecordExcel;
+import cn.linkmore.order.response.ResRechargeRecordExcel;
 
 /**
  * 储值记录--远程调用
@@ -21,7 +22,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date 2018年5月18日
  * @Version v2.0
  */
-@FeignClient(value = "account-server", path = "/record", fallback = RechargeRecordClientHystrix.class, configuration = FeignConfiguration.class)
+@FeignClient(value = "order-server", path = "/record", fallback = RechargeRecordClientHystrix.class, configuration = FeignConfiguration.class)
 public interface RechargeRecordClient {
 
 	/**
@@ -29,6 +30,7 @@ public interface RechargeRecordClient {
 	 * @Author GFF
 	 * @Version v2.0
 	 */
+	@ResponseBody
 	@RequestMapping(value="/v2.0/page",method=RequestMethod.POST)
 	ViewPage findPage(@RequestBody ViewPageable pageable);
 
@@ -37,6 +39,7 @@ public interface RechargeRecordClient {
 	 * @Author GFF
 	 * @Version v2.0
 	 */
+	@ResponseBody
 	@RequestMapping(value="/v2.0/export",method=RequestMethod.POST)
 	List<ResRechargeRecordExcel> findExportList(@RequestBody ReqRechargeRecordExcel bean);
 

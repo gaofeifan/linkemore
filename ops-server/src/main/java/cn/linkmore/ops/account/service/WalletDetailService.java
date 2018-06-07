@@ -1,9 +1,10 @@
 package cn.linkmore.ops.account.service;
 import java.util.List;
-import cn.linkmore.account.request.ReqWalletDetailExport;
-import cn.linkmore.account.response.ResWalletDetailExport;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.order.request.ReqWalletDetailExport;
+import cn.linkmore.order.response.ResWalletDetailExport;
 
 /**
  * 充值明细--接口

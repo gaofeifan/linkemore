@@ -5,8 +5,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.user.service.VehicleMarkManageService;
 import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
@@ -30,6 +34,7 @@ import io.swagger.annotations.ApiParam;
 @Api(tags="Plate number",description="车牌号管理")
 @RestController
 @RequestMapping("/plate-numbers")
+@Validated
 public class VehicleMarkController{
 
 	@Resource
@@ -43,7 +48,7 @@ public class VehicleMarkController{
 	 */
 	@ApiOperation(value="新增",notes="车牌号必填,车牌号规则校验", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
-	public ResponseEntity<?> create( @RequestBody cn.linkmore.user.request.ReqVehicleMark bean,HttpServletRequest request) {
+	public ResponseEntity<?> create( @RequestBody @Validated cn.linkmore.user.request.ReqVehicleMark bean,HttpServletRequest request) {
 		this.vehicleMarkManageService.save(bean,request);
 		return ResponseEntity.success(null, request);
 	}
@@ -55,8 +60,12 @@ public class VehicleMarkController{
 	 */
 	@ApiOperation(value="删除",notes="根据id删除", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<?> delete(@ApiParam(value="id",required=true) @NotBlank(message="id不能为空")  @RequestParam("id") Long id,HttpServletRequest request){
-		this.vehicleMarkManageService.deleteById(id);
+	public ResponseEntity<?> delete(@ApiParam(value="id",required=true) @NotNull(message="id不能为空") @Digits(message="请输入整数", fraction = 11111110, integer = 1)  @RequestParam("id") Long id,HttpServletRequest request){
+		try {
+			this.vehicleMarkManageService.deleteById(id,request);
+		} catch (Exception e) {
+			return ResponseEntity.fail(StatusEnum.UNAUTHORIZED.code, "此账号下没有该车牌号", request);
+		}
 		return ResponseEntity.success(null, request);
 	}
 	

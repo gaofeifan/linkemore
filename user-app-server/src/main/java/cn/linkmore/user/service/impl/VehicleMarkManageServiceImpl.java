@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.client.VehicleMarkClient;
+import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.redis.RedisService;
@@ -45,13 +46,19 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	}
 
 	@Override
-	public void deleteById(Long id) {
-		vehicleMarkClient.delete(id);
+	public void deleteById(Long id, HttpServletRequest request) {
+		ReqVehMarkIdAndUserId v = new ReqVehMarkIdAndUserId();
+		v.setUserId(userService.getCache(request).getId());
+		v.setVehMarkId(id);
+		vehicleMarkClient.delete(v);
 	}
 
 	@Override
-	public ResVechicleMark selectById(Long id) {
-		return this.vehicleMarkClient.findById(id);
+	public ResVechicleMark selectById(Long id, HttpServletRequest request) {
+		ReqVehMarkIdAndUserId v = new ReqVehMarkIdAndUserId();
+		v.setUserId(userService.getCache(request).getId());
+		v.setVehMarkId(id);
+		return this.vehicleMarkClient.findById(v);
 	}
 
 	

@@ -3,12 +3,13 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
-import cn.linkmore.account.client.WalletDetailClient;
-import cn.linkmore.account.request.ReqWalletDetailExport;
-import cn.linkmore.account.response.ResWalletDetailExport;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.account.service.WalletDetailService;
+import cn.linkmore.order.client.WalletDetailClient;
+import cn.linkmore.order.request.ReqWalletDetailExport;
+import cn.linkmore.order.response.ResWalletDetailExport;
 /**
  * 充值明细--接口实现
  * @author   GFF
@@ -23,12 +24,14 @@ public class WalletDetailServiceImpl implements WalletDetailService {
 	
 	@Override
 	public List<ResWalletDetailExport> getListByTime(ReqWalletDetailExport bean) {
-		return this.walletDetailClient.getListByTime(bean);
+		List<ResWalletDetailExport> list = this.walletDetailClient.getListByTime(bean);
+		return list;
 	}
 
 	@Override
 	public ViewPage getDetailList( ViewPageable pageable) {
-		return this.walletDetailClient.list(pageable);
+		ViewPage page = this.walletDetailClient.list(pageable);
+		return page;
 	}
 	
 	

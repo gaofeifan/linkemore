@@ -18,4 +18,31 @@
     from t_acc_recharge_amount
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+    <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+     from t_acc_recharge_amount
+    where 1 = 1 
+    <if test="status!=null">  
+    and status = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="property==null">  
+     order by order_index desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+     from t_acc_recharge_amount
+    where 1 = 1 
+    <if test="status!=null">  
+   	 and status = #{status,jdbcType=VARCHAR}
+    </if>   
+  </select>
 </mapper>

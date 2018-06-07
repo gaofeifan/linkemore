@@ -1,4 +1,4 @@
-package cn.linkmore.account.client;
+package cn.linkmore.order.client;
 
 import java.util.List;
 
@@ -7,13 +7,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import cn.linkmore.account.client.hystrix.ShareClientHystrix;
-import cn.linkmore.account.client.hystrix.WalletDetailClientHystrix;
-import cn.linkmore.account.request.ReqWalletDetailExport;
-import cn.linkmore.account.response.ResWalletDetailExport;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
+import cn.linkmore.order.client.hystrix.WalletDetailClientHystrix;
+import cn.linkmore.order.request.ReqWalletDetailExport;
+import cn.linkmore.order.response.ResWalletDetailExport;
  
 /**
  * 充值明细--远程调用
@@ -21,7 +20,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "account-server", path = "/wallet_detail", fallback=WalletDetailClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "order-server", path = "/wallet_detail", fallback=WalletDetailClientHystrix.class,configuration = FeignConfiguration.class)
 public interface WalletDetailClient {
 	
 	/**
