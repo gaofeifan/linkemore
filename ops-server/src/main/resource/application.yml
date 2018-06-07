@@ -24,6 +24,12 @@ feign:
 security:
   basic:
     enabled: false 
+    
+multipart:  
+  enabled: true  
+  max-file-size: 50mb  
+  max-request-size: 50mb 
+  
 swagger:
   enable: true
   title: 运营管理后台接口文档
