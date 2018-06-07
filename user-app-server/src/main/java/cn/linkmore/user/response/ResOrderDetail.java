@@ -125,10 +125,9 @@ public class ResOrderDetail{
 		this.actualAmount = actualAmount;
 	}
 	@JsonIgnore
-	public void copy(ResUserOrder ruo) { 
-		this.setPrefectureName(ruo.getPreName());
-		this.setPlateNumber(ruo.getPlateNo());
-		this.setStallName(ruo.getStallName());
+	public void copy(ResUserOrder ruo) {  
+		this.setOrderNo(ruo.getOrderNo());
+		this.setPlateNumber(ruo.getPlateNo()); 
 		this.setOrderTime(ruo.getCreateTime());
 		this.setId(ruo.getId());
 		this.setStartTime(ruo.getBeginTime()); 
@@ -137,7 +136,7 @@ public class ResOrderDetail{
 		this.setStatus(ruo.getStatus().shortValue());
 		this.setStallName(ruo.getStallName());
 		this.setPrefectureName(ruo.getPreName());   
-		this.setActualAmount(ruo.getActualAmount());
+		this.setTotalAmount(ruo.getTotalAmount());
 		this.setActualAmount(ruo.getActualAmount());
 		this.setCouponAmount(ruo.getCouponAmount());
 		this.setPayType(ruo.getPayType().shortValue());

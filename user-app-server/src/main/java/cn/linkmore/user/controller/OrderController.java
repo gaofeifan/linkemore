@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +43,8 @@ import io.swagger.annotations.ApiOperation;
 @Validated
 public class OrderController {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private OrderService orderService;
 
@@ -117,12 +121,11 @@ public class OrderController {
 	@ApiOperation(value = "订单详情", notes = "订单详情[订单ID须为数字]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<ResOrderDetail> detail(
-			@NotBlank(message="订单号不能为空") 
+	public ResponseEntity<ResOrderDetail> detail( 
 			@Min(value=0,message="订单ID为大于0的长整数")
 			@RequestParam("orderId") Long orderId,HttpServletRequest request) {
 		ResponseEntity<ResOrderDetail> response = null;
-		try {
+		try { 
 			ResOrderDetail od = this.orderService.detail(orderId,request);
 			response = ResponseEntity.success(od, request);
 		} catch (BusinessException e) {
