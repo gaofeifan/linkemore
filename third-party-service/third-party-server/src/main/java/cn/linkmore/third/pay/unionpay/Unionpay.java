@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.linkmore.third.config.UnionPayConfig;
+import cn.linkmore.third.pay.PayConstants;
 import cn.linkmore.third.request.ReqApplePay; 
 
 /**
@@ -30,7 +31,7 @@ public class Unionpay {
 		map.put("bizType", "000802");
 		map.put("accessType", "0");
 		map.put("merId", unionpayConfig.getMerId());
-		map.put("backUrl", unionpayConfig.getLocalServiceUrl()+"/pay_order/apple_async_callback");
+		map.put("backUrl", PayConstants.getOrderAsyncApplePayUrl());
 		map.put("orderId", rup.getNumber());
 		map.put("currencyCode", "156");
 		map.put("txnAmt",new Long(rup.getAmount().longValue()*100).toString());
@@ -44,24 +45,24 @@ public class Unionpay {
 		}
 		return tn;
 	} 
-	
-	public static void main(String[] args){
-		UnionPayConfig config = new UnionPayConfig();
-		config.setCertDir("");
-		config.setCertPath("cert/acp_test_sign.pfx");
-		config.setCertPwd("000000");
-		config.setCertType("PKCS12");
-		config.setEncryptCertPath("cert/acp_test_enc.cer");
-		config.setLocalServiceUrl("http://app.linkmoreparking.cn");
-		config.setMerId("852331048169991");
-		config.setMiddleCertPath("cert/acp_test_middle.cer");
-		config.setOnline(false);
-		config.setUnionServiceUrl("https://gateway.test.95516.com");
-		config.setRootCertPath("cert/acp_test_root.cer"); 
-//		ReqApplePay rup = new ReqApplePay("2018030910000004",1.5D,new Date().getTime()); 
-//		create(rup,config);
-		
-	}
+//	
+//	public static void main(String[] args){
+//		UnionPayConfig config = new UnionPayConfig();
+//		config.setCertDir("");
+//		config.setCertPath("cert/acp_test_sign.pfx");
+//		config.setCertPwd("000000");
+//		config.setCertType("PKCS12");
+//		config.setEncryptCertPath("cert/acp_test_enc.cer");
+//		config.setLocalServiceUrl("http://app.linkmoreparking.cn");
+//		config.setMerId("852331048169991");
+//		config.setMiddleCertPath("cert/acp_test_middle.cer");
+//		config.setOnline(false);
+//		config.setUnionServiceUrl("https://gateway.test.95516.com");
+//		config.setRootCertPath("cert/acp_test_root.cer"); 
+////		ReqApplePay rup = new ReqApplePay("2018030910000004",1.5D,new Date().getTime()); 
+////		create(rup,config);
+//		
+//	}
 	
 	public static boolean query(ReqApplePay rup,UnionPayConfig unionPayConfig){ 
 		SDKConfig.init(unionPayConfig);

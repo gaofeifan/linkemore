@@ -17,14 +17,17 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.TradePayType;
+import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.client.PayClient;
 import cn.linkmore.order.request.ReqOrderConfirm;
 import cn.linkmore.order.response.ResOrderCheckout;
 import cn.linkmore.order.response.ResOrderConfirm;
 import cn.linkmore.order.response.ResOrderWeixin;
+import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.common.UserCache;
 import cn.linkmore.user.request.ReqPayConfirm;
+import cn.linkmore.user.response.ResOrderDetail;
 import cn.linkmore.user.response.ResPayCheckout;
 import cn.linkmore.user.response.ResPayConfirm;
 import cn.linkmore.user.response.ResPayWeixin;
@@ -38,6 +41,9 @@ public class PayServiceImpl implements PayService {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private RedisService redisService; 
+	
+	@Autowired
+	private OrderClient orderClient;
 	
 	@Autowired
 	private PayClient payClient;
@@ -104,10 +110,19 @@ public class PayServiceImpl implements PayService {
 	}
 
 	@Override
-	public void verify(Long orderId, HttpServletRequest request) {
+	public ResOrderDetail verify(Long orderId, HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-		this.payClient.verify(orderId, ru.getId());
+		if(this.payClient.verify(orderId, ru.getId())) {
+			ResUserOrder order = this.orderClient.detail(orderId); 
+			if(order.getUserId().intValue()!=ru.getId().intValue()) {
+				return null;
+			} 
+			ResOrderDetail detail = new ResOrderDetail();
+			detail.copy(order); 
+			return detail;
+		}
+		return null;
 	}
 
 	@Override

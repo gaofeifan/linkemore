@@ -31,17 +31,13 @@ import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
 import cn.linkmore.order.dao.cluster.AccountClusterMapper;
-import cn.linkmore.order.dao.cluster.AccountHistoryClusterMapper;
 import cn.linkmore.order.dao.cluster.CompanyTradeRecordClusterMapper;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
-import cn.linkmore.order.dao.cluster.OrdersDetailClusterMapper;
 import cn.linkmore.order.dao.cluster.RechargeRecordClusterMapper;
 import cn.linkmore.order.dao.cluster.TradeRecordClusterMapper;
-import cn.linkmore.order.dao.cluster.WalletDetailClusterMapper;
 import cn.linkmore.order.dao.master.AccountHistoryMasterMapper;
 import cn.linkmore.order.dao.master.AccountMasterMapper;
 import cn.linkmore.order.dao.master.CompanyTradeRecordMasterMapper;
-import cn.linkmore.order.dao.master.OrdersDetailMasterMapper;
 import cn.linkmore.order.dao.master.OrdersMasterMapper;
 import cn.linkmore.order.dao.master.RechargeRecordMasterMapper;
 import cn.linkmore.order.dao.master.TradeRecordMasterMapper;
@@ -50,7 +46,6 @@ import cn.linkmore.order.entity.Account;
 import cn.linkmore.order.entity.AccountHistory;
 import cn.linkmore.order.entity.CompanyTradeRecord;
 import cn.linkmore.order.entity.Orders;
-import cn.linkmore.order.entity.OrdersDetail;
 import cn.linkmore.order.entity.RechargeRecord;
 import cn.linkmore.order.entity.TradeRecord;
 import cn.linkmore.order.entity.WalletDetail;
@@ -93,12 +88,7 @@ public class PayServiceImpl implements PayService {
 	@Autowired
 	private StallClient stallClient; 
 	@Autowired
-	private OrdersClusterMapper ordersClusterMapper;
-	@Autowired
-	private OrdersDetailMasterMapper ordersDetailMasterMapper;
-	
-	@Autowired
-	private OrdersDetailClusterMapper ordersDetailClusterMapper;
+	private OrdersClusterMapper ordersClusterMapper; 
 	@Autowired
 	private OrdersMasterMapper orderMasterMapper; 
 	
@@ -126,14 +116,10 @@ public class PayServiceImpl implements PayService {
 	
 	@Autowired
 	private WalletDetailMasterMapper walletDetailMasterMapper; 
+	 
 	
 	@Autowired
-	private WalletDetailClusterMapper walletDetailClusterMapper;
-	
-	@Autowired
-	private AccountHistoryMasterMapper accountHistoryMasterMapper;
-	@Autowired
-	private AccountHistoryClusterMapper accountHistoryClusterMapper;
+	private AccountHistoryMasterMapper accountHistoryMasterMapper; 
 	
 	@Autowired
 	private CompanyTradeRecordMasterMapper companyTradeRecordMasterMapper;
@@ -269,22 +255,29 @@ public class PayServiceImpl implements PayService {
 			orderPayType = OrderPayType.FREE.type;
 		} else if ((amount - (null == coupon ? 0.00 : faceAmount)) <= 0) { 
 			orderPayType = OrderPayType.COUPON.type;
-		}
-		order.setPayType(orderPayType);
-		order.setActualAmount(new BigDecimal(amount - (null == coupon ? 0.00 : faceAmount))); 
-		OrdersDetail od = this.ordersDetailClusterMapper.findByOrderId(order.getId());
-		if (null != coupon) {
-			od.setCouponsId(coupon.getId());
-			od.setCouponsMoney(new BigDecimal(faceAmount));
 		} else {
-			od.setCouponsId(null);
-			od.setCouponsMoney(new BigDecimal(0.0));
+			orderPayType = OrderPayType.ACCOUNT.type;
+		} 
+		order.setActualAmount(new BigDecimal(amount - (null == coupon ? 0.00 : faceAmount)));  
+		if (null != coupon) {
+			order.setCouponId(coupon.getId());
+			order.setCouponAmount(new BigDecimal(faceAmount));
+		} else {
+			order.setCouponId(null);
+			order.setCouponAmount(new BigDecimal(0.0));
 		}
-		ordersDetailMasterMapper.update(od);
+		 
+		Date endTime = new Date();
+		if(order.getStatusHistory()!=null) {
+			endTime = order.getStatusTime();
+		}
 		// 判断实际支付金额是否为0 停车费-优惠券金额 为0则直接将订单状态改为已支付 做结账处理
 		if ((order.getActualAmount().doubleValue() <= 0)) {
 			// 修改订单状态为已支付并保存
 			order.setActualAmount(new BigDecimal(0.0d));
+			order.setPayType(orderPayType); 
+			order.setEndTime(endTime); 
+			this.updateConfirm(order);
 			// 结账
 			this.checkOutOrder(order, null,null); 
 			// 返回app信息
@@ -299,7 +292,7 @@ public class PayServiceImpl implements PayService {
 		if(account == null){
 			account = initAccount(order.getUserId());
 		} 
-		if(roc.getPayType()== OrderPayType.ACCOUNT.type ){ 
+		if(roc.getPayType()== TradePayType.ACCOUNT.type ){ 
 			Double usableAmount = account.getAmount().doubleValue();
 			if ((order.getActualAmount().doubleValue() <= usableAmount)) {
 				// 调起结账接口
@@ -311,7 +304,13 @@ public class PayServiceImpl implements PayService {
 				wd.setCreateTime(new Date());
 				this.walletDetailMasterMapper.save(wd);
 				log.info("order:{}",JsonUtil.toJson(wd));
+				
+				order.setPayType(orderPayType); 
+				order.setEndTime(endTime); 
+				this.updateConfirm(order);
+				
 				this.checkOutOrder(order,null,wd);
+				
 				confirm = new ResOrderConfirm();
 				confirm.setAmount(new BigDecimal(0.0D)); 
 				confirm.setNumber(null); 
@@ -341,6 +340,10 @@ public class PayServiceImpl implements PayService {
 		 * 1.获取待支付订单 2.生成交易记录 根据订单和交易记录生成移动端请求参数列表
 		 */
 		try {
+			orderPayType = OrderPayType.ACCOUNT.type+roc.getPayType(); 
+			order.setPayType(orderPayType); 
+			order.setEndTime(endTime); 
+			this.updateConfirm(order); 
 			// 支付宝 支付
 			if (roc.getPayType() ==TradePayType.ALIPAY.type) {
 				ReqAppAlipay alipay = new ReqAppAlipay();
@@ -386,14 +389,26 @@ public class PayServiceImpl implements PayService {
 				confirm.setApple(tn);
 			}else{
 				throw new BusinessException(StatusEnum.ORDER_UNKNOW_PAY);
-			}
+			} 
+			
 		} catch (BusinessException e) { 
 			throw e;
-		} catch (Exception e) { 
-			e.printStackTrace();
+		} catch (Exception e) {  
 			throw new BusinessException(StatusEnum.ORDER_PAY_SIGN_ERROR);
 		}
 		return confirm; 
+	}
+	
+	private void updateConfirm(Orders order) {
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		param.put("id", order.getId());
+		param.put("payType", order.getPayType());
+		param.put("couponId", order.getCouponId());
+		param.put("couponAmount", order.getCouponAmount());
+		param.put("endTime", order.getEndTime());
+		param.put("totalAmount", order.getTotalAmount());
+		param.put("actualAmount", order.getActualAmount()); 
+		this.orderMasterMapper.updateConfirm(param);
 	}
 	
 	@Transactional(rollbackFor = RuntimeException.class)
@@ -554,11 +569,9 @@ public class PayServiceImpl implements PayService {
 		 * 检查车位状态是否为预下线，-->下线 否则 --> 可租用 如果订单为已挂起状态，不修改车位状态
 		 */
 
-		OrdersDetail od = ordersDetailClusterMapper.findByOrderId(order.getId());
+//		OrdersDetail od = ordersDetailClusterMapper.findByOrderId(order.getId());
 		if (order.getStatus() == OrderStatus.UNPAID.value) { 
 			this.stallClient.checkout(order.getStallId());
-			od.setEndTime(current);
-			od.setUpdateTime(current);  
 			try { 
 				new Thread(new LockUpThread( order.getStallId())).start();
 			} catch (Exception e) {
@@ -566,19 +579,24 @@ public class PayServiceImpl implements PayService {
 			}
 		} 
 		// 更新订单
-		order.setStatus(OrderStatus.COMPLETED.value);
+		order.setStatus(OrderStatus.COMPLETED.value); 
 		order.setUpdateTime(current);
-		this.orderMasterMapper.update(order);
-		ordersDetailMasterMapper.update(od); 
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("id", order.getId());
+		param.put("status", OrderStatus.COMPLETED.value);
+		param.put("updateTime",current);
+		param.put("payTime", current);
+		param.put("tradeId", payTradeRecord.getId());
+		this.orderMasterMapper.updatePayment(param); 
 		// 3.更新优惠券信息
-		if (null != od.getCouponsId()) { 
-			this.couponClient.pay(new ReqCouponPay(od.getCouponsId(),order.getTotalAmount(),od.getCouponsMoney()));
+		if (null != order.getCouponId()) { 
+			this.couponClient.pay(new ReqCouponPay(order.getCouponId(),order.getTotalAmount(),order.getCouponAmount()));
 		}  
 		this.userClient.checkout(order.getUserId());
 		//结账调用新版推送消息 
 		Thread thread = new ProduceCheckBookingThread(order);
 		thread.start();
-		push(order.getUserId().toString(),"第三方支付通知","支付成功",PushType.ORDER_COMPLETE_NOTICE,true); 
+		push(order.getUserId().toString(),"订单支付通知","支付成功",PushType.ORDER_COMPLETE_NOTICE,true); 
 	}
 	
 	@Async

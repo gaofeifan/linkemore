@@ -17,7 +17,7 @@ import cn.linkmore.prefecture.response.ResLockOperateLog;
 public interface LockOperateLogClusterMapper {
 	List<ResLockOperateLog> findPage(Map<String, Object> param);
 
-	List<ResLockOperateLog> exportList(ReqLockOperateLogExcel bean);
+	List<ResLockOperateLog> findExportList(ReqLockOperateLogExcel bean);
 
 	Integer count(Map<String, Object> param);
 }

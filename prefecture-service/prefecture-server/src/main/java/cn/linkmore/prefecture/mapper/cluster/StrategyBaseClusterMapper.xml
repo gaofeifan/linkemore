@@ -52,6 +52,12 @@
     <result column="is_flexed" jdbcType="INTEGER" property="isFlexed" />
     <result column="first_hour_long" jdbcType="INTEGER" property="firstHourLong" />
   </resultMap>
+  
+  <resultMap id="ResSelectResultMap" type="cn.linkmore.prefecture.response.ResFeeStrategy">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  
   <sql id="Base_Column_List">
     id, type, name, begin_time, free_mins, end_time, first_hour, base_price, night_price, 
     timely_long, night_timely_long, timely_unit, top_daily, top_day, top_night, creator, 
@@ -122,6 +128,15 @@
     where 
     ${property} = #{value}  
     and id != #{id} 
+  </select>
+  
+  <select id="findSelectList" resultMap="ResSelectResultMap"   parameterType="java.util.HashMap" >
+  	select id,name
+    from v_strategy_base
+    where 1 = 1 
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if> 
   </select>
   
 </mapper>

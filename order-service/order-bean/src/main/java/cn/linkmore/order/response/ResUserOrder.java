@@ -74,6 +74,11 @@ public class ResUserOrder {
      * 更新时间
      */
     private Date updateTime;
+    
+    /**
+     * 支付时间
+     */
+    private Date payTime;
     /**
      * 对接计费系统id
      */
@@ -104,10 +109,13 @@ public class ResUserOrder {
      */
     private Long strategyId;
     
-    private  Date switchTime;
-    
+    private  Date switchTime; 
     
     private Short switchStatus;
+    
+    private Long couponId;
+    
+    private BigDecimal couponAmount;
 
     public Long getId() {
         return id;
@@ -315,7 +323,30 @@ public class ResUserOrder {
 
 	public void setSwitchStatus(Short switchStatus) {
 		this.switchStatus = switchStatus;
-	} 
-	
+	}
+
+	public Date getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(Date payTime) {
+		this.payTime = payTime;
+	}
+
+	public Long getCouponId() {
+		return couponId;
+	}
+
+	public void setCouponId(Long couponId) {
+		this.couponId = couponId;
+	}
+
+	public BigDecimal getCouponAmount() {
+		return couponAmount;
+	}
+
+	public void setCouponAmount(BigDecimal couponAmount) {
+		this.couponAmount = couponAmount;
+	}  
 	
 }

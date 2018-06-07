@@ -1,7 +1,6 @@
 package cn.linkmore.prefecture.client;
 
 import java.util.List;
-
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +39,8 @@ public interface OrderOperateLogClient {
 	 * 导出
 	 */
 	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
+	@ResponseBody
 	public List<ResOrderOperateLogEntity> export(@RequestBody ReqOrderOperateLogExcel bean);
-	
+    
 	
 }

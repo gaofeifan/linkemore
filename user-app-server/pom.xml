@@ -65,6 +65,11 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
+			<artifactId>coupon-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
 			<artifactId>account-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>

@@ -62,4 +62,89 @@
   	select id,stall_name,lock_sn from v_stall where status in(1,2) and pre_id = #{preId}
   </select>
   
+  <select id="findAll" resultMap="BaseResultMap" >
+    select id, stall_name, sell_count, pre_id, lock_id, lock_sn, lock_status, 
+    status, create_time, update_time, lock_voltage, bind_order_status
+    from v_stall
+  </select>
+  
+  <select id="findTreeList" resultMap="BaseResultMap" parameterType="java.util.List" >
+  	select id, stall_name, pre_id
+	from v_stall 
+	where id in  
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>
+  </select>
+  
+  <select id="findList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
+  	select id, stall_name, lock_sn
+	from v_stall 
+	where 1=1 
+	<if test="name!=null">  
+    and stall_name like #{name}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status}
+    </if> 
+    <if test="preId!=null">  
+    and pre_id = #{preId}
+    </if>
+    <if test="property==null">  
+    order by lock_voltage desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+  </select>
+  
+   <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT count(1) FROM v_stall l
+	WHERE l.pre_id = #{preId}
+    and l.stall_name = #{stallName}
+    <if test="id!=null">  
+    and l.id != #{id}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT count(1) FROM v_stall l
+	WHERE l.pre_id = #{preId}
+    <if test="status!=null">  
+    and l.status = #{status}
+    </if>
+    <if test="stallName!=null">  
+    and l.stall_name like #{stallName}
+    </if>
+    <if test="lockSn!=null">  
+    and l.lock_sn like #{lockSn}
+    </if>
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT
+	*
+	FROM
+		v_stall l
+	WHERE
+	l.pre_id = #{preId}
+    <if test="status!=null">  
+    and l.status = #{status}
+    </if>
+    <if test="stallName!=null">  
+    and l.stall_name like #{stallName}
+    </if>
+    <if test="lockSn!=null">  
+    and l.lock_sn like #{lockSn}
+    </if>
+    <if test="property==null">  
+     order by l.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  l.${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
 </mapper>

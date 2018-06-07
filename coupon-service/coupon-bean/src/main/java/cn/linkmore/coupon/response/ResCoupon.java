@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.linkmore.bean.common.Constants;
 
-public class ResCoupon {  
+public class ResCoupon{ 
 	private Long id;
 
 	private BigDecimal faceAmount;
@@ -183,6 +185,7 @@ public class ResCoupon {
 		this.templateId = templateId;
 	}
 
+	@JsonIgnore
 	public String getValidate() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		return sdf.format(this.getCreateTime())+" - "+ sdf.format(this.getValidTime());

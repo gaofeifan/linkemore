@@ -1,5 +1,6 @@
 package cn.linkmore.common.client.hystrix;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -53,6 +54,12 @@ public class BaseDictClientHystrix implements BaseDictClient {
 	public ResOldDict findOld(Long id) { 
 		log.info("common service old dict  findOld(Long id) hystrix");
 		return null;
+	}
+
+	@Override
+	public List<ResOldDict> findBillSystemList() {
+		log.info("common service old dict  findBillSystemList() hystrix");
+		return new ArrayList<ResOldDict>();
 	}
 	
 }

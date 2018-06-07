@@ -69,6 +69,12 @@ public class CityClientHystrix implements CityClient {
 	public ViewPage findPage(@RequestBody ViewPageable pageable) {
 		log.info("common service citys findPage(ViewPageable pageable) hystrix");
 		return null;
+	}
+
+	@Override
+	public List<ResCity> findSelectList() {
+		log.info("common service citys findSelectList() hystrix");
+		return null;
 	};
 	
 	

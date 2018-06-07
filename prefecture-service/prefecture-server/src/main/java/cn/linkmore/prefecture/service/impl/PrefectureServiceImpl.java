@@ -6,14 +6,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.bean.view.Tree;
@@ -270,7 +269,25 @@ public class PrefectureServiceImpl implements PrefectureService {
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
 		List<ResPreExcel> list = this.prefectureClusterMapper.findPage(param);
+		
+		for (ResPreExcel resPre : list) {
+			StrategyBase strategy = this.clonePrefecture(resPre);
+			resPre.setFirstHourDisplay(strategy.getFirstFeePrice());
+			resPre.setBasePriceDisplay(strategy.getBaseFeePrice());
+			resPre.setNightPriceDisplay(strategy.getNightFeePrice());
+		}
+		
 		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+	
+	// 计费策略和专区信息的clone
+	private StrategyBase clonePrefecture(ResPreExcel bean) {
+		if (bean == null) {
+			return null;
+		}
+		StrategyBase fee = new StrategyBase();
+		BeanUtils.copyProperties(bean, fee);
+		return fee;
 	}
 	
 	@Override
@@ -292,7 +309,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public List<ResPreExcel> exportList(ReqPreExcel reqPreExcel) {
-		return this.prefectureClusterMapper.findExportList();
+		List<ResPreExcel> list = this.prefectureClusterMapper.findExportList();
+		for (ResPreExcel responseBean : list) {
+			StrategyBase strategy = this.clonePrefecture(responseBean);
+			responseBean.setFirstHourDisplay(strategy.getFirstFeePrice());
+			responseBean.setBasePriceDisplay(strategy.getBaseFeePrice());
+			responseBean.setNightPriceDisplay(strategy.getNightFeePrice());
+		}
+		return list;
 	}
 	
 	@Override
@@ -358,6 +382,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 		root.setmId("0");
 		root.setChildren(rtrees);
 		return root;
+	}
+	@Override
+	public ResPrefectureDetail checkName(Map<String, Object> param) {
+		return this.prefectureClusterMapper.checkName(param);
 	}
 	
 }

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +39,7 @@ public class OrderOperateLogServiceImpl implements OrderOperateLogService {
 	@Autowired
 	private OrderOperateLogMasterMapper operateLogMasterMapper;
 	
-	@Autowired
+	@Resource
 	private PersonClient personClient;
 	
 	/*

@@ -33,6 +33,7 @@ import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.response.ResAdminAuth;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.service.AdminAuthService;
 import cn.linkmore.util.DomainUtil;
@@ -133,7 +134,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 	@Override
 	public Tree findTree() {
 		List<ResCity> citys = this.cityClient.list(0, 50);
-		List<Prefecture> pres = prefectureClusterMapper.findAll();
+		List<ResPrefectureDetail> pres = prefectureClusterMapper.findAll();
 		List<Stall> stalls = this.stallClusterMapper.findAll();
 		
 		Tree root = new Tree();
@@ -160,7 +161,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 		Tree child = null;
 		List<Tree> children2 = new ArrayList<>();
 		Map<Long,Tree> treeMap2 = new HashMap<Long,Tree>();
-		for (Prefecture pre : pres) {
+		for (ResPrefectureDetail pre : pres) {
 			tree = treeMap.get(pre.getCityId());
 			if(tree==null) {
 				continue;

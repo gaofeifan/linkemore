@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewFilter;
@@ -35,6 +37,7 @@ public class StallOperateLogServiceImpl implements StallOperateLogService {
 	@Autowired
 	private PersonClient personClient;
 	
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	/*
 	 * 列表
 	 */
@@ -126,6 +129,7 @@ public class StallOperateLogServiceImpl implements StallOperateLogService {
 	public List<ResStallOperateLog> exportList(
 			ReqStallOperateLogExcel excelBean) {
 		List<ResStallOperateLog> list = this.operateLogClusterMapper.findExportList(excelBean);
+		log.info("export list size,{}",list.size());
 		for (ResStallOperateLog bean : list) {
 			//来源（1后台，2app电池更换，3app车区管理）
 			Integer source = bean.getSource();

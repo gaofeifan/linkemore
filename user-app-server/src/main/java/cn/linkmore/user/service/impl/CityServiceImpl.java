@@ -45,6 +45,8 @@ public class CityServiceImpl implements CityService {
 				rc = new ResCity();
 				rc.setId(re.getId()); 
 				rc.setName(re.getName());
+				rc.setLongitude(re.getLongitude());
+				rc.setLatitude(re.getLatitude());
 				res.add(rc);
 				rcMap.put(re.getCode().substring(0,4), rc);
 			}

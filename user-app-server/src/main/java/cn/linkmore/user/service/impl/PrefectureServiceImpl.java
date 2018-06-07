@@ -46,7 +46,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		reqPre.setLatitude(rp.getLatitude());
 		reqPre.setLongitude(rp.getLongitude());
 		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER + key);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + key);
 		if(ru!=null) {
 			reqPre.setUserId(ru.getId());
 		}

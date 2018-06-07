@@ -14,6 +14,7 @@ import cn.linkmore.prefecture.dao.master.StrategyBaseMasterMapper;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStrategyBase;
+import cn.linkmore.prefecture.response.ResFeeStrategy;
 import cn.linkmore.prefecture.response.ResStrategyBase;
 import cn.linkmore.prefecture.service.StrategyBaseService;
 import cn.linkmore.util.DomainUtil;
@@ -42,14 +43,14 @@ public class StrategyBaseServiceImpl implements StrategyBaseService {
 	public int save(ReqStrategyBase reqStrategyBase) {
 		StrategyBase strategyBase = new StrategyBase();
 		strategyBase = ObjectUtils.copyObject(reqStrategyBase, strategyBase);
-		return this.strategyBaseMasterMapper.update(strategyBase);
+		return this.strategyBaseMasterMapper.save(strategyBase);
 	}
 
 	@Override
 	public int update(ReqStrategyBase reqStrategyBase) {
 		StrategyBase strategyBase = new StrategyBase();
 		strategyBase = ObjectUtils.copyObject(reqStrategyBase, strategyBase);
-		return this.strategyBaseMasterMapper.save(strategyBase);
+		return this.strategyBaseMasterMapper.update(strategyBase);
 	}
 
 	@Override
@@ -87,6 +88,16 @@ public class StrategyBaseServiceImpl implements StrategyBaseService {
 		param.put("pageSize", pageable.getPageSize());
 		List<ResStrategyBase> list = this.strategyBaseClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+
+	@Override
+	public List<ResStrategyBase> findList(Map<String, Object> param) {
+		return this.strategyBaseClusterMapper.findList(param);
+	}
+
+	@Override
+	public List<ResFeeStrategy> findSelectList(Map<String, Object> param) {
+		return this.strategyBaseClusterMapper.findSelectList(param);
 	}
 
 }

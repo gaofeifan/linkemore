@@ -25,4 +25,17 @@ public interface OrdersMasterMapper {
 	 * @param param
 	 */
 	void updateSwitch(Map<String, Object> param);
+
+	/**
+	 * 预结账更新
+	 * @param param
+	 */
+	void updateConfirm(Map<String, Object> param);
+	
+	/**
+	 * 结账更新
+	 * @param param
+	 */
+	void updatePayment(Map<String, Object> param);
+	
 }

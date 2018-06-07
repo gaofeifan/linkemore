@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.ViewPage;
@@ -150,7 +152,7 @@ public class PrefectureController {
 	/**
 	 * 专区下拉列表
 	 */
-	@RequestMapping(value = "/v2.0/selectList", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/select_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPreList> selectList() {
 		return this.preService.findSelectList();
@@ -195,4 +197,18 @@ public class PrefectureController {
 		List<ResPreExcel> list = this.preService.exportList(reqPreExcel);
 		return list;
 	}
+	/**
+	 * 根据车区名称检验是否存在
+	 * @param preName
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/check_name", method = RequestMethod.POST)
+	@ResponseBody
+	public ResPrefectureDetail checkName(@RequestParam("preName") String preName) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("name", preName);
+		ResPrefectureDetail detail = this.preService.checkName(param);
+		return detail;
+	}
+	
 }

@@ -117,5 +117,7 @@ public interface PrefectureService {
 	 * @return
 	 */
 	Tree findTree();
+	
+	ResPrefectureDetail checkName(Map<String, Object> param);
 
 }

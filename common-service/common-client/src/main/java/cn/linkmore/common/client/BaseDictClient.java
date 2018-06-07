@@ -46,4 +46,11 @@ public interface BaseDictClient {
 	 */
 	@RequestMapping(value="/old/{id}/",method=RequestMethod.GET)
 	public ResOldDict findOld(@PathVariable("id") Long id);
+	
+	/**
+	 * 查询老字典计费系统下拉列表
+	 * @return
+	 */
+	@RequestMapping(value="/old/bill_system_list/",method=RequestMethod.GET)
+	public List<ResOldDict> findBillSystemList();
 }

@@ -1,10 +1,14 @@
 package cn.linkmore.ops.admin.service;
 
 import java.util.List;
+import java.util.Map;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqOrderOperateLogExcel;
 import cn.linkmore.prefecture.response.ResOrderOperateLogEntity;
+import cn.linkmore.prefecture.response.ResPreList;
+import cn.linkmore.prefecture.response.ResStall;
 
 
 /**
@@ -28,6 +32,5 @@ public interface OrderOperateLogService {
 	List<ResOrderOperateLogEntity> findListById(Long id);
 
 	List<ResOrderOperateLogEntity> exportList(ReqOrderOperateLogExcel bean);
-	
 
 }

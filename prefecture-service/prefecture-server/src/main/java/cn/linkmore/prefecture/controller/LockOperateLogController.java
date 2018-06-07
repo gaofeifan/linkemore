@@ -61,6 +61,7 @@ public class LockOperateLogController {
 	 * 导出
 	 */
 	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
+	@ResponseBody
 	public List<ResLockOperateLog> export(@RequestBody ReqLockOperateLogExcel bean){
 		List<ResLockOperateLog> list = this.lockOperateLogService.exportList(bean);
 		return list;

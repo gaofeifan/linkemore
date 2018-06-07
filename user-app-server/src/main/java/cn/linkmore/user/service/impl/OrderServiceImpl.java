@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +26,12 @@ import cn.linkmore.user.common.UserCache;
 import cn.linkmore.user.request.ReqBooking;
 import cn.linkmore.user.request.ReqOrderStall;
 import cn.linkmore.user.request.ReqSwitch;
+import cn.linkmore.user.response.ResCheckedOrder;
 import cn.linkmore.user.response.ResOrder;
 import cn.linkmore.user.response.ResOrderDetail;
 import cn.linkmore.user.response.ResUser;
 import cn.linkmore.user.service.OrderService;
+import cn.linkmore.util.JsonUtil;
 /**
  * Service实现 - 预约
  * @author liwenlong
@@ -36,6 +40,8 @@ import cn.linkmore.user.service.OrderService;
  */
 @Service
 public class OrderServiceImpl implements OrderService { 
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private OrderClient orderClient;
@@ -115,14 +121,15 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<ResOrder> list(Long start, HttpServletRequest request) {
+	public List<ResCheckedOrder> list(Long start, HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		List<ResUserOrder> list =this.orderClient.list(ru.getId(), start);
-		List<ResOrder> res = new ArrayList<ResOrder>();
-		ResOrder ro = null;
+		List<ResCheckedOrder> res = new ArrayList<ResCheckedOrder>();
+		log.info(JsonUtil.toJson(res));
+		ResCheckedOrder ro = null;
 		for(ResUserOrder ruo:list) {
-			ro = new ResOrder();
+			ro = new ResCheckedOrder();
 			ro.copy(ruo);
 			res.add(ro);
 		}
@@ -133,7 +140,12 @@ public class OrderServiceImpl implements OrderService {
 	public ResOrderDetail detail(Long orderId, HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-		ResOrderDetail detail = null;
+		ResUserOrder order = this.orderClient.detail(orderId); 
+		if(order.getUserId().intValue()!=ru.getId().intValue()) {
+			return null;
+		} 
+		ResOrderDetail detail = new ResOrderDetail();
+		detail.copy(order); 
 		return detail;
 	}
 

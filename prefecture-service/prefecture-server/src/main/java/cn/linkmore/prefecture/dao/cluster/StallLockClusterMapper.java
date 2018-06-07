@@ -2,7 +2,6 @@ package cn.linkmore.prefecture.dao.cluster;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.prefecture.response.ResStallLock;
 @Mapper
@@ -23,4 +22,5 @@ public interface StallLockClusterMapper {
 	int checkSn(Map<String, Object> param);
 
 	int checkFormerSn(Map<String, Object> param);
+
 }

@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.linkmore.user.request.ReqPayConfirm;
+import cn.linkmore.user.response.ResOrderDetail;
 import cn.linkmore.user.response.ResPayCheckout;
 import cn.linkmore.user.response.ResPayConfirm;
 
@@ -30,7 +31,7 @@ public interface PayService {
 	 * @param orderId
 	 * @param request
 	 */
-	void verify(Long orderId, HttpServletRequest request); 
+	ResOrderDetail verify(Long orderId, HttpServletRequest request); 
 
 	/**
 	 * 微信异步通知[订单]

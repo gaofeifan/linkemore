@@ -16,4 +16,6 @@ public interface StallLockMasterMapper {
 	int batchSave(List<StallLock> locks);
 
 	int updateBind(StallLock lock);
+
+	void insertAndGetId(StallLock lock);
 }

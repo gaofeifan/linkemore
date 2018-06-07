@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.controller;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +23,7 @@ import cn.linkmore.prefecture.service.StallOperateLogService;
 @Controller
 @RequestMapping("/stall_operate")
 public class StallOperateLogController {
-	
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private StallOperateLogService stallOperateService;
 	
@@ -47,8 +49,10 @@ public class StallOperateLogController {
 	 * 导出
 	 */
 	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
+	@ResponseBody
 	public List<ResStallOperateLog> export(@RequestBody ReqStallOperateLogExcel bean){
 		List<ResStallOperateLog> list = this.stallOperateService.exportList(bean);
+		log.info("stall operate log export list-------------"+ list.size());
 		return list;
 	}
 }

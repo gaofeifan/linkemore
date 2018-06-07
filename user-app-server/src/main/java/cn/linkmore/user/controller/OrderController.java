@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.user.request.ReqBooking;
 import cn.linkmore.user.request.ReqOrderStall;
 import cn.linkmore.user.request.ReqSwitch;
+import cn.linkmore.user.response.ResCheckedOrder;
 import cn.linkmore.user.response.ResOrder;
 import cn.linkmore.user.response.ResOrderDetail;
 import cn.linkmore.user.service.OrderService;
@@ -40,6 +43,8 @@ import io.swagger.annotations.ApiOperation;
 @Validated
 public class OrderController {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private OrderService orderService;
 
@@ -99,10 +104,10 @@ public class OrderController {
 	@ApiOperation(value = "用户已完成订单列表", notes = "订单列表[起始请从0开始每页10条记录]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<ResOrder>> list(@RequestParam("start") Long start,HttpServletRequest request) {
-		ResponseEntity<List<ResOrder>> response = null;
+	public ResponseEntity<List<ResCheckedOrder>> list(@RequestParam("start") Long start,HttpServletRequest request) {
+		ResponseEntity<List<ResCheckedOrder>> response = null;
 		try {
-			List<ResOrder> orders = this.orderService.list(start,request);
+			List<ResCheckedOrder> orders = this.orderService.list(start,request);
 			response = ResponseEntity.success(orders, request);
 		} catch (BusinessException e) {
 			e.printStackTrace();
@@ -116,12 +121,11 @@ public class OrderController {
 	@ApiOperation(value = "订单详情", notes = "订单详情[订单ID须为数字]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<ResOrderDetail> detail(
-			@NotBlank(message="订单号不能为空") 
+	public ResponseEntity<ResOrderDetail> detail( 
 			@Min(value=0,message="订单ID为大于0的长整数")
 			@RequestParam("orderId") Long orderId,HttpServletRequest request) {
 		ResponseEntity<ResOrderDetail> response = null;
-		try {
+		try { 
 			ResOrderDetail od = this.orderService.detail(orderId,request);
 			response = ResponseEntity.success(od, request);
 		} catch (BusinessException e) {

@@ -29,9 +29,6 @@
     <if test="cityId!=null">  
     and city_id = #{cityId,jdbcType=VARCHAR}
     </if> 
-    <if test="property==null">  
-     order by create_time desc
-    </if>
     <if test="property!=null">  
     order by  ${property} ${direction}
     </if>
@@ -50,9 +47,6 @@
     <if test="cityId!=null">  
     and city_id = #{cityId,jdbcType=VARCHAR}
     </if> 
-    <if test="property==null">  
-     order by create_time desc
-    </if>
     <if test="property!=null">  
     order by  ${property} ${direction}
     </if> 
@@ -77,11 +71,6 @@
     where 
     ${property} = #{value}
     and id != #{id} 
-  </select>
-  <select id="findDistrictByCityId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select id, district_name, city_id
-    from t_district
-    where city_id = #{cityId}
   </select>
   
 </mapper>
