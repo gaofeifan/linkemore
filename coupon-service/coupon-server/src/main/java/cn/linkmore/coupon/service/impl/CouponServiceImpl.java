@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,8 @@ import cn.linkmore.util.JsonUtil;
 @Service
 public class CouponServiceImpl implements CouponService {
 	
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private CouponClusterMapper couponClusterMapper;
 	
@@ -69,6 +73,7 @@ public class CouponServiceImpl implements CouponService {
 	private static final short WEEK_TIME = 1;
 	private static final short DAY_TIME = 2;
 	
+	@Autowired
 	private  TemplateConditionClusterMapper couponThemplateConditionClusterMapper;
 	
 	
@@ -77,8 +82,10 @@ public class CouponServiceImpl implements CouponService {
 		List<Long> ids = new ArrayList<Long>();
 		for(Long key:keys){
 			ids.add(key.longValue());
-		} 
-		List<TemplateCondition> list = this.couponThemplateConditionClusterMapper.findTemplateList(ids); 
+		}  
+		log.info("{}",JsonUtil.toJson(ids));
+		List<TemplateCondition> list = this.couponThemplateConditionClusterMapper.findTemplateList(ids);
+		log.info("list:{}",JsonUtil.toJson(list));
 		Map<Long,TemplateCondition> ccMap = new HashMap<Long,TemplateCondition>();
 		String json = null;
 		ids = new ArrayList<Long>();
@@ -92,7 +99,8 @@ public class CouponServiceImpl implements CouponService {
 			crb.setTimeLimit(cc.getAvailableTime().shortValue()); 
 			if(cc.getAvailablePrefecture().shortValue()>0){
 				 String redis = null;
-				 redis = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_PREIDS.key+cc.getId().toString());  
+				 redis = (String)this.redisService.get(RedisKey.COUPON_TEMPLATE_CONDITION_PREIDS.key+cc.getId().toString()); 
+				 log.info("redis:{}",JsonUtil.toJson(redis));
 				 if(StringUtils.isNotBlank(redis)){
 					 String[] preids = redis.split(",");
 					 crb.setPrefectures(preids);
@@ -117,6 +125,7 @@ public class CouponServiceImpl implements CouponService {
 		}  
 		if(ids.size()>0){ 
 			List<ResCouponPrefecture> ps = null;
+			log.info("ids:{}",JsonUtil.toJson(ids));
 			List<ResPre> rps = this.prefectureClient.prenames(ids);
 			if(!CollectionUtils.isEmpty(rps)) {
 				ps = new ArrayList<ResCouponPrefecture>();
@@ -183,6 +192,7 @@ public class CouponServiceImpl implements CouponService {
 		} 
 		if(!ucrbsMap.isEmpty()){
 			this.addCondition(ucrbsMap);
+			
 		} 
 		return list;
 	}

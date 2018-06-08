@@ -65,7 +65,7 @@
     select 
     <include refid="Res_Column_List" />
     from c_coupon
-    where user_id = #{userId,jdbcType=BIGINT}
+    where user_id = #{userId,jdbcType=BIGINT} and status = 0
   </select>
   
   
