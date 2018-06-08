@@ -27,7 +27,7 @@ public interface PrefectureClusterMapper {
 
 	List<ResPrefecture> findPreByStatusAndGPS1(Map<String, Object> paramMap);
 
-	List<ResPre> findByIds(List<Long> ids);
+	List<ResPre> findByIds(List<Long> list);
 	
 	List<Long> findPreIdList();
 
