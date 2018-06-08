@@ -18,9 +18,9 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
-import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
+import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallLockService;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.util.ObjectUtils;
@@ -43,6 +43,9 @@ public class StallController {
 
 	@Autowired
 	private StallLockService stallLockService;
+	
+	@Autowired
+	private PrefectureService preService;
 
 	/**
 	 * 预约订单时，根据车位锁序列号查询车位
@@ -74,7 +77,7 @@ public class StallController {
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method = RequestMethod.PUT)
 	public Boolean downlock(@RequestParam("stallId") Long stallId) {
-		log.info("downlock:{} 。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。", stallId);
+		log.info("downlock:{} .......................................", stallId);
 		return this.stallService.downlock(stallId);
 	}
 
@@ -122,25 +125,25 @@ public class StallController {
 
 	/*************************************************************************/
 
-	@RequestMapping(value = "/tree", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
 	@ResponseBody
 	public Tree tree() {
-		return stallService.findTree();
+		return preService.findTree();
 	}
 
-	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable) {
 		return stallService.findPage(pageable);
 	}
 
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
 	public int save(@RequestBody ReqStall stall) {
 		return this.stallService.save(stall);
 	}
 
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
 	public int update(@RequestBody ReqStall stall) {
 		ResStallEntity st = stallService.findById(stall.getId());
@@ -154,35 +157,25 @@ public class StallController {
 		return 0;
 	}
 
-	@RequestMapping(value = "/check", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean check(@RequestParam("stallName") String stallName, @RequestParam("preId") Long preId,
-			@RequestParam("id") Long id) {
-		boolean flag = true;
-		ReqCheck reqCheck = new ReqCheck();
-		reqCheck.setProperty(stallName);
-		reqCheck.setValue(preId.toString());
-		reqCheck.setId(id);
-		int check = this.stallService.check(reqCheck);
-		if (check > 0) {
-			flag = false;
-		}
-		return flag;
+	public int check(@RequestBody ReqCheck reqCheck) {
+		return this.stallService.check(reqCheck);
 	}
 
-	@RequestMapping(value = "/sn", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/sn", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStallLock> sn(@RequestParam("lockId") Long lockId) {
 		return stallLockService.findAll(lockId);
 	}
 
-	@RequestMapping(value = "/detail", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.POST)
 	@ResponseBody
 	public ResStallEntity detail(@RequestParam("id") Long id) {
 		return stallService.findById(id);
 	}
 
-	@RequestMapping(value = "/bind", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.POST)
 	@ResponseBody
 	public int bind(@RequestParam("id") Long id, @RequestParam("sid") Long sid) {
 		ResStallEntity stall = this.stallService.findById(id);
@@ -197,7 +190,7 @@ public class StallController {
 		return this.stallService.bind(reqStall);
 	}
 
-	@RequestMapping(value = "/changed_up", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/changed_up", method = RequestMethod.POST)
 	@ResponseBody
 	public int changedUp(@RequestBody List<Long> ids) {
 		for (Long id : ids) {
@@ -212,7 +205,7 @@ public class StallController {
 		return 0;
 	}
 
-	@RequestMapping(value = "/changed_down", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/changed_down", method = RequestMethod.POST)
 	@ResponseBody
 	public int changedDown(@RequestParam("id") Long id) {
 		ResStallEntity stall = this.stallService.findById(id);
@@ -225,5 +218,11 @@ public class StallController {
 			}
 		}
 		return 0;
+	}
+	
+	@RequestMapping(value = "/v2.0/save_bind", method = RequestMethod.POST)
+	@ResponseBody
+	public void saveAndBind(@RequestParam("preId") Long preId,@RequestParam("stallName") String stallName,@RequestParam("sn") String sn) {
+		this.stallService.saveAndBind(preId, stallName, sn);
 	}
 }

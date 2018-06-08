@@ -1,5 +1,7 @@
 package cn.linkmore.user.request;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotBlank;
 
 import io.swagger.annotations.ApiModel;
@@ -11,11 +13,11 @@ public class ReqUpdateVehicle {
 	private Long userId;
 	
 	@ApiModelProperty(value="车牌型号",required=true)
-	@NotBlank(message="车辆型号不能为空")
+	@NotNull(message="车辆型号不能为空")
 	private Integer model;
 
 	@ApiModelProperty(value="车牌品牌",required=true)
-	@NotBlank(message="车辆品牌不能为空")
+	@NotNull(message="车辆品牌不能为空")
 	private Integer brandId;
 
 	public Integer getModel() {

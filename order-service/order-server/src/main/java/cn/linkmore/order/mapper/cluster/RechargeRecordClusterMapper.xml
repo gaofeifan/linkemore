@@ -35,4 +35,111 @@
     from t_acc_recharge_record
     where id = #{id,jdbcType=INTEGER}
   </select>
+   
+  <resultMap id="OpsResultMap" type="cn.linkmore.order.response.ResRechargeRecordExcel">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="account_id" jdbcType="BIGINT" property="accountId" />
+    <result column="package_id" jdbcType="BIGINT" property="packageId" />
+    <result column="package_amount" jdbcType="DECIMAL" property="packageAmount" />
+    <result column="payment_amount" jdbcType="DECIMAL" property="paymentAmount" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="pay_status" jdbcType="BIT" property="payStatus" />
+    <result column="pay_type" jdbcType="SMALLINT" property="payType" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+  </resultMap>
+  <sql id="Ops_Column_List">
+    rr.id, rr.code, rr.account_id, rr.package_id, rr.package_amount, rr.payment_amount, rr.status, rr.pay_status, 
+    rr.pay_type, rr.pay_time, rr.create_time, rr.update_time, rr.order_id,u.mobile,u.nickname
+  </sql>
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="OpsResultMap">
+    select 
+    <include refid="Ops_Column_List" />
+    from  t_acc_recharge_record rr left join t_user u on rr.account_id = u.id
+    where 1 = 1 
+    <if test="code!=null">  
+    and rr.code = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="status!=null">  
+    and rr.status = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="payStatus!=null">  
+    and rr.pay_status = #{payStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="payType!=null">  
+    and rr.pay_type = #{payType,jdbcType=VARCHAR}
+    </if>
+    <if test="mobile!=null">  
+    and u.mobile = #{mobile,jdbcType=VARCHAR}
+    </if>  
+   	<if test="startTime!=null">  
+    <![CDATA[and rr.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and rr.create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+    <if test="property==null">  
+     order by rr.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="findExportList" parameterType="cn.linkmore.order.request.ReqRechargeRecordExcel" resultMap="OpsResultMap">
+    select 
+    <include refid="Ops_Column_List" />
+    from  t_acc_recharge_record rr left join t_user u on rr.account_id = u.id
+    where 1 = 1 
+    <if test="code!=null">  
+    and rr.code = #{code,jdbcType=VARCHAR}
+    </if>  
+    <if test="payStatus!=null">  
+    and rr.pay_status = #{payStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="payType!=null">  
+    and rr.pay_type = #{payType,jdbcType=VARCHAR}
+    </if>
+    <if test="mobile!=null">  
+    and u.mobile = #{mobile,jdbcType=VARCHAR}
+    </if>  
+   	<if test="startTime!=null">  
+    <![CDATA[and rr.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and rr.create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>  
+    order by rr.create_time desc
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from  t_acc_recharge_record rr left join t_user u on rr.account_id = u.id
+    where 1 = 1 
+    <if test="code!=null">  
+    and rr.code = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="status!=null">  
+    and rr.status = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="payStatus!=null">  
+    and rr.pay_status = #{payStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="payType!=null">  
+    and rr.pay_type = #{payType,jdbcType=VARCHAR}
+    </if>
+    <if test="mobile!=null">  
+    and u.mobile = #{mobile,jdbcType=VARCHAR}
+    </if>  
+   	<if test="startTime!=null">  
+    <![CDATA[and rr.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and rr.create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+  </select>
 </mapper>

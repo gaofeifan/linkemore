@@ -1,6 +1,7 @@
 package cn.linkmore.account.service;
 
 
+import java.util.List;
 import java.util.Map;
 
 import cn.linkmore.account.entity.User;
@@ -9,6 +10,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
@@ -125,5 +127,12 @@ public interface UserService {
 	 * @param id
 	 */
 	void checkout(Long id);
+
+	/**
+	 * @Description  导出数据
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPageUser> export(ViewPageable pageable);
 
 }

@@ -1,12 +1,15 @@
 package cn.linkmore.prefecture.service;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStrategyBase;
+import cn.linkmore.prefecture.response.ResFeeStrategy;
+import cn.linkmore.prefecture.response.ResStrategyBase;
 
 /**
  * Service接口 - 计费策略信息
@@ -52,4 +55,11 @@ public interface StrategyBaseService {
 	 */
 	ViewPage findPage(ViewPageable pageable);
 	
+	List<ResStrategyBase> findList(Map<String, Object> param);
+	/**
+	 * 计费策略下拉列表
+	 * @param param
+	 * @return
+	 */
+	List<ResFeeStrategy> findSelectList(Map<String, Object> param);
 }

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import cn.linkmore.prefecture.entity.Prefecture;
+import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
@@ -45,6 +46,12 @@ public interface PrefectureClusterMapper {
 	Integer check(Map<String, Object> param);
 
 	List<ResPrefectureDetail> findAll();
+	/**
+	 * 校验车区是否存在
+	 * @param param
+	 * @return
+	 */
+	ResPrefectureDetail checkName(Map<String, Object> param);
 	
 	
 }

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class RechargeRecord {
-    private Long id;
+    private Integer id;
 
     private String code;
 
@@ -32,15 +32,15 @@ public class RechargeRecord {
 
     private Long orderId;
 
-    public Long getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getCode() {
+	public String getCode() {
         return code;
     }
 

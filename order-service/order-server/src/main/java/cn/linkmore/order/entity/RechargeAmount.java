@@ -2,18 +2,34 @@ package cn.linkmore.order.entity;
 
 import java.math.BigDecimal;
 
+import cn.linkmore.annotation.GColumn;
+import cn.linkmore.annotation.GTable;
+
+/**
+ * 充值面额
+ * @author   GFF
+ * @Date     2018年5月30日
+ * @Version  v2.0
+ */
+@GTable(vlaue="t_acc_recharge_amount")
 public class RechargeAmount {
+	@GColumn
     private Long id;
 
+	@GColumn
     private BigDecimal payment;
 
+	@GColumn
     private BigDecimal gift;
 
-    private Short orderIndex;
+	@GColumn
+    private Integer orderIndex;
 
+	@GColumn
     private Boolean checked;
 
-    private Short status;
+	@GColumn
+    private Integer status;
 
     public Long getId() {
         return id;
@@ -39,27 +55,28 @@ public class RechargeAmount {
         this.gift = gift;
     }
 
-    public Short getOrderIndex() {
-        return orderIndex;
-    }
+    public Integer getOrderIndex() {
+		return orderIndex;
+	}
 
-    public void setOrderIndex(Short orderIndex) {
-        this.orderIndex = orderIndex;
-    }
+	public void setOrderIndex(Integer orderIndex) {
+		this.orderIndex = orderIndex;
+	}
 
-    public Boolean getChecked() {
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Boolean getChecked() {
         return checked;
     }
 
     public void setChecked(Boolean checked) {
         this.checked = checked;
     }
-
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
+    
 }

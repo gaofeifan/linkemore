@@ -77,4 +77,13 @@ public class ResponseEntity<T> implements Serializable {
 		response.status = false;
 		return response;
 	}
+	public static <E> ResponseEntity<E> fail(int code,String label, HttpServletRequest request) {
+		ResponseEntity<E> response = new ResponseEntity<>(); 
+		Map<String,Object> message =  new HashMap<String,Object>(); 
+		message.put("code", code);
+		message.put("content", label);
+		response.setMessage(message);
+		response.status = false;
+		return response;
+	}
 }

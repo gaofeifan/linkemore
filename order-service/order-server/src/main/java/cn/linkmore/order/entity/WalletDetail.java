@@ -3,7 +3,14 @@ package cn.linkmore.order.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * 充值明细
+ * @author   GFF
+ * @Date     2018年5月30日
+ * @Version  v2.0
+ */
 public class WalletDetail {
+	
 	public static final Short SOURCE_ALIPAY = 1;
 	public static final Short SOURCE_WECHAT = 2;
 	public static final Short SOURCE_GIFT= 3;

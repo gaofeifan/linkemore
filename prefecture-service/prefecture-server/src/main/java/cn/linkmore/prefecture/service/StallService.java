@@ -66,12 +66,6 @@ public interface StallService {
 	 */
 	ResStallEntity findByLock(String sn);
 	
-	/**
-	 * 查询树
-	 * 
-	 * @return
-	 */
-	Tree findTree();
 
 	/**
 	 * 查询分页

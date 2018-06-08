@@ -6,22 +6,21 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.account.client.RechargeAmountClient;
-import cn.linkmore.account.request.ReqRechargeAmount;
-import cn.linkmore.account.request.RequpdateColumnValue;
-import cn.linkmore.account.response.ResRechargeAmount;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.account.service.RechargeAmountService;
+import cn.linkmore.order.client.RechargeAmountClient;
+import cn.linkmore.order.request.ReqRechargeAmount;
+import cn.linkmore.order.request.RequpdateColumnValue;
+import cn.linkmore.order.response.ResRechargeAmount;
 
 /**
  * 充值面额的实现
- * @author zhaoyufei
- * 
+ * @author   GFF
+ * @Date     2018年6月6日
+ * @Version  v2.0
  */
 @Service("rechargeAmountService")
 public class RechargeAmountServiceImpl implements RechargeAmountService {

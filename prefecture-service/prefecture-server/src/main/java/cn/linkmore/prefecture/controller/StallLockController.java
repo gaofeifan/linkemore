@@ -1,15 +1,18 @@
 package cn.linkmore.prefecture.controller;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStallLock;
+import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.service.StallLockService;
 
 /**
@@ -40,7 +43,7 @@ public class StallLockController {
 
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public int delete(Long id) {
+	public int delete(@RequestParam("id") Long id) {
 		return	this.stallLockService.delete(id);
 	}
 
@@ -59,6 +62,18 @@ public class StallLockController {
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable) {
 		return this.stallLockService.findPage(pageable);
+	}
+	
+	@RequestMapping(value = "/v2.0/all", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStallLock> findAll(@RequestParam("lockId") Long lockId){
+		return this.stallLockService.findAll(lockId);
+	}
+	
+	@RequestMapping(value = "/v2.0/check_sn", method = RequestMethod.POST)
+	@ResponseBody
+	public int checkSn(@RequestParam("sn") String sn) {
+		return this.stallLockService.checkSn(sn);
 	}
 
 }

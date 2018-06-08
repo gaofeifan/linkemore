@@ -436,7 +436,7 @@ public class PayServiceImpl implements PayService {
 
 		TradeRecord trade = new TradeRecord();
 		trade.setAccountId(rechargeRecord.getAccountId());
-		trade.setBizId(rechargeRecord.getId());
+		trade.setBizId(rechargeRecord.getId().longValue());
 		trade.setCreateTime(new Date());
 		trade.setPaymentAmount(rechargeRecord.getPaymentAmount());
 		trade.setTradeAmount(rechargeRecord.getPackageAmount());

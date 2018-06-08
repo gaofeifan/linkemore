@@ -105,6 +105,51 @@ public class StrategyBase {
      * 首段时间与单位时间的比值 
      */
     private Integer firstHourLong;
+    
+    /**
+	 * 返回夜间计费单价 
+	 * @return
+	 */
+	public String getNightFeePrice(){
+		if(null != nightTimelyLong  && null != nightPrice && null != timelyUnit ){
+			String nightPriceDisplay = this.nightPrice + "元/" + nightTimelyLong + "分钟";
+			if(nightTimelyLong >= 60 && 0 == nightTimelyLong%15){
+				nightPriceDisplay = this.nightPrice + "元/" + ((double) nightTimelyLong / 60) + "小时";
+			}
+			return nightPriceDisplay;
+		}
+		return this.nightPrice+"元/"+this.nightTimelyLong+this.timelyUnit;
+	}
+	
+	/**
+	 * 返回首小时计费单价 
+	 * @return
+	 */
+	public String getFirstFeePrice(){
+		if(null != firstHour && null !=timelyLong && null != timelyUnit ){
+			String firstPriceDisplay = this.firstHour + "元/" + timelyLong + timelyUnit;
+			if(timelyLong >= 60 && 0 == timelyLong%15){
+				firstPriceDisplay = this.firstHour + "元/" + ((double) timelyLong / 60) + "小时";
+			}
+			return firstPriceDisplay;
+		}
+		return this.firstHour+"元/"+this.timelyLong+this.timelyUnit;
+	}
+	
+	/**
+	 * 基本计费单价
+	 * @return
+	 */
+	public String getBaseFeePrice(){
+		if(null != basePrice && null !=timelyLong && null != timelyUnit ){
+			String basePriceDisplay = this.basePrice + "元/" + timelyLong + timelyUnit;
+			if(timelyLong >= 60 && 0 == timelyLong%15){
+				basePriceDisplay = this.basePrice + "元/" + ((double) timelyLong / 60) + "小时";
+			}
+			return basePriceDisplay;
+		}
+		return this.basePrice+"元/"+this.timelyLong+this.timelyUnit;
+	}
 
     public Long getId() {
         return id;

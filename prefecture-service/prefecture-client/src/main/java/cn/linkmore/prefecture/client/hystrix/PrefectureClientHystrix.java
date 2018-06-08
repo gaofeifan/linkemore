@@ -80,23 +80,38 @@ public class PrefectureClientHystrix implements PrefectureClient {
 	}
 	@Override
 	public int save(ReqPrefectureEntity prefecture) {
-		log.info("prefecture service pres save(prefecture) hystrix");
+		log.info("prefecture service pres save() hystrix");
 		return 0;
 	}
 	@Override
 	public int update(ReqPrefectureEntity prefecture) {
-		log.info("prefecture service pres update(prefecture) hystrix");
+		log.info("prefecture service pres update() hystrix");
 		return 0;
 	}
 	@Override
 	public List<Map<String, Object>> findListByCityId(Long cityId) {
-		log.info("prefecture service pres findListByCityId(prefecture) hystrix");
+		log.info("prefecture service pres findListByCityId() hystrix");
 		return new ArrayList<Map<String, Object>>();
 	}
 	@Override
 	public List<ResPreExcel> exportList(ReqPreExcel reqPreExcel) {
-		log.info("prefecture service pres exportList(prefecture) hystrix");
+		log.info("prefecture service pres exportList() hystrix");
 		return new ArrayList<ResPreExcel>();
+	}
+	@Override
+	public List<ResPrefectureDetail> findList(Map<String, Object> param) {
+		log.info("prefecture service pres findList() hystrix");
+		return null;
+	}
+	@Override
+	public List<ResPrefectureDetail> findAll() {
+		log.info("prefecture service pres findAll() hystrix");
+		return null;
+	}
+	@Override
+	public ResPrefectureDetail checkName(String preName) {
+		log.info("prefecture service pres checkName(preName) hystrix");
+		return null;
 	}
 	
 	

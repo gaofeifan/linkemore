@@ -8,13 +8,13 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.account.client.WalletBannerClient;
-import cn.linkmore.account.request.ReqUpdateStatus;
-import cn.linkmore.account.request.ReqWalletBanner;
-import cn.linkmore.account.response.ResWalletBanner;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.account.service.BannerService;
+import cn.linkmore.order.client.WalletBannerClient;
+import cn.linkmore.order.request.ReqUpdateStatus;
+import cn.linkmore.order.request.ReqWalletBanner;
+import cn.linkmore.order.response.ResWalletBanner;
 import cn.linkmore.util.StringUtil;
 
 @Service

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -108,7 +109,7 @@ public interface PrefectureClient {
 	/**
 	 * 专区下拉列表
 	 */
-	@RequestMapping(value = "/v2.0/selectList", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/select_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPreList> selectList();
 
@@ -141,6 +142,23 @@ public interface PrefectureClient {
 	 * @return
 	 */
 	@RequestMapping(value = "/v2.0/export_list", method = RequestMethod.POST)
+	@ResponseBody
 	public List<ResPreExcel> exportList(@RequestBody ReqPreExcel reqPreExcel);
 	
+	@RequestMapping(value = "/v2.0/find_list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPrefectureDetail> findList(@RequestBody Map<String, Object> param);
+	
+	@RequestMapping(value = "/v2.0/find_all", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPrefectureDetail> findAll();
+	/**
+	 * 根据车区名称校验是否存在
+	 * @param preName
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/check_name", method = RequestMethod.POST)
+	@ResponseBody
+	public ResPrefectureDetail checkName(@RequestParam("preName") String preName);
+		
 }

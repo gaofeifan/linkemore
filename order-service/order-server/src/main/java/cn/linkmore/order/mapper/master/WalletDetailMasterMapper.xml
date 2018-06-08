@@ -13,11 +13,11 @@
   <sql id="Base_Column_List">
     id, account_id, amount, source, type, create_time, account_amount
   </sql>
-  <delete id="delete" parameterType="java.lang.Long">
+  <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_acc_wallet_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.order.entity.WalletDetail">
+  <insert id="save" parameterType="cn.linkmore.order.entity.WalletDetail">
     insert into t_acc_wallet_detail (id, account_id, amount, 
       source, type, create_time, 
       account_amount)
@@ -25,7 +25,80 @@
       #{source,jdbcType=SMALLINT}, #{type,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{accountAmount,jdbcType=DECIMAL})
   </insert>
-  <update id="update" parameterType="cn.linkmore.order.entity.WalletDetail">
+  <insert id="saveSelective" parameterType="cn.linkmore.order.entity.WalletDetail">
+    insert into t_acc_wallet_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="accountId != null">
+        account_id,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="accountAmount != null">
+        account_amount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="accountId != null">
+        #{accountId,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=SMALLINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accountAmount != null">
+        #{accountAmount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.order.entity.WalletDetail">
+    update t_acc_wallet_detail
+    <set>
+      <if test="accountId != null">
+        account_id = #{accountId,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=SMALLINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accountAmount != null">
+        account_amount = #{accountAmount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.order.entity.WalletDetail">
     update t_acc_wallet_detail
     set account_id = #{accountId,jdbcType=BIGINT},
       amount = #{amount,jdbcType=DECIMAL},

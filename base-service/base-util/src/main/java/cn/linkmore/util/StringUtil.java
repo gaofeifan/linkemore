@@ -18,6 +18,7 @@ public class StringUtil {
 	public static final String IN = " in ";
 	public static final String LIKE = " like ";
 	public static final String DATE = " DATE ";
+	public static final String WHERE = " where 1 = 1 ";
 
   /**
    * <pre>

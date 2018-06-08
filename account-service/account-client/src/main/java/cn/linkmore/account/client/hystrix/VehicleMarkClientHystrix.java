@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import cn.linkmore.account.client.VehicleMarkClient;
+import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 
@@ -32,15 +33,20 @@ public class VehicleMarkClientHystrix  implements VehicleMarkClient{
 		log.info("account service VechicleMark create(ReqVehicleMark bean) hystrix");
 	};
 	 
-	public void delete(@PathVariable("id") Long id) {
+	@Override
+	public void delete(ReqVehMarkIdAndUserId v) {
 		log.info("account service VechicleMark delete() Long id) hystrix");
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public ResVechicleMark findById(@PathVariable("id") Long id) {
+	public ResVechicleMark findById(Long id) {
 		log.info("account service VechicleMark findById() Long id) hystrix");
 		return null;
 	}
+	
+	
 	
 }
 

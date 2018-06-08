@@ -61,7 +61,7 @@ public class CarBrandController {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public Object list(HttpServletRequest request) {
-		return redisService.get(RedisKey.COMMON_CAR_BRAND_LIST.name());
+		return redisService.get(RedisKey.COMMON_CAR_BRAND_LIST.key);
 	}
 	
 	/**
@@ -115,7 +115,7 @@ public class CarBrandController {
 					}
 				}
 			}
- 	    	redisService.set(RedisKey.COMMON_CAR_BRAND_LIST.name(), JSON.toJSON(resultList));
+ 	    	redisService.set(RedisKey.COMMON_CAR_BRAND_LIST.key, JSON.toJSON(resultList));
  	    	//将成功状态存入redis
  	    	redisService.set("car_brand_status", 0);
 	    	msg.put("message", true);
@@ -134,7 +134,7 @@ public class CarBrandController {
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Object list(){
-		Object obj = redisService.get(RedisKey.COMMON_CAR_BRAND_LIST.name());
+		Object obj = redisService.get(RedisKey.COMMON_CAR_BRAND_LIST.key);
 		return obj;
 	}
 	

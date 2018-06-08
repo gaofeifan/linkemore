@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.prefecture.entity.StrategyBase;
+import cn.linkmore.prefecture.response.ResFeeStrategy;
 import cn.linkmore.prefecture.response.ResStrategyBase;
 /**
  * dao 计费详情
@@ -27,4 +29,8 @@ public interface StrategyBaseClusterMapper {
 	List<ResStrategyBase> findPage(Map<String, Object> param);
 
 	Integer check(Map<String, Object> param);
+
+	List<ResStrategyBase> findList(Map<String, Object> param);
+
+	List<ResFeeStrategy> findSelectList(Map<String, Object> param);
 }

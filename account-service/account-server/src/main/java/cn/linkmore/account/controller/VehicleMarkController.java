@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.VehicleMarkManageService;
@@ -43,9 +44,9 @@ public class VehicleMarkController{
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/{id}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable("id") Long id){
-		this.vehicleMarkManageService.deleteById(id);
+	@RequestMapping(value = "/v2.0", method = RequestMethod.DELETE)
+	public void delete(@RequestBody ReqVehMarkIdAndUserId v){
+		this.vehicleMarkManageService.deleteById(v);
 	}
 	
 	/**

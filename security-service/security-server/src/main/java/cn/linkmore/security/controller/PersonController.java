@@ -94,7 +94,8 @@ public class PersonController {
 	@RequestMapping(value = "/v2.0/username", method = RequestMethod.GET)
 	@ResponseBody
 	public ResPerson findByUsername(@RequestParam("username") String username) {
-		return this.personService.findByUsername(username);
+		ResPerson person = this.personService.findByUsername(username);
+		return person;
 	}
 	
 	

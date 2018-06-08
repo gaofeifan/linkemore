@@ -15,6 +15,8 @@ import cn.linkmore.prefecture.client.hystrix.StrategyBaseClientHystrix;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStrategy;
 import cn.linkmore.prefecture.request.ReqStrategyBase;
+import cn.linkmore.prefecture.response.ResFeeStrategy;
+import cn.linkmore.prefecture.response.ResStrategyBase;
 /**
  * 远程调用 - 计费详情
  * @author jiaohanbin
@@ -74,6 +76,24 @@ public interface StrategyBaseClient {
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable);
+
+	/**
+	 * 列表
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/find_list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStrategyBase> findList();
+	
+	/**
+	 * 计费策略下拉列表
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/select_list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResFeeStrategy> findSelectList();
 	
 	
 }
