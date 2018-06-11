@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.UserGuideClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserGuide">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="en_title" jdbcType="VARCHAR" property="enTitle" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, level, parent_id, status, title, en_title, type, order_index, 
+    url
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_guide
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+ <select id="findAll" resultMap="BaseResultMap" >
+   select id,url, parent_id, title,en_title, type,status,level, create_time, update_time
+    from t_user_guide where status = 1  order by order_index 
+  </select>
+</mapper>

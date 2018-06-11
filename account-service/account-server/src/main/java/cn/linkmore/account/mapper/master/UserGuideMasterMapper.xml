@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.UserGuideMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserGuide">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="en_title" jdbcType="VARCHAR" property="enTitle" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, update_time, level, parent_id, status, title, en_title, type, order_index, 
+    url
+  </sql>
+ <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_user_guide
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.account.entity.UserGuide">
+    insert into t_user_guide (id, create_time, update_time, 
+      level, parent_id, status, 
+      title, en_title, type, 
+      order_index, url)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{level,jdbcType=INTEGER}, #{parentId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{enTitle,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
+      #{orderIndex,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR})
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.account.entity.UserGuide">
+    insert into t_user_guide
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="enTitle != null">
+        en_title,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="orderIndex != null">
+        order_index,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="enTitle != null">
+        #{enTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="orderIndex != null">
+        #{orderIndex,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.UserGuide">
+    update t_user_guide
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="enTitle != null">
+        en_title = #{enTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="orderIndex != null">
+        order_index = #{orderIndex,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.UserGuide">
+    update t_user_guide
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      level = #{level,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      en_title = #{enTitle,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      order_index = #{orderIndex,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -24,6 +24,8 @@ import cn.linkmore.order.response.ResOrderCheckout;
 import cn.linkmore.order.response.ResOrderConfirm;
 import cn.linkmore.order.response.ResOrderWeixin;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.PrefectureClient;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.common.UserCache;
 import cn.linkmore.user.request.ReqPayConfirm;
@@ -47,6 +49,9 @@ public class PayServiceImpl implements PayService {
 	
 	@Autowired
 	private PayClient payClient;
+	
+	@Autowired	
+	private PrefectureClient prefectureClient;
 
 	@Override
 	public ResPayCheckout checkout(Long orderId, HttpServletRequest request) { 
@@ -114,12 +119,18 @@ public class PayServiceImpl implements PayService {
 		String key = UserCache.getCacheKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		if(this.payClient.verify(orderId, ru.getId())) {
-			ResUserOrder order = this.orderClient.detail(orderId); 
+			ResUserOrder order = this.orderClient.detail(orderId);  
 			if(order.getUserId().intValue()!=ru.getId().intValue()) {
 				return null;
 			} 
+			ResPrefectureDetail pre = prefectureClient.findById(order.getPreId());
 			ResOrderDetail detail = new ResOrderDetail();
 			detail.copy(order); 
+			if(pre!=null) {
+				detail.setLeaveTime(pre.getLeaveTime());
+			}else {
+				detail.setLeaveTime(15);
+			}
 			return detail;
 		}
 		return null;

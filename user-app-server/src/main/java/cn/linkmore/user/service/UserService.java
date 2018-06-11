@@ -102,5 +102,18 @@ public interface UserService {
 	 */
 	ResUser getCache(HttpServletRequest request);
 
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateAccountName(String accountName, HttpServletRequest request);
+
+	/**
+	 * 退出登录 
+	 * @param request
+	 */
+	void logout(HttpServletRequest request);
+
 
 }

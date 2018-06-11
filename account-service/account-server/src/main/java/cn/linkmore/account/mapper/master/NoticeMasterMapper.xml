@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.NoticeMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.Notice">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="push_time" jdbcType="TIMESTAMP" property="pushTime" />
+    <result column="status" jdbcType="BIGINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, title, description, url, create_time, push_time, status
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_notice
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.account.entity.Notice">
+    insert into t_notice (id, type, title, 
+      description, url, create_time, 
+      push_time, status)
+    values (#{id,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{pushTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIGINT})
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.account.entity.Notice">
+    insert into t_notice
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="pushTime != null">
+        push_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pushTime != null">
+        #{pushTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.Notice">
+    update t_notice
+    <set>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pushTime != null">
+        push_time = #{pushTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.Notice">
+    update t_notice
+    set type = #{type,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      push_time = #{pushTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

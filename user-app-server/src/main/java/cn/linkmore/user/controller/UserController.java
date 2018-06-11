@@ -63,7 +63,7 @@ public class UserController {
 	@RequestMapping(value = "/v2.0/sms", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> sms(@NotBlank(message="手机号不能为空") 
-	@Pattern(regexp="^(((13[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(15[0-9]{1})|(14[0-9]{1}))+\\d{8})$", message="无效手机号") 
+	@Pattern(regexp="^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(16[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(19[0-9]{1}))+\\d{8})$", message="无效手机号") 
 	@RequestParam(value="mobile" ,required=true)  String mobile,HttpServletRequest request){
 		ResponseEntity<?> response = null;  
 		try {
@@ -91,6 +91,19 @@ public class UserController {
 	public ResponseEntity<?> updateNickname(@ApiParam(value="昵称",required=true)  @NotBlank(message="昵称不能为空") @RequestParam("nickname") String nickname,HttpServletRequest request) {
 		this.userService.updateNickname(nickname,request);
 		return ResponseEntity.success(null, request);
+	}
+	
+	/**
+	 * @Description  更新账号名称
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@ApiOperation(value="更新账号名称",notes="账号名称不能为空，用户需要登录", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/account_name", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> updateAccountName(@ApiParam(value="账号名称",required=true)  @NotBlank(message="账号名称不能为空") @RequestParam("accountName") String accountName,HttpServletRequest request) {
+		this.userService.updateAccountName(accountName,request);
+		return ResponseEntity.success("账户更新成功", request);
 	}
 	
 	/**

@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.client.UserClient;
+import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
@@ -138,6 +139,7 @@ public class UserServiceImpl implements UserService {
 		ru.setId(rul.getId());
 		ru.setMobile(rl.getMobile());
 		ru.setToken(key); 
+		ru.setAccountName(rul.getAccountName());
 		Token token = this.cacheUser(request, ru);  
 		if(token!=null) {
 			this.push(ru.getId().toString(), token); 
@@ -180,6 +182,7 @@ public class UserServiceImpl implements UserService {
 		ru.setId(rul.getId());
 		ru.setMobile(rul.getMobile());
 		ru.setToken(key); 
+		ru.setAccountName(rul.getAccountName());
 		this.cacheUser(request, ru);   
 		return ru;
 	} 
@@ -310,6 +313,21 @@ public class UserServiceImpl implements UserService {
 	public ResUser getCache(HttpServletRequest request) {
 		String key = UserCache.getCacheKey(request);
 		return (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+	}
+	@Override
+	public void updateAccountName(String accountName, HttpServletRequest request) {
+		ResUser user = this.getCache(request);
+		ReqUpdateAccount account = new ReqUpdateAccount();
+		account.setAccountName(accountName);
+		account.setUserId(user.getId());
+		this.userClient.updateAccountName(account);
+	}
+	@Override
+	public void logout(HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ru.getId().toString());
+		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+key); 
 	}
 	
 }

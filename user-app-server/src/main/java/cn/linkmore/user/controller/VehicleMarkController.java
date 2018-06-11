@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -60,7 +61,7 @@ public class VehicleMarkController{
 	 */
 	@ApiOperation(value="删除",notes="根据id删除", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<?> delete(@ApiParam(value="id",required=true) @NotNull(message="id不能为空") @Digits(message="请输入整数", fraction = 11111110, integer = 1)  @RequestParam("id") Long id,HttpServletRequest request){
+	public ResponseEntity<?> delete(@ApiParam(value="id",required=true) @NotNull(message="id不能为空") @Min(message="请输入整数",value=1)  @RequestParam("id") Long id,HttpServletRequest request){
 		try {
 			this.vehicleMarkManageService.deleteById(id,request);
 		} catch (Exception e) {

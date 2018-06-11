@@ -20,6 +20,7 @@ import cn.linkmore.account.entity.Account;
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.entity.UserVechicle;
+import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
@@ -32,6 +33,7 @@ import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
@@ -119,7 +121,7 @@ public class UserServiceImpl implements UserService {
 			UserVechicle vechicle = this.userVechicleClusterMapper.findByUserId(list.get(0).getId());
 			ResUserDetails res = (ResUserDetails) list.get(0);
 			if (res != null && vechicle != null) {
-				Object carObj = redisService.get(CAR_BRAND_LIST);
+				Object carObj = redisService.get(RedisKey.COMMON_CAR_BRAND_LIST.key);
 				if (null != carObj) {
 					// 拼装返回 车辆品牌-型号
 					String brandModel = "";
@@ -259,6 +261,7 @@ public class UserServiceImpl implements UserService {
 		ResUserLogin token = new ResUserLogin();
 		token.setId(user.getId());
 		token.setMobile(user.getUsername());
+		token.setAccountName(user.getAccountName());
 		return token;
 	}
 
@@ -335,6 +338,11 @@ public class UserServiceImpl implements UserService {
 		}
 		List<ResPageUser> list = this.userClusterMapper.export(param);
 		return list; 
+	}
+
+	@Override
+	public void updateAccountName(ReqUpdateAccount account) {
+		this.updateByColumn("account_name", account.getAccountName(), account.getUserId());
 	}
 	
 	

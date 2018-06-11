@@ -5,7 +5,6 @@ import java.util.List;
 import cn.linkmore.account.entity.VehicleMarkManage;
 import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
 import cn.linkmore.account.request.ReqVehicleMark;
-import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResVechicleMark;
 
 /**

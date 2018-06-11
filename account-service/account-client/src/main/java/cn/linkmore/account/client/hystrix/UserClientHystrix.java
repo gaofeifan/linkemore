@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.request.ReqBind;
+import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
@@ -116,6 +117,11 @@ public class UserClientHystrix implements UserClient{
 	public List<ResPageUser> export(ViewPageable pageable) {
 		log.info("account service List<ResPageUser> export(ViewPageable pageable) hystrix"); 
 		return null;
+	}
+
+	@Override
+	public void updateAccountName(ReqUpdateAccount account) {
+		log.info("account service updateAccountName(ReqUpdateAccount account) hystrix"); 
 	}
 	
 	

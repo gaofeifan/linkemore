@@ -2,8 +2,10 @@ package cn.linkmore.user.request;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -47,14 +49,14 @@ public class ReqUnusualLog {
 	 */
 	@ApiModelProperty(value="客户端类型0:微信小程序,1:android,2:ios 必填 ",required=true)
 	@NotNull(message="客户端类型不能为空") 
-	@Digits(integer=0,fraction=2,message="数据类型有误 0【微信小程】,1【androi】,2【ios】")
+	@Range(min=0,max=2,message="客户端类型有误")
 	private Integer clientType;
 
 	/**
 	 * 日志级别
 	 */
-	@ApiModelProperty(value="日志级别 必填",required=true)
-	@NotBlank(message="日志级别不能为空") 
+	@ApiModelProperty(value="日志级别 必填",required=false)
+//	@NotBlank(message="日志级别不能为空") 
 	private String level;
 
 	/**

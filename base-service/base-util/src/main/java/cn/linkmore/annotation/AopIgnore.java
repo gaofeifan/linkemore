@@ -8,8 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Documented
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AopIgnore {
+	String value() default "";
 }

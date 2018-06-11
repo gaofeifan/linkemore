@@ -115,7 +115,6 @@ public class BannerServiceImpl implements BannerService {
 	@Override
 	public void setStatus(List<Long> ids, int status) {
 		this.walletBannerMasterMapper.updateStatus(ids,status);
-		
 	}
 
 	

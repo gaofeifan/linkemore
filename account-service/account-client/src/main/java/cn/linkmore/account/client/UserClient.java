@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.account.client.hystrix.UserClientHystrix;
 import cn.linkmore.account.request.ReqBind;
+import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
@@ -158,4 +159,12 @@ public interface UserClient {
 	 */
 	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
 	public List<ResPageUser> export(@RequestBody ViewPageable pageable);
+
+	/**
+	 * @Description  更新账户名称
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/account_name", method = RequestMethod.PUT)
+	public void updateAccountName(@RequestBody ReqUpdateAccount account);
 }

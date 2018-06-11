@@ -39,6 +39,10 @@ public class ResOrderDetail{
 	private BigDecimal couponAmount;
 	@ApiModelProperty(value = "支付金额")
 	private BigDecimal actualAmount;
+	@ApiModelProperty(value = "停车时长")
+	private String parkingTime;
+	@ApiModelProperty(value = "离开免费时长")
+	private Integer leaveTime;
 	 
 	public Long getId() {
 		return id;
@@ -124,6 +128,21 @@ public class ResOrderDetail{
 	public void setActualAmount(BigDecimal actualAmount) {
 		this.actualAmount = actualAmount;
 	}
+	
+	
+	public String getParkingTime() {
+		return parkingTime;
+	}
+	public void setParkingTime(String parkingTime) {
+		this.parkingTime = parkingTime;
+	}
+	
+	public Integer getLeaveTime() {
+		return leaveTime;
+	}
+	public void setLeaveTime(Integer leaveTime) {
+		this.leaveTime = leaveTime;
+	}
 	@JsonIgnore
 	public void copy(ResUserOrder ruo) {  
 		this.setOrderNo(ruo.getOrderNo());
@@ -140,6 +159,25 @@ public class ResOrderDetail{
 		this.setActualAmount(ruo.getActualAmount());
 		this.setCouponAmount(ruo.getCouponAmount());
 		this.setPayType(ruo.getPayType().shortValue());
-	}
-	
+		long day = 0;
+		long hour = 0;
+		long min = 0;
+		long time = (this.getEndTime().getTime()-this.getStartTime().getTime())/(60*1000L);
+		day = time / (24*60);
+		hour =( time % (24*60) ) / 60;
+		min = time % 60;
+		StringBuffer parkingTime = new StringBuffer();
+		if(day!=0) {
+			parkingTime.append(day);
+			parkingTime.append("天");
+			parkingTime.append(hour);
+			parkingTime.append("时"); 
+		}else if(hour!=0) {
+			parkingTime.append(hour);
+			parkingTime.append("时");
+		} 
+		parkingTime.append(min);
+		parkingTime.append("分");
+		this.setParkingTime(parkingTime.toString()); 
+	} 
 }
