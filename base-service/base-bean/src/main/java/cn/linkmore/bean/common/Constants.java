@@ -93,7 +93,7 @@ public class Constants {
 	}
 
 	public enum ClientSource {
-		WXAPP(0), ANDROID(1), IOS(1);
+		WXAPP(0), ANDROID(1), IOS(2);
 		public int source;
 
 		private ClientSource(int source) {
@@ -230,6 +230,7 @@ public class Constants {
 		COMMON_CAR_BRAND_LIST("common:car_brand:list"), 
 		COUPON_TEMPLATE_CONDITION_USETIME("COUPON_TEMP_CONDITION_USETIME:"), 
 		COUPON_TEMPLATE_CONDITION_PREIDS( "COUPON_TEMP_CONDITION_PREIDS:"),
+		COUPON_SEND_RECORD_MOBILE( "COUPON_SEND_RECORD_MOBILE:"),
 		ORDER_ASSIGN_STALL("assign_lock"),
 		ORDER_SERIAL_NUMBER("order:order:serial_number:"),
 		ORDER_TRADE_SERIAL_NUMBER("order:trade:serial_number:"),

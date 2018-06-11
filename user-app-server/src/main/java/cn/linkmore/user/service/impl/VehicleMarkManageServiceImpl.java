@@ -55,12 +55,6 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	public ResVechicleMark selectById(Long id, HttpServletRequest request) {
-		ReqVehMarkIdAndUserId v = new ReqVehMarkIdAndUserId();
-		v.setUserId(userService.getCache(request).getId());
-		v.setVehMarkId(id);
-		return this.vehicleMarkClient.findById(v);
+		return this.vehicleMarkClient.findById(id);
 	}
-
-	
-	
 }
