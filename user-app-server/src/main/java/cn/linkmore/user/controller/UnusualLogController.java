@@ -1,6 +1,7 @@
 package cn.linkmore.user.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.user.request.ReqUnusualLog;
 import cn.linkmore.user.service.UnusualLogService;
 import io.swagger.annotations.Api;
@@ -37,8 +39,9 @@ public class UnusualLogController {
 	@RequestMapping(value = "/v2.0/upload", method = RequestMethod.POST)
 	@ResponseBody
 	@ApiOperation(value="新增异常日志上报",notes="新增异常日志上报", consumes = "application/json")
-	public void upload(@RequestBody @Validated ReqUnusualLog unusualLog) {
+	public ResponseEntity<?> upload(@RequestBody @Validated ReqUnusualLog unusualLog,HttpServletRequest request) {
 		this.unusualLogService.insert(unusualLog);
+		return ResponseEntity.success("上报成功",request );
 	}
 
 }

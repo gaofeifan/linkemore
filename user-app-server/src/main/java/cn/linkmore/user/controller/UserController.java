@@ -63,7 +63,7 @@ public class UserController {
 	@RequestMapping(value = "/v2.0/sms", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> sms(@NotBlank(message="手机号不能为空") 
-	@Pattern(regexp="^(((13[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(15[0-9]{1})|(14[0-9]{1}))+\\d{8})$", message="无效手机号") 
+	@Pattern(regexp="^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(16[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(19[0-9]{1}))+\\d{8})$", message="无效手机号") 
 	@RequestParam(value="mobile" ,required=true)  String mobile,HttpServletRequest request){
 		ResponseEntity<?> response = null;  
 		try {

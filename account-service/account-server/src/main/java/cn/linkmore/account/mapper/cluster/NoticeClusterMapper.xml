@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.NoticeClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.Notice">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="push_time" jdbcType="TIMESTAMP" property="pushTime" />
+    <result column="status" jdbcType="BIGINT" property="status" />
+  </resultMap>
+	   <resultMap id="ResPageNoticeBeanMap" type="cn.linkmore.account.response.ResPageNotice" >
+      <id column="id" property="id" jdbcType="BIGINT" />
+      <result column="id" property="id"/>
+      <result column="title" property="title"/>
+      <result column="push_time" property="pushTime"/>
+      <result column="type" property="type"/>
+      <result column="description" property="description"/>
+    </resultMap>  
+  <sql id="Base_Column_List">
+    id, type, title, description, url, create_time, push_time, status
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_notice
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findNotReadCount" resultType="java.lang.Integer" parameterType="java.lang.Long"  >
+   SELECT
+	COUNT(rea.id)
+  FROM
+  t_notice_read rea
+  WHERE rea.user_id = #{uid}
+  </select>
+
+  <select id="findPageNotice" resultMap="ResPageNoticeBeanMap" parameterType="java.util.HashMap"  >
+   SELECT
+	t.id,t.title,t.push_time,t.type,t.description
+    FROM
+        t_notice t
+    LEFT JOIN t_notice_read r ON t.id = r.notice_id
+    WHERE
+    t.status = 0
+     AND   t.id NOT IN (
+            SELECT
+                nr.notice_id
+            FROM
+                t_notice_read nr
+            WHERE
+                nr.delete_status = 1
+            AND nr.user_id = #{uid}
+        )
+    GROUP BY t.id
+    ORDER BY t.push_time desc
+    LIMIT #{start}, #{size}
+  </select>
+
+    <select id="findNotReadCountAll" resultType="java.lang.Integer">
+       SELECT COUNT(t.id) count  FROM t_notice t  WHERE t.`status`=0
+    </select>
+    <select id="findNoticeReadByNid" parameterType="cn.linkmore.account.request.ReqNotice" resultMap="BaseResultMap">
+     SELECT
+	n.id,
+	n.notice_id,
+	n.user_id,
+	n.create_time,
+	n.delete_status,
+	n.read_status,
+	n.update_time
+  FROM
+      t_notice_read n
+  WHERE n.notice_id = #{nid} AND n.user_id = #{userId}
+    </select>
+</mapper>

@@ -32,6 +32,7 @@ import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
@@ -119,7 +120,7 @@ public class UserServiceImpl implements UserService {
 			UserVechicle vechicle = this.userVechicleClusterMapper.findByUserId(list.get(0).getId());
 			ResUserDetails res = (ResUserDetails) list.get(0);
 			if (res != null && vechicle != null) {
-				Object carObj = redisService.get(CAR_BRAND_LIST);
+				Object carObj = redisService.get(RedisKey.COMMON_CAR_BRAND_LIST.key);
 				if (null != carObj) {
 					// 拼装返回 车辆品牌-型号
 					String brandModel = "";

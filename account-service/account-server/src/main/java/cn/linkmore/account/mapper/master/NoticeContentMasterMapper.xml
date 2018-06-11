@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.NoticeContentMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.NoticeContent">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, content
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_notice_content
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.account.entity.NoticeContent">
+    insert into t_notice_content (id, content)
+    values (#{id,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR})
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.account.entity.NoticeContent">
+    insert into t_notice_content
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.NoticeContent">
+    update t_notice_content
+    <set>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.NoticeContent">
+    update t_notice_content
+    set content = #{content,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
