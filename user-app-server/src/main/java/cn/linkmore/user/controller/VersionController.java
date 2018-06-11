@@ -2,6 +2,7 @@ package cn.linkmore.user.controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +43,7 @@ public class VersionController {
 	@RequestMapping(value="/v2.0/current",method = RequestMethod.GET)
 	@ResponseBody
 	@ApiOperation(value = "查询当前版本", notes = "来源必填 1 android 2 ios", consumes = "application/json")
-	public ResponseEntity<cn.linkmore.user.response.ResVersionBean> current(@ApiParam(value="来源" ,required=true) @NotBlank(message="来源不能为空") @RequestParam("source")Integer source,HttpServletRequest request){
+	public ResponseEntity<cn.linkmore.user.response.ResVersionBean> current(@ApiParam(value="来源" ,required=true) @NotNull(message="来源不能为空") @RequestParam("source")Integer source,HttpServletRequest request){
 		ResVersionBean res = this.beanVersionService.current(source);
 		cn.linkmore.user.response.ResVersionBean bean = ObjectUtils.copyObject(res, new cn.linkmore.user.response.ResVersionBean());
 		ResponseEntity<cn.linkmore.user.response.ResVersionBean> responseEntity = ResponseEntity.success(bean, request);

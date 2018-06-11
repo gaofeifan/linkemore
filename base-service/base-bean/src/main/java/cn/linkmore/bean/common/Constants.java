@@ -93,7 +93,7 @@ public class Constants {
 	}
 
 	public enum ClientSource {
-		WXAPP(0), ANDROID(1), IOS(1);
+		WXAPP(0), ANDROID(1), IOS(2);
 		public int source;
 
 		private ClientSource(int source) {

@@ -42,7 +42,7 @@ public class BaseVersionController {
 		int appType = 0;
 		if(Constants.ClientSource.ANDROID.source == source){
 			appType = 1;
-		}else if(Constants.ClientSource.IOS.source == source){
+		}else if(2 == source){
 			appType = 2;
 		}
 		ResVersionBean app = this.beanVersionService.currentAppVersion(appType);
