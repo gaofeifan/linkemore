@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
@@ -186,5 +187,15 @@ public class UserControlle {
 	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
 	public List<ResPageUser> export(@RequestBody ViewPageable pageable) {
 		return this.userService.export(pageable);
+	}
+	
+	/**
+	 * @Description  更新账户名称
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/account_name", method = RequestMethod.PUT)
+	public void updateAccountName(@RequestBody ReqUpdateAccount account) {
+		this.userService.updateAccountName(account);
 	}
 }

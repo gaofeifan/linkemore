@@ -20,6 +20,7 @@ import cn.linkmore.account.entity.Account;
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.entity.UserVechicle;
+import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
@@ -260,6 +261,7 @@ public class UserServiceImpl implements UserService {
 		ResUserLogin token = new ResUserLogin();
 		token.setId(user.getId());
 		token.setMobile(user.getUsername());
+		token.setAccountName(user.getAccountName());
 		return token;
 	}
 
@@ -336,6 +338,11 @@ public class UserServiceImpl implements UserService {
 		}
 		List<ResPageUser> list = this.userClusterMapper.export(param);
 		return list; 
+	}
+
+	@Override
+	public void updateAccountName(ReqUpdateAccount account) {
+		this.updateByColumn("account_name", account.getAccountName(), account.getUserId());
 	}
 	
 	

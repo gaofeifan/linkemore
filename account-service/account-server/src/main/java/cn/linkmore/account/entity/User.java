@@ -74,6 +74,8 @@ public class User {
     private Integer orderCount;
     
     private Integer completeOrderCount;
+    
+    private String accountName;
 
     public Long getId() {
         return id;
@@ -322,4 +324,14 @@ public class User {
     public void setCompleteOrderCount(Integer completeOrderCount) {
         this.completeOrderCount = completeOrderCount;
     }
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+    
+    
 }

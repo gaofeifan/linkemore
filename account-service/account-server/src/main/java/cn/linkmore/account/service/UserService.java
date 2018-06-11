@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.linkmore.account.entity.User;
+import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
@@ -134,5 +135,12 @@ public interface UserService {
 	 * @Version  v2.0
 	 */
 	List<ResPageUser> export(ViewPageable pageable);
+
+	/**
+	 * @Description  更新账户名称
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateAccountName(ReqUpdateAccount account);
 
 }

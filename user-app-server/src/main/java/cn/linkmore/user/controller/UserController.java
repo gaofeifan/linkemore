@@ -94,6 +94,19 @@ public class UserController {
 	}
 	
 	/**
+	 * @Description  更新账号名称
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@ApiOperation(value="更新账号名称",notes="账号名称不能为空，用户需要登录", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/account_name", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> updateAccountName(@ApiParam(value="账号名称",required=true)  @NotBlank(message="账号名称不能为空") @RequestParam("accountName") String accountName,HttpServletRequest request) {
+		this.userService.updateAccountName(accountName,request);
+		return ResponseEntity.success("账户更新成功", request);
+	}
+	
+	/**
 	 * @Description  更新性别
 	 * @Author   GFF 
 	 * @Version  v2.0

@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.User">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="sex" jdbcType="SMALLINT" property="sex" />
@@ -38,7 +39,7 @@
     id, username, password, nickname, sex, status, user_type, enterprise_name, ent_admin_name, 
     industry, parent_id, mobile, province, city, address, email, wechat, qq, icon, last_login_time, 
     create_time, update_time, hobby_brand_id, is_app_register, is_wechat_bind, app_register_time, 
-    wechat_bind_time, type, login_count, order_count, complete_order_count
+    wechat_bind_time, type, login_count, order_count, complete_order_count,account_name
   </sql>
   <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_user
@@ -55,7 +56,7 @@
       update_time, hobby_brand_id, is_app_register, 
       is_wechat_bind, app_register_time, wechat_bind_time, 
       type, login_count, order_count, 
-      complete_order_count)
+      complete_order_count,account_name)
     values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=SMALLINT}, #{status,jdbcType=VARCHAR}, 
       #{userType,jdbcType=VARCHAR}, #{enterpriseName,jdbcType=VARCHAR}, #{entAdminName,jdbcType=VARCHAR}, 
@@ -66,7 +67,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{hobbyBrandId,jdbcType=BIGINT}, #{isAppRegister,jdbcType=SMALLINT}, 
       #{isWechatBind,jdbcType=SMALLINT}, #{appRegisterTime,jdbcType=TIMESTAMP}, #{wechatBindTime,jdbcType=TIMESTAMP}, 
       #{type,jdbcType=SMALLINT}, #{loginCount,jdbcType=INTEGER}, #{orderCount,jdbcType=INTEGER}, 
-      #{completeOrderCount,jdbcType=INTEGER})
+      #{completeOrderCount,jdbcType=INTEGER},#{account_name,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.linkmore.account.entity.User" useGeneratedKeys="true" keyProperty="id">
     insert into t_user
@@ -164,6 +165,9 @@
       <if test="completeOrderCount != null">
         complete_order_count,
       </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -258,6 +262,9 @@
       </if>
       <if test="completeOrderCount != null">
         #{completeOrderCount,jdbcType=INTEGER},
+      </if>
+      <if test="accountName != null">
+        #{account_name,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -354,6 +361,9 @@
       <if test="completeOrderCount != null">
         complete_order_count = #{completeOrderCount,jdbcType=INTEGER},
       </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -388,7 +398,8 @@
       type = #{type,jdbcType=SMALLINT},
       login_count = #{loginCount,jdbcType=INTEGER},
       order_count = #{orderCount,jdbcType=INTEGER},
-      complete_order_count = #{completeOrderCount,jdbcType=INTEGER}
+      complete_order_count = #{completeOrderCount,jdbcType=INTEGER},
+      account_name = #{accountName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByColumn" parameterType="java.util.Map">
