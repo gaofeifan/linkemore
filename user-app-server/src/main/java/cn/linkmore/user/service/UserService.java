@@ -109,5 +109,11 @@ public interface UserService {
 	 */
 	void updateAccountName(String accountName, HttpServletRequest request);
 
+	/**
+	 * 退出登录 
+	 * @param request
+	 */
+	void logout(HttpServletRequest request);
+
 
 }

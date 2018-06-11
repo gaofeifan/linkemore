@@ -123,6 +123,8 @@ public class Orders {
     
     private  Date switchTime;
     private Short switchStatus;
+    
+    private Date payTime;
 
     public Long getId() {
         return id;
@@ -378,5 +380,14 @@ public class Orders {
 
 	public void setTradeId(Long tradeId) {
 		this.tradeId = tradeId;
+	}
+
+	public Date getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(Date payTime) {
+		this.payTime = payTime;
 	}  
+	
 }

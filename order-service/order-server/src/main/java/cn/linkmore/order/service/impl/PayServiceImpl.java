@@ -284,7 +284,7 @@ public class PayServiceImpl implements PayService {
 			confirm = new ResOrderConfirm();
 			confirm.setAmount(new BigDecimal(0.0D)); 
 			confirm.setNumber(null); 
-			confirm.setPayType((short)orderPayType);
+			confirm.setPayType((short)(orderPayType-OrderPayType.ACCOUNT.type));
 			return confirm;
 		}
 
@@ -475,7 +475,7 @@ public class PayServiceImpl implements PayService {
 	
 	private String getRechargeNumer() {
 		Date day = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long increment = this.redisService.increment(RedisKey.ORDER_RECHARGE_SERIAL_NUMBER.key+sdf.format(day), 1);
 		Double t = Math.pow(10,5);
 		StringBuffer number = new StringBuffer();
@@ -486,7 +486,7 @@ public class PayServiceImpl implements PayService {
 
 	private String getTradeNumber() {
 		Date day = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long increment = this.redisService.increment(RedisKey.ORDER_TRADE_SERIAL_NUMBER.key+sdf.format(day), 1);
 		Double t = Math.pow(10,5);
 		StringBuffer number = new StringBuffer();
@@ -651,11 +651,13 @@ public class PayServiceImpl implements PayService {
 	public Boolean verify(Long orderId, Long userId) {
 		ResUserOrder order = this.ordersClusterMapper.findUserLatest(userId);
 		Boolean flag = false;
-		if(order==null||order.getUserId()!=userId) {
+		
+		if(order==null||order.getUserId().longValue()!=userId.longValue()) {
 			flag = false;
 		}else if(order.getStatus().intValue()==OrderStatus.COMPLETED.value) {
 			flag = true;
 		}
+		log.info("orderId:{},userId:{},verify:{},order:{}",orderId,userId,flag,JsonUtil.toJson(order));
 		return flag;
 	}
 	

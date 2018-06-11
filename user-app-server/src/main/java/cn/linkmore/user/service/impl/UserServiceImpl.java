@@ -322,5 +322,12 @@ public class UserServiceImpl implements UserService {
 		account.setUserId(user.getId());
 		this.userClient.updateAccountName(account);
 	}
+	@Override
+	public void logout(HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ru.getId().toString());
+		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+key); 
+	}
 	
 }

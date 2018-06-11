@@ -15,6 +15,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 public class FilterConfiguration { 
+	
+//	@Bean
+//	public TokenFilter tokenFilter() {
+//	    return new TokenFilter();
+//	}
 
 	@Bean
 	public ErrorFilter errorFilter(CustomErrorHandler errorHandler) {
@@ -22,6 +27,7 @@ public class FilterConfiguration {
 		errorFilter.setErrorHandler(errorHandler);
 		return errorFilter;
 	}  
+	 
  
 	@Component
 	public class CustomErrorHandler implements ResponseHandler { 

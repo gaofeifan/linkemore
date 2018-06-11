@@ -124,11 +124,11 @@ public class OrdersServiceImpl implements OrdersService {
 
 		}
 		return flag;
-	} 
+	}  
 	
 	private String getOrderNumber() {
 		Date day = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long increment = this.redisService.increment(RedisKey.ORDER_SERIAL_NUMBER.key+sdf.format(day), 1);
 		Double t = Math.pow(10,5);
 		StringBuffer number = new StringBuffer();

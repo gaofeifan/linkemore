@@ -54,6 +54,21 @@ public class AuthController {
 		}
 		return response;
 	}
+	@ApiOperation(value="用户退出登录",notes="用户退出登录", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/logout", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResUser> logout(HttpServletRequest request) {
+		ResponseEntity<ResUser> response = null; 
+		try {  
+			this.userService.logout(request);
+			response = ResponseEntity.success(null, request);
+		}catch(BusinessException e){ 
+			response = ResponseEntity.fail(e.getStatusEnum(), request); 
+		}catch(Exception e){ 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
 	
 	public static void main(String[] args) {
 		Date today = new Date();
