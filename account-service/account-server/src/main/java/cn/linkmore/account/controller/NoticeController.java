@@ -27,6 +27,7 @@ public class NoticeController{
 	/**
 	 * 消息分页列表
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ResPage listNotice(@RequestBody ReqPageNotice bean) {
@@ -50,7 +51,6 @@ public class NoticeController{
 	@ResponseBody
 	public void delete(@RequestBody ReqNotice notice) {
 		noticeService.delete(notice);
-
 	}
 
 }

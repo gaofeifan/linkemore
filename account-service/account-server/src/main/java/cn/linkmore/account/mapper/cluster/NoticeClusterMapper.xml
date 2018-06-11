@@ -74,4 +74,13 @@
       t_notice_read n
   WHERE n.notice_id = #{nid} AND n.user_id = #{userId}
     </select>
+     <select id="findNoticeReadDel" resultType="java.lang.Long" parameterType="java.lang.Long"  >
+    SELECT
+    T.notice_id
+    FROM
+    t_notice_read T
+    WHERE
+    T.user_id = #{uid}
+    AND  T.delete_status =0 AND T.read_status =1
+  </select>
 </mapper>

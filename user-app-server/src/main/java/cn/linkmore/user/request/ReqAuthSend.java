@@ -14,7 +14,7 @@ public class ReqAuthSend {
 	
 	@ApiModelProperty(value = "手机号，必填", required = true)
 	@NotBlank(message="手机号不能为空") 
-	@Pattern(regexp="^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(16[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(19[0-9]{1}))+\\\\d{8})$", message="无效手机号") 
+	@Pattern(regexp="^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(16[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(19[0-9]{1}))+\\d{8})$", message="无效手机号") 
 	private String mobile;
 	
 	@ApiModelProperty(value = "时间戳，必填", required = true)

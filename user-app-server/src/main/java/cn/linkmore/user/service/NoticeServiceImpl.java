@@ -25,6 +25,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Resource
 	private UserService userService;
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public ResPage findPage(ReqPageNotice bean) {
 		ResPage listNotice = noticeClient.listNotice(bean);

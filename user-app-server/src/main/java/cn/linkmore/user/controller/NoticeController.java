@@ -3,6 +3,7 @@ package cn.linkmore.user.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import cn.linkmore.account.request.ReqPageNotice;
@@ -32,16 +33,17 @@ public class NoticeController {
     /**
      *消息分页列表
      */
-    @ApiOperation(value = "消息列表", notes = "消息列表", consumes = "application/json")
+    @SuppressWarnings("rawtypes")
+	@ApiOperation(value = "消息列表", notes = "消息列表", consumes = "application/json")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<ResPage> listNotice(@Valid @RequestBody ReqPageNotice bean , HttpServletRequest request) {
+    public ResponseEntity<ResPage> listNotice(@Validated @RequestBody ReqPageNotice bean , HttpServletRequest request) {
     	ResPage page = this.noticeService.findPage(bean);
     	return ResponseEntity.success(page,request);
     }
 
     /**
-     *阅读
+     * 阅读
      */
     @ApiOperation(value = "阅读", notes = "阅读", consumes = "application/json")
     @RequestMapping(value = "/read", method = RequestMethod.GET)
