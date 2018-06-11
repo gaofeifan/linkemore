@@ -50,8 +50,14 @@ public class VehicleMarkController{
 	@ApiOperation(value="新增",notes="车牌号必填,车牌号规则校验", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	public ResponseEntity<?> create( @RequestBody @Validated cn.linkmore.user.request.ReqVehicleMark bean,HttpServletRequest request) {
-		this.vehicleMarkManageService.save(bean,request);
-		return ResponseEntity.success(null, request);
+		try {
+			this.vehicleMarkManageService.save(bean,request);
+			return ResponseEntity.success(null, request);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code,e.getMessage(), request);
+		}
 	}
 	
 	/**

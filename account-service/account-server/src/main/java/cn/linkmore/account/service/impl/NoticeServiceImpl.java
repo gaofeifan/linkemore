@@ -102,7 +102,6 @@ public class NoticeServiceImpl implements NoticeService {
         noticeRead.setUpdateTime(new Date());
         noticeRead.setReadStatus(NOTICE_OPER_READ);
         readMasterMapper.save(noticeRead);
-
         Notice notice = noticeClusterMapper.findById(reqNotice.getNid());
 
         if(notice.getType() ==1){
