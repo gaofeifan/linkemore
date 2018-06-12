@@ -233,7 +233,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void bindMobile(ReqMobileBind rmb, HttpServletRequest request) {
 		Object cache = this.redisService.get(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
-		if(cache==null) {
+		/*if(cache==null) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
 		}else {
 			if(!cache.toString().equals(rmb.getCode())) {
@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService {
 			}else {
 				this.redisService.remove(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
 			}
-		} 
+		} */
 		String key = UserCache.getCacheKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUpdateMobile rum = new ReqUpdateMobile(); 
