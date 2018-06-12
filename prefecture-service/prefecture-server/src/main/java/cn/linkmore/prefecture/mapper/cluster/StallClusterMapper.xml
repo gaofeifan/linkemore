@@ -59,7 +59,7 @@
   </select>
   
   <select id="findStallsByPreId" parameterType="java.lang.Long" resultMap="ResponseResultMap">
-  	select id,stall_name,lock_sn from v_stall where status in(1,2) and pre_id = #{preId}
+  	select id,stall_name,lock_sn from v_stall where status = 1 and pre_id = #{preId}
   </select>
   
   <select id="findAll" resultMap="BaseResultMap" >
