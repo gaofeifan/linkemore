@@ -23,7 +23,7 @@ import cn.linkmore.prefecture.response.ResStrategyBase;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/strategy", fallback=StrategyBaseClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/feign/strategy", fallback=StrategyBaseClientHystrix.class,configuration = FeignConfiguration.class)
 public interface StrategyBaseClient {
 	
 	/**
@@ -35,6 +35,8 @@ public interface StrategyBaseClient {
 	 */
 	@RequestMapping(value = "/v2.0/fee", method=RequestMethod.POST)
 	public Map<String, Object> fee(@RequestBody ReqStrategy reqStrategy);
+	
+	/*****************************************************************/
 	
 	/**
 	 * 新增

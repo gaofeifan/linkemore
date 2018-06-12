@@ -95,7 +95,8 @@ public class StallServiceImpl implements StallService {
 		boolean flag = false;
 		Stall stall = stallClusterMapper.findById(stallId);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			ResponseMessage<LockBean> res = lockFactory.lockDown(stall.getLockSn());
+			//结账离场应该进行升锁操作
+			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
 			int code = res.getMsgCode();
 			log.info("lock msg:{}", JsonUtil.toJson(res));
 			if (code == 200) {

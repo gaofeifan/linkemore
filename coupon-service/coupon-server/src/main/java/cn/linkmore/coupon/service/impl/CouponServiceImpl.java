@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.CouponStatus;
 import cn.linkmore.bean.common.Constants.CouponType;
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.coupon.dao.cluster.CouponClusterMapper;
 import cn.linkmore.coupon.dao.cluster.TemplateConditionClusterMapper;
 import cn.linkmore.coupon.dao.master.CouponMasterMapper;
@@ -38,6 +41,7 @@ import cn.linkmore.prefecture.request.ReqStrategy;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.TokenUtil;
 /**
  * Service实现 - 停车券
  * @author liwenlong
@@ -431,5 +435,34 @@ public class CouponServiceImpl implements CouponService {
 		param.put("usedAmount", rcp.getUsedAmount());
 		this.couponMasterMapper.payUpdate(param);
 		
+	}
+
+	@Override
+	public List<cn.linkmore.coupon.controller.app.response.ResCoupon> usableList(HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request));  
+		List<ResCoupon> list = this.userEnabledList(cu.getId());
+		List<cn.linkmore.coupon.controller.app.response.ResCoupon> rcs = new ArrayList<cn.linkmore.coupon.controller.app.response.ResCoupon>();
+		cn.linkmore.coupon.controller.app.response.ResCoupon r = null;
+		for(cn.linkmore.coupon.response.ResCoupon rc:list) {
+			r = new cn.linkmore.coupon.controller.app.response.ResCoupon();	
+			r.copy(rc);
+			rcs.add(r);
+		}
+		return rcs;
+	}
+
+	@Override
+	public List<cn.linkmore.coupon.controller.app.response.ResCoupon> paymentList(HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request));  
+		ResUserOrder ruo = this.orderClient.last(cu.getId());
+		List<cn.linkmore.coupon.response.ResCoupon> list = this.userOrderEnableList(cu.getId(), ruo.getId());
+		List<cn.linkmore.coupon.controller.app.response.ResCoupon> rcs = new ArrayList<cn.linkmore.coupon.controller.app.response.ResCoupon>();
+		cn.linkmore.coupon.controller.app.response.ResCoupon r = null;
+		for(cn.linkmore.coupon.response.ResCoupon rc:list) {
+			r = new cn.linkmore.coupon.controller.app.response.ResCoupon();	
+			r.copy(rc);
+			rcs.add(r);
+		}
+		return rcs;
 	}
 }

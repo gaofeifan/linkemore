@@ -2,22 +2,22 @@ package cn.linkmore.prefecture.service;
 
 import java.util.List;
 import java.util.Map;
-
+import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResPreCity;
+import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
+import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
+
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
-import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
-import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
-import cn.linkmore.prefecture.response.ResPrefectureList;
-import cn.linkmore.prefecture.response.ResPrefectureStrategy;
-import cn.linkmore.prefecture.response.ResStrategyBase;
 
 /**
  * Service接口 - 车区信息
@@ -35,18 +35,11 @@ public interface PrefectureService {
 	ResPrefectureDetail findById(Long id);
 	
 	/**
-	 * 根据当前位置获取车区列表
-	 * @param reqPrefecture
-	 * @return
-	 */
-	List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture);
-	
-	/**
 	 * 根据车区id查询计费策略
 	 * @param preId
 	 * @return
 	 */
-	ResPrefectureStrategy getPreStrategy(Long preId);
+	ResPrefectureStrategy findPreStrategy(Long preId);
 	/**
 	 * 根据车区id集合查询车名名称集合
 	 * @param ids
@@ -58,9 +51,6 @@ public interface PrefectureService {
 	 * @return
 	 */
 	List<ResPrefectureList> getStallCount();
-	
-	
-	
 	
 	/**
 	 * 查询分页
@@ -119,5 +109,11 @@ public interface PrefectureService {
 	Tree findTree();
 	
 	ResPrefectureDetail checkName(Map<String, Object> param);
+	/**
+	 * 根据当前位置获取车区分组列表
+	 * @param reqPrefecture
+	 * @return
+	 */
+	List<ResPreCity> list(ReqPrefecture rp, HttpServletRequest request);
 
 }

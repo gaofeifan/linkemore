@@ -17,15 +17,11 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
-import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
-import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
-import cn.linkmore.prefecture.response.ResPrefectureList;
-import cn.linkmore.prefecture.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.service.PrefectureService;
 
 /**
@@ -74,37 +70,37 @@ public class PrefectureController {
 	 * 
 	 * @param reqPrefecture ReqPrefecture
 	 * @return
-	 */
+	 *//*
 	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPrefecture> findPreListByLoc(@RequestBody ReqPrefecture reqPrefecture) {
 		return this.preService.findPreListByLoc(reqPrefecture);
 	}
 
-	/**
+	*//**
 	 * 根据车区id查询计费策略
 	 * 
 	 * @param preId Long
 	 * @return
-	 */
+	 *//*
 	@RequestMapping(value = "/v2.0/strategy/{preId}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResPrefectureStrategy findPreStrategy(@PathVariable ("preId") Long preId) {
-		ResPrefectureStrategy resPreStrategy = preService.getPreStrategy(preId);
+		ResPrefectureStrategy resPreStrategy = preService.findPreStrategy(preId);
 		return resPreStrategy;
 	}
-	/**
+	*//**
 	 * 查询车区空闲车位
 	 * 
 	 * @param preId Long
 	 * @return
-	 */
+	 *//*
 	@RequestMapping(value = "/v2.0/free_count", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ResPrefectureList> refreshFreeStall() {
 		List<ResPrefectureList> resPrefectureList = preService.getStallCount();
 		return resPrefectureList;
-	}
+	}*/
 	
 	
 	

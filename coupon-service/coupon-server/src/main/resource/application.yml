@@ -15,7 +15,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.220:6003/eureka/,http://192.168.1.223:6003/eureka/ 
+      defaultZone: http://192.168.1.220:6003/eureka/
 feign:
   hystrix:
     enabled: true
@@ -63,6 +63,15 @@ cluster-db:
 security:
   basic:
     enabled: false
+    
+swagger:
+  enable: true
+  title: 凌猫停车券服务接口文档
+  description: 本文档为内部文档，仅供内部前端及测试人员参考。 完全基于RESTful接口说明
+  version: 2.0
+  service-url: http://www.linkmoreparking.com
+  contact: 凌猫停车 
+  base-package: cn.linkmore.coupon.controller.app
     
 redis:
   host: 192.168.1.218

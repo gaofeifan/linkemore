@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags = "Order", description = "车位预约")
 @RestController
-@RequestMapping("/order/app/order")
+@RequestMapping("/app/order")
 @Validated
 public class AppOrderController {
 

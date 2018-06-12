@@ -1,18 +1,61 @@
 package cn.linkmore.cloud.zuul;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+
+import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.TokenUtil;
  
 
 public class TokenFilter extends ZuulFilter {
 
-	private  final Logger log = LoggerFactory.getLogger(this.getClass());
+	private  final Logger log = LoggerFactory.getLogger(this.getClass()); 
+	private static final String API_APP_PATH="/app/";
+	private static final String API_OPS_PATH="/ops/";
+	private static final String API_FEIGN_PATH="/feign/"; 
+	private static final String SWAGGER_PATH = "/webjars/";
+	private static final List<String> openResources = new ArrayList<String>() {
+		private static final long serialVersionUID = 1L;
+		{ 
+			add("/webjars/springfox-swagger-ui/");
+			add("/swagger-ui.html");
+			add("/configuration");
+			add("/swagger-resources");
+			add("/swagger-resources/configuration/ui"); 
+			add("/swagger-ui.html/swagger-resources/configuration/ui");
+			add("/swagger-resources/configuration/security");
+			add("/api-docs");
+			add("/v2/api-docs");
+			add("/app/auth/v2.0/login");
+			add("/app/auth/v2.0/wx");
+			add("/app/auth/v2.0/send");  
+			add("/app/prefectures/v2.0/map/list"); 
+			add("/app/prefectures/v2.0/free/list"); 
+			add("/app/prefectures/v2.0/strategy");
+			add("/app/citys/v2.0/list"); 
+			add("/app/callback/v2.0/wechat/order");
+			add("/app/callback/v2.0/alipay/order");
+			add("/app/callback/v2.0/apple/order");
+		}
+	};  
+	
+	@Autowired
+	private RedisService redisService;
+	 
 
     @Override
     public String filterType() {
@@ -27,26 +70,61 @@ public class TokenFilter extends ZuulFilter {
     @Override
     public boolean shouldFilter() {
         return true;// 是否执行该过滤器，此处为true，说明需要过滤
-    }
-
+    }  
     @Override
     public Object run() {
-        RequestContext ctx = RequestContext.getCurrentContext();
+        RequestContext ctx = RequestContext.getCurrentContext(); 
         HttpServletRequest request = ctx.getRequest(); 
-        log.info("--->>> TokenFilter {},{}", request.getMethod(), request.getRequestURL().toString()); 
-        String token = request.getParameter("token");// 获取请求的参数 
-        if (StringUtils.isNotBlank(token)) {
-            ctx.setSendZuulResponse(true); //对请求进行路由
+        String ip = request.getRemoteAddr(); 
+        String url = request.getRequestURI();  
+        String uri = url.substring(url.indexOf("/", 1));
+		String key = TokenUtil.getKey(request);
+		log.info("ip:{},token:{}",ip,key);
+		log.info(uri); 
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);  
+        if (url.contains(SWAGGER_PATH)||(openResources.contains(uri)||cu!=null)) {
+            ctx.setSendZuulResponse(true);
             ctx.setResponseStatusCode(200);
             ctx.set("isSuccess", true);
             return null;
-        } else {
-            ctx.setSendZuulResponse(false); //不对其进行路由
-            ctx.setResponseStatusCode(400);
-            ctx.setResponseBody("token is empty");
+        }else if (uri.contains(API_OPS_PATH)) {
+            ctx.setSendZuulResponse(true);
+            ctx.setResponseStatusCode(200);
+            ctx.set("isSuccess", true);
+            return null;
+        } else if (uri.contains(API_FEIGN_PATH)) {
+            ctx.setSendZuulResponse(true);
+            ctx.setResponseStatusCode(200);
+            ctx.set("isSuccess", true);
+            return null;
+        } else if(uri.contains(API_APP_PATH)){  
+            ctx.setSendZuulResponse(false);
+            ctx.setResponseStatusCode(200);
+            ctx.setResponseBody(JsonUtil.toJson(ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request)));
+            ctx.getResponse().setContentType("text/html;charset=UTF-8");
+            ctx.set("isSuccess", false);
+            return null;
+        }else if(uri.contains(API_OPS_PATH)){  
+            ctx.setSendZuulResponse(false);
+            ctx.setResponseStatusCode(200); 
+            ctx.setResponseBody(JsonUtil.toJson(ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request)));
+            ctx.getResponse().setContentType("text/html;charset=UTF-8");
+            ctx.set("isSuccess", false);
+            return null;
+        }else if(uri.contains(API_FEIGN_PATH)){  
+            ctx.setSendZuulResponse(false);
+            ctx.setResponseStatusCode(200);
+            ctx.setResponseBody(JsonUtil.toJson(ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request)));
+            ctx.getResponse().setContentType("text/html;charset=UTF-8");
+            ctx.set("isSuccess", false);
+            return null;
+        }else{  
+            ctx.setSendZuulResponse(false);
+            ctx.setResponseStatusCode(200);
+            ctx.setResponseBody(JsonUtil.toJson(ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request)));
+            ctx.getResponse().setContentType("text/html;charset=UTF-8");
             ctx.set("isSuccess", false);
             return null;
         }
-    }
-
+    }  
 }

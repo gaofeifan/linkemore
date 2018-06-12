@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags="Pay",description="订单结账")
 @RestController
-@RequestMapping("/order/app/pay")
+@RequestMapping("/app/pay")
 public class AppPayController {
 	
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
