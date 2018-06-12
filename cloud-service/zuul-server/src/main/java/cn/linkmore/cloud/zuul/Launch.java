@@ -3,6 +3,7 @@ package cn.linkmore.cloud.zuul;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Zuul server
@@ -12,6 +13,7 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
  */
 @EnableZuulProxy 
 @SpringBootApplication
+@ComponentScan(basePackages = { "cn.linkmore" })
 public class Launch {
 
 	public static void main(String[] args) {

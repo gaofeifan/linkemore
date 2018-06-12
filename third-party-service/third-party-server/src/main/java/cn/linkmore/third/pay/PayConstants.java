@@ -38,15 +38,15 @@ public class PayConstants {
 	}
 	 
 	public static String getOrderAsyncApplePayUrl(){
-		return server+"/callback/v2.0/apple/order";
+		return server+"/order/app/callback/v2.0/apple/order";
 	}
 	 
 	public static String getOrderAsyncWechatUrl(){
-		return server+"/callback/v2.0/wechat/order";
+		return server+"/order/app/callback/v2.0/wechat/order";
 	} 
 	
 	public static String getRechargeAsyncWechatUrl(){
-		return server+"/callback/v2.0/wechat/recharge";
+		return server+"/order/app/callback/v2.0/wechat/recharge";
 	}  
 
 	//交易类型(微信app支付)
@@ -125,10 +125,10 @@ public class PayConstants {
 	 * @return
 	 */
 	public static String getOrderAsyncAlipayUrl(){
-		return server +"/callback/v2.0/alipay/order";
+		return server +"/order/app/callback/v2.0/alipay/order";
 	}
 	
 	public static String getRechargeAsyncAlipayUrl(){
-		return server+"/callback/v2.0/alipay/recharge";
+		return server+"/order/app/callback/v2.0/alipay/recharge";
 	} 
 }

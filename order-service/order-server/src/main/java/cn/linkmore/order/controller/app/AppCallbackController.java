@@ -22,7 +22,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @ApiIgnore
 @RestController
-@RequestMapping("/order/app/callback")
+@RequestMapping("/app/callback")
 public class AppCallbackController {
 	
 	@Autowired

@@ -2,6 +2,8 @@ package cn.linkmore.coupon.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
 
@@ -40,5 +42,19 @@ public interface CouponService {
 	 * @param rcp
 	 */
 	void pay(ReqCouponPay rcp);
+
+	/**
+	 * App接口用户可用列表
+	 * @param request
+	 * @return
+	 */
+	List<cn.linkmore.coupon.controller.app.response.ResCoupon> usableList(HttpServletRequest request);
+
+	/**
+	 * App接口用户支付列表
+	 * @param request
+	 * @return
+	 */
+	List<cn.linkmore.coupon.controller.app.response.ResCoupon> paymentList(HttpServletRequest request);
 
 }
