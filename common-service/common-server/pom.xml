@@ -81,9 +81,19 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
+			<artifactId>third-party-client</artifactId>
+			<version>${project.version}</version>
+		</dependency> 
+		<dependency>
+			<groupId>cn.linkmore</groupId>
 			<artifactId>common-bean</artifactId>
 			<version>${project.version}</version>
 		</dependency> 
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>swagger-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
