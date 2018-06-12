@@ -68,12 +68,7 @@ public class AuthController {
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
-	}
-	
-	public static void main(String[] args) {
-		Date today = new Date();
-		System.out.print(today.getTime()+1000L*60*60*24*1000);
-	}
+	} 
 	
 	@ApiOperation(value = "微信登录", notes = "微信登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/wx", method = RequestMethod.GET)

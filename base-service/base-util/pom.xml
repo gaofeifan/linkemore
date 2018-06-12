@@ -78,5 +78,10 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>${poi.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>base-bean</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 </project>

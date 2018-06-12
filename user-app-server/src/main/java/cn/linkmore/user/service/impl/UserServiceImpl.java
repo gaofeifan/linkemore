@@ -26,6 +26,7 @@ import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.SmsTemplate;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -140,7 +141,11 @@ public class UserServiceImpl implements UserService {
 		ru.setMobile(rl.getMobile());
 		ru.setToken(key); 
 		ru.setAccountName(rul.getAccountName());
-		Token token = this.cacheUser(request, ru);  
+		CacheUser user = new CacheUser();
+		user.setId(rul.getId());
+		user.setMobile(rul.getMobile());
+		user.setToken(key);  
+		Token token = this.cacheUser(request, user);  
 		if(token!=null) {
 			this.push(ru.getId().toString(), token); 
 		}
@@ -183,7 +188,11 @@ public class UserServiceImpl implements UserService {
 		ru.setMobile(rul.getMobile());
 		ru.setToken(key); 
 		ru.setAccountName(rul.getAccountName());
-		this.cacheUser(request, ru);   
+		CacheUser user = new CacheUser();
+		user.setId(rul.getId());
+		user.setMobile(rul.getMobile());
+		user.setToken(key); 
+		this.cacheUser(request, user);   
 		return ru;
 	} 
 	
@@ -204,7 +213,7 @@ public class UserServiceImpl implements UserService {
 		this.userClient.updateAppfans(ruaf);
 	}  
 	
-	private Token cacheUser(HttpServletRequest request, ResUser user) {
+	private Token cacheUser(HttpServletRequest request, CacheUser user) {
 		String key = UserCache.getCacheKey(request);
 		
 		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId().toString());

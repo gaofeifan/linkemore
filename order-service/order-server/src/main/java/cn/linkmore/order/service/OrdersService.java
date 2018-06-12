@@ -2,9 +2,15 @@ package cn.linkmore.order.service;
 
 import java.util.List;
 
-import cn.linkmore.order.request.ReqOrderCreate;
+import javax.servlet.http.HttpServletRequest;
+
+import cn.linkmore.order.controller.app.request.ReqBooking;
+import cn.linkmore.order.controller.app.request.ReqOrderStall;
+import cn.linkmore.order.controller.app.request.ReqSwitch;
+import cn.linkmore.order.controller.app.response.ResCheckedOrder;
+import cn.linkmore.order.controller.app.response.ResOrder;
+import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.request.ReqOrderDown;
-import cn.linkmore.order.request.ReqOrderSwitch;
 import cn.linkmore.order.response.ResUserOrder;
 
 /**
@@ -18,8 +24,9 @@ public interface OrdersService {
 	/**
 	 * 预约
 	 * @param roc
+	 * @param request
 	 */
-	void create(ReqOrderCreate roc);
+	void create(ReqBooking rb,HttpServletRequest request);
 	
 	/**
 	 * 最新订单
@@ -33,26 +40,32 @@ public interface OrdersService {
 	 * @param id
 	 * @return
 	 */
-	ResUserOrder detail(Long id);
+	ResOrderDetail detail(Long id,HttpServletRequest request);
 
 	/**
 	 * 降下地锁
 	 * @param rod
 	 */
-	void down( ReqOrderDown rod);
+	void down(ReqOrderStall ros,HttpServletRequest request);
 
 	/**
 	 * 切换车位
 	 * @param ros
 	 */
-	void switchStall(ReqOrderSwitch ros);
+	void switchStall(ReqSwitch rs,HttpServletRequest request);
 
 	/**
 	 * 订单列表
-	 * @param userId 
-	 * @param start
+	 * @param start 
+	 * @param request
 	 * @return
 	 */
-	List<ResUserOrder> list(Long userId, Long start);
+	List<ResCheckedOrder> list(Long start, HttpServletRequest request);
 
+	/**
+	 * 当前订单
+	 * @param request
+	 * @return
+	 */
+	ResOrder current(HttpServletRequest request); 
 }

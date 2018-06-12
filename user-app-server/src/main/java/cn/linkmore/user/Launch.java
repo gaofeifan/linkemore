@@ -1,5 +1,7 @@
 package cn.linkmore.user;
 
+import java.util.Date;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
@@ -31,7 +33,7 @@ public class Launch {
 	public static void main(String[] args) {
 		SpringApplication.run(Launch.class, args);
 	}
-
+	
 	@Bean
 	public MethodValidationPostProcessor methodValidationPostProcessor() {
 		return new MethodValidationPostProcessor();

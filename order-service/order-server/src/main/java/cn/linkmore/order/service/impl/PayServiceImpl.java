@@ -1,11 +1,17 @@
 package cn.linkmore.order.service.impl;
 
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -24,12 +30,17 @@ import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.TradePayType;
 import cn.linkmore.bean.common.Constants.TradeType;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
+import cn.linkmore.order.controller.app.request.ReqPayConfirm;
+import cn.linkmore.order.controller.app.response.ResOrderDetail;
+import cn.linkmore.order.controller.app.response.ResPayCheckout;
+import cn.linkmore.order.controller.app.response.ResPayConfirm;
 import cn.linkmore.order.dao.cluster.AccountClusterMapper;
 import cn.linkmore.order.dao.cluster.CompanyTradeRecordClusterMapper;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
@@ -49,7 +60,6 @@ import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.RechargeRecord;
 import cn.linkmore.order.entity.TradeRecord;
 import cn.linkmore.order.entity.WalletDetail;
-import cn.linkmore.order.request.ReqOrderConfirm;
 import cn.linkmore.order.response.ResOrderCheckout;
 import cn.linkmore.order.response.ResOrderConfirm;
 import cn.linkmore.order.response.ResOrderWeixin;
@@ -74,6 +84,8 @@ import cn.linkmore.third.request.ReqOrder;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.response.ResAppWechatOrder;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.TokenUtil;
+import cn.linkmore.util.XMLUtil;
 /**
  * Service实现 - 支付
  * @author liwenlong
@@ -156,18 +168,19 @@ public class PayServiceImpl implements PayService {
 	 
 
 	@Override
-	public ResOrderCheckout checkout(Long orderId, Long userId) {
-		ResUserOrder order = this.ordersClusterMapper.findUserLatest(userId);
+	public ResPayCheckout checkout(Long orderId, HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		ResUserOrder order = this.ordersClusterMapper.findUserLatest(cu.getId());
 		log.info("order:{}",JsonUtil.toJson(order));
-		log.info("orderId:{},userId:{}",orderId,userId);
-		log.info("order==null:{},order.getUserId()!=userId:{}",order==null,order.getUserId()!=userId);
-		if(order==null||order.getUserId().longValue()!=userId.longValue()) {
+		log.info("orderId:{},userId:{}",orderId,cu.getId());
+		log.info("order==null:{},order.getUserId()!=userId:{}",order==null,order.getUserId()!=cu.getId());
+		if(order==null||order.getUserId().longValue()!=cu.getId().longValue()) {
 			return null;
 		}
 		Account account = this.accountClusterMapper.findById(order.getUserId());
 		ResOrderCheckout roc = new ResOrderCheckout();
 		roc.setAccountAmount(account.getUsableAmount());
-		List<ResCoupon> rcs = this.couponClient.order(userId, orderId);
+		List<ResCoupon> rcs = this.couponClient.order(cu.getId(), orderId);
 		roc.setStartTime(order.getCreateTime());
 		roc.setEndTime(new Date());
 		if(order.getStatus()==OrderStatus.SUSPENDED.value) {
@@ -194,7 +207,22 @@ public class PayServiceImpl implements PayService {
 		String totalStr = map.get("totalAmount").toString();
 		String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr)); 
 		roc.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr))); 
-		return roc;
+		ResPayCheckout result = null; 
+		if(roc!=null) {
+			result = new ResPayCheckout();
+			result.setAccountAmount(roc.getAccountAmount());
+			result.setTotalAmount(roc.getTotalAmount());
+			result.setPlateNumber(roc.getPlateNumber());
+			result.setParkingTime(roc.getParkingTime());
+			result.setPayType(roc.getPayType());
+			result.setPrefectureName(roc.getPrefectureName());
+			result.setStallName(roc.getStallName());
+			result.setCouponCount(roc.getCouponCount());
+			result.setEndTime(roc.getEndTime());
+			result.setStartTime(roc.getStartTime());
+			result.setOrderId(roc.getOrderId()); 
+		} 
+		return result;
 	}
 	private Account initAccount(Long userId) {
 		Account account = new Account();
@@ -212,9 +240,39 @@ public class PayServiceImpl implements PayService {
 		accountMasterMapper.save(account);
 		return account;
 	}
+	
+	private ResPayConfirm getConfirmResult(ResOrderConfirm confirm) {
+		ResPayConfirm res = null;
+		if(confirm!=null) {
+			res = new ResPayConfirm(); 
+			res.setAmount(confirm.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+			res.setPayType(confirm.getPayType());
+			
+			if(confirm.getPayType().shortValue()==TradePayType.ALIPAY.type) {
+				res.setAlipay(confirm.getAlipay());
+				res.setNumber(confirm.getNumber());
+			}else if(confirm.getPayType().shortValue()==TradePayType.WECHAT.type){
+				res.setNumber(confirm.getNumber());
+				ResOrderWeixin row = confirm.getWeixin();
+				cn.linkmore.order.controller.app.response.ResPayWeixin weixin = new cn.linkmore.order.controller.app.response.ResPayWeixin();
+				weixin.setAppid(row.getAppid());
+				weixin.setNoncestr(row.getNoncestr());
+				weixin.setPartnerid(row.getPartnerid());
+				weixin.setPrepayid(row.getPrepayid());
+				weixin.setSign(row.getSign());
+				weixin.setTimestamp(row.getTimestamp());
+				res.setWeixin(weixin);
+			}else if(confirm.getPayType().shortValue()==TradePayType.APPLE.type){
+				res.setApple(confirm.getApple());
+				res.setNumber(confirm.getNumber());
+			}
+		}
+		return res;
+	}
 	@Override
 	@Transactional(rollbackFor = RuntimeException.class)
-	public ResOrderConfirm confirm(ReqOrderConfirm roc) {
+	public ResPayConfirm confirm(ReqPayConfirm roc, HttpServletRequest request){
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ResOrderConfirm confirm = null;
 		ResCoupon coupon = null; 
 		if(roc.getCouponId()!=null) {
@@ -285,7 +343,7 @@ public class PayServiceImpl implements PayService {
 			confirm.setAmount(new BigDecimal(0.0D)); 
 			confirm.setNumber(null); 
 			confirm.setPayType((short)(orderPayType-OrderPayType.ACCOUNT.type));
-			return confirm;
+			return getConfirmResult(confirm);
 		}
 
 		Account account = accountClusterMapper.findById(order.getUserId());
@@ -315,7 +373,7 @@ public class PayServiceImpl implements PayService {
 				confirm.setAmount(new BigDecimal(0.0D)); 
 				confirm.setNumber(null); 
 				confirm.setPayType((short)orderPayType);
-				return confirm;
+				return getConfirmResult(confirm);
 			}else{
 				throw new BusinessException(StatusEnum.ORDER_PAY_ACCOUNT_AMOUNT_LOW);
 			}
@@ -355,10 +413,10 @@ public class PayServiceImpl implements PayService {
 				confirm.setNumber(rechargeRecord.getCode()); 
 				confirm.setPayType((short)TradePayType.ALIPAY.type); 
 				confirm.setAlipay(info);
-				return confirm; 
+				return getConfirmResult(confirm);
 			} else if (roc.getPayType() == TradePayType.WECHAT.type) {
 				ReqAppWechatOrder reqawo = new ReqAppWechatOrder(); 
-				reqawo.setAddress(roc.getAddress());
+				reqawo.setAddress(request.getLocalAddr());
 				reqawo.setAmount(rechargeRecord.getPaymentAmount().doubleValue());
 				reqawo.setNumber(rechargeRecord.getCode());
 				ResAppWechatOrder rawo = this.appWechatClient.order(reqawo);
@@ -375,7 +433,7 @@ public class PayServiceImpl implements PayService {
 				row.setNoncestr(rawo.getNoncestr());
 				row.setSign(rawo.getSign());
 				confirm.setWeixin(row); 
-				return confirm;
+				return getConfirmResult(confirm);
 			}else if(roc.getPayType() == TradePayType.APPLE.type){
 				ReqApplePay rap = new ReqApplePay();
 				rap.setTimestramp(new Date().getTime());
@@ -396,7 +454,7 @@ public class PayServiceImpl implements PayService {
 		} catch (Exception e) {  
 			throw new BusinessException(StatusEnum.ORDER_PAY_SIGN_ERROR);
 		}
-		return confirm; 
+		return getConfirmResult(confirm);
 	}
 	
 	private void updateConfirm(Orders order) {
@@ -648,17 +706,29 @@ public class PayServiceImpl implements PayService {
 	}
 
 	@Override
-	public Boolean verify(Long orderId, Long userId) {
-		ResUserOrder order = this.ordersClusterMapper.findUserLatest(userId);
+	public ResOrderDetail verify(Long orderId, HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		ResUserOrder order = this.ordersClusterMapper.findUserLatest(cu.getId());
 		Boolean flag = false;
 		
-		if(order==null||order.getUserId().longValue()!=userId.longValue()) {
+		if(order==null||order.getUserId().longValue()!=cu.getId().longValue()) {
 			flag = false;
 		}else if(order.getStatus().intValue()==OrderStatus.COMPLETED.value) {
 			flag = true;
 		}
-		log.info("orderId:{},userId:{},verify:{},order:{}",orderId,userId,flag,JsonUtil.toJson(order));
-		return flag;
+		log.info("orderId:{},userId:{},verify:{},order:{}",orderId,cu.getId(),flag,JsonUtil.toJson(order));
+		ResOrderDetail detail = null;
+		if(flag&&order.getUserId().longValue()==cu.getId().longValue()) {  
+			ResPrefectureDetail pre = prefectureClient.findById(order.getPreId());
+			detail = new ResOrderDetail();
+			detail.copy(order); 
+			if(pre!=null) {
+				detail.setLeaveTime(pre.getLeaveTime());
+			}else {
+				detail.setLeaveTime(15);
+			} 
+		}
+		return detail;
 	}
 	
 	private Boolean alipay(String json) {
@@ -713,15 +783,86 @@ public class PayServiceImpl implements PayService {
 	}
 	
 	@Override
-	public Boolean callback(String json, Integer source) { 
-		log.info("json:{},source:{}",json,source);
-		if(source == TradePayType.ALIPAY.type) {
-			return this.alipay(json);
-		}else if(source == TradePayType.APPLE.type) {
-			return this.apple(json);
-		}else if(source == TradePayType.WECHAT.type) {
-			return this.wechat(json);
-		}
-		return false;
+	public void wechatOrderNotice(HttpServletResponse response, HttpServletRequest request)  {
+		try {
+			Map<String, String> map = XMLUtil.doXMLParse(request);
+			String json = JsonUtil.toJson(map);
+			log.info("wechatOrderNotice:{}",json);
+			Boolean flag = this.wechat(json);
+			if(flag) {
+				Map<String, String> param = new HashMap<String, String>();
+				param.put("return_msg", "OK");
+				param.put("return_code", "SUCCESS");
+				StringBuffer buffer = new StringBuffer();
+				buffer.append("<xml>");
+				for (Map.Entry<String, String> entry : param.entrySet()) {
+					buffer.append("<" + entry.getKey() + ">");
+					buffer.append("<![CDATA[" + entry.getValue() + "]]>");
+					buffer.append("</" + entry.getKey() + ">");
+				}
+				buffer.append("</xml>");
+				String result = new String(buffer.toString().getBytes(), "utf-8");
+				// 微信通知返回业务结果为success 给微信返回成功信息
+				response.setContentType("text/html");
+				response.setCharacterEncoding("UTF-8");
+				PrintWriter pw = response.getWriter();
+				pw.write(result);
+				pw.flush();
+				pw.close();
+			} 
+		} catch (Exception e) { 
+			e.printStackTrace();
+		}  
 	}
+	private final static String RESULT_SUCCESS="success";
+	private final static String RESULT_FAILURE="fail";
+	@Override
+	public void alipayOrderNotice(HttpServletResponse response, HttpServletRequest request) { 
+		try {
+			Map<String, String> paramMap = new HashMap<>();
+			Map<String, String[]> map = request.getParameterMap(); 
+			Iterator<String> it = map.keySet().iterator();
+			while (it.hasNext()) {
+				String param = it.next();
+				String[] vals = map.get(param);
+				String value = null != vals && vals.length > 0 ? (vals.length == 1 ? vals[0] : null) : null;
+				if (null == value) {
+					value = "";
+					for (String v : vals) {
+						value += "," + v;
+					}
+					value = value.substring(1, value.length());
+				}
+				paramMap.put(param, value);
+			}  
+			String json = JsonUtil.toJson(paramMap);
+			log.info("alipayOrderNotice:{}",json);
+			Boolean flag = false;
+			try {
+				flag = this.alipay(json);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			PrintWriter pw = response.getWriter(); 
+			pw.print(flag?RESULT_SUCCESS:RESULT_FAILURE);
+			pw.flush();
+			pw.close(); 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void appleOrderNotice(HttpServletResponse response, HttpServletRequest request) {
+		Enumeration<String> em = request.getParameterNames();
+    	String name = null;
+    	Map<String,String> respData = new HashMap<String,String>(); 
+    	while(em.hasMoreElements()){ 
+    		name = em.nextElement();
+    		respData.put(name, request.getParameter(name)); 
+    	} 
+    	String json = JsonUtil.toJson(respData);
+    	this.apple(json); 
+	} 
 }
