@@ -95,4 +95,11 @@ public interface CityService {
 	 */
 	List<ResCity> findList(Map<String, Object> param);
 
+	/**
+	 * @Description  查询列表--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<cn.linkmore.common.controller.app.response.ResCity> list(String longitude, String latitude);
+
 }

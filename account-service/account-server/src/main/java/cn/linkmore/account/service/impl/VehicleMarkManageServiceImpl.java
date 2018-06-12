@@ -4,21 +4,26 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import cn.linkmore.account.common.UserCache;
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
 import cn.linkmore.account.entity.VehicleMarkManage;
 import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
 import cn.linkmore.account.request.ReqVehicleMark;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.account.service.VehicleMarkManageService;
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.ObjectUtils;
 /**
  * @author   GFF
@@ -29,12 +34,13 @@ import cn.linkmore.util.ObjectUtils;
 public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Resource
+	private RedisService redisService;
+	@Resource
 	private VehicleMarkManageClusterMapper vehicleMarkManageClusterMapper;
 	@Resource
 	private VehicleMarkManageMasterMapper vehicleMarkManageMasterMapper;
 	@Resource
 	private UserService userService;
-	
 	@Override
 	public List<VehicleMarkManage> findByUserId(Long userId) {
 		return this.vehicleMarkManageClusterMapper.findByUserId(userId);
@@ -75,15 +81,41 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 		throw new RuntimeException("该账户下没有此车牌号");
 	}
 
+
+	@Override
+	public List<ResVechicleMark> selectResList(HttpServletRequest request) {
+		List<ResVechicleMark> resList = this.findResList(getCache(request).getId());
+		return resList;
+	}
+
+	@Override
+	public void save(cn.linkmore.account.controller.app.request.ReqVehicleMark bean, HttpServletRequest request) {
+		bean.setUserId(this.getCache(request).getId());
+		ReqVehicleMark mark = ObjectUtils.copyObject(bean,new ReqVehicleMark());
+		this.save(mark);
+	}
+
+	@Override
+	public void deleteById(Long id, HttpServletRequest request) {
+		ReqVehMarkIdAndUserId v = new ReqVehMarkIdAndUserId();
+		v.setUserId(getCache(request).getId());
+		v.setVehMarkId(id);
+		this.deleteById(v);
+	}
+	
+	private ResUser getCache(HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		return (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+	}
+
 	@Override
 	public List<ResVechicleMark> findResList(Long userId) {
-		return this.vehicleMarkManageClusterMapper.findResList(userId);
+		return null;
 	}
 
 	@Override
-	public ResVechicleMark findById(Long v) {
-		return this.vehicleMarkManageClusterMapper.findById(v);
+	public ResVechicleMark findById(Long id) {
+		return null;
 	}
-
 	
 }

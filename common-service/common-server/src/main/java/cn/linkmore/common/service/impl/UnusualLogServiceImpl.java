@@ -41,6 +41,12 @@ public class UnusualLogServiceImpl implements UnusualLogService {
 		record.setLogId(log.getId());
 		this.unusualLogContentMasterMapper.insert(record );
 	}
+
+	@Override
+	public void insert(cn.linkmore.common.controller.app.request.ReqUnusualLog unusualLog) {
+		ReqUnusualLog log = ObjectUtils.copyObject(unusualLog, new ReqUnusualLog());
+		this.insert(log);
+	}
 	
 	
 	

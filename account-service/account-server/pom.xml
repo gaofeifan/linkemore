@@ -34,6 +34,10 @@
 			<artifactId>mysql-service</artifactId>
 			<version>${project.version}</version>
 		</dependency> 
+			 <dependency>  
+            <groupId>org.springframework.session</groupId>  
+            <artifactId>spring-session-data-redis</artifactId>  
+        </dependency> 
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>feign-service</artifactId>
@@ -62,6 +66,11 @@
         <dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>third-party-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>swagger-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

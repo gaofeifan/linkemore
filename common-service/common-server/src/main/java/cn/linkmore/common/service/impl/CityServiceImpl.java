@@ -1,9 +1,11 @@
 package cn.linkmore.common.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import cn.linkmore.common.dao.master.CityMasterMapper;
 import cn.linkmore.common.entity.City;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.service.CityService;
+import cn.linkmore.third.client.LocateClient;
 import cn.linkmore.util.EntityUtil;
 /**
  * Service实现类 - 城市信息
@@ -31,6 +34,9 @@ public class CityServiceImpl implements CityService {
 	
 	@Autowired
 	private CityMasterMapper cityMasterMapper;
+	
+	@Autowired
+	private LocateClient locateClient;
 
 	@Override
 	public ResCity find(Long id) {
@@ -111,4 +117,43 @@ public class CityServiceImpl implements CityService {
 	public List<ResCity> findList(Map<String, Object> param) {
 		return this.cityClusterMapper.findList(param);
 	}
+	@Override
+	public List<cn.linkmore.common.controller.app.response.ResCity> list(String longitude, String latitude) {
+		List<cn.linkmore.common.response.ResCity> list = this.findList(0, 10);
+		List<cn.linkmore.common.controller.app.response.ResCity> res = null;
+		cn.linkmore.common.controller.app.response.ResCity rc = null;
+		Map<String,cn.linkmore.common.controller.app.response.ResCity> rcMap = new HashMap<String,cn.linkmore.common.controller.app.response.ResCity>();
+		if (CollectionUtils.isNotEmpty(list)) {
+			res = new ArrayList<cn.linkmore.common.controller.app.response.ResCity>();
+			for (cn.linkmore.common.response.ResCity re : list) {
+				rc = new cn.linkmore.common.controller.app.response.ResCity();
+				rc.setId(re.getId()); 
+				rc.setName(re.getName());
+				rc.setLongitude(re.getLongitude());
+				rc.setLatitude(re.getLatitude());
+				res.add(rc);
+				rcMap.put(re.getCode().substring(0,4), rc);
+			}
+		}
+		if (!rcMap.isEmpty()) {
+			rc = null;
+			cn.linkmore.third.request.ReqLocate req = new cn.linkmore.third.request.ReqLocate();
+			req.setLongitude(longitude);
+			req.setLatitude( latitude); 
+			cn.linkmore.third.response.ResLocate info = this.locateClient.get(longitude,latitude);
+			if(info!=null&&info.getAdcode()!=null) { 
+				rc = rcMap.get(info.getAdcode().substring(0, 4));
+				if(rc!=null) {
+					rc.setStatus(cn.linkmore.common.controller.app.response.ResCity.STATUS_CHECKED);
+				}
+			}
+			if(rc==null) {
+				rc = res.get(0);
+				rc.setStatus(cn.linkmore.common.controller.app.response.ResCity.STATUS_ASSIGN);
+			}
+		}
+		return res;
+	}
+	
+	
 }

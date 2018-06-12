@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.account.common.UserCache;
 import cn.linkmore.account.dao.cluster.NoticeClusterMapper;
 import cn.linkmore.account.dao.cluster.NoticeContentClusterMapper;
 import cn.linkmore.account.dao.cluster.NoticeReadClusterMapper;
@@ -22,7 +24,11 @@ import cn.linkmore.account.request.ReqPageNotice;
 import cn.linkmore.account.response.ResNotice;
 import cn.linkmore.account.response.ResPage;
 import cn.linkmore.account.response.ResPageNotice;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.service.NoticeService;
+import cn.linkmore.account.service.UserService;
+import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.redis.RedisService;
 
 /**
  * @author GFF
@@ -32,7 +38,7 @@ import cn.linkmore.account.service.NoticeService;
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
-	  private static final Long NOTICE_OPER_READ =1l;
+	private static final Long NOTICE_OPER_READ =1l;
 	@Resource
 	private NoticeClusterMapper noticeClusterMapper;
 	@Resource
@@ -45,7 +51,10 @@ public class NoticeServiceImpl implements NoticeService {
 	private NoticeReadClusterMapper clusterMapper;
 	@Resource
 	private NoticeReadMasterMapper readMasterMapper;
-
+	@Resource
+	private RedisService redisService;
+	@Resource
+	private UserService userService;
 	@Override
 	public ResPage page(ReqPageNotice bean) {
 		int start = bean.getPage() * bean.getPageSize();
@@ -139,7 +148,28 @@ public class NoticeServiceImpl implements NoticeService {
 			  noticeread.setReadStatus(0l);
 	          readMasterMapper.save(noticeRead);
 		}
-
 	}
+
+	@Override
+	public ResNotice read(Long id, HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		ReqNotice no = new ReqNotice();
+		no.setNid(id);
+		no.setUserId(ru.getId());
+		return this.read( no);
+	}
+
+	@Override
+	public void delete(Long nid, HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		ReqNotice notice = new ReqNotice();
+		notice.setNid(nid);
+		notice.setUserId(ru.getId());
+		this.delete(notice );
+	}
+	
+	
 
 }

@@ -4,6 +4,11 @@ package cn.linkmore.account.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import cn.linkmore.account.controller.app.request.ReqAuthLogin;
+import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
@@ -142,5 +147,90 @@ public interface UserService {
 	 * @Version  v2.0
 	 */
 	void updateAccountName(ReqUpdateAccount account);
+
+	/**
+	 * @Description  app登录
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	cn.linkmore.account.controller.app.response.ResUser appLogin(ReqAuthLogin rl, HttpServletRequest request);
+
+	/**
+	 * @Description  微信登录
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	cn.linkmore.account.controller.app.response.ResUser login(String code, HttpServletRequest request);
+
+	/**
+	 * @Description  推出
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void logout(HttpServletRequest request);
+
+	/**
+	 * @Description  发送短信
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void send(ReqAuthSend rs);
+
+	/**
+	 * @Description  绑定手机号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void bindMobile(ReqMobileBind rmb, HttpServletRequest request);
+
+	/**
+	 * @Description  发送短信
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void send(String mobile, HttpServletRequest request);
+
+	/**
+	 * @Description  更新昵称--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateNickname(String nickname, HttpServletRequest request);
+
+	/**
+	 * @Description  更改账户名--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateAccountName(String accountName, HttpServletRequest request);
+
+	/**
+	 * @Description  更新性别--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateSex(Integer sex, HttpServletRequest request);
+
+	/**
+	 * @Description  更新车牌--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateVehicle(cn.linkmore.account.controller.app.request.ReqUpdateVehicle vehicle, HttpServletRequest request);
+
+	/**
+	 * @Description  查询详情
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResUserDetails detail(HttpServletRequest request);
+
+	/**
+	 * @Description  解除微信绑定--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void removeWechat(HttpServletRequest request);
+
 
 }

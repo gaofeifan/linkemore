@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.common.controller.UserCache;
 import cn.linkmore.common.dao.cluster.BaseAppVersionClusterMapper;
 import cn.linkmore.common.dao.cluster.UserVersionClusterMapper;
 import cn.linkmore.common.dao.master.BaseAppVersionMasterMapper;
@@ -26,6 +29,7 @@ import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.service.BeanVersionService;
 import cn.linkmore.common.service.CommonService;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 /**
@@ -37,6 +41,8 @@ import cn.linkmore.util.ObjectUtils;
 @Service
 public class BeanVersionServiceImpl implements BeanVersionService {
 
+	@Resource
+	private RedisService redisService;
 	@Resource
 	private CommonService commonService;
 	@Resource
@@ -150,10 +156,20 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 		List<UserVersion> list = this.versionClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
-	
-	
-	
-	
+
+	@Override
+	public ResVersionBean current(Integer source) {
+		return this.currentAppVersion(source);
+	}
+
+	@Override
+	public void report(cn.linkmore.common.controller.app.request.ReqVersion vrb, HttpServletRequest request) {
+		String key = UserCache.getCacheKey(request);
+	    Map<String , Object> user= (Map<String, Object>) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		vrb.setUserId(Long.decode(user.get("id").toString()));
+		ReqVersion version = ObjectUtils.copyObject(vrb, new ReqVersion());
+		this.report(version);
+	}
 	
 }
 
