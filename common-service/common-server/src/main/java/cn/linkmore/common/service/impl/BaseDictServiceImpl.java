@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.common.controller.app.response.ResDonwLockError;
 import cn.linkmore.common.dao.cluster.BaseDictClusterMapper;
 import cn.linkmore.common.dao.master.BaseDictMasterMapper;
 import cn.linkmore.common.entity.BaseDict;
@@ -23,6 +24,7 @@ import cn.linkmore.util.ObjectUtils;
 @Service
 public class BaseDictServiceImpl implements BaseDictService {
 
+	public static final String DOWN_LOCK_ERROR_CAUSE = "cause_down";
 	@Resource
 	private BaseDictClusterMapper baseDictClusterMapper;
 
@@ -55,6 +57,17 @@ public class BaseDictServiceImpl implements BaseDictService {
 	@Override
 	public ResBaseDict find(Long id) {
 		return this.baseDictClusterMapper.find(id);
+	}
+
+	@Override
+	public List<ResDonwLockError> selectLockDownErrorCause() {
+		List<ResBaseDict> list = this.findList(DOWN_LOCK_ERROR_CAUSE);
+		List<ResDonwLockError> resultList = new ArrayList<>();
+		for (ResBaseDict resBaseDict : list) {
+			ResDonwLockError lockError = ObjectUtils.copyObject(resBaseDict,new ResDonwLockError());
+			resultList.add(lockError);
+		}
+		return resultList;
 	}
 	
 	

@@ -67,7 +67,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{hobbyBrandId,jdbcType=BIGINT}, #{isAppRegister,jdbcType=SMALLINT}, 
       #{isWechatBind,jdbcType=SMALLINT}, #{appRegisterTime,jdbcType=TIMESTAMP}, #{wechatBindTime,jdbcType=TIMESTAMP}, 
       #{type,jdbcType=SMALLINT}, #{loginCount,jdbcType=INTEGER}, #{orderCount,jdbcType=INTEGER}, 
-      #{completeOrderCount,jdbcType=INTEGER},#{account_name,jdbcType=VARCHAR})
+      #{completeOrderCount,jdbcType=INTEGER},#{accountName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.linkmore.account.entity.User" useGeneratedKeys="true" keyProperty="id">
     insert into t_user
@@ -264,7 +264,7 @@
         #{completeOrderCount,jdbcType=INTEGER},
       </if>
       <if test="accountName != null">
-        #{account_name,jdbcType=VARCHAR},
+        #{accountName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

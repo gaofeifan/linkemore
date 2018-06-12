@@ -2,6 +2,8 @@ package cn.linkmore.common.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.request.ReqAppVersion;
@@ -72,6 +74,20 @@ public interface BeanVersionService {
 	 * @Version  v2.0
 	 */
 	ViewPage findUserPage(ViewPageable pageable);
+
+	/**
+	 * @Description  查询当前版本--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResVersionBean current(Integer source);
+
+	/**
+	 * @Description  上次当前版本--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void report(cn.linkmore.common.controller.app.request.ReqVersion vrb, HttpServletRequest request);
 
 
 }

@@ -18,6 +18,13 @@ public interface UnusualLogService {
 	 */
 	void insert(ReqUnusualLog unusualLog);
 
+	/**
+	 * @Description  新增异常日志上报--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void insert(cn.linkmore.common.controller.app.request.ReqUnusualLog unusualLog);
+
 
 
 }

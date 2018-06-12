@@ -2,6 +2,7 @@ package cn.linkmore.common.service;
 
 import java.util.List;
 
+import cn.linkmore.common.controller.app.response.ResDonwLockError;
 import cn.linkmore.common.request.ReqBaseDict;
 import cn.linkmore.common.response.ResBaseDict;
 
@@ -47,6 +48,13 @@ public interface BaseDictService {
 	 * @return
 	 */
 	ResBaseDict find(Long id);
+
+	/**
+	 * @Description  查询降锁异常原因-app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResDonwLockError> selectLockDownErrorCause();
 
 
 }

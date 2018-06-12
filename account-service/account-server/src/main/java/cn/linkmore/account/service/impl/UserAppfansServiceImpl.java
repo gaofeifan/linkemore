@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.dao.cluster.UserAppfansClusterMapper;
@@ -22,7 +23,7 @@ import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
-@Service
+@Service()
 public class UserAppfansServiceImpl implements UserAppfansService {
 
 	@Resource
@@ -32,6 +33,7 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 	@Resource
 	private UserAppfansMasterMapper userAppfansMasterMapper;
 	@Resource
+	@Lazy
 	private UserService userService;
 	@Override
 	public UserAppfans findById(String id) {

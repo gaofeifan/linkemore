@@ -1,5 +1,7 @@
 package cn.linkmore.account.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.account.request.ReqNotice;
 import cn.linkmore.account.request.ReqPageNotice;
 import cn.linkmore.account.response.ResNotice;
@@ -33,5 +35,20 @@ public interface NoticeService {
 	 * @Version  v2.0
 	 */
 	void delete(ReqNotice notice);
+
+	/**
+	 * @Description  阅读--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResNotice read(Long id, HttpServletRequest request);
+
+	/**
+	 * @Description  删除--app
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void delete(Long nid, HttpServletRequest request);
+
 
 }

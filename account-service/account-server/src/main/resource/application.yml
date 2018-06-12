@@ -63,7 +63,16 @@ cluster-db:
 security:
   basic:
     enabled: false
-    
+
+swagger:
+  enable: true
+  title: 凌猫停车预约服务接口文档
+  description: 本文档为内部文档，仅供内部前端及测试人员参考。 完全基于RESTful接口说明
+  version: 2.0
+  service-url: http://www.linkmoreparking.com
+  contact: 凌猫停车 
+  base-package: cn.linkmore.account.controller.app
+     
 redis:
   host: 192.168.1.218
   port: 6379
