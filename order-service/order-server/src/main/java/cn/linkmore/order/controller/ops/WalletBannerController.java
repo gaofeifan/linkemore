@@ -1,4 +1,4 @@
-package cn.linkmore.order.controller;
+package cn.linkmore.order.controller.ops;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import cn.linkmore.util.ObjectUtils;
  */
 
 @RestController
-@RequestMapping("/banner")
+@RequestMapping("/feign/banner")
 public class WalletBannerController {
 
 	@Resource

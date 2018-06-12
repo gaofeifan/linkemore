@@ -1,4 +1,4 @@
-package cn.linkmore.order.controller;
+package cn.linkmore.order.controller.ops;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -20,7 +20,7 @@ import cn.linkmore.order.service.WalletDetailService;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping(value = "/wallet_detail")
+@RequestMapping(value = "/feign/wallet_detail")
 public class WalletDetailController{
 
 	@Resource

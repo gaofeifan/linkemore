@@ -2,12 +2,15 @@ package cn.linkmore.order.service.impl;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -22,7 +25,6 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
-import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.OrderFailureReason;
@@ -32,11 +34,18 @@ import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallAssignStatus;
 import cn.linkmore.bean.common.Constants.StallStatus;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
+import cn.linkmore.order.controller.app.request.ReqBooking;
+import cn.linkmore.order.controller.app.request.ReqOrderStall;
+import cn.linkmore.order.controller.app.request.ReqSwitch;
+import cn.linkmore.order.controller.app.response.ResCheckedOrder;
+import cn.linkmore.order.controller.app.response.ResOrder;
+import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.cluster.StallAssignClusterMapper;
 import cn.linkmore.order.dao.master.BookingMasterMapper;
@@ -45,9 +54,7 @@ import cn.linkmore.order.dao.master.StallAssignMasterMapper;
 import cn.linkmore.order.entity.Booking;
 import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.StallAssign;
-import cn.linkmore.order.request.ReqOrderCreate;
 import cn.linkmore.order.request.ReqOrderDown;
-import cn.linkmore.order.request.ReqOrderSwitch;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.PrefectureClient;
@@ -61,6 +68,7 @@ import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.TokenUtil;
 /**
  * Service实现 -订单
  * @author liwenlong
@@ -140,7 +148,8 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	@Async
 	@Transactional(rollbackFor = RuntimeException.class)
-	public void create(ReqOrderCreate orc) { 
+	public void create(ReqBooking rb,HttpServletRequest request) {  
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ResStallEntity stall = null;
 		Orders o = null;
 		boolean resetRedis = true;
@@ -148,27 +157,25 @@ public class OrdersServiceImpl implements OrdersService {
 		short bookingStatus = 0;
 		try {
 			synchronized(this) {
-				if(ORDER_USER_SET.contains(orc.getUserId())){
+				if(ORDER_USER_SET.contains(cu.getId())){
 					bookingStatus = (short) OperateStatus.FAILURE.status;
 					failureReason = (short)OrderFailureReason.UNPAID.value;
 					throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
 				}
-				ORDER_USER_SET.add(orc.getUserId());
+				ORDER_USER_SET.add(cu.getId());
 			} 
-			ResUserOrder ruo  = this.ordersClusterMapper.findUserLatest(orc.getUserId());
+			ResUserOrder ruo  = this.ordersClusterMapper.findUserLatest(cu.getId());
 			if(ruo!=null&&(ruo.getStatus().intValue()==OrderStatus.UNPAID.value||ruo.getStatus().intValue()==OrderStatus.SUSPENDED.value)) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.UNPAID.value;
 				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
-			} 
-			
-			ResUser ru = this.userClient.findById(orc.getUserId());
-			if (null == orc.getUserId() || null == orc.getPrefectureId() || null == orc.getPlateId()) {
+			}  
+			if (null == cu.getId() || null == rb.getPrefectureId() || null == rb.getPlateId()) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.EXCEPTION.value;
 				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
 			}
-			ResVechicleMark  vehicleMark =  vehicleMarkClient.findById(orc.getPlateId());
+			ResVechicleMark  vehicleMark =  vehicleMarkClient.findById(rb.getPlateId());
 
 			if (!this.checkCarFree(vehicleMark.getVehMark())) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
@@ -185,12 +192,12 @@ public class OrdersServiceImpl implements OrdersService {
 				JSONObject json = JSON.parseObject(obj.toString());
 				String vm = json.get("plate").toString();
 				Long pid = Long.parseLong(json.get("preId").toString());
-				if (pid.longValue() == orc.getPrefectureId().longValue() && vehMark.equals(vm)) {
+				if (pid.longValue() == rb.getPrefectureId().longValue() && vehMark.equals(vm)) {
 					lockSn = json.get("lockSn").toString();
 					Map<String, Object> map = new HashMap<>();
 					map.put("lockSn", lockSn);
 					map.put("plate", vm);
-					map.put("preId", orc.getPrefectureId().toString());
+					map.put("preId", rb.getPrefectureId().toString());
 					String val = JSON.toJSON(map).toString(); 
 					this.redisService.remove(key, val);
 					assign = true;
@@ -202,7 +209,7 @@ public class OrdersServiceImpl implements OrdersService {
 			
 			// 以下为预约流程
 			if("".equals(lockSn)) {  
-				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + orc.getPrefectureId());
+				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + rb.getPrefectureId());
 				if(sn!=null) {
 					lockSn = sn.toString();
 				} 
@@ -216,7 +223,7 @@ public class OrdersServiceImpl implements OrdersService {
 			// 根据lockSn获取车位
 			log.info("lock,{}", lockSn);
 			
-			ResPrefectureDetail pre = prefectureClient.findById(orc.getPrefectureId());  
+			ResPrefectureDetail pre = prefectureClient.findById(rb.getPrefectureId());  
 			log.info("order:{}",lockSn);
 			stall = this.stallClient.findByLock(lockSn.trim());
 			log.info("order :{}",JsonUtil.toJson(stall));
@@ -224,7 +231,7 @@ public class OrdersServiceImpl implements OrdersService {
 				resetRedis = false;
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.STALL_EXCEPTION.value;
-				log.info("{} create order error with {}", ru.getUsername(), JsonUtil.toJson(stall));
+				log.info("{} create order error with {}", cu.getMobile(), JsonUtil.toJson(stall));
 				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_EXCEPTION);
 			}
 			ResUserOrder latest = this.ordersClusterMapper.findStallLatest(stall.getId());
@@ -232,17 +239,17 @@ public class OrdersServiceImpl implements OrdersService {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.STALL_ORDERED.value;
 				resetRedis = false;
-				log.info("{} create order error latest order {} is unpaid with stall  ", ru.getUsername(),
+				log.info("{} create order error latest order {} is unpaid with stall  ", cu.getMobile(),
 						JsonUtil.toJson(latest), JsonUtil.toJson(stall));
 				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
 			}
-			log.info("{} create order with{}", ru.getUsername(), JsonUtil.toJson(stall)); 
+			log.info("{} create order with{}", cu.getMobile(), JsonUtil.toJson(stall)); 
 			o = new Orders();
 			o.setOrderNo(this.getOrderNumber());
 			o.setUserType((short)0);
 			Date current = new Date();
 			o.setPlateNo(vehicleMark.getVehMark());
-			o.setUsername(ru.getUsername());
+			o.setUsername(cu.getMobile());
 			o.setActualAmount(new BigDecimal(0.0d)); 
 			o.setBeginTime(current);
 			o.setCreateTime(current);
@@ -252,13 +259,13 @@ public class OrdersServiceImpl implements OrdersService {
 			// 支付类型1免费2优惠券3账户
 			// 初始化支付类型为账户支付
 			o.setPayType(OrderPayType.FREE.type); 
-			o.setPreId(orc.getPrefectureId());
+			o.setPreId(rb.getPrefectureId());
 			o.setStallId(stall.getId());
 			o.setPreName(pre.getName());
 			o.setStallName(stall.getStallName());
 			o.setStatus(OrderStatus.UNPAID.value);
 			o.setTotalAmount(new BigDecimal(0.0D));
-			o.setUserId(orc.getUserId());
+			o.setUserId(cu.getId());
 			o.setUsername(o.getUsername());
 
 			// 更新车位状态 
@@ -276,7 +283,7 @@ public class OrdersServiceImpl implements OrdersService {
 			this.stallClient.order(stall.getId()); 
 			bookingStatus = (short)OperateStatus.SUCCESS.status;
 			failureReason = (short)OrderFailureReason.NONE.value;   
-			this.userClient.order(ru.getId());
+			this.userClient.order(cu.getId());
 			if(assign){
 				log.info("use the admin assign stall:{},orderNo:{}",lockSn,o.getOrderNo());
 				StallAssign sa = stallAssignClusterMapper.findByLockSn(lockSn); 
@@ -336,8 +343,8 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			throw new RuntimeException("异常");
 		} finally {
-			ORDER_USER_SET.remove(orc.getUserId());
-			Thread thread = new BookingThread(orc.getPrefectureId(), orc.getUserId(), bookingStatus, failureReason);
+			ORDER_USER_SET.remove(cu.getId());
+			Thread thread = new BookingThread(rb.getPrefectureId(), cu.getId(), bookingStatus, failureReason);
 			thread.start();  
 			String content = "订单预约失败";  
 			Boolean status = false;
@@ -345,7 +352,7 @@ public class OrdersServiceImpl implements OrdersService {
 				content = "订单预约成功";  
 				status = true;
 			}  
-			push(orc.getUserId().toString(),"车位预约通知",content,PushType.ORDER_CREATE_NOTICE,status);
+			push(cu.getId().toString(),"车位预约通知",content,PushType.ORDER_CREATE_NOTICE,status);
 		} 
 	}
 	public ResUserOrder findStallLatestOrder(Long stallId) {
@@ -434,9 +441,15 @@ public class OrdersServiceImpl implements OrdersService {
 		return orders;
 	}
 	@Override
-	public ResUserOrder detail(Long orderId) {
-		ResUserOrder orders = this.ordersClusterMapper.findDetail(orderId); 
-		return orders;
+	public ResOrderDetail detail(Long id,HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		ResUserOrder order = this.ordersClusterMapper.findDetail(id); 
+		if(order.getUserId().intValue()!=cu.getId().intValue()) {
+			return null;
+		} 
+		ResOrderDetail detail = new ResOrderDetail();
+		detail.copy(order); 
+		return detail; 
 	}
 	/**
 	 * 推送消息
@@ -462,11 +475,12 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	@Async
 	@Transactional(rollbackFor = RuntimeException.class)
-	public void down(ReqOrderDown rod) {
-		ResUserOrder order = this.ordersClusterMapper.findDetail(rod.getOrderId());
+	public void down(ReqOrderStall ros,HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
 		Boolean flag = false;    
-		Boolean switchStatus = false;
-		if(rod.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value) {
+		Boolean switchStatus = ros.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value&&order.getUserId().longValue()==cu.getId().longValue();
+		if(switchStatus) {
 			flag = this.stallClient.downlock(order.getStallId());  
 			Map<String,Object> param = new HashMap<String,Object>(); 
 			param.put("lockDownStatus",flag?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
@@ -497,10 +511,11 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	@Async
 	@Transactional(rollbackFor = RuntimeException.class)
-	public void switchStall(ReqOrderSwitch ros) {
-		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
+	public void switchStall(ReqSwitch rs,HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		ResUserOrder order = this.ordersClusterMapper.findDetail(rs.getOrderId());
 		Boolean flag = false;
-		if(order.getStatus().intValue()==OrderStatus.UNPAID.value) {
+		if(order.getStatus().intValue()==OrderStatus.UNPAID.value&&cu.getId().intValue()==order.getUserId().intValue()) {
 			Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
 			log.info("get switch stall sn:{}",sn);
 			if(sn!=null) {
@@ -525,11 +540,41 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public List<ResUserOrder> list(Long userId, Long start) {
+	public List<ResCheckedOrder> list(Long start, HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("userId", userId);
+		param.put("userId", cu.getId());
 		param.put("start", start);
 		List<ResUserOrder> list = this.ordersClusterMapper.findUserList(param);
-		return list;
+		List<ResCheckedOrder> res = new ArrayList<ResCheckedOrder>(); 
+		ResCheckedOrder ro = null;
+		for(ResUserOrder ruo:list) {
+			ro = new ResCheckedOrder();
+			ro.copy(ruo);
+			res.add(ro);
+		} 
+		return res;
+	}
+
+	@Override
+	public ResOrder current(HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());  
+		ReqStrategy rs = new ReqStrategy();
+		rs.setBeginTime(orders.getCreateTime().getTime());
+		rs.setStrategyId(orders.getStrategyId());
+		if(orders.getStatus().intValue()==OrderStatus.SUSPENDED.value) {
+			rs.setEndTime(orders.getStatusTime().getTime());
+		}else {
+			rs.setEndTime(new Date().getTime());
+		}
+		Map<String,Object> map = strategyBaseClient.fee(rs);
+		if(map!=null) {
+			Object object = map.get("totalAmount");
+			if(object!=null) {
+				orders.setTotalAmount(new BigDecimal(object.toString()));
+			}
+		}
+		return null;  
 	}
 }

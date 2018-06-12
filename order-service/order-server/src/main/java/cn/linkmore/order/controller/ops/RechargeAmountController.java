@@ -1,4 +1,4 @@
-package cn.linkmore.order.controller;
+package cn.linkmore.order.controller.ops;
 
 import javax.annotation.Resource;
 
@@ -23,7 +23,7 @@ import cn.linkmore.order.service.RechargeAmountService;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping(value = "/amount")
+@RequestMapping(value = "/admin/amount")
 public class RechargeAmountController {
 	@Resource
 	private RechargeAmountService rechargeAmountService;

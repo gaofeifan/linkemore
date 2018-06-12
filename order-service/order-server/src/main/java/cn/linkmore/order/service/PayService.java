@@ -1,8 +1,12 @@
 package cn.linkmore.order.service;
 
-import cn.linkmore.order.request.ReqOrderConfirm;
-import cn.linkmore.order.response.ResOrderCheckout;
-import cn.linkmore.order.response.ResOrderConfirm;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import cn.linkmore.order.controller.app.request.ReqPayConfirm;
+import cn.linkmore.order.controller.app.response.ResOrderDetail;
+import cn.linkmore.order.controller.app.response.ResPayCheckout;
+import cn.linkmore.order.controller.app.response.ResPayConfirm;
 
 /**
  * Service接口 - 支付
@@ -14,32 +18,44 @@ public interface PayService {
 	/**
 	 * 生成账单
 	 * @param orderId
-	 * @param userId
+	 * @param request
 	 * @return
 	 */
-	ResOrderCheckout checkout(Long orderId, Long userId);
+	ResPayCheckout checkout(Long orderId, HttpServletRequest request);
 
 	/**
 	 * 确认支付[生成第三支付订单]
 	 * @param roc
-	 * @return
+	 * @return request
 	 */
-	ResOrderConfirm confirm(ReqOrderConfirm roc);
+	ResPayConfirm confirm(ReqPayConfirm roc, HttpServletRequest request);
 
 	/**
 	 * 核验支付结果
 	 * @param orderId
-	 * @param userId
+	 * @param request
 	 * @return
 	 */
-	Boolean verify(Long orderId, Long userId);
+	ResOrderDetail verify(Long orderId, HttpServletRequest request); 
+	/**
+	 * 微信预约结账回调
+	 * @param response
+	 * @param request
+	 */
+	void wechatOrderNotice(HttpServletResponse response, HttpServletRequest request);
 
 	/**
-	 * 支付回调
-	 * @param json
-	 * @param source
-	 * @return
+	 * 支付宝预约结账回调
+	 * @param response
+	 * @param request
 	 */
-	Boolean callback(String json, Integer source);
+	void alipayOrderNotice(HttpServletResponse response, HttpServletRequest request);
+
+	/**
+	 * Apple Pay预约结账回调
+	 * @param response
+	 * @param request
+	 */
+	void appleOrderNotice(HttpServletResponse response, HttpServletRequest request);
 
 }

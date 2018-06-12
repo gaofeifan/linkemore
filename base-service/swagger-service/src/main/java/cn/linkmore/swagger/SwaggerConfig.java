@@ -23,10 +23,11 @@ public class SwaggerConfig {
 	private String version = "2.0";
 	private String serviceUrl = "http://www.linkmoreparking.com";
 	private String contact = "凌猫停车"; 
+	private String basePackage = "";
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("cn.linkmore")).paths(PathSelectors.any())
+				.apis(RequestHandlerSelectors.basePackage(this.basePackage)).paths(PathSelectors.any())
 				.build();
 	}
 
@@ -86,6 +87,14 @@ public class SwaggerConfig {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public String getBasePackage() {
+		return basePackage;
+	}
+
+	public void setBasePackage(String basePackage) {
+		this.basePackage = basePackage;
 	} 
 	
 }
