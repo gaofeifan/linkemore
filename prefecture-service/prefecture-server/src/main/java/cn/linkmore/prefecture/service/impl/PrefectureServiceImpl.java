@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -15,10 +17,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.response.ResUserStaff;
+import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResPreCity;
+import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
+import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
@@ -27,20 +36,18 @@ import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
-import cn.linkmore.prefecture.request.ReqPrefecture;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
-import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
-import cn.linkmore.prefecture.response.ResPrefectureList;
-import cn.linkmore.prefecture.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.service.PrefectureService;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
-import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.TokenUtil;
 
 /**
  * Service实现类 - 车区信息
@@ -60,14 +67,17 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private PrefectureMasterMapper prefectureMasterMapper;
 	@Autowired
-	private UserStaffClient userStaff;
+	private UserStaffClient userStaffClient;
+	
+	@Autowired
+	private RedisService redisService;
 	
 	@Override
 	public ResPrefectureDetail findById(Long preId) {
 		ResPrefectureDetail detail = prefectureClusterMapper.findById(preId);
 		return detail;
 	}
-	@Override
+	/*@Override
 	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture) {
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
@@ -94,10 +104,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 			prb.setLeisureStall(getFreeStall(prb.getId())); 
 		}
 		return preList;
-	}
+	}*/
 	
 	@Override
-	public ResPrefectureStrategy getPreStrategy(Long preId) {
+	public ResPrefectureStrategy findPreStrategy(Long preId) {
 		String mins = "分钟";
 		String freetime = "免费时长";
 		String free = "免费";
@@ -387,5 +397,47 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public ResPrefectureDetail checkName(Map<String, Object> param) {
 		return this.prefectureClusterMapper.checkName(param);
 	}
-	
+	@Override
+	public List<ResPreCity> list(ReqPrefecture rp, HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		Map<String,Object> paramMap = new HashMap<String,Object>();
+		paramMap.put("status", 0);
+		//此处cityId暂时为空，返回所有的车区信息
+		paramMap.put("cityId", null);
+		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
+		log.info("preList total size,{}",preList.size());
+		if(cu!=null && cu.getId()!=null){
+			ResUserStaff us = this.userStaffClient.findById(cu.getId());
+			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
+				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
+				if(preList1!=null){
+					if(preList==null){
+						preList = preList1;
+					}else{
+						preList.addAll(preList1);
+					}
+				}
+			} 
+		}
+		for(ResPrefecture prb: preList){ 
+			prb.setChargeTime(prb.getChargeTime() + "分钟");
+			prb.setChargePrice(prb.getChargePrice() + "元");
+			prb.setLeisureStall(getFreeStall(prb.getId()));
+			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()), new Double(rp.getLongitude())));
+		}
+		
+		Map<Long, List<ResPrefecture>> map = preList.stream().collect(Collectors.groupingBy(ResPrefecture::getCityId));
+		
+		List<ResPreCity> resPreCityList = new ArrayList<ResPreCity>();
+		ResPreCity resPreCity = null;
+		for(Long cityId : map.keySet()){
+			resPreCity = new ResPreCity();
+			resPreCity.setCityId(cityId);
+			List<ResPrefecture> prefecturelist = map.get(cityId);
+			resPreCity.setPrefectures(prefecturelist);
+			resPreCityList.add(resPreCity);
+			log.info("cityId:{},city pre list size:{}",cityId,prefecturelist.size());
+		}
+		return resPreCityList;
+	}
 }

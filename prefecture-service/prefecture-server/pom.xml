@@ -87,6 +87,12 @@
 			<version>${version}</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>swagger-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 	</dependencies>
 
 	<repositories> 

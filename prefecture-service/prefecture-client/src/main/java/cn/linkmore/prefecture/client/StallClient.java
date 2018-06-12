@@ -23,7 +23,7 @@ import cn.linkmore.prefecture.response.ResStallLock;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/stall", fallback=StallClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/feign/stall", fallback=StallClientHystrix.class,configuration = FeignConfiguration.class)
 public interface StallClient {
 	
 	/**
@@ -79,7 +79,6 @@ public interface StallClient {
 	 */
 	@RequestMapping(value = "/v2.0/lock/{sn}", method=RequestMethod.GET)
 	public ResStallEntity findByLock(@PathVariable("sn") String sn);
-	
 	
 	
 	/*****************************************************************/

@@ -32,7 +32,7 @@
     <result column="gateway" jdbcType="VARCHAR" property="gateway" />
   </resultMap>
   
-  <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.response.ResPrefecture">
+  <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.controller.app.response.ResPrefecture">
   	<id column="id" jdbcType="BIGINT" property="id" />
   	<result column="name" jdbcType="VARCHAR" property="name" />
   	<result column="city_id" jdbcType="BIGINT" property="cityId" />
@@ -44,7 +44,6 @@
   	<result column="address" jdbcType="VARCHAR" property="address" />
   	<result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
   	<result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
-  	<result column="gateway" jdbcType="VARCHAR" property="gateway" />
   </resultMap>
   
   <resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
@@ -91,7 +90,7 @@
   
   <select id="findPreByStatusAndGPS" resultMap="ResPrefectureMap" parameterType="java.util.Map">
     select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
-  		p.charge_time,p.gateway,p.image_url
+  		p.charge_time,p.image_url
 	from v_prefecture p 
 	where p.status = #{status} and (p.type is null or p.type = 0 )
     and p.category = 0
@@ -102,7 +101,7 @@
   
   <select id="findPreByStatusAndGPS1" resultMap="ResPrefectureMap" parameterType="java.util.Map">
     select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
-  		p.charge_time,p.gateway,p.image_url
+  		p.charge_time,p.image_url
 	from v_prefecture p
 	where p.status = #{status} 
     and p.category != 0
