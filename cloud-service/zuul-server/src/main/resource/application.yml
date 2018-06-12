@@ -5,7 +5,7 @@ spring:
     name: zuul-server
   boot: 
     admin:
-      url: http://192.168.1.232:6002
+      url: http://192.168.1.150:6002
 
 eureka:
   instance:
@@ -16,7 +16,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.232:6003/eureka/  
+      defaultZone: http://192.168.1.150:6003/eureka/  
 
 ribbon:
   ConnectTimeout: 3000
@@ -36,27 +36,49 @@ zuul:
     connect-timeout-millis: 10000
     socket-timeout-millis: 60000
   routes:  
-    user-app-api:
-      path: /user-app/**  
-      serviceId: user-app-server
+    order:
+      path: /order/**  
+      serviceId: order-server
       sensitiveHeaders: Authorization
-    staff-app-api:
-      path: /staff-app/**  
-      serviceId: staff-app-server
-    wxapp-api:
-      path: /wxapp/**  
-      serviceId: wxapp-server 
-    ops-api:
-      path: /ops/**  
-      serviceId: ops-server 
+    prefecture:
+      path: /prefecture/**  
+      serviceId: prefecture-server
+      sensitiveHeaders: Authorization
+    common:
+      path: /common/**  
+      serviceId: common-server 
+      sensitiveHeaders: Authorization
+    account:
+      path: /account/**  
+      serviceId: account-server 
+      sensitiveHeaders: Authorization
+    coupon:
+      path: /coupon/**  
+      serviceId: coupon-server 
+      sensitiveHeaders: Authorization
     cloud-admin:
       path: /cloud-admin/**
       serviceId: admin-server
     cloud-eureka:
       path: /cloud-eureka/**
-      serviceId: eureka-server
+      serviceId: eureka-server 
   
-  
-management:
-  security:
-    enabled: false
+security:
+  basic:
+    enabled: false 
+    
+redis:
+  host: 192.168.1.218
+  port: 6379
+  database: 1
+  timeout: 5000
+  password: ppyx1234
+  pool-max-active: 500
+  pool-max-wait: -1
+  pool-max-idle: 100
+  pool-min-idle: 5
+  test-while-idle: true
+  test-on-borrow: true
+  test-on-create: true 
+  sentinel-master: mymaster
+  sentinel-nodes: 192.168.1.219:26379 
