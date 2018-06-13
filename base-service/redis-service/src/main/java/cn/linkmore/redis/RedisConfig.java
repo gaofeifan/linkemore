@@ -13,6 +13,7 @@ import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.stereotype.Component;
 
 import redis.clients.jedis.JedisPoolConfig;
@@ -24,6 +25,7 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 @Component
 @EnableCaching
+@EnableRedisHttpSession
 public class RedisConfig extends CachingConfigurerSupport { 
 	@Autowired
 	private RedisProperties redisProperties;

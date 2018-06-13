@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiParam;
  * @Date     2018年5月21日
  * @Version  v2.0
  */
-@Api(tags="plate-number",description="车牌号管理")
+@Api(tags="Plate Number",description="车牌号管理")
 @RestController
 @RequestMapping("/app/plate-numbers")
 @Validated

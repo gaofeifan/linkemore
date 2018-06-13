@@ -20,7 +20,7 @@ public class TokenUtil {
 			sessionId = request.getParameter("token");
 		}
 		if (StringUtils.isBlank(sessionId)) {
-			sessionId = request.getSession().getId();
+			sessionId = request.getSession().getId().replaceAll("-", "");
 		}
 		return sessionId;
 	}

@@ -28,6 +28,8 @@ public class TokenFilter extends ZuulFilter {
 	private static final String API_OPS_PATH="/ops/";
 	private static final String API_FEIGN_PATH="/feign/"; 
 	private static final String SWAGGER_PATH = "/webjars/";
+	
+	private static final String CONTENTTYPE = "application/json;charset=UTF-8";
 	private static final List<String> openResources = new ArrayList<String>() {
 		private static final long serialVersionUID = 1L;
 		{ 
@@ -101,28 +103,28 @@ public class TokenFilter extends ZuulFilter {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(200);
             ctx.setResponseBody(JsonUtil.toJson(ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request)));
-            ctx.getResponse().setContentType("text/html;charset=UTF-8");
+            ctx.getResponse().setContentType(CONTENTTYPE);
             ctx.set("isSuccess", false);
             return null;
         }else if(uri.contains(API_OPS_PATH)){  
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(200); 
             ctx.setResponseBody(JsonUtil.toJson(ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request)));
-            ctx.getResponse().setContentType("text/html;charset=UTF-8");
+            ctx.getResponse().setContentType(CONTENTTYPE);
             ctx.set("isSuccess", false);
             return null;
         }else if(uri.contains(API_FEIGN_PATH)){  
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(200);
             ctx.setResponseBody(JsonUtil.toJson(ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request)));
-            ctx.getResponse().setContentType("text/html;charset=UTF-8");
+            ctx.getResponse().setContentType(CONTENTTYPE);
             ctx.set("isSuccess", false);
             return null;
         }else{  
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(200);
             ctx.setResponseBody(JsonUtil.toJson(ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request)));
-            ctx.getResponse().setContentType("text/html;charset=UTF-8");
+            ctx.getResponse().setContentType(CONTENTTYPE);
             ctx.set("isSuccess", false);
             return null;
         }

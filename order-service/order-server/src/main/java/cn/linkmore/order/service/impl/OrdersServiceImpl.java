@@ -558,7 +558,9 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public ResOrder current(HttpServletRequest request) {
+		log.info("key:{}",TokenUtil.getKey(request));
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		log.info("cu:{}",JsonUtil.toJson(cu));
 		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());  
 		ReqStrategy rs = new ReqStrategy();
 		rs.setBeginTime(orders.getCreateTime().getTime());

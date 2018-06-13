@@ -404,8 +404,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		paramMap.put("status", 0);
 		//此处cityId暂时为空，返回所有的车区信息
 		paramMap.put("cityId", null);
-		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
-		log.info("preList total size,{}",preList.size());
+		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap); 
 		if(cu!=null && cu.getId()!=null){
 			ResUserStaff us = this.userStaffClient.findById(cu.getId());
 			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
