@@ -1,6 +1,5 @@
 package cn.linkmore.account.controller.app;
 
-import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 

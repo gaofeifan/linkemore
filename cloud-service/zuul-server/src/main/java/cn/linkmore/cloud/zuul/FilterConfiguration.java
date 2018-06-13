@@ -27,33 +27,7 @@ public class FilterConfiguration {
 		filter.setErrorHandler(errorHandler);
 		return filter;
 	}  
-	
-	@Component
-	public class CustomTokenHandler implements ResponseHandler { 
-
-		@Override
-		public int getResponseCode() {
-			return HttpServletResponse.SC_OK;
-		}
-		 
-		@Override
-		public String getResponseBody(String originMessage, Throwable e) { 
-			Map<String,Object> message = new HashMap<String,Object>();
-			message.put("code", 403);
-			message.put("content", "未授权访问");
-			Map<String, Object> result = new HashMap<String, Object>();
-			result.put("status", false);
-			result.put("message", message);
-			result.put("data", null);
-			String json = null;
-			try {
-				json = new ObjectMapper().writeValueAsString(result);
-			} catch (JsonProcessingException e1) { 
-				e1.printStackTrace();
-			}
-			return json;
-		}
-	}
+	 
  
 	@Component
 	public class CustomErrorHandler implements ResponseHandler { 

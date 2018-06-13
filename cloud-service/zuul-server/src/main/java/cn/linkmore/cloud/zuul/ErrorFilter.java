@@ -31,13 +31,13 @@ public class ErrorFilter extends ZuulFilter {
 	public boolean shouldFilter() {
 		return true;
 	}
-
+	private static final String CONTENTTYPE = "application/json;charset=UTF-8";
 	@Override
 	public Object run() {
 
 		try {
-			RequestContext context = getCurrentContext();
-			context.getResponse().setCharacterEncoding("UTF-8");
+			RequestContext context = getCurrentContext(); 
+			context.getResponse().setCharacterEncoding(CONTENTTYPE);
 			log.error("error", context.getThrowable());
 			if (null != errorHandler) {
 				context.setResponseStatusCode(errorHandler.getResponseCode());

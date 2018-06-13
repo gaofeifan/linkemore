@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication 
 @EnableFeignClients(basePackages = { "cn.linkmore" })
 @ComponentScan(basePackages = { "cn.linkmore" })
-@EnableAsync
+@EnableAsync 
 public class Launch {
 	public static void main(String[] args) {
 		SpringApplication.run(Launch.class, args);

@@ -1,31 +1,29 @@
 package cn.linkmore.account.controller.app;
 
-import io.swagger.annotations.Api;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
-import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.linkmore.account.request.ReqNotice;
 import cn.linkmore.account.request.ReqPageNotice;
 import cn.linkmore.account.response.ResNotice;
 import cn.linkmore.account.response.ResPage;
 import cn.linkmore.account.service.NoticeService;
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.util.ObjectUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.Date;
-import java.util.List;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 消息的Controller
  */
 @Controller
-@Api(tags = "notice",description="消息管理", produces = "application/json")
+@Api(tags = "Notice",description="消息管理", produces = "application/json")
 @RequestMapping("/app/notice")
 public class AppNoticeController {
 
