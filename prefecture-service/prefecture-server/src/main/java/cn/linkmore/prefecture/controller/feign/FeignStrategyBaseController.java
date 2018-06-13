@@ -25,7 +25,7 @@ import cn.linkmore.prefecture.service.StrategyBaseService;
  */
 @RestController
 @RequestMapping("/feign/strategy")
-public class StrategyBaseController {
+public class FeignStrategyBaseController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
