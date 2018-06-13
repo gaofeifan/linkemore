@@ -14,7 +14,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "common-server", path = "/access_detail", fallback=AccessDetailClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "/feign/access_detail", fallback=AccessDetailClientHystrix.class,configuration = FeignConfiguration.class)
 public interface AccessDetailClient {
 	
 	/**

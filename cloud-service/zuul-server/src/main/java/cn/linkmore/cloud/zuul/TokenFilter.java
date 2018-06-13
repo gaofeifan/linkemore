@@ -29,7 +29,7 @@ public class TokenFilter extends ZuulFilter {
 	private static final String API_FEIGN_PATH="/feign/"; 
 	private static final String SWAGGER_PATH = "/webjars/";
 	
-	private static final String CONTENTTYPE = "application/json;charset=UTF-8";
+	private static final String CONTENTTYPE = "text/json;charset=UTF-8";
 	private static final List<String> openResources = new ArrayList<String>() {
 		private static final long serialVersionUID = 1L;
 		{  
@@ -78,7 +78,7 @@ public class TokenFilter extends ZuulFilter {
         HttpServletRequest request = ctx.getRequest(); 
         String ip = request.getRemoteAddr(); 
         String url = request.getRequestURI();  
-        String uri = url.substring(url.indexOf("/", 1));
+        String uri = url.substring(url.indexOf("/",5));
 		String key = TokenUtil.getKey(request);
 		log.info("ip:{},token:{}",ip,key);
 		log.info(uri); 
@@ -127,5 +127,5 @@ public class TokenFilter extends ZuulFilter {
             ctx.set("isSuccess", false);
             return null;
         }
-    }  
+    }   
 }

@@ -31,7 +31,7 @@ public class ErrorFilter extends ZuulFilter {
 	public boolean shouldFilter() {
 		return true;
 	}
-	private static final String CONTENTTYPE = "application/json;charset=UTF-8";
+	private static final String CONTENTTYPE = "text/json;charset=UTF-8";
 	@Override
 	public Object run() {
 
