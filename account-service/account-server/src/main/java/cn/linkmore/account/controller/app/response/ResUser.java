@@ -18,7 +18,7 @@ public class ResUser implements Serializable {
 	@ApiModelProperty(value = "令牌")
 	private String token;
 	@ApiModelProperty(value = "账号名称")
-	private String accountName;
+	private String realname;
 	public Long getId() {
 		return id;
 	}
@@ -37,11 +37,11 @@ public class ResUser implements Serializable {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	public String getAccountName() {
-		return accountName;
+	public String getRealname() {
+		return realname;
 	}
-	public void setAccountName(String accountName) {
-		this.accountName = accountName;
+	public void setRealname(String realname) {
+		this.realname = realname;
 	}
 	 
 }

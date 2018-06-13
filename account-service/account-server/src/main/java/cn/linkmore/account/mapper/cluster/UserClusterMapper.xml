@@ -6,7 +6,7 @@
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
-    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="sex" jdbcType="SMALLINT" property="sex" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="user_type" jdbcType="VARCHAR" property="userType" />
@@ -38,7 +38,7 @@
   <resultMap id="ResBaseResultMap" type="cn.linkmore.account.response.ResUser">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="sex" jdbcType="SMALLINT" property="sex" />
@@ -85,7 +85,7 @@
     id, username, password, nickname, sex, status, user_type, enterprise_name, ent_admin_name, 
     industry, parent_id, mobile, province, city, address, email, wechat, qq, icon, last_login_time, 
     create_time, update_time, hobby_brand_id, is_app_register, is_wechat_bind, app_register_time, 
-    wechat_bind_time, type, login_count, order_count, complete_order_count,account_name
+    wechat_bind_time, type, login_count, order_count, complete_order_count,realname
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="ResBaseResultMap">
     select 
@@ -97,7 +97,7 @@
     select id, username, password, nickname, status, user_type, enterprise_name, ent_admin_name, sex,
     industry, parent_id, mobile, province, city, address, email, wechat, qq, icon, last_login_time, 
     create_time, update_time, hobby_brand_id, is_app_register, is_wechat_bind, app_register_time, 
-    wechat_bind_time,type,account_name
+    wechat_bind_time,type,realname
     from  t_user where id = #{userId}
   </select>
   <select id="findByMobile" parameterType="java.lang.String" resultMap="ResBaseResultMap">
@@ -109,7 +109,7 @@
   
   <select id="findPage" parameterType="java.util.HashMap" resultMap="ListUserMap">
     SELECT
-    u.account_name,u.id,u.nickname nickName,u.mobile,cy.city_name cityName,u.order_count orderCount,u.last_login_time loginTime,o.create_time ordersTime,u.status userStatus,o.plate_no plateNO
+    u.realname,u.id,u.nickname nickName,u.mobile,cy.city_name cityName,u.order_count orderCount,u.last_login_time loginTime,o.create_time ordersTime,u.status userStatus,o.plate_no plateNO
     FROM
         t_user u
     LEFT JOIN (

@@ -10,7 +10,7 @@ public class ReqUpdateAccount {
 
 	private Long userId;
 	
-	private String accountName;
+	private String realname;
 
 	public Long getUserId() {
 		return userId;
@@ -20,13 +20,14 @@ public class ReqUpdateAccount {
 		this.userId = userId;
 	}
 
-	public String getAccountName() {
-		return accountName;
+	public String getRealname() {
+		return realname;
 	}
 
-	public void setAccountName(String accountName) {
-		this.accountName = accountName;
+	public void setRealname(String realname) {
+		this.realname = realname;
 	}
+
 	
 	
 }

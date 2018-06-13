@@ -33,6 +33,8 @@ public class ResUserDetails implements Serializable{
 	
 	@GColumn
 	private String wechatUrl;
+	
+	private String realname;
 
 	public String getNickname() {
 		return nickname;
@@ -97,5 +99,14 @@ public class ResUserDetails implements Serializable{
 	public void setWechatUrl(String wechatUrl) {
 		this.wechatUrl = wechatUrl;
 	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+	
 	
 }

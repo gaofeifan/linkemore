@@ -294,7 +294,7 @@ public class UserServiceImpl implements UserService {
 		ResUserLogin token = new ResUserLogin();
 		token.setId(user.getId());
 		token.setMobile(user.getUsername());
-		token.setAccountName(user.getAccountName());
+		token.setRealname(user.getRealname());
 		return token;
 	}
 
@@ -374,8 +374,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateAccountName(ReqUpdateAccount account) {
-		this.updateByColumn("account_name", account.getAccountName(), account.getUserId());
+	public void updateRealname(ReqUpdateAccount account) {
+		this.updateByColumn("realname", account.getRealname(), account.getUserId());
 	}
 
 	@Override
@@ -401,7 +401,7 @@ public class UserServiceImpl implements UserService {
 		ru.setId(rul.getId());
 		ru.setMobile(rl.getMobile());
 		ru.setToken(key); 
-		ru.setAccountName(rul.getAccountName());
+		ru.setRealname(rul.getRealname());
 		CacheUser user = new CacheUser();
 		user.setId(rul.getId());
 		user.setMobile(rul.getMobile());
@@ -436,7 +436,7 @@ public class UserServiceImpl implements UserService {
 		ru.setId(rul.getId());
 		ru.setMobile(rul.getMobile());
 		ru.setToken(key); 
-		ru.setAccountName(rul.getAccountName());
+		ru.setRealname(rul.getRealname());
 		CacheUser user = new CacheUser();
 		user.setId(rul.getId());
 		user.setMobile(rul.getMobile());
@@ -617,13 +617,13 @@ public class UserServiceImpl implements UserService {
 		this.removeWechat(ru.getId());
 	}
 	@Override
-	public void updateAccountName(String accountName, HttpServletRequest request) {
+	public void updateRealname(String accountName, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUpdateAccount account = new ReqUpdateAccount();
-		account.setAccountName(accountName);
+		account.setRealname(accountName);
 		account.setUserId(ru.getId());
-		this.updateAccountName(account);
+		this.updateRealname(account);
 	}
 	
 	private CacheUser getCacheUser(HttpServletRequest request) {

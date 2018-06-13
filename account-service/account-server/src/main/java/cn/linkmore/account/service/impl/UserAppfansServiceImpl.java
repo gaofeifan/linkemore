@@ -132,7 +132,7 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 		ResUserLogin urb = new ResUserLogin();
 		urb.setId(user.getId());
 		urb.setMobile(user.getUsername());
-		urb.setAccountName(user.getAccountName());
+		urb.setRealname(user.getRealname());
 		return urb;
 	}
 

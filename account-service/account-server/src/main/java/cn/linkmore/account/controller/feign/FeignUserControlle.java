@@ -196,6 +196,6 @@ public class FeignUserControlle {
 	 */
 	@RequestMapping(value = "/v2.0/account_name", method = RequestMethod.PUT)
 	public void updateAccountName(@RequestBody ReqUpdateAccount account) {
-		this.userService.updateAccountName(account);
+		this.userService.updateRealname(account);
 	}
 }

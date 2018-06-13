@@ -146,7 +146,7 @@ public interface UserService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void updateAccountName(ReqUpdateAccount account);
+	void updateRealname(ReqUpdateAccount account);
 
 	/**
 	 * @Description  app登录
@@ -202,7 +202,7 @@ public interface UserService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void updateAccountName(String accountName, HttpServletRequest request);
+	void updateRealname(String accountName, HttpServletRequest request);
 
 	/**
 	 * @Description  更新性别--app
