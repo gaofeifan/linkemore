@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/app/auth") 
 @Validated
-public class AuthController {
+public class AppAuthController {
 	@Autowired
 	private UserService userService;
 	

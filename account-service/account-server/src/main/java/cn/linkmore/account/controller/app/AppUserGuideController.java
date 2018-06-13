@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/app/user_guide")
 @Api(value = "用户指南", produces = "application/json")
-public class UserGuideController {
+public class AppUserGuideController {
 	@Resource
 	private UserGuideService userGuideService;
 

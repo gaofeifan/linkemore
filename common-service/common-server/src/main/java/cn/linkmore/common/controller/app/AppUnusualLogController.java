@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/exception-logs")
 @Api(tags="Exception logs",description="APP异常日志上报")
-public class UnusualLogController {
+public class AppUnusualLogController {
 	
 	@Resource
 	private UnusualLogService unusualLogService;

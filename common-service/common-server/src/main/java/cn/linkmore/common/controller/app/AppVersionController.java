@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiParam;
 @Api(tags="Versions",description="版本管理")
 @RestController
 @RequestMapping("/versions")
-public class VersionController {
+public class AppVersionController {
 	
 	@Resource
 	private BeanVersionService beanVersionService;

@@ -1,4 +1,4 @@
-package cn.linkmore.account.controller;
+package cn.linkmore.account.controller.ops;
 
 import javax.annotation.Resource;
 

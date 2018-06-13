@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags="Vehicle brands",description="车辆品牌")
 @RestController
 @RequestMapping("/vehicle-brands")
-public class CarBrandController {
+public class AppCarBrandController {
 
 	@Resource
 	private RedisService redisService;

@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/citys")
 @Validated
-public class CityController {
+public class AppCityController {
 	
 	@Autowired
 	private CityService cityService;

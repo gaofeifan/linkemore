@@ -27,7 +27,7 @@ import java.util.List;
 @Controller
 @Api(value = "消息管理", produces = "application/json")
 @RequestMapping("/app/notice")
-public class NoticeController {
+public class AppNoticeController {
 
     @Resource
     private NoticeService noticeService;

@@ -37,7 +37,7 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("/app/users")
 @Validated
-public class UserController {
+public class AppUserController {
 	
 	@Autowired
 	private UserService userService; 

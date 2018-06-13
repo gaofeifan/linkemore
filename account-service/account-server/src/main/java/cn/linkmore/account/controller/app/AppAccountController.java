@@ -14,5 +14,5 @@ import io.swagger.annotations.Api;
 @Api(tags="Account",description="用户账号")
 @RestController
 @RequestMapping("app/accounts")
-public class AccountController {
+public class AppAccountController {
 }

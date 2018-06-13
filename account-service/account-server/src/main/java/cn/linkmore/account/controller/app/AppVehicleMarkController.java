@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("/app/plate-numbers")
 @Validated
-public class VehicleMarkController{
+public class AppVehicleMarkController{
 
 	@Resource
 	private VehicleMarkManageService vehicleMarkManageService;

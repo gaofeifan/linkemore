@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @Api(tags="Dict",description="数据字典")
 @RequestMapping(value="/dicts")
-public class BaseDictController {
+public class AppBaseDictController {
 	
 	@Resource
 	private BaseDictService baseDictService;
