@@ -16,7 +16,7 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 
 @RestController
-@RequestMapping("user_guide")
+@RequestMapping("/feign/user_guide")
 public class FeignUserGuideController {
 	@Resource
 	private UserGuideService userGuideService;

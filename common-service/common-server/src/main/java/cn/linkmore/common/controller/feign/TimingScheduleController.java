@@ -1,4 +1,4 @@
-package cn.linkmore.common.controller;
+package cn.linkmore.common.controller.feign;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +20,7 @@ import cn.linkmore.util.CronUtils;
  *
  */
 @RestController
-@RequestMapping("/task")
+@RequestMapping("/feign/task")
 public class TimingScheduleController {
 	
 	@Autowired

@@ -32,7 +32,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "account-server", path = "/user", fallback=UserClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "account-server", path = "/feign/user", fallback=UserClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UserClient {
 	
 	

@@ -1,4 +1,4 @@
-package cn.linkmore.common.controller;
+package cn.linkmore.common.controller.feign;
 
 import javax.annotation.Resource;
 
@@ -16,8 +16,8 @@ import cn.linkmore.common.service.AccessDetailService;
  * @Date     2018年5月15日
  */
 @RestController
-@RequestMapping("/access_detail")
-public class AccessDetailController {
+@RequestMapping("/feign/access_detail")
+public class FeignAccessDetailController {
 	
 	@Resource
 	private AccessDetailService accessDetailService;

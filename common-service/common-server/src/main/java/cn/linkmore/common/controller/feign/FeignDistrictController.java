@@ -1,4 +1,4 @@
-package cn.linkmore.common.controller;
+package cn.linkmore.common.controller.feign;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -27,8 +27,8 @@ import cn.linkmore.util.ObjectUtils;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping(value="/district")
-public class DistrictController {
+@RequestMapping(value="/feign/district")
+public class FeignDistrictController {
 	
 	@Resource
 	private DistrictService districtService;

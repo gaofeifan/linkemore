@@ -23,7 +23,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date 2018年5月29日
  * @Version v2.0
  */
-@FeignClient(value = "account-server", path = "/wechat_fans", fallback = WechatFansClientHystrix.class, configuration = FeignConfiguration.class)
+@FeignClient(value = "account-server", path = "/feign/wechat_fans", fallback = WechatFansClientHystrix.class, configuration = FeignConfiguration.class)
 public interface WechatFansClient {
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody

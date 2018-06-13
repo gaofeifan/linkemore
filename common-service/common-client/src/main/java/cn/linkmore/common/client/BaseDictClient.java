@@ -19,7 +19,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "common-server", path = "/dict", fallback=BaseDictClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "/feign/dict", fallback=BaseDictClientHystrix.class,configuration = FeignConfiguration.class)
 public interface BaseDictClient {
 	@RequestMapping(value="/{code}",method=RequestMethod.GET)
 	public List<ResBaseDict> findList(@PathVariable("code") String code);

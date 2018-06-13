@@ -16,7 +16,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "account-server", path = "/user_guide", fallback=UserGuideClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "account-server", path = "/feign/user_guide", fallback=UserGuideClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UserGuideClient {
 	
 	/**

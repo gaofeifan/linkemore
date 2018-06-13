@@ -18,7 +18,7 @@ import cn.linkmore.common.service.UnusualLogService;
  * @Date     2018年5月11日
  */
 @RestController
-@RequestMapping("/app_log")
+@RequestMapping("/feign/app_log")
 public class FeignUnusualLogController {
 	
 	@Resource

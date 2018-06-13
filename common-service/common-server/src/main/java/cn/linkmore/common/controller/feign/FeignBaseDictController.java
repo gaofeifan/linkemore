@@ -23,7 +23,7 @@ import cn.linkmore.common.service.DictService;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping(value="/dict")
+@RequestMapping(value="/feign/dict")
 public class FeignBaseDictController {
 	
 	@Resource

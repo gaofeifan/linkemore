@@ -23,7 +23,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月29日
  * @Version  v2.0
  */
-@FeignClient(value = "common-server", path = "/task", fallback = TimingScheduleClientHystrix.class, configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "/feign/task", fallback = TimingScheduleClientHystrix.class, configuration = FeignConfiguration.class)
 public interface TimingScheduleClient {
 
 	/**

@@ -23,7 +23,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "common-server", path = "/version", fallback=BaseVersionClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "/feign/version", fallback=BaseVersionClientHystrix.class,configuration = FeignConfiguration.class)
 public interface BaseVersionClient {
 	
 	/**

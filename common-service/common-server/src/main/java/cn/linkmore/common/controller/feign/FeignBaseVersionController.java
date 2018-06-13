@@ -1,4 +1,4 @@
-package cn.linkmore.common.controller;
+package cn.linkmore.common.controller.feign;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -24,8 +24,8 @@ import cn.linkmore.common.service.BeanVersionService;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping("/version")
-public class BaseVersionController {
+@RequestMapping("/feign/version")
+public class FeignBaseVersionController {
 	
 	@Resource
 	private BeanVersionService beanVersionService;

@@ -34,7 +34,7 @@ import cn.linkmore.util.JsonUtil;
  *
  */ 
 @RestController
-@RequestMapping("/citys")
+@RequestMapping("/feign/citys")
 public class FeignCityController{
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired

@@ -12,7 +12,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "common-server", path = "/car_brand", fallback=CarBrandClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "/feign/car_brand", fallback=CarBrandClientHystrix.class,configuration = FeignConfiguration.class)
 public interface CarBrandClient {
 	
 	@RequestMapping(method = RequestMethod.GET)

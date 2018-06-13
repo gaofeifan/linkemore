@@ -19,7 +19,7 @@ import cn.linkmore.account.service.NoticeService;
  * 消息的Controller
  */
 @Controller
-@RequestMapping("notice")
+@RequestMapping("/feign/notice")
 public class FeignNoticeController{
 
 	@Resource

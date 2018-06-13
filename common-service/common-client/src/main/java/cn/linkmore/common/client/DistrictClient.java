@@ -25,7 +25,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月28日
  * @Version  v2.0
  */
-@FeignClient(value = "common-server", path = "/district", fallback = DistrictClientHystrix.class, configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "/feign/district", fallback = DistrictClientHystrix.class, configuration = FeignConfiguration.class)
 public interface DistrictClient {
 
 	/**

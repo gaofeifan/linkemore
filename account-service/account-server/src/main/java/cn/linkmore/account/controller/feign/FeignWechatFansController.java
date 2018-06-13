@@ -22,7 +22,7 @@ import cn.linkmore.bean.view.ViewPageable;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping("/wechat_fans")
+@RequestMapping("/feign/wechat_fans")
 public class FeignWechatFansController {
 	
 	@Autowired

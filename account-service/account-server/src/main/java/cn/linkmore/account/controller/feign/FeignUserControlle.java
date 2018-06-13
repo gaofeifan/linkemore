@@ -36,7 +36,7 @@ import cn.linkmore.bean.view.ViewPageable;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/feign/user")
 public class FeignUserControlle {
 	
 	@Resource

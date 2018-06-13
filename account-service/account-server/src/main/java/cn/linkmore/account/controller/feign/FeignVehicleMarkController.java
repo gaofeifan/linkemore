@@ -22,7 +22,7 @@ import cn.linkmore.account.service.VehicleMarkManageService;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping("/vehicle_mark")
+@RequestMapping("/feign/vehicle_mark")
 public class FeignVehicleMarkController{
 
 	@Resource

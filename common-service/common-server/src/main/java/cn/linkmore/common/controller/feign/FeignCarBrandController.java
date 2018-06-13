@@ -35,7 +35,7 @@ import cn.linkmore.util.HttpUtils;
  * @Date     2018年5月11日
  */
 @RestController
-@RequestMapping("/car_brand")
+@RequestMapping("/feign/car_brand")
 public class FeignCarBrandController {
 
 	@Resource

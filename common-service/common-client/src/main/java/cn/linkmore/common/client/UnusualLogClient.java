@@ -15,7 +15,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "common-server", path = "/app_log", fallback=UnusualLogClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "feign/app_log", fallback=UnusualLogClientHystrix.class,configuration = FeignConfiguration.class)
 public interface UnusualLogClient {
 	
 	/**

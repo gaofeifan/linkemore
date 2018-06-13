@@ -25,7 +25,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @version 2.0
  *
  */
-@FeignClient(value = "common-server", path = "/citys", fallback = CityClientHystrix.class, configuration = FeignConfiguration.class)
+@FeignClient(value = "common-server", path = "/feign/citys", fallback = CityClientHystrix.class, configuration = FeignConfiguration.class)
 public interface CityClient {
 
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)
