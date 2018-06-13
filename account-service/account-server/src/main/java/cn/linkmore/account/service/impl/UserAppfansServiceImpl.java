@@ -135,6 +135,11 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 		urb.setAccountName(user.getAccountName());
 		return urb;
 	}
+
+	@Override
+	public void deleteByUserId(Long userId) {
+		this.userAppfansMasterMapper.deleteByUserId(userId);
+	}
 	
 	
 	

@@ -2,13 +2,12 @@ package cn.linkmore.account.controller.app;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +31,7 @@ import io.swagger.annotations.ApiParam;
  * @Date     2018年5月21日
  * @Version  v2.0
  */
-@Api(tags="Plate number",description="车牌号管理")
+@Api(tags="plate-number",description="车牌号管理")
 @RestController
 @RequestMapping("/app/plate-numbers")
 @Validated
@@ -54,7 +53,6 @@ public class AppVehicleMarkController{
 			this.vehicleMarkManageService.save(bean,request);
 			return ResponseEntity.success(null, request);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code,e.getMessage(), request);
 		}

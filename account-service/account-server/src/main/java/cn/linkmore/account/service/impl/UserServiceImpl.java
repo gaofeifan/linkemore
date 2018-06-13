@@ -14,9 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.account.common.UserCache;
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
@@ -65,6 +65,7 @@ import cn.linkmore.third.response.ResFans;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.TokenUtil;
 
 /**
  * 用户实体类
@@ -231,7 +232,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void removeWechat(Long userId) {
-		this.userAppfansService.updateStatusByUserId(userId, 0);
+		this.userAppfansService.deleteByUserId(userId);
 		Map<String, Object> param = new HashMap<>();
 		param.put("column", "wechat");
 		param.put("value", null);
@@ -395,7 +396,7 @@ public class UserServiceImpl implements UserService {
 		if(rul==null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
 		} 
-		String key = UserCache.getCacheKey(request); 
+		String key = TokenUtil.getKey(request); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
 		ru.setId(rul.getId());
 		ru.setMobile(rl.getMobile());
@@ -430,7 +431,7 @@ public class UserServiceImpl implements UserService {
 		if(rul==null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
 		} 
-		String key = UserCache.getCacheKey(request); 
+		String key = TokenUtil.getKey(request); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
 		ru.setId(rul.getId());
 		ru.setMobile(rul.getMobile());
@@ -446,14 +447,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void logout(HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ru.getId().toString());
 		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+key); 
 	}
 	
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
-		String key = UserCache.getCacheKey(request);
+		String key = TokenUtil.getKey(request);
 		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId().toString());
 		if(last!=null){ 
 			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId().toString());
@@ -526,7 +527,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void bindMobile(ReqMobileBind rmb, HttpServletRequest request) {
 		Object cache = this.redisService.get(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
-		/*if(cache==null) {
+		if(cache==null) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
 		}else {
 			if(!cache.toString().equals(rmb.getCode())) {
@@ -534,9 +535,9 @@ public class UserServiceImpl implements UserService {
 			}else {
 				this.redisService.remove(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
 			}
-		} */
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		} 
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUpdateMobile rum = new ReqUpdateMobile(); 
 		rum.setMobile(rmb.getMobile());
 		rum.setUserId(ru.getId());
@@ -547,11 +548,11 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * 更新缓存中的用户信息
 	 * @param request 用户请求
-	 * @param user 用户信息
+	 * @param ru 用户信息
 	 */
-	private void updateCache(HttpServletRequest request, ResUser user){
-		String key = UserCache.getCacheKey(request);
-		this.redisService.set(RedisKey.USER_APP_AUTH_USER.key+key, user); 
+	private void updateCache(HttpServletRequest request, CacheUser ru){
+		String key = TokenUtil.getKey(request);
+		this.redisService.set(RedisKey.USER_APP_AUTH_USER.key+key, ru); 
 	}
 
 	@Override
@@ -577,8 +578,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateNickname(String nickname, HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
-		ResUser user = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		String key = TokenUtil.getKey(request);
+		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUpdateNickname nick = new ReqUpdateNickname();
 		nick.setNickname(nickname);
 		nick.setUserId(user.getId());
@@ -587,8 +588,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateSex(Integer sex, HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUpdateSex req = new ReqUpdateSex();
 		req.setSex(sex);
 		req.setUserId(ru.getId());
@@ -596,33 +597,38 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	public void updateVehicle(cn.linkmore.account.controller.app.request.ReqUpdateVehicle vehicle, HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		vehicle.setUserId(ru.getId());
 		cn.linkmore.account.request.ReqUpdateVehicle object = ObjectUtils.copyObject(vehicle, new cn.linkmore.account.request.ReqUpdateVehicle());
 		this.updateVehicle(object);
 	}
 	@Override
 	public ResUserDetails detail(HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
+		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_USER.key+key); 
 		return this.detail(ru.getId());
 	}
 	
 	@Override
 	public void removeWechat(HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		this.removeWechat(ru.getId());
 	}
 	@Override
 	public void updateAccountName(String accountName, HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqUpdateAccount account = new ReqUpdateAccount();
 		account.setAccountName(accountName);
 		account.setUserId(ru.getId());
 		this.updateAccountName(account);
+	}
+	
+	private CacheUser getCacheUser(HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		return (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 	}
 	
 }

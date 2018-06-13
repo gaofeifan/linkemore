@@ -53,4 +53,11 @@ public interface UserAppfansService {
 	 * @Version  v2.0
 	 */
 	ResUserLogin wxLogin(ReqUserAppfans appfans);
+
+	/**
+	 * @Description  根据用户id删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void deleteByUserId(Long userId);
 	}

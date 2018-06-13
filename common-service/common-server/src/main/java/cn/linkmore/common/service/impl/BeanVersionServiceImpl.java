@@ -15,7 +15,6 @@ import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.common.controller.UserCache;
 import cn.linkmore.common.dao.cluster.BaseAppVersionClusterMapper;
 import cn.linkmore.common.dao.cluster.UserVersionClusterMapper;
 import cn.linkmore.common.dao.master.BaseAppVersionMasterMapper;
@@ -32,6 +31,7 @@ import cn.linkmore.common.service.CommonService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.TokenUtil;
 /**
  * 版本实现类
  * @author   GFF
@@ -164,7 +164,7 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 
 	@Override
 	public void report(cn.linkmore.common.controller.app.request.ReqVersion vrb, HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
+		String key = TokenUtil.getKey(request);
 	    Map<String , Object> user= (Map<String, Object>) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		vrb.setUserId(Long.decode(user.get("id").toString()));
 		ReqVersion version = ObjectUtils.copyObject(vrb, new ReqVersion());

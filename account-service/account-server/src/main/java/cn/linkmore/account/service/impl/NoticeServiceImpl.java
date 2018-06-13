@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.account.common.UserCache;
 import cn.linkmore.account.dao.cluster.NoticeClusterMapper;
 import cn.linkmore.account.dao.cluster.NoticeContentClusterMapper;
 import cn.linkmore.account.dao.cluster.NoticeReadClusterMapper;
@@ -29,6 +28,7 @@ import cn.linkmore.account.service.NoticeService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.TokenUtil;
 
 /**
  * @author GFF
@@ -152,7 +152,7 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Override
 	public ResNotice read(Long id, HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
+		String key = TokenUtil.getKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
 		ReqNotice no = new ReqNotice();
 		no.setNid(id);
@@ -162,7 +162,7 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Override
 	public void delete(Long nid, HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
+		String key = TokenUtil.getKey(request);
 		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
 		ReqNotice notice = new ReqNotice();
 		notice.setNid(nid);

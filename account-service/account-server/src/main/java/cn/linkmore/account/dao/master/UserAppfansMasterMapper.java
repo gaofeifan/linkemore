@@ -54,4 +54,11 @@ public interface UserAppfansMasterMapper {
 	 */
 	void updateStatusByUserId(@Param("userId") Long userId,@Param("status") Integer status);
 
+	/**
+	 * @Description  通过用户id删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void deleteByUserId(Long userId);
+
 }

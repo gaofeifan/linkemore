@@ -8,9 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import cn.linkmore.account.common.UserCache;
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
 import cn.linkmore.account.entity.VehicleMarkManage;
@@ -25,6 +23,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.TokenUtil;
 /**
  * @author   GFF
  * @Date     2018年5月21日
@@ -104,7 +103,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	}
 	
 	private ResUser getCache(HttpServletRequest request) {
-		String key = UserCache.getCacheKey(request);
+		String key = TokenUtil.getKey(request);
 		return (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 	}
 

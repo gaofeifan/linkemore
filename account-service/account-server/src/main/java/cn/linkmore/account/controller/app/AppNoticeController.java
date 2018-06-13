@@ -25,7 +25,7 @@ import java.util.List;
  * 消息的Controller
  */
 @Controller
-@Api(value = "消息管理", produces = "application/json")
+@Api(tags = "notice",description="消息管理", produces = "application/json")
 @RequestMapping("/app/notice")
 public class AppNoticeController {
 
