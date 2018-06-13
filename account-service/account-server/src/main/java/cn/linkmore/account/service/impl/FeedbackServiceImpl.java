@@ -1,23 +1,31 @@
 package cn.linkmore.account.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.dao.cluster.FeedbackClusterMapper;
 import cn.linkmore.account.dao.master.FeedbackMasterMapper;
+import cn.linkmore.account.entity.Feedback;
 import cn.linkmore.account.request.ReqFeedBack;
 import cn.linkmore.account.response.ResFeedBack;
 import cn.linkmore.account.service.FeedbackService;
+import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.TokenUtil;
 /**
  * 问题反馈接口实现
  * @author   GFF
@@ -31,6 +39,8 @@ public class FeedbackServiceImpl implements FeedbackService {
 	private FeedbackClusterMapper feedbackClusterMapper;
 	@Resource
 	private FeedbackMasterMapper feedbackMasterMapper;
+	@Resource
+	private RedisService redisService;
 	
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
@@ -71,7 +81,23 @@ public class FeedbackServiceImpl implements FeedbackService {
 			param.put("endTime", bean.getEndTime());
 		}
 		return  this.feedbackClusterMapper.findExportList(param); 
+	}
+
+	@Override
+	public void save(String content, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		if(user == null) {
+			throw new RuntimeException(StatusEnum.USER_APP_NO_LOGIN.label);
+		}
+		Feedback feedback = new Feedback();
+		feedback.setContent(content);
+		feedback.setCreateTime(new Date());
+		feedback.setUpdateTime(new Date());
+		feedback.setUserId(user.getId());
+		this.feedbackMasterMapper.save(feedback);
 	} 
 
+	
 	
 }

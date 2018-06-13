@@ -2,6 +2,8 @@ package cn.linkmore.account.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.account.request.ReqFeedBack;
 import cn.linkmore.account.response.ResFeedBack;
 import cn.linkmore.bean.view.ViewPage;
@@ -28,5 +30,13 @@ public interface FeedbackService {
 	 * @Version  v2.0
 	 */
 	List<ResFeedBack> exportList(ReqFeedBack bean);
+
+	/**
+	 * @param request 
+	 * @Description  保存投诉建议
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void save(String content, HttpServletRequest request);
 
 }
