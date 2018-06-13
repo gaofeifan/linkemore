@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -164,9 +165,9 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 
 	@Override
 	public void report(cn.linkmore.common.controller.app.request.ReqVersion vrb, HttpServletRequest request) {
-		String key = TokenUtil.getKey(request);
-	    Map<String , Object> user= (Map<String, Object>) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-		vrb.setUserId(Long.decode(user.get("id").toString()));
+//		String key = TokenUtil.getKey(request);
+//	    CacheUser user =  (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+//		vrb.setUserId(user.getId());
 		ReqVersion version = ObjectUtils.copyObject(vrb, new ReqVersion());
 		this.report(version);
 	}

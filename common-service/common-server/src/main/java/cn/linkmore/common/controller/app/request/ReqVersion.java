@@ -1,5 +1,7 @@
 package cn.linkmore.common.controller.app.request;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotBlank;
 
 import io.swagger.annotations.ApiModel;
@@ -7,7 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("版本")
 public class ReqVersion {
-	@ApiModelProperty(value="用户id",required=false)
+	@ApiModelProperty(value="用户id",required=true)
+	@NotNull(message="用户id不能为空")
 	private Long userId;
 
 	@ApiModelProperty(value="客户端",required=true)

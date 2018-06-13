@@ -27,6 +27,7 @@ import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.service.NoticeService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.TokenUtil;
 
@@ -153,7 +154,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public ResNotice read(Long id, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
 		ReqNotice no = new ReqNotice();
 		no.setNid(id);
 		no.setUserId(ru.getId());

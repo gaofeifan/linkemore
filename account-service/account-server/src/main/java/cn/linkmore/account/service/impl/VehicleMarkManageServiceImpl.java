@@ -19,6 +19,7 @@ import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.account.service.VehicleMarkManageService;
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
@@ -102,9 +103,9 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 		this.deleteById(v);
 	}
 	
-	private ResUser getCache(HttpServletRequest request) {
+	private CacheUser getCache(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		return (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		return (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 	}
 
 	@Override
