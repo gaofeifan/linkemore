@@ -177,11 +177,12 @@ public interface UserService {
 	void send(ReqAuthSend rs);
 
 	/**
+	 * @return 
 	 * @Description  绑定手机号
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void bindMobile(ReqMobileBind rmb, HttpServletRequest request);
+	cn.linkmore.account.controller.app.response.ResUser bindMobile(ReqMobileBind rmb, HttpServletRequest request);
 
 	/**
 	 * @Description  发送短信

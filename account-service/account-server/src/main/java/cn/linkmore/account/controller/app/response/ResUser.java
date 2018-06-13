@@ -19,6 +19,9 @@ public class ResUser implements Serializable {
 	private String token;
 	@ApiModelProperty(value = "账号名称")
 	private String realname;
+	@ApiModelProperty(value = "性别")
+	private Short sex;
+	
 	public Long getId() {
 		return id;
 	}
@@ -43,5 +46,11 @@ public class ResUser implements Serializable {
 	public void setRealname(String realname) {
 		this.realname = realname;
 	}
-	 
+	public Short getSex() {
+		return sex;
+	}
+	public void setSex(Short sex) {
+		this.sex = sex;
+	}
+	
 }

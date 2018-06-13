@@ -43,7 +43,6 @@ public class AppAuthController {
 	public ResponseEntity<ResUser> login(@Validated @RequestBody ReqAuthLogin rl, HttpServletRequest request) {
 		ResponseEntity<ResUser> response = null; 
 		try {
-			
 			ResUser ru = this.userService.appLogin(rl,request);
 			response = ResponseEntity.success(ru, request);
 		}catch(BusinessException e){ 

@@ -295,6 +295,7 @@ public class UserServiceImpl implements UserService {
 		token.setId(user.getId());
 		token.setMobile(user.getUsername());
 		token.setRealname(user.getRealname());
+		token.setSex(user.getSex());
 		return token;
 	}
 
@@ -401,6 +402,7 @@ public class UserServiceImpl implements UserService {
 		ru.setId(rul.getId());
 		ru.setMobile(rl.getMobile());
 		ru.setToken(key); 
+		ru.setSex(rul.getSex());
 		ru.setRealname(rul.getRealname());
 		CacheUser user = new CacheUser();
 		user.setId(rul.getId());
@@ -437,6 +439,7 @@ public class UserServiceImpl implements UserService {
 		ru.setMobile(rul.getMobile());
 		ru.setToken(key); 
 		ru.setRealname(rul.getRealname());
+		ru.setSex(rul.getSex());
 		CacheUser user = new CacheUser();
 		user.setId(rul.getId());
 		user.setMobile(rul.getMobile());
@@ -525,7 +528,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void bindMobile(ReqMobileBind rmb, HttpServletRequest request) {
+	public cn.linkmore.account.controller.app.response.ResUser bindMobile(ReqMobileBind rmb, HttpServletRequest request) {
 		Object cache = this.redisService.get(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
 		if(cache==null) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
@@ -543,6 +546,14 @@ public class UserServiceImpl implements UserService {
 		rum.setUserId(ru.getId());
 		this.updateMobile(rum);
 		this.updateCache(request, ru); 
+		ResUserDetails details = this.detail(request);
+		cn.linkmore.account.controller.app.response.ResUser user = new cn.linkmore.account.controller.app.response.ResUser();
+		user.setId(details.getId());
+		user.setMobile(rmb.getMobile());
+		user.setRealname(details.getRealname());
+		user.setSex(details.getSex().shortValue());
+		user.setToken(ru.getToken());
+		return user;
 	}
 	
 	/**

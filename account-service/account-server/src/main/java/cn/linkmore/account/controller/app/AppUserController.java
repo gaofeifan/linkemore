@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.controller.app.request.ReqUpdateVehicle;
+import cn.linkmore.account.controller.app.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.ResponseEntity;
@@ -48,8 +49,8 @@ public class AppUserController {
 	public ResponseEntity<?> bindMobile(@RequestBody @Validated ReqMobileBind rmb, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
 		try {
-			this.userService.bindMobile(rmb,request);
-			response = ResponseEntity.success(null, request);
+			ResUser user = this.userService.bindMobile(rmb,request);
+			return ResponseEntity.success(user, request);
 		}catch(BusinessException e){
 			e.printStackTrace();
 			response = ResponseEntity.fail(e.getStatusEnum(), request);

@@ -33,6 +33,9 @@ public class ResUserDetails implements Serializable{
 	@ApiModelProperty(value = "微信头像")
 	private String wechatUrl;
 
+	@ApiModelProperty(value = "账户名称")
+	
+	private String realname;
 	public Long getId() {
 		return id;
 	}
@@ -96,4 +99,14 @@ public class ResUserDetails implements Serializable{
 	public void setWechatUrl(String wechatUrl) {
 		this.wechatUrl = wechatUrl;
 	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+	
+	
 }

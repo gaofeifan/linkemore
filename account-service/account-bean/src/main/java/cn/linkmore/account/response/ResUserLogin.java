@@ -7,6 +7,8 @@ public class ResUserLogin {
 	private String mobile;
 	
 	private String realname;
+	
+	private Short sex;
 
 	public Long getId() {
 		return id;
@@ -30,6 +32,14 @@ public class ResUserLogin {
 
 	public void setRealname(String realname) {
 		this.realname = realname;
+	}
+
+	public Short getSex() {
+		return sex;
+	}
+
+	public void setSex(Short sex) {
+		this.sex = sex;
 	}
 
 	
