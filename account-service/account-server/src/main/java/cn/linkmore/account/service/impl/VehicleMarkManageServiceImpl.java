@@ -109,12 +109,12 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	public List<ResVechicleMark> findResList(Long userId) {
-		return null;
+		return this.vehicleMarkManageClusterMapper.findResList(userId);
 	}
 
 	@Override
 	public ResVechicleMark findById(Long id) {
-		return null;
+		return this.vehicleMarkManageClusterMapper.findById(id);
 	}
 	
 }
