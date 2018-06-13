@@ -20,7 +20,6 @@ public class ReqPageNotice {
 	 */
 	private int pageSize = DEFAULT_SIZE;
 
-	private Long userId;
 	
 	public int getPage() {
 		return page;
@@ -36,14 +35,6 @@ public class ReqPageNotice {
 
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
 	}
 	
 	

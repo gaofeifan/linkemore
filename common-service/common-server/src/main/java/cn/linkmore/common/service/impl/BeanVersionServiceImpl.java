@@ -165,10 +165,10 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 
 	@Override
 	public void report(cn.linkmore.common.controller.app.request.ReqVersion vrb, HttpServletRequest request) {
-//		String key = TokenUtil.getKey(request);
-//	    CacheUser user =  (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-//		vrb.setUserId(user.getId());
+		String key = TokenUtil.getKey(request);
+	    CacheUser user =  (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqVersion version = ObjectUtils.copyObject(vrb, new ReqVersion());
+		version.setUserId(user.getId());
 		this.report(version);
 	}
 	

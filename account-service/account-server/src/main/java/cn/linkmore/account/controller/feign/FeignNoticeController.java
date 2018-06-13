@@ -1,6 +1,7 @@
 package cn.linkmore.account.controller.feign;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,8 +31,8 @@ public class FeignNoticeController{
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
-	public ResPage listNotice(@RequestBody ReqPageNotice bean) {
-		ResPage resPage = noticeService.page(bean);
+	public ResPage listNotice(@RequestBody ReqPageNotice bean,HttpServletRequest request) {
+		ResPage resPage = noticeService.page(bean,request);
 		return resPage;
 	}
 

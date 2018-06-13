@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
  * @Date     2018年5月11日
  */
 @RestController
-@RequestMapping("/exception-logs")
+@RequestMapping("/app/exception-logs")
 @Api(tags="Exception logs",description="APP异常日志上报")
 public class AppUnusualLogController {
 	

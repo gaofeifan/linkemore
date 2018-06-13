@@ -20,7 +20,7 @@ import cn.linkmore.order.response.ResWalletDetailExport;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "order-server", path = "/wallet_detail", fallback=WalletDetailClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "order-server", path = "/feign/wallet_detail", fallback=WalletDetailClientHystrix.class,configuration = FeignConfiguration.class)
 public interface WalletDetailClient {
 	
 	/**

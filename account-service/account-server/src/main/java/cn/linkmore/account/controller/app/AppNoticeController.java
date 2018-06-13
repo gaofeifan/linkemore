@@ -38,7 +38,7 @@ public class AppNoticeController {
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<ResPage> listNotice(@Validated @RequestBody ReqPageNotice bean , HttpServletRequest request) {
-    	ResPage page = this.noticeService.page(bean);
+    	ResPage page = this.noticeService.page(bean,request);
     	return ResponseEntity.success(page,request);
     }
 

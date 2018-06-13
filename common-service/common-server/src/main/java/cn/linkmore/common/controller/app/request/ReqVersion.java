@@ -9,9 +9,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("版本")
 public class ReqVersion {
-	@ApiModelProperty(value="用户id",required=true)
-	@NotNull(message="用户id不能为空")
-	private Long userId;
 
 	@ApiModelProperty(value="客户端",required=true)
 	@NotBlank(message="客户端不能为空")
@@ -28,14 +25,6 @@ public class ReqVersion {
 	@ApiModelProperty(value="版本",required=true)
 	@NotBlank(message="版本不能为空")
 	private String version;
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
 
 	public Short getClient() {
 		return client;

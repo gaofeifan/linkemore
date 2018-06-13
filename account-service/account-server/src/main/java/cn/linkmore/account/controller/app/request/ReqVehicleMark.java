@@ -16,9 +16,6 @@ public class ReqVehicleMark {
 														,lengths= {8,7})
 	private String vehMark;
 	
-	@ApiModelProperty(value="用户id",required=false)
-	private Long userId;
-	
 	public String getVehMark() {
 		return vehMark;
 	}
@@ -26,14 +23,5 @@ public class ReqVehicleMark {
 	public void setVehMark(String vehMark) {
 		this.vehMark = vehMark;
 	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-	
 }
 

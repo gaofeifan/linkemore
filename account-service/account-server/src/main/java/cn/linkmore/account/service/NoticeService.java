@@ -16,11 +16,12 @@ import cn.linkmore.account.response.ResPage;
 public interface NoticeService {
 
 	/**
+	 * @param request 
 	 * @Description  分页查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResPage page(ReqPageNotice bean);
+	ResPage page(ReqPageNotice bean, HttpServletRequest request);
 
 	/**
 	 * @Description  
@@ -49,6 +50,7 @@ public interface NoticeService {
 	 * @Version  v2.0
 	 */
 	void delete(Long nid, HttpServletRequest request);
+
 
 
 }

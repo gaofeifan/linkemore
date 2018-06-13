@@ -6,12 +6,10 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import springfox.documentation.annotations.ApiIgnore;
 
 @ApiModel("更新车牌号请求")
 public class ReqUpdateVehicle {
-	@ApiModelProperty(value="用户id",required=false)
-	private Long userId;
-	
 	@ApiModelProperty(value="车牌型号",required=true)
 	@NotNull(message="车辆型号不能为空")
 	private Integer model;
@@ -36,14 +34,6 @@ public class ReqUpdateVehicle {
 		this.brandId = brandId;
 	}
 
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-	
 
 }
 

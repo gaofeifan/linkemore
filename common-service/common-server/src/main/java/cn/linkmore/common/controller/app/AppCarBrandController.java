@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags="Vehicle brands",description="车辆品牌")
 @RestController
-@RequestMapping("/vehicle-brands")
+@RequestMapping("/app/vehicle-brands")
 public class AppCarBrandController {
 
 	@Resource

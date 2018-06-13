@@ -599,8 +599,8 @@ public class UserServiceImpl implements UserService {
 	public void updateVehicle(cn.linkmore.account.controller.app.request.ReqUpdateVehicle vehicle, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-		vehicle.setUserId(ru.getId());
 		cn.linkmore.account.request.ReqUpdateVehicle object = ObjectUtils.copyObject(vehicle, new cn.linkmore.account.request.ReqUpdateVehicle());
+		object.setUserId(ru.getId());
 		this.updateVehicle(object);
 	}
 	@Override

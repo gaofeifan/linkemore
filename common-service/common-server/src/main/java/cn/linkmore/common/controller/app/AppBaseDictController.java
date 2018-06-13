@@ -19,7 +19,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @Api(tags="Dict",description="数据字典")
-@RequestMapping(value="/dicts")
+@RequestMapping(value="/app/dicts")
 public class AppBaseDictController {
 	
 	@Resource

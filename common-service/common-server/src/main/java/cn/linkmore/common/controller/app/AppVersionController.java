@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiParam;
  */
 @Api(tags="Versions",description="版本管理")
 @RestController
-@RequestMapping("/versions")
+@RequestMapping("/app/versions")
 public class AppVersionController {
 	
 	@Resource

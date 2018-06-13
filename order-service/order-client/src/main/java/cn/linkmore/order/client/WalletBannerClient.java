@@ -21,7 +21,7 @@ import cn.linkmore.order.response.ResWalletBanner;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "order-server", path = "/banner", fallback=WalletBannerClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "order-server", path = "/feign/banner", fallback=WalletBannerClientHystrix.class,configuration = FeignConfiguration.class)
 public interface WalletBannerClient {
 
 	@RequestMapping(value = "/v2.0" ,method = RequestMethod.POST)
