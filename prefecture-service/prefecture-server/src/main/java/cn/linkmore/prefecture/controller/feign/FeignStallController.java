@@ -20,7 +20,7 @@ import cn.linkmore.prefecture.service.StallService;
  */
 @RestController
 @RequestMapping("/feign/stall")
-public class StallController {
+public class FeignStallController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
