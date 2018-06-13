@@ -48,8 +48,7 @@
   		<module>coupon-service</module>
   		<module>order-service</module>
   		<module>third-party-service</module>
-  		<module>common-service</module>
-  		<module>mini-program-server</module>
+  		<module>common-service</module> 
   		<module>security-service</module>
   	</modules>
 </project>

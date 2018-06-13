@@ -1,6 +1,11 @@
 server:
   port: 6005
 spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
   application:
     name: zuul-server
   boot: 
@@ -37,31 +42,25 @@ zuul:
     socket-timeout-millis: 60000
   routes:  
     order:
-      path: /order/**  
+      path: /api/order/**  
       serviceId: order-server
       sensitiveHeaders: Authorization
     prefecture:
-      path: /prefecture/**  
+      path: /api/prefecture/**  
       serviceId: prefecture-server
       sensitiveHeaders: Authorization
     common:
-      path: /common/**  
+      path: /api/common/**  
       serviceId: common-server 
       sensitiveHeaders: Authorization
     account:
-      path: /account/**  
+      path: /api/account/**  
       serviceId: account-server 
       sensitiveHeaders: Authorization
     coupon:
-      path: /coupon/**  
+      path: /api/coupon/**  
       serviceId: coupon-server 
-      sensitiveHeaders: Authorization
-    cloud-admin:
-      path: /cloud-admin/**
-      serviceId: admin-server
-    cloud-eureka:
-      path: /cloud-eureka/**
-      serviceId: eureka-server 
+      sensitiveHeaders: Authorization 
   
 security:
   basic:
