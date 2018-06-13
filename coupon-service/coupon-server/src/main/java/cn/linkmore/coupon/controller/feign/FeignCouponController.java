@@ -1,4 +1,4 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.feign;
 
 import java.util.List;
 
@@ -21,8 +21,8 @@ import cn.linkmore.coupon.service.CouponService;
  *
  */
 @RestController
-@RequestMapping("/coupons")
-public class CouponController {
+@RequestMapping("/feign/coupons")
+public class FeignCouponController {
 	@Autowired
 	private CouponService couponService;
 	

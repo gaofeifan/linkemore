@@ -20,7 +20,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @version 2.0
  *
  */
-@FeignClient(value = "coupon-server", path = "/coupons", fallback=CouponClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "coupon-server", path = "/feign/coupons", fallback=CouponClientHystrix.class,configuration = FeignConfiguration.class)
 public interface CouponClient {
 	/**
 	 * 消费停车券

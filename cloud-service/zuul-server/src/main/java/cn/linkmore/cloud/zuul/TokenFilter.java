@@ -32,8 +32,7 @@ public class TokenFilter extends ZuulFilter {
 	private static final String CONTENTTYPE = "application/json;charset=UTF-8";
 	private static final List<String> openResources = new ArrayList<String>() {
 		private static final long serialVersionUID = 1L;
-		{ 
-			add("/webjars/springfox-swagger-ui/");
+		{  
 			add("/swagger-ui.html");
 			add("/configuration");
 			add("/swagger-resources");
