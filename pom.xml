@@ -43,7 +43,6 @@
   		<module>base-service</module>
   		<module>prefecture-service</module>
   		<module>account-service</module>
-  		<module>user-app-server</module>
   		<module>staff-app-server</module>
   		<module>ops-server</module>
   		<module>coupon-service</module>

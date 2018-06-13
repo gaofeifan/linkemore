@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.coupon.controller.app.response.ResCoupon;
 import cn.linkmore.coupon.service.CouponService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 /**
  * Controller - 停车券
@@ -20,6 +21,7 @@ import io.swagger.annotations.ApiOperation;
  * @version 2.0
  *
  */
+@Api(tags="Coupon",description="停车券")
 @RestController
 @RequestMapping("/app/coupons")
 public class AppCouponController {
