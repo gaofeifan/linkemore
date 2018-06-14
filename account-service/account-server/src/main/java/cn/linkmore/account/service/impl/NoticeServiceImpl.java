@@ -28,6 +28,7 @@ import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.TokenUtil;
 
 /**
@@ -64,12 +65,14 @@ public class NoticeServiceImpl implements NoticeService {
 		map.put("uid", ru.getId());
 		List<ResPageNotice> resPageNotic = noticeClusterMapper.findPageNotice(map);
 		List<Long> longs = noticeClusterMapper.findNoticeReadDel( ru.getId());
+		Date now = new Date();
 		for (int i = 0; i < resPageNotic.size(); i++) {
+			Date time = resPageNotic.get(i).getPushTime();
+			String duration = DateUtils.getDuration(now, time);
+			resPageNotic.get(i).setPushedTime(duration);
 			for (Long del : longs) {
-
 				if (resPageNotic.get(i).getId() == del) {
 					resPageNotic.get(i).setRead_status(NOTICE_OPER_READ);
-
 				}
 			}
 

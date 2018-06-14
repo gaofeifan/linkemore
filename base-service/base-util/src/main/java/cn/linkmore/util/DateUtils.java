@@ -185,4 +185,34 @@ public class DateUtils {
 				return null;
 			}
 		}
+		
+		/**
+		 * @Description  计算两个时间内的时长
+		 * @Author   GFF 
+		 * @Version  v2.0
+		 */
+		public static String getDuration(Date startDate , Date endDate) {
+			if(startDate == null) {
+				startDate = new Date();
+			}
+			if(endDate == null) {
+				throw new RuntimeException("结束时间不能为null");
+			}
+			long time = startDate.getTime() - endDate.getTime();
+			long days = time / (1000 * 60 * 60 * 24);  
+			if(days > 1) {
+				return days + "天前";
+			}else if(days == 1) {
+				return days + "天";
+			}
+		    long hours = (time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);  
+		    if(hours == 1) {
+		    	return hours + "小时";
+		    }else if(hours > 1) {
+		    	return hours + "小时前";
+		    }
+		    long minutes = (time % (1000 * 60 * 60)) / (1000 * 60);  
+			return minutes + "分钟";
+			
+		}
 }
