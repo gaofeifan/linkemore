@@ -39,6 +39,7 @@
     <result column="type" jdbcType="INTEGER" property="type" /> 
     <result column="discount" jdbcType="INTEGER" property="discount" />  
     <result column="condition_amount" jdbcType="DECIMAL" property="conditionAmount" />
+    <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
   </resultMap>
   
   <sql id="Base_Column_List">

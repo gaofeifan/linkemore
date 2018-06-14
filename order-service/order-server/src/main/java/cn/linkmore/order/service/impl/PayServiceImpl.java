@@ -648,7 +648,11 @@ public class PayServiceImpl implements PayService {
 		this.orderMasterMapper.updatePayment(param); 
 		// 3.更新优惠券信息
 		if (null != order.getCouponId()) { 
-			this.couponClient.pay(new ReqCouponPay(order.getCouponId(),order.getTotalAmount(),order.getCouponAmount()));
+			ReqCouponPay rcp = new ReqCouponPay(); 
+			rcp.setCouponId(order.getCouponId());
+			rcp.setOrderAmount(order.getTotalAmount());
+			rcp.setUsedAmount(order.getCouponAmount());
+			this.couponClient.pay(rcp);
 		}  
 		this.userClient.checkout(order.getUserId());
 		//结账调用新版推送消息 

@@ -6,12 +6,7 @@ public class ReqCouponPay {
 	private Long couponId;
 	private BigDecimal orderAmount;
 	private BigDecimal usedAmount; 
-	
-	public ReqCouponPay(Long couponId,BigDecimal orderAmount,BigDecimal usedAmount) {
-		this.couponId = couponId;
-		this.orderAmount = orderAmount;
-		this.usedAmount = usedAmount;
-	}
+	 
 	public Long getCouponId() {
 		return couponId;
 	}
