@@ -21,7 +21,7 @@ public interface NoticeService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResPage page(ReqPageNotice bean, HttpServletRequest request);
+	ResPage page(Long start, HttpServletRequest request);
 
 	/**
 	 * @Description  

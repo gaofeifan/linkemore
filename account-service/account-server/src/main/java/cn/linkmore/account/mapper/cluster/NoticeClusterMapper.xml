@@ -55,7 +55,7 @@
         )
     GROUP BY t.id
     ORDER BY t.push_time desc
-    LIMIT #{start}, #{size}
+    limit #{start,jdbcType=BIGINT},10
   </select>
 
     <select id="findNotReadCountAll" resultType="java.lang.Integer">

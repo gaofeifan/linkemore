@@ -23,12 +23,10 @@ import cn.linkmore.account.request.ReqPageNotice;
 import cn.linkmore.account.response.ResNotice;
 import cn.linkmore.account.response.ResPage;
 import cn.linkmore.account.response.ResPageNotice;
-import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.service.NoticeService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
-import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.TokenUtil;
 
@@ -58,18 +56,15 @@ public class NoticeServiceImpl implements NoticeService {
 	@Resource
 	private UserService userService;
 	@Override
-	public ResPage page(ReqPageNotice bean, HttpServletRequest request) {
+	public ResPage page(Long start, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-		int start = bean.getPage() * bean.getPageSize();
 		Map<String, Object> map = new HashMap<>();
 		map.put("start", start);
-		map.put("size", bean.getPageSize());
 		map.put("uid", ru.getId());
 		List<ResPageNotice> resPageNotic = noticeClusterMapper.findPageNotice(map);
 		List<Long> longs = noticeClusterMapper.findNoticeReadDel( ru.getId());
 		for (int i = 0; i < resPageNotic.size(); i++) {
-
 			for (Long del : longs) {
 
 				if (resPageNotic.get(i).getId() == del) {

@@ -29,7 +29,7 @@ public class ResUserGuide {
 	@ApiModelProperty(value="路径")
 	private String url;
 	@ApiModelProperty(value="子集合")
-	private List<ResUserGuide> children;
+	private List<cn.linkmore.account.response.ResUserGuide> children;
 	public Long getId() {
 		return id;
 	}
@@ -60,10 +60,10 @@ public class ResUserGuide {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public List<ResUserGuide> getChildren() {
+	public List<cn.linkmore.account.response.ResUserGuide> getChildren() {
 		return children;
 	}
-	public void setChildren(List<ResUserGuide> children) {
+	public void setChildren(List<cn.linkmore.account.response.ResUserGuide> children) {
 		this.children = children;
 	}
 	

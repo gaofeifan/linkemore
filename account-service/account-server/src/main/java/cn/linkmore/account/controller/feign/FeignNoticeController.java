@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.account.request.ReqNotice;
@@ -31,8 +32,8 @@ public class FeignNoticeController{
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
-	public ResPage listNotice(@RequestBody ReqPageNotice bean,HttpServletRequest request) {
-		ResPage resPage = noticeService.page(bean,request);
+	public ResPage listNotice(@RequestParam("start") Long start,HttpServletRequest request) {
+		ResPage resPage = noticeService.page(start,request);
 		return resPage;
 	}
 

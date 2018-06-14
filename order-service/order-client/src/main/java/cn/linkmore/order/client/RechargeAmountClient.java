@@ -21,7 +21,7 @@ import cn.linkmore.order.response.ResRechargeAmount;
  * @Date     2018年5月18日
  * @Version  v2.0
  */
-@FeignClient(value = "order-server", path = "/amount", fallback=RechargeAmountClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "order-server", path = "/admin/amount", fallback=RechargeAmountClientHystrix.class,configuration = FeignConfiguration.class)
 public interface RechargeAmountClient {
 
 	/**
