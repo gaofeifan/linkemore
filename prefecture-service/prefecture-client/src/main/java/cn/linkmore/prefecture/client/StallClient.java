@@ -39,6 +39,7 @@ public interface StallClient {
 	 * @param stallId Long
 	 */
 	@RequestMapping(value = "/v2.0/cancel", method=RequestMethod.PUT)
+	@ResponseBody
 	public boolean cancel(@RequestParam("stallId") Long stallId);
 	
 	/**
@@ -47,6 +48,7 @@ public interface StallClient {
 	 * @return true 车位锁降下成功 false 车位锁降下失败
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method=RequestMethod.PUT)
+	@ResponseBody
 	public Boolean downlock(@RequestParam("stallId") Long stallId);
 	
 	/**
@@ -55,6 +57,7 @@ public interface StallClient {
 	 * @return true 车位锁升起成功 false 车位锁升起失败
 	 */
 	@RequestMapping(value = "/v2.0/uplock", method=RequestMethod.PUT)
+	@ResponseBody
 	public Boolean uplock(@RequestParam("stallId") Long stallId);
 	
 	/**
@@ -63,6 +66,7 @@ public interface StallClient {
 	 * @return true 车位锁升起成功 false 车位锁升起失败
 	 */
 	@RequestMapping(value = "/v2.0/checkout", method=RequestMethod.PUT)
+	@ResponseBody
 	public Boolean checkout(@RequestParam("stallId") Long stallId);
 	
 	/**
@@ -71,6 +75,7 @@ public interface StallClient {
 	 * @param stallId Long
 	 */
 	@RequestMapping(value = "/v2.0/{stallId}", method=RequestMethod.GET)
+	@ResponseBody
 	public ResStallEntity findById(@PathVariable("stallId") Long stallId);
 	/**
 	 * 根据锁编号获取车位信息
@@ -78,6 +83,7 @@ public interface StallClient {
 	 * @return
 	 */
 	@RequestMapping(value = "/v2.0/lock/{sn}", method=RequestMethod.GET)
+	@ResponseBody
 	public ResStallEntity findByLock(@PathVariable("sn") String sn);
 	
 	

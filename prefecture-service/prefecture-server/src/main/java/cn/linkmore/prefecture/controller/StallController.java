@@ -65,6 +65,7 @@ public class StallController {
 	 *            Long
 	 */
 	@RequestMapping(value = "/v2.0/cancel", method = RequestMethod.PUT)
+	@ResponseBody
 	public boolean cancel(@RequestParam("stallId") Long stallId) {
 		return this.stallService.cancel(stallId);
 	}
@@ -76,6 +77,7 @@ public class StallController {
 	 *            Long
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method = RequestMethod.PUT)
+	@ResponseBody
 	public Boolean downlock(@RequestParam("stallId") Long stallId) {
 		log.info("downlock:{} .......................................", stallId);
 		return this.stallService.downlock(stallId);
@@ -88,6 +90,7 @@ public class StallController {
 	 *            Long
 	 */
 	@RequestMapping(value = "/v2.0/uplock", method = RequestMethod.PUT)
+	@ResponseBody
 	public Boolean uplock(@RequestParam("stallId") Long stallId) {
 		boolean flag = this.stallService.uplock(stallId);
 		return flag;
@@ -100,6 +103,7 @@ public class StallController {
 	 *            Long
 	 */
 	@RequestMapping(value = "/v2.0/checkout", method = RequestMethod.PUT)
+	@ResponseBody
 	public Boolean checkout(@RequestParam("stallId") Long stallId) {
 		boolean flag = this.stallService.checkout(stallId);
 		return flag;
@@ -112,12 +116,14 @@ public class StallController {
 	 *            Long
 	 */
 	@RequestMapping(value = "/v2.0/{stallId}", method = RequestMethod.GET)
+	@ResponseBody
 	public ResStallEntity findById(@PathVariable("stallId") Long stallId) {
 		ResStallEntity stallEntity = this.stallService.findById(stallId);
 		return stallEntity;
 	}
 
 	@RequestMapping(value = "/v2.0/lock/{sn}", method = RequestMethod.GET)
+	@ResponseBody
 	public ResStallEntity findByLock(@PathVariable("sn") String sn) {
 		ResStallEntity stallEntity = this.stallService.findByLock(sn);
 		return stallEntity;
