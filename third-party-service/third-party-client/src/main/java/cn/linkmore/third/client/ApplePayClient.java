@@ -16,7 +16,7 @@ import cn.linkmore.third.request.ReqApplePay;
  * @author liwenlong
  * @version 2.0
  */
-@FeignClient(value = "third-party-server", path = "/apple-pay", fallback=ApplePayClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/apple-pay", fallback=ApplePayClientHystrix.class,configuration = FeignConfiguration.class)
 public interface ApplePayClient {
 	/**
 	 * 统一下单

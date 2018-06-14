@@ -17,6 +17,7 @@
       <result column="title" property="title"/>
       <result column="push_time" property="pushTime"/>
       <result column="type" property="type"/>
+      <result column="url" property="url"/>
       <result column="description" property="description"/>
     </resultMap>  
   <sql id="Base_Column_List">
@@ -38,7 +39,7 @@
 
   <select id="findPageNotice" resultMap="ResPageNoticeBeanMap" parameterType="java.util.HashMap"  >
    SELECT
-	t.id,t.title,t.push_time,t.type,t.description
+	t.id,t.title,t.push_time,t.type,t.description,t.url
     FROM
         t_notice t
     LEFT JOIN t_notice_read r ON t.id = r.notice_id
@@ -55,7 +56,7 @@
         )
     GROUP BY t.id
     ORDER BY t.push_time desc
-    LIMIT #{start}, #{size}
+    limit #{start,jdbcType=BIGINT},10
   </select>
 
     <select id="findNotReadCountAll" resultType="java.lang.Integer">

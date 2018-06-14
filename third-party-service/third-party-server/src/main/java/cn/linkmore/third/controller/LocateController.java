@@ -11,7 +11,7 @@ import cn.linkmore.third.response.ResLocate;
 import cn.linkmore.third.service.LocateService;
 
 @RestController
-@RequestMapping("/locate")
+@RequestMapping("/feign/locate")
 public class LocateController {
 	
 	@Autowired

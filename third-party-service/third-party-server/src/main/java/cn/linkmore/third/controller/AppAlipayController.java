@@ -27,7 +27,7 @@ import cn.linkmore.util.JsonUtil;
  *
  */
 @RestController
-@RequestMapping("/alipay")
+@RequestMapping("/feign/alipay")
 public class AppAlipayController {
 	
 	@Autowired

@@ -48,8 +48,10 @@ public class AppPayController {
 			ResPayCheckout checkout = payService.checkout(orderId,request);
 			response = ResponseEntity.success(checkout, request);
 		} catch (BusinessException e) { 
+			e.printStackTrace();
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) { 
+			e.printStackTrace();
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;

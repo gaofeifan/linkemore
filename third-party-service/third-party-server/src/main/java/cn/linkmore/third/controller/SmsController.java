@@ -15,7 +15,7 @@ import cn.linkmore.third.service.SmsService;
  * @version 2.0
  */
 @RestController
-@RequestMapping("/sms")
+@RequestMapping("/feign/sms")
 public class SmsController {
 	@Autowired
 	private SmsService smsService;

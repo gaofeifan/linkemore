@@ -10,7 +10,7 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.third.client.hystrix.LocateClientHystrix;
 import cn.linkmore.third.response.ResLocate;
 
-@FeignClient(value = "third-party-server", path = "/locate", fallback=LocateClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/locate", fallback=LocateClientHystrix.class,configuration = FeignConfiguration.class)
 public interface LocateClient {
 
 	@RequestMapping(method=RequestMethod.GET)

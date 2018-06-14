@@ -23,9 +23,7 @@
     update_time, acc_type
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_acc_account
+    select * from t_acc_account
     where id = #{id,jdbcType=BIGINT}
   </select>
   

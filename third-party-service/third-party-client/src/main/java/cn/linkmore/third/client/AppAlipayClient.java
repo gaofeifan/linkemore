@@ -16,7 +16,7 @@ import cn.linkmore.third.request.ReqAppAlipay;
  * @version 2.0
  *
  */
-@FeignClient(value = "third-party-server", path = "/alipay", fallback=AppAlipayClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/alipay", fallback=AppAlipayClientHystrix.class,configuration = FeignConfiguration.class)
 public interface AppAlipayClient {
 	/**
 	 * 发起支付宝支付

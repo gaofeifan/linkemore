@@ -43,6 +43,12 @@ public class ResPrefecture {
 	
 	@ApiModelProperty(value = "距离")
 	private String distance;
+	
+	@ApiModelProperty(value = "推荐车牌ID")
+	private Long plateId;
+	
+	@ApiModelProperty(value = "推荐车牌号")
+	private String plateNumber;
 
 	public Long getId() {
 		return id;
@@ -146,6 +152,22 @@ public class ResPrefecture {
 
 	public void setDistance(String distance) {
 		this.distance = distance;
+	}
+
+	public Long getPlateId() {
+		return plateId;
+	}
+
+	public void setPlateId(Long plateId) {
+		this.plateId = plateId;
+	}
+
+	public String getPlateNumber() {
+		return plateNumber;
+	}
+
+	public void setPlateNumber(String plateNumber) {
+		this.plateNumber = plateNumber;
 	} 
 	
 }

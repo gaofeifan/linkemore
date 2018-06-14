@@ -26,7 +26,7 @@ public class ResPageNotice {
     private Date pushTime;
 
     /**
-     *  分类：0 文本，1 H5页面
+     *  分类(0 文本，1 H5页面，3优惠卷)
      */ 
     private Long type;
 
@@ -39,7 +39,19 @@ public class ResPageNotice {
      *  阅读状态
      */ 
     private Long read_status = READ_STATUS;
+    
+    /**
+     *  H5的 地址
+     */ 
+    private String url;
+    
+    private String imageUrl;
 
+    /**
+     *  已经推送时长
+     */ 
+    private String pushedTime;
+    
     public Long getRead_status() {
         return read_status;
     }
@@ -87,4 +99,32 @@ public class ResPageNotice {
     public void setDescription(String description) {
         this.description = description;
     }
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getPushedTime() {
+		return pushedTime;
+	}
+
+	public void setPushedTime(String pushedTime) {
+		this.pushedTime = pushedTime;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+    
+	
+	
+    
 }

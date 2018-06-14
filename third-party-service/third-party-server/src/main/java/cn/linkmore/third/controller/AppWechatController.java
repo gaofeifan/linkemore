@@ -29,7 +29,7 @@ import cn.linkmore.util.JsonUtil;
  *
  */
 @RestController
-@RequestMapping("/app-wechat")
+@RequestMapping("/feign/app-wechat")
 public class AppWechatController {
 	@Autowired
 	private AppWechatService appWechatService;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 2.0
  */
 @RestController
-@RequestMapping("/mini-program")
+@RequestMapping("/feign/mini-program")
 public class MiniProgramController {
 
 }

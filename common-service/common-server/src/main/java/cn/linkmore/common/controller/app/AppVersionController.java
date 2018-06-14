@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +30,7 @@ import io.swagger.annotations.ApiParam;
 @Api(tags="Versions",description="版本管理")
 @RestController
 @RequestMapping("/app/versions")
+@Validated
 public class AppVersionController {
 	
 	@Resource
@@ -57,7 +59,7 @@ public class AppVersionController {
 	 */
 	@RequestMapping(value="/v2.0/report",method = RequestMethod.POST)
 	@ApiOperation(value = "上报用户版本", notes = "上报用户版本", consumes = "application/json")
-	public ResponseEntity<?> report(@RequestBody ReqVersion vrb,HttpServletRequest request){
+	public ResponseEntity<?> report(@RequestBody @Validated ReqVersion vrb,HttpServletRequest request){
 		this.beanVersionService.report(vrb,request);
 		return ResponseEntity.success(null, request);
 	}

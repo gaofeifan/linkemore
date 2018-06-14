@@ -10,7 +10,7 @@ import cn.linkmore.third.request.ReqOrder;
 import cn.linkmore.third.service.DockingService;
 
 @RestController
-@RequestMapping("/docking")
+@RequestMapping("/feign/docking")
 public class DockingController {
 	
 	@Autowired

@@ -22,7 +22,7 @@ import cn.linkmore.util.JsonUtil;
  *
  */
 @RestController
-@RequestMapping("/apple-pay")
+@RequestMapping("/feign/apple-pay")
 public class ApplePayController {
 	
 	@Autowired

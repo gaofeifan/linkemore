@@ -2,6 +2,7 @@ package cn.linkmore.account.controller.app;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,7 @@ import cn.linkmore.account.service.NoticeService;
 import cn.linkmore.bean.common.ResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * 消息的Controller
@@ -25,6 +27,7 @@ import io.swagger.annotations.ApiOperation;
 @Controller
 @Api(tags = "Notice",description="消息管理", produces = "application/json")
 @RequestMapping("/app/notice")
+@Validated
 public class AppNoticeController {
 
     @Resource
@@ -35,10 +38,10 @@ public class AppNoticeController {
      */
     @SuppressWarnings("rawtypes")
 	@ApiOperation(value = "消息列表", notes = "消息列表", consumes = "application/json")
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ResPage> listNotice(@Validated @RequestBody ReqPageNotice bean , HttpServletRequest request) {
-    	ResPage page = this.noticeService.page(bean,request);
+    public ResponseEntity<ResPage> listNotice(@ApiParam(value = "起始请从0开始每页10条记录",required = true)@RequestParam("start") @NotNull(message = "数据不能为空") Long start , HttpServletRequest request) {
+    	ResPage page = this.noticeService.page(start,request);
     	return ResponseEntity.success(page,request);
     }
 
@@ -48,7 +51,7 @@ public class AppNoticeController {
     @ApiOperation(value = "阅读", notes = "阅读", consumes = "application/json")
     @RequestMapping(value = "/read", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ResNotice> read(@RequestParam("id")Long id, HttpServletRequest request) {
+    public ResponseEntity<ResNotice> read(@NotNull(message = "数据不能为空") @RequestParam("id")Long id, HttpServletRequest request) {
     	ResNotice notice = noticeService.read(id,request);
         return ResponseEntity.success(notice, request);
     }
