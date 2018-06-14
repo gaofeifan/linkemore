@@ -29,7 +29,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
    <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
-   	select count(1) from 	from t_acc_wallet_detail d left join t_user u on d.account_id = u.id 
+   	select count(1) from t_acc_wallet_detail d left join t_user u on d.account_id = u.id 
 		where 1 = 1
     <if test="username!=null">
 		AND u.username = #{username}

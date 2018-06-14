@@ -120,8 +120,6 @@ public class AppUserController {
 		try {
 			this.userService.updateSex(sex,request);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
 		}
 		return ResponseEntity.success(null, request);
 	}

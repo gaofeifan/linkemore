@@ -167,7 +167,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public void delete(Long nid, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		ResUser ru = (ResUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
 		ReqNotice notice = new ReqNotice();
 		notice.setNid(nid);
 		notice.setUserId(ru.getId());
