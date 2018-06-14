@@ -236,7 +236,9 @@ public class Constants {
 		ORDER_TRADE_SERIAL_NUMBER("order:trade:serial_number:"),
 		ORDER_RECHARGE_SERIAL_NUMBER("order:recharge:serial_number:"),
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
-		PREFECTURE_FREE_STALL("prefecture:free_stall:");
+		PREFECTURE_FREE_STALL("prefecture:free_stall:"),
+		WECHAT_TOKEN_KEY("wechat_token"),
+		WECHAT_TOKEN_EXPIRE("3600");
 		public String key;
 
 		private RedisKey(String key) {
