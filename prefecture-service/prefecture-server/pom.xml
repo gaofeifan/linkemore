@@ -68,10 +68,16 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>order-client</artifactId>
+			<version>${project.version}</version>
+		</dependency> 
+		
+		
+		<dependency>
 			<groupId>com.linkmore</groupId>
 			<artifactId>linkmore-lock-sdk</artifactId>
 			<version>${linkmore-lock-sdk.version}</version>
-			<classifier>Releases</classifier>
 		</dependency>
 		
 		<dependency>
@@ -99,7 +105,7 @@
         <repository> 
             <id>nexus</id> 
             <name>rongxin private nexus</name> 
-            <url>http://192.168.1.9:8088/nexus/content/groups/public/</url>
+            <url>http://192.168.1.217:8081/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases> 
@@ -112,7 +118,7 @@
         <pluginRepository> 
             <id>nexus</id> 
             <name>rongxin private nexus</name> 
-            <url>http://192.168.1.9:8088/nexus/content/groups/public/</url>
+            <url>http://192.168.1.217:8081/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases> 

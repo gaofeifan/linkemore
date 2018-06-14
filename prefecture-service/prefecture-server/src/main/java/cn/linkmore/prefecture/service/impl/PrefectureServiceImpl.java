@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -15,14 +17,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.account.client.UserStaffClient;
+import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
+import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.order.client.OrderClient;
+import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
@@ -68,6 +75,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private PrefectureMasterMapper prefectureMasterMapper;
 	@Autowired
 	private UserStaffClient userStaffClient;
+	
+	@Autowired
+	private OrderClient orderClient;
+	
+	@Autowired
+	private VehicleMarkClient vehicleMarkClient;
 	
 	@Autowired
 	private RedisService redisService;
@@ -405,7 +418,23 @@ public class PrefectureServiceImpl implements PrefectureService {
 		//此处cityId暂时为空，返回所有的车区信息
 		paramMap.put("cityId", null);
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap); 
+		Long plateId = null;
+		String plateNumber = null;
 		if(cu!=null && cu.getId()!=null){
+			ResUserOrder ro = this.orderClient.last(cu.getId());
+			List<ResVechicleMark> plates = this.vehicleMarkClient.list(cu.getId());
+			if(ro!=null) {
+				Map<String,Long> plateMap = new HashMap<String,Long>();
+				for(ResVechicleMark rvm:plates) {
+					plateMap.put(rvm.getVehMark(), rvm.getId());
+				}
+				plateNumber = ro.getPlateNo();
+				plateId = plateMap.get(plateNumber);
+			}else if(CollectionUtils.isNotEmpty(plates)){
+				plateId = plates.get(0).getId();
+				plateNumber = plates.get(0).getVehMark();
+			}
+			
 			ResUserStaff us = this.userStaffClient.findById(cu.getId());
 			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
 				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
@@ -419,6 +448,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 			} 
 		}
 		for(ResPrefecture prb: preList){ 
+			prb.setPlateId(plateId);
+			prb.setPlateNumber(plateNumber);
 			prb.setChargeTime(prb.getChargeTime() + "分钟");
 			prb.setChargePrice(prb.getChargePrice() + "元");
 			prb.setLeisureStall(getFreeStall(prb.getId()));

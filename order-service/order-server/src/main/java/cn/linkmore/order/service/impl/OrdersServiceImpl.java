@@ -416,28 +416,22 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 	@Override
 	public ResUserOrder latest(Long userId) {
-		ResUserOrder orders = null;
-		try {
-			orders = this.ordersClusterMapper.findUserLatest(userId);  
-			ReqStrategy rs = new ReqStrategy();
-			rs.setBeginTime(orders.getCreateTime().getTime());
-			rs.setStrategyId(orders.getStrategyId());
-			if(orders.getStatus().intValue()==OrderStatus.SUSPENDED.value) {
-				rs.setEndTime(orders.getStatusTime().getTime());
-			}else {
-				rs.setEndTime(new Date().getTime());
-			}
-			Map<String,Object> map = strategyBaseClient.fee(rs);
-			if(map!=null) {
-				Object object = map.get("totalAmount");
-				if(object!=null) {
-					orders.setTotalAmount(new BigDecimal(object.toString()));
-				}
-			} 
-		}catch(Exception e) {
-			e.printStackTrace();
+		ResUserOrder orders =  this.ordersClusterMapper.findUserLatest(userId);  
+		ReqStrategy rs = new ReqStrategy();
+		rs.setBeginTime(orders.getCreateTime().getTime());
+		rs.setStrategyId(orders.getStrategyId());
+		if(orders.getStatus().intValue()==OrderStatus.SUSPENDED.value) {
+			rs.setEndTime(orders.getStatusTime().getTime());
+		}else {
+			rs.setEndTime(new Date().getTime());
 		}
-		
+		Map<String,Object> map = strategyBaseClient.fee(rs);
+		if(map!=null) {
+			Object object = map.get("totalAmount");
+			if(object!=null) {
+				orders.setTotalAmount(new BigDecimal(object.toString()));
+			}
+		} 
 		return orders;
 	}
 	@Override
@@ -577,6 +571,25 @@ public class OrdersServiceImpl implements OrdersService {
 				orders.setTotalAmount(new BigDecimal(object.toString()));
 			}
 		}
-		return null;  
+		ResOrder ro = null; 
+		if(orders!=null&&(orders.getStatus()==OrderStatus.UNPAID.value||orders.getStatus()==OrderStatus.SUSPENDED.value)) {
+			ro = new ResOrder();
+			ro.copy(orders);
+			ResPrefectureDetail pre = this.prefectureClient.findById(orders.getPreId());
+			if(pre!=null) {
+				ro.setPreLongitude(pre.getLongitude());
+				ro.setPreLatitude(pre.getLatitude());
+				ro.setPrefectureAddress(pre.getAddress());
+				ro.setGuideImage(pre.getRouteGuidance());
+				ro.setGuideRemark(pre.getRouteDescription());
+				ro.setPrefectureName(pre.getName());
+			}
+			ResStallEntity stall = this.stallClient.findById(ro.getStallId());
+			if(stall!=null) {
+				ro.setStallName(stall.getStallName());
+				ro.setBluetooth("E0FE28BF8161|DAB57585F519|E6B0C368D285|");
+			}
+		}
+		return ro;  
 	}
 }

@@ -1,5 +1,6 @@
 package cn.linkmore.order.controller.feign;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +16,7 @@ import cn.linkmore.order.service.OrdersService;
 @Validated
 public class FeignOrderController {
 	
+	@Autowired
 	private OrdersService ordersService;
 	
 	@RequestMapping(value = "/v2.0/last", method = RequestMethod.GET)
