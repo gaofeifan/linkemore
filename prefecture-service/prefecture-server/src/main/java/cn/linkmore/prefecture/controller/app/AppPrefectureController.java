@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags="Prefecture",description="车区信息")
 @RestController
-@RequestMapping("/app/prefecture")
+@RequestMapping("/app/prefectures")
 public class AppPrefectureController {
 	@Autowired
 	private PrefectureService prefectureService;
