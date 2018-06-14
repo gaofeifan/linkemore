@@ -17,7 +17,7 @@ import cn.linkmore.third.request.ReqPush;
  * @version 2.0
  * 
  */
-@FeignClient(value = "third-party-server", path = "/push", fallback=PushClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/push", fallback=PushClientHystrix.class,configuration = FeignConfiguration.class)
 public interface PushClient {
 	/**
 	 * 推送消息

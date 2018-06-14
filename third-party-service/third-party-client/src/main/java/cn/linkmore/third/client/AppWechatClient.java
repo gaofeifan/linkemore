@@ -19,7 +19,7 @@ import cn.linkmore.third.response.ResFans;
  * @author liwenlong
  * @version 2.0
  */
-@FeignClient(value = "third-party-server", path = "/app-wechat", fallback=AppWechatClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/app-wechat", fallback=AppWechatClientHystrix.class,configuration = FeignConfiguration.class)
 public interface AppWechatClient {
 	/**
 	 * 根据code获取粉丝

@@ -9,7 +9,7 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.third.client.hystrix.DockingClientHystrix;
 import cn.linkmore.third.request.ReqOrder;
 
-@FeignClient(value = "third-party-server", path = "/docking", fallback=DockingClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/docking", fallback=DockingClientHystrix.class,configuration = FeignConfiguration.class)
 public interface DockingClient {
 	@RequestMapping(value = "/v2.0/order", method = RequestMethod.POST)  
 	public void order(@RequestBody ReqOrder ro);

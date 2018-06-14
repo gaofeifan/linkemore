@@ -12,7 +12,7 @@ import cn.linkmore.third.client.hystrix.OssClientHystrix;
  * @version 2.0
  *
  */
-@FeignClient(value = "third-party-server", path = "/oss", fallback=OssClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/oss", fallback=OssClientHystrix.class,configuration = FeignConfiguration.class)
 public interface OssClient {
 
 }

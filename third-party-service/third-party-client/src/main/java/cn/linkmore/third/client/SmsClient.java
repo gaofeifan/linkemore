@@ -16,7 +16,7 @@ import cn.linkmore.third.request.ReqSms;
  * @version 2.0
  *
  */
-@FeignClient(value = "third-party-server", path = "/sms", fallback=SmsClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/sms", fallback=SmsClientHystrix.class,configuration = FeignConfiguration.class)
 public interface SmsClient {
 	
 	/**
