@@ -43,9 +43,24 @@ public class BeanFactory {
 		return new JPushClient(PushConfig.getSecret(), PushConfig.getKey(), 3);
 	}
 	
-	@Bean(name = "oSSClient")
-	public OSSClient oSSClient() {
-		return new OSSClient(ossConfig.getUploadEndpoint(), ossConfig.getAccessKeyId(),
+	/**
+	 * 存储-下载
+	 * 
+	 * @return
+	 */
+	@Bean(name = "downloadOSSClient")
+	public OSSClient downloadOSSClient() {
+		return new OSSClient(ossConfig.getDownloadEndpoint(), ossConfig.getAccessKeyId(),
 				ossConfig.getAccessKeySecret());
-	} 
+	}
+
+	/**
+	 * 存储-上传
+	 * 
+	 * @return
+	 */
+	@Bean(name = "uploadOSSClient")
+	public OSSClient uploadOSSClient() {
+		return new OSSClient(ossConfig.getUploadEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+	}
 }
