@@ -13,6 +13,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -40,7 +41,9 @@ public class FreeStallInitRunner implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception { 
 		log.info("free stall init ");
 		List<Long> preIds = this.prefectureClusterMapper.findPreIdList();
+		log.info("preIds" + JSON.toJSON(preIds));
 		List<Stall> list = this.stallClusterMapper.findByStatus(StallStatus.FREE.status);
+		log.info("free stall list size " + list.size());
 		Map<Long, Set<Object>> map = new HashMap<Long, Set<Object>>();
 		Set<Object> sns = null;
 		for (Stall stall : list) {
@@ -51,6 +54,7 @@ public class FreeStallInitRunner implements ApplicationRunner {
 			}
 			sns.add(stall.getLockSn());
 		}
+		log.info("free stall map "+ map);
 		Set<Long> keys = map.keySet();
 		for (Long key : keys) {
 			preIds.remove(key);
@@ -58,6 +62,7 @@ public class FreeStallInitRunner implements ApplicationRunner {
 			redisService.addAll(RedisKey.PREFECTURE_FREE_STALL.key + key, map.get(key));
 		}
 		for(Long id:preIds) {
+			log.info("redis remove key " + id);
 			redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key+id);
 		}
 		Set<Object> bindLockSet = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);
