@@ -49,5 +49,6 @@
   		<module>third-party-service</module>
   		<module>common-service</module> 
   		<module>security-service</module>
+  		<module>enterprise-service</module>
   	</modules>
 </project>
