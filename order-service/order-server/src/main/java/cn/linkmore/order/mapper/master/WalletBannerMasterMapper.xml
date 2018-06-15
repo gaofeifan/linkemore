@@ -110,4 +110,10 @@
     set ${column} = ${status}
     where id = #{bid}
   </update>
+  <update id="updateStatus">
+    update t_biz_wallet_banner
+    set status = #{status}
+    where 
+     id in (${ids})
+  </update>
 </mapper>

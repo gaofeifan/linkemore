@@ -1,6 +1,7 @@
 package cn.linkmore.order.service.impl;
 
 import java.util.Date;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +115,11 @@ public class BannerServiceImpl implements BannerService {
 
 	@Override
 	public void setStatus(List<Long> ids, int status) {
-		this.walletBannerMasterMapper.updateStatus(ids,status);
+		StringBuffer join = new StringBuffer();
+		for (Long long1 : ids) {
+			join.append(long1).append(",");
+		}
+		this.walletBannerMasterMapper.updateStatus(join.substring(0, join.length()-1),status);
 	}
 
 	

@@ -1,6 +1,5 @@
 package cn.linkmore.ops.account.controller;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +124,6 @@ public class BannerController  {
 	public ViewMsg setHide(@RequestBody List<Long> ids, HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
-			
 			this.bannerService.updateStatus(new ReqUpdateStatus(ids, 0));
 			msg = new ViewMsg("操作成功",true);
 		}catch(DataException e) {
@@ -133,7 +131,7 @@ public class BannerController  {
 		}catch(Exception e) {
 			e.printStackTrace();
 			msg = new ViewMsg("操作失败",false);
-		}
+		}	
 		return msg;
 	}
 
@@ -159,7 +157,7 @@ public class BannerController  {
 		Map<String, Object> msg = new HashMap<String, Object>();
 		int count = this.bannerService.findStatusCount();
 		if(count >= 3 ) {
-			flag=false;
+			flag = false;
 		}
 		msg.put("success",flag);
 		return msg;

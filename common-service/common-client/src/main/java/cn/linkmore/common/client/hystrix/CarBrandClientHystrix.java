@@ -1,5 +1,7 @@
 package cn.linkmore.common.client.hystrix;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,8 +24,9 @@ public class CarBrandClientHystrix implements CarBrandClient {
 	}
 
 	@Override
-	public void load() {
+	public Map<String,Object> load() {
 		log.info("common service carBrand load() hystrix");
+		return null;
 	}
 
 	

@@ -1,7 +1,5 @@
 package cn.linkmore.order.dao.master;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -69,5 +67,5 @@ public interface WalletBannerMasterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void updateStatus(@Param("ids") List<Long> ids,@Param("status") int status);
+	void updateStatus(@Param("ids") String ids,@Param("status") int status);
 }

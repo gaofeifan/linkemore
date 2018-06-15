@@ -63,6 +63,7 @@ public class AppAuthController {
 		}catch(BusinessException e){ 
 			response = ResponseEntity.fail(e.getStatusEnum(), request); 
 		}catch(Exception e){ 
+			
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
@@ -84,6 +85,7 @@ public class AppAuthController {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+			
 		}
 		return response;
 	} 

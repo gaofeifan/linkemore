@@ -1,5 +1,7 @@
 package cn.linkmore.common.client;
 
+import java.util.Map;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,5 +21,5 @@ public interface CarBrandClient {
 	public Object list();
 
 	@RequestMapping(method = RequestMethod.GET)
-	public void load();
+	public Map<String,Object> load();
 }
