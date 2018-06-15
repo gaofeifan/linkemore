@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.EnterpriseDealClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResEnterpriseDeal">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="enterprise_name" jdbcType="VARCHAR" property="enterpriseName" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="deal_pay_amount" jdbcType="INTEGER" property="dealPayAmount" />
+    <result column="deal_gift_amount" jdbcType="INTEGER" property="dealGiftAmount" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+    <result column="creator_name" jdbcType="VARCHAR" property="creatorName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="is_create" jdbcType="INTEGER" property="isCreate" />
+    <result column="used_deal_pay_amount" jdbcType="DECIMAL" property="usedDealPayAmount" />
+    <result column="user_deal_gift_amount" jdbcType="DECIMAL" property="userDealGiftAmount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, enterprise_id, enterprise_name, serial_number, deal_pay_amount, deal_gift_amount, 
+    remark, creator_id, creator_name, create_time, is_create, used_deal_pay_amount, user_deal_gift_amount
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_enterprise_deal
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select id, enterprise_id, enterprise_name, serial_number, deal_pay_amount, deal_gift_amount, 
+    remark, creator_id, creator_name, create_time,is_create,used_deal_pay_amount,user_deal_gift_amount
+    from t_biz_enterprise_deal where 1 = 1
+    <if test="searchSerial!=null and searchSerial!=''">  
+    	and serial_number like #{searchSerial,jdbcType=VARCHAR}
+    </if>
+    <if test="parentId != null">
+    	AND enterprise_id = #{parentId}
+    </if>
+    <if test="property==null">  
+     order by id desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+    <select id="listByEnterpriseId" resultMap="BaseResultMap" parameterType="Integer">
+    select id, enterprise_id, enterprise_name, serial_number, deal_pay_amount, deal_gift_amount, 
+    remark, creator_id, creator_name, create_time,is_create,used_deal_pay_amount,user_deal_gift_amount
+    from t_biz_enterprise_deal where 1 = 1
+    <if test="enterpriseId != null">  
+    	AND enterprise_id = #{enterpriseId}
+    </if>
+    <if test="isCreate != null">  
+    	AND is_create = #{isCreate}
+    </if>
+    
+  </select>
+   <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_biz_enterprise_deal where 1=1
+    <if test="serialNumber!=null">  
+    	and serial_number like #{serialNumber,jdbcType=VARCHAR}
+    </if>
+    <if test="parentId != null">
+    	AND enterprise_id = #{parentId}
+    </if>
+  </select>
+  <select id="selectByDealNumber" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_enterprise_deal
+    where serial_number = #{number,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_biz_enterprise_deal where   
+    ${property} = #{value}    
+   	<if test="id != null">
+    and id != #{id} 
+    </if>
+  </select>
+  
+   <select id="selectByDealNumbers" resultMap="BaseResultMap" parameterType="java.util.List">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_enterprise_deal
+    where serial_number in
+	  <foreach collection="list"  index="index" item="number" open="(" separator="," close=")"  >
+	     #{number}
+	  </foreach> 
+  </select>
+  
+</mapper>

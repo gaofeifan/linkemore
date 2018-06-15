@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.master.EnterpriseMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.Enterprise">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="industry" jdbcType="BIGINT" property="industry" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="region" jdbcType="BIGINT" property="region" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="tellphone" jdbcType="VARCHAR" property="tellphone" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+  </resultMap>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_biz_enterprise
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.enterprise.entity.Enterprise">
+    insert into t_biz_enterprise (id, account, name, 
+      industry, create_time, update_time, 
+      region, address, tellphone, 
+      code)
+    values (#{id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{industry,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{region,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, #{tellphone,jdbcType=VARCHAR}, 
+      #{code,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.enterprise.entity.Enterprise">
+    update t_biz_enterprise
+    set name = #{name,jdbcType=VARCHAR},
+      industry = #{industry,jdbcType=BIGINT}, 
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      region = #{region,jdbcType=BIGINT},
+      address = #{address,jdbcType=VARCHAR},
+      tellphone = #{tellphone,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
