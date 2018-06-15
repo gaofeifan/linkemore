@@ -429,10 +429,11 @@ public class CouponServiceImpl implements CouponService {
 	public void pay(ReqCouponPay rcp) {
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("status", CouponStatus.USED.status);
-		param.put("updateTime", new Date().getTime());
+		param.put("updateTime", new Date());
 		param.put("id", rcp.getCouponId());
 		param.put("orderAmount", rcp.getOrderAmount());
 		param.put("usedAmount", rcp.getUsedAmount());
+		log.info("param:{}",JsonUtil.toJson(param));
 		this.couponMasterMapper.payUpdate(param);
 		
 	}

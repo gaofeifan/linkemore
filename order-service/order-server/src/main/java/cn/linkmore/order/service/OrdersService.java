@@ -67,5 +67,12 @@ public interface OrdersService {
 	 * @param request
 	 * @return
 	 */
-	ResOrder current(HttpServletRequest request); 
+	ResOrder current(HttpServletRequest request);
+
+	/**
+	 * 落锁结果查询
+	 * @param ros
+	 * @param request
+	 */
+	void downResult(HttpServletRequest request); 
 }
