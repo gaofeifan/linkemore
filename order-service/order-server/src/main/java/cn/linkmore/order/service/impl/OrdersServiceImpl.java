@@ -54,7 +54,6 @@ import cn.linkmore.order.dao.master.StallAssignMasterMapper;
 import cn.linkmore.order.entity.Booking;
 import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.StallAssign;
-import cn.linkmore.order.request.ReqOrderDown;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.PrefectureClient;
@@ -555,7 +554,10 @@ public class OrdersServiceImpl implements OrdersService {
 		log.info("key:{}",TokenUtil.getKey(request));
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		log.info("cu:{}",JsonUtil.toJson(cu));
-		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());  
+		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); 
+		if(orders==null) {
+			return null;
+		}
 		ReqStrategy rs = new ReqStrategy();
 		rs.setBeginTime(orders.getCreateTime().getTime());
 		rs.setStrategyId(orders.getStrategyId());
@@ -591,5 +593,14 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 		}
 		return ro;  
+	}
+
+	@Override
+	public void downResult( HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); 
+		if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+orders.getId())) {
+			throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
+		} 
 	}
 }

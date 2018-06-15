@@ -430,7 +430,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 				plateNumber = ro.getPlateNo();
 				plateId = plateMap.get(plateNumber);
-			}else if(CollectionUtils.isNotEmpty(plates)){
+				if(plateId==null) {
+					plateNumber = null; 
+				}
+			}
+
+			if(plateNumber==null&&CollectionUtils.isNotEmpty(plates)){
 				plateId = plates.get(0).getId();
 				plateNumber = plates.get(0).getVehMark();
 			}

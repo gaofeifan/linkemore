@@ -153,5 +153,21 @@ public class AppOrderController {
 		}
 		return response;
 	}
+	
+	@ApiOperation(value = "降锁回调", notes = "降锁回调校验结果", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/down/result", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> downResult(HttpServletRequest request) {
+		ResponseEntity<ResOrder> response = null;
+		try {
+			this.ordersService.downResult(request);
+			response = ResponseEntity.success(null, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
 
 }
