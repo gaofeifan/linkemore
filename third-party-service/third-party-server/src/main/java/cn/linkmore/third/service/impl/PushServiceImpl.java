@@ -1,6 +1,7 @@
 package cn.linkmore.third.service.impl;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,9 +17,6 @@ import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.PushPayload.Builder;
 import cn.jpush.api.push.model.audience.Audience;
-import cn.jpush.api.push.model.notification.AndroidNotification;
-import cn.jpush.api.push.model.notification.IosNotification;
-import cn.jpush.api.push.model.notification.Notification;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.third.config.BeanFactory;
 import cn.linkmore.third.request.ReqPush;
@@ -49,6 +47,7 @@ public class PushServiceImpl implements PushService {
 				.addExtra("title", rp.getTitle())
 				.addExtra("content", rp.getContent())
 				.addExtra("type",rp.getType().id) 
+				.addExtra("timestamp", new Date().getTime())
 				.addExtra("data", rp.getData())
 				.setMsgContent(rp.getContent()).build());
 		android.setPlatform(Platform.android());
@@ -69,6 +68,7 @@ public class PushServiceImpl implements PushService {
 				.addExtra("title", rp.getTitle())
 				.addExtra("content", rp.getContent())
 				.addExtra("type",rp.getType().id) 
+				.addExtra("timestamp", new Date().getTime())
 				.addExtra("data", rp.getData())
 				.setMsgContent(rp.getContent()).build());
 		ios.setPlatform(Platform.ios());
@@ -78,30 +78,6 @@ public class PushServiceImpl implements PushService {
 			jpushClient.sendPush(iosppl);
 			flag = true;
 		} catch (Exception e) { }
-		return flag;
-	}
-	
-	private boolean ios(ReqPush rp) {
-		boolean flag = false;
-		JPushClient jpushClient = this.beanFactory.jPushClient(); 
-		Builder ios = PushPayload.newBuilder(); 
-		ios.setAudience(Audience.alias("u"+rp.getAlias()));
-		ios.setPlatform(Platform.ios());
-		Notification.Builder nfb = Notification.newBuilder();
-		nfb.setAlert(rp.getContent());
-		nfb.addPlatformNotification(AndroidNotification.newBuilder().setTitle(rp.getTitle()).build());
-		nfb.addPlatformNotification(IosNotification.newBuilder().incrBadge(1)
-				.addExtra("title",rp.getTitle())
-				.addExtra("content", rp.getContent())
-				.addExtra("data", rp.getData())
-				.addExtra("type", rp.getType().id).build());
-		ios.setOptions(Options.newBuilder().setApnsProduction(false).build());
-		ios.setNotification(nfb.build());
-		PushPayload iosppl = ios.build();
-		try {
-			jpushClient.sendPush(iosppl);
-			flag = true;
-		} catch (Exception e) { } 
 		return flag;
 	} 
 	

@@ -1,6 +1,7 @@
 package cn.linkmore.coupon.controller.app.response;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
@@ -139,6 +140,10 @@ public class ResCoupon {
 	public void setConditionAmount(BigDecimal conditionAmount) {
 		this.conditionAmount = conditionAmount;
 	}  
+	public String getValidate() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		return sdf.format(this.getCreateTime())+" - "+ sdf.format(this.getValidTime());
+	} 
 	
 	public void copy(cn.linkmore.coupon.response.ResCoupon res) {
 		this.setConditionAmount(res.getConditionAmount());
