@@ -1,10 +1,10 @@
 package cn.linkmore.common.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.io.InputStream;
 
+import org.springframework.web.multipart.MultipartFile;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.common.entity.Attachment;
 import cn.linkmore.common.entity.BaseAttachment;
 
 /**
@@ -15,7 +15,7 @@ import cn.linkmore.common.entity.BaseAttachment;
  */
 public interface BaseAttachmentService {
 
-	/*ViewPage findPage(ViewPageable pageable);
+	ViewPage findPage(ViewPageable pageable);
 
 	BaseAttachment find(Long id);
 
@@ -23,7 +23,8 @@ public interface BaseAttachmentService {
 
 	boolean delete(Long id);
 
-	BaseAttachment saveFile(MultipartFile file);*/
+	BaseAttachment saveFile(MultipartFile file);
 
+	String createImage(String fileName, InputStream is);
 
 }

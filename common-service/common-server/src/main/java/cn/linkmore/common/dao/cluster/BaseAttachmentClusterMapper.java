@@ -2,10 +2,7 @@ package cn.linkmore.common.dao.cluster;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
-
-import cn.linkmore.common.entity.Attachment;
 import cn.linkmore.common.entity.BaseAttachment;
 
 /**
@@ -35,6 +32,6 @@ public interface BaseAttachmentClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<Attachment> findPage(Map<String, Object> param);
+	List<BaseAttachment> findPage(Map<String, Object> param);
 
 }
