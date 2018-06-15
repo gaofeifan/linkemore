@@ -266,4 +266,11 @@
     order by  ${property} ${direction}
     </if>
   </select>
+  
+  <select id="getUserByUserName" resultMap="ResBaseResultMap" parameterType="java.lang.String">
+  	select * from t_user u where u.user_type =1
+  	and  u.username = #{userName}
+  </select>
+  
+  
 </mapper>

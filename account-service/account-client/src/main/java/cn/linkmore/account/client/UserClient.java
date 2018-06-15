@@ -167,4 +167,8 @@ public interface UserClient {
 	 */
 	@RequestMapping(value = "/v2.0/account_name", method = RequestMethod.PUT)
 	public void updateAccountName(@RequestBody ReqUpdateAccount account);
+	
+	@RequestMapping(value = "/v2.0/by_username", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUser getUserByUserName(@RequestParam("userName") String userName);
 }

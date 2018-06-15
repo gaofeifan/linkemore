@@ -1,6 +1,7 @@
 package cn.linkmore.account.controller.feign;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
@@ -69,5 +71,25 @@ public class FeignVehicleMarkController{
 		return this.vehicleMarkManageService.findById(id);
 	}
 	
+	/**
+	 * @Description	根据用户id和车牌号查询
+	 * @Author   jiaohanbin 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/plate_no", method = RequestMethod.POST)
+	@ResponseBody
+	public ResVechicleMark findByPlateNo(@RequestBody Map<String,Object> param) {
+		return this.vehicleMarkManageService.findByPlateNo(param);
+	}
+	
+	/**
+	 * @Description  新增
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/update", method = RequestMethod.PUT)
+	public int update(@RequestBody ReqVehicleMark bean) {
+		return this.vehicleMarkManageService.update(bean);
+	}
 	
 }

@@ -123,6 +123,13 @@ public class UserClientHystrix implements UserClient{
 	public void updateAccountName(ReqUpdateAccount account) {
 		log.info("account service updateAccountName(ReqUpdateAccount account) hystrix"); 
 	}
+
+
+	@Override
+	public ResUser getUserByUserName(String userName) {
+		log.info("account service getUserByUserName(userName) hystrix"); 
+		return new ResUser();
+	}
 	
 	
 	

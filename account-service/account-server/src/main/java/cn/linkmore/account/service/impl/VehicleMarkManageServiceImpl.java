@@ -1,7 +1,9 @@
 package cn.linkmore.account.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +16,6 @@ import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
 import cn.linkmore.account.entity.VehicleMarkManage;
 import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
 import cn.linkmore.account.request.ReqVehicleMark;
-import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.account.service.VehicleMarkManageService;
@@ -118,6 +119,28 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	@Override
 	public ResVechicleMark findById(Long id) {
 		return this.vehicleMarkManageClusterMapper.findById(id);
+	}
+
+	@Override
+	public ResVechicleMark findByPlateNo(Map<String, Object> param) {
+		return this.vehicleMarkManageClusterMapper.findByPlateNo(param);
+	}
+
+	@Override
+	public int update(ReqVehicleMark bean) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("userId", bean.getUserId());
+		param.put("plateNo", bean.getVehMark());
+		ResVechicleMark vechicle = findByPlateNo(param);
+		if(vechicle != null) {
+			VehicleMarkManage mark = new VehicleMarkManage();
+			mark.setId(vechicle.getId());
+			mark.setVehUserId(vechicle.getUserId().toString());
+			mark.setUpdateTime(new Date());
+			mark.setVehMark(bean.getNewpl());
+			return vehicleMarkManageMasterMapper.updateById(mark);
+		}
+		return 0;
 	}
 	
 }

@@ -5,6 +5,8 @@ public class ReqVehicleMark {
 	private String vehMark;
 
 	private Long userId;
+	//更换车牌号
+	private String newpl;
 	
 	public String getVehMark() {
 		return vehMark;
@@ -20,6 +22,14 @@ public class ReqVehicleMark {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getNewpl() {
+		return newpl;
+	}
+
+	public void setNewpl(String newpl) {
+		this.newpl = newpl;
 	}
 	
 }

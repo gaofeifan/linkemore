@@ -1,6 +1,7 @@
 package cn.linkmore.account.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -73,5 +74,14 @@ public interface VehicleMarkManageService {
 	 * @Version  v2.0
 	 */
 	List<ResVechicleMark> selectResList(HttpServletRequest request);
+	
+	/**
+	 * @Description  根据用户id和车牌id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResVechicleMark findByPlateNo(Map<String,Object> param);
+
+	int update(ReqVehicleMark bean);
 
 }

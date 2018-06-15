@@ -34,4 +34,11 @@
     from v_vehicle_mark_manage
     where veh_user_id = #{userId}
   </select>
+  
+  <select id="findByPlateNo" resultMap="ResBaseResultMap" parameterType="java.util.HashMap" >
+    select *
+    from v_vehicle_mark_manage vm
+    where vm.veh_user_id = #{userId}
+    and vm.veh_mark = #{plateNo}
+  </select>
 </mapper>

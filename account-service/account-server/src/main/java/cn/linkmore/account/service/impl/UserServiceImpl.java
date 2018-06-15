@@ -641,5 +641,10 @@ public class UserServiceImpl implements UserService {
 		String key = TokenUtil.getKey(request);
 		return (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 	}
+
+	@Override
+	public ResUser getUserByUserName(String userName) {
+		return this.userClusterMapper.getUserByUserName(userName);
+	}
 	
 }
