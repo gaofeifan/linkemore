@@ -1,9 +1,9 @@
-package cn.linkmore.common.entity;
+package cn.linkmore.common.response;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class BaseAttachment {
+public class ResBaseAttachment {
     private Long id;
 
     private String name;

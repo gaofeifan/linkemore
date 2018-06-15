@@ -1,12 +1,32 @@
 package cn.linkmore.common.service.impl;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
-
+import javax.imageio.ImageIO;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import cn.linkmore.bean.view.ViewFilter;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.dao.cluster.BaseAttachmentClusterMapper;
 import cn.linkmore.common.dao.master.BaseAttachmentMasterMapper;
+import cn.linkmore.common.entity.BaseAttachment;
 import cn.linkmore.common.service.BaseAttachmentService;
+import cn.linkmore.third.client.OssClient;
+import cn.linkmore.third.config.OssConfig;
+import cn.linkmore.util.DomainUtil;
 /**
  * 文件管理--实现
  * @author   GFF
@@ -20,12 +40,12 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 	private BaseAttachmentClusterMapper attachmentClusterMapper;
 	@Resource
 	private BaseAttachmentMasterMapper attachmentmasterMapper;
-	/*
-	@Resource(name="baseOSSClient")
-	private OSSClient client;
 	
 	@Resource
-	private BaseOssConfig baseOssConfig;
+	private OssClient ossClient;
+	
+	@Resource
+	private OssConfig ossConfig;
 	
 	@Override
 	public BaseAttachment find(Long id){
@@ -51,7 +71,7 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		Integer count = this.attachmentClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<Attachment> list = this.attachmentClusterMapper.findPage(param);
+		List<BaseAttachment> list = this.attachmentClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
@@ -62,7 +82,7 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		image.setCreateTime(new Date()); 
 		image.setSource((short) 0);
 		image.setType((short) 0);
-		image.setSize(file.getSize());
+		image.setSize((int)file.getSize());
 		image.setName(file.getOriginalFilename());
 		int index = file.getOriginalFilename().lastIndexOf("."); 
 		image.setSuffix(file.getOriginalFilename().substring(index)); 
@@ -70,8 +90,8 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		FileOutputStream out = null;
 		InputStream is = null;
 		try { 
-			client.putObject(baseOssConfig.getBucketName(), image.getOriginalUrl(), file.getInputStream()); 
-			File mini = new File(baseOssConfig.getTemp()+file.getOriginalFilename());
+			ossClient.uploadOSSClient().putObject(ossConfig.getBucketName(), image.getOriginalUrl(), file.getInputStream());
+			File mini = new File(ossConfig.getTempDir()+file.getOriginalFilename());
 			try{ 
 				int outputWidth = 600;
 				is = file.getInputStream();
@@ -108,7 +128,7 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 				}
 			} 
 			is = new FileInputStream(mini);
-			client.putObject(baseOssConfig.getBucketName(), image.getCompressUrl(),new FileInputStream(mini));  
+			ossClient.uploadOSSClient().putObject(ossConfig.getBucketName(), image.getCompressUrl(),new FileInputStream(mini));  
 		}  catch (IOException e) { 
 			throw new RuntimeException();
 		}finally{
@@ -132,12 +152,12 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		try{ 
 			switch(attach.getType()){
 				case 0:{
-					client.deleteObject(baseOssConfig.getBucketName(), attach.getCompressUrl());
-					client.deleteObject(baseOssConfig.getBucketName(), attach.getOriginalUrl());
+					ossClient.uploadOSSClient().deleteObject(ossConfig.getBucketName(), attach.getCompressUrl());
+					ossClient.uploadOSSClient().deleteObject(ossConfig.getBucketName(), attach.getOriginalUrl());
 					flag = true;
 				};break;
 				case 1:{
-					client.deleteObject(baseOssConfig.getBucketName(), attach.getFileUrl());
+					ossClient.uploadOSSClient().deleteObject(ossConfig.getBucketName(), attach.getFileUrl());
 					flag = true;
 				};break;
 			}
@@ -154,16 +174,37 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		attach.setCreateTime(new Date()); 
 		attach.setSource((short)0);
 		attach.setType((short)1);
-		attach.setSize(file.getSize());
+		attach.setSize((int)file.getSize());
 		attach.setName(file.getOriginalFilename()); 
 		int index = file.getOriginalFilename().lastIndexOf("."); 
 		attach.setSuffix(file.getOriginalFilename().substring(index)); 
 		this.attachmentmasterMapper.save(attach);
 		try { 
-			client.putObject(baseOssConfig.getBucketName(), attach.getFileUrl(), file.getInputStream());
+			ossClient.uploadOSSClient().putObject(ossConfig.getBucketName(), attach.getFileUrl(), file.getInputStream());
 		}  catch (IOException e) { 
 			throw new RuntimeException();
 		}  
 		return attach;
-	}*/
+	}
+
+	@Override
+	public String createImage(String fileName, InputStream is) {
+		BaseAttachment image = new BaseAttachment();
+		image.setCreateTime(new Date()); 
+		image.setSource((short)0);
+		image.setType((short)0);
+		image.setSize(0);
+		image.setName(fileName);
+		int index = fileName.lastIndexOf("."); 
+		image.setSuffix(fileName.substring(index));
+		this.attachmentmasterMapper.save(image);
+		try { 
+			ossClient.uploadOSSClient().putObject(ossConfig.getBucketName(), image.getOriginalUrl(), is); 
+		} catch (Exception e) { 
+			throw new RuntimeException();
+		}finally{
+			if(is!=null){try {is.close();} catch (IOException e) {e.printStackTrace();}}  
+		} 
+		return image.getOriginalUrl();
+	}
 }
