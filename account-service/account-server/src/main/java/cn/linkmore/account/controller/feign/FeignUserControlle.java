@@ -198,4 +198,10 @@ public class FeignUserControlle {
 	public void updateAccountName(@RequestBody ReqUpdateAccount account) {
 		this.userService.updateRealname(account);
 	}
+	
+	@RequestMapping(value = "/v2.0/by_username", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUser getUserByUserName(@RequestParam("userName") String userName) {
+		return this.userService.getUserByUserName(userName);
+	}
 }

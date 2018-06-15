@@ -1,6 +1,8 @@
 package cn.linkmore.account.dao.cluster;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,5 +37,7 @@ public interface VehicleMarkManageClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<ResVechicleMark> findResList(Long userId);
+
+	ResVechicleMark findByPlateNo(Map<String, Object> param);
 
 }

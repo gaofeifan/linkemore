@@ -59,5 +59,12 @@ public interface UserClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<ResPageUser> export(Map<String, Object> param);
+	
+	/**
+     * @Description  根据id查询
+     * @Author   GFF 
+     * @Version  v2.0
+     */
+    ResUser getUserByUserName(String userName);
 
 }

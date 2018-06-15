@@ -232,6 +232,13 @@ public interface UserService {
 	 * @Version  v2.0
 	 */
 	void removeWechat(HttpServletRequest request);
+	
+	/**
+     * @Description  根据username查询
+     * @Author   jiaohanbin 
+     * @Version  v2.0
+     */
+    ResUser getUserByUserName(String userName);
 
 
 }

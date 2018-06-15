@@ -1,6 +1,7 @@
 package cn.linkmore.account.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +46,17 @@ public class VehicleMarkClientHystrix  implements VehicleMarkClient{
 		log.info("account service VechicleMark findById() Long id) hystrix");
 		return null;
 	}
-	
-	
+
+	@Override
+	public ResVechicleMark findByPlateNo(Map<String, Object> param) {
+		log.info("account service VechicleMark findByPlateNo() param) hystrix");
+		return null;
+	}
+
+	@Override
+	public void update(ReqVehicleMark reqMark) {
+		log.info("account service VechicleMark reqMark() reqMark) hystrix");
+	}
 	
 }
 
