@@ -44,12 +44,18 @@
       template_id = #{templateId,jdbcType=BIGINT},
       url = #{url,jdbcType=VARCHAR},
       img_url = #{imgUrl,jdbcType=VARCHAR},
-      operator_id = #{operatorId,jdbcType=BIGINT},
-      status = #{status,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       type = #{type,jdbcType=INTEGER},
       total_amount = #{totalAmount,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="startOrStop" parameterType="java.util.HashMap">
+    update t_coupon_subject
+    set update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  
 </mapper>

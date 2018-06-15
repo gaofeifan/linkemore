@@ -40,4 +40,18 @@
       given_amount = #{givenAmount,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <insert id="insertBatch" parameterType="java.util.List" keyProperty="id" useGeneratedKeys="true">
+    insert into t_coupon_rollback (id, template_id, rollback_date, enterprise_deal_number, used_deal_pay_amount, 
+      user_deal_gift_amount, contract_amount, given_amount
+      )
+    values
+    <foreach collection ="list" item="rollback" separator =",">
+      (#{rollback.id,jdbcType=BIGINT}, #{rollback.templateId,jdbcType=BIGINT}, #{rollback.rollbackDate,jdbcType=TIMESTAMP}, 
+      #{rollback.enterpriseDealNumber,jdbcType=VARCHAR}, #{rollback.usedDealPayAmount,jdbcType=DECIMAL}, 
+      #{rollback.userDealGiftAmount,jdbcType=DECIMAL}, #{rollback.contractAmount,jdbcType=DECIMAL}, #{rollback.givenAmount,jdbcType=DECIMAL}
+      )
+    </foreach>
+  </insert>
+  
 </mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.master.ComboMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.Combo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="validity" jdbcType="SMALLINT" property="validity" />
+    <result column="combo_json" jdbcType="VARCHAR" property="comboJson" />
+    <result column="total_num" jdbcType="SMALLINT" property="totalNum" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="operater_id" jdbcType="BIGINT" property="operaterId" />
+    <result column="utility_package" jdbcType="INTEGER" property="utilityPackage" />
+    <result column="combo_type" jdbcType="INTEGER" property="comboType" />
+    <result column="validity_day" jdbcType="SMALLINT" property="validityDay" />
+    <result column="delete_status" jdbcType="SMALLINT" property="deleteStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, validity, combo_json, total_num, total_amount, status, create_time, update_time, 
+    operater_id, utility_package, combo_type, validity_day, delete_status
+  </sql>
+ 
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from c_combo
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.Combo">
+    insert into c_combo (id, name, validity, 
+      combo_json, total_num, total_amount, 
+      status, create_time, update_time, 
+      operater_id, utility_package, combo_type, 
+      validity_day, delete_status)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{validity,jdbcType=SMALLINT}, 
+      #{comboJson,jdbcType=VARCHAR}, #{totalNum,jdbcType=SMALLINT}, #{totalAmount,jdbcType=DECIMAL}, 
+      #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{operaterId,jdbcType=BIGINT}, #{utilityPackage,jdbcType=INTEGER}, #{comboType,jdbcType=INTEGER}, 
+      #{validityDay,jdbcType=SMALLINT}, #{deleteStatus,jdbcType=SMALLINT})
+  </insert>
+
+  <update id="update" parameterType="cn.linkmore.coupon.entity.Combo">
+    update c_combo
+    set name = #{name,jdbcType=VARCHAR},
+      validity = #{validity,jdbcType=SMALLINT},
+      combo_json = #{comboJson,jdbcType=VARCHAR},
+      total_num = #{totalNum,jdbcType=SMALLINT},
+      total_amount = #{totalAmount,jdbcType=DECIMAL},
+      status = #{status,jdbcType=SMALLINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      operater_id = #{operaterId,jdbcType=BIGINT},
+      utility_package = #{utilityPackage,jdbcType=INTEGER},
+      combo_type = #{comboType,jdbcType=INTEGER},
+      validity_day = #{validityDay,jdbcType=SMALLINT},
+      delete_status = #{deleteStatus,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

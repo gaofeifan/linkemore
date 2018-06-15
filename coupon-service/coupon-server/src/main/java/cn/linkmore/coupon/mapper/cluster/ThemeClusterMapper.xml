@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.coupon.dao.cluster.ThemeClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.Theme">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.response.ResTheme">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
     <result column="enterprise_name" jdbcType="VARCHAR" property="enterpriseName" />
@@ -26,4 +26,66 @@
     from t_coupon_theme
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+   <resultMap id="EntResultMap" type="cn.linkmore.coupon.response.ResEnterpriseBean">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="enterprise_name" jdbcType="VARCHAR" property="name" /> 
+  </resultMap>
+  <select id="findEnterpriseList" resultMap="EntResultMap">
+    select id,enterprise_name from t_user t where t.user_type = 2
+  </select> 
+  
+  <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select 
+	<include refid="Base_Column_List" /> 
+    from t_coupon_theme
+    where 1 = 1
+    <if test="status!=null">  
+    and status = #{status,jdbcType=SMALLINT}
+    </if> 
+    <if test="templateId!=null">  
+    and template_id = #{templateId,jdbcType=SMALLINT}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="findList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select
+	<include refid="Base_Column_List" />
+    from t_coupon_theme
+    where 1 = 1 
+    <if test="templateId!=null">  
+    and template_id = #{templateId,jdbcType=SMALLINT}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status,jdbcType=SMALLINT}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+  </select>
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_coupon_theme
+    where 1 = 1 
+    <if test="templateId!=null">  
+    and template_id = #{templateId,jdbcType=SMALLINT}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status,jdbcType=SMALLINT}
+    </if> 
+  </select>
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_coupon_theme
+    where 
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
+  
 </mapper>

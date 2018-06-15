@@ -1,10 +1,18 @@
 package cn.linkmore.coupon.dao.cluster;
 
+import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
-
-import cn.linkmore.coupon.entity.Subject;
+import cn.linkmore.coupon.response.ResSubject;
+import cn.linkmore.coupon.response.ResSubjectBean;
 @Mapper
 public interface SubjectClusterMapper {
 
-    Subject findById(Long id);
+    ResSubject findById(Long id);
+
+	Integer count(Map<String, Object> param);
+
+	List<ResSubjectBean> findPage(Map<String, Object> param);
+
+	Integer check(Map<String, Object> param);
 }

@@ -78,6 +78,18 @@
 			<artifactId>order-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>common-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>third-party-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

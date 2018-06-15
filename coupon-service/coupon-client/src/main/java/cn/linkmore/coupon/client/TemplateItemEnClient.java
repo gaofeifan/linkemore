@@ -1,0 +1,36 @@
+package cn.linkmore.coupon.client;
+
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import cn.linkmore.coupon.client.hystrix.TemplateItemEnClientHystrix;
+import cn.linkmore.coupon.request.ReqTemplateItem;
+import cn.linkmore.feign.FeignConfiguration;
+/**
+ * Client  - 企业停车券
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
+@FeignClient(value = "coupon-server", path = "/coupon_enterprise_Item", fallback=TemplateItemEnClientHystrix.class,configuration = FeignConfiguration.class)
+public interface TemplateItemEnClient {
+	
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@ResponseBody
+	public int save(@RequestBody ReqTemplateItem record);
+	
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@ResponseBody
+	public int update(@RequestBody ReqTemplateItem record);
+	
+	@RequestMapping(value = "/selectBuDealNumber", method = RequestMethod.POST)
+	@ResponseBody
+	public Object selectBuDealNumber(@RequestParam("dealNumber") String dealNumber);
+	
+	@RequestMapping(value = "/selectByEnterpriseId", method = RequestMethod.POST)
+	@ResponseBody
+	public Object selectBuEnterpriseId(@RequestParam("id") Long id);
+}

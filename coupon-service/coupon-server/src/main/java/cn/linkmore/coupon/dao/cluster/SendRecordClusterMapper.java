@@ -1,15 +1,17 @@
 package cn.linkmore.coupon.dao.cluster;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.coupon.entity.SendRecord;
+import cn.linkmore.coupon.response.ResSendRecord;
 @Mapper
 public interface SendRecordClusterMapper {
-	int delete(Long id);
 
-    int save(SendRecord record);
+    ResSendRecord findById(Long id);
 
-    SendRecord findById(Long id);
+	List<ResSendRecord> findPage(Map<String, Object> param);
 
-    int update(SendRecord record);
+	Integer count(Map<String, Object> param);
 }

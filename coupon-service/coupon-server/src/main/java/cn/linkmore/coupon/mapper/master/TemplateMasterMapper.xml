@@ -104,4 +104,19 @@
       delete_status = #{deleteStatus,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="startOrStop" parameterType="java.util.HashMap">
+    update t_coupon_template
+    set update_time = #{updateTime,jdbcType=TIMESTAMP},
+      <if test="expiryTime != null">
+        expiry_time = #{expiryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  
 </mapper>

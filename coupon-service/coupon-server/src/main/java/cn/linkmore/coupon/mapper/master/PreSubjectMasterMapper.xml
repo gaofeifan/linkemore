@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.master.PreSubjectMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.PreSubject">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="subject_id" jdbcType="BIGINT" property="subjectId" />
+    <result column="oneself_type" jdbcType="INTEGER" property="oneselfType" />
+    <result column="oneself_min" jdbcType="INTEGER" property="oneselfMin" />
+    <result column="oneself_max" jdbcType="INTEGER" property="oneselfMax" />
+    <result column="oneself_fixe" jdbcType="INTEGER" property="oneselfFixe" />
+    <result column="oneself_validity" jdbcType="INTEGER" property="oneselfValidity" />
+    <result column="other_type" jdbcType="INTEGER" property="otherType" />
+    <result column="other_min" jdbcType="INTEGER" property="otherMin" />
+    <result column="other_max" jdbcType="INTEGER" property="otherMax" />
+    <result column="other_fixe" jdbcType="INTEGER" property="otherFixe" />
+    <result column="other_validity" jdbcType="INTEGER" property="otherValidity" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pay_title" jdbcType="VARCHAR" property="payTitle" />
+    <result column="pay_validity" jdbcType="INTEGER" property="payValidity" />
+    <result column="denomain_one_min" jdbcType="DECIMAL" property="denomainOneMin" />
+    <result column="denomain_one_max" jdbcType="DECIMAL" property="denomainOneMax" />
+    <result column="denomain_one_prop" jdbcType="INTEGER" property="denomainOneProp" />
+    <result column="denomain_two_min" jdbcType="DECIMAL" property="denomainTwoMin" />
+    <result column="denomain_two_max" jdbcType="DECIMAL" property="denomainTwoMax" />
+    <result column="denomain_two_prop" jdbcType="INTEGER" property="denomainTwoProp" />
+    <result column="denomain_three_min" jdbcType="DECIMAL" property="denomainThreeMin" />
+    <result column="denomain_three_max" jdbcType="DECIMAL" property="denomainThreeMax" />
+    <result column="denomain_three_prop" jdbcType="INTEGER" property="denomainThreeProp" />
+    <result column="pay_content" jdbcType="VARCHAR" property="payContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, pre_id, subject_id, oneself_type, oneself_min, oneself_max, oneself_fixe, oneself_validity, 
+    other_type, other_min, other_max, other_fixe, other_validity, content, operator_id, 
+    create_time, update_time, status, pay_title, pay_validity, denomain_one_min, denomain_one_max, 
+    denomain_one_prop, denomain_two_min, denomain_two_max, denomain_two_prop, denomain_three_min, 
+    denomain_three_max, denomain_three_prop, pay_content
+  </sql>
+  
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_biz_pre_subject
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.PreSubject">
+    insert into t_biz_pre_subject (id, pre_id, subject_id, 
+      oneself_type, oneself_min, oneself_max, 
+      oneself_fixe, oneself_validity, other_type, 
+      other_min, other_max, other_fixe, 
+      other_validity, content, operator_id, 
+      create_time, update_time, status, 
+      pay_title, pay_validity, denomain_one_min, 
+      denomain_one_max, denomain_one_prop, denomain_two_min, 
+      denomain_two_max, denomain_two_prop, denomain_three_min, 
+      denomain_three_max, denomain_three_prop, pay_content
+      )
+    values (#{id,jdbcType=BIGINT}, #{preId,jdbcType=BIGINT}, #{subjectId,jdbcType=BIGINT}, 
+      #{oneselfType,jdbcType=INTEGER}, #{oneselfMin,jdbcType=INTEGER}, #{oneselfMax,jdbcType=INTEGER}, 
+      #{oneselfFixe,jdbcType=INTEGER}, #{oneselfValidity,jdbcType=INTEGER}, #{otherType,jdbcType=INTEGER}, 
+      #{otherMin,jdbcType=INTEGER}, #{otherMax,jdbcType=INTEGER}, #{otherFixe,jdbcType=INTEGER}, 
+      #{otherValidity,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{operatorId,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{payTitle,jdbcType=VARCHAR}, #{payValidity,jdbcType=INTEGER}, #{denomainOneMin,jdbcType=DECIMAL}, 
+      #{denomainOneMax,jdbcType=DECIMAL}, #{denomainOneProp,jdbcType=INTEGER}, #{denomainTwoMin,jdbcType=DECIMAL}, 
+      #{denomainTwoMax,jdbcType=DECIMAL}, #{denomainTwoProp,jdbcType=INTEGER}, #{denomainThreeMin,jdbcType=DECIMAL}, 
+      #{denomainThreeMax,jdbcType=DECIMAL}, #{denomainThreeProp,jdbcType=INTEGER}, #{payContent,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="update" parameterType="cn.linkmore.coupon.entity.PreSubject">
+    update t_biz_pre_subject
+    set pre_id = #{preId,jdbcType=BIGINT},
+      subject_id = #{subjectId,jdbcType=BIGINT},
+      oneself_type = #{oneselfType,jdbcType=INTEGER},
+      oneself_min = #{oneselfMin,jdbcType=INTEGER},
+      oneself_max = #{oneselfMax,jdbcType=INTEGER},
+      oneself_fixe = #{oneselfFixe,jdbcType=INTEGER},
+      oneself_validity = #{oneselfValidity,jdbcType=INTEGER},
+      other_type = #{otherType,jdbcType=INTEGER},
+      other_min = #{otherMin,jdbcType=INTEGER},
+      other_max = #{otherMax,jdbcType=INTEGER},
+      other_fixe = #{otherFixe,jdbcType=INTEGER},
+      other_validity = #{otherValidity,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      <!-- operator_id = #{operatorId,jdbcType=BIGINT}, -->
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      pay_title = #{payTitle,jdbcType=VARCHAR},
+      pay_validity = #{payValidity,jdbcType=INTEGER},
+      denomain_one_min = #{denomainOneMin,jdbcType=DECIMAL},
+      denomain_one_max = #{denomainOneMax,jdbcType=DECIMAL},
+      denomain_one_prop = #{denomainOneProp,jdbcType=INTEGER},
+      denomain_two_min = #{denomainTwoMin,jdbcType=DECIMAL},
+      denomain_two_max = #{denomainTwoMax,jdbcType=DECIMAL},
+      denomain_two_prop = #{denomainTwoProp,jdbcType=INTEGER},
+      denomain_three_min = #{denomainThreeMin,jdbcType=DECIMAL},
+      denomain_three_max = #{denomainThreeMax,jdbcType=DECIMAL},
+      denomain_three_prop = #{denomainThreeProp,jdbcType=INTEGER},
+      pay_content = #{payContent,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

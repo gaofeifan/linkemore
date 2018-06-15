@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.coupon.dao.cluster.SendRecordClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.SendRecord">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.response.ResSendRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="template_id" jdbcType="BIGINT" property="templateId" />
@@ -23,5 +23,14 @@
     from t_coupon_send_record
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+   <select id="findTaskList" resultMap="BaseResultMap" >
+  	select 
+	<include refid="Base_Column_List" /> 
+    from t_coupon_send_record
+    where 1 = 1 and type = 1 and status = 0 and task_time is not null
+  </select>
+  
+  
   
 </mapper>

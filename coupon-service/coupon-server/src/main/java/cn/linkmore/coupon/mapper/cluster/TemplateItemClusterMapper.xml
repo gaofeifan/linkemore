@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.coupon.dao.cluster.TemplateItemClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.TemplateItem">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.response.ResTemplateItem">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="template_id" jdbcType="BIGINT" property="templateId" />
     <result column="type" jdbcType="INTEGER" property="type" />
@@ -23,4 +23,22 @@
     from t_coupon_template_item
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_template_item
+    where delete_status = 0 and template_id = #{template_id,jdbcType=BIGINT}
+    order by type asc
+  </select>
+  
+  <select id="findItemList" parameterType="java.util.List" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_template_item
+    where delete_status = 0 and template_id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </select> 
 </mapper>

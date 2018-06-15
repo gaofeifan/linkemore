@@ -91,4 +91,33 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   
+  <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into c_coupon (id, user_id, combo_id, 
+      coupon_grant_id, value_pack_id, face_amount, 
+      vp_valid_time, valid_time, status, 
+      update_time, create_time, enterprise_id, 
+      theme_id, item_id, record_id, 
+      template_id, condition_id, type, 
+      order_amount, discount, condition_amount, used_amount,send_user_id
+      )
+    values
+    <foreach collection ="list" item="coupon" separator =",">
+        (#{coupon.id,jdbcType=BIGINT}, #{coupon.userId,jdbcType=BIGINT}, #{coupon.comboId,jdbcType=BIGINT}, 
+      #{coupon.couponGrantId,jdbcType=BIGINT}, #{coupon.valuePackId,jdbcType=BIGINT}, #{coupon.faceAmount,jdbcType=DECIMAL}, 
+      #{coupon.vpValidTime,jdbcType=TIMESTAMP}, #{coupon.validTime,jdbcType=TIMESTAMP}, #{coupon.status,jdbcType=SMALLINT}, 
+      #{coupon.updateTime,jdbcType=TIMESTAMP}, #{coupon.createTime,jdbcType=TIMESTAMP}, #{coupon.enterpriseId,jdbcType=BIGINT}, 
+      #{coupon.themeId,jdbcType=BIGINT}, #{coupon.itemId,jdbcType=BIGINT}, #{coupon.recordId,jdbcType=BIGINT}, 
+      #{coupon.templateId,jdbcType=BIGINT}, #{coupon.conditionId,jdbcType=BIGINT}, #{coupon.type,jdbcType=INTEGER}, 
+      #{coupon.orderAmount,jdbcType=DECIMAL}, #{coupon.discount,jdbcType=INTEGER}, #{coupon.conditionAmount,jdbcType=DECIMAL},
+      #{coupon.usedAmount,jdbcType=DECIMAL}, #{coupon.sendUserId,jdbcType=BIGINT}
+      )
+    </foreach >
+  </insert>
+  
+   <update id="updateCouponStatus" >
+	update c_coupon c INNER JOIN 
+	(select c.id   FROM c_coupon c where 
+	#{date} > c.valid_time AND c.`status` = 0) co  ON co.id = c.id  SET `status` = 2 
+  </update>
+  
 </mapper>

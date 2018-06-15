@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.coupon.dao.cluster.TemplateClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.Template">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.response.ResTemplate">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -46,6 +46,60 @@
     <include refid="Base_Column_List" />
     from t_coupon_template
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_coupon_template
+    where delete_status = 0 and 
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_coupon_template
+    where 1 = 1 and delete_status = 0 and type = #{type,jdbcType=INTEGER}
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if> 
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select 
+	<include refid="Base_Column_List" /> 
+    from t_coupon_template
+    where 1 = 1 and delete_status = 0 and type = #{type,jdbcType=INTEGER}
+    <if test="status!=null">  
+    and status = #{status,jdbcType=INTEGER}
+    </if> 
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="findTaskList" resultMap="BaseResultMap" >
+  	select 
+	<include refid="Base_Column_List" /> 
+    from t_coupon_template
+    where 1 = 1 and delete_status = 0 and (valid_type= 1 or valid_type is null) and status = 1
+  </select>
+  
+  <select id="findSubjectCouponList" resultMap="BaseResultMap" >
+  	select 
+	<include refid="Base_Column_List" /> 
+    from t_coupon_template 
+    where 1 = 1 and delete_status = 0 and type = 3
   </select>
   
 </mapper>

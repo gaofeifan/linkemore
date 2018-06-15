@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.master.ValuePackMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.ValuePack">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="pack_name" jdbcType="VARCHAR" property="packName" />
+    <result column="available_amount" jdbcType="DECIMAL" property="availableAmount" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="is_disable" jdbcType="SMALLINT" property="isDisable" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="validity" jdbcType="SMALLINT" property="validity" />
+    <result column="validity_date" jdbcType="TIMESTAMP" property="validityDate" />
+    <result column="operater_id" jdbcType="BIGINT" property="operaterId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="value_pack_type" jdbcType="INTEGER" property="valuePackType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, pack_name, available_amount, total_amount, is_disable, status, validity, 
+    validity_date, operater_id, create_time, update_time, value_pack_type
+  </sql>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from c_value_pack
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.ValuePack">
+    insert into c_value_pack (id, user_id, pack_name, 
+      available_amount, total_amount, is_disable, 
+      status, validity, validity_date, 
+      operater_id, create_time, update_time, 
+      value_pack_type)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{packName,jdbcType=VARCHAR}, 
+      #{availableAmount,jdbcType=DECIMAL}, #{totalAmount,jdbcType=DECIMAL}, #{isDisable,jdbcType=SMALLINT}, 
+      #{status,jdbcType=SMALLINT}, #{validity,jdbcType=SMALLINT}, #{validityDate,jdbcType=TIMESTAMP}, 
+      #{operaterId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{valuePackType,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.coupon.entity.ValuePack">
+    update c_value_pack
+    set user_id = #{userId,jdbcType=BIGINT},
+      pack_name = #{packName,jdbcType=VARCHAR},
+      available_amount = #{availableAmount,jdbcType=DECIMAL},
+      total_amount = #{totalAmount,jdbcType=DECIMAL},
+      is_disable = #{isDisable,jdbcType=SMALLINT},
+      status = #{status,jdbcType=SMALLINT},
+      validity = #{validity,jdbcType=SMALLINT},
+      validity_date = #{validityDate,jdbcType=TIMESTAMP},
+      operater_id = #{operaterId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      value_pack_type = #{valuePackType,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

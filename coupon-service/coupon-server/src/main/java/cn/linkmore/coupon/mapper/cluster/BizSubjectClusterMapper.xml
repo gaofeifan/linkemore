@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.cluster.BizSubjectClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.response.ResBizSubjectBean">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="intro" jdbcType="VARCHAR" property="intro" />
+    <result column="combo_id" jdbcType="BIGINT" property="comboId" />
+    <result column="pack_id" jdbcType="BIGINT" property="packId" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="operator_name" jdbcType="BIGINT" property="operatorName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, intro, combo_id, pack_id, url, img_url, operator_id, status, create_time, 
+    update_time, type, total_amount
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_subject
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_biz_subject
+    where 
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
+  
+  <select id="selectSubjectListByType" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_subject where type = 5 and status = 1
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_biz_subject s left join t_sec_person t on s.operator_id=t.id
+    where 1 = 1
+    <if test="title!=null">  
+    and s.title like #{title,jdbcType=VARCHAR}
+    </if> 
+    <if test="operatorName!=null">  
+    and t.username like #{operatorName,jdbcType=VARCHAR}
+    </if> 
+    <if test="status!=null">  
+    and s.status = #{status,jdbcType=INTEGER}
+    </if> 
+    <if test="type!=null">  
+    and s.type = #{type,jdbcType=INTEGER}
+    </if> 
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select s.* ,t.username as operator_name
+    from t_biz_subject s left join t_sec_person t on s.operator_id=t.id
+    where 1 = 1
+    <if test="title!=null">  
+    and s.title like #{title,jdbcType=VARCHAR}
+    </if> 
+    <if test="operatorName!=null">  
+    and t.username like #{operatorName,jdbcType=VARCHAR}
+    </if> 
+    <if test="status!=null">  
+    and s.status = #{status,jdbcType=INTEGER}
+    </if> 
+    <if test="type!=null">  
+    and s.type = #{type,jdbcType=INTEGER}
+    </if> 
+    <if test="property==null">  
+     order by s.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
+
+</mapper>

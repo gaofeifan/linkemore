@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.cluster.TemplateItemEnClusterMapper">
+	<resultMap id="BaseResultMap" type="cn.linkmore.coupon.response.ResTemplateItem">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="face_amount" jdbcType="DECIMAL" property="faceAmount" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="valid_day" jdbcType="INTEGER" property="validDay" />
+    <result column="discount" jdbcType="INTEGER" property="discount" />
+    <result column="condition_amount" jdbcType="DECIMAL" property="conditionAmount" />
+    <result column="source" jdbcType="INTEGER" property="source" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, template_id, type, face_amount, quantity, valid_day, discount, condition_amount, 
+    source, delete_status
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_template_item
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectBuDealNumber"  resultMap="BaseResultMap">
+   select cti.id,cti.type,cti.face_amount,cti.quantity,cti.source,ct.enterprise_deal_number,ct.name, cti.condition_amount,cti.valid_day, cti.discount FROM t_coupon_template ct INNER JOIN t_coupon_template_item cti ON ct.id = cti.template_id
+	AND ct.enterprise_deal_number = #{dealNumber}
+  </select>
+  <select id="selectByTemplateIds"  resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_coupon_template_item
+    where template_id in
+    <foreach collection="ids"  index="index" item="id" open="(" separator="," close=")" >
+    	 #{id}
+    </foreach>
+    order by type asc
+  </select>
+  <select id="selectBuEnterpriseId"  resultMap="BaseResultMap">
+   select cti.id,cti.type,cti.face_amount,cti.quantity,cti.source,ct.enterprise_deal_number,ct.name, cti.condition_amount,cti.valid_day, cti.discount FROM t_coupon_template ct INNER JOIN t_coupon_template_item cti ON ct.id = cti.template_id
+	AND ct.enterprise_id = #{id}
+  </select>
+</mapper>

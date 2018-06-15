@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.coupon.dao.cluster.SendUserClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.SendUser">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.response.ResSendUser">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="template_id" jdbcType="BIGINT" property="templateId" />
     <result column="record_id" jdbcType="BIGINT" property="recordId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="rollback_flag" jdbcType="INTEGER" property="rollbackFlag" />
+  </resultMap>
+  
+  <resultMap id="ResponseResultMap" type="cn.linkmore.coupon.response.ResSendUserList">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="name" jdbcType="VARCHAR" property="tempName" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="unit_amount" jdbcType="DECIMAL" property="unitAmount" />
+    <result column="rollback_flag" jdbcType="INTEGER" property="rollbackFlag" />
+    <result column="usage" jdbcType="VARCHAR" property="usage" />
   </resultMap>
   <sql id="Base_Column_List">
     id, template_id, record_id, user_id, create_time, rollback_flag
@@ -18,4 +30,41 @@
     from t_coupon_send_user
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_coupon_send_user t left join t_user u on t.user_id = u.id
+    where 1 = 1 and template_id = #{templateId,jdbcType=BIGINT}
+    <if test="username != null">  
+    and u.username like #{username,jdbcType=VARCHAR}
+    </if> 
+  </select>
+  
+  <select id="findPage" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
+  	select t.id,t.template_id,t.create_time,u.username,template.name,template.creator_name,template.unit_amount,t.rollback_flag,
+  	(select concat_ws('/',count(case when c.status=1 then 1 end),count(*)) from c_coupon c  where c.template_id=t.template_id and c.send_user_id = t.id) as 'usage'
+  	from t_coupon_send_user t left join t_user u on t.user_id = u.id
+    left join t_coupon_template template on t.template_id = template.id 
+    where 1 = 1 and template_id = #{templateId,jdbcType=BIGINT}
+    <if test="username != null">  
+    and u.username like #{username,jdbcType=VARCHAR}
+    </if> 
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="findExpireList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_send_user where rollback_flag = 0 and id not in(
+	SELECT
+		c.send_user_id
+	FROM
+		c_coupon c
+	WHERE
+		c.send_user_id IS NOT NULL
+	AND c. STATUS IN (0, 1)
+	) and template_id in(select id from t_coupon_template where type=1)
+  </select>
+  
+  
 </mapper>

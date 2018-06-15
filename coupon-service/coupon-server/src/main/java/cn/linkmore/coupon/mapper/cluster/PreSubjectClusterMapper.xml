@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.coupon.dao.cluster.PreSubjectClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.PreSubject">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="subject_id" jdbcType="BIGINT" property="subjectId" />
+    <result column="oneself_type" jdbcType="INTEGER" property="oneselfType" />
+    <result column="oneself_min" jdbcType="INTEGER" property="oneselfMin" />
+    <result column="oneself_max" jdbcType="INTEGER" property="oneselfMax" />
+    <result column="oneself_fixe" jdbcType="INTEGER" property="oneselfFixe" />
+    <result column="oneself_validity" jdbcType="INTEGER" property="oneselfValidity" />
+    <result column="other_type" jdbcType="INTEGER" property="otherType" />
+    <result column="other_min" jdbcType="INTEGER" property="otherMin" />
+    <result column="other_max" jdbcType="INTEGER" property="otherMax" />
+    <result column="other_fixe" jdbcType="INTEGER" property="otherFixe" />
+    <result column="other_validity" jdbcType="INTEGER" property="otherValidity" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pay_title" jdbcType="VARCHAR" property="payTitle" />
+    <result column="pay_validity" jdbcType="INTEGER" property="payValidity" />
+    <result column="denomain_one_min" jdbcType="DECIMAL" property="denomainOneMin" />
+    <result column="denomain_one_max" jdbcType="DECIMAL" property="denomainOneMax" />
+    <result column="denomain_one_prop" jdbcType="INTEGER" property="denomainOneProp" />
+    <result column="denomain_two_min" jdbcType="DECIMAL" property="denomainTwoMin" />
+    <result column="denomain_two_max" jdbcType="DECIMAL" property="denomainTwoMax" />
+    <result column="denomain_two_prop" jdbcType="INTEGER" property="denomainTwoProp" />
+    <result column="denomain_three_min" jdbcType="DECIMAL" property="denomainThreeMin" />
+    <result column="denomain_three_max" jdbcType="DECIMAL" property="denomainThreeMax" />
+    <result column="denomain_three_prop" jdbcType="INTEGER" property="denomainThreeProp" />
+    <result column="pay_content" jdbcType="VARCHAR" property="payContent" />
+  </resultMap>
+  
+  <resultMap id="ResResultMap" type="cn.linkmore.coupon.response.ResPreSubjectBean">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="subject_id" jdbcType="BIGINT" property="subjectId" />
+    <result column="oneself_type" jdbcType="INTEGER" property="oneselfType" />
+    <result column="oneself_min" jdbcType="INTEGER" property="oneselfMin" />
+    <result column="oneself_max" jdbcType="INTEGER" property="oneselfMax" />
+    <result column="oneself_fixe" jdbcType="INTEGER" property="oneselfFixe" />
+    <result column="oneself_validity" jdbcType="INTEGER" property="oneselfValidity" />
+    <result column="other_type" jdbcType="INTEGER" property="otherType" />
+    <result column="other_min" jdbcType="INTEGER" property="otherMin" />
+    <result column="other_max" jdbcType="INTEGER" property="otherMax" />
+    <result column="other_fixe" jdbcType="INTEGER" property="otherFixe" />
+    <result column="other_validity" jdbcType="INTEGER" property="otherValidity" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="operator_name" jdbcType="VARCHAR" property="operatorName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pay_title" jdbcType="VARCHAR" property="payTitle" />
+    <result column="pay_validity" jdbcType="INTEGER" property="payValidity" />
+    <result column="denomain_one_min" jdbcType="DECIMAL" property="denomainOneMin" />
+    <result column="denomain_one_max" jdbcType="DECIMAL" property="denomainOneMax" />
+    <result column="denomain_one_prop" jdbcType="INTEGER" property="denomainOneProp" />
+    <result column="denomain_two_min" jdbcType="DECIMAL" property="denomainTwoMin" />
+    <result column="denomain_two_max" jdbcType="DECIMAL" property="denomainTwoMax" />
+    <result column="denomain_two_prop" jdbcType="INTEGER" property="denomainTwoProp" />
+    <result column="denomain_three_min" jdbcType="DECIMAL" property="denomainThreeMin" />
+    <result column="denomain_three_max" jdbcType="DECIMAL" property="denomainThreeMax" />
+    <result column="denomain_three_prop" jdbcType="INTEGER" property="denomainThreeProp" />
+    <result column="pay_content" jdbcType="VARCHAR" property="payContent" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, pre_id, subject_id, oneself_type, oneself_min, oneself_max, oneself_fixe, oneself_validity, 
+    other_type, other_min, other_max, other_fixe, other_validity, content, operator_id, 
+    create_time, update_time, status, pay_title, pay_validity, denomain_one_min, denomain_one_max, 
+    denomain_one_prop, denomain_two_min, denomain_two_max, denomain_two_prop, denomain_three_min, 
+    denomain_three_max, denomain_three_prop, pay_content
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_pre_subject
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_biz_pre_subject
+    where status = 1 and
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
+  
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_biz_pre_subject p left join t_sec_person t on p.operator_id=t.id
+		LEFT JOIN v_prefecture pre on p.pre_id=pre.id
+    where 1 = 1 and p.status = 1
+    <if test="preId!=null">
+    and pre.id like #{preId,jdbcType=VARCHAR}
+    </if> 
+  </select>
+  
+  <select id="findPage" resultMap="ResResultMap"   parameterType="java.util.HashMap" >
+    select p.*,t.username as operator_name
+    from t_biz_pre_subject p left join t_sec_person t on p.operator_id=t.id
+		LEFT JOIN v_prefecture pre on p.pre_id=pre.id
+    where 1 = 1 and p.status = 1
+    <if test="preId!=null">
+    and pre.id like #{preId,jdbcType=VARCHAR}
+    </if> 
+    <if test="property==null">  
+     order by s.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+</mapper>

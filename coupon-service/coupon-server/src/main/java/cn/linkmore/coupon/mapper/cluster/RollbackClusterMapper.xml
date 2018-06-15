@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.coupon.dao.cluster.RollbackClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.entity.Rollback">
+  <resultMap id="BaseResultMap" type="cn.linkmore.coupon.response.ResRollback">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="template_id" jdbcType="BIGINT" property="templateId" />
     <result column="rollback_date" jdbcType="TIMESTAMP" property="rollbackDate" />
@@ -11,6 +11,18 @@
     <result column="contract_amount" jdbcType="DECIMAL" property="contractAmount" />
     <result column="given_amount" jdbcType="DECIMAL" property="givenAmount" />
   </resultMap>
+  
+  <resultMap id="ResponseResultMap" type="cn.linkmore.coupon.response.ResRollbackBean">
+    <result column="template_name" jdbcType="VARCHAR" property="templateName" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="enterprise_name" jdbcType="VARCHAR" property="enterpriseName" />
+    <result column="rollback_date" jdbcType="TIMESTAMP" property="rollbackDate" />
+    <result column="used_deal_pay_amount" jdbcType="DECIMAL" property="usedDealPayAmount" />
+    <result column="user_deal_gift_amount" jdbcType="DECIMAL" property="userDealGiftAmount" />
+    <result column="given_amount" jdbcType="DECIMAL" property="givenAmount" />
+    <result column="contract_amount" jdbcType="DECIMAL" property="contractAmount" />
+  </resultMap>
+  
   <sql id="Base_Column_List">
     id, template_id, rollback_date, enterprise_deal_number, used_deal_pay_amount, user_deal_gift_amount, 
     contract_amount, given_amount
@@ -21,4 +33,57 @@
     from t_coupon_rollback
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+	from t_coupon_rollback t 
+     left join t_coupon_template template on t.template_id= template.id
+	 left join t_biz_enterprise_deal d on t.enterprise_deal_number=d.serial_number
+	 where 1=1
+	<if test="templateId != null">  
+    and template.id = #{templateId,jdbcType=BIGINT}
+    </if> 
+    <if test="templateName != null">  
+    and template.name like #{templateName,jdbcType=VARCHAR}
+    </if> 
+    <if test="serialNumber != null">  
+    and d.serial_number like #{serialNumber,jdbcType=VARCHAR}
+    </if>
+    <if test="enterpriseName != null">  
+    and d.enterprise_name like #{enterpriseName,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <select id="findPage" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
+  	select template.`name` as template_name,d.serial_number,d.enterprise_name,t.rollback_date,t.used_deal_pay_amount,t.user_deal_gift_amount,t.given_amount,t.contract_amount 
+		from t_coupon_rollback t 
+		left join t_coupon_template template on t.template_id= template.id
+		left join t_biz_enterprise_deal d on t.enterprise_deal_number=d.serial_number
+		where 1=1
+	<if test="templateId != null">  
+    and template.id = #{templateId,jdbcType=BIGINT}
+    </if> 
+    <if test="templateName != null">  
+    and template.name like #{templateName,jdbcType=VARCHAR}
+    </if> 
+    <if test="serialNumber != null">  
+    and d.serial_number like #{serialNumber,jdbcType=VARCHAR}
+    </if>
+    <if test="enterpriseName != null">  
+    and d.enterprise_name like #{enterpriseName,jdbcType=VARCHAR}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByTemplateIds" parameterType="java.util.List" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_coupon_rollback 
+    where template_id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
+    	 #{id}
+    </foreach>
+  </select>
+  
+  
 </mapper>

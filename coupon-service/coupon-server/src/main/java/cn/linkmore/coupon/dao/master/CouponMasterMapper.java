@@ -1,5 +1,7 @@
 package cn.linkmore.coupon.dao.master;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -33,5 +35,9 @@ public interface CouponMasterMapper {
 	 * @param param
 	 */
 	int payUpdate(Map<String,Object> param);
+
+	void insertBatch(List<Coupon> couponList);
+
+	void updateCouponStatus(Date date);
 	
 }

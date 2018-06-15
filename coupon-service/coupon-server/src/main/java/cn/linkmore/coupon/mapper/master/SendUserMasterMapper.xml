@@ -34,4 +34,31 @@
       rollback_flag = #{rollbackFlag,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  
+   <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into t_coupon_send_user (id, template_id, record_id, 
+      user_id, create_time ,rollback_flag)
+    values
+      <foreach collection ="list" item="item" separator =",">
+         (#{item.id,jdbcType=BIGINT}, #{item.templateId,jdbcType=BIGINT}, #{item.recordId,jdbcType=BIGINT}, 
+      	#{item.userId,jdbcType=BIGINT}, #{item.createTime,jdbcType=TIMESTAMP},#{item.rollbackFlag,jdbcType=INTEGER})
+      </foreach >
+  </insert>
+  
+  <update id="updateBatch" parameterType="java.util.List">
+    
+    update t_coupon_send_user
+    set 
+      rollback_flag =
+    	<foreach collection="list" item="item" index="index" separator=" " open="case ID" close="end">
+		when #{item.id} then #{item.rollbackFlag,jdbcType=INTEGER}  
+		</foreach> 
+    where id in 
+    <foreach collection="list" index="index" item="item" 
+        separator="," open="(" close=")">
+        #{item.id,jdbcType=BIGINT}
+    </foreach>
+    
+  </update>
 </mapper>

@@ -1,13 +1,18 @@
 package cn.linkmore.coupon.dao.cluster;
 
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-
-import cn.linkmore.coupon.entity.TemplateItem;
+import cn.linkmore.coupon.response.ResTemplateItem;
+/**
+ * 优惠券套餐项
+ * @author jiaohanbin
+ * @version 2.0
+ *
+ */
 @Mapper
 public interface TemplateItemClusterMapper {
-    int delete(Long id);
 
-    int save(TemplateItem record);
+	List<ResTemplateItem> findItemList(List<Long> ids);
 
-    int update(TemplateItem record);
+	List<ResTemplateItem> findList(Long id);
 }

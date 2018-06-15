@@ -35,8 +35,14 @@
       available_time = #{availableTime,jdbcType=INTEGER},
       available_prefecture = #{availablePrefecture,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       is_default = #{isDefault,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="setDefault" parameterType="java.util.HashMap">
+    update t_coupon_template_condition
+    set is_default = #{isDefault,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
 </mapper>
