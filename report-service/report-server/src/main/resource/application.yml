@@ -1,11 +1,11 @@
 server:
-  port: 8007 
+  port: 8008
 spring:
   application:
-    name: enterprise-server
+    name: report-server
   boot: 
     admin:
-      url: http://192.168.1.223:6002
+      url: http://192.168.1.232:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -15,13 +15,13 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.223:6003/eureka/
+      defaultZone: http://192.168.1.232:6003/eureka/
 feign:
   hystrix:
     enabled: true
  
 master-db:   
-  url: jdbc:mysql://192.168.1.218:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -41,7 +41,7 @@ master-db:
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   
 cluster-db:   
-  url: jdbc:mysql://192.168.1.219:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+  url: jdbc:mysql://192.168.1.219:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -64,19 +64,10 @@ security:
   basic:
     enabled: false
     
-swagger:
-  enable: true
-  title: 凌猫企业服务接口文档
-  description: 本文档为内部文档，仅供内部前端及测试人员参考。 完全基于RESTful接口说明
-  version: 2.0
-  service-url: http://www.linkmoreparking.com
-  contact: 凌猫停车 
-  base-package: cn.linkmore.enterprise.controller.app
-    
 redis:
   host: 192.168.1.218
   port: 6379
-  database: 1
+  database: 2
   timeout: 5000
   password: ppyx1234
   pool-max-active: 500
@@ -87,4 +78,14 @@ redis:
   test-on-borrow: true
   test-on-create: true 
   sentinel-master: mymaster
-  sentinel-nodes: 192.168.1.219:26379 
+  sentinel-nodes: 192.168.1.219:26379  
+  
+swagger:
+  enable: true
+  title: 凌猫停车报表服务接口文档
+  description: 本文档为内部文档，仅供内部前端及测试人员参考。 完全基于RESTful接口说明
+  version: 2.0
+  service-url: http://www.linkmoreparking.com
+  contact: 凌猫停车 
+  base-package: cn.linkmore.report.controller.app
+    
