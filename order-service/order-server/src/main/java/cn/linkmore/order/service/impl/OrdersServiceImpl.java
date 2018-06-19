@@ -415,7 +415,10 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 	@Override
 	public ResUserOrder latest(Long userId) {
-		ResUserOrder orders =  this.ordersClusterMapper.findUserLatest(userId);  
+		ResUserOrder orders =  this.ordersClusterMapper.findUserLatest(userId); 
+		if(orders==null) {
+			return null;
+		}
 		ReqStrategy rs = new ReqStrategy();
 		rs.setBeginTime(orders.getCreateTime().getTime());
 		rs.setStrategyId(orders.getStrategyId());
