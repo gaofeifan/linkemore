@@ -144,7 +144,7 @@ oss:
   temp-dir: D:/oss-temp   #windows路径 D:/oss-temp    linux 路径/data/oss-temp
  
 #银联支付配置
-union-pay:
+union-pay: 
   union-service-url: https://gateway.test.95516.com 
   mer-id: 852331048169991
   cert-path: cert/acp_test_sign.pfx

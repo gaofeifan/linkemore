@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class ReqVersion {
 
 	@ApiModelProperty(value="客户端",required=true)
-	@NotBlank(message="客户端不能为空")
+	@NotNull(message="客户端不能为空")
 	private Short client;
 
 	@ApiModelProperty(value="型号",required=true)

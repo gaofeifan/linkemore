@@ -238,7 +238,8 @@ public class Constants {
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
 		PREFECTURE_FREE_STALL("prefecture:free_stall:"),
 		WECHAT_TOKEN_KEY("wechat_token"),
-		WECHAT_TOKEN_EXPIRE("3600");
+		WECHAT_TOKEN_EXPIRE("3600"),
+		BLACKLIST_ORDER_LIMIT("blacklist:order:limit");
 		public String key;
 
 		private RedisKey(String key) {

@@ -26,7 +26,6 @@ import cn.linkmore.util.JsonUtil;
  * Controller - 微信支付[APP]
  * @author liwenlong
  * @version 2.0
- *
  */
 @RestController
 @RequestMapping("/feign/app-wechat")

@@ -43,6 +43,7 @@ public class CustomerInfoController{
 		List<ResCustomerInfoExport> result = infoService.getExportList(pageable);
 		return result;
 	}
+	
 	@InitBinder  
 	public void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
