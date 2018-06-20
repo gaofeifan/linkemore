@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.fee;
+package cn.linkmore.prefecture.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import com.linkmore.lock.bean.AbuttingBean;
 import com.linkmore.lock.factory.LockFactory;
-import cn.linkmore.redis.LockProperties;
 /**
  * Config - lock配置
  * @author liwenlong
