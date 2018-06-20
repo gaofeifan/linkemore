@@ -1,8 +1,11 @@
 package cn.linkmore.third.client.hystrix;
 
 import org.springframework.stereotype.Component;
+
 import com.aliyun.oss.OSSClient;
+
 import cn.linkmore.third.client.OssClient;
+import cn.linkmore.third.response.ResOssConfig;
 
 @Component
 public class OssClientHystrix implements OssClient {
@@ -17,4 +20,8 @@ public class OssClientHystrix implements OssClient {
 		return null;
 	}
 
+	@Override
+	public ResOssConfig initOssConfig() {
+		return null;	
+	}
 }

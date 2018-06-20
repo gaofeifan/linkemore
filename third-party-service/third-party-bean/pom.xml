@@ -10,11 +10,13 @@
 	</parent>
 	<artifactId>third-party-bean</artifactId>
 	<name>third-party-bean</name>
-	<url>http://www.linkmoreparking.com</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<url>http://www.linkmoreparking.com</url> 
 	<dependencies>
+		<dependency>
+			<groupId>com.aliyun.oss</groupId>
+			<artifactId>aliyun-sdk-oss</artifactId>
+			<version>${aliyun.sdk.oss.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>

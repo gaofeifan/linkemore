@@ -628,10 +628,9 @@ public class PayServiceImpl implements PayService {
 		 */
 
 //		OrdersDetail od = ordersDetailClusterMapper.findByOrderId(order.getId());
-		if (order.getStatus() == OrderStatus.UNPAID.value) { 
-			this.stallClient.checkout(order.getStallId());
+		if (order.getStatus() == OrderStatus.UNPAID.value) {  
 			try { 
-				new Thread(new LockUpThread( order.getStallId())).start();
+				new Thread(new StallCheckoutThread( order.getStallId())).start();
 			} catch (Exception e) {
 				log.info("up lock throw exception");
 			}
@@ -698,14 +697,14 @@ public class PayServiceImpl implements PayService {
 			}
 		}
 	}
-	class LockUpThread extends Thread {
+	class StallCheckoutThread extends Thread {
 		private Long stallId; 
-		public LockUpThread(Long stallId) {
+		public StallCheckoutThread(Long stallId) {
 			this.stallId = stallId;
 		}  
 		@Override
 		public void run() { 
-			stallClient.uplock(stallId);
+			stallClient.checkout(stallId);
 		}  
 	}
 
