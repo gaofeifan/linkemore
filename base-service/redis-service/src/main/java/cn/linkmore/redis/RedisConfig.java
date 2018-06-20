@@ -26,9 +26,12 @@ import redis.clients.jedis.JedisPoolConfig;
 @Component
 @EnableCaching
 @EnableRedisHttpSession
-public class RedisConfig extends CachingConfigurerSupport { 
+public class RedisConfig extends CachingConfigurerSupport {  
+	
 	@Autowired
 	private RedisProperties redisProperties;
+	
+	
 	@Bean
 	public JedisPoolConfig redisPoolConfig(){
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
@@ -46,18 +49,18 @@ public class RedisConfig extends CachingConfigurerSupport {
 	 * 获取redis 主从配置
 	 * */
 	@Bean
-	public RedisSentinelConfiguration redisSentinelConfig(){ 
+	public RedisSentinelConfiguration redisSentinelConfiguration(){ 
 		/**
 		 * 主从配置信息
 		 * */
-		try{
+		try{  
 			RedisSentinelConfiguration redisSentinelConfiguration  = new RedisSentinelConfiguration();
 			redisSentinelConfiguration.setMaster(redisProperties.getSentinelMaster());
-			RedisNode redisNode = null;
-			for(String node: redisProperties.getSentinelNodes().split(" ")){ 
+			RedisNode redisNode = null; 
+			for(String node: redisProperties.getSentinelNodes().split(" ")){  
 				redisNode = new RedisNode(node.split(":")[0],Integer.valueOf(node.split(":")[1]));
 				redisSentinelConfiguration.addSentinel(redisNode);
-			}
+			} 
 			return redisSentinelConfiguration;
 		}catch(Exception e){
 			e.printStackTrace();
@@ -95,23 +98,21 @@ public class RedisConfig extends CachingConfigurerSupport {
         };
     }
 	
-	@Autowired private RedisSentinelConfiguration redisSentinelConfig;
-	@Autowired private JedisPoolConfig redisPoolConfig;
+	@Autowired 
+	private RedisSentinelConfiguration redisSentinelConfiguration;
+	
+	@Autowired 
+	private JedisPoolConfig redisPoolConfig;
 	
 	@Bean
 	public JedisConnectionFactory redisConnectionFactory(){
-		JedisConnectionFactory jedisConnectionFactory = null;
-		if(redisSentinelConfig == null){
-			jedisConnectionFactory = new JedisConnectionFactory(redisPoolConfig);
-			jedisConnectionFactory.setHostName(redisProperties.getHost());
-			jedisConnectionFactory.setPort(redisProperties.getPort());
-			jedisConnectionFactory.setPassword(redisProperties.getPassword());
-			jedisConnectionFactory.setDatabase(redisProperties.getDatabase());
-			jedisConnectionFactory.setTimeout(redisProperties.getTimeout());
-		}else{
-			jedisConnectionFactory = new JedisConnectionFactory(redisSentinelConfig,redisPoolConfig);
-			jedisConnectionFactory.setPassword(redisProperties.getPassword());
-		}
+		JedisConnectionFactory jedisConnectionFactory = null; 
+		jedisConnectionFactory = new JedisConnectionFactory(redisSentinelConfiguration,redisPoolConfig);
+		jedisConnectionFactory.setHostName(redisProperties.getHost());
+		jedisConnectionFactory.setPort(redisProperties.getPort());
+		jedisConnectionFactory.setPassword(redisProperties.getPassword());
+		jedisConnectionFactory.setDatabase(redisProperties.getDatabase());
+		jedisConnectionFactory.setTimeout(redisProperties.getTimeout()); 
 		return jedisConnectionFactory;
 	}
 	
