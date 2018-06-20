@@ -123,7 +123,7 @@ public class OrdersServiceImpl implements OrdersService {
 	public boolean checkCarFree(String carno) {
 		boolean flag = true;
 		try {
-			Integer status = this.ordersClusterMapper.getLastOrderStatusByCarno(carno);
+			Integer status = this.ordersClusterMapper.getPlateLastOrderStatus(carno);
 			if (status != null && status.intValue() == 1) {
 				flag = false;
 			}
