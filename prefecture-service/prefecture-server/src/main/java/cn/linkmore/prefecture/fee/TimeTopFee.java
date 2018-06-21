@@ -1,5 +1,8 @@
 package cn.linkmore.prefecture.fee;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +22,8 @@ public class TimeTopFee {
 		map.put("night", 0l); 
 		map.put("dayAmount", 0d);
 		map.put("totalAmount", 0d); 
-		map.put("nightAmount", 0d);
-		long freeTime =base.getFreeMins()*60*1000; 
-		Date orderDate = new Date(startDate.getTime()-freeTime);
+		map.put("nightAmount", 0d); 
+		Date orderDate = startDate; 
 		Long day = (stopDate.getTime()-orderDate.getTime())/(24*60*60*1000l);
 		Long time = (stopDate.getTime()-orderDate.getTime())%(24*60*60*1000l); 
 		map.put("resideTime", (stopDate.getTime()-orderDate.getTime())/(60*1000l));
@@ -33,7 +35,7 @@ public class TimeTopFee {
 		if(day>=1){
 			totalFee = day*topFee;
 		}else{
-			time = time - base.getFreeMins()*60*1000l-1;
+			time = time -1;
 		} 
 		double fee = 0d; 
 		if(time>0){ 
@@ -47,4 +49,22 @@ public class TimeTopFee {
 		map.put("totalAmount", totalFee);  
 		return map;
 	}
+	public static void mains(String[] args) throws ParseException{
+		StrategyBase base = new StrategyBase();
+		base.setFreeMins(15);
+		base.setBeginTime("10:00:00");
+		base.setEndTime("22:00:00");
+		base.setTimelyLong(15);
+		base.setBasePrice(new BigDecimal(1.5d));
+		base.setTopDaily(1440);
+		String startString = "2018-05-26 12:54:38";
+		String endString = "2018-05-26 13:11:11";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date startDate = sdf.parse(startString); 
+		startDate = new Date(startDate.getTime()+base.getFreeMins()*60*1000l); 
+		Date endDate = sdf.parse(endString);
+		Long min = (endDate.getTime() - startDate.getTime() )/(60*1000L);
+		System.out.println(min);
+		Map<String,Object> map = getBilling(base,startDate,endDate); 
+	} 
 }

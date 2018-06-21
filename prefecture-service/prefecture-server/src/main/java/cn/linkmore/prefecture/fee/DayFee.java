@@ -26,7 +26,7 @@ public class DayFee {
 	
 	public static Map<String,Object> getBilling(StrategyBase base, Date startDate, Date stopDate){ 
 		Map<String,Object> map = new HashMap<String,Object>();
-		startDate = new Date(startDate.getTime()-base.getFreeMins());
+		startDate = new Date(startDate.getTime()-base.getFreeMins()*60*1000L);
 		Long day = (stopDate.getTime()-startDate.getTime())/(24*60*60*1000l);
 		map.put("day", 0l);
 		map.put("night", 0l);
@@ -120,7 +120,8 @@ public class DayFee {
 				}else if(endIndex==1&&startIndex==2){
 					nightTime = DayFee.getSpaceTime(startTime, DayFee.DAY_END);
 					nightTime += DayFee.getSpaceTime(DayFee.DAY_START, base.getBeginTime()); 
-					dayTime = DayFee.getSpaceTime(base.getBeginTime(), base.getEndTime());  
+					dayTime = DayFee.getSpaceTime(base.getBeginTime(), stopTime);  
+					
 				}
 				
 			}
@@ -150,40 +151,38 @@ public class DayFee {
 		}  
 		 
 		int completeDayTime = DayFee.getSpaceTime(base.getBeginTime(), base.getEndTime());
-		int completeNightTime = 24*60 - completeDayTime;
-		
+		int completeNightTime = 24*60 - completeDayTime; 
 		long over = dayTime%base.getTimelyLong()+nightTime%base.getNightTimelyLong(); 
 		double completeDayAmount = 0d;
 		double completeNightAmount = 0d; 
-		if(day>0){ 
-			completeDayAmount =( (completeDayTime-1)/base.getTimelyLong()+1)*base.getBasePrice().doubleValue();
-			completeNightAmount = ( (completeNightTime-1)/base.getNightTimelyLong()+1)*base.getNightPrice().doubleValue();
+		if(day>0){  
+			completeDayAmount =( completeDayTime/base.getTimelyLong())*base.getBasePrice().doubleValue();
+			completeNightAmount = ( completeNightTime/base.getNightTimelyLong())*base.getNightPrice().doubleValue();
 			amount = (completeDayAmount+completeNightAmount)*day;
-		}  
+		}
 		dayAmount = (dayTime/base.getTimelyLong())*base.getBasePrice().doubleValue(); 
-		nightAmount = (nightTime/base.getNightTimelyLong())*base.getNightPrice().doubleValue();  
-		
-		
+		nightAmount = (nightTime/base.getNightTimelyLong())*base.getNightPrice().doubleValue();   
 		if(over>base.getTimelyLong()) {
 			dayAmount += base.getBasePrice().doubleValue();
 		}else if(over>base.getNightTimelyLong()) {
 			nightAmount += base.getNightPrice().doubleValue();
-		}
-		 
-		if(base.getFirstHour()!=null) {
-			if(startIndex==1&&base.getBasePrice().doubleValue()<base.getFirstHour().doubleValue()) { 
-				dayAmount += base.getFirstHour().doubleValue()-base.getBasePrice().doubleValue();
-			}else if(base.getNightPrice().doubleValue()<base.getFirstHour().doubleValue()) {
-				nightAmount +=  base.getFirstHour().doubleValue() -  base.getNightPrice().doubleValue();
-			}
-		} 
+		}   
+		dayTime = dayTime+completeDayTime*day;
+		nightTime = nightTime+completeNightTime*day;
 		
+		if(base.getFirstHour()!=null) {  
+			if(startIndex==1&&base.getBasePrice().doubleValue()<base.getFirstHour().doubleValue()&&dayTime>=base.getTimelyLong()) { 
+				dayAmount += base.getFirstHour().doubleValue()-base.getBasePrice().doubleValue(); 
+			}else if(base.getNightPrice().doubleValue()<base.getFirstHour().doubleValue()&&nightTime>=base.getNightTimelyLong()) {
+				nightAmount +=  base.getFirstHour().doubleValue() -  base.getNightPrice().doubleValue(); 
+			}  
+		}   
 		amount += dayAmount+nightAmount;
-		map.put("day", dayTime+completeDayTime*day); 
-		map.put("night", nightTime+completeNightTime*day); 
+		map.put("day", dayTime); 
+		map.put("night", nightTime); 
 		map.put("dayAmount", completeDayAmount+dayAmount);
 		map.put("totalAmount", amount); 
-		map.put("nightAmount", completeNightAmount+nightAmount); 
+		map.put("nightAmount", completeNightAmount+nightAmount);
 		return map;
 	}
 	public static int getSpaceTime(String start,String end){
@@ -194,21 +193,22 @@ public class DayFee {
 		int startMin = Integer.valueOf(starts[1]); 
 		int endHour = Integer.valueOf(ends[0]);
 		int endMin = Integer.valueOf(ends[1]); 
-		time = (endHour-startHour)*60+(endMin-startMin); 
+		time = (endHour-startHour)*60+(endMin-startMin);  
 		return time;
 	}
 	
-	public static void main(String[] args) throws ParseException{
+	public static void mains(String[] args) throws ParseException{
 		StrategyBase base = new StrategyBase();
 		base.setFreeMins(15);
 		base.setBeginTime("10:00:00");
 		base.setEndTime("22:00:00");
 		base.setTimelyLong(15);
-		base.setBasePrice(new BigDecimal(1.25));
-		base.setNightPrice(new BigDecimal(2.5));
-		base.setNightTimelyLong(30); 
-		String startString = "2017-11-06 09:08:06";
-		String endString = "2017-11-07 14:11:06";
+		base.setBasePrice(new BigDecimal(2D));
+		base.setNightPrice(new BigDecimal(2D));
+		base.setFirstHour(new BigDecimal(4D));
+		base.setNightTimelyLong(15); 
+		String startString = "2018-05-24 18:20:00";
+		String endString = "2018-05-25 19:06:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date startDate = sdf.parse(startString); 
 		startDate = new Date(startDate.getTime()+base.getFreeMins()*60*1000l); 

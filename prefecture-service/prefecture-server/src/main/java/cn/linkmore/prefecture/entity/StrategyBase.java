@@ -9,6 +9,7 @@ import java.util.Date;
  *
  */
 public class StrategyBase {
+	public static final int TYPE_DAY_FEE = 0;//北京按天无封顶计费
 	public static final int TYPE_TOP_NONE=1;//无封顶计费
 	public static final int TYPE_TOP_DAILY=2;//按天封顶计费
 	public static final int TYPE_TOP_SECTION=3;//按照时段封顶计费
