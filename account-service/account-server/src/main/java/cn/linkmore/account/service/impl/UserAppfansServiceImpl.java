@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 @Service()
 public class UserAppfansServiceImpl implements UserAppfansService {
-
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private AccountMasterMapper accountMasterMapper;
 	@Resource
@@ -76,7 +78,9 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 			fans.setRegisterStatus((short)0);
 			this.userAppfansMasterMapper.insertSelective(fans);  
 		}else{
+			log.info(userAppfans.getUserId()+"fans.getUserId()");
 			if(!userAppfans.getUserId().equals(fans.getUserId())) {
+				log.error(StatusEnum.ACCOUNT_WECHAT_BINDING_ERROR.label);
 				throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_BINDING_ERROR);
 			}
 			fans.setStatus((short)1); 
