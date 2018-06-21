@@ -421,6 +421,7 @@ public class UserServiceImpl implements UserService {
 		if(fans==null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_LOGIN_ERROR);
 		} 
+		CacheUser cache = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ReqUserAppfans ruaf = new ReqUserAppfans();
 		ruaf.setCreateTime(fans.getCreateTime());
 		ruaf.setHeadurl(fans.getHeadurl());
@@ -429,7 +430,9 @@ public class UserServiceImpl implements UserService {
 		ruaf.setRegisterStatus(fans.getRegisterStatus());
 		ruaf.setStatus(fans.getStatus());
 		ruaf.setUnionid(fans.getUnionid());
-		ruaf.setUserId(fans.getUserId());
+		if(cache != null) {
+			ruaf.setUserId(cache.getId());
+		}
 		ResUserLogin rul =this.userAppfansService.wxLogin(ruaf);
 		if(rul==null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.request.ReqOrderStall;
 
 @Component
 public class OrderClientHystrix implements OrderClient {
@@ -16,6 +17,12 @@ public class OrderClientHystrix implements OrderClient {
 	public ResUserOrder last(@RequestParam("userId") Long userId){
 		log.info("latest order :{}",userId);
 		return null;
+	}
+
+	@Override
+	public void downMsgPush(ReqOrderStall stall) {
+		log.info("downMsgPush order :{}",stall.toString());
+		
 	}
 	 
 }

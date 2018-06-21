@@ -10,6 +10,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
@@ -35,8 +36,8 @@ public class StallClientHystrix implements StallClient {
 	}
 
 	@Override
-	public void downlock(Long stallId) {
-		log.info("prefecture service stall downlock(Long stallId) hystrix");
+	public void downlock(ReqOrderStall stall) {
+		log.info("prefecture service stall downlock(ReqOrderStall stall) hystrix");
 	}
 
 	@Override

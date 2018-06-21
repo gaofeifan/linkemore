@@ -11,7 +11,7 @@
 	<artifactId>order-client</artifactId>
 	<name>order-client</name>
 	<url>http://maven.apache.org</url>
-	<dependencies> 
+	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -29,6 +29,11 @@
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>order-bean</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>prefecture-bean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

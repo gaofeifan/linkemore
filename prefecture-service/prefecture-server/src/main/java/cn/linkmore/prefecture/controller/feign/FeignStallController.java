@@ -4,10 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.service.StallService;
 
@@ -56,9 +59,9 @@ public class FeignStallController {
 	 *            Long
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method = RequestMethod.PUT)
-	public void downlock(@RequestParam("stallId") Long stallId) {
-		log.info("downlock:{} .......................................", stallId);
-		this.stallService.downlock(stallId);
+	public void downlock(@RequestBody ReqOrderStall stall) {
+		log.info("downlock:{} .......................................", stall.toString());
+		this.stallService.downlock(stall);
 	}
 
 	/**

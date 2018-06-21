@@ -74,5 +74,12 @@ public interface OrdersService {
 	 * @param ros
 	 * @param request
 	 */
-	void downResult(HttpServletRequest request); 
+	void downResult(HttpServletRequest request);
+
+	/**
+	 * @Description  降锁消息推送
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void downMsgPush(cn.linkmore.prefecture.request.ReqOrderStall ros); 
 }

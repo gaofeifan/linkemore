@@ -76,6 +76,9 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 			fans.setRegisterStatus((short)0);
 			this.userAppfansMasterMapper.insertSelective(fans);  
 		}else{
+			if(!userAppfans.getUserId().equals(fans.getUserId())) {
+				throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_BINDING_ERROR);
+			}
 			fans.setStatus((short)1); 
 			this.userAppfansMasterMapper.updateByIdSelective(fans);  
 		}  
@@ -134,6 +137,7 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 		urb.setId(user.getId());
 		urb.setMobile(user.getUsername());
 		urb.setRealname(user.getRealname());
+		urb.setSex(user.getSex());
 		return urb;
 	}
 

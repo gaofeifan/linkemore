@@ -22,6 +22,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
 import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
@@ -29,6 +30,7 @@ import cn.linkmore.prefecture.dao.master.StallMasterMapper;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StallLock;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -57,7 +59,8 @@ public class StallServiceImpl implements StallService {
 	private RedisService redisService;
 	@Autowired
 	private LockFactory lockFactory;
-
+	@Autowired
+	private OrderClient orderClient;
 	@Autowired
 	private StallLockMasterMapper stallLockMasterMapper;
 	
@@ -115,8 +118,8 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	@Async
-	public void downlock(Long stallId) {
-		Stall stall = stallClusterMapper.findById(stallId);
+	public void downlock(ReqOrderStall reqos) {
+		Stall stall = stallClusterMapper.findById(reqos.getStallId());
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			log.info("download");
@@ -126,7 +129,11 @@ public class StallServiceImpl implements StallService {
 			if (code == 200) {
 				stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
 				stallMasterMapper.lockdown(stall);
+				reqos.setFlag(true);
+			}else {
+				reqos.setFlag(false);
 			}
+			orderClient.downMsgPush(reqos);
 
 		}
 	}

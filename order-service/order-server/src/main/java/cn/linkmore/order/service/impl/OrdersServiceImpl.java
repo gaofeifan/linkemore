@@ -474,10 +474,22 @@ public class OrdersServiceImpl implements OrdersService {
 	public void down(ReqOrderStall ros,HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
-		Boolean flag = false;    
 		Boolean switchStatus = ros.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value&&order.getUserId().longValue()==cu.getId().longValue();
 		if(switchStatus) {
-			this.stallClient.downlock(order.getStallId());  
+			cn.linkmore.prefecture.request.ReqOrderStall stall = new cn.linkmore.prefecture.request.ReqOrderStall();
+			stall.setOrderId(order.getId());
+			stall.setStallId(order.getStallId());
+			stall.setUserId(cu.getId());
+			this.stallClient.downlock(stall);  
+		}
+	}
+	
+	@Override
+	public void downMsgPush(cn.linkmore.prefecture.request.ReqOrderStall ros) {
+		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
+		Boolean flag = ros.isFlag();    
+		Boolean switchStatus = ros.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value&&order.getUserId().longValue()==ros.getUserId().longValue();
+		if(switchStatus) {
 			Map<String,Object> param = new HashMap<String,Object>(); 
 			param.put("lockDownStatus",flag?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
 			param.put("lockDownTime", new Date());

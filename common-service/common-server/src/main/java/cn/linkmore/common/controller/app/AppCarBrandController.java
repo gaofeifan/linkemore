@@ -80,7 +80,6 @@ public class AppCarBrandController {
 	public void load(HttpServletRequest request) {
 		log.info("请求车辆品牌接口,请耐心等待......");
 		//请求状态  0成功，1请求中，2失败, 方便后台页面控制 请求按钮
-		redisService.set(RedisKey.COMMON_CAR_BRAND_LIST.key, 1);
 		Map<String,Object> msg = new HashMap<String,Object>();
 		
  	    Map<String, String> headers = new HashMap<String, String>();
@@ -124,17 +123,11 @@ public class AppCarBrandController {
 				}
 			}
  	    	redisService.set(RedisKey.COMMON_CAR_BRAND_LIST.key, JSON.toJSON(resultList));
- 	    	//将成功状态存入redis
- 	    	redisService.set(RedisKey.COMMON_CAR_BRAND_LIST.key, 0);
 	    	msg.put("message", true);
 	    	log.info("车辆品牌数据请求成功......");
  	    } catch (NullPointerException n) {
- 	    	redisService.set(RedisKey.COMMON_CAR_BRAND_LIST.key, 2);
-			msg.put("message", "请求数据丢失，请稍后重试");
 			log.info("数据丢失，车辆品牌数据请求失败......");
 		} catch (Exception e) {
-			redisService.set(RedisKey.COMMON_CAR_BRAND_LIST.key, 2);
-			msg.put("message", "连接失败，请稍后重试");
 			log.info("连接失败，车辆品牌数据请求失败......");
 		}
 		

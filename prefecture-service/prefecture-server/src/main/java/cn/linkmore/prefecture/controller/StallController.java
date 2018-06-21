@@ -17,6 +17,7 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
@@ -78,9 +79,9 @@ public class StallController {
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method = RequestMethod.PUT)
 	@ResponseBody
-	public void downlock(@RequestParam("stallId") Long stallId) {
-		log.info("downlock:{} .......................................", stallId);
-		this.stallService.downlock(stallId);
+	public void downlock(@RequestBody ReqOrderStall stall) {
+		log.info("downlock:{} .......................................", stall.toString());
+		this.stallService.downlock(stall);
 	}
 
 	/**

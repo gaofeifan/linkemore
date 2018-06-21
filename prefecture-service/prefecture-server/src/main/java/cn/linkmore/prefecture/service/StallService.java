@@ -8,6 +8,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -43,10 +44,10 @@ public interface StallService {
 	boolean uplock(Long stallId);
 	/**
 	 * 降锁操作
-	 * @param stallId
+	 * @param stall
 	 * @return true 车位锁降下成功 false 车位锁降下失败
 	 */
-	void downlock(Long stallId);
+	void downlock(ReqOrderStall stall);
 	/**
 	 * 根据车位id查询正常状态下车位信息
 	 * @param preId
