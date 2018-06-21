@@ -27,6 +27,7 @@ import cn.linkmore.annotation.TaskId;
 import cn.linkmore.common.entity.TimingSchedule;
 import cn.linkmore.util.BeanUtils;
 
+
 /**
  * @Description  调度中心配置
  * @author  GFF
@@ -42,6 +43,7 @@ public class DefaultSchedulingConfigurer implements SchedulingConfigurer {
 	private final String TASK = "TASK";
 	private ScheduledTaskRegistrar taskRegistrar;
 	//	上下文
+	
 	public static ApplicationContext context;
 	private static Logger logger = Logger.getLogger(DefaultSchedulingConfigurer.class);
 	private Set<ScheduledFuture<?>> scheduledFutures = null;

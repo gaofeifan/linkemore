@@ -3,7 +3,6 @@ package cn.linkmore.account.controller.feign;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.account.response.ResUserGuide;
 import cn.linkmore.account.service.UserGuideService;
-import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.bean.exception.BusinessException;
 
 @RestController
 @RequestMapping("/feign/user_guide")

@@ -477,7 +477,7 @@ public class OrdersServiceImpl implements OrdersService {
 		Boolean flag = false;    
 		Boolean switchStatus = ros.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value&&order.getUserId().longValue()==cu.getId().longValue();
 		if(switchStatus) {
-			flag = this.stallClient.downlock(order.getStallId());  
+			this.stallClient.downlock(order.getStallId());  
 			Map<String,Object> param = new HashMap<String,Object>(); 
 			param.put("lockDownStatus",flag?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
 			param.put("lockDownTime", new Date());
@@ -502,7 +502,6 @@ public class OrdersServiceImpl implements OrdersService {
 		} 
 	}
 
-	 
 
 	@Override
 	@Async

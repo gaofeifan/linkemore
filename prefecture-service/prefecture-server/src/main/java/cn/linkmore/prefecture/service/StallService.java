@@ -46,7 +46,7 @@ public interface StallService {
 	 * @param stallId
 	 * @return true 车位锁降下成功 false 车位锁降下失败
 	 */
-	boolean downlock(Long stallId);
+	void downlock(Long stallId);
 	/**
 	 * 根据车位id查询正常状态下车位信息
 	 * @param preId

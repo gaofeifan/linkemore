@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
@@ -113,8 +114,8 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public boolean downlock(Long stallId) {
-		boolean flag = false;
+	@Async
+	public void downlock(Long stallId) {
 		Stall stall = stallClusterMapper.findById(stallId);
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
@@ -123,13 +124,11 @@ public class StallServiceImpl implements StallService {
 			log.info("res:{}", JsonUtil.toJson(res));
 			int code = res.getMsgCode();
 			if (code == 200) {
-				flag = true;
 				stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
 				stallMasterMapper.lockdown(stall);
 			}
 
 		}
-		return flag;
 	}
 
 	@Override

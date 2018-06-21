@@ -71,6 +71,7 @@ public class UserAppfansServiceImpl implements UserAppfansService {
 			fans.setNickname(userAppfans.getNickname());
 			fans.setUnionid(userAppfans.getUnionid());
 			fans.setCreateTime(new Date());
+			fans.setUserId(userAppfans.getUserId());
 			fans.setStatus((short)1);
 			fans.setRegisterStatus((short)0);
 			this.userAppfansMasterMapper.insertSelective(fans);  

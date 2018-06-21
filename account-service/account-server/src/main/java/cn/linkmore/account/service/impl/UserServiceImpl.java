@@ -429,6 +429,7 @@ public class UserServiceImpl implements UserService {
 		ruaf.setRegisterStatus(fans.getRegisterStatus());
 		ruaf.setStatus(fans.getStatus());
 		ruaf.setUnionid(fans.getUnionid());
+		ruaf.setUserId(fans.getUserId());
 		ResUserLogin rul =this.userAppfansService.wxLogin(ruaf);
 		if(rul==null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);

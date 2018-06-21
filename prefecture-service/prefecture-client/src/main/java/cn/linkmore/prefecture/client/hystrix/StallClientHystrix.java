@@ -35,9 +35,8 @@ public class StallClientHystrix implements StallClient {
 	}
 
 	@Override
-	public Boolean downlock(Long stallId) {
+	public void downlock(Long stallId) {
 		log.info("prefecture service stall downlock(Long stallId) hystrix");
-		return false;
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public interface StallClient {
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method=RequestMethod.PUT)
 	@ResponseBody
-	public Boolean downlock(@RequestParam("stallId") Long stallId);
+	public void downlock(@RequestParam("stallId") Long stallId);
 	
 	/**
 	 * 升锁操作
