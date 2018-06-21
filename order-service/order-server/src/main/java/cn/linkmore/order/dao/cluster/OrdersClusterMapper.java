@@ -35,7 +35,7 @@ public interface OrdersClusterMapper {
 	 * @param carno
 	 * @return
 	 */
-	Integer getLastOrderStatusByCarno(String carno);
+	Integer getPlateLastOrderStatus(String carno);
 	/**
 	 * 查询当前用户订单数
 	 * @param userId
