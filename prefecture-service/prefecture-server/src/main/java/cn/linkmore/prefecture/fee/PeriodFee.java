@@ -145,7 +145,7 @@ public class PeriodFee {
 			for(String k:ks){
 				tp = tpmap.get(k);
 				complete += tp.getCompleteAmount();
-			}
+			} 
 			if(startIndex<endIndex){
 				//开始时间小于结束时间
 				//#---S-----------#------------E--#
@@ -270,11 +270,11 @@ public class PeriodFee {
 	
 	public static void mains(String[] args) throws ParseException{
 		StrategyBase base = new StrategyBase();
-		base.setFreeMins(10);
+		base.setFreeMins(15);
 		String text = "01:00,05:00|00:00,01:00,1.0,15|05:00,09:00,1.0,15|22:00,24:00,1.0,15|09:00,13:00,1.5,15|13:00,22:00,2.5,15";
 		base.setFlexDetail(text);
-		String startString = "2017-11-06 14:08:06";
-		String endString = "2017-11-06 14:11:06";
+		String startString = "2017-11-07 10:31:06";
+		String endString = "2017-11-08 11:45:06";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date startDate = sdf.parse(startString); 
 		startDate = new Date(startDate.getTime()+base.getFreeMins()*60*1000l);

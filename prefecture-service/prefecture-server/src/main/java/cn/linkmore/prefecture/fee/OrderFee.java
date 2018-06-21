@@ -36,6 +36,7 @@ public class OrderFee {
 		startDate = new Date(startDate.getTime() + freeTime);
 		Map<String,Object> result = null;
 		switch(base.getType().intValue()){
+			case StrategyBase.TYPE_DAY_FEE:result=DayFee.getBilling(base, startDate, stopDate);break;
 			case StrategyBase.TYPE_TOP_NONE:result=getParkingCost(base, startDate, stopDate);break;
 			case StrategyBase.TYPE_TOP_DAILY:result=getTOPDailyMap(base, startDate, stopDate);break;
 			case StrategyBase.TYPE_TOP_SECTION:result= getTOPSectionMap(base, startDate, stopDate);break;

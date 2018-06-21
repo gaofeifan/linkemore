@@ -15,6 +15,7 @@ import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.fee.OrderFee;
 import cn.linkmore.prefecture.request.ReqStrategy;
 import cn.linkmore.prefecture.service.StrategyBaseService;
+import cn.linkmore.util.JsonUtil;
 
 /**
  * Controller - 计费操作
@@ -43,12 +44,12 @@ public class FeignStrategyBaseController {
 	@ResponseBody
 	public Map<String, Object> fee(@RequestBody ReqStrategy reqStrategy) {
 		log.info("strategy fee " + reqStrategy.getStrategyId());
-		StrategyBase strategyBase =  this.strategyBaseService.findById(reqStrategy.getStrategyId());
+		StrategyBase strategyBase =  this.strategyBaseService.findById(reqStrategy.getStrategyId()); 
 		Map<String, Object> costMap = new HashMap<String, Object>();
 		if(strategyBase != null) {
 			costMap = OrderFee.getMultipleParkingCost(strategyBase, new Date(reqStrategy.getBeginTime()), 
 					new Date(reqStrategy.getEndTime()));
-		}
+		} 
 		return costMap;
 	}
 }
