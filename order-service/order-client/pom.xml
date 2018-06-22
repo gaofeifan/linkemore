@@ -31,11 +31,6 @@
 			<artifactId>order-bean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>cn.linkmore</groupId>
-			<artifactId>prefecture-bean</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
