@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.UserBlacklistClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserBlacklist">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="max_pre_id" jdbcType="BIGINT" property="maxPreId" />
+    <result column="pre_id_count" jdbcType="SMALLINT" property="preIdCount" />
+    <result column="min_pre_id" jdbcType="BIGINT" property="minPreId" />
+    <result column="total_order_count" jdbcType="INTEGER" property="totalOrderCount" />
+    <result column="cash_order_count" jdbcType="INTEGER" property="cashOrderCount" />
+    <result column="max_coupon_amount" jdbcType="INTEGER" property="maxCouponAmount" />
+    <result column="total_coupon_amount" jdbcType="DOUBLE" property="totalCouponAmount" />
+    <result column="coupon_count" jdbcType="INTEGER" property="couponCount" />
+    <result column="coupon_validate" jdbcType="TIMESTAMP" property="couponValidate" />
+    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap id="ResBaseResultMap" type="cn.linkmore.account.response.ResUserBlacklist">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="max_pre_id" jdbcType="BIGINT" property="maxPreId" />
+    <result column="pre_id_count" jdbcType="SMALLINT" property="preIdCount" />
+    <result column="min_pre_id" jdbcType="BIGINT" property="minPreId" />
+    <result column="total_order_count" jdbcType="INTEGER" property="totalOrderCount" />
+    <result column="cash_order_count" jdbcType="INTEGER" property="cashOrderCount" />
+    <result column="max_coupon_amount" jdbcType="INTEGER" property="maxCouponAmount" />
+    <result column="total_coupon_amount" jdbcType="DOUBLE" property="totalCouponAmount" />
+    <result column="coupon_count" jdbcType="INTEGER" property="couponCount" />
+    <result column="coupon_validate" jdbcType="TIMESTAMP" property="couponValidate" />
+    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, username, max_pre_id, pre_id_count, min_pre_id, total_order_count, cash_order_count, 
+    max_coupon_amount, total_coupon_amount, coupon_count, coupon_validate, limit_status, 
+    operator_id, create_time
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_blacklist
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findPage" resultMap="ResBaseResultMap"  parameterType="java.util.HashMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_blacklist where 1=1 
+    <if test="username!=null">  
+    and username like #{username,jdbcType=VARCHAR}
+    </if>
+     <if test="numberStart!=null">
+    and coupon_count &gt;= #{numberStart}
+    </if> 
+    <if test="numberEnd!=null">
+    and coupon_count &lt;= #{numberEnd}
+    </if> 
+    <if test="startTime!=null">
+    and coupon_validate &gt;= #{startTime}
+    </if> 
+    <if test="endTime!=null">
+    and coupon_validate &lt;= #{endTime}
+    </if> 
+    <if test="property==null">  
+     order by create_time desc,id asc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction},id asc
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+   	from t_user_blacklist where 1=1 
+    <if test="username!=null">  
+    and username like #{username,jdbcType=VARCHAR}
+    </if> 
+      <if test="numberStart!=null">
+    and coupon_count &gt;= #{numberStart}
+    </if> 
+    <if test="numberEnd!=null">
+    and coupon_count &lt;= #{numberEnd}
+    </if> 
+    <if test="startTime!=null">
+    and coupon_validate &gt;= #{startTime}
+    </if> 
+    <if test="endTime!=null">
+    and coupon_validate &lt;= #{endTime}
+    </if> 
+  </select> 
+   <select id="findList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_blacklist 
+  </select>
+</mapper>

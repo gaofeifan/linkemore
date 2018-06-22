@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.UserBlacklistMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserBlacklist">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="max_pre_id" jdbcType="BIGINT" property="maxPreId" />
+    <result column="pre_id_count" jdbcType="SMALLINT" property="preIdCount" />
+    <result column="min_pre_id" jdbcType="BIGINT" property="minPreId" />
+    <result column="total_order_count" jdbcType="INTEGER" property="totalOrderCount" />
+    <result column="cash_order_count" jdbcType="INTEGER" property="cashOrderCount" />
+    <result column="max_coupon_amount" jdbcType="INTEGER" property="maxCouponAmount" />
+    <result column="total_coupon_amount" jdbcType="DOUBLE" property="totalCouponAmount" />
+    <result column="coupon_count" jdbcType="INTEGER" property="couponCount" />
+    <result column="coupon_validate" jdbcType="TIMESTAMP" property="couponValidate" />
+    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, username, max_pre_id, pre_id_count, min_pre_id, total_order_count, cash_order_count, 
+    max_coupon_amount, total_coupon_amount, coupon_count, coupon_validate, limit_status, 
+    operator_id, create_time
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_user_blacklist
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.account.entity.UserBlacklist">
+    insert into t_user_blacklist (id, username, max_pre_id, 
+      pre_id_count, min_pre_id, total_order_count, 
+      cash_order_count, max_coupon_amount, total_coupon_amount, 
+      coupon_count, coupon_validate, limit_status, 
+      operator_id, create_time)
+    values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{maxPreId,jdbcType=BIGINT}, 
+      #{preIdCount,jdbcType=SMALLINT}, #{minPreId,jdbcType=BIGINT}, #{totalOrderCount,jdbcType=INTEGER}, 
+      #{cashOrderCount,jdbcType=INTEGER}, #{maxCouponAmount,jdbcType=INTEGER}, #{totalCouponAmount,jdbcType=DOUBLE}, 
+      #{couponCount,jdbcType=INTEGER}, #{couponValidate,jdbcType=TIMESTAMP}, #{limitStatus,jdbcType=SMALLINT}, 
+      #{operatorId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.account.entity.UserBlacklist">
+    insert into t_user_blacklist
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="maxPreId != null">
+        max_pre_id,
+      </if>
+      <if test="preIdCount != null">
+        pre_id_count,
+      </if>
+      <if test="minPreId != null">
+        min_pre_id,
+      </if>
+      <if test="totalOrderCount != null">
+        total_order_count,
+      </if>
+      <if test="cashOrderCount != null">
+        cash_order_count,
+      </if>
+      <if test="maxCouponAmount != null">
+        max_coupon_amount,
+      </if>
+      <if test="totalCouponAmount != null">
+        total_coupon_amount,
+      </if>
+      <if test="couponCount != null">
+        coupon_count,
+      </if>
+      <if test="couponValidate != null">
+        coupon_validate,
+      </if>
+      <if test="limitStatus != null">
+        limit_status,
+      </if>
+      <if test="operatorId != null">
+        operator_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPreId != null">
+        #{maxPreId,jdbcType=BIGINT},
+      </if>
+      <if test="preIdCount != null">
+        #{preIdCount,jdbcType=SMALLINT},
+      </if>
+      <if test="minPreId != null">
+        #{minPreId,jdbcType=BIGINT},
+      </if>
+      <if test="totalOrderCount != null">
+        #{totalOrderCount,jdbcType=INTEGER},
+      </if>
+      <if test="cashOrderCount != null">
+        #{cashOrderCount,jdbcType=INTEGER},
+      </if>
+      <if test="maxCouponAmount != null">
+        #{maxCouponAmount,jdbcType=INTEGER},
+      </if>
+      <if test="totalCouponAmount != null">
+        #{totalCouponAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="couponCount != null">
+        #{couponCount,jdbcType=INTEGER},
+      </if>
+      <if test="couponValidate != null">
+        #{couponValidate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="limitStatus != null">
+        #{limitStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="operatorId != null">
+        #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.account.entity.UserBlacklist">
+    update t_user_blacklist
+    <set>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPreId != null">
+        max_pre_id = #{maxPreId,jdbcType=BIGINT},
+      </if>
+      <if test="preIdCount != null">
+        pre_id_count = #{preIdCount,jdbcType=SMALLINT},
+      </if>
+      <if test="minPreId != null">
+        min_pre_id = #{minPreId,jdbcType=BIGINT},
+      </if>
+      <if test="totalOrderCount != null">
+        total_order_count = #{totalOrderCount,jdbcType=INTEGER},
+      </if>
+      <if test="cashOrderCount != null">
+        cash_order_count = #{cashOrderCount,jdbcType=INTEGER},
+      </if>
+      <if test="maxCouponAmount != null">
+        max_coupon_amount = #{maxCouponAmount,jdbcType=INTEGER},
+      </if>
+      <if test="totalCouponAmount != null">
+        total_coupon_amount = #{totalCouponAmount,jdbcType=DOUBLE},
+      </if>
+      <if test="couponCount != null">
+        coupon_count = #{couponCount,jdbcType=INTEGER},
+      </if>
+      <if test="couponValidate != null">
+        coupon_validate = #{couponValidate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="limitStatus != null">
+        limit_status = #{limitStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="operatorId != null">
+        operator_id = #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.account.entity.UserBlacklist">
+    update t_user_blacklist
+    set username = #{username,jdbcType=VARCHAR},
+      max_pre_id = #{maxPreId,jdbcType=BIGINT},
+      pre_id_count = #{preIdCount,jdbcType=SMALLINT},
+      min_pre_id = #{minPreId,jdbcType=BIGINT},
+      total_order_count = #{totalOrderCount,jdbcType=INTEGER},
+      cash_order_count = #{cashOrderCount,jdbcType=INTEGER},
+      max_coupon_amount = #{maxCouponAmount,jdbcType=INTEGER},
+      total_coupon_amount = #{totalCouponAmount,jdbcType=DOUBLE},
+      coupon_count = #{couponCount,jdbcType=INTEGER},
+      coupon_validate = #{couponValidate,jdbcType=TIMESTAMP},
+      limit_status = #{limitStatus,jdbcType=SMALLINT},
+      operator_id = #{operatorId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+   <update id="enable" parameterType="java.util.List">
+    update t_user_blacklist
+    set  
+    limit_status = 0  
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id,jdbcType=BIGINT}
+    </foreach> 
+  </update>
+   <delete id="clear">
+    delete from t_user_blacklist
+  </delete>
+  
+  <delete id="deleteWhitelist">
+    delete  from t_user_blacklist   where  username  in(
+		select mobile from t_user_whitelist
+	) 
+  </delete>
+  
+  <insert id="batchSave">
+    insert into t_user_blacklist (id, username, max_pre_id, 
+      pre_id_count, min_pre_id, total_order_count, 
+      cash_order_count, max_coupon_amount, total_coupon_amount, 
+      coupon_count, coupon_validate, limit_status, 
+      operator_id,create_time) 
+	select t.uid id,o.username,max(o.pre_id) max_pre_id,
+	count(DISTINCT o.pre_id) pre_id_count,min(o.pre_id) min_pre_id,
+	count(1) total_order_count,sum(o.actual_amount/(o.total_amount+1)>0) cash_order_count, 
+	t.max_coupon_amount,t.total_coupon_amount,t.coupon_count,t.counpon_validate,
+	1 as limit_status,null as operator_id,NOW() as create_time
+	from  o_orders o  
+	inner join  
+	(
+	SELECT
+		t.user_id uid, 
+		max(t.face_amount) max_coupon_amount, 
+		sum(t.face_amount) total_coupon_amount,
+		count(1) coupon_count,
+		max(t.valid_time) counpon_validate
+	FROM
+		c_coupon t 
+	WHERE
+		t.face_amount >= 20 
+		and t.status = 0  
+		and t.template_id is null 
+	GROUP BY
+		t.user_id 
+	) t on o.user_id = t.uid and o.status = 3  group by o.user_id
+  </insert>   
+</mapper>

@@ -4,10 +4,15 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.account.entity.UserGuide;
-import cn.linkmore.account.request.ReqUserGuide;
+import cn.linkmore.account.entity.UserBlacklist;
+/**
+ * - 权限模块mapper -- 写
+ * @author   GFF
+ * @Date     2018年6月20日
+ * @Version  v2.0
+ */
 @Mapper
-public interface UserGuideMasterMapper {
+public interface UserBlacklistMasterMapper {
     /**
      * @Description  
      * @Author   GFF 
@@ -20,47 +25,49 @@ public interface UserGuideMasterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    int save(UserGuide record);
+    int save(UserBlacklist record);
 
     /**
      * @Description  
      * @Author   GFF 
      * @Version  v2.0
      */
-    int saveSelective(UserGuide record);
+    int saveSelective(UserBlacklist record);
 
     /**
      * @Description  
      * @Author   GFF 
      * @Version  v2.0
      */
-    int updateByIdSelective(UserGuide record);
+    int updateByIdSelective(UserBlacklist record);
 
     /**
      * @Description  
      * @Author   GFF 
      * @Version  v2.0
      */
-    int updateById(UserGuide record);
+    int updateById(UserBlacklist record);
 
-	/**
-	 * @Description  新增
+    /**
+	 * @Description  解禁
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void saveReq(ReqUserGuide userGuide);
+	void enable(List<Long> list);
 
 	/**
-	 * @Description  更新--请求
+	 * @Description  清除
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void updateReqById(ReqUserGuide userGuide);
+	int clear();
 
 	/**
-	 * @Description  批量删除
+	 * @Description  批量新增
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void deleteIds(List<Long> ids);
+	int batchSave();
+
+	int deleteWhitelist();
 }

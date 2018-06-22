@@ -81,5 +81,5 @@ public interface OrdersService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void downMsgPush(cn.linkmore.prefecture.request.ReqOrderStall ros); 
+	void downMsgPush(Long orderId, Long stallId); 
 }

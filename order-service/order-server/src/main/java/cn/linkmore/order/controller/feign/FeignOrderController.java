@@ -27,10 +27,10 @@ public class FeignOrderController {
 		return this.ordersService.latest(userId);
 	} 
 
-	@RequestMapping(value = "/v2.0/down_msg_push", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/down-msg-push", method = RequestMethod.POST)
 	@ResponseBody
-	void downMsgPush(@RequestBody ReqOrderStall stall) {
-		this.ordersService.downMsgPush(stall);
+	void downMsgPush(@RequestParam("orderId")Long orderId, @RequestParam("stallId")Long stallId) {
+		this.ordersService.downMsgPush(orderId,stallId);
 	} 
 	
 	

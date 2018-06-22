@@ -485,32 +485,28 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 	
 	@Override
-	public void downMsgPush(cn.linkmore.prefecture.request.ReqOrderStall ros) {
-		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
-		Boolean flag = ros.isFlag();    
-		Boolean switchStatus = ros.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value&&order.getUserId().longValue()==ros.getUserId().longValue();
-		if(switchStatus) {
-			Map<String,Object> param = new HashMap<String,Object>(); 
-			param.put("lockDownStatus",flag?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
-			param.put("lockDownTime", new Date());
-			param.put("orderId", order.getId());
-			this.orderMasterMapper.updateLockStatus(param); 
-			log.info("stall downing :{}",flag);
-			if(!flag) {
-				if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId())) {
-					switchStatus = true;
-				}else {
-					this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), 1);
-				}
-				
+	public void downMsgPush(Long orderId, Long stallId) {
+		ResUserOrder order = this.ordersClusterMapper.findDetail(orderId);
+		Boolean switchStatus = false;
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		param.put("lockDownStatus",switchStatus?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
+		param.put("lockDownTime", new Date());
+		param.put("orderId", order.getId());
+		this.orderMasterMapper.updateLockStatus(param); 
+		log.info("stall downing :{}",switchStatus);
+		if(!switchStatus) {
+			if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId())) {
+				switchStatus = true;
 			}else {
-				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), 1);
 			}
-		} 
+		}else {
+			this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
+		}
 		if(switchStatus) {
 			this.push(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
 		}else {
-			this.push(order.getUserId().toString(), "预约降锁通知",flag? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, flag);
+			this.push(order.getUserId().toString(), "预约降锁通知",switchStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
 		} 
 	}
 

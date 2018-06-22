@@ -47,7 +47,8 @@ public class AppCarBrandController {
 	//API域名
     private final static String HOST = "http://jisucxdq.market.alicloudapi.com";
 	//阿里云市场里，购买服务后的code
-    private final static String APP_CODE = "ad0d38987d534d0692e15b67a9fb168c";
+//    private final static String APP_CODE = "ad0d38987d534d0692e15b67a9fb168c";
+    private final static String APP_CODE = "fac3d2da15bc41b4a2a16ed02a2a7aef";
     //一级品牌url
     private final static String CarBrandPath = "/car/brand";
     //二级三级品牌url

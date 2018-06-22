@@ -129,11 +129,9 @@ public class StallServiceImpl implements StallService {
 			if (code == 200) {
 				stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
 				stallMasterMapper.lockdown(stall);
-				reqos.setFlag(true);
 			}else {
-				reqos.setFlag(false);
 			}
-			orderClient.downMsgPush(reqos);
+			orderClient.downMsgPush(reqos.getOrderId(),reqos.getStallId());
 
 		}
 	}

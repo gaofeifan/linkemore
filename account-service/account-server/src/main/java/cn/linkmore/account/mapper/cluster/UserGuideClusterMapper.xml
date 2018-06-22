@@ -24,8 +24,79 @@
     from t_user_guide
     where id = #{id,jdbcType=BIGINT}
   </select>
+   <select id="findList" resultMap="BaseResultMap"  parameterType="java.util.HashMap">
+    select id, create_time, update_time, level, parent_id, status, title,en_title, type, order_index
+    from t_user_guide where 1= 1
+    <if test="parentId!=null">  
+    and parent_id = #{parentId,jdbcType=BIGINT}
+    </if>
+    <if test="title!=null">  
+    and title like #{title,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=BIGINT}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=BIGINT}
+    </if>
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
+  </select>
  <select id="findAll" resultMap="BaseResultMap" >
    select id,url, parent_id, title,en_title, type,status,level, create_time, update_time
     from t_user_guide where status = 1  order by order_index 
+  </select>
+   <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_user_guide
+    where 1 = 1
+    <if test="parentId!=null">  
+    and parent_id = #{parentId,jdbcType=BIGINT}
+    </if>
+    <if test="title!=null">  
+    and title like #{title,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=BIGINT}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=BIGINT}
+    </if>
+  </select>
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_user_guide
+    where 
+    ${property} = #{value}  
+    and parent_id = #{parentId}
+    and id != #{id} 
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap"  parameterType="java.util.HashMap">
+    select id, create_time, update_time, level, parent_id, status, title,en_title, type, order_index
+    from t_user_guide where 1= 1
+    <if test="parentId!=null">  
+    and parent_id = #{parentId,jdbcType=BIGINT}
+    </if>
+    <if test="title!=null">  
+    and title like #{title,jdbcType=VARCHAR}
+    </if>
+    <if test="status!=null">  
+    and status = #{status,jdbcType=BIGINT}
+    </if> 
+    <if test="type!=null">  
+    and type = #{type,jdbcType=BIGINT}
+    </if>
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 </mapper>

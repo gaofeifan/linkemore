@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
-import cn.linkmore.prefecture.request.ReqOrderStall;
 
 @Component
 public class OrderClientHystrix implements OrderClient {
@@ -20,9 +19,11 @@ public class OrderClientHystrix implements OrderClient {
 	}
 
 	@Override
-	public void downMsgPush(ReqOrderStall stall) {
-		log.info("downMsgPush order :{}",stall.toString());
+	public void downMsgPush(Long orderId, Long stallId) {
+		log.info("downMsgPush order :{}",orderId + "," + stallId);
 		
 	}
+	
+	
 	 
 }
