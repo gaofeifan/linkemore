@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.report.dao.cluster.ReportDayClusterMapper">
+  <resultMap id="CityResultMap" type="cn.linkmore.report.response.ResCity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+  </resultMap>
+  
+  <resultMap id="PreResultMap" type="cn.linkmore.report.response.ResPre">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  
+  <resultMap id="UserNumResultMap" type="cn.linkmore.report.response.ResUserNum">
+    <id column="sum_total" jdbcType="INTEGER" property="sumTotal" />
+    <result column="day_total" jdbcType="INTEGER" property="dayTotal" />
+    <result column="stall_total" jdbcType="VARCHAR" property="stallTotal" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+  </resultMap>
+  
+  <resultMap id="NewUserResultMap" type="cn.linkmore.report.response.ResNewUser">
+    <result column="id" jdbcType="BIGINT" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="day_total" jdbcType="VARCHAR" property="dayTotal" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+  </resultMap>
+  
+  <resultMap id="PullResultMap" type="cn.linkmore.report.response.ResPull">
+  	<result column="id" jdbcType="BIGINT" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="day_total" jdbcType="INTEGER" property="dayTotal" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+  </resultMap>
+  
+  <resultMap id="StallAverageResultMap" type="cn.linkmore.report.response.ResStallAverage">
+  	<result column="id" jdbcType="BIGINT" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="day_total" jdbcType="INTEGER" property="dayTotal" />
+    <result column="stall_total" jdbcType="INTEGER" property="stallTotal" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+    <result column="average" jdbcType="DOUBLE" property="average" />
+  </resultMap>
+  
+  <resultMap id="OrderResultMap" type="cn.linkmore.report.response.ResOrder">
+  	<result column="id" jdbcType="BIGINT" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="day_total" jdbcType="INTEGER" property="dayTotal" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+  </resultMap>
+  
+  <resultMap id="RunTimeResultMap" type="cn.linkmore.report.response.ResRunTime">
+  	<result column="id" jdbcType="BIGINT" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="day_total" jdbcType="INTEGER" property="dayTotal" />
+    <result column="stall_total" jdbcType="INTEGER" property="stallTotal" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+    <result column="rdl" jdbcType="DOUBLE" property="rdl" />
+    <result column="jtsc" jdbcType="DOUBLE" property="jtsc" />
+    <result column="runtime" jdbcType="DOUBLE" property="runtime" />
+  </resultMap>
+  
+  <resultMap id="AveragePriceResultMap" type="cn.linkmore.report.response.ResAveragePrice">
+  	<result column="id" jdbcType="BIGINT" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="day_total" jdbcType="INTEGER" property="dayTotal" />
+    <result column="average_price" jdbcType="DOUBLE" property="averagePrice" />
+  </resultMap>
+  <!-- 城市列表 -->
+  <select id="cityList" resultMap="CityResultMap" >
+    select t.id,t.city_name from t_city t
+  </select>
+  <!-- 车区列表 -->
+  <select id="preList" resultMap="PreResultMap" parameterType="java.util.HashMap">
+    select t.id,t.name from v_prefecture t where 1 = 1 
+    <if test="cityId != null">  
+    	and t.city_id = #{cityId,jdbcType=BIGINT}
+    </if>  
+  </select>
+  <!-- 用户总数 -->
+  <select id="totalCount" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(*) from t_user t where (t.is_app_register = 1 or t.is_wechat_bind=1)
+  </select>
+  <!-- 用户数量 -->
+  <select id="userNumList" resultMap="UserNumResultMap" parameterType="java.util.HashMap">
+	SELECT
+		count(*) as sum_total,
+		t1.DAY,
+		t1.day_total ,
+		t1.stall_total
+	FROM
+		t_user t,
+		(
+			SELECT
+				DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+				count(*) AS day_total,
+				(SELECT count(*) FROM v_stall) AS stall_total
+			FROM
+				t_user t
+			WHERE
+				(
+					t.is_app_register = 1
+					OR t.is_wechat_bind = 1
+				)
+			<if test="startTime!=null">
+		    	AND t.create_time &gt; #{startTime}
+		    </if> 
+		    <if test="endTime!=null">
+		    	AND t.create_time &lt; #{endTime}
+		    </if> 
+			GROUP BY
+				DAY
+			ORDER BY
+				DAY DESC
+		) t1
+	WHERE
+		(
+			t.is_app_register = 1
+			OR t.is_wechat_bind = 1
+		)
+	AND t.create_time &lt; t1.day group by day
+  </select>
+  <!-- 新增用户 -->
+  <select id="newUserList" resultMap="NewUserResultMap" parameterType="java.util.HashMap">
+    SELECT
+		c.id,
+		c.city_name,
+		DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+		count(*) AS day_total
+	FROM
+		t_coupon_send_user t
+	LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
+	LEFT JOIN v_prefecture pre ON temp.pre_id = pre.id
+	LEFT JOIN t_city c ON pre.city_id = c.id
+	WHERE
+		temp.type = 2
+	AND temp. STATUS = 1
+	AND pre. STATUS = 0
+	<if test="startTime!=null">
+    	AND t.create_time &gt; #{startTime}
+    </if> 
+    <if test="endTime!=null">
+    	AND t.create_time &lt; #{endTime}
+    </if>
+	GROUP BY
+		c.id,
+		c.city_name,
+		DAY
+  </select>
+  <!-- 现场拉新 -->
+  <select id="pullList" resultMap="PullResultMap" parameterType="java.util.HashMap">
+	SELECT
+		c.id,
+		c.city_name,
+		pre.id AS pre_id,
+		pre. NAME AS pre_name,
+		DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+		count(*) AS day_total
+	FROM
+		t_coupon_send_user t
+	LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
+	LEFT JOIN v_prefecture pre ON temp.pre_id = pre.id
+	LEFT JOIN t_city c ON pre.city_id = c.id
+	WHERE
+		temp.type = 2
+	AND temp. STATUS = 1
+	AND pre. STATUS = 0
+	and pre.id in
+	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+	<if test="startTime!=null">
+		AND t.create_time &gt; #{startTime}
+	</if> 
+	<if test="endTime!=null">
+		AND t.create_time &lt; #{endTime}
+	</if>
+	GROUP BY
+		c.id,
+		c.city_name,
+		pre.id,
+		pre. NAME,
+		DAY
+  </select>
+  <!-- 单车位日均 -->
+  <select id="stallAverageList" resultMap="StallAverageResultMap" parameterType="java.util.HashMap">
+	SELECT
+		c.id,
+		c.city_name,
+		pre.id AS pre_id,
+		pre. NAME AS pre_name,
+		DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+		count(*) AS day_total,
+		pre.stall_total,
+		ROUND(count(*) / pre.stall_total, 1) AS average
+	FROM
+		t_coupon_send_user t
+	LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
+	LEFT JOIN (
+		SELECT
+			p.id,
+			p. NAME,
+			p.city_id,
+			count(*) AS stall_total
+		FROM
+			v_stall s
+		LEFT JOIN v_prefecture p ON p.id = s.pre_id
+		WHERE
+			p. STATUS = 0
+		GROUP BY
+			p.id,
+			p. NAME,
+			p.city_id
+	) pre ON temp.pre_id = pre.id
+	left join t_city c on c.id = pre.city_id
+	WHERE
+		temp.type = 2
+	AND temp. STATUS = 1
+	and pre.id in
+	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+	<if test="startTime!=null">
+		AND t.create_time &gt; #{startTime}
+	</if> 
+	<if test="endTime!=null">
+		AND t.create_time &lt; #{endTime}
+	</if>
+	GROUP BY
+		c.id,
+		c.city_name,
+		pre.id,
+		pre.NAME,
+		pre.stall_total,
+		DAY
+  </select>
+  <!-- 订单数量 -->
+  <select id="orderList" resultMap="OrderResultMap" parameterType="java.util.HashMap">
+	SELECT
+        c.id,
+		c.city_name,
+		pre.id AS pre_id,
+		pre.NAME AS pre_name,
+		DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
+		count(*) AS day_total
+	FROM
+		o_orders o
+	LEFT JOIN v_prefecture pre ON o.pre_id = pre.id
+	LEFT JOIN t_city c on pre.city_id = c.id
+	WHERE
+		pre. STATUS = 0
+	AND o. STATUS = 3
+	AND pre.id in
+	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+	AND TIMESTAMPDIFF(
+		MINUTE,
+		o.create_time,
+		o.end_time
+	) >= 15
+	<if test="startTime!=null">
+		AND o.create_time &gt; #{startTime}
+	</if> 
+	<if test="endTime!=null">
+		AND o.create_time &lt; #{endTime}
+	</if>
+	GROUP BY
+        c.id,
+	    c.city_name,
+		pre.id,
+		pre.NAME,
+		DAY
+  </select>
+  <!-- 银联订单 -->
+  <select id="ylOrderList" resultMap="OrderResultMap" parameterType="java.util.HashMap">
+	SELECT
+	    c.id,
+		c.city_name,
+		pre.id AS pre_id,
+		pre.NAME AS pre_name,
+		DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
+		count(*) AS day_total
+	FROM
+		o_orders o
+	LEFT JOIN v_prefecture pre ON o.pre_id = pre.id
+	LEFT JOIN t_city c on pre.city_id = c.id
+	WHERE
+		pre. STATUS = 0
+	AND o. STATUS = 3
+	AND o.order_no LIKE '%YL%'
+	AND pre.id in
+	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+	AND TIMESTAMPDIFF(
+		MINUTE,
+		o.create_time,
+		o.end_time
+	) >= 15
+	<if test="startTime!=null">
+		AND o.create_time &gt; #{startTime}
+	</if> 
+	<if test="endTime!=null">
+		AND o.create_time &lt; #{endTime}
+	</if>
+	GROUP BY
+		c.id,
+	    c.city_name,
+		pre.id,
+		pre.NAME,
+		DAY
+  </select>
+  <!-- 新用户订单 -->
+  <select id="newUserOrderList" resultMap="OrderResultMap" parameterType="java.util.HashMap">
+	SELECT
+		c.id,
+	    c.city_name,
+		pre.id pre_id,
+		pre.NAME pre_name,
+		DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
+		count(*) AS day_total
+	FROM
+		o_orders o
+	LEFT JOIN v_prefecture pre ON o.pre_id = pre.id
+	LEFT JOIN t_user u ON o.user_id = u.id
+	LEFT JOIN t_city c on pre.city_id = c.id
+	WHERE
+		pre. STATUS = 0
+	AND o. STATUS = 3
+	AND pre.id in
+	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+	AND TIMESTAMPDIFF(
+		MINUTE,
+		o.create_time,
+		o.end_time
+	) >= 15
+	<if test="startTime!=null">
+		AND o.create_time &gt; #{startTime}
+	</if> 
+	<if test="endTime!=null">
+		AND o.create_time &lt; #{endTime}
+	</if>
+	AND DATE_FORMAT(u.create_time, '%Y-%m-%d') = DATE_FORMAT(o.create_time, '%Y-%m-%d')
+	GROUP BY
+		c.id,
+	    c.city_name,
+		pre.id,
+		pre.NAME,
+		DAY
+  </select>
+  <!-- 老用户订单 -->
+  <select id="oldUserOrderList" resultMap="OrderResultMap" parameterType="java.util.HashMap">
+	SELECT
+		c.id,
+	    c.city_name,
+		pre.id pre_id,
+		pre.NAME pre_name,
+		DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
+		count(*) AS day_total
+	FROM
+		o_orders o
+	LEFT JOIN v_prefecture pre ON o.pre_id = pre.id
+	LEFT JOIN t_user u ON o.user_id = u.id
+	LEFT JOIN t_city c on pre.city_id = c.id
+	WHERE
+		pre. STATUS = 0
+	AND o. STATUS = 3
+	AND pre.id in
+	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+	AND TIMESTAMPDIFF(
+		MINUTE,
+		o.create_time,
+		o.end_time
+	) >= 15
+	<if test="startTime!=null">
+		AND o.create_time &gt; #{startTime}
+	</if> 
+	<if test="endTime!=null">
+		AND o.create_time &lt; #{endTime}
+	</if>
+	AND DATE_FORMAT(u.create_time, '%Y-%m-%d') != DATE_FORMAT(o.create_time, '%Y-%m-%d')
+	GROUP BY
+		c.id,
+	    c.city_name,
+		pre.id,
+		pre.NAME,
+		DAY
+  </select>
+  
+  <!-- 运营时长 均停时长 日单量 -->
+  <select id="runTimeList" resultMap="RunTimeResultMap" parameterType="java.util.HashMap">
+	SELECT
+    	c.id,
+		c.city_name,
+		pre.id pre_id,
+		pre.NAME pre_name,
+		DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
+		sum(
+			TIMESTAMPDIFF(
+				MINUTE,
+				o.create_time,
+				o.end_time
+			)
+		) AS total_time,
+		pre.stall_total,
+		count(*) AS day_total,
+		ROUND(count(*) / stall_total, 1) AS rdl,
+		ROUND(
+			sum(
+				TIMESTAMPDIFF(
+					MINUTE,
+					o.create_time,
+					o.end_time
+				)
+			) / 60 / count(*),
+			1
+		) AS jtsc,
+		ROUND(
+			sum(
+				TIMESTAMPDIFF(
+					MINUTE,
+					o.create_time,
+					o.end_time
+				)
+			) / 60 / stall_total,
+			1
+		) AS runtime
+	FROM
+		o_orders o
+	LEFT JOIN (
+		SELECT
+			p.id,
+			p.NAME,
+			p.city_id,
+			p.status,
+			count(*) AS stall_total
+		FROM
+			v_stall s
+		LEFT JOIN v_prefecture p ON p.id = s.pre_id
+		GROUP BY
+			p.id,
+			p.NAME,
+			p.city_id,
+			p.status
+	) pre ON o.pre_id = pre.id
+  LEFT JOIN t_city c on c.id = pre.city_id
+	WHERE
+  	o.STATUS = 3
+  	AND pre.STATUS = 0
+  	AND pre.id in
+	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+	AND TIMESTAMPDIFF(
+		MINUTE,
+		o.create_time,
+		o.end_time
+	) >= 15
+	<if test="startTime!=null">
+		AND o.create_time &gt; #{startTime}
+	</if> 
+	<if test="endTime!=null">
+		AND o.create_time &lt; #{endTime}
+	</if>
+	GROUP BY
+    	c.id,
+    	c.city_name,
+		pre.id,
+		pre.name,
+		pre.stall_total,
+		DAY
+  </select>
+  
+  <!-- 客单价 -->
+  <select id="averagePriceList" resultMap="AveragePriceResultMap" parameterType="java.util.HashMap">
+	SELECT
+		c.id,
+	    c.city_name,
+		pre.id pre_id,
+		pre. NAME pre_name,
+		DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
+		round(
+			sum(o.total_amount) / count(*),
+			1
+		) AS average_price
+	FROM
+		o_orders o
+	LEFT JOIN v_prefecture pre ON o.pre_id = pre.id
+	LEFT JOIN t_city c ON pre.city_id = c.id
+	WHERE
+		o. STATUS = 3
+	AND pre. STATUS = 0
+	AND pre.id in
+	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+	AND TIMESTAMPDIFF(
+		MINUTE,
+		o.create_time,
+		o.end_time
+	) >= 15
+	<if test="startTime!=null">
+		AND o.create_time &gt; #{startTime}
+	</if> 
+	<if test="endTime!=null">
+		AND o.create_time &lt; #{endTime}
+	</if>
+	GROUP BY
+		c.id,
+	    c.city_name,
+		pre.id,
+		pre. NAME,
+		DAY
+  </select>
+ </mapper>
