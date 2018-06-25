@@ -84,12 +84,7 @@ public class UserClientHystrix implements UserClient{
 		log.info("account service user appLogin( String mobile) hystrix");
 		return null;
 	}
- 
-	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans) {
-		log.info("account service user wxLogin(  ReqUserAppfans appfans) hystrix");
-		return null;
-	}
-
+  
 	@Override
 	public ResUser findById(Long id) {
 		log.info("account service user findById(Long id) hystrix");

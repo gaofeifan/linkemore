@@ -1,10 +1,8 @@
 package cn.linkmore.report.request;
 
-import java.util.List;
-
 public class ReqReportDay {
 	private Long cityId;
-	private List<Long> preIds;
+	private String preIds;
 	private String startTime;
 	private String endTime;
 	public Long getCityId() {
@@ -13,10 +11,11 @@ public class ReqReportDay {
 	public void setCityId(Long cityId) {
 		this.cityId = cityId;
 	}
-	public List<Long> getPreIds() {
+	
+	public String getPreIds() {
 		return preIds;
 	}
-	public void setPreIds(List<Long> preIds) {
+	public void setPreIds(String preIds) {
 		this.preIds = preIds;
 	}
 	public String getStartTime() {

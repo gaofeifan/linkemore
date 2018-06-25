@@ -240,5 +240,13 @@ public interface UserService {
      */
     ResUser getUserByUserName(String userName);
 
+    /**
+     * 绑定微信号
+     * @param code
+     * @param request
+     * @return 
+     */
+	void bindWechat(String code, HttpServletRequest request);
+
 
 }

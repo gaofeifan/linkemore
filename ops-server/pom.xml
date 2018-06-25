@@ -80,7 +80,18 @@
 			<artifactId>order-bean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-			<dependency>
+		
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>report-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>report-bean</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>${poi.version}</version>

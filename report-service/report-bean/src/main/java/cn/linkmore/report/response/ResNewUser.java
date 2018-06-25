@@ -12,7 +12,7 @@ public class ResNewUser {
 	private int bjCooperation = 0;//北京合作转化
 	private int hzUnderTran = 0;//杭州线下转化
 	private int bjUnderTran = 0;//北京线下转化
-	private int natureTran = 0;//自然转化
+	private int natureTran ;//自然转化
 	
 	private Long cityId;//城市id
 	private String cityName;//城市名称
