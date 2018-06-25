@@ -115,14 +115,7 @@ public interface UserClient {
 	@RequestMapping(value = "/v2.0/login/{mobile}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserLogin appLogin(@PathVariable("mobile") String mobile);
-
-	/**
-	 * @Description  微信登录
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	@RequestMapping(value="/v2.0/login",method = RequestMethod.POST)
-	public ResUserLogin wxLogin(@RequestBody ReqUserAppfans appfans);
+ 
 	
 	/**
 	 * @Description  根据id查询

@@ -159,12 +159,32 @@ public class AppUserController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@ApiOperation(value="删除微信号",notes="用户需要登录", consumes = "application/json")
+	@ApiOperation(value="解绑微信号",notes="解绑微信号", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResponseEntity<?> removeWechat(HttpServletRequest request) {
 		this.userService.removeWechat(request);
 		ResponseEntity<?> response = ResponseEntity.success(null, request);
 		return response;
+	}
+	/**
+	 * @Description  删除微信号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@ApiOperation(value="绑定微信号",notes="绑定微信号", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<?> bindWechat(@RequestParam("code")String code,HttpServletRequest request) { 
+		ResponseEntity<?> response = null;
+		try {
+			this.userService.bindWechat(code,request);
+			response = ResponseEntity.success(null, request);
+		}catch(BusinessException e){ 
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		}catch(Exception e){ 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;  
 	}
 }

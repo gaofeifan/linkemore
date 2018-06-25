@@ -14,16 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
+import cn.linkmore.account.dao.cluster.UserAppfansClusterMapper;
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
 import cn.linkmore.account.dao.cluster.UserVechicleClusterMapper;
 import cn.linkmore.account.dao.master.AccountMasterMapper;
 import cn.linkmore.account.dao.master.AdminUserMasterMapper;
+import cn.linkmore.account.dao.master.UserAppfansMasterMapper;
 import cn.linkmore.account.dao.master.UserMasterMapper;
 import cn.linkmore.account.dao.master.UserVechicleMasterMapper;
 import cn.linkmore.account.entity.Account;
@@ -41,7 +42,6 @@ import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserLogin;
-import cn.linkmore.account.service.UserAppfansService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
@@ -94,7 +94,11 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PushClient pushClient;
 	@Resource
-	private UserAppfansService userAppfansService;
+	private UserAppfansClusterMapper userAppfansClusterMapper;
+	
+	@Resource
+	private UserAppfansMasterMapper userAppfansMasterMapper;
+	
 	@Resource
 	private UserVechicleClusterMapper userVechicleClusterMapper;
 	@Resource
@@ -183,7 +187,7 @@ public class UserServiceImpl implements UserService {
 					res.setBrandModel(brandModel);
 				}
 			}
-			ResUserAppfans af = this.userAppfansService.findByUserId(userId);
+			ResUserAppfans af = this.userAppfansClusterMapper.findByUserId(userId);
 			if (af != null && af.getStatus().shortValue() == 1) {
 				res.setWechatId(af.getId());
 				res.setWechatUrl(af.getHeadurl());
@@ -211,7 +215,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateAppfans(ReqUserAppfans bean) {
 		ResUser user = this.findById(bean.getUserId());
-		UserAppfans fans = this.userAppfansService.findById(bean.getId());
+		UserAppfans fans = this.userAppfansClusterMapper.findById(bean.getId());
 		if (fans == null) {
 			fans = new UserAppfans();
 			fans.setId(bean.getId());
@@ -222,17 +226,17 @@ public class UserServiceImpl implements UserService {
 			fans.setStatus((short) 1);
 			fans.setUserId(user.getId());
 			fans.setRegisterStatus((short) 0);
-			this.userAppfansService.insertSelective(fans);
+			this.userAppfansMasterMapper.insertSelective(fans);
 		} else {
 			fans.setStatus((short) 1);
 			fans.setUserId(user.getId());
-			this.userAppfansService.updateByIdSelective(fans);
+			this.userAppfansMasterMapper.updateByIdSelective(fans);
 		}
 	}
 
 	@Override
 	public void removeWechat(Long userId) {
-		this.userAppfansService.deleteByUserId(userId);
+		this.userAppfansMasterMapper.deleteByUserId(userId);
 		Map<String, Object> param = new HashMap<>();
 		param.put("column", "wechat");
 		param.put("value", null);
@@ -413,42 +417,93 @@ public class UserServiceImpl implements UserService {
 			this.push(ru.getId().toString(), token); 
 		}
 		return ru;
-	}
+	} 
 
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser login(String code, HttpServletRequest request) {
 		ResFans fans = this.appWechatClient.getFans(code);
 		if(fans==null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_LOGIN_ERROR);
-		} 
-		CacheUser cache = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
-		ReqUserAppfans ruaf = new ReqUserAppfans();
-		ruaf.setCreateTime(fans.getCreateTime());
-		ruaf.setHeadurl(fans.getHeadurl());
-		ruaf.setId(fans.getId());
-		ruaf.setNickname(fans.getNickname());
-		ruaf.setRegisterStatus(fans.getRegisterStatus());
-		ruaf.setStatus(fans.getStatus());
-		ruaf.setUnionid(fans.getUnionid());
-		if(cache != null) {
-			ruaf.setUserId(cache.getId());
+		}    
+		UserAppfans db = this.userAppfansClusterMapper.findById(fans.getId());
+		if(db==null){
+			db = new UserAppfans();
+			db.setId(fans.getId());
+			db.setHeadurl(fans.getHeadurl());
+			db.setNickname(fans.getNickname());
+			db.setUnionid(fans.getUnionid());
+			db.setCreateTime(new Date()); 
+			db.setStatus((short)1);
+			db.setRegisterStatus((short)0);
+			this.userAppfansMasterMapper.insertSelective(db);  
+		}else{  
+			db.setStatus((short)1); 
+			this.userAppfansMasterMapper.updateByIdSelective(db);  
+		}  
+		ResUser user = null;
+		if(db.getUserId()!=null){
+			user = this.userClusterMapper.findById(db.getUserId());
 		}
-		ResUserLogin rul =this.userAppfansService.wxLogin(ruaf);
-		if(rul==null) {
-			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
-		} 
+		if(user==null){
+			user = this.userClusterMapper.findByMobile(db.getId());
+			if(user!=null){
+				db.setUserId(user.getId()); 
+				this.userAppfansMasterMapper.updateByIdSelective(db);
+			}
+		}
+		if(user==null){
+			User u = new User();
+			u.setMobile(fans.getId());
+			u.setUsername(fans.getId());
+			u.setNickname(fans.getNickname());
+			u.setPassword("");
+			u.setUserType("1");
+			u.setStatus("1"); 
+			u.setLastLoginTime(new Date());
+			u.setCreateTime(new Date());
+			u.setUpdateTime(new Date());
+			u.setIsAppRegister((short)1);
+			u.setAppRegisterTime(new Date());
+			u.setIsWechatBind((short)0);
+			this.userMasterMapper.insertSelective(u);  
+			user = this.userClusterMapper.findById(u.getId());
+			Account account = new Account();
+			account.setId(u.getId());
+			account.setAmount(0.00d);
+			account.setUsableAmount(0.00d);
+			account.setFrozenAmount(0.00d);
+			account.setRechagePaymentAmount(0.00d);
+			account.setRechargeAmount(0.00d);
+			account.setAccType(1);
+			account.setStatus((short) 1);
+			account.setOrderAmount(0.00d);
+			account.setOrderPaymentAmount(0.00d);
+			account.setCreateTime(new Date());
+			accountMasterMapper.insertSelective(account);
+			db.setUserId(u.getId());
+			this.userAppfansMasterMapper.updateByIdSelective(db);
+		}  else if(user.getStatus().equals("2")){
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
+		} else {
+			user.setLastLoginTime(new Date());
+			Map<String,Object> param = new HashMap<String,Object>();
+			param.put("id", user.getId());
+			param.put("lastLoginTime", new Date());
+			param.put("updateTime", new Date());
+			this.userMasterMapper.updateLoginTime(param);
+		}  
 		String key = TokenUtil.getKey(request); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
-		ru.setId(rul.getId());
-		ru.setMobile(rul.getMobile());
+		ru.setId(user.getId());
+		ru.setMobile(user.getMobile());
 		ru.setToken(key); 
-		ru.setRealname(rul.getRealname());
-		ru.setSex(rul.getSex());
-		CacheUser user = new CacheUser();
-		user.setId(rul.getId());
-		user.setMobile(rul.getMobile());
-		user.setToken(key); 
-		this.cacheUser(request, user);   
+		ru.setRealname(user.getRealname());
+		ru.setSex(user.getSex());
+		CacheUser cu = new CacheUser();
+		cu.setId(user.getId());
+		cu.setMobile(user.getUsername());
+		cu.setToken(key); 
+		this.cacheUser(request, cu);   
 		return ru;
 	}
 
@@ -557,6 +612,8 @@ public class UserServiceImpl implements UserService {
 		user.setRealname(details.getRealname());
 		user.setSex(details.getSex().shortValue());
 		user.setToken(ru.getToken());
+		ru.setMobile(user.getMobile());
+		this.updateCache(request, ru);
 		return user;
 	}
 	
@@ -649,6 +706,39 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResUser getUserByUserName(String userName) {
 		return this.userClusterMapper.getUserByUserName(userName);
+	}
+
+	@Override
+	public void bindWechat(String code, HttpServletRequest request) { 
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_USER.key+key);  
+		if(ru.getMobile().trim().length()>=12) {
+			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_BINDING_NOMOBILE);
+		}
+		ResFans fans = this.appWechatClient.getFans(code);
+		if(fans==null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_BINDING_ERROR);
+		}    
+		UserAppfans db = this.userAppfansClusterMapper.findById(fans.getId());
+		if(db!=null&&db.getUserId().longValue()!=ru.getId().longValue()) {
+			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_BINDING_ERROR);
+		}
+		if(db==null){
+			db = new UserAppfans();
+			db.setId(fans.getId());
+			db.setHeadurl(fans.getHeadurl());
+			db.setNickname(fans.getNickname());
+			db.setUnionid(fans.getUnionid());
+			db.setCreateTime(new Date()); 
+			db.setUserId(ru.getId());
+			db.setStatus((short)1);
+			db.setRegisterStatus((short)0);
+			this.userAppfansMasterMapper.insertSelective(db);  
+		}else{  
+			db.setStatus((short)1); 
+			db.setRegisterStatus((short)1);
+			this.userAppfansMasterMapper.updateByIdSelective(db);  
+		}   
 	}
 	
 }

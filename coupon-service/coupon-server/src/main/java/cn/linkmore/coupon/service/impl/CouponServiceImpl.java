@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.CouponStatus;
 import cn.linkmore.bean.common.Constants.CouponType;
+import cn.linkmore.bean.common.Constants.OrderStatus;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.coupon.dao.cluster.CouponClusterMapper;
@@ -456,6 +457,9 @@ public class CouponServiceImpl implements CouponService {
 	public List<cn.linkmore.coupon.controller.app.response.ResCoupon> paymentList(HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request));  
 		ResUserOrder ruo = this.orderClient.last(cu.getId());
+		if(ruo==null||!(ruo.getStatus().intValue()==OrderStatus.UNPAID.value||ruo.getStatus().intValue()==OrderStatus.SUSPENDED.value)) {
+			return null;
+		}
 		List<cn.linkmore.coupon.response.ResCoupon> list = this.userOrderEnableList(cu.getId(), ruo.getId());
 		List<cn.linkmore.coupon.controller.app.response.ResCoupon> rcs = new ArrayList<cn.linkmore.coupon.controller.app.response.ResCoupon>();
 		cn.linkmore.coupon.controller.app.response.ResCoupon r = null;

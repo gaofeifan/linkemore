@@ -47,12 +47,7 @@ public interface UserAppfansService {
 	 */
 	void updateStatusByUserId(Long userId, int i);
 
-	/**
-	 * @Description  微信登录
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	ResUserLogin wxLogin(ReqUserAppfans appfans);
+	 
 
 	/**
 	 * @Description  根据用户id删除
