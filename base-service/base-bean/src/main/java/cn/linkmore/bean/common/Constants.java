@@ -237,6 +237,7 @@ public class Constants {
 		ORDER_RECHARGE_SERIAL_NUMBER("order:recharge:serial_number:"),
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
 		PREFECTURE_FREE_STALL("prefecture:free_stall:"),
+		PREFECTURE_BUSY_STALL("repfecture:busy_stall:"),
 		WECHAT_TOKEN_KEY("wechat_token"),
 		WECHAT_TOKEN_EXPIRE("3600"),
 		BLACKLIST_ORDER_LIMIT("blacklist:order:limit");
