@@ -41,6 +41,15 @@
     from t_wx_fans
     where id = #{id,jdbcType=VARCHAR}
   </select>
+  
+  <select id="findByUnionid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_wx_fans
+    where unionid = #{unionid,jdbcType=VARCHAR} 
+    limit 0,1
+  </select>
+  
    <select id="exportList" parameterType="cn.linkmore.account.request.ReqWechatFansExcel" resultMap="ResBaseResultMap">
     select 
     <include refid="Base_Column_List" />

@@ -1,6 +1,7 @@
 package cn.linkmore.account.controller.app.response;
 
 import java.io.Serializable;
+import java.util.List;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,7 +22,10 @@ public class ResUser implements Serializable {
 	private String realname;
 	@ApiModelProperty(value = "性别")
 	private Short sex;
-	
+	@ApiModelProperty(value = "极光别名")
+	private String alias;
+	@ApiModelProperty(value = "极光标签")
+	private List<String> tags; 
 	public Long getId() {
 		return id;
 	}
@@ -52,5 +56,16 @@ public class ResUser implements Serializable {
 	public void setSex(Short sex) {
 		this.sex = sex;
 	}
-	
+	public String getAlias() {
+		return alias;
+	}
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+	public List<String> getTags() {
+		return tags;
+	}
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	} 
 }

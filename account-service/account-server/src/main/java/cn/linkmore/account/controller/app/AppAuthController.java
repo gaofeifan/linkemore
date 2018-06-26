@@ -70,9 +70,9 @@ public class AppAuthController {
 	} 
 	
 	@ApiOperation(value = "微信登录", notes = "微信登录", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/wx", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<ResUser> wxLogin( 
+	public ResponseEntity<ResUser> login( 
 			@RequestParam(value="code")  
 			@NotBlank(message="授权码不能为空") 
 			@Size(min =32,max=36,message="授权码为无效")
@@ -88,7 +88,7 @@ public class AppAuthController {
 			
 		}
 		return response;
-	} 
+	}  
 	
 	@ApiOperation(value="发短信验证码",notes="手机号不能为空,需要加密", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/send", method = RequestMethod.POST)

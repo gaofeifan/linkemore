@@ -227,6 +227,7 @@ public class Constants {
 		USER_APP_AUTH_MOBILE("user_app:auth:mobile:"), 
 		USER_APP_USER_CODE("user_app:user:code:"), 
 		USER_APP_USER_MOBILE("user_app:user:mobile:"), 
+		USER_APP_USER_CHANGE_MOBILE("user_app:user:change-mobile:"), 
 		COMMON_CAR_BRAND_LIST("common:car_brand:list"), 
 		COUPON_TEMPLATE_CONDITION_USETIME("COUPON_TEMP_CONDITION_USETIME:"), 
 		COUPON_TEMPLATE_CONDITION_PREIDS( "COUPON_TEMP_CONDITION_PREIDS:"),

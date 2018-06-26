@@ -85,13 +85,19 @@ public class ResPayCheckout {
 		this.payType = payType;
 	}
 	public BigDecimal getTotalAmount() {
-		return totalAmount;
+		if(this.totalAmount==null) {
+			this.totalAmount = new BigDecimal(0d);
+		}
+		return this.totalAmount.setScale(2,   BigDecimal.ROUND_HALF_UP);
 	}
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 	public BigDecimal getAccountAmount() {
-		return accountAmount;
+		if(this.accountAmount==null) {
+			this.accountAmount = new BigDecimal(0d);
+		}
+		return this.accountAmount.setScale(2,   BigDecimal.ROUND_HALF_UP);
 	}
 	public void setAccountAmount(BigDecimal accountAmount) {
 		this.accountAmount = accountAmount;

@@ -15,7 +15,8 @@ public class CacheUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id; 
 	private String mobile; 
-	private String token; 
+	private String token;
+	private Short client;
 	public Long getId() {
 		return id;
 	}
@@ -33,5 +34,12 @@ public class CacheUser implements Serializable {
 	}
 	public void setToken(String token) {
 		this.token = token;
-	} 
+	}
+	public Short getClient() {
+		return client;
+	}
+	public void setClient(Short client) {
+		this.client = client;
+	}
+	 
 }

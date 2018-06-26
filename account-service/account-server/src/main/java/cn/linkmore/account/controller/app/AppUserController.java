@@ -52,11 +52,9 @@ public class AppUserController {
 		try {
 			ResUser user = this.userService.bindMobile(rmb,request);
 			return ResponseEntity.success(user, request);
-		}catch(BusinessException e){
-			e.printStackTrace();
+		}catch(BusinessException e){ 
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		}catch(Exception e){
-			e.printStackTrace();
+		}catch(Exception e){ 
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
@@ -162,10 +160,17 @@ public class AppUserController {
 	@ApiOperation(value="解绑微信号",notes="解绑微信号", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/wechat", method = RequestMethod.DELETE)
 	@ResponseBody
-	public ResponseEntity<?> removeWechat(HttpServletRequest request) {
-		this.userService.removeWechat(request);
-		ResponseEntity<?> response = ResponseEntity.success(null, request);
-		return response;
+	public ResponseEntity<?> removeWechat(HttpServletRequest request) { 
+		ResponseEntity<?> response = null;
+		try {
+			this.userService.removeWechat(request);
+			response = ResponseEntity.success(null, request);
+		}catch(BusinessException e){ 
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		}catch(Exception e){ 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response; 
 	}
 	/**
 	 * @Description  删除微信号

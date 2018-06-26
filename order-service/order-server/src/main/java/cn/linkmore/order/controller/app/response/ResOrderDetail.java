@@ -111,19 +111,28 @@ public class ResOrderDetail{
 		this.payType = payType;
 	}
 	public BigDecimal getTotalAmount() {
-		return totalAmount;
+		if(this.totalAmount==null) {
+			this.totalAmount = new BigDecimal(0d);
+		}
+		return this.totalAmount.setScale(2,   BigDecimal.ROUND_HALF_UP);
 	}
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 	public BigDecimal getCouponAmount() {
-		return couponAmount;
+		if(this.couponAmount==null) {
+			this.couponAmount = new BigDecimal(0d);
+		}
+		return this.couponAmount.setScale(2,   BigDecimal.ROUND_HALF_UP);
 	}
 	public void setCouponAmount(BigDecimal couponAmount) {
 		this.couponAmount = couponAmount;
 	}
 	public BigDecimal getActualAmount() {
-		return actualAmount;
+		if(this.actualAmount==null) {
+			this.actualAmount = new BigDecimal(0d);
+		}
+		return this.actualAmount.setScale(2,   BigDecimal.ROUND_HALF_UP);
 	}
 	public void setActualAmount(BigDecimal actualAmount) {
 		this.actualAmount = actualAmount;
