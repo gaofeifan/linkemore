@@ -13,6 +13,28 @@ public class ResPull {
 	private String day;//日期
 	private int dayTotal;//新增拉新数量
 	
+	private int total;//总计
+	private int bjTotal;//北京总计
+	private int hzTotal;//杭州总计
+	
+	public int getTotal() {
+		return total;
+	}
+	public void setTotal(int total) {
+		this.total = total;
+	}
+	public int getBjTotal() {
+		return bjTotal;
+	}
+	public void setBjTotal(int bjTotal) {
+		this.bjTotal = bjTotal;
+	}
+	public int getHzTotal() {
+		return hzTotal;
+	}
+	public void setHzTotal(int hzTotal) {
+		this.hzTotal = hzTotal;
+	}
 	public Long getCityId() {
 		return cityId;
 	}

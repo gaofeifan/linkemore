@@ -85,6 +85,7 @@
     <if test="cityId != null">  
     	and t.city_id = #{cityId,jdbcType=BIGINT}
     </if>  
+    and id in (select pre_id from t_coupon_template t where t.type = 2)
   </select>
   <!-- 用户总数 -->
   <select id="totalCount" resultType="java.lang.Integer" parameterType="java.util.HashMap">
@@ -237,6 +238,7 @@
   </select>
   <!-- 现场拉新 -->
   <select id="pullList" resultMap="PullResultMap" parameterType="java.util.HashMap">
+	
 	SELECT
 		c.id,
 		c.city_name,
@@ -269,6 +271,169 @@
 		pre.id,
 		pre. NAME,
 		DAY
+	
+	<!-- 
+	SELECT
+		t1.bj_total + t1.hz_total AS total,
+		t1.bj_total,
+		t1.hz_total,
+		t2.*
+	FROM
+		(
+			SELECT
+				DAY,
+				MAX(
+					CASE city_name
+					WHEN '北京' THEN
+						day_total
+					ELSE
+						0
+					END
+				) bj_total,
+				MAX(
+					CASE city_name
+					WHEN '杭州' THEN
+						day_total
+					ELSE
+						0
+					END
+				) hz_total
+			FROM
+				(
+					SELECT
+						c.id,
+						c.city_name,
+						DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+						count(*) AS day_total
+					FROM
+						t_coupon_send_user t
+					LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
+					LEFT JOIN v_prefecture pre ON temp.pre_id = pre.id
+					LEFT JOIN t_city c ON pre.city_id = c.id
+					WHERE
+						temp.type = 2
+					AND temp. STATUS = 1
+					AND pre. STATUS = 0
+					and pre.id in
+					<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+				       #{id}
+				    </foreach> 
+					<if test="startTime!=null">
+						AND t.create_time &gt; #{startTime}
+					</if> 
+					<if test="endTime!=null">
+						AND t.create_time &lt; #{endTime}
+					</if>
+					GROUP BY
+						c.id,
+						c.city_name,
+						DAY
+				) t
+			GROUP BY
+				DAY
+		) t1,
+		(
+			SELECT
+				DAY,
+				MAX(
+					CASE pre_name
+					WHEN '远洋未来广场车区' THEN
+						day_total
+					ELSE
+						0
+					END
+				) 远洋未来广场车区,
+				MAX(
+					CASE pre_name
+					WHEN '北京国瑞城车区' THEN
+						day_total
+					ELSE
+						0
+					END
+				) 北京国瑞城车区,
+				MAX(
+					CASE pre_name
+					WHEN '501城市广场车区' THEN
+						day_total
+					ELSE
+						0
+					END
+				) 501城市广场车区,
+				MAX(
+					CASE pre_name
+					WHEN '星光大道车区' THEN
+						day_total
+					ELSE
+						0
+					END
+				) 星光大道车区,
+				MAX(
+					CASE pre_name
+					WHEN '西湖银泰车区' THEN
+						day_total
+					ELSE
+						0
+					END
+				) 西湖银泰车区,
+				MAX(
+					CASE pre_name
+					WHEN '西城广场车区' THEN
+						day_total
+					ELSE
+						0
+					END
+				) 西城广场车区,
+				MAX(
+					CASE pre_name
+					WHEN '湖滨银泰车区C区' THEN
+						day_total
+					ELSE
+						0
+					END
+				) 湖滨银泰车区C区
+			FROM
+				(
+					SELECT
+						c.id,
+						c.city_name,
+						pre.id AS pre_id,
+						pre. NAME AS pre_name,
+						DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+						count(*) AS day_total
+					FROM
+						t_coupon_send_user t
+					LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
+					LEFT JOIN v_prefecture pre ON temp.pre_id = pre.id
+					LEFT JOIN t_city c ON pre.city_id = c.id
+					WHERE
+						temp.type = 2
+					AND temp. STATUS = 1
+					AND pre. STATUS = 0
+					and pre.id in
+					<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+				       #{id}
+				    </foreach> 
+					<if test="startTime!=null">
+						AND t.create_time &gt; #{startTime}
+					</if> 
+					<if test="endTime!=null">
+						AND t.create_time &lt; #{endTime}
+					</if>
+					GROUP BY
+						c.id,
+						c.city_name,
+						pre.id,
+						pre. NAME,
+						DAY
+				) t2
+			GROUP BY
+				DAY
+		) t2
+	WHERE
+		t1. DAY = t2. DAY
+	ORDER BY
+		DAY DESC
+	-->
   </select>
   <!-- 单车位日均 -->
   <select id="stallAverageList" resultMap="StallAverageResultMap" parameterType="java.util.HashMap">
