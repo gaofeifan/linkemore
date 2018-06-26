@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +40,8 @@ public class ReportDayController {
 	public Map<String, Object> convert(ReqReportDay reportDay) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<Long> preIds = new ArrayList<Long>();
-		if (reportDay.getPreIds()=="" || reportDay.getPreIds() ==null) {
-			if (reportDay.getCityId() != null) {
+		if (StringUtils.isBlank(reportDay.getPreIds())) {
+			if (reportDay.getCityId() != 0) {
 				param.put("cityId", reportDay.getCityId());
 			}
 			List<ResPre> preList = reportDayService.preList(param);
