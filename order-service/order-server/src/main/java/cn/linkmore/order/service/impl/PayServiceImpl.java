@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -180,13 +179,13 @@ public class PayServiceImpl implements PayService {
 		Account account = this.accountClusterMapper.findById(order.getUserId());
 		ResOrderCheckout roc = new ResOrderCheckout();
 		roc.setAccountAmount(account.getUsableAmount());
-		List<ResCoupon> rcs = this.couponClient.order(cu.getId(), orderId);
+//		List<ResCoupon> rcs = this.couponClient.order(cu.getId(), orderId);
 		roc.setStartTime(order.getCreateTime());
 		roc.setEndTime(new Date());
 		if(order.getStatus()==OrderStatus.SUSPENDED.value) {
 			roc.setEndTime(order.getStatusTime());
 		}
-		roc.setCouponCount(rcs!=null?rcs.size():0);
+		roc.setCouponCount(0);
 		roc.setParkingTime(new Long((roc.getEndTime().getTime()-roc.getStartTime().getTime())/(1000L*60)).intValue());
 		roc.setOrderId(orderId);
 		roc.setPayType((short)TradePayType.WECHAT.type);
@@ -278,6 +277,8 @@ public class PayServiceImpl implements PayService {
 		if(roc.getCouponId()!=null) {
 			coupon = this.couponClient.get(roc.getCouponId());
 			if(coupon!=null&&coupon.getStatus()!=CouponStatus.FREE.status) {
+				coupon = null;
+			}else if(coupon!=null&&coupon.getUserId().longValue()!=cu.getId().longValue()) {
 				coupon = null;
 			}
 		} 
