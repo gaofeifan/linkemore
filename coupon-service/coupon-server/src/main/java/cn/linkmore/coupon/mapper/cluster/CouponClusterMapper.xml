@@ -28,7 +28,8 @@
   </resultMap>
   
   <resultMap id="ResResultMap" type="cn.linkmore.coupon.response.ResCoupon">
-    <result column="id" jdbcType="BIGINT" property="id" />  
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />    
     <result column="face_amount" jdbcType="DECIMAL" property="faceAmount" />  
     <result column="status" jdbcType="SMALLINT" property="status" /> 
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />  

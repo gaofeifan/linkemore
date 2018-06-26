@@ -32,6 +32,9 @@ public enum StatusEnum {
 	ACCOUNT_PLATE_NONE(8003023 ,"删除失败,车牌号不存在 "), 
 	
 	
+	COUPON_USER_NO_EQUIRE(8004001,"非当前用户停车券"),
+	
+	
 	ORDER_UNPAY_ORDER(8005001,"您有未支付的订单，请先结账!"),
 	ORDER_CREATE_FAIL(8005002,"预约失败请重新预约^_^!"),
 	ORDER_USERID_ERROR(8005003,"取消失败,预约用户信息错误!"),
