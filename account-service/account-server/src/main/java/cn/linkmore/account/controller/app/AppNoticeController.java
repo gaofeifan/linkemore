@@ -57,6 +57,16 @@ public class AppNoticeController {
     }
 
     /**
+     * 修改阅读状态为已读状态 
+     */
+    @ApiOperation(value = "修改阅读状态为已读状态 ", notes = "修改阅读状态", consumes = "application/json")
+    @RequestMapping(value = "/update-read", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> updateRead(HttpServletRequest request) {
+    	noticeService.updateRead();
+        return ResponseEntity.success("更新成功", request);
+    }
+    /**
      *删除
      */
     @ApiOperation(value = "删除", notes = "删除", consumes = "application/json")
