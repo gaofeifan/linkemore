@@ -31,14 +31,14 @@ import cn.linkmore.report.response.ResTitle;
 import cn.linkmore.report.response.ResUserNum;
 import cn.linkmore.util.StringUtil;
 /**
- * Controller - 车区每日目标
+ * Controller - 日报-用户分析
  * @author jiaohanbin
  * @version 2.0
  *
  */
 @Controller
 @RequestMapping("/admin/account/report_day")
-public class ReportDayController { 
+public class ReportDayUserController { 
 	
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	

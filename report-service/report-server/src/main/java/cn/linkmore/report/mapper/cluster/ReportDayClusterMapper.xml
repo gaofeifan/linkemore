@@ -61,6 +61,7 @@
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="day_total" jdbcType="INTEGER" property="dayTotal" />
     <result column="stall_total" jdbcType="INTEGER" property="stallTotal" />
+    <result column="total_time" jdbcType="INTEGER" property="totalTime" />
     <result column="day" jdbcType="VARCHAR" property="day" />
     <result column="rdl" jdbcType="DOUBLE" property="rdl" />
     <result column="jtsc" jdbcType="DOUBLE" property="jtsc" />
@@ -73,7 +74,9 @@
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="day_total" jdbcType="INTEGER" property="dayTotal" />
+    <result column="amount_total" jdbcType="DOUBLE" property="amountTotal" />
     <result column="average_price" jdbcType="DOUBLE" property="averagePrice" />
+    
   </resultMap>
   <!-- 城市列表 -->
   <select id="cityList" resultMap="CityResultMap" >
@@ -740,7 +743,9 @@
 		round(
 			sum(o.total_amount) / count(*),
 			1
-		) AS average_price
+		) AS average_price,
+  		sum(o.total_amount) as amount_total,
+	    count(*) as day_total
 	FROM
 		o_orders o
 	LEFT JOIN v_prefecture pre ON o.pre_id = pre.id

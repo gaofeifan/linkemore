@@ -97,7 +97,7 @@ public interface ReportDayClusterMapper {
 	 * @param param
 	 * @return
 	 */
-	List<ResRunTime> runtimeList(Map<String, Object> param);
+	List<ResRunTime> runTimeList(Map<String, Object> param);
 	
 	/**
 	 * 客单价列表
