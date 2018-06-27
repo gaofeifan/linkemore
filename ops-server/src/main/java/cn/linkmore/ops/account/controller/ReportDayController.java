@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +16,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+
+import cn.linkmore.common.response.ResCity;
 import cn.linkmore.ops.account.service.ReportDayService;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.report.request.ReqReportDay;
 import cn.linkmore.report.response.ResAveragePrice;
-import cn.linkmore.report.response.ResCity;
 import cn.linkmore.report.response.ResNewUser;
 import cn.linkmore.report.response.ResOrder;
-import cn.linkmore.report.response.ResPre;
 import cn.linkmore.report.response.ResPull;
 import cn.linkmore.report.response.ResRunTime;
 import cn.linkmore.report.response.ResStallAverage;
@@ -44,13 +48,13 @@ public class ReportDayController {
 	
 	@RequestMapping(value = "/city_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResCity> cityList(){
+	public List<cn.linkmore.report.response.ResCity> cityList(){
 		return this.reportDayService.cityList(); 
 	} 
 	
 	@RequestMapping(value = "/pre_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResPre> preList(HttpServletRequest request, Long cityId){
+	public List<cn.linkmore.report.response.ResPre> preList(HttpServletRequest request, Long cityId){
 		Map<String,Object> param = new HashMap<String,Object>();
 		if(cityId != null && cityId != 0) {
 			param.put("cityId", cityId);
