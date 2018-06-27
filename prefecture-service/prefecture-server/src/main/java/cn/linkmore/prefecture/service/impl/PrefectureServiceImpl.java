@@ -475,4 +475,16 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}
 		return resPreCityList;
 	}
+
+	@Override
+	public List<cn.linkmore.prefecture.response.ResPrefecture> findPreList() {
+		return this.prefectureClusterMapper.findPreList();
+	}
+
+	@Override
+	public List<ResPrefectureDetail> findList(Map<String, Object> param) {
+		return this.findList(param);
+	}
+	
+	
 }
