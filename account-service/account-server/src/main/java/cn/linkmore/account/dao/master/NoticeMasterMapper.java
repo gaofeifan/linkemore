@@ -46,4 +46,6 @@ public interface NoticeMasterMapper {
      * @Version  v2.0
      */
     int updateById(Notice record);
+
+	void updateReadStatus();
 }

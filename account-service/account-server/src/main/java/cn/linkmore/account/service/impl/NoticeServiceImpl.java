@@ -87,7 +87,7 @@ public class NoticeServiceImpl implements NoticeService {
 		}
 		ResPage<ResPageNotice> page = new ResPage<ResPageNotice>();
 		int i = noticeClusterMapper.findNotReadCount( ru.getId());
-		Integer flag = this.clusterMapper.findNotReadNotice();
+		Integer flag = this.noticeClusterMapper.findNotReadNotice();
 		page.setRows(resPageNotic);
 		page.setRecords((long) i);
 		if(flag > 0) {
@@ -293,7 +293,7 @@ public class NoticeServiceImpl implements NoticeService {
 
 	@Override
 	public void updateRead() {
-		this.readMasterMapper.updateReadStatus();
+		this.noticeMasterMapper.updateReadStatus();
 	}
 	
 	

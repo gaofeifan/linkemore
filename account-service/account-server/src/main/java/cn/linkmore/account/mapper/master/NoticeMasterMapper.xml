@@ -18,7 +18,7 @@
     delete from t_notice
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.account.entity.Notice">
+  <insert id="save" parameterType="cn.linkmore.account.entity.Notice"  useGeneratedKeys="true" keyProperty="id">
     insert into t_notice (id, type, title, 
       description, url, create_time, 
       push_time, status)
@@ -26,7 +26,7 @@
       #{description,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{pushTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIGINT})
   </insert>
-  <insert id="saveSelective" parameterType="cn.linkmore.account.entity.Notice">
+  <insert id="saveSelective" parameterType="cn.linkmore.account.entity.Notice" useGeneratedKeys="true" keyProperty="id">
     insert into t_notice
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -118,5 +118,10 @@
       push_time = #{pushTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateReadStatus" >
+    update t_notice
+    set 
+      status = 1
   </update>
 </mapper>

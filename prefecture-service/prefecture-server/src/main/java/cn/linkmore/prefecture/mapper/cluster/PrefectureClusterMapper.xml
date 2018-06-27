@@ -87,6 +87,9 @@
     from v_prefecture
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findPreList" parameterType="java.lang.Long" resultType="cn.linkmore.prefecture.response.ResPrefecture">
+    select  id,name from v_prefecture 
+  </select>
   
   <select id="findPreByStatusAndGPS" resultMap="ResPrefectureMap" parameterType="java.util.Map">
     select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
@@ -266,4 +269,18 @@
     where city_id = #{cityId,jdbcType=BIGINT} and status = 0
   </select>
   
+  <select id="findList" resultMap="ResPrefectureMap"   parameterType="java.util.HashMap" >
+  	select *
+	from v_prefecture 
+	where 1 = 1 
+	<if test="status!=null">  
+    and status = #{status}
+    </if>
+    <if test="property==null">  
+    order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+  </select>
 </mapper>

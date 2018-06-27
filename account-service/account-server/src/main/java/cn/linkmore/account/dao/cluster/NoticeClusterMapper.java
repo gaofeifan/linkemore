@@ -88,5 +88,21 @@ public interface NoticeClusterMapper {
 	 */
 	NoticeRead findNoticeReadByNid(ReqNotice notice);
 
+	/**
+	 * @Description  查询总数
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer count(Map<String, Object> param);
+
+	/**
+	 * @Description  分页查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<Notice> findPage(Map<String, Object> param);
+
+	Integer findNotReadNotice();
+
 
 }

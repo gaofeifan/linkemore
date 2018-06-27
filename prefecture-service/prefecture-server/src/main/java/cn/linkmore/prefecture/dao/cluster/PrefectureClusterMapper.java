@@ -49,6 +49,15 @@ public interface PrefectureClusterMapper {
 	 * @return
 	 */
 	ResPrefectureDetail checkName(Map<String, Object> param);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<cn.linkmore.prefecture.response.ResPrefecture> findPreList();
+
+	List<ResPrefectureDetail> findList(Map<String, Object> param);
 	
 	
 }

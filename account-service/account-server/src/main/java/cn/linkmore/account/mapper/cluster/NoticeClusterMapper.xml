@@ -10,6 +10,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="push_time" jdbcType="TIMESTAMP" property="pushTime" />
     <result column="status" jdbcType="BIGINT" property="status" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
   </resultMap>
 	   <resultMap id="ResPageNoticeBeanMap" type="cn.linkmore.account.response.ResPageNotice" >
       <id column="id" property="id" jdbcType="BIGINT" />
@@ -83,5 +84,49 @@
     WHERE
     T.user_id = #{uid}
     AND  T.delete_status =0 AND T.read_status =1
+  </select>
+  
+   <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+     select 
+     n.id, n.type, n.title, n.description, n.url, n.create_time, n.push_time, n.status ,nc.content
+    from t_notice n inner join t_notice_content nc on n.id = nc.id where 1 = 1 
+    <if test="category!=null">  
+    and n.type = #{category}
+    </if> 
+    <if test="status!=null">  
+    and n.status = #{status}
+    </if> 
+    <if test="title!=null">  
+    and n.title like #{title}
+    </if> 
+    <if test="property==null">  
+     order by id desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_notice where 1 = 1 
+    <if test="category!=null">  
+    and type = #{category}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status}
+    </if> 
+    <if test="title!=null">  
+    and title like #{title}
+    </if> 
+  </select>
+  
+   <select id="findNotReadNotice" resultType="Integer">
+    select 
+    count(1)
+    from t_notice
+    where status = 0
   </select>
 </mapper>
