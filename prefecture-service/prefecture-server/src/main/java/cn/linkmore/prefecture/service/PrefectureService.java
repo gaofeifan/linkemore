@@ -17,6 +17,7 @@ import cn.linkmore.prefecture.request.ReqPrefectureEntity;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
+import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 
 /**
@@ -115,5 +116,19 @@ public interface PrefectureService {
 	 * @return
 	 */
 	List<ResPreCity> list(ReqPrefecture rp, HttpServletRequest request);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPrefecture> findPreList();
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPrefectureDetail> findList(Map<String, Object> param);
 
 }

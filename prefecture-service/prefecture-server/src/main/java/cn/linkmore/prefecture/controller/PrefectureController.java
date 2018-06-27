@@ -21,6 +21,7 @@ import cn.linkmore.prefecture.request.ReqPrefectureEntity;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
+import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.service.PrefectureService;
 
@@ -207,4 +208,20 @@ public class PrefectureController {
 		return detail;
 	}
 	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/pre-list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResPrefecture> findPreList(){
+		return this.preService.findPreList();
+	}
+	
+	@RequestMapping(value = "/v2.0/find_list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPrefectureDetail> findList(@RequestBody Map<String, Object> param){
+		return this.preService.findList(param);
+	}
 }
