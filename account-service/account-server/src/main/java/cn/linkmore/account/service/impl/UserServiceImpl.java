@@ -405,7 +405,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser appLogin(ReqAuthLogin rl, HttpServletRequest request) {
-		if(!(TEST_MOBILE.contains(rl.getMobile())&&"6666".equals(rl.getCode()))) {
+		if(!("6666".equals(rl.getCode()))) {
 			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
@@ -545,9 +545,9 @@ public class UserServiceImpl implements UserService {
 	
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
 		String key = TokenUtil.getKey(request);
-		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId().toString());
+		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 		if(last!=null){ 
-			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId().toString());
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
 			last.setAccessToken(key);
 		}
@@ -801,12 +801,12 @@ public class UserServiceImpl implements UserService {
 			ui.setCreateTime(new Date());
 			ui.setUnionId(rms.getUnionid());
 			this.userInfoMasterMapper.save(ui);
-		}
-		return ui;
+		}		return ui;
 	}
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser mini(String code, HttpServletRequest request) {
 		ResMiniSession rms = miniProgramClient.getSession(code);
+		log.info("rms:{}",JsonUtil.toJson(rms));
 		UserInfo ui = this.userInfoClusterMapper.find(rms.getOpenid());
 		if (ui == null) {
 			ui = this.saveUserInfo(rms);

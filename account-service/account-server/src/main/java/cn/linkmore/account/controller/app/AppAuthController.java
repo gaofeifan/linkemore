@@ -18,8 +18,6 @@ import cn.linkmore.account.controller.app.request.ReqAuthSend;
 import cn.linkmore.account.controller.app.response.ResUser;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.bean.exception.BusinessException;
-import cn.linkmore.bean.exception.StatusEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -42,14 +40,8 @@ public class AppAuthController {
 	@ResponseBody
 	public ResponseEntity<ResUser> login(@Validated @RequestBody ReqAuthLogin rl, HttpServletRequest request) {
 		ResponseEntity<ResUser> response = null; 
-		try {
-			ResUser ru = this.userService.appLogin(rl,request);
-			response = ResponseEntity.success(ru, request);
-		}catch(BusinessException e){ 
-			response = ResponseEntity.fail(e.getStatusEnum(), request); 
-		}catch(Exception e){ 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
+		ResUser ru = this.userService.appLogin(rl,request);
+		response = ResponseEntity.success(ru, request);
 		return response;
 	}
 	@ApiOperation(value="用户退出登录",notes="用户退出登录", consumes = "application/json")
@@ -57,15 +49,8 @@ public class AppAuthController {
 	@ResponseBody
 	public ResponseEntity<ResUser> logout(HttpServletRequest request) {
 		ResponseEntity<ResUser> response = null; 
-		try {  
-			this.userService.logout(request);
-			response = ResponseEntity.success(null, request);
-		}catch(BusinessException e){ 
-			response = ResponseEntity.fail(e.getStatusEnum(), request); 
-		}catch(Exception e){ 
-			
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
+		this.userService.logout(request);
+		response = ResponseEntity.success(null, request);
 		return response;
 	} 
 	
@@ -78,15 +63,8 @@ public class AppAuthController {
 			@Size(min =32,max=36,message="授权码为无效")
 			String code, HttpServletRequest request) {
 		ResponseEntity<ResUser> response = null;
-		try { 
-			ResUser urb = this.userService.login(code, request);
-			response = ResponseEntity.success( urb, request);
-		} catch (BusinessException e) {
-			response = ResponseEntity.fail( e.getStatusEnum(),  request);
-		} catch (Exception e) { 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-			
-		}
+		ResUser urb = this.userService.login(code, request);
+		response = ResponseEntity.success( urb, request);
 		return response;
 	}  
 	
@@ -95,14 +73,8 @@ public class AppAuthController {
 	@ResponseBody
 	public ResponseEntity<?> send(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
-		try {
-			this.userService.send(rs);
-			response = ResponseEntity.success(null, request);
-		}catch(BusinessException e){
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		}catch(Exception e){
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
+		this.userService.send(rs);
+		response = ResponseEntity.success(null, request);
 		return response;
 	}
 }

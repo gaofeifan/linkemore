@@ -25,6 +25,14 @@ public class Constants {
 		
 	}
 	
+	public enum UserStaffStatus{
+		OFF(0),ON(1);
+		public int status;
+		private UserStaffStatus(int status){
+			this.status = status;
+		}
+	}
+	
 	public enum TradePayType{
 		ACCOUNT(0),
 		ALIPAY( 1),
@@ -211,7 +219,8 @@ public class Constants {
 		LOCK_DOWN_NOTICE(2, "LOCK_DOWN_NOTICE"),
 		ORDER_SWITCH_RESULT_NOTICE(3,"ORDER_SWITCH_RESULT_NOTICE"),
 		ORDER_SWITCH_STATUS_NOTICE(4,"ORDER_SWITCH_STATUS_NOTICE"),
-		ORDER_COMPLETE_NOTICE(5,"ORDER_COMPLETE_NOTICE");
+		ORDER_COMPLETE_NOTICE(5,"ORDER_COMPLETE_NOTICE"),
+		OPS_MESSAGE_NOTICE(6,"OPS_MESSAGE_NOTICE");
 		public int type;
 		public String id; 
 		private PushType(int type, String id) {

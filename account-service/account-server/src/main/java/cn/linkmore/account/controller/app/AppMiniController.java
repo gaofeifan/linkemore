@@ -18,8 +18,6 @@ import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.controller.app.response.ResUser;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.bean.exception.BusinessException;
-import cn.linkmore.bean.exception.StatusEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -40,48 +38,31 @@ public class AppMiniController {
 			@Size(min =32,max=36,message="授权码为无效")
 			String code, HttpServletRequest request) {
 		ResponseEntity<ResUser> response = null;
-		try { 
-			ResUser urb = this.userService.mini(code, request);
-			response = ResponseEntity.success( urb, request);
-		} catch (BusinessException e) {
-			response = ResponseEntity.fail( e.getStatusEnum(),  request);
-		} catch (Exception e) { 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-			
+		ResUser urb =null;
+		try {
+			urb = this.userService.mini(code, request);
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
+		
+		response = ResponseEntity.success( urb, request);
 		return response;
 	} 
 	
 	@ApiOperation(value="绑定授权手机号",notes="手机号不能为空,短信验证码不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<ResUser> bindMobile(String mobile, HttpServletRequest request){
-		ResponseEntity<ResUser> response = null; 
-		try {
-			ResUser user = this.userService.bindWechatMobile(mobile,request);
-			return ResponseEntity.success(user, request);
-		}catch(BusinessException e){ 
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		}catch(Exception e){ 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+	public ResponseEntity<ResUser> bindMobile(String mobile, HttpServletRequest request){ 
+		ResUser user = this.userService.bindWechatMobile(mobile,request);
+		return ResponseEntity.success(user, request);
 	}
 	
 	@ApiOperation(value="绑定普通手机号",notes="手机号不能为空,短信验证码不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<ResUser> bind(@RequestBody @Validated ReqMobileBind rmb, HttpServletRequest request){
-		ResponseEntity<ResUser> response = null; 
-		try {
-			ResUser user = this.userService.bindNormalMobile(rmb,request);
-			return ResponseEntity.success(user, request);
-		}catch(BusinessException e){ 
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		}catch(Exception e){ 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		ResUser user = this.userService.bindNormalMobile(rmb,request);
+		return ResponseEntity.success(user, request);
 	}
 	
 	@ApiOperation(value="发短信验证码",notes="手机号不能为空", consumes = "application/json")
@@ -91,14 +72,8 @@ public class AppMiniController {
 	@Pattern(regexp="^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(16[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(19[0-9]{1}))+\\d{8})$", message="无效手机号") 
 	@RequestParam(value="mobile" ,required=true)  String mobile,HttpServletRequest request){
 		ResponseEntity<?> response = null;  
-		try {
-			this.userService.send(mobile,request);
-			response = ResponseEntity.success(null, request);
-		}catch(BusinessException e){ 
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		}catch(Exception e){ 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
+		this.userService.send(mobile,request);
+		response = ResponseEntity.success(null, request);
 		return response; 
 	}
 	

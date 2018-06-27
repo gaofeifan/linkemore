@@ -59,7 +59,7 @@ public class PushServiceImpl implements PushService {
 		return flag;
 	}
 	
-	private boolean ios1(ReqPush rp) {
+	private boolean ios(ReqPush rp) {
 		boolean flag = false;
 		JPushClient jpushClient = this.beanFactory.jPushClient(); 
 		Builder ios = PushPayload.newBuilder();  
@@ -88,7 +88,7 @@ public class PushServiceImpl implements PushService {
 		if(rp.getClient().intValue()  ==Constants.ClientSource.ANDROID.source) {
 			this.android(rp);
 		}else {
-			this.ios1(rp);
+			this.ios(rp);
 		}
 	}
 	
@@ -101,7 +101,7 @@ public class PushServiceImpl implements PushService {
 				if(rp.getClient().intValue()  ==Constants.ClientSource.ANDROID.source) {
 					this.android(rp);
 				}else {
-					this.ios1(rp);
+					this.ios(rp);
 				}
 			}catch(Exception e) {
 				

@@ -20,6 +20,16 @@ public class MiniProgramServiceImpl implements MiniProgramService {
 	@Autowired
 	private MiniProgramConfig miniProgramConfig;
 	
+	public static void main(String[] args) {
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("appid", "wx62db01dddd56972f");
+		param.put("secret", "78cd1e2349a7133b0b9ef8c5ad2a2eb0");
+		param.put("js_code", "023vELZd2Zu7rD08K90e2JltZd2vELZB");
+		String json = HttpUtil.sendGet(SESSION_URL, param);
+		ResMiniSession rms = JsonUtil.toObject(json, ResMiniSession.class);
+		System.out.println(json);
+	}
+	
 	@Override
 	public ResMiniSession getSession(String code) {
 		Map<String, String> param = new HashMap<String, String>();
