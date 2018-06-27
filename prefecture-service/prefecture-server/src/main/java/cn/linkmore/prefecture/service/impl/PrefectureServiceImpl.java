@@ -23,6 +23,7 @@ import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
@@ -441,7 +442,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 			
 			ResUserStaff us = this.userStaffClient.findById(cu.getId());
-			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
+			if(us!=null&&us.getStatus().intValue() == UserStaffStatus.ON.status){
 				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
 				if(preList1!=null){
 					if(preList==null){

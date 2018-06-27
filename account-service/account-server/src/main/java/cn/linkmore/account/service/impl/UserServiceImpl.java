@@ -1,5 +1,6 @@
 package cn.linkmore.account.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,16 +22,21 @@ import cn.linkmore.account.controller.app.request.ReqAuthSend;
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.dao.cluster.UserAppfansClusterMapper;
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
+import cn.linkmore.account.dao.cluster.UserInfoClusterMapper;
 import cn.linkmore.account.dao.cluster.UserVechicleClusterMapper;
+import cn.linkmore.account.dao.cluster.WechatFansClusterMapper;
 import cn.linkmore.account.dao.master.AccountMasterMapper;
 import cn.linkmore.account.dao.master.AdminUserMasterMapper;
 import cn.linkmore.account.dao.master.UserAppfansMasterMapper;
+import cn.linkmore.account.dao.master.UserInfoMasterMapper;
 import cn.linkmore.account.dao.master.UserMasterMapper;
 import cn.linkmore.account.dao.master.UserVechicleMasterMapper;
 import cn.linkmore.account.entity.Account;
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.entity.UserAppfans;
+import cn.linkmore.account.entity.UserInfo;
 import cn.linkmore.account.entity.UserVechicle;
+import cn.linkmore.account.entity.WechatFans;
 import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUpdateNickname;
@@ -57,11 +63,13 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.AppWechatClient;
+import cn.linkmore.third.client.MiniProgramClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.third.response.ResFans;
+import cn.linkmore.third.response.ResMiniSession;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -87,6 +95,8 @@ public class UserServiceImpl implements UserService {
 	public static final String CAR_BRAND_LIST = "CAR_BRAND_LIST";
 	@Autowired
 	private AppWechatClient appWechatClient;
+	@Autowired
+	private MiniProgramClient miniProgramClient;
 	@Resource
 	private AccountMasterMapper accountMasterMapper;
 	@Resource
@@ -107,10 +117,20 @@ public class UserServiceImpl implements UserService {
 	private UserMasterMapper userMasterMapper;
 	@Resource
 	private UserClusterMapper userClusterMapper;
+	
+	@Autowired
+	private UserInfoMasterMapper userInfoMasterMapper;
+	
+	@Autowired
+	private UserInfoClusterMapper userInfoClusterMapper;
+	
 	@Resource
 	private RedisService redisService;
 	@Resource
 	private AdminUserMasterMapper adminUserMasterMapper;
+	
+	@Autowired
+	private WechatFansClusterMapper wechatFansClusterMapper;
 
 	@Override
 	public void updateNickname(ReqUpdateNickname nickname) {
@@ -163,14 +183,14 @@ public class UserServiceImpl implements UserService {
 					// 拼装返回 车辆品牌-型号
 					String brandModel = "";
 					int num = 0;
-					for (Object carBrand : (List) carObj) {
-						Map m = (Map) carBrand;
+					for (Object carBrand : (List<?>) carObj) {
+						Map<?,?> m = (Map<?,?>) carBrand;
 						if (m.get("id").toString().equals(vechicle.getBrandId().toString())) {
 							brandModel = brandModel + m.get("name");
-							for (Object carFirm : (List) m.get("childlist")) {
-								Map m2 = (Map) carFirm;
-								for (Object carModel : (List) m2.get("carlist")) {
-									Map m3 = (Map) carModel;
+							for (Object carFirm : (List<?>) m.get("childlist")) {
+								Map<?,?> m2 = (Map<?,?>) carFirm;
+								for (Object carModel : (List<?>) m2.get("carlist")) {
+									Map<?,?> m3 = (Map<?,?>) carModel;
 									if (m3.get("id").toString().equals(vechicle.getModel().toString())) {
 										brandModel = brandModel + "-" + m3.get("fullname");
 										num++;
@@ -385,7 +405,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser appLogin(ReqAuthLogin rl, HttpServletRequest request) {
-		if(!(TEST_MOBILE.contains(rl.getMobile())&&"6666".equals(rl.getCode()))) {
+		if(!("6666".equals(rl.getCode()))) {
 			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
@@ -408,6 +428,10 @@ public class UserServiceImpl implements UserService {
 		ru.setToken(key); 
 		ru.setSex(rul.getSex());
 		ru.setRealname(rul.getRealname());
+		ru.setAlias("u"+rul.getId());
+		List<String> tags = new ArrayList<String>();
+		tags.add("appuser");
+		ru.setTags(tags);
 		CacheUser user = new CacheUser();
 		user.setId(rul.getId());
 		user.setMobile(rul.getMobile());
@@ -499,6 +523,10 @@ public class UserServiceImpl implements UserService {
 		ru.setToken(key); 
 		ru.setRealname(user.getRealname());
 		ru.setSex(user.getSex());
+		ru.setAlias("u"+user.getId());
+		List<String> tags = new ArrayList<String>();
+		tags.add("appuser");
+		ru.setTags(tags);
 		CacheUser cu = new CacheUser();
 		cu.setId(user.getId());
 		cu.setMobile(user.getUsername());
@@ -517,12 +545,13 @@ public class UserServiceImpl implements UserService {
 	
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
 		String key = TokenUtil.getKey(request);
-		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId().toString());
+		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 		if(last!=null){ 
-			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId().toString());
+			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
 			last.setAccessToken(key);
 		}
+		user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user); 
 		Token token = new Token();
 		token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
@@ -600,11 +629,14 @@ public class UserServiceImpl implements UserService {
 		} 
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		
+		if(this.redisService.exists(RedisKey.USER_APP_USER_CHANGE_MOBILE.key+ru.getId())) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_CHANGE_MOBILE);
+		} 
 		ReqUpdateMobile rum = new ReqUpdateMobile(); 
 		rum.setMobile(rmb.getMobile());
 		rum.setUserId(ru.getId());
 		this.updateMobile(rum);
-		this.updateCache(request, ru); 
 		ResUserDetails details = this.detail(request);
 		cn.linkmore.account.controller.app.response.ResUser user = new cn.linkmore.account.controller.app.response.ResUser();
 		user.setId(details.getId());
@@ -613,7 +645,8 @@ public class UserServiceImpl implements UserService {
 		user.setSex(details.getSex().shortValue());
 		user.setToken(ru.getToken());
 		ru.setMobile(user.getMobile());
-		this.updateCache(request, ru);
+		this.updateCache(request, ru); 
+		this.redisService.set(RedisKey.USER_APP_USER_CHANGE_MOBILE.key+ru.getId(), user.getMobile(), 60*60*24*30); 
 		return user;
 	}
 	
@@ -686,6 +719,9 @@ public class UserServiceImpl implements UserService {
 	public void removeWechat(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		if(ru.getMobile().trim().length()>=12) {
+			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_BINDING_NOMOBILE);
+		}
 		this.removeWechat(ru.getId());
 	}
 	@Override
@@ -739,6 +775,133 @@ public class UserServiceImpl implements UserService {
 			db.setRegisterStatus((short)1);
 			this.userAppfansMasterMapper.updateByIdSelective(db);  
 		}   
+	}
+
+	
+	private UserInfo saveUserInfo(ResMiniSession rms) {
+		UserInfo ui = null;
+		WechatFans fans = this.wechatFansClusterMapper.findByUnionid(rms.getUnionid());
+		if (fans != null) {
+			ui = new UserInfo();
+			ui.setCreateTime(new Date());
+			ui.setAvatarurl(fans.getHeadimagurl());
+			ui.setGender(fans.getSex().shortValue());
+			ui.setCity(fans.getCity());
+			ui.setNickName(fans.getNickname());
+			ui.setUnionId(rms.getUnionid());
+			if (fans.getUid() != null) {
+				ui.setUserId(fans.getUid());
+				ui.setBindTime(ui.getCreateTime());
+			}
+			ui.setId(rms.getOpenid());
+			this.userInfoMasterMapper.save(ui);
+		} else {
+			ui = new UserInfo();
+			ui.setId(rms.getOpenid());
+			ui.setCreateTime(new Date());
+			ui.setUnionId(rms.getUnionid());
+			this.userInfoMasterMapper.save(ui);
+		}		return ui;
+	}
+	@Override
+	public cn.linkmore.account.controller.app.response.ResUser mini(String code, HttpServletRequest request) {
+		ResMiniSession rms = miniProgramClient.getSession(code);
+		log.info("rms:{}",JsonUtil.toJson(rms));
+		UserInfo ui = this.userInfoClusterMapper.find(rms.getOpenid());
+		if (ui == null) {
+			ui = this.saveUserInfo(rms);
+		}
+		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
+		if (ui.getUserId() != null) {
+			ResUser user = this.userClusterMapper.findById(ui.getUserId());
+			if (user != null) {
+				ru.setId(user.getId());
+				ru.setMobile(user.getUsername());
+			}
+		}
+		String key = TokenUtil.getKey(request);  
+		ru.setToken(key); 
+		CacheUser cu = new CacheUser(); 
+		cu.setToken(key); 
+		cu.setClient((short)ClientSource.WXAPP.source);
+		this.cacheUser(request, cu);
+		return ru;
+	}
+	
+	@Override
+	public cn.linkmore.account.controller.app.response.ResUser bindWechatMobile(String mobile,
+			HttpServletRequest request) {
+		ResUser user = this.findByMobile(mobile);
+		if (user == null) {
+			user = new ResUser();
+			user.setMobile(mobile);
+			user.setUsername(mobile);
+			user.setPassword("");
+			user.setUserType("1");
+			user.setStatus("1");
+			user.setLastLoginTime(new Date());
+			user.setCreateTime(new Date());
+			user.setUpdateTime(new Date());
+			user.setIsAppRegister((short) 1);
+			user.setAppRegisterTime(new Date());
+			user.setIsWechatBind((short) 0);
+			this.userMasterMapper.insert(user);
+			Account account = new Account();
+			account.setId(user.getId());
+			account.setAmount(0.00d);
+			account.setUsableAmount(0.00d);
+			account.setFrozenAmount(0.00d);
+			account.setRechagePaymentAmount(0.00d);
+			account.setRechargeAmount(0.00d);
+			account.setAccType(1);
+			account.setStatus((short) 1);
+			account.setOrderAmount(0.00d);
+			account.setOrderPaymentAmount(0.00d);
+			account.setCreateTime(new Date());
+			accountMasterMapper.insert(account);
+		} else if (user.getStatus().equals("2")) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
+		} else {
+			user.setLastLoginTime(new Date());
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", user.getId());
+			param.put("lastLoginTime", new Date());
+			param.put("updateTime", new Date());
+			this.userMasterMapper.updateLoginTime(param);
+		}
+		String key = TokenUtil.getKey(request); 
+		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
+		ru.setId(user.getId());
+		ru.setMobile(user.getUsername());
+		ru.setToken(key); 
+		ru.setSex(user.getSex());
+		ru.setRealname(user.getRealname());
+		ru.setAlias("u"+user.getId());
+		List<String> tags = new ArrayList<String>();
+		tags.add("miniuser");
+		ru.setTags(tags);
+		CacheUser cu = new CacheUser(); 
+		cu.setId(user.getId());
+		cu.setMobile(user.getUsername());
+		cu.setToken(key);  
+		this.cacheUser(request, cu);  
+		return ru; 
+	}
+
+	@Override
+	public cn.linkmore.account.controller.app.response.ResUser bindNormalMobile(ReqMobileBind rmb,
+			HttpServletRequest request) {
+		Object cache = this.redisService.get(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
+		if(cache==null) {
+			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
+		}else {
+			if(!cache.toString().equals(rmb.getCode())) {
+				throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
+			}else {
+				this.redisService.remove(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
+			}
+		} 
+		return this.bindWechatMobile(rmb.getMobile(), request);
 	}
 	
 }

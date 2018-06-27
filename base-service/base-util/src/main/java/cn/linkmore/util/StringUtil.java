@@ -1,5 +1,13 @@
 package cn.linkmore.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -164,5 +172,48 @@ public class StringUtil {
 		}
 		return sb.toString();
   }
+  /**
+   * 获取两个日期之间的数据
+   * @param start
+   * @param end
+   * @return
+   */
+	public static List<String> getBetweenDates(String start, String end) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		List<String> strList = new ArrayList<String>();
+		Calendar tempStart = Calendar.getInstance();
+		Calendar tempEnd = Calendar.getInstance();
+		try {
+			tempStart.setTime(sdf.parse(start));
+			tempEnd.setTime(sdf.parse(end));
+			while (tempStart.before(tempEnd)) {
+				strList.add(sdf.format(tempStart.getTime()));
+				tempStart.add(Calendar.DAY_OF_YEAR, 1);
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Collections.sort(strList, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				try {
+					Date dt1 = format.parse(o1);
+					Date dt2 = format.parse(o2);
+					if (dt1.getTime() > dt2.getTime()) {
+						return -1;
+					} else if (dt1.getTime() < dt2.getTime()) {
+						return 1;
+					} else {
+						return 0;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return 0;
+			}
+		});
+		return strList;
+	}
 
 }

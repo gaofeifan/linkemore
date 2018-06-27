@@ -100,7 +100,10 @@ public class ResOrder {
 		this.parkingTime = parkingTime;
 	}
 	public BigDecimal getTotalAmount() {
-		return totalAmount;
+		if(this.totalAmount==null) {
+			this.totalAmount = new BigDecimal(0d);
+		}
+		return this.totalAmount.setScale(2,   BigDecimal.ROUND_HALF_UP);
 	}
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
@@ -130,7 +133,10 @@ public class ResOrder {
 		this.payType = payType;
 	}
 	public BigDecimal getActualAmount() {
-		return actualAmount;
+		if(this.actualAmount==null) {
+			this.actualAmount = new BigDecimal(0d);
+		}
+		return this.actualAmount.setScale(2,   BigDecimal.ROUND_HALF_UP);
 	}
 	public void setActualAmount(BigDecimal actualAmount) {
 		this.actualAmount = actualAmount;

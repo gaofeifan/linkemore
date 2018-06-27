@@ -30,13 +30,16 @@ public class ResCoupon{
 	private Date  validTime;
 	
 	private Long itemId;
+	
     private Long enterpriseId;
-    private Long templateId; 
-	  	 
+    
+    private Long templateId;  
 	
 	private Long conditionId;
 	
 	private Integer discount;
+	
+	private Long userId;
 	
 	private BigDecimal conditionAmount; 
 	
@@ -183,6 +186,15 @@ public class ResCoupon{
 
 	public void setTemplateId(Long templateId) {
 		this.templateId = templateId;
+	}
+
+	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	@JsonIgnore

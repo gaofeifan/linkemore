@@ -2,10 +2,8 @@ package cn.linkmore.report.service.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.report.dao.cluster.ReportDayClusterMapper;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
@@ -87,7 +85,7 @@ public class ReportDayServiceImpl implements ReportDayService {
 
 	@Override
 	public List<ResRunTime> runtimeList(Map<String, Object> param) {
-		return reportClusterMapper.runtimeList(param);
+		return reportClusterMapper.runTimeList(param);
 	}
 
 	@Override

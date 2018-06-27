@@ -17,6 +17,13 @@ import cn.linkmore.account.response.ResWechatFans;
  */
 @Mapper
 public interface WechatFansClusterMapper {
+	
+	/**
+	 * 根据unionid获取粉丝
+	 * @param unionid
+	 * @return
+	 */
+	WechatFans findByUnionid(String unionid);
     /**
      * @Description  根据id查询
      * @Author   GFF 

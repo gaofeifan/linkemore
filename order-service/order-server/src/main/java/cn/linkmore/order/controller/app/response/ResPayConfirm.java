@@ -1,5 +1,7 @@
 package cn.linkmore.order.controller.app.response;
 
+import java.math.BigDecimal;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -17,8 +19,12 @@ public class ResPayConfirm {
 	private ResPayWeixin weixin;
 	@ApiModelProperty(value = "苹果支付")
 	private String apple;
-	public Double getAmount() {
-		return amount;
+	public Double getAmount() { 
+		if(amount==null) {
+			amount = new Double(0D);
+		}
+		BigDecimal b = new BigDecimal(this.amount); 
+		return b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(); 
 	}
 	public void setAmount(Double amount) {
 		this.amount = amount;

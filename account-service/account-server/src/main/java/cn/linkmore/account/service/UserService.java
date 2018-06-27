@@ -248,5 +248,29 @@ public interface UserService {
      */
 	void bindWechat(String code, HttpServletRequest request);
 
+	/**
+	 * 微信小程序登录
+	 * @param code
+	 * @param request
+	 * @return
+	 */
+	cn.linkmore.account.controller.app.response.ResUser mini(String code, HttpServletRequest request);
+
+	/**
+	 * 小程序绑定微信注册手机
+	 * @param mobile
+	 * @param request
+	 * @return
+	 */
+	cn.linkmore.account.controller.app.response.ResUser bindWechatMobile(String mobile, HttpServletRequest request);
+
+	/**
+	 * 小程序绑定普通手机
+	 * @param rmb
+	 * @param request
+	 * @return
+	 */
+	cn.linkmore.account.controller.app.response.ResUser bindNormalMobile(ReqMobileBind rmb, HttpServletRequest request);
+
 
 }

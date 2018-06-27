@@ -12,7 +12,21 @@ public class ResAveragePrice {
 	private String preName;//车区名称
 	private String day;//日期
 	private Double averagePrice;//客单价
+	private double amountTotal;//总金额
+	private int dayTotal;//订单数量
 	
+	public double getAmountTotal() {
+		return amountTotal;
+	}
+	public void setAmountTotal(double amountTotal) {
+		this.amountTotal = amountTotal;
+	}
+	public int getDayTotal() {
+		return dayTotal;
+	}
+	public void setDayTotal(int dayTotal) {
+		this.dayTotal = dayTotal;
+	}
 	public Long getPreId() {
 		return preId;
 	}
