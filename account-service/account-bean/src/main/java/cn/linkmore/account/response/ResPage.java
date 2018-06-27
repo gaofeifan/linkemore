@@ -1,7 +1,6 @@
 package cn.linkmore.account.response;
 
 import java.util.List;
-
 public class ResPage<T> {
 	private static final long serialVersionUID = 6887389993060457824L;
 	/**
@@ -13,6 +12,7 @@ public class ResPage<T> {
 	 */
 	private long records;
 
+	private boolean status;
 
 	public ResPage() {
 	}
@@ -40,4 +40,13 @@ public class ResPage<T> {
 		this.records = records;
 	}
 
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	
 }
