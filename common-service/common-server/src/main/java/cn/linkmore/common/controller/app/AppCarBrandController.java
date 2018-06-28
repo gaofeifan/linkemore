@@ -76,7 +76,7 @@ public class AppCarBrandController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@ApiOperation(value="加载数据",notes="加载数据", consumes = "application/json")
+/*	@ApiOperation(value="加载数据",notes="加载数据", consumes = "application/json")
 	@RequestMapping(value="/v2.0/load", method = RequestMethod.GET)
 	public void load(HttpServletRequest request) {
 		log.info("请求车辆品牌接口,请耐心等待......");
@@ -132,5 +132,5 @@ public class AppCarBrandController {
 			log.info("连接失败，车辆品牌数据请求失败......");
 		}
 		
-	}
+	}*/
 }
