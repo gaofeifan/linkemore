@@ -104,10 +104,13 @@ public class ReportDayOrderController {
 					map.put(resOrder.getPreName(), resOrder.getPreName());
 				}
 			}
-			int i = titleList.size();
-			int j = 100 / i;
+			int titleSize = titleList.size();
+			String width = "130";
+			if (titleSize < 10) {
+				width = 100 / titleSize + "%";
+			}
 			for (ResTitle resTitle : titleList) {
-				resTitle.setWidth(j + "%");
+				resTitle.setWidth(width);
 			}
 		} else {
 			titleList = new ArrayList<ResTitle>();
@@ -152,10 +155,13 @@ public class ReportDayOrderController {
 					map.put(resPull.getPreName(), resPull.getPreName());
 				}
 			}
-			int i = titleList.size();
-			int j = 100 / i;
+			int titleSize = titleList.size();
+			String width = "130";
+			if (titleSize < 10) {
+				width = 100 / titleSize + "%";
+			}
 			for (ResTitle resTitle : titleList) {
-				resTitle.setWidth(j + "%");
+				resTitle.setWidth(width);
 			}
 		} else {
 			titleList = new ArrayList<ResTitle>();

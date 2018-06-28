@@ -7,10 +7,13 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.report.dao.cluster.ReportDayClusterMapper;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
+import cn.linkmore.report.response.ResCost;
+import cn.linkmore.report.response.ResIncome;
 import cn.linkmore.report.response.ResNewUser;
 import cn.linkmore.report.response.ResOrder;
 import cn.linkmore.report.response.ResPre;
 import cn.linkmore.report.response.ResPull;
+import cn.linkmore.report.response.ResPullCost;
 import cn.linkmore.report.response.ResRunTime;
 import cn.linkmore.report.response.ResStallAverage;
 import cn.linkmore.report.response.ResUserNum;
@@ -91,5 +94,20 @@ public class ReportDayServiceImpl implements ReportDayService {
 	@Override
 	public List<ResAveragePrice> averagePriceList(Map<String, Object> param) {
 		return reportClusterMapper.averagePriceList(param);
+	}
+
+	@Override
+	public List<ResIncome> incomeList(Map<String, Object> param) {
+		return reportClusterMapper.incomeList(param);
+	}
+
+	@Override
+	public List<ResCost> costList(Map<String, Object> param) {
+		return reportClusterMapper.costList(param);
+	}
+
+	@Override
+	public List<ResPullCost> pullCostList(Map<String, Object> param) {
+		return reportClusterMapper.pullCostList(param);
 	}
 }

@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.report.response.ResCity;
+import cn.linkmore.report.response.ResCost;
+import cn.linkmore.report.response.ResIncome;
 import cn.linkmore.report.response.ResNewUser;
 import cn.linkmore.report.response.ResOrder;
 import cn.linkmore.report.response.ResPre;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResPull;
+import cn.linkmore.report.response.ResPullCost;
 import cn.linkmore.report.response.ResRunTime;
 import cn.linkmore.report.response.ResStallAverage;
 import cn.linkmore.report.response.ResUserNum;
@@ -62,6 +65,7 @@ public interface ReportDayClusterMapper {
 	 */
 	List<ResStallAverage> stallAverageList(Map<String, Object> param);
 	
+	
 	/**
 	 * 订单列表
 	 * @param param
@@ -106,5 +110,25 @@ public interface ReportDayClusterMapper {
 	 */
 	List<ResAveragePrice> averagePriceList(Map<String, Object> param);
 	
-
+	
+	/**
+	 * 成本列表
+	 * @param param
+	 * @return
+	 */
+	List<ResCost> costList(Map<String, Object> param);
+	
+	/**
+	 * 收入列表
+	 * @param param
+	 * @return
+	 */
+	List<ResIncome> incomeList(Map<String, Object> param);
+	
+	/**
+	 * 拉新成本
+	 * @param param
+	 * @return
+	 */
+	List<ResPullCost> pullCostList(Map<String, Object> param);
 }

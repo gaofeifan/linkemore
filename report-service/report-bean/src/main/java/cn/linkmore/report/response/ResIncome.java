@@ -13,8 +13,18 @@ public class ResIncome {
 	private String day;//日期
 	private double totalAmount;//交易额
 	private double actualAmount;//现金收入
-	private double rate;//现金占交易额比例
+	private double cashDealRate;//现金占交易额比例
+	private double dealCostRate;//交易额占成本比例
+	private double cashCostRate;//现金占成本比例cash_cost_rate
+	private int fee;//费用= 成本-现金收入
+	private int cost;//车区每天成本
 	
+	public int getCost() {
+		return cost;
+	}
+	public void setCost(int cost) {
+		this.cost = cost;
+	}
 	public Long getCityId() {
 		return cityId;
 	}
@@ -57,10 +67,28 @@ public class ResIncome {
 	public void setActualAmount(double actualAmount) {
 		this.actualAmount = actualAmount;
 	}
-	public double getRate() {
-		return rate;
+	public double getCashDealRate() {
+		return cashDealRate;
 	}
-	public void setRate(double rate) {
-		this.rate = rate;
+	public void setCashDealRate(double cashDealRate) {
+		this.cashDealRate = cashDealRate;
+	}
+	public double getDealCostRate() {
+		return dealCostRate;
+	}
+	public void setDealCostRate(double dealCostRate) {
+		this.dealCostRate = dealCostRate;
+	}
+	public double getCashCostRate() {
+		return cashCostRate;
+	}
+	public void setCashCostRate(double cashCostRate) {
+		this.cashCostRate = cashCostRate;
+	}
+	public int getFee() {
+		return fee;
+	}
+	public void setFee(int fee) {
+		this.fee = fee;
 	}
 }

@@ -19,13 +19,10 @@ import com.alibaba.fastjson.JSON;
 import cn.linkmore.bean.common.ResultMap;
 import cn.linkmore.ops.account.service.ReportDayService;
 import cn.linkmore.report.request.ReqReportDay;
-import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
 import cn.linkmore.report.response.ResNewUser;
-import cn.linkmore.report.response.ResOrder;
 import cn.linkmore.report.response.ResPre;
 import cn.linkmore.report.response.ResPull;
-import cn.linkmore.report.response.ResRunTime;
 import cn.linkmore.report.response.ResStallAverage;
 import cn.linkmore.report.response.ResTitle;
 import cn.linkmore.report.response.ResUserNum;
@@ -94,33 +91,6 @@ public class ReportDayUserController {
         return new ResultMap<List<ResNewUser>>(0,"",newUserList,newUserList.size()); 
 	}
 	
-	@RequestMapping(value = "/user_list", method = RequestMethod.POST)
-	@ResponseBody
-	public ResultMap<List<User>> userList(HttpServletRequest request, ReqReportDay reportDay){
-		List<User> userList = new ArrayList<User>();
-		userList.add(new User("11","222"));
-		userList.add(new User("33","444"));
-		log.info("userList = "+ JSON.toJSON(userList));
-        return new ResultMap<List<User>>(0,"", userList, userList.size()); 
-	}
-	
-	@RequestMapping("/title/demo")  
-    @ResponseBody  
-    public List<ResTitle> demo(){  
-		ResTitle test=new ResTitle();  
-        test.setField("username");  
-        test.setTitle("名称");
-        test.setWidth("10%");
-        ResTitle test2=new ResTitle();  
-        test2.setField("address");  
-        test2.setTitle("地址");
-        test.setWidth("20%");
-        ArrayList<ResTitle> list=new ArrayList<ResTitle>();  
-        list.add(test);  
-        list.add(test2);
-        return list;  
-    }  
-	
 	@RequestMapping(value = "/title", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResTitle> titleList(HttpServletRequest request, ReqReportDay reportDay){
@@ -166,10 +136,13 @@ public class ReportDayUserController {
 					map.put(resPull.getPreName(), resPull.getPreName());
 				}
 			}
-			int i = titleList.size();
-			int j = 100/i;
-			for(ResTitle resTitle : titleList) {
-				resTitle.setWidth(j+"%");
+			int titleSize = titleList.size();
+			String width = "130";
+			if (titleSize < 10) {
+				width = 100 / titleSize + "%";
+			}
+			for (ResTitle resTitle : titleList) {
+				resTitle.setWidth(width);
 			}
 		}else {
 			titleList = new ArrayList<ResTitle>();
@@ -276,64 +249,5 @@ public class ReportDayUserController {
 			}
 		}
 		return new ResultMap<List<Map<String,Object>>>(0,"", list, list.size()); 
-	}
-	
-	@RequestMapping(value = "/order", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResOrder> orderList(HttpServletRequest request, ReqReportDay reportDay){
-		
-		return this.reportDayService.orderList(reportDay);
-	}
-	
-	@RequestMapping(value = "/yl_order", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResOrder> ylOrderList(HttpServletRequest request, ReqReportDay reportDay){
-		return this.reportDayService.ylOrderList(reportDay);
-	}
-	
-	@RequestMapping(value = "/newuser_order", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResOrder> newUserOrderList(HttpServletRequest request, ReqReportDay reportDay){
-		return this.reportDayService.newUserOrderList(reportDay);
-	}
-	
-	@RequestMapping(value = "/olduser_order", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResOrder> oldUserOrderList(HttpServletRequest request, ReqReportDay reportDay){
-		
-		return this.reportDayService.oldUserOrderList(reportDay);
-	}
-	
-	@RequestMapping(value = "/runtime", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResRunTime> runtimeList(HttpServletRequest request, ReqReportDay reportDay){
-		return this.reportDayService.runtimeList(reportDay);
-	}
-	
-	@RequestMapping(value = "/average_price", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResAveragePrice> averagePriceList(HttpServletRequest request, ReqReportDay reportDay){
-		return this.reportDayService.averagePriceList(reportDay);
-	}
-}
-
-class User{
-	private String username;
-	private String address;
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	public User(String username,String address) {
-		this.username = username;
-		this.address = address;
 	}
 }

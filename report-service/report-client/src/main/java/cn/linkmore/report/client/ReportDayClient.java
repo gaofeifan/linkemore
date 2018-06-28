@@ -12,10 +12,13 @@ import cn.linkmore.report.client.hystrix.ReportDayClientHystrix;
 import cn.linkmore.report.request.ReqReportDay;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
+import cn.linkmore.report.response.ResCost;
+import cn.linkmore.report.response.ResIncome;
 import cn.linkmore.report.response.ResNewUser;
 import cn.linkmore.report.response.ResOrder;
 import cn.linkmore.report.response.ResPre;
 import cn.linkmore.report.response.ResPull;
+import cn.linkmore.report.response.ResPullCost;
 import cn.linkmore.report.response.ResRunTime;
 import cn.linkmore.report.response.ResStallAverage;
 import cn.linkmore.report.response.ResUserNum;
@@ -79,5 +82,17 @@ public interface ReportDayClient {
 	@RequestMapping(value = "/v2.0/average_price", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResAveragePrice> averagePriceList(@RequestBody ReqReportDay reportDay);
+	
+	@RequestMapping(value = "/v2.0/cost", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResCost> costList(@RequestBody ReqReportDay reportDay);
+	
+	@RequestMapping(value = "/v2.0/income", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResIncome> incomeList(@RequestBody ReqReportDay reportDay);
+	
+	@RequestMapping(value = "/v2.0/pull_cost", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPullCost> pullCostList(@RequestBody ReqReportDay reportDay);
 	
 }

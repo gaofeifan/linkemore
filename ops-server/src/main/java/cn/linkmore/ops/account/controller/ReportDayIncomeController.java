@@ -15,90 +15,114 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.alibaba.fastjson.JSON;
 import cn.linkmore.bean.common.ResultMap;
 import cn.linkmore.ops.account.service.ReportDayService;
 import cn.linkmore.report.request.ReqReportDay;
-import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
-import cn.linkmore.report.response.ResNewUser;
-import cn.linkmore.report.response.ResOrder;
+import cn.linkmore.report.response.ResCost;
+import cn.linkmore.report.response.ResIncome;
 import cn.linkmore.report.response.ResPre;
-import cn.linkmore.report.response.ResPull;
-import cn.linkmore.report.response.ResRunTime;
-import cn.linkmore.report.response.ResStallAverage;
+import cn.linkmore.report.response.ResPullCost;
 import cn.linkmore.report.response.ResTitle;
-import cn.linkmore.report.response.ResUserNum;
 import cn.linkmore.util.StringUtil;
+
 /**
  * Controller 日报- 收入分析
+ * 
  * @author jiaohanbin
  * @version 2.0
  *
  */
 @Controller
 @RequestMapping("/admin/account/report_day_income")
-public class ReportDayIncomeController { 
-	
-	private  final Logger log = LoggerFactory.getLogger(this.getClass());
-	
+public class ReportDayIncomeController {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
 	@Resource
 	private ReportDayService reportDayService;
-	
+
 	@RequestMapping(value = "/city_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResCity> cityList(){
-		return this.reportDayService.cityList(); 
-	} 
-	
+	public List<ResCity> cityList() {
+		return this.reportDayService.cityList();
+	}
+
 	@RequestMapping(value = "/pre_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResPre> preList(HttpServletRequest request, Long cityId){
-		Map<String,Object> param = new HashMap<String,Object>();
-		if(cityId != 0) {
+	public List<ResPre> preList(HttpServletRequest request, Long cityId) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		if (cityId != 0) {
 			param.put("cityId", cityId);
 		}
 		return this.reportDayService.preList(param);
 	}
-	
-	@RequestMapping(value = "/total_count", method = RequestMethod.GET)
-	@ResponseBody
-	public Integer totalCount(){
-		return this.reportDayService.totalCount(); 
-	} 
-	
-	@RequestMapping(value = "/user_num", method = RequestMethod.POST)
-	@ResponseBody
-	public ResultMap<List<ResUserNum>> userNumList(HttpServletRequest request,ReqReportDay reportDay){
-		List<ResUserNum> list = this.reportDayService.userNumList(reportDay);
-		if(CollectionUtils.isNotEmpty(list)) {
-			for(ResUserNum resUserNum :list) {
-				double average = new BigDecimal((float)resUserNum.getDayTotal()/resUserNum.getStallTotal()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();  
-				resUserNum.setAverage(average);
-			}
-		}else {
-			list = new ArrayList<ResUserNum>();
-		}
-		log.info("userNumList = "+ JSON.toJSON(list));
-        return new ResultMap<List<ResUserNum>>(0,"",list,list.size()); 
-	}
-	
-	@RequestMapping(value = "/new_user", method = RequestMethod.POST)
-	@ResponseBody
-	public ResultMap<List<ResNewUser>> newUserList(HttpServletRequest request, ReqReportDay reportDay){
-		List<ResNewUser> newUserList = this.reportDayService.newUserList(reportDay);
-		log.info("newUserList = "+ JSON.toJSON(newUserList));
-		if(newUserList == null) {
-			newUserList = new ArrayList<ResNewUser>();
-		}
-        return new ResultMap<List<ResNewUser>>(0,"",newUserList,newUserList.size()); 
-	}
-	
+
 	@RequestMapping(value = "/title", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResTitle> titleList(HttpServletRequest request, ReqReportDay reportDay){
-		List<ResPull> pullList = this.reportDayService.pullList(reportDay);
-		Map<String,String> map = new HashMap<String,String>();
+	public List<ResTitle> titleList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResCost> costList = this.reportDayService.costList(reportDay);
+		Map<String, String> map = new HashMap<String, String>();
+		List<ResTitle> titleList = new ArrayList<ResTitle>();
+		ResTitle title = new ResTitle();
+		title.setField("column");
+		title.setTitle("列项");
+		titleList.add(title);
+		ResTitle title2 = new ResTitle();
+		title2.setField("total");
+		title2.setTitle("合计");
+		titleList.add(title2);
+		if (CollectionUtils.isNotEmpty(costList)) {
+			for (ResCost resCost : costList) {
+				if (resCost.getCityName().equals("北京")) {
+					if (!map.containsKey("bjTotal")) {
+						ResTitle title3 = new ResTitle();
+						title3.setField("bjTotal");
+						title3.setTitle(resCost.getCityName() + "合计");
+						titleList.add(title3);
+						map.put("bjTotal", resCost.getCityName() + "合计");
+					}
+				}
+				if (resCost.getCityName().equals("杭州")) {
+					if (!map.containsKey("hzTotal")) {
+						ResTitle title4 = new ResTitle();
+						title4.setField("hzTotal");
+						title4.setTitle(resCost.getCityName() + "合计");
+						titleList.add(title4);
+						map.put("hzTotal", resCost.getCityName() + "合计");
+					}
+				}
+			}
+
+			for (ResCost resPull : costList) {
+				if (!map.containsKey(resPull.getPreName())) {
+					ResTitle title5 = new ResTitle();
+					title5.setField(resPull.getPreName());
+					title5.setTitle(resPull.getPreName());
+					titleList.add(title5);
+					map.put(resPull.getPreName(), resPull.getPreName());
+				}
+			}
+			int titleSize = titleList.size();
+			String width = "130";
+			if (titleSize < 10) {
+				width = 100 / titleSize + "%";
+			}
+			for (ResTitle resTitle : titleList) {
+				resTitle.setWidth(width);
+			}
+		} else {
+			titleList = new ArrayList<ResTitle>();
+		}
+
+		return titleList;
+	}
+
+	@RequestMapping(value = "/income_title", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResTitle> incomeTitleList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResCost> costList = this.reportDayService.costList(reportDay);
+		Map<String, String> map = new HashMap<String, String>();
 		List<ResTitle> titleList = new ArrayList<ResTitle>();
 		ResTitle title = new ResTitle();
 		title.setField("day");
@@ -108,30 +132,30 @@ public class ReportDayIncomeController {
 		title2.setField("total");
 		title2.setTitle("合计");
 		titleList.add(title2);
-		if(CollectionUtils.isNotEmpty(pullList)) {
-			for(ResPull resPull :pullList) {
-				if(resPull.getCityName().equals("北京")) {
-					if(!map.containsKey("bjTotal")) {
+		if (CollectionUtils.isNotEmpty(costList)) {
+			for (ResCost resCost : costList) {
+				if (resCost.getCityName().equals("北京")) {
+					if (!map.containsKey("bjTotal")) {
 						ResTitle title3 = new ResTitle();
 						title3.setField("bjTotal");
-						title3.setTitle(resPull.getCityName()+"合计");
+						title3.setTitle(resCost.getCityName() + "合计");
 						titleList.add(title3);
-						map.put("bjTotal", resPull.getCityName()+"合计");
+						map.put("bjTotal", resCost.getCityName() + "合计");
 					}
 				}
-				if(resPull.getCityName().equals("杭州")) {
-					if(!map.containsKey("hzTotal")) {
+				if (resCost.getCityName().equals("杭州")) {
+					if (!map.containsKey("hzTotal")) {
 						ResTitle title4 = new ResTitle();
 						title4.setField("hzTotal");
-						title4.setTitle(resPull.getCityName()+"合计");
+						title4.setTitle(resCost.getCityName() + "合计");
 						titleList.add(title4);
-						map.put("hzTotal", resPull.getCityName()+"合计");
+						map.put("hzTotal", resCost.getCityName() + "合计");
 					}
 				}
 			}
-			
-			for(ResPull resPull :pullList) {
-				if(!map.containsKey(resPull.getPreName())) {
+
+			for (ResCost resPull : costList) {
+				if (!map.containsKey(resPull.getPreName())) {
 					ResTitle title5 = new ResTitle();
 					title5.setField(resPull.getPreName());
 					title5.setTitle(resPull.getPreName());
@@ -139,45 +163,75 @@ public class ReportDayIncomeController {
 					map.put(resPull.getPreName(), resPull.getPreName());
 				}
 			}
-			int i = titleList.size();
-			int j = 100/i;
-			for(ResTitle resTitle : titleList) {
-				resTitle.setWidth(j+"%");
+			int titleSize = titleList.size();
+			String width = "130";
+			if (titleSize < 10) {
+				width = 100 / titleSize + "%";
 			}
-		}else {
+			for (ResTitle resTitle : titleList) {
+				resTitle.setWidth(width);
+			}
+		} else {
 			titleList = new ArrayList<ResTitle>();
 		}
-		
+
 		return titleList;
 	}
-	
-	@RequestMapping(value = "/pull", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/cost", method = RequestMethod.POST)
 	@ResponseBody
-	public ResultMap<List<Map<String,Object>>> pullList(HttpServletRequest request, ReqReportDay reportDay){
-		List<ResPull> pullList = this.reportDayService.pullList(reportDay);
-		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-		Map<String,Object> map = null;
-		if(StringUtils.isNotBlank(reportDay.getStartTime()) && 
-				StringUtils.isNotBlank(reportDay.getEndTime()) && pullList != null) {
-			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(),reportDay.getEndTime());
-			for(String date : dateList) {
-				map = new HashMap<String,Object>();
-				map.put("day", date);
+	public ResultMap<List<Map<String, Object>>> costList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResCost> costList = this.reportDayService.costList(reportDay);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = null;
+		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+				&& costList != null) {
+			List<String> dateList = new ArrayList<String>();
+			dateList.add("单车位天成本");
+			dateList.add("车区天成本");
+			dateList.add("单车位月成本");
+			dateList.add("车区月成本");
+			for (String column : dateList) {
+				map = new HashMap<String, Object>();
+				map.put("column", column);
 				int bjTotal = 0;
 				int hzTotal = 0;
-				for(ResPull resPull: pullList) {
-					if(map.get(resPull.getPreName())==null) {
-						map.put(resPull.getPreName(), 0);
-					}
-					if(date.equals(resPull.getDay())) {
-						map.put(resPull.getPreName(), resPull.getDayTotal());
-						if(resPull.getCityName().equals("北京")) {
-							bjTotal += resPull.getDayTotal();
-						}else if(resPull.getCityName().equals("杭州")) {
-							hzTotal += resPull.getDayTotal();
+				for (ResCost resCost : costList) {
+
+					if (column.equals("车区月成本")) {
+						map.put(resCost.getPreName(), resCost.getMonthRent());
+						if (resCost.getCityName().equals("北京")) {
+							bjTotal += resCost.getMonthRent();
+						} else if (resCost.getCityName().equals("杭州")) {
+							hzTotal += resCost.getMonthRent();
 						}
-					}else {
-						
+					}
+
+					if (column.equals("车区天成本")) {
+						map.put(resCost.getPreName(), resCost.getMonthRent() / 30);
+						if (resCost.getCityName().equals("北京")) {
+							bjTotal += resCost.getMonthRent() / 30;
+						} else if (resCost.getCityName().equals("杭州")) {
+							hzTotal += resCost.getMonthRent() / 30;
+						}
+					}
+
+					if (column.equals("单车位月成本")) {
+						map.put(resCost.getPreName(), resCost.getMonthRent() / resCost.getStallTotal());
+						if (resCost.getCityName().equals("北京")) {
+							bjTotal += resCost.getMonthRent() / resCost.getStallTotal();
+						} else if (resCost.getCityName().equals("杭州")) {
+							hzTotal += resCost.getMonthRent() / resCost.getStallTotal();
+						}
+					}
+
+					if (column.equals("单车位天成本")) {
+						map.put(resCost.getPreName(), resCost.getMonthRent() / resCost.getStallTotal() / 30);
+						if (resCost.getCityName().equals("北京")) {
+							bjTotal += resCost.getMonthRent() / resCost.getStallTotal() / 30;
+						} else if (resCost.getCityName().equals("杭州")) {
+							hzTotal += resCost.getMonthRent() / resCost.getStallTotal() / 30;
+						}
 					}
 				}
 				map.put("bjTotal", bjTotal);
@@ -185,107 +239,359 @@ public class ReportDayIncomeController {
 				map.put("total", bjTotal + hzTotal);
 				list.add(map);
 			}
-			System.out.println("list = "+ list);
-			System.out.println("pull_list "+ JSON.toJSON(pullList));
 		}
-		return new ResultMap<List<Map<String,Object>>>(0,"", list, list.size()); 
+		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
 	}
-	
-	@RequestMapping(value = "/stall_average", method = RequestMethod.POST)
+
+	public double add(double v1, double v2) {
+		BigDecimal b1 = new BigDecimal(Double.toString(v1));
+		BigDecimal b2 = new BigDecimal(Double.toString(v2));
+		return b1.add(b2).doubleValue();
+	}
+
+	@RequestMapping(value = "/deal", method = RequestMethod.POST)
 	@ResponseBody
-	public ResultMap<List<Map<String,Object>>> stallAverageList(HttpServletRequest request, ReqReportDay reportDay){
-		List<ResStallAverage> averageList = this.reportDayService.stallAverageList(reportDay);
-		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-		Map<String,Object> map = null;
-		int bjStall = 0;
-		int hzStall = 0;
-		Map<String,Object> stallMap = new HashMap<String,Object>();
-		for(ResStallAverage resPull: averageList) {
-			if(stallMap.get(resPull.getPreName())==null) {
-				stallMap.put(resPull.getPreName(), resPull.getStallTotal());
-				if(resPull.getCityName().equals("北京")) {
-					bjStall += resPull.getStallTotal();
-				}else if(resPull.getCityName().equals("杭州")) {
-					hzStall += resPull.getStallTotal();
-				}
-			}
-		}
-		
-		if(StringUtils.isNotBlank(reportDay.getStartTime()) && 
-				StringUtils.isNotBlank(reportDay.getEndTime()) && averageList != null) {
-			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(),reportDay.getEndTime());
-			for(String date : dateList) {
-				map = new HashMap<String,Object>();
+	public ResultMap<List<Map<String, Object>>> dealList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = null;
+		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+				&& incomeList != null) {
+			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			for (String date : dateList) {
+				map = new HashMap<String, Object>();
 				map.put("day", date);
-				int bjTotal = 0;
-				int hzTotal = 0;
-				double bjTotalAverage = 0d;
-				double hzTotalAverage = 0d;
-				double totalAverage = 0d;
-				for(ResStallAverage resPull: averageList) {
-					if(map.get(resPull.getPreName())==null) {
-						map.put(resPull.getPreName(), 0);
+				double bjTotal = 0d;// 北京总金额
+				double hzTotal = 0d;// 杭州总金额
+				for (ResIncome resIncome : incomeList) {
+					if (map.get(resIncome.getPreName()) == null) {
+						map.put(resIncome.getPreName(), 0);
 					}
-					if(date.equals(resPull.getDay())) {
-						map.put(resPull.getPreName(), resPull.getAverage());
-						if(resPull.getCityName().equals("北京")) {
-							bjTotal += resPull.getDayTotal();
-						}else if(resPull.getCityName().equals("杭州")) {
-							hzTotal += resPull.getDayTotal();
+					if (date.equals(resIncome.getDay())) {
+						map.put(resIncome.getPreName(), resIncome.getTotalAmount());
+						if (resIncome.getCityName().equals("北京")) {
+							bjTotal = add(bjTotal, resIncome.getTotalAmount());
+						} else if (resIncome.getCityName().equals("杭州")) {
+							hzTotal = add(hzTotal, resIncome.getTotalAmount());
 						}
 					}
 				}
-				if(bjStall != 0) {
-					 bjTotalAverage = new BigDecimal((float)bjTotal/bjStall).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue(); 
+				map.put("bjTotal", bjTotal);
+				map.put("hzTotal", hzTotal);
+				map.put("total", add(bjTotal, hzTotal));
+				list.add(map);
+			}
+		}
+		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
+	}
+
+	@RequestMapping(value = "/deal_cost", method = RequestMethod.POST)
+	@ResponseBody
+	public ResultMap<List<Map<String, Object>>> dealCostList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = null;
+		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+				&& incomeList != null) {
+			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			for (String date : dateList) {
+				map = new HashMap<String, Object>();
+				map.put("day", date);
+				double bjTotal = 0d;// 北京总金额
+				double hzTotal = 0d;// 杭州总金额
+				int bjCost = 0;
+				int hzCost = 0;
+				double bjTotalAverage = 0d;
+				double hzTotalAverage = 0d;
+				double totalAverage = 0d;
+
+				for (ResIncome resIncome : incomeList) {
+					if (map.get(resIncome.getPreName()) == null) {
+						map.put(resIncome.getPreName(), 0);
+					}
+					if (date.equals(resIncome.getDay())) {
+						map.put(resIncome.getPreName(), resIncome.getDealCostRate());
+						if (resIncome.getCityName().equals("北京")) {
+							bjTotal = add(bjTotal, resIncome.getTotalAmount());
+							bjCost += resIncome.getCost();
+						} else if (resIncome.getCityName().equals("杭州")) {
+							hzTotal = add(hzTotal, resIncome.getTotalAmount());
+							hzCost += resIncome.getCost();
+						}
+					}
 				}
-				if(hzStall != 0) {
-					 hzTotalAverage = new BigDecimal((float)hzTotal/hzStall).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();  
+
+				if (bjCost != 0) {
+					bjTotalAverage = new BigDecimal((float) bjTotal / bjCost).setScale(2, BigDecimal.ROUND_HALF_UP)
+							.doubleValue();
 				}
-				totalAverage = new BigDecimal((float)(bjTotal+hzTotal)/(bjStall+hzStall)).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();  
+				if (hzCost != 0) {
+					hzTotalAverage = new BigDecimal((float) hzTotal / hzCost).setScale(2, BigDecimal.ROUND_HALF_UP)
+							.doubleValue();
+				}
+				if ((bjCost + hzCost) != 0) {
+					totalAverage = new BigDecimal((float) (bjTotal + hzTotal) / (bjCost + hzCost))
+							.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+				log.info("bj_total ,{} hz_total ,{} bj_cost ,{} hz_cost,{}", bjTotal, hzTotal, bjCost, hzCost);
+
 				map.put("bjTotal", bjTotalAverage);
 				map.put("hzTotal", hzTotalAverage);
 				map.put("total", totalAverage);
 				list.add(map);
 			}
 		}
-		return new ResultMap<List<Map<String,Object>>>(0,"", list, list.size()); 
+		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
 	}
-	
-	@RequestMapping(value = "/order", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/cash", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResOrder> orderList(HttpServletRequest request, ReqReportDay reportDay){
-		
-		return this.reportDayService.orderList(reportDay);
+	public ResultMap<List<Map<String, Object>>> cashList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = null;
+		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+				&& incomeList != null) {
+			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			for (String date : dateList) {
+				map = new HashMap<String, Object>();
+				map.put("day", date);
+				double bjTotal = 0d;// 北京总金额
+				double hzTotal = 0d;// 杭州总金额
+				for (ResIncome resIncome : incomeList) {
+					if (map.get(resIncome.getPreName()) == null) {
+						map.put(resIncome.getPreName(), 0);
+					}
+					if (date.equals(resIncome.getDay())) {
+						map.put(resIncome.getPreName(), resIncome.getActualAmount());
+						if (resIncome.getCityName().equals("北京")) {
+							bjTotal = add(bjTotal, resIncome.getActualAmount());
+						} else if (resIncome.getCityName().equals("杭州")) {
+							hzTotal = add(hzTotal, resIncome.getActualAmount());
+						}
+					}
+				}
+				map.put("bjTotal", bjTotal);
+				map.put("hzTotal", hzTotal);
+				map.put("total", add(bjTotal, hzTotal));
+				list.add(map);
+			}
+		}
+		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
 	}
-	
-	@RequestMapping(value = "/yl_order", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/cash_cost", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResOrder> ylOrderList(HttpServletRequest request, ReqReportDay reportDay){
-		return this.reportDayService.ylOrderList(reportDay);
+	public ResultMap<List<Map<String, Object>>> cashCostList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = null;
+		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+				&& incomeList != null) {
+			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			for (String date : dateList) {
+				map = new HashMap<String, Object>();
+				map.put("day", date);
+				double bjTotal = 0d;// 北京总金额
+				double hzTotal = 0d;// 杭州总金额
+				int bjCost = 0;
+				int hzCost = 0;
+				double bjTotalAverage = 0d;
+				double hzTotalAverage = 0d;
+				double totalAverage = 0d;
+
+				for (ResIncome resIncome : incomeList) {
+					if (map.get(resIncome.getPreName()) == null) {
+						map.put(resIncome.getPreName(), 0);
+					}
+					if (date.equals(resIncome.getDay())) {
+						map.put(resIncome.getPreName(), resIncome.getCashCostRate());
+						if (resIncome.getCityName().equals("北京")) {
+							bjTotal = add(bjTotal, resIncome.getActualAmount());
+							bjCost += resIncome.getCost();
+						} else if (resIncome.getCityName().equals("杭州")) {
+							hzTotal = add(hzTotal, resIncome.getActualAmount());
+							hzCost += resIncome.getCost();
+						}
+					}
+				}
+
+				if (bjCost != 0) {
+					bjTotalAverage = new BigDecimal((float) bjTotal / bjCost).setScale(2, BigDecimal.ROUND_HALF_UP)
+							.doubleValue();
+				}
+				if (hzCost != 0) {
+					hzTotalAverage = new BigDecimal((float) hzTotal / hzCost).setScale(2, BigDecimal.ROUND_HALF_UP)
+							.doubleValue();
+				}
+				if ((bjCost + hzCost) != 0) {
+					totalAverage = new BigDecimal((float) (bjTotal + hzTotal) / (bjCost + hzCost))
+							.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+				log.info("bj_total ,{} hz_total ,{} bj_cost ,{} hz_cost,{}", bjTotal, hzTotal, bjCost, hzCost);
+
+				map.put("bjTotal", bjTotalAverage);
+				map.put("hzTotal", hzTotalAverage);
+				map.put("total", totalAverage);
+				list.add(map);
+			}
+		}
+		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
 	}
-	
-	@RequestMapping(value = "/newuser_order", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/cash_deal", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResOrder> newUserOrderList(HttpServletRequest request, ReqReportDay reportDay){
-		return this.reportDayService.newUserOrderList(reportDay);
+	public ResultMap<List<Map<String, Object>>> cashDealList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = null;
+		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+				&& incomeList != null) {
+			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			for (String date : dateList) {
+				map = new HashMap<String, Object>();
+				map.put("day", date);
+				double bjTotal = 0d;// 北京总金额
+				double hzTotal = 0d;// 杭州总金额
+				double bjCost = 0;
+				double hzCost = 0;
+				double bjTotalAverage = 0d;
+				double hzTotalAverage = 0d;
+				double totalAverage = 0d;
+
+				for (ResIncome resIncome : incomeList) {
+					if (map.get(resIncome.getPreName()) == null) {
+						map.put(resIncome.getPreName(), 0);
+					}
+					if (date.equals(resIncome.getDay())) {
+						map.put(resIncome.getPreName(), resIncome.getCashDealRate());
+						if (resIncome.getCityName().equals("北京")) {
+							bjTotal = add(bjTotal, resIncome.getActualAmount());
+							bjCost = add(bjCost, resIncome.getTotalAmount());
+						} else if (resIncome.getCityName().equals("杭州")) {
+							hzTotal = add(hzTotal, resIncome.getActualAmount());
+							hzCost = add(hzCost, resIncome.getTotalAmount());
+						}
+					}
+				}
+
+				if (bjCost != 0) {
+					bjTotalAverage = new BigDecimal((float) bjTotal / bjCost).setScale(2, BigDecimal.ROUND_HALF_UP)
+							.doubleValue();
+				}
+				if (hzCost != 0) {
+					hzTotalAverage = new BigDecimal((float) hzTotal / hzCost).setScale(2, BigDecimal.ROUND_HALF_UP)
+							.doubleValue();
+				}
+				if ((bjCost + hzCost) != 0) {
+					totalAverage = new BigDecimal((float) add(bjTotal, hzTotal) / add(hzCost, bjCost))
+							.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+				log.info("bj_total ,{} hz_total ,{} bj_cost ,{} hz_cost,{}", bjTotal, hzTotal, bjCost, hzCost);
+
+				map.put("bjTotal", bjTotalAverage);
+				map.put("hzTotal", hzTotalAverage);
+				map.put("total", totalAverage);
+				list.add(map);
+			}
+		}
+		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
 	}
-	
-	@RequestMapping(value = "/olduser_order", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/fee", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResOrder> oldUserOrderList(HttpServletRequest request, ReqReportDay reportDay){
-		
-		return this.reportDayService.oldUserOrderList(reportDay);
+	public ResultMap<List<Map<String, Object>>> feeList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = null;
+		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+				&& incomeList != null) {
+			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			for (String date : dateList) {
+				map = new HashMap<String, Object>();
+				map.put("day", date);
+				double bjTotal = 0d;// 北京总金额
+				double hzTotal = 0d;// 杭州总金额
+				for (ResIncome resIncome : incomeList) {
+					if (map.get(resIncome.getPreName()) == null) {
+						map.put(resIncome.getPreName(), 0);
+					}
+					if (date.equals(resIncome.getDay())) {
+						map.put(resIncome.getPreName(), resIncome.getFee());
+						if (resIncome.getCityName().equals("北京")) {
+							bjTotal += resIncome.getFee();
+						} else if (resIncome.getCityName().equals("杭州")) {
+							hzTotal += resIncome.getFee();
+						}
+					}
+				}
+				map.put("bjTotal", bjTotal);
+				map.put("hzTotal", hzTotal);
+				map.put("total", add(bjTotal, hzTotal));
+				list.add(map);
+			}
+		}
+		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
 	}
-	
-	@RequestMapping(value = "/runtime", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/pull_cost", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResRunTime> runtimeList(HttpServletRequest request, ReqReportDay reportDay){
-		return this.reportDayService.runtimeList(reportDay);
+	public ResultMap<List<Map<String, Object>>> pullCostList(HttpServletRequest request, ReqReportDay reportDay) {
+		List<ResPullCost> pullCostList = this.reportDayService.pullCostList(reportDay);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> map = null;
+		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+				&& pullCostList != null) {
+			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			for (String date : dateList) {
+				map = new HashMap<String, Object>();
+				map.put("day", date);
+				int bjFeeTotal = 0;// 北京费用总金额
+				int hzFeeTotal = 0;// 杭州费用总金额
+				int bjPullCount = 0;
+				int hzPullCount = 0;
+				double bjTotalAverage = 0d;
+				double hzTotalAverage = 0d;
+				double totalAverage = 0d;
+
+				for (ResPullCost resPullCost : pullCostList) {
+					if (map.get(resPullCost.getPreName()) == null) {
+						map.put(resPullCost.getPreName(), 0);
+					}
+					if (date.equals(resPullCost.getDay())) {
+						map.put(resPullCost.getPreName(), resPullCost.getPullCost());
+						if (resPullCost.getCityName().equals("北京")) {
+							bjFeeTotal += resPullCost.getFee();
+							bjPullCount += resPullCost.getDayTotal();
+						} else if (resPullCost.getCityName().equals("杭州")) {
+							hzFeeTotal += resPullCost.getFee();
+							hzPullCount += resPullCost.getDayTotal();
+						}
+					}
+				}
+
+				if (bjPullCount != 0) {
+					bjTotalAverage = new BigDecimal((float) bjFeeTotal / bjPullCount)
+							.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+				if (hzPullCount != 0) {
+					hzTotalAverage = new BigDecimal((float) hzFeeTotal / hzPullCount)
+							.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+				if ((bjPullCount + hzPullCount) != 0) {
+					totalAverage = new BigDecimal((float) (bjFeeTotal + hzFeeTotal) / (bjPullCount + hzPullCount))
+							.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+				log.info("bj_fee_total ,{} hz_fee_total ,{} bj_pull_count ,{} hz_pull_count,{}", bjFeeTotal, hzFeeTotal,
+						bjPullCount, hzPullCount);
+
+				map.put("bjTotal", bjTotalAverage);
+				map.put("hzTotal", hzTotalAverage);
+				map.put("total", totalAverage);
+				list.add(map);
+			}
+		}
+		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
 	}
-	
-	@RequestMapping(value = "/average_price", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResAveragePrice> averagePriceList(HttpServletRequest request, ReqReportDay reportDay){
-		return this.reportDayService.averagePriceList(reportDay);
-	}
+
 }
