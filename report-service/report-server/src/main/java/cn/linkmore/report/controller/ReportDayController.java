@@ -62,6 +62,43 @@ public class ReportDayController {
 		param.put("endTime", reportDay.getEndTime());
 		return param;
 	}
+	
+	public Map<String, Object> orderConvert(ReqReportDay reportDay) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		List<Long> preIds = new ArrayList<Long>();
+		List<Long> statuIds = new ArrayList<Long>();
+		if (StringUtils.isBlank(reportDay.getPreIds())) {
+			if (reportDay.getCityId() != 0) {
+				param.put("cityId", reportDay.getCityId());
+			}
+			List<ResPre> preList = reportDayService.preList(param);
+			for (ResPre pre : preList) {
+				preIds.add(pre.getId());
+			}
+		} else {
+			String[] preIdStr = reportDay.getPreIds().split(",");
+			for(String preId : preIdStr) {
+				preIds.add(Long.valueOf(preId));
+			}
+		}
+		if (StringUtils.isBlank(reportDay.getStatuIds())) {
+			reportDay.setStatuIds("1,3,4,6,7");
+			String[] statuIdStr = reportDay.getStatuIds().split(",");
+			for(String statuId : statuIdStr) {
+				statuIds.add(Long.valueOf(statuId));
+			}
+		} else {
+			String[] statuIdStr = reportDay.getStatuIds().split(",");
+			for(String statuId : statuIdStr) {
+				statuIds.add(Long.valueOf(statuId));
+			}
+		}
+		param.put("list", preIds);
+		param.put("startTime", reportDay.getStartTime());
+		param.put("endTime", reportDay.getEndTime());
+		param.put("statuList", statuIds);
+		return param;
+	}
 
 	@RequestMapping(value = "/v2.0/city_list", method = RequestMethod.GET)
 	@ResponseBody
@@ -112,7 +149,7 @@ public class ReportDayController {
 	@RequestMapping(value = "/v2.0/order", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResOrder> orderList(@RequestBody ReqReportDay reportDay) {
-		Map<String, Object> param = convert(reportDay);
+		Map<String, Object> param = orderConvert(reportDay);
 		return this.reportDayService.orderList(param);
 	}
 

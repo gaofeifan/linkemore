@@ -378,7 +378,10 @@
 	LEFT JOIN t_city c on pre.city_id = c.id
 	WHERE
 		pre. STATUS = 0
-	AND o. STATUS = 3
+	AND o. STATUS in
+	<foreach collection="statuList"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
 	AND pre.id in
 	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
        #{id}
