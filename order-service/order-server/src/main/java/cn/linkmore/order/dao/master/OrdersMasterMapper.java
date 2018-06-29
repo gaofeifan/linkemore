@@ -38,4 +38,10 @@ public interface OrdersMasterMapper {
 	 */
 	void updatePayment(Map<String, Object> param);
 	
+	/**
+	 * 关闭订单
+	 * @param param
+	 */
+	void updateClose(Map<String,Object> param);
+	
 }
