@@ -44,7 +44,7 @@ public class ReportDayController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<Long> preIds = new ArrayList<Long>();
 		if (StringUtils.isBlank(reportDay.getPreIds())) {
-			if (reportDay.getCityId() != 0) {
+			if (reportDay.getCityId() != null && reportDay.getCityId() != 0 ) {
 				param.put("cityId", reportDay.getCityId());
 			}
 			List<ResPre> preList = reportDayService.preList(param);
@@ -68,7 +68,7 @@ public class ReportDayController {
 		List<Long> preIds = new ArrayList<Long>();
 		List<Long> statuIds = new ArrayList<Long>();
 		if (StringUtils.isBlank(reportDay.getPreIds())) {
-			if (reportDay.getCityId() != 0) {
+			if (reportDay.getCityId() != null && reportDay.getCityId() != 0 ) {
 				param.put("cityId", reportDay.getCityId());
 			}
 			List<ResPre> preList = reportDayService.preList(param);

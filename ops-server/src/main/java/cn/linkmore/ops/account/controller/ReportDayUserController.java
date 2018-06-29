@@ -1,12 +1,21 @@
 package cn.linkmore.ops.account.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -16,8 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import cn.linkmore.bean.common.ResultMap;
 import cn.linkmore.ops.account.service.ReportDayService;
+import cn.linkmore.ops.utils.ExcelUtil;
 import cn.linkmore.report.request.ReqReportDay;
 import cn.linkmore.report.response.ResCity;
 import cn.linkmore.report.response.ResNewUser;
@@ -250,4 +261,175 @@ public class ReportDayUserController {
 		}
 		return new ResultMap<List<Map<String,Object>>>(0,"", list, list.size()); 
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	 * 导出
+	 */
+	@RequestMapping(value = "/export", method = RequestMethod.POST)
+	public void export(ReqReportDay reportDay, HttpServletResponse response,HttpServletRequest request) {
+		String title = "日报";
+		List<ResUserNum> list = this.reportDayService.userNumList(reportDay);
+		if(CollectionUtils.isNotEmpty(list)) {
+			for(ResUserNum resUserNum :list) {
+				double average = new BigDecimal((float)resUserNum.getDayTotal()/resUserNum.getStallTotal()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();  
+				resUserNum.setAverage(average);
+			}
+		}else {
+			list = new ArrayList<ResUserNum>();
+		}
+		
+		List<ResNewUser> newUserList = this.reportDayService.newUserList(reportDay);
+		log.info("newUserList = "+ JSON.toJSON(newUserList));
+		if(newUserList == null) {
+			newUserList = new ArrayList<ResNewUser>();
+		}
+		try {
+			/*JSONArray ja = new JSONArray();
+			Map<String, Object> s = null;
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			for (ResUserNum userNum : list) {
+				s = new HashMap<String, Object>();
+				s.put("day", userNum.getDay());
+				s.put("sumTotal", userNum.getSumTotal());
+				s.put("dayTotal", userNum.getDayTotal());
+				s.put("average", userNum.getAverage());
+				ja.add(s);
+			}
+			Map<String, String> headMap = new LinkedHashMap<String, String>();
+			headMap.put("day", "日期");
+			headMap.put("sumTotal", "累计用户数");
+			headMap.put("dayTotal", "新增用户数");
+			headMap.put("average", "单车位日均");
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			
+			ExcelUtil.exportExcel("用户数量", headMap, ja, null, 0, os);
+			
+			JSONArray jaNewUser = new JSONArray();
+			Map<String, Object> sNewUser = null;
+			for (ResNewUser newUser : newUserList) {
+				sNewUser = new HashMap<String, Object>();
+				sNewUser.put("day", newUser.getDay());
+				sNewUser.put("hzPull", newUser.getHzPull());
+				sNewUser.put("bjPull", newUser.getHzPull());
+				sNewUser.put("hzCooperation", newUser.getHzCooperation());
+				sNewUser.put("bjCooperation", newUser.getBjCooperation());
+				sNewUser.put("hzUnderTran", newUser.getHzUnderTran());
+				sNewUser.put("bjUnderTran", newUser.getBjUnderTran());
+				sNewUser.put("natureTran", newUser.getNatureTran());
+				jaNewUser.add(sNewUser);
+			}
+			Map<String, String> headMapNewUser = new LinkedHashMap<String, String>();
+			headMapNewUser.put("day", "日期");
+			headMapNewUser.put("hzPull", "杭州现场拉新");
+			headMapNewUser.put("bjPull", "北京现场拉新");
+			headMapNewUser.put("hzCooperation", "杭州合作转化");
+			headMapNewUser.put("bjCooperation", "北京合作转化");
+			headMapNewUser.put("hzUnderTran", "杭州线下转化");
+			headMapNewUser.put("bjUnderTran", "北京线下转化");
+			headMapNewUser.put("natureTran", "自然转化");
+			ExcelUtil.exportExcel("新增用户", headMapNewUser, jaNewUser, null, 0, os);*/
+			
+			List<ResPull> pullList = this.reportDayService.pullList(reportDay);
+			JSONArray ja = new JSONArray();
+			if(StringUtils.isNotBlank(reportDay.getStartTime()) && 
+					StringUtils.isNotBlank(reportDay.getEndTime()) && pullList != null) {
+				List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(),reportDay.getEndTime());
+				Map<String, Object> map = null;
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				for(String date : dateList) {
+					map = new HashMap<String,Object>();
+					map.put("day", date);
+					int bjTotal = 0;
+					int hzTotal = 0;
+					for(ResPull resPull: pullList) {
+						if(map.get(resPull.getPreName())==null) {
+							map.put(resPull.getPreName(), 0);
+						}
+						if(date.equals(resPull.getDay())) {
+							map.put(resPull.getPreName(), resPull.getDayTotal());
+							if(resPull.getCityName().equals("北京")) {
+								bjTotal += resPull.getDayTotal();
+							}else if(resPull.getCityName().equals("杭州")) {
+								hzTotal += resPull.getDayTotal();
+							}
+						}else {
+							
+						}
+					}
+					map.put("bjTotal", bjTotal);
+					map.put("hzTotal", hzTotal);
+					map.put("total", bjTotal + hzTotal);
+					ja.add(map);
+				}
+			}
+			Map<String, String> headMap = titleMap(reportDay);
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			ExcelUtil.exportExcel("现场拉新", headMap, ja, null, 0, os);
+			
+			byte[] content = os.toByteArray();
+			InputStream is = new ByteArrayInputStream(content);
+			response.reset();
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+			response.setHeader("Content-Disposition",
+					"attachment;filename=" + new String((title + ".xlsx").getBytes(), "iso-8859-1"));
+			response.setContentLength(content.length);
+			ServletOutputStream outputStream = response.getOutputStream();
+			BufferedInputStream bis = new BufferedInputStream(is);
+			BufferedOutputStream bos = new BufferedOutputStream(outputStream);
+			byte[] buff = new byte[8192];
+			int bytesRead;
+			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+				bos.write(buff, 0, bytesRead);
+			}
+			bis.close();
+			bos.close();
+			outputStream.flush();
+			outputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public Map<String,String> titleMap(ReqReportDay reportDay){
+		List<ResPull> pullList = this.reportDayService.pullList(reportDay);
+		Map<String,String> map = new LinkedHashMap<String, String>();
+		map.put("day", "日期");
+		map.put("total", "合计");
+		if(CollectionUtils.isNotEmpty(pullList)) {
+			for(ResPull resPull :pullList) {
+				if(resPull.getCityName().equals("北京")) {
+					if(!map.containsKey("bjTotal")) {
+						ResTitle title3 = new ResTitle();
+						map.put("bjTotal", resPull.getCityName()+"合计");
+					}
+				}
+				if(resPull.getCityName().equals("杭州")) {
+					if(!map.containsKey("hzTotal")) {
+						map.put("hzTotal", resPull.getCityName()+"合计");
+					}
+				}
+			}
+			
+			for(ResPull resPull :pullList) {
+				if(!map.containsKey(resPull.getPreName())) {
+					map.put(resPull.getPreName(), resPull.getPreName());
+				}
+			}
+		}
+		return map;
+	}
+	
+	
+	
 }

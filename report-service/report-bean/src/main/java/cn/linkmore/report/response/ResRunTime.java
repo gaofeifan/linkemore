@@ -14,10 +14,17 @@ public class ResRunTime {
 	private int dayTotal;//新增订单数量
 	private int totalTime;//订单总时长
 	private int stallTotal;//车位总数
+	private int dayNum;//当月天数
 	private Double rdl;//日单量
 	private Double jtsc;//均停时长
 	private Double runtime;//运营时长
 	
+	public int getDayNum() {
+		return dayNum;
+	}
+	public void setDayNum(int dayNum) {
+		this.dayNum = dayNum;
+	}
 	public Long getCityId() {
 		return cityId;
 	}

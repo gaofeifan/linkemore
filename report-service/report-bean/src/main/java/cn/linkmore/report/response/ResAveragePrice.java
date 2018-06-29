@@ -14,7 +14,13 @@ public class ResAveragePrice {
 	private Double averagePrice;//客单价
 	private double amountTotal;//总金额
 	private int dayTotal;//订单数量
-	
+	private int dayNum;//当月天数
+	public int getDayNum() {
+		return dayNum;
+	}
+	public void setDayNum(int dayNum) {
+		this.dayNum = dayNum;
+	}
 	public double getAmountTotal() {
 		return amountTotal;
 	}
