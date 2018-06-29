@@ -31,6 +31,7 @@ import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.OrderFailureReason;
 import cn.linkmore.bean.common.Constants.OrderPayType;
 import cn.linkmore.bean.common.Constants.OrderStatus;
+import cn.linkmore.bean.common.Constants.OrderStatusHistory;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallAssignStatus;
@@ -490,8 +491,7 @@ public class OrdersServiceImpl implements OrdersService {
 				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), new Integer(count.toString())+1,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
 			}else {
 				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(),1, ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
-			}
-			
+			} 
 			this.stallClient.downlock(stall);   
 		}
 	}
@@ -518,15 +518,21 @@ public class OrdersServiceImpl implements OrdersService {
 			Long count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
 			if(count>0) {
 				this.push(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
-			}else {
-				this.push(order.getUserId().toString(), "预约关闭通知","无空闲车位,订单已关闭。",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
-			} 
-		}else {
+			}  
+		}else{
 			this.push(order.getUserId().toString(), "预约降锁通知",switchStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
 		} 
 	}
 
-
+	class CancelStallThread extends Thread{
+		private Long stallId;
+		public CancelStallThread(Long stallId) {
+			this.stallId = stallId;
+		}
+		public void run() {
+			stallClient.cancel(stallId);
+		} 
+	}
 	@Override
 	@Async
 	@Transactional(rollbackFor = RuntimeException.class)
@@ -535,27 +541,45 @@ public class OrdersServiceImpl implements OrdersService {
 		ResUserOrder order = this.ordersClusterMapper.findDetail(rs.getOrderId());
 		Boolean flag = false;
 		if(order.getStatus().intValue()==OrderStatus.UNPAID.value&&cu.getId().intValue()==order.getUserId().intValue()) {
-			Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
-			log.info("get switch stall sn:{}",sn);
-			if(sn!=null) {
-				ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
-				log.info("switch stall:{}",JsonUtil.toJson(stall));
-				if(stall.getStatus().intValue()==StallStatus.FREE.status) {
-					order.setStallId(stall.getId());
-					order.setStallName(stall.getStallName());
-					Map<String,Object> param = new HashMap<String,Object>();
-					param.put("id", order.getId());
-					param.put("stallId", stall.getId());
-					param.put("stallName", stall.getStallName());
-					param.put("switchTime", new Date());
-					param.put("switchStatus", 1);
-					this.orderMasterMapper.updateSwitch(param);
-					this.stallClient.order(stall.getId()); 
-					flag = true;
-				} 
+			Long count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
+			if(count.intValue()<=0) { 
+				Map<String,Object> param = new HashMap<String,Object>();
+				Date current = new Date();
+				param.put("id", order.getId()); 
+				param.put("endTime", current);
+				param.put("updateTime", current);
+				param.put("statusTime", current);
+				param.put("statusHistory", OrderStatusHistory.CLOSED.code);
+				param.put("status", OrderStatus.COMPLETED.value);
+				this.orderMasterMapper.updateClose(param); 
+				new CancelStallThread(order.getStallId()).start();
+				this.push(order.getUserId().toString(), "订单通知","无空闲车位,订单已关闭",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
+			}else {
+				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
+				log.info("get switch stall sn:{}",sn);
+				if(sn!=null) {
+					ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
+					log.info("switch stall:{}",JsonUtil.toJson(stall));
+					if(stall.getStatus().intValue()==StallStatus.FREE.status) {
+						order.setStallId(stall.getId());
+						order.setStallName(stall.getStallName());
+						Map<String,Object> param = new HashMap<String,Object>();
+						param.put("id", order.getId());
+						param.put("stallId", stall.getId());
+						param.put("stallName", stall.getStallName());
+						param.put("switchTime", new Date());
+						param.put("switchStatus", 1);
+						this.orderMasterMapper.updateSwitch(param);
+						this.stallClient.order(stall.getId()); 
+						flag = true;
+					} 
+				}
 			}
+			this.push(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
+		}else {
+			this.push(order.getUserId().toString(), "车位切换通知","车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, false);
 		}
-		this.push(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
+		
 	}
 
 	@Override
