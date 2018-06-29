@@ -574,12 +574,12 @@ public class OrdersServiceImpl implements OrdersService {
 						flag = true;
 					} 
 				}
+				this.push(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
 			}
-			this.push(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
+			
 		}else {
 			this.push(order.getUserId().toString(), "车位切换通知","车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, false);
-		}
-		
+		} 
 	}
 
 	@Override
