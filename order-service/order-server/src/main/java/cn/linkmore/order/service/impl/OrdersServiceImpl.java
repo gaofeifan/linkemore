@@ -26,6 +26,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResVechicleMark;
+import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.OrderFailureReason;
 import cn.linkmore.bean.common.Constants.OrderPayType;
@@ -486,9 +487,9 @@ public class OrdersServiceImpl implements OrdersService {
 			stall.setUserId(cu.getId());
 			if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId())) {
 				Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
-				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), new Integer(count.toString())+1);
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), new Integer(count.toString())+1,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
 			}else {
-				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), 1);
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(),1, ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
 			}
 			
 			this.stallClient.downlock(stall);   
@@ -519,8 +520,7 @@ public class OrdersServiceImpl implements OrdersService {
 				this.push(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
 			}else {
 				this.push(order.getUserId().toString(), "预约关闭通知","无空闲车位,订单已关闭。",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
-			}
-			
+			} 
 		}else {
 			this.push(order.getUserId().toString(), "预约降锁通知",switchStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
 		} 

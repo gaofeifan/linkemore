@@ -92,7 +92,10 @@ public class Constants {
 	}
 
 	public enum ExpiredTime {
-		ACCESS_TOKEN_EXP_TIME(60 * 60 * 24 * 30 * 4), SMS_CODE_SEND_SPACE(60), SMS_CODE_EXP_TIME(600);
+		ACCESS_TOKEN_EXP_TIME(60 * 60 * 24 * 30 * 4), 
+		SMS_CODE_SEND_SPACE(60), 
+		SMS_CODE_EXP_TIME(600),
+		STALL_DOWN_FAIL_EXP_TIME(60 * 60);
 		public int time;
 
 		private ExpiredTime(int time) {
