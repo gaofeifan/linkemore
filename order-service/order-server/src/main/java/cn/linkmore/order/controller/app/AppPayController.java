@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.bean.exception.BusinessException;
-import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.controller.app.request.ReqPayConfirm;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.controller.app.response.ResPayCheckout;
@@ -43,48 +41,28 @@ public class AppPayController {
 	@RequestMapping(value = "/v2.0/checkout", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<ResPayCheckout> checkout(@RequestParam("orderId") Long orderId, HttpServletRequest request) {
-		ResponseEntity<ResPayCheckout> response = null;
-		try {
-			ResPayCheckout checkout = payService.checkout(orderId,request);
-			response = ResponseEntity.success(checkout, request);
-		} catch (BusinessException e) { 
-			e.printStackTrace();
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) { 
-			e.printStackTrace();
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		ResPayCheckout checkout = payService.checkout(orderId,request);
+		return ResponseEntity.success(checkout, request);
 	}
 	@ApiOperation(value = "确认支付", notes = "确认支付", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/confirm", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<ResPayConfirm> confirm(@RequestBody ReqPayConfirm roc, HttpServletRequest request) {
-		ResponseEntity<ResPayConfirm> response = null;
-		try {
+		try { 
 			ResPayConfirm confirm = this.payService.confirm(roc,request);
-			response = ResponseEntity.success(confirm, request);
-		} catch (BusinessException e) { 
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) { 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+			return ResponseEntity.success(confirm, request);
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
-		return response;
+		return ResponseEntity.fail(null, request);
+		
 	}
 	
 	@ApiOperation(value = "校验支付", notes = "校验支付[订单ID不为空]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/verify", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<ResOrderDetail> verify(@RequestParam("orderId") Long orderId, HttpServletRequest request) {
-		ResponseEntity<ResOrderDetail> response = null;
-		try { 
-			ResOrderDetail detail = this.payService.verify(orderId,request);
-			response = ResponseEntity.success(detail, request);
-		} catch (BusinessException e) { 
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) { 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		ResOrderDetail detail = this.payService.verify(orderId,request);
+		return ResponseEntity.success(detail, request);
 	}
 }

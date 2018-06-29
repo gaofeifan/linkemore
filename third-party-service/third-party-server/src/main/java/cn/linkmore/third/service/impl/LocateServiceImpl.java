@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
+
 import cn.linkmore.third.response.ResLocate;
 import cn.linkmore.third.service.LocateService;
 import cn.linkmore.util.HttpUtil;
@@ -63,4 +65,21 @@ public class LocateServiceImpl implements LocateService {
 		}
 		return res;
 	}
+
+	@Override
+	public String distance(String oriLng, String oriLat, String desLng, String desLat) {
+		Map<String, String> params = new HashMap<>();  
+        params.put("output","json");
+        String key = KEYS[COUNT++ % KEYS.length]; 
+        params.put("ak","KvbAhccGqKgrVGX7ZhkUWTR6dHM1ihlc");
+        params.put("sn","TGIxKgS4jqCGlIXmzxpqnZEux8DICTwC");
+        params.put("origins",oriLat+","+oriLng+"|"+oriLat+","+oriLng);
+        params.put("destinations",desLat+","+desLng+"|"+desLat+","+desLng); 
+        String result = HttpUtil.sendGet("http://api.map.baidu.com/routematrix/v2/driving", params);
+        log.info(result);
+        JSONArray jsonArray = com.alibaba.fastjson.JSONObject.parseObject(result).getJSONArray("result");
+        
+        String distanceString = jsonArray.getJSONObject(0).getJSONObject("distance").getString("text");
+        return distanceString; 
+	} 
 }

@@ -8,7 +8,7 @@ public class ResUserLogin {
 	
 	private String realname;
 	
-	private Short sex;
+	private Integer sex;
 
 	public Long getId() {
 		return id;
@@ -34,11 +34,11 @@ public class ResUserLogin {
 		this.realname = realname;
 	}
 
-	public Short getSex() {
+	public Integer getSex() {
 		return sex;
 	}
 
-	public void setSex(Short sex) {
+	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
 

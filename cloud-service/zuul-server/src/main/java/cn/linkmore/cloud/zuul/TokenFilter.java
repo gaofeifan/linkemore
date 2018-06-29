@@ -43,7 +43,7 @@ public class TokenFilter extends ZuulFilter {
 			add("/v2/api-docs");
 			add("/app/mini/v2.0/login");
 			add("/app/auth/v2.0/login");
-			add("/app/auth/v2.0/wx");
+			add("/app/auth/v2.0/wechat");
 			add("/app/auth/v2.0/send");  
 			add("/app/prefectures/v2.0/map/list"); 
 			add("/app/prefectures/v2.0/free/list"); 

@@ -19,7 +19,7 @@ public class ResUser {
     private String nickname;
 
 	@GColumn
-    private Short sex;
+    private Integer sex;
 
     private String status;
 
@@ -132,11 +132,11 @@ public class ResUser {
         this.nickname = nickname == null ? null : nickname.trim();
     }
 
-    public Short getSex() {
+    public Integer getSex() {
         return sex;
     }
 
-    public void setSex(Short sex) {
+    public void setSex(Integer sex) {
         this.sex = sex;
     }
 

@@ -51,71 +51,31 @@ public class AppOrderController {
 	@RequestMapping(value = "/v2.0/create", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> create(@RequestBody ReqBooking rb, HttpServletRequest request) {
-		ResponseEntity<?> response = null;
-		try {
-			this.ordersService.create(rb, request);
-			response = ResponseEntity.success(null, request);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		this.ordersService.create(rb, request);
+		return ResponseEntity.success(null, request);
 	}
 	@ApiOperation(value = "切换车位", notes = "原因ID不能为空，备注可为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/switch", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> switchStall( @RequestBody ReqSwitch rs, HttpServletRequest request) {
-		ResponseEntity<?> response = null;
-		try {
-			this.ordersService.switchStall(rs, request);
-			response = ResponseEntity.success(null, request);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		this.ordersService.switchStall(rs, request);
+		return ResponseEntity.success(null, request);
 	} 
 
 	@ApiOperation(value = "当前订单", notes = "结账离场[组织数据,计算费用，计算时长]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/current", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<ResOrder> current(HttpServletRequest request) {
-		ResponseEntity<ResOrder> response = null;
-		try { 
-			ResOrder order = this.ordersService.current(request);
-			response = ResponseEntity.success(order, request);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		ResOrder order = this.ordersService.current(request);
+		return ResponseEntity.success(order, request);
 	}
 	
 	@ApiOperation(value = "用户已完成订单列表", notes = "订单列表[起始请从0开始每页10条记录]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<ResCheckedOrder>> list(@RequestParam("start") Long start,HttpServletRequest request) {
-		ResponseEntity<List<ResCheckedOrder>> response = null;
-		try {
-			List<ResCheckedOrder> orders = this.ordersService.list(start,request);
-			response = ResponseEntity.success(orders, request);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		List<ResCheckedOrder> orders = this.ordersService.list(start,request);
+		return ResponseEntity.success(orders, request);
 	}
 	@ApiOperation(value = "订单详情", notes = "订单详情[订单ID须为数字]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
@@ -123,18 +83,8 @@ public class AppOrderController {
 	public ResponseEntity<ResOrderDetail> detail( 
 			@Min(value=0,message="订单ID为大于0的长整数")
 			@RequestParam("orderId") Long orderId,HttpServletRequest request) {
-		ResponseEntity<ResOrderDetail> response = null;
-		try { 
-			ResOrderDetail od = this.ordersService.detail(orderId,request);
-			response = ResponseEntity.success(od, request);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) {
-			e.printStackTrace();
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		ResOrderDetail od = this.ordersService.detail(orderId,request);
+		return ResponseEntity.success(od, request);
 	}
 
 	@ApiOperation(value = "降下地锁", notes = "降下预约车位地锁[异步操作]", consumes = "application/json")
@@ -142,32 +92,16 @@ public class AppOrderController {
 	@ResponseBody
 	public ResponseEntity<?> downLock(@RequestBody ReqOrderStall ros, 
 			HttpServletRequest request) {
-		ResponseEntity<ResOrder> response = null;
-		try {
-			this.ordersService.down(ros, request);
-			response = ResponseEntity.success(null, request);
-		} catch (BusinessException e) {
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) {
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		this.ordersService.down(ros, request);
+		return ResponseEntity.success(null, request);
 	}
 	
 	@ApiOperation(value = "降锁回调", notes = "降锁回调校验结果", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/down/result", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<?> downResult(HttpServletRequest request) {
-		ResponseEntity<ResOrder> response = null;
-		try {
-			this.ordersService.downResult(request);
-			response = ResponseEntity.success(null, request);
-		} catch (BusinessException e) {
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) {
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+	public ResponseEntity<?> downResult(HttpServletRequest request) { 
+		this.ordersService.downResult(request);
+		return  ResponseEntity.success(null, request);
 	}
 
 }

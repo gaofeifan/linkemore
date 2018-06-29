@@ -201,7 +201,7 @@ public class PayServiceImpl implements PayService {
 		ReqStrategy strategy = new ReqStrategy();
 		strategy.setBeginTime(roc.getStartTime().getTime());
 		strategy.setEndTime(roc.getEndTime().getTime());
-		strategy.setStrategyId(pre.getStrategyId());
+		strategy.setStrategyId(order.getStrategyId());
 		Map<String,Object> map = this.strategyBaseClient.fee(strategy); 
 		String totalStr = map.get("totalAmount").toString();
 		String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr)); 
@@ -276,6 +276,7 @@ public class PayServiceImpl implements PayService {
 		ResCoupon coupon = null; 
 		if(roc.getCouponId()!=null) {
 			coupon = this.couponClient.get(roc.getCouponId());
+			log.info("coupon:{}",JsonUtil.toJson(coupon));
 			if(coupon!=null&&coupon.getStatus()!=CouponStatus.FREE.status) {
 				coupon = null;
 			}else if(coupon!=null&&coupon.getUserId().longValue()!=cu.getId().longValue()) {

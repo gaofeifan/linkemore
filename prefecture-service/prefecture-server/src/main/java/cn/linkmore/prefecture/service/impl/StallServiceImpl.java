@@ -129,10 +129,9 @@ public class StallServiceImpl implements StallService {
 			if (code == 200) {
 				stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
 				stallMasterMapper.lockdown(stall);
-			}else {
-			}
-			orderClient.downMsgPush(reqos.getOrderId(),reqos.getStallId());
-
+				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqos.getOrderId());
+			} 
+			orderClient.downMsgPush(reqos.getOrderId(),reqos.getStallId()); 
 		}
 	}
 

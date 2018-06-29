@@ -36,17 +36,9 @@ public class AppMiniController {
 			@RequestParam(value="code")  
 			@NotBlank(message="授权码不能为空") 
 			@Size(min =32,max=36,message="授权码为无效")
-			String code, HttpServletRequest request) {
-		ResponseEntity<ResUser> response = null;
-		ResUser urb =null;
-		try {
-			urb = this.userService.mini(code, request);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		response = ResponseEntity.success( urb, request);
-		return response;
+			String code, HttpServletRequest request) { 
+		ResUser urb = this.userService.mini(code, request);
+		return ResponseEntity.success( urb, request); 
 	} 
 	
 	@ApiOperation(value="绑定授权手机号",notes="手机号不能为空,短信验证码不能为空", consumes = "application/json")

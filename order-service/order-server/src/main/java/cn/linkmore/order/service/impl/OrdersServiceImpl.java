@@ -175,7 +175,11 @@ public class OrdersServiceImpl implements OrdersService {
 				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
 			}
 			ResVechicleMark  vehicleMark =  vehicleMarkClient.findById(rb.getPlateId());
-
+			if(vehicleMark.getUserId().longValue()!=cu.getId().longValue()) {
+				bookingStatus =(short) OperateStatus.FAILURE.status;
+				failureReason = (short)OrderFailureReason.CARNO_NONE.value;
+				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
+			}
 			if (!this.checkCarFree(vehicleMark.getVehMark())) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.CARNO_BUSY.value;
@@ -307,7 +311,7 @@ public class OrdersServiceImpl implements OrdersService {
 				if (element.toString().indexOf("cn.linkmore") >= 0) {
 					sb.append(element.toString() + "\n");
 				}
-			}
+			} 
 			log.info(sb.toString());
 			if (null != stall && resetRedis) { 
 				this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key +stall.getPreId(), stall.getLockSn());
@@ -480,7 +484,14 @@ public class OrdersServiceImpl implements OrdersService {
 			stall.setOrderId(order.getId());
 			stall.setStallId(order.getStallId());
 			stall.setUserId(cu.getId());
-			this.stallClient.downlock(stall);  
+			if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId())) {
+				Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), new Integer(count.toString())+1);
+			}else {
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), 1);
+			}
+			
+			this.stallClient.downlock(stall);   
 		}
 	}
 	
@@ -488,23 +499,28 @@ public class OrdersServiceImpl implements OrdersService {
 	public void downMsgPush(Long orderId, Long stallId) {
 		ResUserOrder order = this.ordersClusterMapper.findDetail(orderId);
 		Boolean switchStatus = false;
+		if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId())) {
+			Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
+			if(Integer.valueOf(count.toString())>1) {
+				switchStatus = true;
+			}
+		}else {
+			this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
+		}
 		Map<String,Object> param = new HashMap<String,Object>(); 
 		param.put("lockDownStatus",switchStatus?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
 		param.put("lockDownTime", new Date());
 		param.put("orderId", order.getId());
 		this.orderMasterMapper.updateLockStatus(param); 
-		log.info("stall downing :{}",switchStatus);
-		if(!switchStatus) {
-			if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId())) {
-				switchStatus = true;
-			}else {
-				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId(), 1);
-			}
-		}else {
-			this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
-		}
+		log.info("stall downing :{}",switchStatus); 
 		if(switchStatus) {
-			this.push(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
+			Long count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
+			if(count>0) {
+				this.push(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
+			}else {
+				this.push(order.getUserId().toString(), "预约关闭通知","无空闲车位,订单已关闭。",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
+			}
+			
 		}else {
 			this.push(order.getUserId().toString(), "预约降锁通知",switchStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
 		} 
@@ -537,7 +553,7 @@ public class OrdersServiceImpl implements OrdersService {
 					this.stallClient.order(stall.getId()); 
 					flag = true;
 				} 
-			}   
+			}
 		}
 		this.push(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
 	}

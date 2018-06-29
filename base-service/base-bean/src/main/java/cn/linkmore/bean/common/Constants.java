@@ -110,7 +110,7 @@ public class Constants {
 	}
 	
 	public enum OrderFailureReason{
-		NONE( 0),EXCEPTION (1),	STALL_NONE( 2),	STALL_EXCEPTION( 3),STALL_ORDERED ( 4),	CARNO_BUSY ( 5),USER_LIMIT ( 6),UNPAID(7);
+		NONE( 0),EXCEPTION (1),	STALL_NONE( 2),	STALL_EXCEPTION( 3),STALL_ORDERED ( 4),	CARNO_BUSY ( 5),USER_LIMIT ( 6),UNPAID(7),CARNO_NONE(8);
 		public int value;
 		private OrderFailureReason(int value) {
 			this.value = value;
@@ -220,7 +220,8 @@ public class Constants {
 		ORDER_SWITCH_RESULT_NOTICE(3,"ORDER_SWITCH_RESULT_NOTICE"),
 		ORDER_SWITCH_STATUS_NOTICE(4,"ORDER_SWITCH_STATUS_NOTICE"),
 		ORDER_COMPLETE_NOTICE(5,"ORDER_COMPLETE_NOTICE"),
-		OPS_MESSAGE_NOTICE(6,"OPS_MESSAGE_NOTICE");
+		OPS_MESSAGE_NOTICE(6,"OPS_MESSAGE_NOTICE"),
+		ORDER_AUTO_CLOSE_NOTICE(7,"ORDER_AUTO_CLOSE_NOTICE");
 		public int type;
 		public String id; 
 		private PushType(int type, String id) {

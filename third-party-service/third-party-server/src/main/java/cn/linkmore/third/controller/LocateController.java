@@ -17,9 +17,15 @@ public class LocateController {
 	@Autowired
 	private LocateService locateService;
 	
-	@RequestMapping(method=RequestMethod.GET)
+	@RequestMapping(value = "/v2.0", method=RequestMethod.GET)
 	@ResponseBody
 	public ResLocate get(@RequestParam(value="longitude",required=true)String longitude,@RequestParam(value="latitude",required=true)String latitude) {
 		return this.locateService.getInfo(longitude,latitude);
+	}
+	
+	@RequestMapping(value = "/v2.0/distance", method=RequestMethod.GET)
+	@ResponseBody
+	public String distance(String oriLng,String oriLat,String desLng,String desLat) {
+		return this.locateService.distance( oriLng, oriLat, desLng, desLat);
 	}
 }
