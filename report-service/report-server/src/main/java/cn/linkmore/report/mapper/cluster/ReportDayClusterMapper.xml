@@ -132,42 +132,44 @@
   </select>
   <!-- 用户数量 -->
   <select id="userNumList" resultMap="UserNumResultMap" parameterType="java.util.HashMap">
-	SELECT
-		count(*) as sum_total,
-		t1.DAY,
-		t1.day_total ,
-		t1.stall_total
-	FROM
-		t_user t,
-		(
-			SELECT
-				DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
-				count(*) AS day_total,
-				(SELECT count(*) FROM v_stall) AS stall_total
-			FROM
-				t_user t
-			WHERE
-				(
-					t.is_app_register = 1
-					OR t.is_wechat_bind = 1
-				)
-			<if test="startTime!=null">
-		    	AND t.create_time &gt; #{startTime}
-		    </if> 
-		    <if test="endTime!=null">
-		    	AND t.create_time &lt; #{endTime}
-		    </if> 
-			GROUP BY
-				DAY
-			ORDER BY
-				DAY DESC
-		) t1
-	WHERE
-		(
-			t.is_app_register = 1
-			OR t.is_wechat_bind = 1
-		)
-	AND t.create_time &lt; t1.day group by day order by day desc
+  		SELECT
+			u. DAY,
+			u.day_total,
+			u.sum_total,
+			(SELECT count(*) FROM v_stall) AS stall_total
+		FROM
+			(
+				SELECT
+					DAY,
+					day_total ,@total := @total + day_total AS sum_total
+				FROM
+					(
+						SELECT
+							date(t.create_time) AS DAY,
+							count(*) AS day_total
+						FROM
+							t_user t
+						WHERE
+							(
+								t.is_app_register = 1
+								OR t.is_wechat_bind = 1
+							)
+						GROUP BY
+							DAY
+					) t,
+					(SELECT @total := 0) AS t1
+				ORDER BY
+					DAY
+			) u
+		WHERE 1 = 1
+		<if test="startTime!=null">
+	    	AND u.day &gt;= #{startTime}
+	    </if> 
+	    <if test="endTime!=null">
+	    	AND u.day &lt; #{endTime}
+	    </if>
+		ORDER BY
+			u. DAY DESC
   </select>
   <!-- 新增用户 -->
   <select id="newUserList" resultMap="NewUserResultMap" parameterType="java.util.HashMap">
