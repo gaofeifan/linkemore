@@ -1,6 +1,6 @@
 package cn.linkmore.report.response;
 /**
- * 订单数量
+ * 拉新费用
  * @author jiaohanbin
  * @version 2.0
  *

@@ -155,10 +155,10 @@
 					OR t.is_wechat_bind = 1
 				)
 			<if test="startTime!=null">
-		    	AND t.create_time &gt; #{startTime}
+		    	AND DATE_FORMAT(t.create_time, '%Y-%m') &gt;= #{startTime}
 		    </if> 
 		    <if test="endTime!=null">
-		    	AND t.create_time &lt; #{endTime}
+		    	AND DATE_FORMAT(t.create_time, '%Y-%m') &lt; #{endTime}
 		    </if> 
 			GROUP BY
 				DAY
@@ -198,10 +198,10 @@
 							OR t.is_wechat_bind = 1
 						)
 					<if test="startTime!=null">
-				    	AND t.create_time &gt; #{startTime}
+				    	AND DATE_FORMAT(t.create_time, '%Y-%m') &gt;= #{startTime}
 				    </if> 
 				    <if test="endTime!=null">
-				    	AND t.create_time &lt; #{endTime}
+				    	AND DATE_FORMAT(t.create_time, '%Y-%m') &lt; #{endTime}
 				    </if> 
 					GROUP BY
 						DAY
@@ -218,10 +218,10 @@
 					temp.type = 2
 				AND temp. STATUS = 1
 				<if test="startTime!=null">
-			    	AND t.create_time &gt; #{startTime}
+			    	AND DATE_FORMAT(t.create_time, '%Y-%m') &gt;= #{startTime}
 			    </if> 
 			    <if test="endTime!=null">
-			    	AND t.create_time &lt; #{endTime}
+			    	AND DATE_FORMAT(t.create_time, '%Y-%m') &lt; #{endTime}
 			    </if> 
 				GROUP BY
 					DAY
@@ -263,10 +263,10 @@
 				AND temp. STATUS = 1
 				AND pre. STATUS = 0
 				<if test="startTime!=null">
-			    	AND t.create_time &gt; #{startTime}
+			    	AND DATE_FORMAT(t.create_time, '%Y-%m') &gt;= #{startTime}
 			    </if> 
 			    <if test="endTime!=null">
-			    	AND t.create_time &lt; #{endTime}
+			    	AND DATE_FORMAT(t.create_time, '%Y-%m') &lt; #{endTime}
 			    </if> 
 				GROUP BY
 					c.id,
@@ -302,10 +302,10 @@
        #{id}
     </foreach> 
 	<if test="startTime!=null">
-		AND t.create_time &gt; #{startTime}
+		AND DATE_FORMAT(t.create_time, '%Y-%m') &gt;= #{startTime}
 	</if> 
 	<if test="endTime!=null">
-		AND t.create_time &lt; #{endTime}
+		AND DATE_FORMAT(t.create_time, '%Y-%m') &lt; #{endTime}
 	</if>
 	GROUP BY
 		c.id,
@@ -316,61 +316,7 @@
   </select>
   <!-- 单车位日均 -->
   <select id="stallAverageList" resultMap="StallAverageResultMap" parameterType="java.util.HashMap">
-	<!-- 
-		SELECT
-			c.id,
-			c.city_name,
-			pre.id AS pre_id,
-			pre. NAME AS pre_name,
-			DATE_FORMAT(t.create_time, '%Y-%m') AS DAY,
-			count(*) AS day_total,
-			pre.stall_total,
-			ROUND(count(*) / pre.stall_total, 1) AS average
-		FROM
-			t_coupon_send_user t
-		LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
-		LEFT JOIN (
-			SELECT
-				p.id,
-				p. NAME,
-				p.city_id,
-				count(*) AS stall_total
-			FROM
-				v_stall s
-			LEFT JOIN v_prefecture p ON p.id = s.pre_id
-			WHERE
-				p. STATUS = 0
-			GROUP BY
-				p.id,
-				p. NAME,
-				p.city_id
-		) pre ON temp.pre_id = pre.id
-		left join t_city c on c.id = pre.city_id
-		WHERE
-			temp.type = 2
-		AND temp. STATUS = 1
-		and pre.id in
-		<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
-	       #{id}
-	    </foreach> 
-		<if test="startTime!=null">
-			AND t.create_time &gt; #{startTime}
-		</if> 
-		<if test="endTime!=null">
-			AND t.create_time &lt; #{endTime}
-		</if>
-		GROUP BY
-			c.id,
-			c.city_name,
-			pre.id,
-			pre.NAME,
-			pre.stall_total,
-			DAY
-	 -->
-	
-	
-		
-		
+
 	SELECT
 		t.id,
 		t.city_name,
@@ -433,10 +379,10 @@
 		       #{id}
 		    </foreach> 
 			<if test="startTime!=null">
-				AND t.create_time &gt; #{startTime}
+				AND DATE_FORMAT(t.create_time, '%Y-%m') &gt;= #{startTime}
 			</if> 
 			<if test="endTime!=null">
-				AND t.create_time &lt; #{endTime}
+				AND DATE_FORMAT(t.create_time, '%Y-%m') &lt; #{endTime}
 			</if>
 			GROUP BY
 				c.id,
@@ -478,10 +424,10 @@
 		o.end_time
 	) >= 15
 	<if test="startTime!=null">
-		AND o.create_time &gt; #{startTime}
+		AND DATE_FORMAT(o.create_time, '%Y-%m') &gt;= #{startTime}
 	</if> 
 	<if test="endTime!=null">
-		AND o.create_time &lt; #{endTime}
+		AND DATE_FORMAT(o.create_time, '%Y-%m') &lt; #{endTime}
 	</if>
 	GROUP BY
         c.id,
@@ -517,10 +463,10 @@
 		o.end_time
 	) >= 15
 	<if test="startTime!=null">
-		AND o.create_time &gt; #{startTime}
+		AND DATE_FORMAT(o.create_time, '%Y-%m') &gt; #{startTime}
 	</if> 
 	<if test="endTime!=null">
-		AND o.create_time &lt; #{endTime}
+		AND DATE_FORMAT(o.create_time, '%Y-%m') &lt; #{endTime}
 	</if>
 	GROUP BY
 		c.id,
@@ -556,10 +502,10 @@
 		o.end_time
 	) >= 15
 	<if test="startTime!=null">
-		AND o.create_time &gt; #{startTime}
+		AND DATE_FORMAT(o.create_time, '%Y-%m') &gt;= #{startTime}
 	</if> 
 	<if test="endTime!=null">
-		AND o.create_time &lt; #{endTime}
+		AND DATE_FORMAT(o.create_time, '%Y-%m')  &lt; #{endTime}
 	</if>
 	AND DATE_FORMAT(u.create_time, '%Y-%m-%d') = DATE_FORMAT(o.create_time, '%Y-%m-%d')
 	GROUP BY
@@ -596,10 +542,10 @@
 		o.end_time
 	) >= 15
 	<if test="startTime!=null">
-		AND o.create_time &gt; #{startTime}
+		AND DATE_FORMAT(o.create_time, '%Y-%m') &gt;= #{startTime}
 	</if> 
 	<if test="endTime!=null">
-		AND o.create_time &lt; #{endTime}
+		AND DATE_FORMAT(o.create_time, '%Y-%m') &lt; #{endTime}
 	</if>
 	AND DATE_FORMAT(u.create_time, '%Y-%m-%d') != DATE_FORMAT(o.create_time, '%Y-%m-%d')
 	GROUP BY
@@ -612,89 +558,7 @@
   
   <!-- 运营时长 均停时长 日单量 -->
   <select id="runTimeList" resultMap="RunTimeResultMap" parameterType="java.util.HashMap">
-	<!-- 
-		SELECT
-	    	c.id,
-			c.city_name,
-			pre.id pre_id,
-			pre.NAME pre_name,
-			DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
-			sum(
-				TIMESTAMPDIFF(
-					MINUTE,
-					o.create_time,
-					o.end_time
-				)
-			) AS total_time,
-			pre.stall_total,
-			count(*) AS day_total,
-			ROUND(count(*) / stall_total, 1) AS rdl,
-			ROUND(
-				sum(
-					TIMESTAMPDIFF(
-						MINUTE,
-						o.create_time,
-						o.end_time
-					)
-				) / 60 / count(*),
-				1
-			) AS jtsc,
-			ROUND(
-				sum(
-					TIMESTAMPDIFF(
-						MINUTE,
-						o.create_time,
-						o.end_time
-					)
-				) / 60 / stall_total,
-				1
-			) AS runtime
-		FROM
-			o_orders o
-		LEFT JOIN (
-			SELECT
-				p.id,
-				p.NAME,
-				p.city_id,
-				p.status,
-				count(*) AS stall_total
-			FROM
-				v_stall s
-			LEFT JOIN v_prefecture p ON p.id = s.pre_id
-			GROUP BY
-				p.id,
-				p.NAME,
-				p.city_id,
-				p.status
-		) pre ON o.pre_id = pre.id
-	  LEFT JOIN t_city c on c.id = pre.city_id
-		WHERE
-	  	o.STATUS = 3
-	  	AND pre.STATUS = 0
-	  	AND pre.id in
-		<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
-	       #{id}
-	    </foreach> 
-		AND TIMESTAMPDIFF(
-			MINUTE,
-			o.create_time,
-			o.end_time
-		) >= 15
-		<if test="startTime!=null">
-			AND o.create_time &gt; #{startTime}
-		</if> 
-		<if test="endTime!=null">
-			AND o.create_time &lt; #{endTime}
-		</if>
-		GROUP BY
-	    	c.id,
-	    	c.city_name,
-			pre.id,
-			pre.name,
-			pre.stall_total,
-			DAY
-	 -->
-	 
+	
 	 SELECT
 		t.id,
 		t.city_name,
@@ -798,10 +662,10 @@
 				o.end_time
 			) >= 15
 			<if test="startTime!=null">
-				AND o.create_time &gt; #{startTime}
+				AND DATE_FORMAT(o.create_time, '%Y-%m') &gt;= #{startTime}
 			</if> 
 			<if test="endTime!=null">
-				AND o.create_time &lt; #{endTime}
+				AND DATE_FORMAT(o.create_time, '%Y-%m') &lt; #{endTime}
 			</if>
 			GROUP BY
 				c.id,
@@ -817,49 +681,7 @@
   
   <!-- 客单价 -->
   <select id="averagePriceList" resultMap="AveragePriceResultMap" parameterType="java.util.HashMap">
-	<!-- 
-	SELECT
-		c.id,
-	    c.city_name,
-		pre.id pre_id,
-		pre. NAME pre_name,
-		DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
-		round(
-			sum(o.total_amount) / count(*),
-			1
-		) AS average_price,
-  		sum(o.total_amount) as amount_total,
-	    count(*) as day_total
-	FROM
-		o_orders o
-	LEFT JOIN v_prefecture pre ON o.pre_id = pre.id
-	LEFT JOIN t_city c ON pre.city_id = c.id
-	WHERE
-		o. STATUS = 3
-	AND pre. STATUS = 0
-	AND pre.id in
-	<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
-       #{id}
-    </foreach> 
-	AND TIMESTAMPDIFF(
-		MINUTE,
-		o.create_time,
-		o.end_time
-	) >= 15
-	<if test="startTime!=null">
-		AND o.create_time &gt; #{startTime}
-	</if> 
-	<if test="endTime!=null">
-		AND o.create_time &lt; #{endTime}
-	</if>
-	GROUP BY
-		c.id,
-	    c.city_name,
-		pre.id,
-		pre. NAME,
-		DAY
-	 -->
-	 
+	
 	 SELECT
 		t.id,
 		t.city_name,
@@ -912,10 +734,10 @@
 				o.end_time
 			) >= 15
 			<if test="startTime!=null">
-				AND o.create_time &gt; #{startTime}
+				AND DATE_FORMAT(o.create_time, '%Y-%m') &gt;= #{startTime}
 			</if> 
 			<if test="endTime!=null">
-				AND o.create_time &lt; #{endTime}
+				AND DATE_FORMAT(o.create_time, '%Y-%m') &lt; #{endTime}
 			</if>
 			GROUP BY
 				c.id,
@@ -955,10 +777,10 @@
 	       #{id}
 	  </foreach> 
 	  <if test="startTime!=null">
-		 AND o.create_time &gt; #{startTime}
+		 AND DATE_FORMAT(o.create_time, '%Y-%m') &gt;= #{startTime}
 	  </if> 
 	  <if test="endTime!=null">
-		 AND o.create_time &lt; #{endTime}
+		 AND DATE_FORMAT(o.create_time, '%Y-%m') &lt; #{endTime}
 	  </if>
 	GROUP BY
 		c.id,
@@ -1030,10 +852,10 @@
 		       #{id}
 		  </foreach> 
 		  <if test="startTime!=null">
-			 AND o.create_time &gt; #{startTime}
+			 AND DATE_FORMAT(o.create_time, '%Y-%m') &gt;= #{startTime}
 		  </if> 
 		  <if test="endTime!=null">
-			 AND o.create_time &lt; #{endTime}
+			 AND DATE_FORMAT(o.create_time, '%Y-%m')  &lt; #{endTime}
 		  </if>
 			GROUP BY
 				c.id,
@@ -1061,10 +883,10 @@
 		     #{id}
 		</foreach> 
 		<if test="startTime!=null">
-			AND t.create_time &gt; #{startTime}
+			and DATE_FORMAT(t.create_time, '%Y-%m') &gt;= #{startTime}
 		</if> 
 		<if test="endTime!=null">
-			AND t.create_time &lt; #{endTime}
+			and DATE_FORMAT(t.create_time, '%Y-%m') &lt; #{endTime}
 		</if>
 		GROUP BY
 			pre.id,
