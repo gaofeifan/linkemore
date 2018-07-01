@@ -45,14 +45,17 @@ public class FreeStallInitRunner implements ApplicationRunner {
 		List<Stall> list = this.stallClusterMapper.findByStatus(StallStatus.FREE.status);
 		log.info("free stall list size " + list.size());
 		Map<Long, Set<Object>> map = new HashMap<Long, Set<Object>>();
-		Set<Object> sns = null;
+		Set<Object> sns = null; 
 		for (Stall stall : list) {
-			sns = map.get(stall.getPreId());
-			if (sns == null) {
-				sns = new HashSet<>();
-				map.put(stall.getPreId(), sns);
+			if(!this.redisService.exists(RedisKey.PREFECTURE_BUSY_STALL+stall.getLockSn())){
+				sns = map.get(stall.getPreId());
+				if (sns == null) {
+					sns = new HashSet<>();
+					map.put(stall.getPreId(), sns);
+				}
+				sns.add(stall.getLockSn());
 			}
-			sns.add(stall.getLockSn());
+			
 		}
 		log.info("free stall map "+ map);
 		Set<Long> keys = map.keySet();

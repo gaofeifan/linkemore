@@ -11,7 +11,7 @@ public class ResPayConfirm {
 	private Double amount;
 	@ApiModelProperty(value = "流水号")
 	private String number;
-	@ApiModelProperty(value = "支付分类[0账户余额，1支付宝，2微信，3银联]")
+	@ApiModelProperty(value = "支付分类[0账户余额，1支付宝，2微信，3银联,4小程序]")
 	private Short payType;
 	@ApiModelProperty(value = "支付宝支付")
 	private String alipay;
@@ -19,6 +19,9 @@ public class ResPayConfirm {
 	private ResPayWeixin weixin;
 	@ApiModelProperty(value = "苹果支付")
 	private String apple;
+	@ApiModelProperty(value = "小程序微信支付")
+	private ResPayWeixinMini weixinMini;
+	
 	public Double getAmount() { 
 		if(amount==null) {
 			amount = new Double(0D);
@@ -58,5 +61,12 @@ public class ResPayConfirm {
 	}
 	public void setApple(String apple) {
 		this.apple = apple;
+	}
+	public ResPayWeixinMini getWeixinMini() {
+		return weixinMini;
+	}
+	public void setWeixinMini(ResPayWeixinMini weixinMini) {
+		this.weixinMini = weixinMini;
 	} 
+	
 }

@@ -58,4 +58,11 @@ public interface PayService {
 	 */
 	void appleOrderNotice(HttpServletResponse response, HttpServletRequest request);
 
+	/**
+	 * 微信小程序支付异步回调
+	 * @param response
+	 * @param request
+	 */
+	void wechatMiniOrderNotice(HttpServletResponse response, HttpServletRequest request);
+
 }

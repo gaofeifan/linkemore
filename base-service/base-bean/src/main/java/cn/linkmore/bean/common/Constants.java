@@ -37,7 +37,8 @@ public class Constants {
 		ACCOUNT(0),
 		ALIPAY( 1),
 		WECHAT ( 2), 
-		APPLE (3);
+		APPLE (3),
+		WECHAT_MINI (4);
 		public int type;
 		private TradePayType(int type) {
 			this.type = type;
@@ -95,6 +96,7 @@ public class Constants {
 		ACCESS_TOKEN_EXP_TIME(60 * 60 * 24 * 30 * 4), 
 		SMS_CODE_SEND_SPACE(60), 
 		SMS_CODE_EXP_TIME(600),
+		STALL_LOCK_BOOKING_EXP_TIME(60),
 		STALL_DOWN_FAIL_EXP_TIME(60 * 60);
 		public int time;
 

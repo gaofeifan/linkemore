@@ -63,7 +63,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.AppWechatClient;
-import cn.linkmore.third.client.MiniProgramClient;
+import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.request.ReqPush;
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private AppWechatClient appWechatClient;
 	@Autowired
-	private MiniProgramClient miniProgramClient;
+	private WechatMiniClient miniProgramClient;
 	@Resource
 	private AccountMasterMapper accountMasterMapper;
 	@Resource
@@ -829,6 +829,7 @@ public class UserServiceImpl implements UserService {
 		String key = TokenUtil.getKey(request);  
 		ru.setToken(key); 
 		CacheUser cu = new CacheUser(); 
+		cu.setOpenId(rms.getOpenid());
 		cu.setToken(key); 
 		cu.setClient((short)ClientSource.WXAPP.source);
 		this.cacheUser(request, cu);

@@ -35,6 +35,11 @@ public class AppCallbackController {
 		log.info("wechat  async callback");
 		this.payService.wechatOrderNotice(response,request);
 	}
+	@RequestMapping(value = "/v2.0/wechat-mini/order", method = RequestMethod.POST)
+	public void wechatMini(HttpServletResponse response, HttpServletRequest request) {
+		log.info("wechat  async callback");
+		this.payService.wechatMiniOrderNotice(response,request);
+	}
 
 	@RequestMapping(value = "/v2.0/alipay/order", consumes = { "application/x-www-form-urlencoded;charset=utf-8" })
 	public void alipay(HttpServletResponse response, HttpServletRequest request) {

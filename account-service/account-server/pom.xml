@@ -42,6 +42,11 @@
             <groupId>org.springframework.session</groupId>  
             <artifactId>spring-session-data-redis</artifactId>  
         </dependency> 
+        <dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>server-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>feign-service</artifactId>

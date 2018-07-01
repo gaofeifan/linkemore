@@ -7,14 +7,13 @@ import org.springframework.stereotype.Component;
  * @author liwenlong
  * @version 2.0
  */
-@ConfigurationProperties(prefix = "mini-program")
+@ConfigurationProperties(prefix = "wechat-mini")
 @Component
-public class MiniProgramConfig {
+public class WechatMiniConfig {
 	private String  appId;
 	private String  appSecret;  
 	private String mchid;
 	private String 	key;
-	private String serviceUrl;
 	public String getAppId() {
 		return appId;
 	}
@@ -38,12 +37,6 @@ public class MiniProgramConfig {
 	}
 	public void setKey(String key) {
 		this.key = key;
-	}
-	public String getServiceUrl() {
-		return serviceUrl;
-	}
-	public void setServiceUrl(String serviceUrl) {
-		this.serviceUrl = serviceUrl;
 	}
 	 
 }

@@ -39,6 +39,11 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
+			<artifactId>server-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
 			<artifactId>swagger-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>

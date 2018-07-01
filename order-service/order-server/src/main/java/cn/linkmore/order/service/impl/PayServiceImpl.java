@@ -40,6 +40,7 @@ import cn.linkmore.order.controller.app.request.ReqPayConfirm;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.controller.app.response.ResPayCheckout;
 import cn.linkmore.order.controller.app.response.ResPayConfirm;
+import cn.linkmore.order.controller.app.response.ResPayWeixinMini;
 import cn.linkmore.order.dao.cluster.AccountClusterMapper;
 import cn.linkmore.order.dao.cluster.CompanyTradeRecordClusterMapper;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
@@ -76,12 +77,15 @@ import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.ApplePayClient;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
+import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqAppWechatOrder;
 import cn.linkmore.third.request.ReqApplePay;
 import cn.linkmore.third.request.ReqOrder;
 import cn.linkmore.third.request.ReqPush;
+import cn.linkmore.third.request.ReqWechatMiniOrder;
 import cn.linkmore.third.response.ResAppWechatOrder;
+import cn.linkmore.third.response.ResWechatMiniOrder;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 import cn.linkmore.util.XMLUtil;
@@ -161,6 +165,9 @@ public class PayServiceImpl implements PayService {
 	
 	@Autowired
 	private ApplePayClient applePayClient;
+	
+	@Autowired
+	private WechatMiniClient wechatMiniClient;
 	
 	@Autowired
 	private PushClient pushClient;
@@ -403,7 +410,7 @@ public class PayServiceImpl implements PayService {
 			orderPayType = OrderPayType.ACCOUNT.type+roc.getPayType(); 
 			order.setPayType(orderPayType); 
 			order.setEndTime(endTime); 
-			this.updateConfirm(order); 
+			this.updateConfirm(order);  
 			// 支付宝 支付
 			if (roc.getPayType() ==TradePayType.ALIPAY.type) {
 				ReqAppAlipay alipay = new ReqAppAlipay();
@@ -447,6 +454,30 @@ public class PayServiceImpl implements PayService {
 				confirm.setNumber(rechargeRecord.getCode()); 
 				confirm.setPayType((short)TradePayType.APPLE.type); 
 				confirm.setApple(tn);
+			}else if(roc.getPayType() == TradePayType.WECHAT_MINI.type) { 
+				ReqWechatMiniOrder wechat = new ReqWechatMiniOrder();
+				wechat.setAddress(request.getLocalAddr());
+				wechat.setAmount(rechargeRecord.getPaymentAmount().doubleValue());
+				wechat.setNumber(rechargeRecord.getCode());
+				wechat.setOpenId(cu.getOpenId());
+				ResWechatMiniOrder mini = this.wechatMiniClient.order(wechat);
+				confirm = new ResOrderConfirm();
+				confirm.setAmount(rechargeRecord.getPaymentAmount()); 
+				confirm.setNumber(rechargeRecord.getCode()); 
+				confirm.setPayType((short)TradePayType.WECHAT_MINI.type); 
+				ResPayConfirm res = new ResPayConfirm(); 
+				res.setAmount(confirm.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+				res.setPayType(confirm.getPayType());
+				res.setNumber(confirm.getNumber());  
+				ResPayWeixinMini wxMini = new ResPayWeixinMini();
+				wxMini.setId(mini.getId());
+				wxMini.setNonce(mini.getNonce());
+				wxMini.setPack(mini.getPack());
+				wxMini.setSign(mini.getSign());
+				wxMini.setStamp(mini.getStamp());
+				wxMini.setType(mini.getType()); 
+				res.setWeixinMini(wxMini);
+				return res;
 			}else{
 				throw new BusinessException(StatusEnum.ORDER_UNKNOW_PAY);
 			} 
@@ -786,6 +817,23 @@ public class PayServiceImpl implements PayService {
 		}
 		return flag;
 	}
+	private Boolean wechatMini(String json) {
+		Boolean flag = false;
+		flag = this.wechatMiniClient.verify(json);
+		log.info("alipay verify :{},result:{}",json,flag);
+		if(flag) {
+			flag = false;
+			Map<String,String> param = JsonUtil.toObject(json, HashMap.class);
+			if ("SUCCESS".equals(param.get("return_code")) && "SUCCESS".equals(param.get("result_code"))) { 
+				String number = param.get("out_trade_no");
+				RechargeRecord rr = this.rechargeRecordClusterMapper.findByNumber(number);
+				Orders orders = ordersClusterMapper.findById(rr.getOrderId());
+				this.checkOutOrder(orders, rr,null);
+				flag = true;
+			}
+		}
+		return flag;
+	}
 	
 	@Override
 	public void wechatOrderNotice(HttpServletResponse response, HttpServletRequest request)  {
@@ -869,5 +917,36 @@ public class PayServiceImpl implements PayService {
     	} 
     	String json = JsonUtil.toJson(respData);
     	this.apple(json); 
+	}
+	@Override
+	public void wechatMiniOrderNotice(HttpServletResponse response, HttpServletRequest request) { 
+		try {
+			Map<String, String> map = XMLUtil.doXMLParse(request);
+			String json = JsonUtil.toJson(map);
+			log.info("wechatMiniOrderNotice:{}",json);
+			Boolean flag = this.wechatMini(json);
+			if(flag) {
+				Map<String, String> param = new HashMap<String, String>();
+				param.put("return_msg", "OK");
+				param.put("return_code", "SUCCESS");
+				StringBuffer buffer = new StringBuffer();
+				buffer.append("<xml>");
+				for (Map.Entry<String, String> entry : param.entrySet()) {
+					buffer.append("<" + entry.getKey() + ">");
+					buffer.append("<![CDATA[" + entry.getValue() + "]]>");
+					buffer.append("</" + entry.getKey() + ">");
+				}
+				buffer.append("</xml>");
+				String result = new String(buffer.toString().getBytes(), "utf-8"); 
+				response.setContentType("text/html");
+				response.setCharacterEncoding("UTF-8");
+				PrintWriter pw = response.getWriter();
+				pw.write(result);
+				pw.flush(); 
+				pw.close();
+			} 
+		} catch (Exception e) { 
+			log.info("wechat mini pay callback exception .");
+		}    
 	} 
 }
