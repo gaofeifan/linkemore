@@ -15,7 +15,6 @@ import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.fee.OrderFee;
 import cn.linkmore.prefecture.request.ReqStrategy;
 import cn.linkmore.prefecture.service.StrategyBaseService;
-import cn.linkmore.util.JsonUtil;
 
 /**
  * Controller - 计费操作
@@ -37,8 +36,8 @@ public class FeignStrategyBaseController {
 	 * 根据计费策略和进出时间获取计费信息
 	 * 
 	 * @param strategyId String
-	 * @param beginTime Date
-	 * @param endTime Date
+	 * @param beginTime Long
+	 * @param endTime Long
 	 */
 	@RequestMapping(value = "/v2.0/fee", method=RequestMethod.POST)
 	@ResponseBody

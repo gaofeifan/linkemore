@@ -66,51 +66,7 @@ public class PrefectureController {
 		return this.preService.findList(ids);
 	}
 
-	/**
-	 * 根据位置查询车区地图
-	 * 
-	 * @param reqPrefecture ReqPrefecture
-	 * @return
-	 *//*
-	@RequestMapping(value = "/v2.0/loc", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResPrefecture> findPreListByLoc(@RequestBody ReqPrefecture reqPrefecture) {
-		return this.preService.findPreListByLoc(reqPrefecture);
-	}
-
-	*//**
-	 * 根据车区id查询计费策略
-	 * 
-	 * @param preId Long
-	 * @return
-	 *//*
-	@RequestMapping(value = "/v2.0/strategy/{preId}", method = RequestMethod.GET)
-	@ResponseBody
-	public ResPrefectureStrategy findPreStrategy(@PathVariable ("preId") Long preId) {
-		ResPrefectureStrategy resPreStrategy = preService.findPreStrategy(preId);
-		return resPreStrategy;
-	}
-	*//**
-	 * 查询车区空闲车位
-	 * 
-	 * @param preId Long
-	 * @return
-	 *//*
-	@RequestMapping(value = "/v2.0/free_count", method = RequestMethod.GET)
-	@ResponseBody
-	public List<ResPrefectureList> refreshFreeStall() {
-		List<ResPrefectureList> resPrefectureList = preService.getStallCount();
-		return resPrefectureList;
-	}*/
-	
-	
-	
-	
-	
 	/********************************ops***********************************/
-	
-	
-	
 	
 	/**
 	 * 车区列表分页
