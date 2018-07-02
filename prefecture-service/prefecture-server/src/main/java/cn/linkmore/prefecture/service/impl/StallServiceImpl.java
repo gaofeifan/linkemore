@@ -35,6 +35,7 @@ import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
+import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
@@ -329,4 +330,11 @@ public class StallServiceImpl implements StallService {
 		lock.setStallId(stall.getId());
 	    stallLockMasterMapper.updateBind(lock);
 	}
+
+	@Override
+	public List<ResStallOps> findListByParam(Map<String, Object> param) {
+		return this.stallClusterMapper.findListByParam(param);
+	}
+	
+	
 }
