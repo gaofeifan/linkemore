@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private AppWechatClient appWechatClient;
 	@Autowired
-	private WechatMiniClient miniProgramClient;
+	private WechatMiniClient wechatMiniClient;
 	@Resource
 	private AccountMasterMapper accountMasterMapper;
 	@Resource
@@ -812,7 +812,7 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser mini(String code, HttpServletRequest request) {
-		ResMiniSession rms = miniProgramClient.getSession(code);
+		ResMiniSession rms = wechatMiniClient.getSession(code);
 		log.info("rms:{}",JsonUtil.toJson(rms));
 		UserInfo ui = this.userInfoClusterMapper.find(rms.getOpenid());
 		if (ui == null) {

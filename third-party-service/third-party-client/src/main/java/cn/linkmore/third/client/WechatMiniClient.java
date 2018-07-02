@@ -18,7 +18,7 @@ import cn.linkmore.third.response.ResWechatMiniOrder;
  * @author liwenlong
  * @version 2.0
  */
-@FeignClient(value = "third-party-server", path = "/feign/mini-program", fallback=WechatMiniClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/wechat-mini", fallback=WechatMiniClientHystrix.class,configuration = FeignConfiguration.class)
 public interface WechatMiniClient { 
 	/**
 	 * 根据code取用户session
