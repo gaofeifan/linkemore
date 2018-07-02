@@ -49,6 +49,7 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/prefectures/v2.0/free/list"); 
 			add("/app/prefectures/v2.0/strategy");
 			add("/app/citys/v2.0/list"); 
+			add("/app/callback/v2.0/wechat-mini/order");
 			add("/app/callback/v2.0/wechat/order");
 			add("/app/callback/v2.0/alipay/order");
 			add("/app/callback/v2.0/apple/order");
