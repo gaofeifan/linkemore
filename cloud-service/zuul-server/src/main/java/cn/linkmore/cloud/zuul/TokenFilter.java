@@ -25,6 +25,7 @@ public class TokenFilter extends ZuulFilter {
 
 	private  final Logger log = LoggerFactory.getLogger(this.getClass()); 
 	private static final String API_APP_PATH="/app/";
+	private static final String API_WS_PATH = "/ws/";
 	private static final String API_OPS_PATH="/ops/";
 	private static final String API_FEIGN_PATH="/feign/"; 
 	private static final String SWAGGER_PATH = "/webjars/";
@@ -78,6 +79,14 @@ public class TokenFilter extends ZuulFilter {
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext(); 
         HttpServletRequest request = ctx.getRequest(); 
+        String upgradeHeader = request.getHeader("Upgrade");
+        if (null == upgradeHeader) {
+            upgradeHeader = request.getHeader("upgrade");
+        }
+        if (null != upgradeHeader && "websocket".equalsIgnoreCase(upgradeHeader)) {
+        	log.info("websokcet running...");
+            ctx.addZuulRequestHeader("connection", "Upgrade");
+        }
         String ip = request.getRemoteAddr(); 
         String url = request.getRequestURI();  
         String uri = url.substring(url.indexOf("/",5));
@@ -85,7 +94,8 @@ public class TokenFilter extends ZuulFilter {
 		log.info("ip:{},token:{}",ip,key);
 		log.info(uri); 
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);  
-        if (url.contains(SWAGGER_PATH)||(openResources.contains(uri)||cu!=null)) {
+		log.info("json:{}",JsonUtil.toJson(cu));
+        if (url.contains(SWAGGER_PATH)||(openResources.contains(uri)||cu!=null)||url.contains(API_WS_PATH)) {
             ctx.setSendZuulResponse(true);
             ctx.setResponseStatusCode(200);
             ctx.set("isSuccess", true);
