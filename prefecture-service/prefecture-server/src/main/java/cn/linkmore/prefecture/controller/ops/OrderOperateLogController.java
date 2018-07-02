@@ -1,10 +1,6 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +23,7 @@ import cn.linkmore.prefecture.service.StallService;
  * @author jiaohanbin
  */
 @Controller
-@RequestMapping("/order_operate")
+@RequestMapping("/ops/order_operate")
 public class OrderOperateLogController {
 	
 	@Autowired

@@ -1,6 +1,5 @@
 package cn.linkmore.prefecture.client;
 
-import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,16 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import cn.linkmore.bean.view.Tree;
-import cn.linkmore.bean.view.ViewPage;
-import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.StallClientHystrix;
-import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqOrderStall;
-import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
-import cn.linkmore.prefecture.response.ResStallLock;
 /**
  * 远程调用 - 车位操作
  * @author jiaohanbin
@@ -87,51 +80,4 @@ public interface StallClient {
 	@ResponseBody
 	public ResStallEntity findByLock(@PathVariable("sn") String sn);
 	
-	
-	/*****************************************************************/
-	
-	
-	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
-	@ResponseBody
-	public Tree tree();
-
-	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
-	@ResponseBody
-	public ViewPage list(@RequestBody ViewPageable pageable);
-
-	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
-	@ResponseBody
-	public int save(@RequestBody ReqStall stall) ;
-
-	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
-	@ResponseBody
-	public int update(@RequestBody ReqStall stall);
-
-	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
-	@ResponseBody
-	public int check(@RequestBody ReqCheck reqCheck);
-
-	@RequestMapping(value = "/v2.0/sn", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResStallLock> sn(@RequestParam("lockId") Long lockId);
-
-	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.POST)
-	@ResponseBody
-	public ResStallEntity detail(@RequestParam("id") Long id);
-
-	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.POST)
-	@ResponseBody
-	public int bind(@RequestParam("id") Long id, @RequestParam("sid") Long sid);
-
-	@RequestMapping(value = "/v2.0/changed_up", method = RequestMethod.POST)
-	@ResponseBody
-	public int changedUp(@RequestBody List<Long> ids);
-
-	@RequestMapping(value = "/v2.0/changed_down", method = RequestMethod.POST)
-	@ResponseBody
-	public int changedDown(@RequestParam("id") Long id);
-	
-	@RequestMapping(value = "/v2.0/save_bind", method = RequestMethod.POST)
-	@ResponseBody
-	public void saveAndBind(@RequestParam("preId") Long preId,@RequestParam("stallName") String stallName,@RequestParam("sn") String sn);
 }

@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ import cn.linkmore.prefecture.service.LockOperateLogService;
  *
  */
 @RestController
-@RequestMapping("/lock")
+@RequestMapping("/ops/lock")
 public class LockOperateLogController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());

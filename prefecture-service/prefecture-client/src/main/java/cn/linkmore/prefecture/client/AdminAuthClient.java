@@ -21,7 +21,7 @@ import cn.linkmore.prefecture.request.ReqCheck;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/admin_auth", fallback=AdminAuthClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/ops/admin_auth", fallback=AdminAuthClientHystrix.class,configuration = FeignConfiguration.class)
 public interface AdminAuthClient {
 	/**
 	 * 列表

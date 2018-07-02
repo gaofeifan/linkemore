@@ -23,7 +23,7 @@ import cn.linkmore.prefecture.response.ResStallLock;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/stall_lock", fallback=StallLockClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/ops/stall_lock", fallback=StallLockClientHystrix.class,configuration = FeignConfiguration.class)
 public interface StallLockClient {
 	
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)

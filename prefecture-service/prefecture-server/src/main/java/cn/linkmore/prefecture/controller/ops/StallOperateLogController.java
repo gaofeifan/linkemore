@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ import cn.linkmore.prefecture.service.StallOperateLogService;
  * @version 2.0
  */
 @Controller
-@RequestMapping("/stall_operate")
+@RequestMapping("/ops/stall_operate")
 public class StallOperateLogController {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired

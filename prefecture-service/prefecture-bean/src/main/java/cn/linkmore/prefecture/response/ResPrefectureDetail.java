@@ -83,6 +83,22 @@ public class ResPrefectureDetail {
      */
     private Date updateTime;
     /**
+     * 运营时长 （分钟数）
+     */
+    private Integer runtime;
+    /**
+     * 月租金成本（元）
+     */
+    private Integer monthRent;
+    /**
+     * 租金涨幅 百分比
+     */
+    private String increase;
+    /**
+     * 计费策略描述
+     */
+    private String strategyDescription;
+    /**
      * 线路描述
      */
     private String routeDescription;
@@ -355,4 +371,37 @@ public class ResPrefectureDetail {
 	public void setGateway(String gateway) {
 		this.gateway = gateway;
 	}
+
+	public Integer getRuntime() {
+		return runtime;
+	}
+
+	public void setRuntime(Integer runtime) {
+		this.runtime = runtime;
+	}
+
+	public Integer getMonthRent() {
+		return monthRent;
+	}
+
+	public void setMonthRent(Integer monthRent) {
+		this.monthRent = monthRent;
+	}
+
+	public String getIncrease() {
+		return increase;
+	}
+
+	public void setIncrease(String increase) {
+		this.increase = increase;
+	}
+
+	public String getStrategyDescription() {
+		return strategyDescription;
+	}
+
+	public void setStrategyDescription(String strategyDescription) {
+		this.strategyDescription = strategyDescription;
+	}
+	
 }

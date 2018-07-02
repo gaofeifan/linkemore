@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +33,7 @@ import cn.linkmore.prefecture.service.PrefectureService;
  *
  */
 @RestController
-@RequestMapping("/pres")
+@RequestMapping("/ops/pres")
 public class PrefectureController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());

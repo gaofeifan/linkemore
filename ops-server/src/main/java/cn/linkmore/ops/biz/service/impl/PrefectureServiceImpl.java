@@ -15,8 +15,8 @@ import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.response.ResDistrict;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.ops.biz.service.PrefectureService;
-import cn.linkmore.prefecture.client.PrefectureClient;
-import cn.linkmore.prefecture.client.StrategyBaseClient;
+import cn.linkmore.prefecture.client.OpsPrefectureClient;
+import cn.linkmore.prefecture.client.OpsStrategyBaseClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
@@ -28,7 +28,7 @@ import cn.linkmore.prefecture.response.ResPrefectureDetail;
 @Service
 public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
-	private PrefectureClient prefectureClient;
+	private OpsPrefectureClient prefectureClient;
 	@Autowired
 	private CityClient cityClient;
 	@Autowired
@@ -36,7 +36,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private BaseDictClient baseDictClient;
 	@Autowired
-	private StrategyBaseClient strategyBaseClient;
+	private OpsStrategyBaseClient strategyBaseClient;
 
 	/*
 	 * 专区下拉列表

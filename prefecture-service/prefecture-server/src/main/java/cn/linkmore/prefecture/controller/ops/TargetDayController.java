@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import cn.linkmore.prefecture.service.TargetDayService;
  *
  */
 @Controller
-@RequestMapping("/target_day")
+@RequestMapping("/ops/target_day")
 public class TargetDayController { 
 	@Autowired
 	private TargetDayService targetDayService;

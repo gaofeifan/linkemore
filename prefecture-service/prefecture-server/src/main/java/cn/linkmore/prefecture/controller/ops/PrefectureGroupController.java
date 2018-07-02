@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import cn.linkmore.prefecture.service.PreGroupService;
  *
  */
 @Controller
-@RequestMapping("/pre_group")
+@RequestMapping("/ops/pre_group")
 public class PrefectureGroupController {
 
 	@Autowired

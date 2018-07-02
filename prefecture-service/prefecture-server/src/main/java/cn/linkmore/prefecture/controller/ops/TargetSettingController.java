@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ import cn.linkmore.prefecture.service.TargetSettingService;
  *
  */
 @Controller
-@RequestMapping("/target_setting")
+@RequestMapping("/ops/target_setting")
 public class TargetSettingController { 
 	@Autowired
 	private TargetSettingService preTargetSettingService;

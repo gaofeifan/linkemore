@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import cn.linkmore.prefecture.service.StallRechargeService;
  * @version 2.0
  */
 @Controller
-@RequestMapping("/stall_recharge")
+@RequestMapping("/ops/stall_recharge")
 public class StallRechargeController {
 	
 	@Autowired

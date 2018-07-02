@@ -9,6 +9,7 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.StallService;
+import cn.linkmore.prefecture.client.OpsStallClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
@@ -24,7 +25,7 @@ import cn.linkmore.prefecture.response.ResStallEntity;
 public class StallServiceImpl implements StallService {
 	
 	@Resource
-	private StallClient stallClient;
+	private OpsStallClient stallClient;
 
 	private static final Logger log = LoggerFactory.getLogger(Logger.class);
 

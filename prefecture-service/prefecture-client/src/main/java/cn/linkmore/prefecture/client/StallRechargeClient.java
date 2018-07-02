@@ -19,7 +19,7 @@ import cn.linkmore.prefecture.response.ResStallRecharge;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/stall_recharge", fallback=StallRechargeClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/ops/stall_recharge", fallback=StallRechargeClientHystrix.class,configuration = FeignConfiguration.class)
 public interface StallRechargeClient {
 	
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)

@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import cn.linkmore.prefecture.service.StallLockService;
  *
  */
 @Controller
-@RequestMapping("/stall_lock")
+@RequestMapping("/ops/stall_lock")
 public class StallLockController {
 
 	@Autowired

@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
 import java.util.Map;
@@ -12,27 +12,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.prefecture.request.ReqAdminUser;
+import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
-import cn.linkmore.prefecture.service.AdminUserService;
+import cn.linkmore.prefecture.service.AdminAuthService;
+
 
 /**
- * Controller - 线下管理员
+ * Controller - 线下管理员 授权
  * @author jiaohanbin
  */
 @Controller
-@RequestMapping("/admin_user")
-public class AdminUserController {
+@RequestMapping("/ops/admin_auth")
+public class AdminAuthController {
 	
 	@Autowired
-	AdminUserService adminUserService;
+	AdminAuthService adminAuthService;
 	/**
-	 * 管理员列表
+	 * 列表
 	 */
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable){
-		return this.adminUserService.findPage(pageable); 
+		return this.adminAuthService.findPage(pageable); 
 	} 
 	
 	/**
@@ -42,7 +43,7 @@ public class AdminUserController {
 	@ResponseBody
 	public Boolean check(@RequestBody ReqCheck reqCheck){
 		Boolean flag = true ;
-		Integer count = this.adminUserService.check(reqCheck); 
+		Integer count = this.adminAuthService.check(reqCheck); 
 		if(count>0){
             flag = false;
         }
@@ -53,16 +54,16 @@ public class AdminUserController {
 	 */
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public int save(@RequestBody ReqAdminUser admin){
-		return	this.adminUserService.save(admin);
+	public int save(@RequestBody ReqAdminAuth admin){
+		return this.adminAuthService.save(admin);
 	}
 	/**
 	 * 更新
 	 */
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public int update(@RequestBody ReqAdminUser admin){
-		return	this.adminUserService.update(admin);
+	public int update(@RequestBody ReqAdminAuth admin){
+		return this.adminAuthService.update(admin);
 	}
 	/**
 	 * 资源树
@@ -70,31 +71,31 @@ public class AdminUserController {
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
 	@ResponseBody
 	public Tree tree(){ 
-		return this.adminUserService.findTree();
+		return this.adminAuthService.findTree();
 	}
-	/**
+	/*
 	 * 权限回显
 	 */
 	@RequestMapping(value = "/v2.0/resource", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String,Object> resource(@RequestParam("id") Long id){ 
-		return this.adminUserService.resource(id);
+		return this.adminAuthService.resource(id);
 	}
 	
-	/**
+	/*
 	 * 绑定
 	 */
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.POST)
 	@ResponseBody
-	public void bind(@RequestParam("id") Long id,@RequestParam("authids") String authids){ 
-			this.adminUserService.bind(id,authids);
+	public void bind(@RequestParam("id") Long id,@RequestParam("citys") String citys,@RequestParam("pres") String pres,@RequestParam("json") String json){ 
+		this.adminAuthService.bind(id,json,citys,pres);
 	}
-	/**
+	/*
 	 * 删除
 	 */
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids){ 
-		return	this.adminUserService.delete(ids);
+		return	this.adminAuthService.delete(ids);
 	}
 }

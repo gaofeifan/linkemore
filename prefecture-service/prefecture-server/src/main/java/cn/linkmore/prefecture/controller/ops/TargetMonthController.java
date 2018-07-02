@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,7 @@ import cn.linkmore.prefecture.service.TargetMonthService;
  *
  */
 @Controller
-@RequestMapping("/target_month")
+@RequestMapping("/ops/target_month")
 public class TargetMonthController { 
 	@Autowired
 	private TargetMonthService targetMonthService;

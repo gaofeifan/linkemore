@@ -18,7 +18,7 @@ import cn.linkmore.prefecture.request.ReqPrefectureGroup;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/pre_group", fallback=PrefectureGroupClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/ops/pre_group", fallback=PrefectureGroupClientHystrix.class,configuration = FeignConfiguration.class)
 public interface PrefectureGroupClient {
 	
 	/**

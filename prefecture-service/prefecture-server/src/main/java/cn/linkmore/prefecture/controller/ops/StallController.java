@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.controller;
+package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import cn.linkmore.util.ObjectUtils;
  *
  */
 @RestController
-@RequestMapping("/stall")
+@RequestMapping("/ops/stall")
 public class StallController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
