@@ -459,6 +459,8 @@ public class PayServiceImpl implements PayService {
 				confirm.setNumber(rechargeRecord.getCode()); 
 				confirm.setPayType((short)TradePayType.APPLE.type); 
 				confirm.setApple(tn);
+				log.info("apple confir :{}",JsonUtil.toJson(confirm));
+				return getConfirmResult(confirm);
 			}else if(roc.getPayType() == TradePayType.WECHAT_MINI.type) { 
 				ReqWechatMiniOrder wechat = new ReqWechatMiniOrder();
 				wechat.setAddress(request.getLocalAddr());
@@ -491,8 +493,7 @@ public class PayServiceImpl implements PayService {
 			throw e;
 		} catch (Exception e) {  
 			throw new BusinessException(StatusEnum.ORDER_PAY_SIGN_ERROR);
-		}
-		return getConfirmResult(confirm);
+		} 
 	}
 	
 	private void updateConfirm(Orders order) {

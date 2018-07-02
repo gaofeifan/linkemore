@@ -51,15 +51,13 @@ public class WebSocketServer {
     			while(time++<10) {
     				this.server.sendMessage("Hello Kitty");
     				try {
-						Thread.sleep(1000l*3);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
+						Thread.sleep(1000l*30);
+					} catch (InterruptedException e) { 
 						e.printStackTrace();
 					}
     			}
 				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} catch (IOException e) { 
 				e.printStackTrace();
 			}
     	}
@@ -80,6 +78,7 @@ public class WebSocketServer {
     	} 
     	try {
        	 sendMessage(success.toString());
+       	new PushThread(this).start();
         } catch (IOException e) {
            log.error("websocket IO异常");
         }
