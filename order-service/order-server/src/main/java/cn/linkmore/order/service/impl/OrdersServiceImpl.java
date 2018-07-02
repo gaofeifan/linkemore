@@ -26,6 +26,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResVechicleMark;
+import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.OrderFailureReason;
@@ -67,6 +68,7 @@ import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
+import cn.linkmore.third.client.WebsocketClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
@@ -114,6 +116,8 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	@Autowired
 	private PushClient pushClient;
+	@Autowired
+	private WebsocketClient websocketClient;
 	
 	@Autowired
 	private UserClient userClient;
@@ -465,15 +469,25 @@ public class OrdersServiceImpl implements OrdersService {
 	 */
 	@Async
 	private void push(String uid,String title,String content,PushType type,Boolean status) {
-		Token token = (Token)this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key+uid.toString());
-		ReqPush rp = new ReqPush();
-		rp.setAlias(uid);
-		rp.setTitle(title); 
-		rp.setContent(content);
-		rp.setClient(token.getClient());
-		rp.setType(type);
-		rp.setData(status.toString()); 
-		this.pushClient.push(rp);
+		Token token = (Token)this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key+uid.toString()); 
+		if(token.getClient().intValue()==ClientSource.WXAPP.source) {
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("title", title);
+			map.put("type", type.id);
+			map.put("content", content);
+			map.put("status", status);
+			websocketClient.push(JsonUtil.toJson(map), token.getAccessToken());
+		}else { 
+			ReqPush rp = new ReqPush();
+			rp.setAlias(uid);
+			rp.setTitle(title); 
+			rp.setContent(content);
+			rp.setClient(token.getClient());
+			rp.setType(type);
+			rp.setData(status.toString());
+			this.pushClient.push(rp);
+		}
+		
 	}
 	
 	@Override

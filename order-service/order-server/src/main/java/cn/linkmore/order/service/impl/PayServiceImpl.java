@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.linkmore.account.client.UserClient;
+import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.CouponStatus;
 import cn.linkmore.bean.common.Constants.CouponType;
 import cn.linkmore.bean.common.Constants.OrderPayType;
@@ -77,6 +78,7 @@ import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.ApplePayClient;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
+import cn.linkmore.third.client.WebsocketClient;
 import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqAppWechatOrder;
@@ -88,7 +90,7 @@ import cn.linkmore.third.response.ResAppWechatOrder;
 import cn.linkmore.third.response.ResWechatMiniOrder;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
-import cn.linkmore.util.XMLUtil;
+import cn.linkmore.util.XMLUtil; 
 /**
  * Service实现 - 支付
  * @author liwenlong
@@ -171,6 +173,9 @@ public class PayServiceImpl implements PayService {
 	
 	@Autowired
 	private PushClient pushClient;
+	
+	@Autowired
+	private WebsocketClient websocketClient;
 	 
 
 	@Override
@@ -696,14 +701,24 @@ public class PayServiceImpl implements PayService {
 	@Async
 	private void push(String uid,String title,String content,PushType type,Boolean status) {
 		Token token = (Token)this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key+uid.toString());
-		ReqPush rp = new ReqPush();
-		rp.setAlias(uid);
-		rp.setTitle(title); 
-		rp.setContent(content);
-		rp.setClient(token.getClient());
-		rp.setType(type);
-		rp.setData(status.toString()); 
-		this.pushClient.push(rp);
+		if(token.getClient().intValue()==ClientSource.WXAPP.source) {
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("title", title);
+			map.put("type", type.id);
+			map.put("content", content);
+			map.put("status", status);
+			this.websocketClient.push(JsonUtil.toJson(map), token.getAccessToken());
+		}else {
+			ReqPush rp = new ReqPush();
+			rp.setAlias(uid);
+			rp.setTitle(title); 
+			rp.setContent(content);
+			rp.setClient(token.getClient());
+			rp.setType(type);
+			rp.setData(status.toString()); 
+			this.pushClient.push(rp);
+		}
+		
 	}
 	class ProduceCheckBookingThread extends Thread{
 		private Orders order;
