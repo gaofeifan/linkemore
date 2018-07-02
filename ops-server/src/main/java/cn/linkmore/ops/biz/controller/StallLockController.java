@@ -135,24 +135,25 @@ public class StallLockController {
 					rows.add(row);
 				}
 			}
-			ResPrefectureDetail p = prefectureService.checkName(rows.get(0).get("preName").toString());
-			if (null == p) {
-				msg = new ViewMsg("导入失败，专区不存在", false);
-				return msg;
-			}
+			
 			int count = 0;
 			ReqCheck reqCheck = null;
 			for (Map<String, Object> r : rows) {
-				reqCheck = new ReqCheck();
-				reqCheck.setProperty(r.get("stallName").toString());
-				reqCheck.setValue(p.getId().toString());
-				reqCheck.setId(null);
-				int check = stallService.check(reqCheck);
-				int checkSn = stallLockService.checkSn(r.get("sn").toString());
-				if (check < 1 && checkSn < 1) {
-					this.stallService.saveAndBind(p.getId(), r.get("stallName").toString(), r.get("sn").toString());
-				} else {
-					count++;
+				ResPrefectureDetail p = prefectureService.checkName(r.get("preName").toString());
+				if (null == p) {
+					msg = new ViewMsg("导入失败，专区不存在", false);
+				}else {
+					reqCheck = new ReqCheck();
+					reqCheck.setProperty(r.get("stallName").toString());
+					reqCheck.setValue(p.getId().toString());
+					reqCheck.setId(null);
+					int check = stallService.check(reqCheck);
+					int checkSn = stallLockService.checkSn(r.get("sn").toString());
+					if (check < 1 && checkSn < 1) {
+						this.stallService.saveAndBind(p.getId(), r.get("stallName").toString(), r.get("sn").toString());
+					} else {
+						count++;
+					}
 				}
 			}
 			if (count != 0) {
