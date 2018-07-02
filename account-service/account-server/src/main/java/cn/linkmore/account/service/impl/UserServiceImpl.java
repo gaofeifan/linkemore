@@ -63,7 +63,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.AppWechatClient;
-import cn.linkmore.third.client.MiniProgramClient;
+import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.request.ReqPush;
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private AppWechatClient appWechatClient;
 	@Autowired
-	private MiniProgramClient miniProgramClient;
+	private WechatMiniClient miniProgramClient;
 	@Resource
 	private AccountMasterMapper accountMasterMapper;
 	@Resource
@@ -133,13 +133,17 @@ public class UserServiceImpl implements UserService {
 	private WechatFansClusterMapper wechatFansClusterMapper;
 
 	@Override
-	public void updateNickname(ReqUpdateNickname nickname) {
-		updateByColumn("nickname", nickname.getNickname(), nickname.getUserId());
+	public void updateNickname(String nickname, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		updateByColumn("nickname", nickname, user.getId());
 	}
 
 	@Override
-	public void updateSex(ReqUpdateSex sex) {
-		updateByColumn("sex", sex.getSex(), sex.getUserId());
+	public void updateSex(Integer sex, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		updateByColumn("sex", sex, ru.getId());
 	}
 
 	private void updateByColumn(String column, Object value, Long id) {
@@ -153,18 +157,20 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public void updateVehicle(ReqUpdateVehicle req) {
-		UserVechicle vechicle = userVechicleClusterMapper.findByUserId(req.getUserId());
+	public void updateVehicle(cn.linkmore.account.controller.app.request.ReqUpdateVehicle vehicle, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		UserVechicle vechicle = userVechicleClusterMapper.findByUserId(ru.getId());
 		boolean flag = false;
 		if (vechicle == null) {
 			vechicle = new UserVechicle();
 			flag = true;
 		}
-		UserVechicle object = ObjectUtils.copyObject(req, vechicle);
+		UserVechicle object = ObjectUtils.copyObject(vehicle, vechicle );
+		object.setUserId(ru.getId());
 		object.setUpdateTime(new Date());
 		if (flag) {
 			object.setCreateTime(new Date());
-			object.setUserId(req.getUserId());
 			this.userVechicleMasterMapper.insert(object);
 			return;
 		}
@@ -255,17 +261,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void removeWechat(Long userId) {
-		this.userAppfansMasterMapper.deleteByUserId(userId);
-		Map<String, Object> param = new HashMap<>();
-		param.put("column", "wechat");
-		param.put("value", null);
-		param.put("id", userId);
-		param.put("updateTime", new Date());
-		this.userMasterMapper.updateByColumn(param );
-	}
-
-	@Override
 	public ResUser findByMobile(String mobile) {
 		return this.userClusterMapper.findByMobile(mobile);
 	}
@@ -275,53 +270,6 @@ public class UserServiceImpl implements UserService {
 		return this.userClusterMapper.findById(userId);
 	}
 
-	@Override
-	public ResUserLogin appLogin(String mobile) {
-		ResUser user = this.findByMobile(mobile);
-		if (user == null) {
-			user = new ResUser();
-			user.setMobile(mobile);
-			user.setUsername(mobile);
-			user.setPassword("");
-			user.setUserType("1");
-			user.setStatus("1");
-			user.setLastLoginTime(new Date());
-			user.setCreateTime(new Date());
-			user.setUpdateTime(new Date());
-			user.setIsAppRegister((short) 1);
-			user.setAppRegisterTime(new Date());
-			user.setIsWechatBind((short) 0);
-			this.userMasterMapper.insert(user);
-			Account account = new Account();
-			account.setId(user.getId());
-			account.setAmount(0.00d);
-			account.setUsableAmount(0.00d);
-			account.setFrozenAmount(0.00d);
-			account.setRechagePaymentAmount(0.00d);
-			account.setRechargeAmount(0.00d);
-			account.setAccType(1);
-			account.setStatus((short) 1);
-			account.setOrderAmount(0.00d);
-			account.setOrderPaymentAmount(0.00d);
-			account.setCreateTime(new Date());
-			accountMasterMapper.insert(account);
-		} else if (user.getStatus().equals("2")) {
-			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
-		} else {
-			user.setLastLoginTime(new Date());
-			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("id", user.getId());
-			param.put("lastLoginTime", new Date());
-			param.put("updateTime", new Date());
-			this.userMasterMapper.updateLoginTime(param);
-		}
-		ResUserLogin token = new ResUserLogin();
-		token.setId(user.getId());
-		token.setMobile(user.getUsername());
-		token.setRealname(user.getRealname());
-		token.setSex(user.getSex());
-		return token;
-	}
 
 	@Override
 	public void insertSelective(User user) {
@@ -399,8 +347,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateRealname(ReqUpdateAccount account) {
-		this.updateByColumn("realname", account.getRealname(), account.getUserId());
+	public void updateRealname(String accountName, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		this.updateByColumn("realname", accountName, ru.getId());
 	}
 
 	@Override
@@ -417,26 +367,60 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		}
-		ResUserLogin rul = this.appLogin(rl.getMobile());
-		if(rul==null) {
-			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
-		} 
+		ResUser user = this.findByMobile(rl.getMobile());
+		if (user == null) {
+			user = new ResUser();
+			user.setMobile(rl.getMobile());
+			user.setUsername(rl.getMobile());
+			user.setPassword("");
+			user.setUserType("1");
+			user.setStatus("1");
+			user.setLastLoginTime(new Date());
+			user.setCreateTime(new Date());
+			user.setUpdateTime(new Date());
+			user.setIsAppRegister((short) 1);
+			user.setAppRegisterTime(new Date());
+			user.setIsWechatBind((short) 0);
+			this.userMasterMapper.insert(user);
+			Account account = new Account();
+			account.setId(user.getId());
+			account.setAmount(0.00d);
+			account.setUsableAmount(0.00d);
+			account.setFrozenAmount(0.00d);
+			account.setRechagePaymentAmount(0.00d);
+			account.setRechargeAmount(0.00d);
+			account.setAccType(1);
+			account.setStatus((short) 1);
+			account.setOrderAmount(0.00d);
+			account.setOrderPaymentAmount(0.00d);
+			account.setCreateTime(new Date());
+			accountMasterMapper.insert(account);
+		} else if (user.getStatus().equals("2")) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
+		} else {
+			user.setLastLoginTime(new Date());
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", user.getId());
+			param.put("lastLoginTime", new Date());
+			param.put("updateTime", new Date());
+			this.userMasterMapper.updateLoginTime(param);
+		}
 		String key = TokenUtil.getKey(request); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
-		ru.setId(rul.getId());
+		ru.setId(user.getId());
 		ru.setMobile(rl.getMobile());
 		ru.setToken(key); 
-		ru.setSex(rul.getSex());
-		ru.setRealname(rul.getRealname());
-		ru.setAlias("u"+rul.getId());
+		ru.setSex(user.getSex());
+		ru.setRealname(user.getRealname());
+		ru.setAlias("u"+user.getId());
 		List<String> tags = new ArrayList<String>();
 		tags.add("appuser");
 		ru.setTags(tags);
-		CacheUser user = new CacheUser();
-		user.setId(rul.getId());
-		user.setMobile(rul.getMobile());
-		user.setToken(key);  
-		Token token = this.cacheUser(request, user);  
+		CacheUser u = new CacheUser();
+		u.setId(user.getId());
+		u.setMobile(user.getMobile());
+		u.setToken(key);  
+		Token token = this.cacheUser(request, u);  
 		if(token!=null) {
 			this.push(ru.getId().toString(), token); 
 		}
@@ -681,7 +665,7 @@ public class UserServiceImpl implements UserService {
 		} 
 	}
 
-	@Override
+/*	@Override
 	public void updateNickname(String nickname, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
@@ -689,9 +673,9 @@ public class UserServiceImpl implements UserService {
 		nick.setNickname(nickname);
 		nick.setUserId(user.getId());
 		this.updateNickname(nick);		
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public void updateSex(Integer sex, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
@@ -699,15 +683,15 @@ public class UserServiceImpl implements UserService {
 		req.setSex(sex);
 		req.setUserId(ru.getId());
 		this.updateSex(req);
-	}
-	@Override
+	}*/
+/*	@Override
 	public void updateVehicle(cn.linkmore.account.controller.app.request.ReqUpdateVehicle vehicle, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		cn.linkmore.account.request.ReqUpdateVehicle object = ObjectUtils.copyObject(vehicle, new cn.linkmore.account.request.ReqUpdateVehicle());
 		object.setUserId(ru.getId());
 		this.updateVehicle(object);
-	}
+	}*/
 	@Override
 	public ResUserDetails detail(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
@@ -722,9 +706,15 @@ public class UserServiceImpl implements UserService {
 		if(ru.getMobile().trim().length()>=12) {
 			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_BINDING_NOMOBILE);
 		}
-		this.removeWechat(ru.getId());
+		this.userAppfansMasterMapper.deleteByUserId(ru.getId());
+		Map<String, Object> param = new HashMap<>();
+		param.put("column", "wechat");
+		param.put("value", null);
+		param.put("id", ru.getId());
+		param.put("updateTime", new Date());
+		this.userMasterMapper.updateByColumn(param );
 	}
-	@Override
+/*	@Override
 	public void updateRealname(String accountName, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
@@ -732,7 +722,7 @@ public class UserServiceImpl implements UserService {
 		account.setRealname(accountName);
 		account.setUserId(ru.getId());
 		this.updateRealname(account);
-	}
+	}*/
 	
 	private CacheUser getCacheUser(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);

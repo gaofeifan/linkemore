@@ -10,16 +10,11 @@ import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.entity.User;
-import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
-import cn.linkmore.account.request.ReqUpdateNickname;
-import cn.linkmore.account.request.ReqUpdateSex;
-import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
-import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 
@@ -31,13 +26,6 @@ import cn.linkmore.bean.view.ViewPageable;
  */
 public interface UserService {
 	
-	/**
-	 * @Description  更新用户车牌
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	void updateVehicle(ReqUpdateVehicle req);
-
 	/**
 	 * @Description  查询用户详情
 	 * @Author   GFF 
@@ -52,12 +40,6 @@ public interface UserService {
 	 */
 	void updateMobile(ReqUpdateMobile bean);
 
-	/**
-	 * @Description  删除微信号
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	void removeWechat(Long userId);
 
 	/**
 	 * @Description  根据手机号查询
@@ -78,14 +60,14 @@ public interface UserService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void updateNickname(ReqUpdateNickname nickname);
+//	void updateNickname(ReqUpdateNickname nickname);
 
 	/**
 	 * @Description  更新性别
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void updateSex(ReqUpdateSex sex);
+//	void updateSex(ReqUpdateSex sex);
 
 	/**
 	 * @Description  新增
@@ -100,13 +82,6 @@ public interface UserService {
 	 * @Version  v2.0
 	 */
 	void updateLoginTime(Map<String, Object> param);
-
-	/**
-	 * @Description  app登录
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	ResUserLogin appLogin(String mobile);
 
 	/**
 	 * @Description  更新用户微信
@@ -146,7 +121,7 @@ public interface UserService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void updateRealname(ReqUpdateAccount account);
+//	void updateRealname(ReqUpdateAccount account);
 
 	/**
 	 * @Description  app登录
