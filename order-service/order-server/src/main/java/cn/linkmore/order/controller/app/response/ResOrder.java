@@ -50,6 +50,8 @@ public class ResOrder {
 	private Short status;  
 	@ApiModelProperty(value = "蓝牙地址串用")
 	private String bluetooth;
+	@ApiModelProperty(value = "金额[字符串]")
+	private String amount;
 	public Long getId() {
 		return id;
 	}
@@ -104,6 +106,16 @@ public class ResOrder {
 			this.totalAmount = new BigDecimal(0d);
 		}
 		return this.totalAmount.setScale(2,   BigDecimal.ROUND_HALF_UP);
+	}
+	
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+	public String getAmount() {
+		if(this.totalAmount==null) {
+			this.totalAmount = new BigDecimal(0d);
+		}
+		return this.totalAmount.setScale(2,   BigDecimal.ROUND_HALF_UP).toString();
 	}
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;

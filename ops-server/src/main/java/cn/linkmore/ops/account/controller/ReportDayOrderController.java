@@ -103,10 +103,13 @@ public class ReportDayOrderController {
 					map.put(resOrder.getPreName(), resOrder.getPreName());
 				}
 			}
-			int i = titleList.size();
-			int j = 100 / i;
+			int titleSize = titleList.size();
+			String width = "130";
+			if (titleSize < 10) {
+				width = 100 / titleSize + "%";
+			}
 			for (ResTitle resTitle : titleList) {
-				resTitle.setWidth(j + "%");
+				resTitle.setWidth(width);
 			}
 		} else {
 			titleList = new ArrayList<ResTitle>();
@@ -151,10 +154,13 @@ public class ReportDayOrderController {
 					map.put(resPull.getPreName(), resPull.getPreName());
 				}
 			}
-			int i = titleList.size();
-			int j = 100 / i;
+			int titleSize = titleList.size();
+			String width = "130";
+			if (titleSize < 10) {
+				width = 100 / titleSize + "%";
+			}
 			for (ResTitle resTitle : titleList) {
-				resTitle.setWidth(j + "%");
+				resTitle.setWidth(width);
 			}
 		} else {
 			titleList = new ArrayList<ResTitle>();
@@ -596,7 +602,7 @@ public class ReportDayOrderController {
        BigDecimal b1=new BigDecimal(Double.toString(v1));
        BigDecimal b2 = new BigDecimal(Double.toString(v2));
        return b1.add(b2).doubleValue();
-   }
+    }
 
 	/**
 	 * 客单价

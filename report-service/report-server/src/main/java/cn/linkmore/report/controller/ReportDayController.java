@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.report.request.ReqReportDay;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
+import cn.linkmore.report.response.ResCost;
+import cn.linkmore.report.response.ResIncome;
 import cn.linkmore.report.response.ResNewUser;
 import cn.linkmore.report.response.ResOrder;
 import cn.linkmore.report.response.ResPre;
 import cn.linkmore.report.response.ResPull;
+import cn.linkmore.report.response.ResPullCost;
 import cn.linkmore.report.response.ResRunTime;
 import cn.linkmore.report.response.ResStallAverage;
 import cn.linkmore.report.response.ResUserNum;
@@ -41,7 +44,7 @@ public class ReportDayController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<Long> preIds = new ArrayList<Long>();
 		if (StringUtils.isBlank(reportDay.getPreIds())) {
-			if (reportDay.getCityId() != 0) {
+			if (reportDay.getCityId() != null && reportDay.getCityId() != 0 ) {
 				param.put("cityId", reportDay.getCityId());
 			}
 			List<ResPre> preList = reportDayService.preList(param);
@@ -57,6 +60,43 @@ public class ReportDayController {
 		param.put("list", preIds);
 		param.put("startTime", reportDay.getStartTime());
 		param.put("endTime", reportDay.getEndTime());
+		return param;
+	}
+	
+	public Map<String, Object> orderConvert(ReqReportDay reportDay) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		List<Long> preIds = new ArrayList<Long>();
+		List<Long> statuIds = new ArrayList<Long>();
+		if (StringUtils.isBlank(reportDay.getPreIds())) {
+			if (reportDay.getCityId() != null && reportDay.getCityId() != 0 ) {
+				param.put("cityId", reportDay.getCityId());
+			}
+			List<ResPre> preList = reportDayService.preList(param);
+			for (ResPre pre : preList) {
+				preIds.add(pre.getId());
+			}
+		} else {
+			String[] preIdStr = reportDay.getPreIds().split(",");
+			for(String preId : preIdStr) {
+				preIds.add(Long.valueOf(preId));
+			}
+		}
+		if (StringUtils.isBlank(reportDay.getStatuIds())) {
+			reportDay.setStatuIds("1,3,4,6,7");
+			String[] statuIdStr = reportDay.getStatuIds().split(",");
+			for(String statuId : statuIdStr) {
+				statuIds.add(Long.valueOf(statuId));
+			}
+		} else {
+			String[] statuIdStr = reportDay.getStatuIds().split(",");
+			for(String statuId : statuIdStr) {
+				statuIds.add(Long.valueOf(statuId));
+			}
+		}
+		param.put("list", preIds);
+		param.put("startTime", reportDay.getStartTime());
+		param.put("endTime", reportDay.getEndTime());
+		param.put("statuList", statuIds);
 		return param;
 	}
 
@@ -109,7 +149,7 @@ public class ReportDayController {
 	@RequestMapping(value = "/v2.0/order", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResOrder> orderList(@RequestBody ReqReportDay reportDay) {
-		Map<String, Object> param = convert(reportDay);
+		Map<String, Object> param = orderConvert(reportDay);
 		return this.reportDayService.orderList(param);
 	}
 
@@ -146,6 +186,27 @@ public class ReportDayController {
 	public List<ResAveragePrice> averagePriceList(@RequestBody ReqReportDay reportDay) {
 		Map<String, Object> param = convert(reportDay);
 		return this.reportDayService.averagePriceList(param);
+	}
+	
+	@RequestMapping(value = "/v2.0/cost", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResCost> costList(@RequestBody ReqReportDay reportDay) {
+		Map<String, Object> param = convert(reportDay);
+		return this.reportDayService.costList(param);
+	}
+	
+	@RequestMapping(value = "/v2.0/income", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResIncome> incomeList(@RequestBody ReqReportDay reportDay) {
+		Map<String, Object> param = convert(reportDay);
+		return this.reportDayService.incomeList(param);
+	}
+	
+	@RequestMapping(value = "/v2.0/pull_cost", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPullCost> pullCostList(@RequestBody ReqReportDay reportDay) {
+		Map<String, Object> param = convert(reportDay);
+		return this.reportDayService.pullCostList(param);
 	}
 
 }

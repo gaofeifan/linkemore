@@ -13,7 +13,7 @@ import cn.linkmore.third.response.ResLocate;
 @FeignClient(value = "third-party-server", path = "/feign/locate", fallback=LocateClientHystrix.class,configuration = FeignConfiguration.class)
 public interface LocateClient {
 
-	@RequestMapping(method=RequestMethod.GET)
+	@RequestMapping(value = "/v2.0", method=RequestMethod.GET)
 	@ResponseBody
 	ResLocate get(@RequestParam(value="longitude",required=true)String longitude,@RequestParam(value="latitude",required=true)String latitude) ;
 }

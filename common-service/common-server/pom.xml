@@ -54,6 +54,11 @@
 	        <groupId>org.springframework.boot</groupId>  
 	        <artifactId>spring-boot-starter-aop</artifactId>  
    		 </dependency>  
+   		 <dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>server-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
         <dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>mysql-service</artifactId>

@@ -15,7 +15,6 @@ import com.alipay.api.AlipayApiException;
 
 import cn.linkmore.third.pay.alipay.Alipay;
 import cn.linkmore.third.pay.alipay.OrderTrade;
-import cn.linkmore.third.pay.wxpay.PaySign;
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.service.AppAlipayService;
 import cn.linkmore.util.JsonUtil;

@@ -10,10 +10,13 @@ import cn.linkmore.report.client.ReportDayClient;
 import cn.linkmore.report.request.ReqReportDay;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
+import cn.linkmore.report.response.ResCost;
+import cn.linkmore.report.response.ResIncome;
 import cn.linkmore.report.response.ResNewUser;
 import cn.linkmore.report.response.ResOrder;
 import cn.linkmore.report.response.ResPre;
 import cn.linkmore.report.response.ResPull;
+import cn.linkmore.report.response.ResPullCost;
 import cn.linkmore.report.response.ResRunTime;
 import cn.linkmore.report.response.ResStallAverage;
 import cn.linkmore.report.response.ResUserNum;
@@ -93,5 +96,20 @@ public class ReportDayServiceImpl implements ReportDayService {
 	@Override
 	public List<ResAveragePrice> averagePriceList(ReqReportDay reportDay) {
 		return reportClusterClient.averagePriceList(reportDay);
+	}
+
+	@Override
+	public List<ResCost> costList(ReqReportDay reportDay) {
+		return reportClusterClient.costList(reportDay);
+	}
+
+	@Override
+	public List<ResIncome> incomeList(ReqReportDay reportDay) {
+		return reportClusterClient.incomeList(reportDay);
+	}
+
+	@Override
+	public List<ResPullCost> pullCostList(ReqReportDay reportDay) {
+		return reportClusterClient.pullCostList(reportDay);
 	}
 }

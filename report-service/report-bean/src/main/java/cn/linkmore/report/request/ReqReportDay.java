@@ -1,10 +1,11 @@
 package cn.linkmore.report.request;
 
 public class ReqReportDay {
-	private Long cityId;
-	private String preIds;
-	private String startTime;
-	private String endTime;
+	private Long cityId;//城市id
+	private String preIds;//车区id
+	private String startTime;//开始时间
+	private String endTime;//结束时间
+	private String statuIds;//订单状态
 	public Long getCityId() {
 		return cityId;
 	}
@@ -29,5 +30,11 @@ public class ReqReportDay {
 	}
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
+	}
+	public String getStatuIds() {
+		return statuIds;
+	}
+	public void setStatuIds(String statuIds) {
+		this.statuIds = statuIds;
 	}
 }

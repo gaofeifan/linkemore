@@ -9,15 +9,18 @@ import cn.linkmore.report.client.ReportDayClient;
 import cn.linkmore.report.request.ReqReportDay;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
+import cn.linkmore.report.response.ResCost;
+import cn.linkmore.report.response.ResIncome;
 import cn.linkmore.report.response.ResNewUser;
 import cn.linkmore.report.response.ResOrder;
 import cn.linkmore.report.response.ResPre;
 import cn.linkmore.report.response.ResPull;
+import cn.linkmore.report.response.ResPullCost;
 import cn.linkmore.report.response.ResRunTime;
 import cn.linkmore.report.response.ResStallAverage;
 import cn.linkmore.report.response.ResUserNum;
 /**
- * 远程调用实现 - 锁操作日志信息
+ * 远程调用实现 - 日报信息
  * @author jiaohanbin
  * @version 2.0
  *
@@ -101,6 +104,24 @@ public class ReportDayClientHystrix implements ReportDayClient {
 	@Override
 	public List<ResAveragePrice> averagePriceList(ReqReportDay reportDay) {
 		log.info("report-server averagePriceList () hystrix");
+		return null;
+	}
+
+	@Override
+	public List<ResCost> costList(ReqReportDay reportDay) {
+		log.info("report-server costList () hystrix");
+		return null;
+	}
+
+	@Override
+	public List<ResIncome> incomeList(ReqReportDay reportDay) {
+		log.info("report-server incomeList () hystrix");
+		return null;
+	}
+
+	@Override
+	public List<ResPullCost> pullCostList(ReqReportDay reportDay) {
+		log.info("report-server pullCostList () hystrix");
 		return null;
 	}
 }

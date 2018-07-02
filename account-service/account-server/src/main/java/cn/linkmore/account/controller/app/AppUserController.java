@@ -48,16 +48,8 @@ public class AppUserController {
 	@RequestMapping(value = "/v2.0/mobile", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<?> bindMobile(@RequestBody @Validated ReqMobileBind rmb, HttpServletRequest request){
-		ResponseEntity<?> response = null; 
-		try {
-			ResUser user = this.userService.bindMobile(rmb,request);
-			return ResponseEntity.success(user, request);
-		}catch(BusinessException e){ 
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		}catch(Exception e){ 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
+		ResUser user = this.userService.bindMobile(rmb,request);
+		return ResponseEntity.success(user, request);
 	}
 	
 	@ApiOperation(value="发短信验证码",notes="手机号不能为空", consumes = "application/json")
@@ -65,19 +57,9 @@ public class AppUserController {
 	@ResponseBody
 	public ResponseEntity<?> sms(@NotBlank(message="手机号不能为空") 
 	@Pattern(regexp="^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(16[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(19[0-9]{1}))+\\d{8})$", message="无效手机号") 
-	@RequestParam(value="mobile" ,required=true)  String mobile,HttpServletRequest request){
-		ResponseEntity<?> response = null;  
-		try {
-			this.userService.send(mobile,request);
-			response = ResponseEntity.success(null, request);
-		}catch(BusinessException e){
-			e.printStackTrace();
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		}catch(Exception e){
-			e.printStackTrace();
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response; 
+	@RequestParam(value="mobile" ,required=true)  String mobile,HttpServletRequest request){ 
+		this.userService.send(mobile,request);
+		return ResponseEntity.success(null, request); 
 	}
 	
 

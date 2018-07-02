@@ -14,7 +14,14 @@ public class ResStallAverage {
 	private int dayTotal;//新增数量
 	private int stallTotal;//车位总数
 	private Double average;//单车位日均
+	private int dayNum;//当月天数-月报表中使用
 	
+	public int getDayNum() {
+		return dayNum;
+	}
+	public void setDayNum(int dayNum) {
+		this.dayNum = dayNum;
+	}
 	public Long getCityId() {
 		return cityId;
 	}

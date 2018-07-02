@@ -21,7 +21,7 @@ public class ResUser implements Serializable {
 	@ApiModelProperty(value = "账号名称")
 	private String realname;
 	@ApiModelProperty(value = "性别")
-	private Short sex;
+	private Integer sex;
 	@ApiModelProperty(value = "极光别名")
 	private String alias;
 	@ApiModelProperty(value = "极光标签")
@@ -50,10 +50,10 @@ public class ResUser implements Serializable {
 	public void setRealname(String realname) {
 		this.realname = realname;
 	}
-	public Short getSex() {
+	public Integer getSex() {
 		return sex;
 	}
-	public void setSex(Short sex) {
+	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
 	public String getAlias() {

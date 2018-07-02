@@ -52,7 +52,7 @@
    <sql id="Res_Column_List">
     id, face_amount, 
     valid_time, status, create_time, enterprise_id, item_id, 
-    template_id, condition_id, type, discount, 
+    template_id, condition_id, type, discount, user_id,
     condition_amount
   </sql>
   

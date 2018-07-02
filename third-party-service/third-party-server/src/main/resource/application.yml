@@ -114,7 +114,7 @@ sms:
   sign-name: 凌猫停车
     
 #小程序配置
-mini-program:  
+wechat-mini:  
   app-id: wx62db01dddd56972f
   app-secret: 78cd1e2349a7133b0b9ef8c5ad2a2eb0  
   mchid: 1463909002

@@ -34,7 +34,7 @@ public class Unionpay {
 		map.put("backUrl", PayConstants.getOrderAsyncApplePayUrl());
 		map.put("orderId", rup.getNumber());
 		map.put("currencyCode", "156");
-		map.put("txnAmt",new Long(rup.getAmount().longValue()*100).toString());
+		map.put("txnAmt",new Long(new Double(rup.getAmount().doubleValue()*100).longValue()).toString());
 		map.put("txnTime", sdf.format(rup.getTimestramp()));
 		map.put("payTimeout", sdf.format(new Date(rup.getTimestramp()+1000l*60*60)));
 		Map<String, String> reqData = AcpService.sign(map,"UTF-8");

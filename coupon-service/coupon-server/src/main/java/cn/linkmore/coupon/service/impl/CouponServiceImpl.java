@@ -456,10 +456,11 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public List<cn.linkmore.coupon.controller.app.response.ResCoupon> paymentList(HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request));  
-		ResUserOrder ruo = this.orderClient.last(cu.getId());
-		if(ruo==null||ruo.getStatus().intValue()!=OrderStatus.UNPAID.value||ruo.getStatus().intValue()!=OrderStatus.SUSPENDED.value) {
+		ResUserOrder ruo = this.orderClient.last(cu.getId()); 
+		if(ruo==null||!(ruo.getStatus().intValue()!=OrderStatus.UNPAID.value||ruo.getStatus().intValue()!=OrderStatus.SUSPENDED.value)) {
 			return null;
 		}
+		
 		List<cn.linkmore.coupon.response.ResCoupon> list = this.userOrderEnableList(cu.getId(), ruo.getId());
 		List<cn.linkmore.coupon.controller.app.response.ResCoupon> rcs = new ArrayList<cn.linkmore.coupon.controller.app.response.ResCoupon>();
 		cn.linkmore.coupon.controller.app.response.ResCoupon r = null;
