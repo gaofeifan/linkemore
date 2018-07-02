@@ -35,4 +35,10 @@ public class SendRecordController {
 	public int saveBusiness(@RequestBody ReqSendRecord record) {
 		return	this.sendRecordService.saveBusiness(record);
 	}
+	
+	@RequestMapping(value = "/v2.0/timingForSend", method = RequestMethod.GET)
+	@ResponseBody
+	public void timingForSend() {
+		this.sendRecordService.timingForSend();
+	}
 }

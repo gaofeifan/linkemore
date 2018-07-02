@@ -26,10 +26,13 @@ import com.alibaba.fastjson.JSONObject;
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResVechicleMark;
+import cn.linkmore.bean.common.Constants.ClientSource;
+import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.OrderFailureReason;
 import cn.linkmore.bean.common.Constants.OrderPayType;
 import cn.linkmore.bean.common.Constants.OrderStatus;
+import cn.linkmore.bean.common.Constants.OrderStatusHistory;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallAssignStatus;
@@ -38,6 +41,9 @@ import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.bean.view.ViewFilter;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.order.controller.app.request.ReqBooking;
@@ -54,6 +60,8 @@ import cn.linkmore.order.dao.master.StallAssignMasterMapper;
 import cn.linkmore.order.entity.Booking;
 import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.StallAssign;
+import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.PrefectureClient;
@@ -66,6 +74,7 @@ import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.request.ReqPush;
+import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 /**
@@ -112,6 +121,8 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	@Autowired
 	private PushClient pushClient;
+	@Autowired
+	private WebsocketClient websocketClient;
 	
 	@Autowired
 	private UserClient userClient;
@@ -613,4 +624,36 @@ public class OrdersServiceImpl implements OrdersService {
 			throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
 		} 
 	}
+
+	@Override
+	public ViewPage findPage(ViewPageable pageable) {
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		List<ViewFilter> filters = pageable.getFilters();
+		if(StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if(filters!=null&&filters.size()>0) {
+			for(ViewFilter filter:filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.ordersClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<ResOrder> list = this.ordersClusterMapper.findPage(param);
+		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+
+	@Override
+	public List<ResOrderExcel> exportList(ReqOrderExcel bean) {
+		return this.ordersClusterMapper.exportList(bean);
+	}
+	
+	
+	
+	
 }
