@@ -214,7 +214,7 @@ public class OrdersServiceImpl implements OrdersService {
 					map.put("plate", vm);
 					map.put("preId", rb.getPrefectureId().toString());
 					String val = JSON.toJSON(map).toString(); 
-					this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL+val, val, ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+					this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key+val, val, ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
 					this.redisService.remove(key, val);
 					assign = true;
 					log.info("use the admin assign stall:{},plate:{}",lockSn,vehicleMark.getVehMark());
@@ -227,7 +227,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if("".equals(lockSn)) {  
 				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + rb.getPrefectureId());
 				if(sn!=null) {
-					this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL+sn.toString(), sn.toString(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+					this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key+sn.toString(), sn.toString(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
 					lockSn = sn.toString();
 				} 
 			}

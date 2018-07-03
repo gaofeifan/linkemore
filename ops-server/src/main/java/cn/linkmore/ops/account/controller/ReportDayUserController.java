@@ -262,8 +262,11 @@ public class ReportDayUserController {
 					hzTotalAverage = new BigDecimal((float) hzTotal / hzStall).setScale(1, BigDecimal.ROUND_HALF_UP)
 							.doubleValue();
 				}
-				totalAverage = new BigDecimal((float) (bjTotal + hzTotal) / (bjStall + hzStall))
-						.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+				if(bjStall + hzStall !=0) {
+					totalAverage = new BigDecimal((float) (bjTotal + hzTotal) / (bjStall + hzStall))
+							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+				
 				map.put("bjTotal", bjTotalAverage);
 				map.put("hzTotal", hzTotalAverage);
 				map.put("total", totalAverage);

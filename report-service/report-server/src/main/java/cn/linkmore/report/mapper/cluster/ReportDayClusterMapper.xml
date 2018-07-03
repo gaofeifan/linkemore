@@ -661,14 +661,14 @@
 	    c.city_name,
 		pre.id pre_id,
 		pre. NAME pre_name,
-	    ROUND((9000/30),0) as cost,
+	    ROUND((pre.month_rent/30),0) as cost,
 		DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
 	  sum(o.total_amount) as total_amount,
 	  sum(o.actual_amount) as actual_amount,
 	  ROUND(sum(o.actual_amount)/sum(o.total_amount),2) as cash_deal_rate,
-	  ROUND(sum(o.total_amount)/(9000/30),2) as deal_cost_rate,
-	  ROUND(sum(o.actual_amount)/(9000/30),2) as cash_cost_rate,
-	  ROUND((9000/30) - sum(o.actual_amount),0) as fee
+	  ROUND(sum(o.total_amount)/(pre.month_rent/30),2) as deal_cost_rate,
+	  ROUND(sum(o.actual_amount)/(pre.month_rent/30),2) as cash_cost_rate,
+	  ROUND((pre.month_rent/30) - sum(o.actual_amount),0) as fee
 	FROM
 		o_orders o
 	LEFT JOIN v_prefecture pre ON o.pre_id = pre.id
@@ -701,7 +701,7 @@
 	    c.city_name,
 	    pre.id as pre_id,
 		pre.NAME as pre_name,
-		9000 AS month_rent,
+		pre.month_rent,
 		count(*) AS stall_total
 	FROM
 		v_prefecture pre
@@ -718,7 +718,8 @@
 	  c.id,
 	  c.city_name,
 	  pre.id,
-	  pre.NAME
+	  pre.NAME,
+	  pre.month_rent
   </select>
   
   <!-- 拉新成本 -->
@@ -738,12 +739,9 @@
 				c.id,
 				c.city_name,
 				pre.id pre_id,
-				pre. NAME pre_name,
+				pre.NAME pre_name,
 				DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
-				ROUND(
-					(9000 / 30) - sum(o.actual_amount),
-					0
-				) AS fee
+				ROUND((pre.month_rent / 30) - sum(o.actual_amount),0) AS fee
 			FROM
 				o_orders o
 			LEFT JOIN v_prefecture pre ON o.pre_id = pre.id
