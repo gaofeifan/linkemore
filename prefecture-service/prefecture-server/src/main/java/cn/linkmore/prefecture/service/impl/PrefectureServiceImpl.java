@@ -484,7 +484,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Override
 	public List<ResPrefectureDetail> findList(Map<String, Object> param) {
-		return this.findList(param);
+		return this.prefectureClusterMapper.findList(param);
 	}
 	
 	
