@@ -2,6 +2,7 @@ package cn.linkmore.prefecture.controller.feign;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.fee.OrderFee;
+import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStrategy;
+import cn.linkmore.prefecture.request.ReqStrategyBase;
+import cn.linkmore.prefecture.response.ResFeeStrategy;
+import cn.linkmore.prefecture.response.ResStrategyBase;
 import cn.linkmore.prefecture.service.StrategyBaseService;
 import cn.linkmore.util.JsonUtil;
 
@@ -52,4 +60,89 @@ public class FeignStrategyBaseController {
 		} 
 		return costMap;
 	}
+	
+	/**
+	 * 新增
+	 * @param reqStrategyBase
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
+	@ResponseBody
+	public int save(@RequestBody ReqStrategyBase reqStrategyBase) {
+		return this.strategyBaseService.save(reqStrategyBase);
+	}
+	/**
+	 * 更新
+	 * @param reqStrategyBase
+	 * @return
+	 */
+	
+	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
+	@ResponseBody
+	public int update(@RequestBody ReqStrategyBase reqStrategyBase) {
+		return this.strategyBaseService.update(reqStrategyBase);
+	}
+	
+	/**
+	 * 删除
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public int delete(@RequestBody List<Long> ids) {
+		return this.strategyBaseService.delete(ids);
+	}
+	
+	/**
+	 * 校验
+	 * @param reqCheck
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean check(@RequestBody ReqCheck reqCheck) {
+		Integer check = this.strategyBaseService.check(reqCheck);
+		if(check > 0) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 列表
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage list(@RequestBody ViewPageable pageable) {
+		return this.strategyBaseService.findPage(pageable);
+	}
+
+	/**
+	 * 列表
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/find_list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStrategyBase> findList(){
+		return this.strategyBaseService.findList(null);
+	}
+	
+	/**
+	 * 计费策略下拉列表
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/select_list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResFeeStrategy> findSelectList(){
+		Map<String, Object> param = new HashMap<>();
+		param.put("status", 1);
+		return this.strategyBaseService.findSelectList(param);
+	}
+	
+	
 }
