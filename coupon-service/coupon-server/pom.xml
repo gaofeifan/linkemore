@@ -93,6 +93,11 @@
 			<artifactId>common-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>enterprise-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>cn.linkmore</groupId>
