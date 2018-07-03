@@ -2,19 +2,19 @@ package cn.linkmore.coupon.client;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.client.hystrix.TemplateClientHystrix;
 import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqTemplate;
+import cn.linkmore.coupon.response.ResQrc;
 import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.feign.FeignConfiguration;
 /**
@@ -69,7 +69,7 @@ public interface TemplateClient {
 	 */
 	@RequestMapping(value = "/v2.0/download", method = RequestMethod.GET)
 	@ResponseBody
-	public void download(@RequestParam("id") Long id, HttpServletResponse response);
+	public ResQrc download(@RequestParam("id") Long id);
 
 	
 }

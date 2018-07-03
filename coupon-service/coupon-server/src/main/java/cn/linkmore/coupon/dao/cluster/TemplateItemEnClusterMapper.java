@@ -3,6 +3,8 @@ package cn.linkmore.coupon.dao.cluster;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import cn.linkmore.coupon.response.ResTemplateItem;
 
 @Mapper
@@ -36,5 +38,5 @@ public interface TemplateItemEnClusterMapper {
 	 */
 	List<ResTemplateItem> selectBuEnterpriseId(Long id);
 
-	List<ResTemplateItem> selectByTemplateIds(List<String> ids);
+	List<ResTemplateItem> selectByTemplateIds(@Param("ids") List<String> ids);
 }

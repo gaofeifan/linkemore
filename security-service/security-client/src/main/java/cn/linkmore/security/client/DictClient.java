@@ -36,7 +36,6 @@ public interface DictClient {
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids);
 	
-	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean check(@RequestBody ReqCheck reqCheck);
@@ -52,5 +51,6 @@ public interface DictClient {
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.GET)
 	@ResponseBody
 	public Tree tree();
+
 	
 }

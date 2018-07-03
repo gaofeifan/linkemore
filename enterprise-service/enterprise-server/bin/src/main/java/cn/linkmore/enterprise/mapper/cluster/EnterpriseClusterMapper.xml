@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResEnterprise">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="industry" jdbcType="BIGINT" property="industry" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="region" jdbcType="BIGINT" property="region" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="tellphone" jdbcType="VARCHAR" property="tellphone" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, account, name, industry, create_time, update_time, region, address, tellphone, 
+    code
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_enterprise
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectRegionByIndustry"  resultMap="BaseResultMap">
+  	 select en.region,bd.name address from t_biz_enterprise en INNER JOIN t_base_dict bd on en.region = bd.id
+	 where industry = #{industry} GROUP BY region
+  </select>
+
+  <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_enterprise
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="account!=null">  
+    and account = #{account,jdbcType=VARCHAR}
+    </if> 
+    <if test="industry!=null">  
+    and industry = #{industry,jdbcType=VARCHAR}
+    </if> 
+    <if test="region!=null">  
+    and region = #{region,jdbcType=VARCHAR}
+    </if>  
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+  </select>
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_enterprise
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="account!=null">  
+    and account = #{account,jdbcType=VARCHAR}
+    </if> 
+    <if test="industry!=null">  
+    and industry = #{industry,jdbcType=VARCHAR}
+    </if> 
+    <if test="region!=null">  
+    and region = #{region,jdbcType=VARCHAR}
+    </if>  
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_biz_enterprise
+    where 1= 1
+    <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="account!=null">  
+    and account = #{account,jdbcType=VARCHAR}
+    </if> 
+    <if test="industry!=null">  
+    and industry = #{industry,jdbcType=VARCHAR}
+    </if> 
+    <if test="region!=null">  
+    and region = #{region,jdbcType=VARCHAR}
+    </if>  
+  </select>
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_biz_enterprise
+    where 
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
+  
+   <select id="findName" parameterType="java.util.HashMap" resultMap="BaseResultMap" >
+    select * 
+    from t_biz_enterprise
+    where 
+    ${property} = #{value}  
+  </select>
+  
+   <select id="findAll"  resultMap="BaseResultMap" >
+    select *
+    from t_biz_enterprise
+  </select>
+  
+   <select id="findByType"  resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select *
+    from t_biz_enterprise
+    where industry = #{type}
+    and region =#{region}
+  </select>
+  
+  <select id="findByRegion"  resultType="java.lang.Long"  parameterType="java.util.HashMap" >
+	SELECT
+	r.user_id
+	FROM
+		t_coupon_qrc_receive r
+	LEFT JOIN t_user p ON r.enterprise_id = p.id
+	WHERE
+		1 = 1
+	AND r.user_id is not null
+	<if test="regionId !=null">
+	AND p.region =#{regionId}
+	</if>	
+	<if test="enterpriseId !=null">
+	AND r.enterprise_id =#{enterpriseId}
+	</if>	
+  </select>
+  
+  
+</mapper>

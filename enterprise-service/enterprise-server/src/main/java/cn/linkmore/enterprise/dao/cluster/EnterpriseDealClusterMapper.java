@@ -3,6 +3,8 @@ package cn.linkmore.enterprise.dao.cluster;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import cn.linkmore.enterprise.response.ResEnterpriseDeal;
 /**
  * 企业合同
@@ -21,9 +23,9 @@ public interface EnterpriseDealClusterMapper {
 
 	List<ResEnterpriseDeal> findPage(Map<String, Object> param);
 	
-	List<ResEnterpriseDeal> listByEnterpriseId(Integer enterpriseId, Integer isCreate);
+	List<ResEnterpriseDeal> listByEnterpriseId(@Param("enterpriseId") Integer enterpriseId, @Param("isCreate") Integer isCreate);
 
-	ResEnterpriseDeal selectByDealNumber(String number);
+	ResEnterpriseDeal selectByDealNumber(@Param("number") String number);
 	
 	List<ResEnterpriseDeal> selectByDealNumbers(List<String> dealNumberList);
 }

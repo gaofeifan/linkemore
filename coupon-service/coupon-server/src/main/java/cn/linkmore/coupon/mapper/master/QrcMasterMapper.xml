@@ -23,7 +23,7 @@
     delete from t_coupon_qrc
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.coupon.entity.Qrc">
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.Qrc" useGeneratedKeys="true" keyProperty="id">
     insert into t_coupon_qrc (id, name, operator_id, 
       enterprise_id, combo_id, pack_id, 
       create_time, url, update_time, 

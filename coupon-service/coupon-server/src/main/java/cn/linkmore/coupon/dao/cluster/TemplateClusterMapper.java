@@ -40,5 +40,12 @@ public interface TemplateClusterMapper {
 	 * @return
 	 */
 	List<ResTemplate> findSubjectCouponList();
+	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResTemplate> selectByEnterpriseId(Long entId);
 
 }

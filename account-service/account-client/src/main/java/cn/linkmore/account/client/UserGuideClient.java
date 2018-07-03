@@ -43,7 +43,8 @@ public interface UserGuideClient {
 	public void delete(@RequestBody List<Long> ids);
 	
 	@RequestMapping(value = "/check",method = RequestMethod.POST)
-	public void check(@RequestBody ReqCheck reqCheck);
+	public Boolean check(@RequestBody ReqCheck reqCheck);
+	
 	@RequestMapping(value = "/tree",method = RequestMethod.GET)
 	public Tree findTree();
 	

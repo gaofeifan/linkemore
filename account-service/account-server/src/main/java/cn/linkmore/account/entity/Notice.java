@@ -23,6 +23,8 @@ public class Notice {
     private Date pushTime;
 
     private Long status;
+    
+    private String content;
 
     public Long getId() {
         return id;
@@ -87,4 +89,13 @@ public class Notice {
     public void setStatus(Long status) {
         this.status = status;
     }
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+    
 }

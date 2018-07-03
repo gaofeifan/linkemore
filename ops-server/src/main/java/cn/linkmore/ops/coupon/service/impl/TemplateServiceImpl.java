@@ -28,6 +28,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.client.TemplateClient;
 import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqTemplate;
+import cn.linkmore.coupon.response.ResQrc;
 import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.ops.coupon.service.TemplateService;
@@ -85,7 +86,7 @@ public class TemplateServiceImpl implements TemplateService {
 	}
 
 	@Override
-	public void download(Long id, HttpServletResponse response) {
-		this.templateClient.download(id,response);
+	public ResQrc download(Long id) {
+		return this.templateClient.download(id);
 	}
 }

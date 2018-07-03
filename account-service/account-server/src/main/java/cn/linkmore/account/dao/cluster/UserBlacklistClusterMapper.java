@@ -42,6 +42,6 @@ public interface UserBlacklistClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<UserBlacklist> findList();
+	List<ResUserBlacklist> findList();
 
 }

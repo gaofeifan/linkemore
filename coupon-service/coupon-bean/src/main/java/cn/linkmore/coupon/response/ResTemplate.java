@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import cn.linkmore.coupon.request.ReqTemplateItem;
+
 public class ResTemplate {
-    private Long id;
+	private Long id;
 
     private String name;
 
@@ -374,4 +376,5 @@ public class ResTemplate {
     public void setDeleteStatus(Long deleteStatus) {
         this.deleteStatus = deleteStatus;
     }
+
 }

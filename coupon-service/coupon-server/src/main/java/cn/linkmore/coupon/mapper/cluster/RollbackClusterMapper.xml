@@ -75,7 +75,7 @@
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   
-  <select id="selectByTemplateIds" parameterType="java.util.List" resultMap="BaseResultMap">
+  <select id="findByTemplateIds" parameterType="java.util.List" resultMap="BaseResultMap">
   	select 
     <include refid="Base_Column_List" />
     from t_coupon_rollback 

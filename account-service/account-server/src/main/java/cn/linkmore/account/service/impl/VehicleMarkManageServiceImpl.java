@@ -49,8 +49,12 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	@Transactional
-	public void save(ReqVehicleMark bean) {
-		List<VehicleMarkManage> list = this.findByUserId(bean.getUserId());
+	public void save(cn.linkmore.account.controller.app.request.ReqVehicleMark bean, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		ReqVehicleMark mark = ObjectUtils.copyObject(bean,new ReqVehicleMark());
+		mark.setUserId(user.getId());
+		List<VehicleMarkManage> list = this.findByUserId(user.getId());
 		if(list.size() < 3){
 			//检查车牌号是否已经存在
 			List<String> fieldVlaue = ObjectUtils.findFieldVlaue(list, "vehMark", new String[]{"vehMark"}, new String[] {bean.getVehMark()});
@@ -58,7 +62,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				throw new BusinessException(StatusEnum.ACCOUNT_PLATE_EXISTS);
 			}else{
 				VehicleMarkManage manage = new VehicleMarkManage();
-				manage.setVehUserId(bean.getUserId().toString());
+				manage.setVehUserId(user.getId().toString());
 				manage.setVehMark(bean.getVehMark());
 				manage.setCreateTime(new Date());
 				manage.setUpdateTime(new Date());
@@ -71,40 +75,41 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	@Transactional
-	public void deleteById( ReqVehMarkIdAndUserId v) {
-		List<ResVechicleMark> list = this.findResList(v.getUserId());
+	public void deleteById(Long id, HttpServletRequest request) {
+		List<ResVechicleMark> list = this.findResList(request);
 		for (ResVechicleMark resVechicleMark : list) {
-			if(resVechicleMark.getId().equals(v.getVehMarkId())) {
-				this.vehicleMarkManageMasterMapper.deleteById(v.getVehMarkId());
+			if(resVechicleMark.getId().equals(id)) {
+				this.vehicleMarkManageMasterMapper.deleteById(id);
 				return;
 			}
 		}
 		throw new RuntimeException("该账户下没有此车牌号");
 	}
 
-
+/*
 	@Override
 	public List<ResVechicleMark> selectResList(HttpServletRequest request) {
 		List<ResVechicleMark> resList = this.findResList(getCache(request).getId());
 		return resList;
 	}
-
-	@Override
+*/
+/*	@Override
 	public void save(cn.linkmore.account.controller.app.request.ReqVehicleMark bean, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		ReqVehicleMark mark = ObjectUtils.copyObject(bean,new ReqVehicleMark());
 		mark.setUserId(user.getId());
 		this.save(mark);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public void deleteById(Long id, HttpServletRequest request) {
+		
 		ReqVehMarkIdAndUserId v = new ReqVehMarkIdAndUserId();
 		v.setUserId(getCache(request).getId());
 		v.setVehMarkId(id);
 		this.deleteById(v);
-	}
+	}*/
 	
 	private CacheUser getCache(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
@@ -112,8 +117,8 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	}
 
 	@Override
-	public List<ResVechicleMark> findResList(Long userId) {
-		return this.vehicleMarkManageClusterMapper.findResList(userId);
+	public List<ResVechicleMark> findResList(HttpServletRequest request) {
+		return this.vehicleMarkManageClusterMapper.findResList(getCache(request).getId());
 	}
 
 	@Override

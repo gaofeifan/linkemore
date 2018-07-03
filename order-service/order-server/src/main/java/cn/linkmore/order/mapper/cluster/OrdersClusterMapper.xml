@@ -36,7 +36,29 @@
     <result column="coupon_amount" jdbcType="DECIMAL" property="couponAmount" /> 
     <result column="trade_id" jdbcType="BIGINT" property="tradeId" />
   </resultMap>
-  
+  <resultMap id="ExcelResultMap" type="cn.linkmore.order.response.ResOrderExcel">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="pay_type" jdbcType="INTEGER" property="payType" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="status_time" jdbcType="TIMESTAMP" property="statusTime" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="plate_no" jdbcType="VARCHAR" property="plateNo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="dock_id" jdbcType="VARCHAR" property="dockId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="prefecture_name" jdbcType="VARCHAR" property="prefectureName" />
+    <result column="lock_down_status" property="lockDownStatus" jdbcType="SMALLINT" />
+    <result column="lock_down_time" property="lockDownTime" jdbcType="TIMESTAMP" />
+  </resultMap>
   <resultMap id="ResResultMap" type="cn.linkmore.order.response.ResUserOrder">
     <result column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
@@ -69,7 +91,30 @@
     <result column="coupon_amount" jdbcType="DECIMAL" property="couponAmount" />  
     <result column="trade_id" jdbcType="BIGINT" property="tradeId" />
   </resultMap>
-  
+   <resultMap id="OpsResultMap" type="cn.linkmore.order.response.ResOrderOps">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="pay_type" jdbcType="INTEGER" property="payType" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="status_time" jdbcType="TIMESTAMP" property="statusTime" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="plate_no" jdbcType="VARCHAR" property="plateNo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="dock_id" jdbcType="VARCHAR" property="dockId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="prefecture_name" jdbcType="VARCHAR" property="prefectureName" />
+    <result column="lock_down_status" property="lockDownStatus" jdbcType="SMALLINT" />
+    <result column="lock_down_time" property="lockDownTime" jdbcType="TIMESTAMP" />
+    <result column="status_history" jdbcType="INTEGER" property="statusHistory" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, user_id, pre_id,pre_name, stall_id,stall_name, order_no, pay_type, total_amount, actual_amount, status, 
     begin_time, username, end_time, plate_no, stall_image, stall_local, stall_guidance, 
@@ -129,4 +174,101 @@
     order by create_time desc 
     limit 0,1
   </select>
+  <sql id="Ops_Column_List">
+    o.id, o.user_id, o.pre_id, o.stall_id, o.order_no, o.pay_type, o.total_amount, o.actual_amount, o.status, 
+    o.begin_time, o.username, o.end_time, o.plate_no, o.create_time, o.update_time, o.dock_id,
+    p.name prefecture_name,s.stall_name ,status_time,o.lock_down_status,o.lock_down_time
+  </sql>
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="OpsResultMap">
+    select 
+    <include refid="Ops_Column_List" />
+    from o_orders o left join v_stall s on o.stall_id = s.id left join v_prefecture p on o.pre_id = p.id
+    where 1 = 1 
+    <if test="code!=null">  
+    and o.order_no = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="username!=null">  
+    and o.username = #{username,jdbcType=VARCHAR}
+    </if> 
+    <if test="plateNo!=null">  
+    and o.plate_no = #{plateNo,jdbcType=VARCHAR}
+    </if> 
+    <if test="preId!=null">  
+    and o.pre_id = #{preId,jdbcType=VARCHAR}
+    </if>
+     <if test="stallId!=null">  
+    and o.stall_id = #{stallId,jdbcType=VARCHAR}
+    </if> 
+   	<if test="startTime!=null">  
+    <![CDATA[and o.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and o.create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+    <if test="property==null">  
+     order by o.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from o_orders  o
+    where 1 = 1 
+    <if test="code!=null">  
+    and o.order_no = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="username!=null">  
+    and o.username = #{username,jdbcType=VARCHAR}
+    </if>
+    <if test="plateNo!=null">  
+    and o.plate_no = #{plateNo,jdbcType=VARCHAR}
+    </if> 
+    <if test="preId!=null">  
+    and o.pre_id = #{preId,jdbcType=VARCHAR}
+    </if>
+     <if test="stallId!=null">  
+    and o.stall_id = #{stallId,jdbcType=VARCHAR}
+    </if> 
+   	<if test="startTime!=null">  
+    <![CDATA[and o.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and o.create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+  </select>
+   
+  <select id="exportList" parameterType="cn.linkmore.order.request.ReqOrderExcel" resultMap="ExcelResultMap">
+    select 
+    <include refid="Ops_Column_List" />
+    from o_orders o left join v_stall s on o.stall_id = s.id left join v_prefecture p on o.pre_id = p.id
+    where 1 = 1 
+    <if test="code!=null">  
+    and o.code = #{code,jdbcType=VARCHAR}
+    </if> 
+    <if test="username!=null">  
+    and o.username = #{username,jdbcType=VARCHAR}
+    </if>
+    <if test="plateNo!=null">  
+    and o.plate_no = #{plateNo,jdbcType=VARCHAR}
+    </if> 
+    <if test="preId!=null">  
+    and o.pre_id = #{preId,jdbcType=VARCHAR}
+    </if>
+     <if test="stallId!=null">  
+    and o.stall_id = #{stallId,jdbcType=VARCHAR}
+    </if> 
+   	<if test="startTime!=null">  
+    <![CDATA[and o.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and o.create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+     order by o.create_time desc 
+  </select>
+  
+  
 </mapper>

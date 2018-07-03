@@ -1,5 +1,7 @@
 package cn.linkmore.third.client;
 
+import java.io.InputStream;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,5 +30,6 @@ public interface OssClient {
 	@RequestMapping(value = "/v2.0/init", method = RequestMethod.GET) 
 	@ResponseBody
 	public ResOssConfig initOssConfig();
+
 	
 }

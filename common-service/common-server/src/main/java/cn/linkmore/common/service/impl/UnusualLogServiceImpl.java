@@ -33,7 +33,7 @@ public class UnusualLogServiceImpl implements UnusualLogService {
 	private UnusualLogContentClusterMapper unusualLogContentClusterMapper;
 	
 	@Override
-	public void insert(ReqUnusualLog unusualLog) {
+	public void insert(cn.linkmore.common.controller.app.request.ReqUnusualLog unusualLog) {
 		UnusualLog log = ObjectUtils.copyObject(unusualLog, new UnusualLog());
 		this.unusualLogMasterMapper.insertSelective(log);
 		UnusualLogContent record = new UnusualLogContent();
@@ -42,12 +42,6 @@ public class UnusualLogServiceImpl implements UnusualLogService {
 		this.unusualLogContentMasterMapper.insert(record );
 	}
 
-	@Override
-	public void insert(cn.linkmore.common.controller.app.request.ReqUnusualLog unusualLog) {
-		ReqUnusualLog log = ObjectUtils.copyObject(unusualLog, new ReqUnusualLog());
-		this.insert(log);
-	}
-	
 	
 	
 }

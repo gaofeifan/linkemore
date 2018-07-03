@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +26,7 @@ import cn.linkmore.enterprise.service.EnterpriseDealService;
  *
  */
 @Controller
-@RequestMapping("/admin/biz/enterprise_deal")
+@RequestMapping("/enterprise_deal")
 public class EnterpriseDealController {
 
 	@Autowired
@@ -79,7 +80,27 @@ public class EnterpriseDealController {
 	
 	@RequestMapping(value = "/listByEnterpriseId", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResEnterpriseDeal> listByEnterpriseId(@RequestParam("enterpriseId") Integer enterpriseId,@RequestParam("isCreate") Integer isCreate){ 
+	public List<ResEnterpriseDeal> listByEnterpriseId(@RequestBody Map<String,Object> map){ 
+		Integer enterpriseId = null;
+		Integer isCreate = null;
+		if(map.get("enterpriseId") != null) {
+			enterpriseId = Integer.decode(map.get("enterpriseId").toString());
+		}
+		if(map.get("isCreate") != null) {
+			isCreate = Integer.decode(map.get("isCreate").toString());
+		}
 		return this.contractService.listByEnterpriseId(enterpriseId,isCreate); 
 	} 
+	
+	@RequestMapping(value = "/listByEnterpriseId/{number}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResEnterpriseDeal selectByDealNumber(@PathVariable("number")String number) {
+		return this.contractService.selectByDealNumber(number);
+	}
+	
+	@RequestMapping(value = "/create-status", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateCreateStatus(@RequestBody Map<String, Object> map) {
+		this.contractService.updateCreateStatus(map);
+	}
 }

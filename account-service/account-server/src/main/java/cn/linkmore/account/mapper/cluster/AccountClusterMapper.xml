@@ -17,6 +17,22 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="acc_type" jdbcType="INTEGER" property="accType" />
   </resultMap>
+   <resultMap id="OpsResultMap" type="cn.linkmore.account.response.ResAccount">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="usable_amount" jdbcType="DECIMAL" property="usableAmount" />
+    <result column="frozen_amount" jdbcType="DECIMAL" property="frozenAmount" />
+    <result column="recharge_amount" jdbcType="DECIMAL" property="rechargeAmount" />
+    <result column="rechage_payment_amount" jdbcType="DECIMAL" property="rechagePaymentAmount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+    <result column="order_payment_amount" jdbcType="DECIMAL" property="orderPaymentAmount" />
+    <result column="gift_amount" property="giftAmount" jdbcType="DECIMAL" />
+    <result column="gift_total_amount" property="giftTotalAmount" jdbcType="DECIMAL" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="acc_type" property="accType" jdbcType="INTEGER" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, amount, usable_amount, frozen_amount, recharge_amount, rechage_payment_amount, 
     status, order_amount, order_payment_amount, gift_amount, gift_total_amount, create_time, 
@@ -27,5 +43,57 @@
     <include refid="Base_Column_List" />
     from t_acc_account
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_acc_account a inner join t_user u on a.id = u.id
+    where 1 = 1
+    <if test="id!=null">  
+    and a.id = #{id,jdbcType=VARCHAR}
+    </if> 
+    <if test="nickname!=null">  
+    and u.nickname like #{nickname,jdbcType=VARCHAR}
+    </if>  
+    <if test="mobile!=null">  
+    and u.mobile = #{mobile,jdbcType=VARCHAR}
+    </if>     
+   	<if test="startTime!=null">  
+    <![CDATA[and a.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and a.create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+  </select>
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="OpsResultMap">
+    select 
+    a.id,u.mobile,u.nickname, a.amount, a.usable_amount, a.frozen_amount, a.recharge_amount, a.rechage_payment_amount, 
+    a.status, a.order_amount, a.order_payment_amount,a.gift_amount, a.gift_total_amount, a.create_time, a.update_time, a.acc_type 
+    from t_acc_account a inner join t_user u on a.id = u.id
+    where 1 = 1
+    <if test="id!=null">  
+    and a.id = #{id,jdbcType=VARCHAR}
+    </if> 
+    <if test="nickname!=null">  
+    and u.nickname like #{nickname,jdbcType=VARCHAR}
+    </if>  
+    <if test="mobile!=null">  
+    and u.mobile = #{mobile,jdbcType=VARCHAR}
+    </if>     
+   	<if test="startTime!=null">  
+    <![CDATA[and a.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and a.create_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 </mapper>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.linkmore.common.controller.app.response.ResDonwLockError;
 import cn.linkmore.common.request.ReqBaseDict;
+import cn.linkmore.common.request.ReqCheck;
 import cn.linkmore.common.response.ResBaseDict;
 
 /**
@@ -55,6 +56,5 @@ public interface BaseDictService {
 	 * @Version  v2.0
 	 */
 	List<ResDonwLockError> selectLockDownErrorCause();
-
 
 }

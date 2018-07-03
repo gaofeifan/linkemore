@@ -28,4 +28,13 @@ public interface NoticeReadClusterMapper {
 	 */
 	NoticeRead findNotReadByNid(Map<String, Object> map);
 
+	/**
+	 * @Description  查询未读取的消息
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer findNotReadNotice();
+
+
+
 }

@@ -99,18 +99,20 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public ResNotice read(ReqNotice reqNotice) {
+	public ResNotice read(Long id, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
 		String content = "";
         Map<String,Object> map = new HashMap<>();
-        map.put("nid",reqNotice.getNid());
-        map.put("uid",reqNotice.getUserId());
+        map.put("nid",id);
+        map.put("uid",ru.getId());
         NoticeRead notReadByNid = clusterMapper.findNotReadByNid(map);
         if(null != notReadByNid ){
-            Notice notice = noticeClusterMapper.findById(reqNotice.getNid());
+            Notice notice = noticeClusterMapper.findById(id);
             if(notice.getType() ==1){
             	content = notice.getUrl();
             }else if(notice.getType() ==0){
-            	content = contentClusterMapper.findById(reqNotice.getNid()).getContent();
+            	content = contentClusterMapper.findById(id).getContent();
 
             }else {
             	content = "open couponList";
@@ -122,24 +124,24 @@ public class NoticeServiceImpl implements NoticeService {
         NoticeRead noticeRead = new NoticeRead();
         noticeRead.setDeleteStatus(0l);
         noticeRead.setCreateTime(new Date());
-        noticeRead.setUserId(reqNotice.getUserId());
-        noticeRead.setNoticeId(reqNotice.getNid());
+        noticeRead.setUserId(ru.getId());
+        noticeRead.setNoticeId(id);
         noticeRead.setUpdateTime(new Date());
         noticeRead.setReadStatus(NOTICE_OPER_READ);
         readMasterMapper.save(noticeRead);
-        Notice notice = noticeClusterMapper.findById(reqNotice.getNid());
+        Notice notice = noticeClusterMapper.findById(id);
 
         if(notice.getType() ==1){
         	content = notice.getUrl();
         }else if(notice.getType() ==0){
-        	content = contentClusterMapper.findById(reqNotice.getNid()).getContent();
+        	content = contentClusterMapper.findById(id).getContent();
 
         }else {
         	content = "open couponList";
         }
         }
         
-        int i = this.noticeClusterMapper.findNotReadCount(reqNotice.getUserId());
+        int i = this.noticeClusterMapper.findNotReadCount(ru.getId());
         ResNotice noticeResponseBean = new ResNotice();
         noticeResponseBean.setContent(content);
         noticeResponseBean.setCount((long)i);
@@ -148,7 +150,12 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public void delete(ReqNotice notice) {
+	public void delete(Long nid, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		ReqNotice notice = new ReqNotice();
+		notice.setNid(nid);
+		notice.setUserId(ru.getId());
 	  NoticeRead noticeRead = this.noticeClusterMapper.findNoticeReadByNid(notice);
 		if (null != noticeRead) {
 			noticeRead.setUpdateTime(new Date());
@@ -165,7 +172,7 @@ public class NoticeServiceImpl implements NoticeService {
 	          readMasterMapper.save(noticeRead);
 		}
 	}
-
+/*
 	@Override
 	public ResNotice read(Long id, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
@@ -175,8 +182,8 @@ public class NoticeServiceImpl implements NoticeService {
 		no.setUserId(ru.getId());
 		return this.read( no);
 	}
-
-	@Override
+*/
+	/*@Override
 	public void delete(Long nid, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
@@ -184,7 +191,7 @@ public class NoticeServiceImpl implements NoticeService {
 		notice.setNid(nid);
 		notice.setUserId(ru.getId());
 		this.delete(notice );
-	}
+	}*/
 
 	@Override
 	public ViewPage selectList(ViewPageable pageable) {

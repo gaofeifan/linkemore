@@ -48,7 +48,8 @@ public class EnterpriseUserServiceImpl implements EnterpriseUserService {
 	private VehicleMarkClient vehicleMarkClient;
 
 	@Override
-	public int save(EnterpriseUser enterpriseUser) {
+	public int save(ReqEnterpriseUser reqEnterpriseUser) {
+		EnterpriseUser enterpriseUser = ObjectUtils.copyObject(reqEnterpriseUser, new EnterpriseUser());
 		Map<String, Object> param = null;
 		Date currentTime = new Date();
 		String mobile = enterpriseUser.getMobile();
@@ -179,8 +180,8 @@ public class EnterpriseUserServiceImpl implements EnterpriseUserService {
 	}
 
 	@Override
-	public void saveAll(List<EnterpriseUser> all) {
-		for (EnterpriseUser enterpriseUser : all) {
+	public void saveAll(List<ReqEnterpriseUser> all) {
+		for (ReqEnterpriseUser enterpriseUser : all) {
 			this.save(enterpriseUser);
 		}
 	}

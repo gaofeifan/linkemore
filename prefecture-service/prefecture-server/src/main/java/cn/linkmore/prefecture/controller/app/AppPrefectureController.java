@@ -51,7 +51,7 @@ public class AppPrefectureController {
 	} 
  
 	
-	@ApiOperation(value = "车区计费详情", notes = "根据车区ID车区计费策略", consumes = "application/json")
+	@ApiOperation(value = "车区计费详情", notes = "根据车区ID查看车区计费策略详情", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/strategy", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<ResPrefectureStrategy> findStrategyById(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {

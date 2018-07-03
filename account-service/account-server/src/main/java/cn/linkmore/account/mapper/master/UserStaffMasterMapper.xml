@@ -15,13 +15,27 @@
     delete from t_user_staff
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.linkmore.account.entity.UserStaff">
+  <insert id="save" parameterType="cn.linkmore.account.entity.UserStaff">
+    insert into t_user_staff (id, username, realname, 
+      status, create_time)
+    values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
+      #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="saveReq" parameterType="cn.linkmore.account.request.ReqUserStaff">
     insert into t_user_staff (id, username, realname, 
       status, create_time)
     values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
       #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <update id="update" parameterType="cn.linkmore.account.entity.UserStaff">
+    update t_user_staff
+    set username = #{username,jdbcType=VARCHAR},
+      realname = #{realname,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateReq" parameterType="cn.linkmore.account.request.ReqUserStaff">
     update t_user_staff
     set username = #{username,jdbcType=VARCHAR},
       realname = #{realname,jdbcType=VARCHAR},

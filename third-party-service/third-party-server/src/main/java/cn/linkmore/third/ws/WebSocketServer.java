@@ -13,14 +13,11 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
-import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
-import cn.linkmore.util.JsonUtil;  
+import cn.linkmore.util.SpringUtil;  
 
 /**
  * Websocket
@@ -28,12 +25,9 @@ import cn.linkmore.util.JsonUtil;
  * @version 2.0
  *
  */
-@ServerEndpoint(value = "/ws/{token}")
+@ServerEndpoint(value = "/ws/{token}") 
 @Component
-public class WebSocketServer {
-	
-	@Autowired
-	private RedisService redisService;
+public class WebSocketServer { 
 	
 	private String token;
 	
@@ -45,11 +39,36 @@ public class WebSocketServer {
     
     private Session session;
  
+    class PushThread extends Thread{
+    	private WebSocketServer server;
+    	public PushThread(WebSocketServer server) {
+    		this.server = server;
+    	}
+    	
+    	public void run() {
+    		try {
+    			int time = 0;
+    			while(time++<10) {
+    				this.server.sendMessage("Hello Kitty");
+    				try {
+						Thread.sleep(1000l*30);
+					} catch (InterruptedException e) { 
+						e.printStackTrace();
+					}
+    			}
+				
+			} catch (IOException e) { 
+				e.printStackTrace();
+			}
+    	}
+    }
     
     @OnOpen
     public void onOpen(@PathParam("token") String token,Session session) {
+    	RedisService redisService = SpringUtil.getBean(RedisService.class); 
     	Boolean success = false;
-    	if(this.redisService.exists(RedisKey.USER_APP_AUTH_USER.key+token)) {
+    	log.info("A websokcet connceted:{}",token);  
+    	if(redisService.exists(RedisKey.USER_APP_AUTH_USER.key+token)) {
     		this.token = token;
             this.session = session;
             webSocketMap.put(this.token,this); 
@@ -57,6 +76,12 @@ public class WebSocketServer {
             log.info("new user added！current user count :{}" ,getOnlineCount());
             success = true;
     	} 
+    	try {
+       	 sendMessage(success.toString());
+       	new PushThread(this).start();
+        } catch (IOException e) {
+           log.error("websocket IO异常");
+        }
     	try {
        	 sendMessage(success.toString());
         } catch (IOException e) {

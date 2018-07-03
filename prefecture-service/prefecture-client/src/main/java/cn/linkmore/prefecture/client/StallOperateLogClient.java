@@ -18,7 +18,7 @@ import cn.linkmore.prefecture.response.ResStallOperateLog;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/stall_operate", fallback=StallOperateLogClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/ops/stall_operate", fallback=StallOperateLogClientHystrix.class,configuration = FeignConfiguration.class)
 public interface StallOperateLogClient {
 	
 	/**

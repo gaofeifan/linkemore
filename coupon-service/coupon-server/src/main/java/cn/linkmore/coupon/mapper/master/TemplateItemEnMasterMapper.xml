@@ -31,4 +31,58 @@
     where template_id = #{tempId,jdbcType=BIGINT}
   </delete>
   
+   <update id="updateByIdSelective" parameterType="cn.linkmore.coupon.entity.TemplateItem">
+    update t_coupon_template_item
+    <set>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="faceAmount != null">
+        face_amount = #{faceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="validDay != null">
+        valid_day = #{validDay,jdbcType=INTEGER},
+      </if>
+      <if test="discount != null">
+        discount = #{discount,jdbcType=INTEGER},
+      </if>
+      <if test="conditionAmount != null">
+        condition_amount = #{conditionAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.coupon.entity.TemplateItem">
+    update t_coupon_template_item
+    set template_id = #{templateId,jdbcType=BIGINT},
+      type = #{type,jdbcType=INTEGER},
+      face_amount = #{faceAmount,jdbcType=DECIMAL},
+      quantity = #{quantity,jdbcType=INTEGER},
+      valid_day = #{validDay,jdbcType=INTEGER},
+      discount = #{discount,jdbcType=INTEGER},
+      condition_amount = #{conditionAmount,jdbcType=DECIMAL},
+      source = #{source,jdbcType=INTEGER},
+      delete_status = #{deleteStatus,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateDeletaStatus" parameterType="java.util.Map">
+    update t_coupon_template_item
+    set 
+      delete_status = #{delete_status}
+    where id in(#{ids})
+  </update>
+  
+  
 </mapper>

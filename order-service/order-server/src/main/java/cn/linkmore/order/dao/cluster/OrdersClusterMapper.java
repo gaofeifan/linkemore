@@ -5,7 +5,10 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.entity.Orders;
+import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResUserOrder;
 @Mapper
 public interface OrdersClusterMapper {
@@ -56,5 +59,26 @@ public interface OrdersClusterMapper {
 	 * @return
 	 */
 	List<ResUserOrder> findUserList(Map<String,Object> param);
+
+	/**
+	 * @Description  查询总数
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer count(Map<String, Object> param);
+
+	/**
+	 * @Description  分页查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResOrder> findPage(Map<String, Object> param);
+
+	/**
+	 * @Description  文件导出
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResOrderExcel> exportList(ReqOrderExcel bean);
 
 }

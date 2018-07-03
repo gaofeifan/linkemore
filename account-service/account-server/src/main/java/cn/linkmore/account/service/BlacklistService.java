@@ -3,6 +3,7 @@ package cn.linkmore.account.service;
 import java.util.List;
 
 import cn.linkmore.account.entity.UserBlacklist;
+import cn.linkmore.account.response.ResUserBlacklist;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 
@@ -31,7 +32,7 @@ public interface BlacklistService {
 	 * 取列表
 	 * @return
 	 */
-	List<UserBlacklist> findList();
+	List<ResUserBlacklist> findList();
 
 	void reset();
 

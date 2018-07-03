@@ -1,5 +1,4 @@
 package cn.linkmore.prefecture.client;
-
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -89,7 +89,6 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/lock/{sn}", method=RequestMethod.GET)
 	@ResponseBody
 	public ResStallEntity findByLock(@PathVariable("sn") String sn);
-	
 	
 	/*****************************************************************/
 	

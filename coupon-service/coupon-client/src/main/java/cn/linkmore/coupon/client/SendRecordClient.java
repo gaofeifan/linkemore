@@ -38,4 +38,8 @@ public interface SendRecordClient {
 	@RequestMapping(value = "/v2.0/saveBusiness", method = RequestMethod.POST)
 	@ResponseBody
 	public int saveBusiness(@RequestBody ReqSendRecord record) ;
+
+	@RequestMapping(value = "/v2.0/timingForSend", method = RequestMethod.GET)
+	@ResponseBody
+	public void timingForSend();
 }

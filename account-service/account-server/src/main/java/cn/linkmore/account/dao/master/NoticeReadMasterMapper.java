@@ -1,9 +1,7 @@
 package cn.linkmore.account.dao.master;
 
 import org.apache.ibatis.annotations.Mapper;
-
 import cn.linkmore.account.entity.NoticeRead;
-import cn.linkmore.account.request.ReqNotice;
 
 /**
  * @author   GFF
@@ -42,5 +40,7 @@ public interface NoticeReadMasterMapper {
      * @Version  v2.0
      */
     int updateById(NoticeRead record);
+
+	void updateReadStatus();
 
 }

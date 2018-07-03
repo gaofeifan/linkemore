@@ -8,6 +8,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterprise;
 import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.security.request.ReqPerson;
 
 public interface EnterpriseService {
 
@@ -62,7 +63,7 @@ public interface EnterpriseService {
 	 * 
 	 * @param person
 	 */
-	//void setPassword(Person person);
+	void setPassword(ReqPerson person);
 
 	
 	/**
@@ -82,5 +83,7 @@ public interface EnterpriseService {
 	 * @Return   String
 	 */
 	List<ResEnterprise> selectAll();
+
+
 
 }

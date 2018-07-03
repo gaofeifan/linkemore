@@ -1,5 +1,7 @@
 package cn.linkmore.coupon.client;
 
+import java.util.List;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.coupon.client.hystrix.TemplateItemEnClientHystrix;
 import cn.linkmore.coupon.request.ReqTemplateItem;
+import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.feign.FeignConfiguration;
 /**
  * Client  - 企业停车券
@@ -28,9 +31,9 @@ public interface TemplateItemEnClient {
 	
 	@RequestMapping(value = "/selectBuDealNumber", method = RequestMethod.POST)
 	@ResponseBody
-	public Object selectBuDealNumber(@RequestParam("dealNumber") String dealNumber);
+	public List<ResTemplateItem> selectBuDealNumber(@RequestParam("dealNumber") String dealNumber);
 	
 	@RequestMapping(value = "/selectByEnterpriseId", method = RequestMethod.POST)
 	@ResponseBody
-	public Object selectBuEnterpriseId(@RequestParam("id") Long id);
+	public List<ResTemplateItem> selectBuEnterpriseId(@RequestParam("id") Long id);
 }

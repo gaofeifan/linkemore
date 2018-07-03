@@ -33,8 +33,9 @@ public class TemplateItemEnServiceImpl implements TemplateItemEnService {
 	
 	@Override
 	public int update(ReqTemplateItem record) {
-		TemplateItem tempItem = ObjectUtils.copyObject(record, new TemplateItem());
-		return this.templateItemEnMasterMapper.update(tempItem);
+		TemplateItem item = ObjectUtils.copyObject(record, new TemplateItem());
+		this.templateItemEnMasterMapper.updateById(item);
+		return 0;
 	}
 
 	@Override

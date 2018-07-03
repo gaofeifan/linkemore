@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.account.client.hystrix.BlackListClientHystrix;
-import cn.linkmore.account.client.hystrix.CustomerInfoClientHystrix;
+import cn.linkmore.account.response.ResUserBlacklist;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -42,5 +42,9 @@ public interface BlackListClient {
 	@RequestMapping(value = "/v2.0/enable", method = RequestMethod.PUT)
 	@ResponseBody
 	public ViewMsg enable(@RequestBody List<Long> list);
+
+	@RequestMapping(value = "/v2.0/all", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResUserBlacklist> findList();
 	
 }

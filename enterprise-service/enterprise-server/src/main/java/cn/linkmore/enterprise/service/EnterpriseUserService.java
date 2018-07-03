@@ -15,14 +15,14 @@ public interface EnterpriseUserService {
 	 * 
 	 * @param enterpriseUser
 	 */
-	void saveAll(List<EnterpriseUser> all);
+	void saveAll(List<ReqEnterpriseUser> all);
 
 	/**
 	 * 添加
 	 * 
 	 * @param enterpriseUser
 	 */
-	int save(EnterpriseUser enterpriseUser);
+	int save(ReqEnterpriseUser enterpriseUser);
 
 	/**
 	 * 删除

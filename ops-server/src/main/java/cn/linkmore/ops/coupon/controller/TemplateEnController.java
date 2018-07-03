@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.exception.DataException;
+import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -30,10 +31,13 @@ public class TemplateEnController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(ReqTemplate record) {
+	public ViewMsg save(ReqTemplate record,HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
-			record.setDeleteStatus(0L);
+			ResPerson person = getPerson(request);
+			record.setCreatorId(person.getId().intValue());
+			record.setCreatorName(person.getUsername());
+			record.setDeleteStatus(0);
 			this.templateEnService.save(record);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
@@ -46,10 +50,13 @@ public class TemplateEnController {
 	}
 	@RequestMapping(value = "/saveBusiness", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg saveBusiness(ReqTemplate record) {
+	public ViewMsg saveBusiness(ReqTemplate record,HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
-			record.setDeleteStatus(0L);
+			ResPerson person = getPerson(request);
+			record.setCreatorId(person.getId().intValue());
+			record.setCreatorName(person.getUsername());
+			record.setDeleteStatus(0);
 			this.templateEnService.saveBusiness(record);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
@@ -69,9 +76,12 @@ public class TemplateEnController {
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update(ReqTemplate record) {
+	public ViewMsg update(ReqTemplate record,HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
+			ResPerson person = getPerson(request);
+			record.setCreatorId(person.getId().intValue());
+			record.setCreatorName(person.getUsername());
 			this.templateEnService.update(record);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
@@ -117,6 +127,17 @@ public class TemplateEnController {
 	@RequestMapping(value = "/listBusiness", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage listBusiness(HttpServletRequest request, ViewPageable pageable) {
+		 ResPerson person = getPerson(request);
+		 List<ViewFilter> filters = pageable.getFilters();
+		 ViewFilter vf = new ViewFilter();
+		 vf.setProperty("enterpriseId");
+		 vf.setValue(person.getId());
+		 vf.setValue(0L);
+		 filters.add(vf);
+		 vf = new ViewFilter();
+		 vf.setProperty("isBusinessSelect");
+		 vf.setValue(1);
+		 filters.add(vf);
 		return this.templateEnService.findPage(pageable);
 	}
 
@@ -171,6 +192,12 @@ public class TemplateEnController {
 	 */
 	@RequestMapping(value = "/download", method = RequestMethod.POST)
 	public void download(Long id,HttpServletResponse response){
-		
+	}
+	
+
+	private ResPerson getPerson(HttpServletRequest request){
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+		return person;
 	}
 }

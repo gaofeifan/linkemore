@@ -47,7 +47,6 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.order.controller.app.request.ReqBooking;
-import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
@@ -59,6 +58,7 @@ import cn.linkmore.order.dao.master.OrdersMasterMapper;
 import cn.linkmore.order.dao.master.StallAssignMasterMapper;
 import cn.linkmore.order.entity.Booking;
 import cn.linkmore.order.entity.Orders;
+import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrderExcel;
@@ -538,9 +538,9 @@ public class OrdersServiceImpl implements OrdersService {
 		log.info("stall downing :{}",switchStatus); 
 		if(switchStatus) {
 			Long count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
-			if(count>0) {
+//			if(count>0) {
 				this.push(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
-			}  
+//			}  
 		}else{
 			this.push(order.getUserId().toString(), "预约降锁通知",switchStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
 		} 

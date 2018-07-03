@@ -26,10 +26,12 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.dao.cluster.BaseAttachmentClusterMapper;
 import cn.linkmore.common.dao.master.BaseAttachmentMasterMapper;
 import cn.linkmore.common.entity.BaseAttachment;
+import cn.linkmore.common.request.ReqAttachment;
 import cn.linkmore.common.service.BaseAttachmentService;
 import cn.linkmore.third.client.OssClient;
 import cn.linkmore.third.response.ResOssConfig;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.ObjectUtils;
 /**
  * 文件管理--实现
  * @author   GFF
@@ -216,4 +218,14 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		} 
 		return image.getOriginalUrl();
 	}
+
+	@Override
+	public void save(ReqAttachment image) {
+		BaseAttachment object = ObjectUtils.copyObject(image, new BaseAttachment(),null,null,new String[] {"size"});
+		object.setSize(image.getSource().intValue());
+		this.attachmentmasterMapper.save(object);
+	}
+
+	
+	
 }

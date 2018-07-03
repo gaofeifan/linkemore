@@ -1,5 +1,6 @@
 package cn.linkmore.ops.coupon.controller;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +25,7 @@ import cn.linkmore.coupon.request.ReqSendRecord;
 import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.ops.coupon.service.SendRecordService;
 import cn.linkmore.ops.coupon.service.TemplateService;
+import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.util.ExcelRead;
 
 @Controller
@@ -73,9 +77,13 @@ public class SendRecordController {
 
 	@RequestMapping(value = "/saveBusiness", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg saveBusiness(ReqSendRecord record) {
+	public ViewMsg saveBusiness(ReqSendRecord record,HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
+			Subject subject = SecurityUtils.getSubject();
+			ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
+			record.setCreatorId(person.getId().intValue());
+			record.setCreatorName(person.getUsername());
 			this.sendRecordService.saveBusiness(record);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {

@@ -33,13 +33,13 @@ public class TemplateItemEnController {
 	
 	@RequestMapping(value = "/selectBuDealNumber", method = RequestMethod.POST)
 	@ResponseBody
-	public Object selectBuDealNumber(@RequestParam("dealNumber") String dealNumber){
+	public List<ResTemplateItem> selectBuDealNumber(@RequestParam("dealNumber") String dealNumber){
 		List<ResTemplateItem> items = this.templateItemEnService.selectBuDealNumber(dealNumber);
 		return items;
 	}
 	@RequestMapping(value = "/selectByEnterpriseId", method = RequestMethod.POST)
 	@ResponseBody
-	public Object selectBuEnterpriseId(@RequestParam("id") Long id){
+	public List<ResTemplateItem> selectBuEnterpriseId(@RequestParam("id") Long id){
 		List<ResTemplateItem> items = this.templateItemEnService.selectBuEnterpriseId(id);
 		return items;
 	}

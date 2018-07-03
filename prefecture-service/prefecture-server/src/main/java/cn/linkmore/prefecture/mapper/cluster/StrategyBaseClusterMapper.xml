@@ -103,12 +103,12 @@
     <if test="status!=null">  
     and status = #{status,jdbcType=INTEGER}
     </if> 
-    <if test="property==null">  
+   <!--  <if test="property==null">  
     order by create_time desc
     </if>
     <if test="property!=null">  
     order by  ${property} ${direction}
-    </if> 
+    </if>  -->
   </select>
   
   <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >

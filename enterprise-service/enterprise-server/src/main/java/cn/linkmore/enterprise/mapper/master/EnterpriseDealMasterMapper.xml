@@ -68,7 +68,48 @@
         #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
-  
+   <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.entity.EnterpriseDeal">
+    update t_biz_enterprise_deal
+    <set>
+      <if test="enterpriseId != null">
+        enterprise_id = #{enterpriseId,jdbcType=BIGINT},
+      </if>
+      <if test="enterpriseName != null">
+        enterprise_name = #{enterpriseName,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="dealPayAmount != null">
+        deal_pay_amount = #{dealPayAmount,jdbcType=INTEGER},
+      </if>
+      <if test="dealGiftAmount != null">
+        deal_gift_amount = #{dealGiftAmount,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorId != null">
+        creator_id = #{creatorId,jdbcType=BIGINT},
+      </if>
+      <if test="creatorName != null">
+        creator_name = #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isCreate != null">
+        is_create = #{isCreate,jdbcType=INTEGER},
+      </if>
+       <if test="usedDealPayAmount != null">
+        used_deal_pay_amount = #{usedDealPayAmount},
+      </if>
+      <if test="userDealGiftAmount != null">
+        user_deal_gift_amount = #{userDealGiftAmount},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
   <delete id="delete" parameterType="java.util.List">
 	  delete from t_biz_enterprise_deal
 	  where id in
@@ -76,4 +117,8 @@
 	     #{id}
 	  </foreach> 
   </delete>
+  <update id="updateCreateStatus" parameterType="java.util.HashMap">
+  	 update t_biz_enterprise_deal
+    set is_create = #{isCreate} where serial_number = #{enterpriseDeal}
+  </update>
 </mapper>

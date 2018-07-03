@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.ApplicationGroupMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.ApplicationGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="user_group_id" jdbcType="BIGINT" property="userGroupId" />
+    <result column="control_attribute" jdbcType="SMALLINT" property="controlAttribute" />
+    <result column="control_area" jdbcType="SMALLINT" property="controlArea" />
+    <result column="pre_group_id" jdbcType="BIGINT" property="preGroupId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="cycle_time" jdbcType="SMALLINT" property="cycleTime" />
+    <result column="time_slot" jdbcType="VARCHAR" property="timeSlot" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="probability" jdbcType="SMALLINT" property="probability" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, user_group_id, control_attribute, control_area, pre_group_id, pre_id, cycle_time, 
+    time_slot, operator_id, probability, create_time, update_time, status
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_application_group
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.ApplicationGroup">
+    insert into t_application_group (id, name, user_group_id, 
+      control_attribute, control_area, pre_group_id, 
+      pre_id, cycle_time, time_slot, 
+      operator_id, probability, create_time, 
+      update_time, status)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{userGroupId,jdbcType=BIGINT}, 
+      #{controlAttribute,jdbcType=SMALLINT}, #{controlArea,jdbcType=SMALLINT}, #{preGroupId,jdbcType=BIGINT}, 
+      #{preId,jdbcType=BIGINT}, #{cycleTime,jdbcType=SMALLINT}, #{timeSlot,jdbcType=VARCHAR}, 
+      #{operatorId,jdbcType=BIGINT}, #{probability,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=SMALLINT})
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.prefecture.entity.ApplicationGroup">
+    insert into t_application_group
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="userGroupId != null">
+        user_group_id,
+      </if>
+      <if test="controlAttribute != null">
+        control_attribute,
+      </if>
+      <if test="controlArea != null">
+        control_area,
+      </if>
+      <if test="preGroupId != null">
+        pre_group_id,
+      </if>
+      <if test="preId != null">
+        pre_id,
+      </if>
+      <if test="cycleTime != null">
+        cycle_time,
+      </if>
+      <if test="timeSlot != null">
+        time_slot,
+      </if>
+      <if test="operatorId != null">
+        operator_id,
+      </if>
+      <if test="probability != null">
+        probability,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="userGroupId != null">
+        #{userGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="controlAttribute != null">
+        #{controlAttribute,jdbcType=SMALLINT},
+      </if>
+      <if test="controlArea != null">
+        #{controlArea,jdbcType=SMALLINT},
+      </if>
+      <if test="preGroupId != null">
+        #{preGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="preId != null">
+        #{preId,jdbcType=BIGINT},
+      </if>
+      <if test="cycleTime != null">
+        #{cycleTime,jdbcType=SMALLINT},
+      </if>
+      <if test="timeSlot != null">
+        #{timeSlot,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="probability != null">
+        #{probability,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.prefecture.entity.ApplicationGroup">
+    update t_application_group
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="userGroupId != null">
+        user_group_id = #{userGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="controlAttribute != null">
+        control_attribute = #{controlAttribute,jdbcType=SMALLINT},
+      </if>
+      <if test="controlArea != null">
+        control_area = #{controlArea,jdbcType=SMALLINT},
+      </if>
+      <if test="preGroupId != null">
+        pre_group_id = #{preGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="preId != null">
+        pre_id = #{preId,jdbcType=BIGINT},
+      </if>
+      <if test="cycleTime != null">
+        cycle_time = #{cycleTime,jdbcType=SMALLINT},
+      </if>
+      <if test="timeSlot != null">
+        time_slot = #{timeSlot,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        operator_id = #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="probability != null">
+        probability = #{probability,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.prefecture.entity.ApplicationGroup">
+    update t_application_group
+    set name = #{name,jdbcType=VARCHAR},
+      user_group_id = #{userGroupId,jdbcType=BIGINT},
+      control_attribute = #{controlAttribute,jdbcType=SMALLINT},
+      control_area = #{controlArea,jdbcType=SMALLINT},
+      pre_group_id = #{preGroupId,jdbcType=BIGINT},
+      pre_id = #{preId,jdbcType=BIGINT},
+      cycle_time = #{cycleTime,jdbcType=SMALLINT},
+      time_slot = #{timeSlot,jdbcType=VARCHAR},
+      operator_id = #{operatorId,jdbcType=BIGINT},
+      probability = #{probability,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+   <update id="startOrDown" parameterType="java.util.HashMap">
+    update t_application_group
+    set update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=SMALLINT}
+    where id in 
+    <foreach collection="ids"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </update>
+</mapper>

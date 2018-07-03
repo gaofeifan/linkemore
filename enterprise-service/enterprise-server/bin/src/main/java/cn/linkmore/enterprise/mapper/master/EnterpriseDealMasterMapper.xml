@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.master.EnterpriseDealMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EnterpriseDeal">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="enterprise_name" jdbcType="VARCHAR" property="enterpriseName" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="deal_pay_amount" jdbcType="INTEGER" property="dealPayAmount" />
+    <result column="deal_gift_amount" jdbcType="INTEGER" property="dealGiftAmount" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+    <result column="creator_name" jdbcType="VARCHAR" property="creatorName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="is_create" jdbcType="INTEGER" property="isCreate" />
+    <result column="used_deal_pay_amount" jdbcType="DECIMAL" property="usedDealPayAmount" />
+    <result column="user_deal_gift_amount" jdbcType="DECIMAL" property="userDealGiftAmount" />
+  </resultMap>
+  
+  <!-- <delete id="delete" parameterType="java.lang.Long">
+    delete from t_biz_enterprise_deal
+    where id = #{id,jdbcType=BIGINT}
+  </delete> -->
+  <insert id="save" parameterType="cn.linkmore.enterprise.entity.EnterpriseDeal">
+    insert into t_biz_enterprise_deal (id, enterprise_id, enterprise_name, 
+      serial_number, deal_pay_amount, deal_gift_amount, 
+      remark, creator_id, creator_name, 
+      create_time, is_create, used_deal_pay_amount, 
+      user_deal_gift_amount)
+    values (#{id,jdbcType=BIGINT}, #{enterpriseId,jdbcType=BIGINT}, #{enterpriseName,jdbcType=VARCHAR}, 
+      #{serialNumber,jdbcType=VARCHAR}, #{dealPayAmount,jdbcType=INTEGER}, #{dealGiftAmount,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{creatorId,jdbcType=BIGINT}, #{creatorName,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{isCreate,jdbcType=INTEGER}, #{usedDealPayAmount,jdbcType=DECIMAL}, 
+      #{userDealGiftAmount,jdbcType=DECIMAL})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.enterprise.entity.EnterpriseDeal">
+    update t_biz_enterprise_deal
+    set enterprise_id = #{enterpriseId,jdbcType=BIGINT},
+      enterprise_name = #{enterpriseName,jdbcType=VARCHAR},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      deal_pay_amount = #{dealPayAmount,jdbcType=INTEGER},
+      deal_gift_amount = #{dealGiftAmount,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      creator_id = #{creatorId,jdbcType=BIGINT},
+      creator_name = #{creatorName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      is_create = #{isCreate,jdbcType=INTEGER},
+      used_deal_pay_amount = #{usedDealPayAmount,jdbcType=DECIMAL},
+      user_deal_gift_amount = #{userDealGiftAmount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateBatch" parameterType="java.util.List">
+    update t_biz_enterprise_deal
+    set 
+      used_deal_pay_amount =
+    	<foreach collection="list" item="item" index="index" separator=" " open="case ID" close="end">
+		when #{item.id} then #{item.usedDealPayAmount,jdbcType=DECIMAL}  
+		</foreach> 
+	  ,user_deal_gift_amount = 
+	 	<foreach collection="list" item="item" index="index" separator=" " open="case ID" close="end">
+		when #{item.id} then #{item.userDealGiftAmount,jdbcType=DECIMAL} 
+		</foreach> 
+    where id in 
+    <foreach collection="list" index="index" item="item" 
+        separator="," open="(" close=")">
+        #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  
+  <delete id="delete" parameterType="java.util.List">
+	  delete from t_biz_enterprise_deal
+	  where id in
+	  <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+	     #{id}
+	  </foreach> 
+  </delete>
+</mapper>

@@ -6,6 +6,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqTemplate;
+import cn.linkmore.coupon.response.ResQrc;
 import cn.linkmore.coupon.response.ResTemplate;
 
 public interface TemplateService {
@@ -60,6 +61,6 @@ public interface TemplateService {
 	 */
 	ResTemplate findById(Long id);
 	
-	void download(Long id, HttpServletResponse response);
+	ResQrc download(Long id);
 
 }

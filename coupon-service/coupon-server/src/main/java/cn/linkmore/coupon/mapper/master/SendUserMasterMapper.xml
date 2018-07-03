@@ -47,7 +47,6 @@
   </insert>
   
   <update id="updateBatch" parameterType="java.util.List">
-    
     update t_coupon_send_user
     set 
       rollback_flag =

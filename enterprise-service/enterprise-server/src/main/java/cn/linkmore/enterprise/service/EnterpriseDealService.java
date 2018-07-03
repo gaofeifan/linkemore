@@ -67,5 +67,19 @@ public interface EnterpriseDealService {
 	 */
 	List<ResEnterpriseDeal> listByEnterpriseId(Integer enterpriseId,Integer isCreate);
 
+	/**
+	 * @Description  根据合同单号查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResEnterpriseDeal selectByDealNumber(String number);
+
+	/**
+	 * @Description  更新创建状态
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateCreateStatus(Map<String, Object> map);
+
 
 }

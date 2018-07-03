@@ -2,6 +2,9 @@ package cn.linkmore.ops.coupon.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +15,7 @@ import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.coupon.request.ReqTemplateItem;
 import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.ops.coupon.service.TemplateItemEnService;
+import cn.linkmore.ops.security.response.ResPerson;
 
 @Controller
 @RequestMapping("/admin/coupon_enterprise_Item")
@@ -61,7 +65,9 @@ public class TemplateItemEnController {
 	@RequestMapping(value = "/selectByEnterpriseId", method = RequestMethod.POST)
 	@ResponseBody
 	public Object selectBuEnterpriseId(HttpServletRequest request , Long id){
-		List<ResTemplateItem> items = this.templateItemEnService.selectBuEnterpriseId(id);
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+		List<ResTemplateItem> items = this.templateItemEnService.selectBuEnterpriseId(person.getId());
 		return items;
 	}
 

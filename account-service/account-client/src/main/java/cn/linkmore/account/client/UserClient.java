@@ -1,6 +1,7 @@
 package cn.linkmore.account.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -164,4 +165,12 @@ public interface UserClient {
 	@RequestMapping(value = "/v2.0/by_username", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUser getUserByUserName(@RequestParam("userName") String userName);
+
+	@RequestMapping(value = "/v2.0/username", method = RequestMethod.POST)
+	@ResponseBody
+	public ResUser getUserByUserName(@RequestBody Map<String, Object> param);
+
+	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
+	@ResponseBody
+	public ResUser save(@RequestBody ResUser user);
 }

@@ -1,7 +1,6 @@
 package cn.linkmore.enterprise.controller;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,10 +13,10 @@ import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.entity.Enterprise;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterprise;
 import cn.linkmore.enterprise.service.EnterpriseService;
+import cn.linkmore.security.request.ReqPerson;
 
 /**
  * 
@@ -27,26 +26,26 @@ import cn.linkmore.enterprise.service.EnterpriseService;
  * @Version v1.0.0
  */
 @Controller
-@RequestMapping("/admin/biz/enterprise")
+@RequestMapping("/enterprise")
 public class EnterpriseController {
 	@Resource
 	private EnterpriseService enterpriseService;
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public int save(ReqEnterprise record) {
+	public int save(@RequestBody ReqEnterprise record) {
 		return this.enterpriseService.save(record);
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
-	public int update(ReqEnterprise record) {
+	public int update(@RequestBody ReqEnterprise record) {
 		return this.enterpriseService.update(record);
 	}
 
-	/*@RequestMapping(value = "/set_password", method = RequestMethod.POST)
+	@RequestMapping(value = "/set_password", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg setPassword(Person person) {
+	public ViewMsg setPassword(ReqPerson person) {
 		ViewMsg msg = null;
 		try {
 			this.enterpriseService.setPassword(person);
@@ -57,7 +56,7 @@ public class EnterpriseController {
 			msg = new ViewMsg("保存失败", false);
 		}
 		return msg;
-	}*/
+	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody

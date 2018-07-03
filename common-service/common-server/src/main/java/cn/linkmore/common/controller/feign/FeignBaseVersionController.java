@@ -54,10 +54,10 @@ public class FeignBaseVersionController {
 	 * @Author  	 GFF 
 	 * @Version  	 v2.0
 	 */
-	@RequestMapping(value="/report",method = RequestMethod.POST)
+	/*@RequestMapping(value="/report",method = RequestMethod.POST)
 	public void report(@RequestBody ReqVersion vrb){
 		this.beanVersionService.report(vrb);
-	}
+	}*/
 	
 	/**
 	 * @Description  添加app版本

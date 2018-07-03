@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -64,7 +65,6 @@ public class StallClientHystrix implements StallClient {
 		log.info("prefecture service stall findByLock(String sn) hystrix");
 		return null;
 	}
-	
 	
 
 	@Override
@@ -138,6 +138,5 @@ public class StallClientHystrix implements StallClient {
 		log.info("prefecture service List<ResStallOps> findList(Map<String, Object> param) hystrix");
 		return null;
 	}
-	
 	
 }

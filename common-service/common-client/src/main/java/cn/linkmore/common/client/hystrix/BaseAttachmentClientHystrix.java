@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseAttachmentClient;
+import cn.linkmore.common.request.ReqAttachment;
+import cn.linkmore.common.response.ResAttachment;
 import cn.linkmore.common.response.ResBaseAttachment;
 
 /**
@@ -23,32 +25,48 @@ public class BaseAttachmentClientHystrix implements BaseAttachmentClient {
 
 	@Override
 	public boolean delete(Long id) {
-		// TODO Auto-generated method stub
+		log.info("common service boolean delete(Long id) hystrix");
 		return false;
 	}
 
 	@Override
 	public ViewPage list(ViewPageable pageable) {
-		// TODO Auto-generated method stub
+		log.info("common service ViewPage list(ViewPageable pageable) hystrix");
 		return null;
 	}
 
 	@Override
 	public ResBaseAttachment imageUpload(MultipartFile file) {
-		// TODO Auto-generated method stub
+		log.info("common service ResBaseAttachment imageUpload(MultipartFile file) hystrix");
 		return null;
 	}
 
 	@Override
 	public ResBaseAttachment fileUpload(MultipartFile file) {
-		// TODO Auto-generated method stub
+		log.info("common service ResBaseAttachment fileUpload(MultipartFile file) hystrix");
+		log.info("common service ResBaseAttachment fileUpload(MultipartFile file) hystrix");
 		return null;
 	}
 
 	@Override
 	public String createImage(String fileName, InputStream is) {
-		// TODO Auto-generated method stub
+		log.info("common service String createImage(String fileName, InputStream is) hystrix");
 		return null;
 	}
+
+	@Override
+	public ResBaseAttachment find(Long id) {
+		log.info("common service ResBaseAttachment find(Long id) hystrix");
+		return null;
+	}
+
+	@Override
+	public void save(ReqAttachment image) {
+		log.info("common service ResBaseAttachment save(ReqAttachment image) hystrix");
+	}
+
+	
+	
+	
 	
 }

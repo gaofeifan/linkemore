@@ -67,7 +67,7 @@ public class BlacklistServiceImpl implements BlacklistService {
 	}
 
 	@Override
-	public List<UserBlacklist> findList() {
+	public List<ResUserBlacklist> findList() {
 		return this.blacklistClusterMapper.findList();
 	}
 

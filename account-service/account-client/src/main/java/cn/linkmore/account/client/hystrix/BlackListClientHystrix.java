@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import cn.linkmore.account.client.BlackListClient;
+import cn.linkmore.account.response.ResUserBlacklist;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -42,6 +43,11 @@ public class BlackListClientHystrix implements BlackListClient {
 	@Override
 	public ViewPage list(ViewPageable pageable) {
 		log.info("account service  ViewMsg list(ViewPageable pageable) hystrix");
+		return null;
+	}
+	@Override
+	public List<ResUserBlacklist> findList() {
+		log.info("account service  List<ResUserBlacklist> findList() hystrix");
 		return null;
 	}
 

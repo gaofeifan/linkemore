@@ -9,8 +9,10 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,11 +26,11 @@ import com.alibaba.fastjson.JSONObject;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.coupon.entity.TemplateItem;
 import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqTemplate;
 import cn.linkmore.coupon.response.ResQrc;
 import cn.linkmore.coupon.response.ResTemplate;
-import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.coupon.service.QrcService;
 import cn.linkmore.coupon.service.TemplateEnService;
 
@@ -44,18 +46,20 @@ public class TemplateEnController {
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
 	public int save(@RequestBody ReqTemplate record) {
-		record.setDeleteStatus(0L);
-		return	this.templateEnService.save(record);
+		record.setDeleteStatus(0);
+		this.templateEnService.save(record);
+		return 0;
 	}
 	@RequestMapping(value = "/v2.0/saveBusiness", method = RequestMethod.POST)
 	@ResponseBody
 	public int saveBusiness(@RequestBody ReqTemplate record) {
-			record.setDeleteStatus(0L);
-		return	this.templateEnService.saveBusiness(record);
+		record.setDeleteStatus(0);
+		this.templateEnService.saveBusiness(record);
+		return 0;
 	}
 
-	public static ResTemplateItem initCouponTemplateItem2(JSONObject json) {
-		ResTemplateItem item = new ResTemplateItem();
+	public static TemplateItem initCouponTemplateItem2(JSONObject json) {
+		TemplateItem item = new TemplateItem();
 		if (json != null) {
 			Integer type = json.getInteger("couponItemType");
 			BigDecimal faceAmount = new BigDecimal(0);
@@ -95,9 +99,10 @@ public class TemplateEnController {
 		}
 		return item;
 	}
-	public static ResTemplateItem initCouponTemplateItem(JSONObject json) {
-		ResTemplateItem item = new ResTemplateItem();
+	public static TemplateItem initCouponTemplateItem(JSONObject json) {
+		TemplateItem item = new TemplateItem();
 		if (json != null) {
+			Long couponItemId = json.getLong("couponItemId");
 			Integer type = json.getInteger("couponItemType");
 			BigDecimal faceAmount = new BigDecimal(0);
 			if(json.containsKey("source")){
@@ -114,6 +119,9 @@ public class TemplateEnController {
 			Integer validDay = json.getInteger("couponValidDay");
 			Integer discount = json.getInteger("item_discount");
 			BigDecimal conditionAmount = json.getBigDecimal("conditionAmount");
+			if(couponItemId != null){
+				item.setId(couponItemId);
+			}
 			item.setConditionAmount(conditionAmount);
 			item.setDiscount(discount);
 			item.setFaceAmount(faceAmount);
@@ -123,7 +131,38 @@ public class TemplateEnController {
 		}
 		return item;
 	}
-
+	public static TemplateItem initCouponTemplateItemUpdate(JSONObject json,String deleteIds) {
+		TemplateItem item = new TemplateItem();
+		if (json != null) {
+			Long couponItemId = json.getLong("couponItemId");
+			Integer type = json.getInteger("couponItemType");
+			BigDecimal faceAmount = new BigDecimal(0);
+			if(json.containsKey("source")){
+				item.setSource(json.getInteger("source"));
+			}
+			if (type == 0) {
+				faceAmount = json.getBigDecimal("faceAmount");
+			} else if (type == 1) {
+				faceAmount = json.getBigDecimal("mj_faceAmount");
+			} else if (type == 2) {
+				faceAmount = json.getBigDecimal("zk_faceAmount");
+			}
+			Integer quantity = json.getInteger("quantity");
+			Integer validDay = json.getInteger("couponValidDay");
+			Integer discount = json.getInteger("item_discount");
+			BigDecimal conditionAmount = json.getBigDecimal("conditionAmount");
+			if(couponItemId != null){
+				item.setId(couponItemId);
+			}
+			item.setConditionAmount(conditionAmount);
+			item.setDiscount(discount);
+			item.setFaceAmount(faceAmount);
+			item.setType(type);
+			item.setQuantity(quantity);
+			item.setValidDay(validDay);
+		}
+		return item;
+	}
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
 	@ResponseBody
 	public ResTemplate detail(@RequestParam("id") Long id) {
@@ -134,7 +173,8 @@ public class TemplateEnController {
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
 	public int update(@RequestBody ReqTemplate record) {
-		return	this.templateEnService.update(record);
+		this.templateEnService.update(record);
+		return 0;
 	}
 
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
@@ -147,7 +187,7 @@ public class TemplateEnController {
 	@ResponseBody
 	public Boolean check(ReqCheck reqCheck) {
 		Boolean flag = true;
-		Integer count = this.templateEnService.check(reqCheck);
+		Integer count = this.templateEnService.check(reqCheck.getProperty(),reqCheck.getValue(), reqCheck.getId());
 		if (count > 0) {
 			flag = false;
 		}
@@ -163,17 +203,6 @@ public class TemplateEnController {
 	@RequestMapping(value = "/v2.0/listBusiness", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage listBusiness(@RequestBody ViewPageable pageable) {
-		 //Person person = getPerson(request);
-		 List<ViewFilter> filters = pageable.getFilters();
-		 ViewFilter vf = new ViewFilter();
-		 vf.setProperty("enterpriseId");
-		 //vf.setValue(person.getId());
-		 vf.setValue(0L);
-		 filters.add(vf);
-		 vf = new ViewFilter();
-		 vf.setProperty("isBusinessSelect");
-		 vf.setValue(1);
-		 filters.add(vf);
 		return this.templateEnService.findPage(pageable);
 	}
 
@@ -183,7 +212,8 @@ public class TemplateEnController {
 	@RequestMapping(value = "/v2.0/start", method = RequestMethod.GET)
 	@ResponseBody
 	public int start(@RequestParam("id") Long id) {
-		return	this.templateEnService.start(id);
+		this.templateEnService.start(id);
+		return	0;
 	}
 
 	/*
@@ -192,7 +222,8 @@ public class TemplateEnController {
 	@RequestMapping(value = "/v2.0/stop", method = RequestMethod.GET)
 	@ResponseBody
 	public int down(@RequestParam("id") Long id) {
-		return	this.templateEnService.stop(id);
+		this.templateEnService.stop(id);
+		return 0;
 	}
 	
 	@RequestMapping(value = "/v2.0/selectByEnterpriseId", method = RequestMethod.GET)
@@ -201,7 +232,8 @@ public class TemplateEnController {
 		//此处传递id为当前登录人的id
 		//Person person = getPerson(request);
 		//personId = person.getId();
-		return this.templateEnService.findByEnterpriseId(id);
+		List<ResTemplate> list = this.templateEnService.selectByEnterpriseId(id);
+		return list;
 	}
 	
 	

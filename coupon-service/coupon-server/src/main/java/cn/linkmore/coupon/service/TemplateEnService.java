@@ -1,9 +1,10 @@
 package cn.linkmore.coupon.service;
 
 import java.util.List;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.coupon.request.ReqCheck;
+import cn.linkmore.coupon.entity.Template;
 import cn.linkmore.coupon.request.ReqTemplate;
 import cn.linkmore.coupon.response.ResTemplate;
 
@@ -15,7 +16,7 @@ public interface TemplateEnService {
 	 * @param id
 	 * @return
 	 */
-	Integer check(ReqCheck reqCheck);
+	Integer check(String property, String value, Long id);
 	/**
 	 * 删除信息
 	 * @param id
@@ -28,13 +29,13 @@ public interface TemplateEnService {
 	 * @param record
 	 * @return
 	 */
-	int update(ReqTemplate record);
+	Template update(ReqTemplate record);
 
 	/**
 	 * 保存信息
 	 * @param record
 	 */
-	int save(ReqTemplate record);
+	void save(ReqTemplate record);
 
 	/**
 	 * 分页查询
@@ -47,16 +48,14 @@ public interface TemplateEnService {
 	 * 开启
 	 * @param id
 	 */
-	int start(Long id);
+	void start(Long id);
 	/**
 	 * 暂停
 	 * @param id
 	 */
-	int stop(Long id);
+	void stop(Long id);
 	
-	ResTemplate findById(Long id);
-	
-	List<ResTemplate> findByEnterpriseId(Long entId);
+	List<ResTemplate> selectByEnterpriseId(Long entId);
 	
 	/**
 	 * @Description 商家自定义修改
@@ -65,6 +64,24 @@ public interface TemplateEnService {
 	 * @Param    CouponTemplateEnService
 	 * @Return   void
 	 */
-	int saveBusiness(ReqTemplate record);
+	void saveBusiness(ReqTemplate record);
+
+	/**
+	 * @Description  查询  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResTemplate findById(Long id);
 	
-	}
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResTemplate find(Long id);
+	
+	
+	
+	 
+
+}

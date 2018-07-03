@@ -82,12 +82,7 @@ public class UserGuideController {
 	@RequestMapping(value = "/check", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean check(String property,String value,Long parentId,Long id){
-		Boolean flag = true ;
-		Integer count = this.userGuideService.check(property, value,parentId, id); 
-		if(count>0){
-            flag = false;
-        }
-        return flag;
+		return this.userGuideService.check(property, value,parentId, id); 
 	}
 	
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
@@ -95,7 +90,6 @@ public class UserGuideController {
 	public ViewPage list(HttpServletRequest request,ViewPageable pageable){
 		return this.userGuideService.findPage(pageable); 
 	} 
-	 
 	
 	@RequestMapping(value = "/tree", method = RequestMethod.POST)
 	@ResponseBody

@@ -21,7 +21,7 @@ import cn.linkmore.prefecture.response.ResLockOperateLog;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/lock", fallback=LockOperateLogClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/ops/lock", fallback=LockOperateLogClientHystrix.class,configuration = FeignConfiguration.class)
 public interface LockOperateLogClient {
 	
 	/**

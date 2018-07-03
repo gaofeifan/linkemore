@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.entity.BaseAttachment;
+import cn.linkmore.common.request.ReqAttachment;
 
 /**
  * 	文件管理
@@ -26,5 +27,12 @@ public interface BaseAttachmentService {
 	BaseAttachment saveFile(MultipartFile file);
 
 	String createImage(String fileName, InputStream is);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void save(ReqAttachment image);
 
 }

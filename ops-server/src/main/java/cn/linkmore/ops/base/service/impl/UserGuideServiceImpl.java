@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.client.UserGuideClient;
+import cn.linkmore.account.request.ReqCheck;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -44,21 +45,23 @@ public class UserGuideServiceImpl implements UserGuideService {
 	}
 
 	@Override
-	public Integer check(String property, String value, Long parentId, Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Boolean check(String property, String value, Long parentId, Long id) {
+		ReqCheck reqCheck = new ReqCheck();
+		reqCheck.setParentId(parentId);
+		reqCheck.setValue(value);
+		reqCheck.setParentId(parentId);
+		reqCheck.setId(id);
+		return this.userGuideClient.check(reqCheck );
 	}
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.userGuideClient.list(pageable);
 	}
 
 	@Override
 	public Tree findTree() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.userGuideClient.findTree();
 	}
 
 }

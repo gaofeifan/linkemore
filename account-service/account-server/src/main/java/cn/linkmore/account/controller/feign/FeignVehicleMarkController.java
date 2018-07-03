@@ -36,30 +36,30 @@ public class FeignVehicleMarkController{
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
 	public void create( @RequestBody ReqVehicleMark bean) {
 		this.vehicleMarkManageService.save(bean);
-	}
+	}*/
 	
 	/**
 	 * @Description  删除
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0", method = RequestMethod.DELETE)
+	/*@RequestMapping(value = "/v2.0", method = RequestMethod.DELETE)
 	public void delete(@RequestBody ReqVehMarkIdAndUserId v){
 		this.vehicleMarkManageService.deleteById(v);
 	}
-	
+	*/
 	/**
 	 * @Description  列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/{userId}", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/v2.0/{userId}", method = RequestMethod.GET)
 	public List<ResVechicleMark> list(@PathVariable("userId")Long userId){
 		return vehicleMarkManageService.findResList(userId);
-	}
+	}*/
 	
 	/**
 	 * @Description  根据id查询

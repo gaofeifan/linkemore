@@ -21,7 +21,7 @@ import cn.linkmore.prefecture.response.ResPreList;
  * @version 2.0
  *
  */
-@FeignClient(value = "prefecture-server", path = "/target_setting", fallback = TargetSettingClientHystrix.class, configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/ops/target_setting", fallback = TargetSettingClientHystrix.class, configuration = FeignConfiguration.class)
 public interface TargetSettingClient {
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody

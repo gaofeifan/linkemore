@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.client.BlackListClient;
+import cn.linkmore.account.response.ResUserBlacklist;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -45,7 +46,14 @@ public class BlacklistServiceImpl implements BlacklistService {
 
 	@Override
 	public ViewMsg enable(List<Long> list) {
-		return this.enable(list);
+		return this.blackListClient.enable(list);
 	}
+
+	@Override
+	public List<ResUserBlacklist> findList() {
+		return this.blackListClient.findList();
+	}
+	
+	
 	
 }

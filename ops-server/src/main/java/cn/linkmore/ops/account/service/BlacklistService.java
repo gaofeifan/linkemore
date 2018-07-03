@@ -2,6 +2,7 @@ package cn.linkmore.ops.account.service;
 
 import java.util.List;
 
+import cn.linkmore.account.response.ResUserBlacklist;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -50,5 +51,12 @@ public interface BlacklistService {
 	 * @Version  v2.0
 	 */
 	ViewMsg enable(List<Long> list);
+
+	/**
+	 * @Description  查询list
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResUserBlacklist> findList();
 
 }

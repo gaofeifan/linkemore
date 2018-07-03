@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.FeeStrategyService;
-import cn.linkmore.prefecture.client.StrategyBaseClient;
+import cn.linkmore.prefecture.client.OpsStrategyBaseClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStrategyBase;
 import cn.linkmore.prefecture.response.ResStrategyBase;
@@ -15,7 +15,7 @@ import cn.linkmore.prefecture.response.ResStrategyBase;
 public class FeeStrategyServiceImpl implements FeeStrategyService {
 
 	@Autowired
-	private StrategyBaseClient strategyBaseClient;
+	private OpsStrategyBaseClient strategyBaseClient;
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {

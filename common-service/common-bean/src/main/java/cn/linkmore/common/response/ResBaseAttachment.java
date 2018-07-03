@@ -4,77 +4,87 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ResBaseAttachment {
-    private Long id;
+	public static final String[] DIR = new String[]{"image","file"};
+	
+	public static final Short SOURCE_SERVER = 0;
+	
+	public static final Integer SOURCE_APP = 1;
+	
+	public static final Short TYPE_IMAGE = 0;
+	
+	public static final Short TYPE_FILE = 1; 
+	
+	private Long id;
 
-    private String name;
+	private String name;
 
-    private String suffix;
+	private String suffix;
 
-    private Short type;
+	private Short type;
 
-    private Integer size;
+	private Long size;
 
-    private Short source;
+	private Short source;
 
-    private Date createTime;
+	private Date createTime;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
+	public void setName(String name) {
+		this.name = name == null ? null : name.trim();
+	}
 
-    public String getSuffix() {
-        return suffix;
-    }
+	public String getSuffix() {
+		return suffix;
+	}
 
-    public void setSuffix(String suffix) {
-        this.suffix = suffix == null ? null : suffix.trim();
-    }
+	public void setSuffix(String suffix) {
+		this.suffix = suffix == null ? null : suffix.trim();
+	}
 
-    public Short getType() {
-        return type;
-    }
+	public Short getType() {
+		return type;
+	}
 
-    public void setType(Short type) {
-        this.type = type;
-    }
+	public void setType(Short type) {
+		this.type = type;
+	}
 
-    public Integer getSize() {
-        return size;
-    }
+	public Long getSize() {
+		return size;
+	}
 
-    public void setSize(Integer size) {
-        this.size = size;
-    }
+	public void setSize(Long size) {
+		this.size = size;
+	}
 
-    public Short getSource() {
-        return source;
-    }
+	public Short getSource() {
+		return source;
+	}
 
-    public void setSource(Short source) {
-        this.source = source;
-    }
+	public void setSource(Short source) {
+		this.source = source;
+	}
 
-    public Date getCreateTime() {
-        return createTime;
-    }
+	public Date getCreateTime() {
+		return createTime;
+	}
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-    
-    /**
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	/**
 	 * OSS文件路径
 	 * 
 	 * @return
@@ -112,4 +122,5 @@ public class ResBaseAttachment {
 		url.append("image/").append(date).append(this.getId()).append("_max").append(this.getSuffix());
 		return url.toString();
 	}
+
 }

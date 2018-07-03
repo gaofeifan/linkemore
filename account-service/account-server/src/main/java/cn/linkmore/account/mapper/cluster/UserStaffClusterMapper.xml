@@ -24,4 +24,37 @@
     from t_user_staff
     where id = #{id,jdbcType=BIGINT}
   </select>
+   <select id="findPage" resultMap="BaseResultMap"  parameterType="java.util.HashMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_staff where 1=1 
+    <if test="username!=null">  
+    and username = #{username,jdbcType=VARCHAR}
+    </if>
+    <if test="realname!=null">  
+    and realname like #{realname,jdbcType=VARCHAR}
+    </if> 
+    <if test="property!=null">  
+    order by  ${property} ${direction},id asc
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+   	from t_user_staff where 1=1 
+    <if test="username!=null">  
+    and username = #{username,jdbcType=VARCHAR}
+    </if>
+    <if test="realname!=null">  
+    and realname like #{realname,jdbcType=VARCHAR}
+    </if> 
+  </select> 
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_user_staff
+    where 
+    ${property} = #{value}   
+    and id != #{id} 
+  </select>
 </mapper>

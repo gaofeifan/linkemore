@@ -3,6 +3,8 @@ package cn.linkmore.coupon.dao.cluster;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+
+import cn.linkmore.coupon.entity.Template;
 import cn.linkmore.coupon.response.ResTemplate;
 
 @Mapper
@@ -31,11 +33,19 @@ public interface TemplateEnClusterMapper {
 	 * @Param    CouponTemplateEnMapper
 	 * @Return   CouponTemplate
 	 */
-	ResTemplate findByEnterpriseNumber(String number);
+	Template findByEnterpriseNumber(String number);
 	/**
 	 * 查找企业优惠券模板
 	 * @param templateIds
 	 * @return
 	 */
 	List<ResTemplate> findEnterpriseTemplate(List<Long> templateIds);
+
+	/**
+	 * @Description  查询详情
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResTemplate find(Long id);
+
 }

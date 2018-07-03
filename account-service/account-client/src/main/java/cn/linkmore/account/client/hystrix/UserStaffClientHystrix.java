@@ -6,7 +6,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import cn.linkmore.account.client.UserStaffClient;
+import cn.linkmore.account.request.ReqCheck;
+import cn.linkmore.account.request.ReqUserStaff;
 import cn.linkmore.account.response.ResUserStaff;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 
 /**
  * @author   GFF
@@ -21,7 +25,29 @@ public class UserStaffClientHystrix  implements UserStaffClient{
 
 	@Override
 	public ResUserStaff findById(@PathVariable("id")Long id) {
-		log.info("account service userstaff findById(Long id) hystrix");
+		log.info("account service ResUserStaff findById(Long id) hystrix");
+		return null;
+	}
+
+	@Override
+	public void save(ReqUserStaff record) {
+		log.info("account service void save(ReqUserStaff record) hystrix");
+	}
+
+	@Override
+	public void update(ReqUserStaff record) {
+		log.info("account service void update(ReqUserStaff record) hystrix");
+	}
+
+	@Override
+	public Boolean check(ReqCheck check) {
+		log.info("account service Boolean check(ReqCheck check) hystrix");
+		return null;
+	}
+
+	@Override
+	public ViewPage list(ViewPageable pageable) {
+		log.info("account service ViewPage list(ViewPageable pageable) hystrix");
 		return null;
 	}
 

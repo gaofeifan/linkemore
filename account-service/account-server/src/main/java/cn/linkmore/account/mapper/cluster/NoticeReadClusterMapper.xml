@@ -32,5 +32,10 @@
       t_notice_read n
   WHERE n.notice_id = #{nid} AND n.user_id = #{uid}
   </select>
-  
+  <select id="findNotReadNotice" resultType="Integer">
+    select 
+    count(1)
+    from t_notice_read
+    where read_status = 0
+  </select>
 </mapper>

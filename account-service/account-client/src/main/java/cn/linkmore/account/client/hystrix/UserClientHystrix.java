@@ -2,6 +2,7 @@ package cn.linkmore.account.client.hystrix;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,6 +126,21 @@ public class UserClientHystrix implements UserClient{
 		log.info("account service getUserByUserName(userName) hystrix"); 
 		return new ResUser();
 	}
+
+
+	@Override
+	public ResUser getUserByUserName(Map<String, Object> param) {
+		log.info("account service ResUser getUserByUserName(Map<String, Object> param) hystrix"); 
+		return null;
+	}
+
+
+	@Override
+	public ResUser save(ResUser user) {
+		log.info("account service ResUser getUserByUserName(Map<String, Object> param) hystrix"); 
+		return null;
+	}
+	
 	
 	
 	

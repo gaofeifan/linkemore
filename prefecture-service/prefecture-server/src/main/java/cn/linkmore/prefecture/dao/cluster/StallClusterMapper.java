@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.response.ResStall;
+import cn.linkmore.prefecture.response.ResStallOps;
 /**
  * dao 车位
  * @author jiaohanbin
@@ -68,5 +69,12 @@ public interface StallClusterMapper {
 	List<Stall> findPage(Map<String, Object> param);
 	
 	List<ResStall> findList(Map<String, Object> param);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStallOps> findListByParam(Map<String, Object> param);
 	
 }

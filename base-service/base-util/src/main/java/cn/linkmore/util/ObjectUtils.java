@@ -188,7 +188,7 @@ public class ObjectUtils {
 		}
 		if(fields != null && replaceField != null) {
 			if(fields.length != replaceField.length) {
-				throw new RuntimeException("元素数量不相等");
+				throw new RuntimeException("元素长度不相等");
 			}
 		}
 		Class<E> sourceC = (Class<E>) source.getClass();

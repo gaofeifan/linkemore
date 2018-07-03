@@ -21,7 +21,7 @@
     delete from t_coupon_send_record
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.coupon.entity.SendRecord">
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.SendRecord"  useGeneratedKeys="true" keyProperty="id">
     insert into t_coupon_send_record (id, type, template_id, 
       condition_id, creator_id, creator_name, 
       task_time, create_time, status, 
@@ -45,4 +45,14 @@
       send_time = #{sendTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into t_coupon_send_user (id, template_id, record_id, 
+      user_id, create_time ,rollback_flag)
+    values
+      <foreach collection ="list" item="item" separator =",">
+         (#{item.id,jdbcType=BIGINT}, #{item.templateId,jdbcType=BIGINT}, #{item.recordId,jdbcType=BIGINT}, 
+      	#{item.userId,jdbcType=BIGINT}, #{item.createTime,jdbcType=TIMESTAMP},#{item.rollbackFlag,jdbcType=INTEGER})
+      </foreach >
+  </insert>
 </mapper>

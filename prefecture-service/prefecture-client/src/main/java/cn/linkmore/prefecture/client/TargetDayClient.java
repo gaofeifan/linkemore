@@ -15,7 +15,7 @@ import cn.linkmore.prefecture.client.hystrix.TargetDayClientHystrix;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/target_day", fallback=TargetDayClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/ops/target_day", fallback=TargetDayClientHystrix.class,configuration = FeignConfiguration.class)
 public interface TargetDayClient {
 	
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)

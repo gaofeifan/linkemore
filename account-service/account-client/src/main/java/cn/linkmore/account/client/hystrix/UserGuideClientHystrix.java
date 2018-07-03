@@ -46,8 +46,9 @@ public class UserGuideClientHystrix implements UserGuideClient {
 	}
 
 	@Override
-	public void check(ReqCheck reqCheck) {
+	public Boolean check(ReqCheck reqCheck) {
 		log.info("account service ResUserGuide check(ReqCheck reqCheck) hystrix");
+		return null;
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.response.ResDistrict;
 import cn.linkmore.common.response.ResOldDict;
+import cn.linkmore.ops.biz.response.ResPrefecture;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
@@ -100,5 +101,7 @@ public interface PrefectureService {
 	 * @return
 	 */
 	ResPrefectureDetail checkName(String preName);
+	
+	List<cn.linkmore.prefecture.response.ResPrefecture> findPreList();
 	
 }

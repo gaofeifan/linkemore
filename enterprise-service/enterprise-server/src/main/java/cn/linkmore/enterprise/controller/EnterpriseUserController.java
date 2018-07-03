@@ -3,13 +3,17 @@ package cn.linkmore.enterprise.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEnterpriseUser;
@@ -58,5 +62,22 @@ public class EnterpriseUserController {
 		param.put("userName", userName);
 		List<ResEnterpriseUser> resList = enterpriseUserService.findExcel(param);
 		return resList;
+	}
+	
+	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+	public ResEnterpriseUser getEnterpriseUser(@PathVariable("id")Long id) {
+		ResEnterpriseUser enterpriseUser = this.enterpriseUserService.getEnterpriseUser(id);
+		return enterpriseUser;
+	}
+	
+	@RequestMapping(value = "/excel", method = RequestMethod.POST)
+	public List<ResEnterpriseUser> findExcel(@RequestBody Map<String, Object> param){
+		List<ResEnterpriseUser> list = this.enterpriseUserService.findExcel(param);
+		return list;
+	}
+
+	@RequestMapping(value = "/save-all", method = RequestMethod.POST)
+	public void saveAll(@RequestBody List<ReqEnterpriseUser> entAll){
+		this.enterpriseUserService.saveAll(entAll);
 	}
 }

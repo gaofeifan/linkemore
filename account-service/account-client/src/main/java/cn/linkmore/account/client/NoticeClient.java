@@ -10,11 +10,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.account.client.hystrix.NoticeClientHystrix;
 import cn.linkmore.account.client.hystrix.UserGuideClientHystrix;
+import cn.linkmore.account.request.ReqCreateNotice;
 import cn.linkmore.account.request.ReqNotice;
 import cn.linkmore.account.request.ReqPageNotice;
 import cn.linkmore.account.response.ResNotice;
+import cn.linkmore.account.response.ResNoticeBean;
 import cn.linkmore.account.response.ResPage;
 import cn.linkmore.account.response.ResUserGuide;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
  
 /**
@@ -47,4 +51,35 @@ public interface NoticeClient {
 	@ResponseBody
 	public void delete(@RequestBody ReqNotice notice);
 	
+	
+	/**
+	 * 获取列表
+	 */
+	@RequestMapping(value = "/select-list", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage selectList(@RequestBody ViewPageable pageable);
+	
+	/**
+	 * 添加
+	 */
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public void save(@RequestBody ReqCreateNotice noticeBean);
+	
+	/**
+	 * 详情
+	 */
+	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResNoticeBean detail(@PathVariable("id")Long id);
+	/**
+	 * 更新
+	 */
+	@RequestMapping(value = "/update", method = RequestMethod.PUT)
+	public void update(@RequestBody ReqCreateNotice noticeBean);
+	
+	/**
+	 * 推送
+	 */
+	@RequestMapping(value = "/push", method = RequestMethod.POST)
+	void push(@RequestBody List<Long> ids);
 }

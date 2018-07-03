@@ -84,4 +84,11 @@ public interface UserMasterMapper {
 	 */
 	void checkoutUpdate(Map<String, Object> param);
 
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void save(ResUser user);
+
 }

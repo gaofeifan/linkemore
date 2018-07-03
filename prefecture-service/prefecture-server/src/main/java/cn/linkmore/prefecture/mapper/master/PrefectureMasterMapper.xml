@@ -30,13 +30,13 @@
     <result column="category" jdbcType="SMALLINT" property="category" />
     <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
     <result column="gateway" jdbcType="VARCHAR" property="gateway" />
+    <!-- 新增字段 -->
+    <result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
+    <result column="runtime" jdbcType="INTEGER" property="runtime" />
+    <result column="increase" jdbcType="VARCHAR" property="increase" />
+    <result column="month_rent" jdbcType="INTEGER" property="monthRent" />
   </resultMap>
-  <sql id="Base_Column_List">
-    id, strategy_id, status, name, district_id, address, latitude, longitude, route_guidance, 
-    image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
-    route_description, base_dict_id, city_id, order_index, leave_time, charge_price, 
-    charge_time, type, enterprise_id, category, limit_status, gateway
-  </sql>
+  
   <delete id="delete" parameterType="java.util.List" >
     delete from v_prefecture
     where id in
@@ -54,7 +54,7 @@
       base_dict_id, city_id, order_index, 
       leave_time, charge_price, charge_time, 
       type, enterprise_id, category, 
-      limit_status,gateway )
+      limit_status,gateway ,strategy_description, runtime, increase, month_rent)
     values (#{id,jdbcType=BIGINT}, #{strategyId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR}, #{districtId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=DECIMAL}, #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, 
@@ -64,7 +64,10 @@
       #{baseDictId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT}, #{orderIndex,jdbcType=INTEGER}, 
       #{leaveTime,jdbcType=INTEGER}, #{chargePrice,jdbcType=VARCHAR}, #{chargeTime,jdbcType=INTEGER}, 
       #{type,jdbcType=SMALLINT}, #{enterpriseId,jdbcType=BIGINT}, #{category,jdbcType=SMALLINT}, 
-      #{limitStatus,jdbcType=SMALLINT},#{gateway,jdbcType=VARCHAR})
+      #{limitStatus,jdbcType=SMALLINT}, #{gateway,jdbcType=VARCHAR},
+      #{strategyDescription,jdbcType=VARCHAR}, #{runtime,jdbcType=INTEGER},
+      #{monthRent,jdbcType=INTEGER}, #{increase,jdbcType=VARCHAR}
+      )
   </insert>
   
   <update id="update" parameterType="cn.linkmore.prefecture.entity.Prefecture">
@@ -94,7 +97,13 @@
       enterprise_id = #{enterpriseId,jdbcType=BIGINT},
       category = #{category,jdbcType=SMALLINT},
       limit_status = #{limitStatus,jdbcType=SMALLINT},
-      gateway = #{gateway,jdbcType=VARCHAR}
+      gateway = #{gateway,jdbcType=VARCHAR},
+      
+      strategy_description = #{strategyDescription,jdbcType=VARCHAR},
+      runtime = #{runtime,jdbcType=INTEGER},
+      month_rent = #{monthRent,jdbcType=INTEGER},
+      increase = #{increase,jdbcType=VARCHAR}
+      
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

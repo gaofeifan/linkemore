@@ -82,7 +82,7 @@ public class AppVehicleMarkController{
 	@ApiOperation(value="列表list",notes="查询该用户所有车牌", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
 	public ResponseEntity<List<cn.linkmore.account.controller.app.response.ResVechicleMark>> list(HttpServletRequest request){
-		List<ResVechicleMark> list = vehicleMarkManageService.selectResList(request);
+		List<ResVechicleMark> list = vehicleMarkManageService.findResList(request);
 		List<cn.linkmore.account.controller.app.response.ResVechicleMark> resultList = new ArrayList<>();
 		for (ResVechicleMark resVechicleMark : list) {
 			cn.linkmore.account.controller.app.response.ResVechicleMark mark = ObjectUtils.copyObject(resVechicleMark, new cn.linkmore.account.controller.app.response.ResVechicleMark());

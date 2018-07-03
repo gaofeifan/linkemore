@@ -48,7 +48,7 @@ public class RechargeRecordController {
 	@RequestMapping(value="/v2.0/export",method=RequestMethod.POST)
 	@ResponseBody
 	public List<ResRechargeRecordExcel> findExportList(@RequestBody ReqRechargeRecordExcel bean){
-		return this.findExportList(bean);
+		return this.rechargeRecordService.exportList(bean);
 	}
 
 }

@@ -21,10 +21,9 @@ public interface UserGuideService {
 
 	void delete(List<Long> ids);
 
-	Integer check(String property, String value, Long parentId, Long id);
+	Boolean check(String property, String value, Long parentId, Long id);
 
 	ViewPage findPage(ViewPageable pageable);
 
 	Tree findTree();
-
 }

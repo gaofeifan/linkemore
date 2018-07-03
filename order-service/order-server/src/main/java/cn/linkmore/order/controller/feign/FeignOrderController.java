@@ -1,5 +1,7 @@
 package cn.linkmore.order.controller.feign;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.request.ReqOrderStall;
@@ -33,5 +39,15 @@ public class FeignOrderController {
 		this.ordersService.downMsgPush(orderId,stallId);
 	} 
 	
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage list(@RequestBody ViewPageable pageable){
+		return this.ordersService.findPage(pageable);
+	} 
 	
+	@RequestMapping(value = "/export", method = RequestMethod.POST)
+	@ResponseBody
+	List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean){
+		return this.ordersService.exportList(bean);
+	}
 }

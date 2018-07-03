@@ -30,5 +30,11 @@ public class SendRecordClientHystrix implements SendRecordClient {
 		log.info("coupon service send_record saveBusiness() hystrix");
 		return 0;
 	}
+
+	@Override
+	public void timingForSend() {
+		log.info("coupon service void timingForSend() hystrix");
+	}
+	
 	
 }

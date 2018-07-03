@@ -1,10 +1,9 @@
 package cn.linkmore.enterprise.request;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class ReqEnterpriseDeal {
-    private Long id;
+	private Long id;
 
     private Long enterpriseId;
 
@@ -23,12 +22,12 @@ public class ReqEnterpriseDeal {
     private String creatorName;
 
     private Date createTime;
-
+    
     private Integer isCreate;
-
-    private BigDecimal usedDealPayAmount;
-
-    private BigDecimal userDealGiftAmount;
+    
+    private Double usedDealPayAmount;
+    
+    private Double userDealGiftAmount;
 
     public Long getId() {
         return id;
@@ -110,27 +109,27 @@ public class ReqEnterpriseDeal {
         this.createTime = createTime;
     }
 
-    public Integer getIsCreate() {
-        return isCreate;
-    }
+	public Integer getIsCreate() {
+		return isCreate;
+	}
 
-    public void setIsCreate(Integer isCreate) {
-        this.isCreate = isCreate;
-    }
+	public void setIsCreate(Integer isCreate) {
+		this.isCreate = isCreate;
+	}
 
-    public BigDecimal getUsedDealPayAmount() {
-        return usedDealPayAmount;
-    }
+	public Double getUsedDealPayAmount() {
+		return usedDealPayAmount;
+	}
 
-    public void setUsedDealPayAmount(BigDecimal usedDealPayAmount) {
-        this.usedDealPayAmount = usedDealPayAmount;
-    }
+	public void setUsedDealPayAmount(Double usedDealPayAmount) {
+		this.usedDealPayAmount = usedDealPayAmount;
+	}
 
-    public BigDecimal getUserDealGiftAmount() {
-        return userDealGiftAmount;
-    }
+	public Double getUserDealGiftAmount() {
+		return userDealGiftAmount;
+	}
 
-    public void setUserDealGiftAmount(BigDecimal userDealGiftAmount) {
-        this.userDealGiftAmount = userDealGiftAmount;
-    }
+	public void setUserDealGiftAmount(Double userDealGiftAmount) {
+		this.userDealGiftAmount = userDealGiftAmount;
+	}
 }

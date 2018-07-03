@@ -1,17 +1,44 @@
 package cn.linkmore.ops.base.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.OSSObject;
+
+import cn.linkmore.bean.exception.DataException;
+import cn.linkmore.bean.view.ViewMsg;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.common.request.ReqAttachment;
+import cn.linkmore.common.response.ResBaseAttachment;
+import cn.linkmore.ops.base.service.AttachmentService;
+import cn.linkmore.third.client.OssClient;
+import cn.linkmore.third.response.ResOssConfig;
 
 @Controller
 @RequestMapping("/admin/base/attachment")
 public class AttachmentController {
-	/*@Resource(name="baseOSSClient")
-	private OSSClient client;
 	
 	@Resource
-	private BaseOssConfig baseOssConfig;
+	private OssClient ossClient;
 	
+	public static ResOssConfig resOssConfig = null;
+
 	@Resource
 	private AttachmentService attachmentService;
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -41,9 +68,9 @@ public class AttachmentController {
     public ViewMsg imageUpload(@RequestParam("file") MultipartFile file,HttpServletRequest request) {  
 		 ViewMsg msg = null; 
 		try{
-			Attachment attach = this.attachmentService.saveImage(file); 
+			ReqAttachment image = this.attachmentService.saveImage(file,getOssConfig(ossClient));
 			msg = new ViewMsg("上传成功",true); 
-			msg.add("attach", attach); 
+			msg.add("attach", image); 
 		}catch(Exception e){  
 			msg = new ViewMsg("上传失败",false);
 		}  
@@ -55,7 +82,7 @@ public class AttachmentController {
     public ViewMsg fileUpload(@RequestParam("file") MultipartFile file,HttpServletRequest request) {  
 		 ViewMsg msg = null; 
 		try{
-			Attachment attach = this.attachmentService.saveFile(file); 
+			ReqAttachment attach = this.attachmentService.saveFile(file,getOssConfig(ossClient));
 			msg = new ViewMsg("上传成功",true); 
 			msg.add("attach", attach); 
 		}catch(Exception e){  
@@ -63,14 +90,14 @@ public class AttachmentController {
 		}  
         return msg;
     } 
-	*//**
+	/**
 	 * 处理下载请求
 	 * @param id 主键
 	 * @param response
-	 *//* 
+	 */ 
 	@RequestMapping(value = "/download", method = RequestMethod.POST) 
  	public void download(Long id,HttpServletResponse response,HttpServletRequest request){ 
-		Attachment attach = this.attachmentService.find(id);
+		ResBaseAttachment attach = this.attachmentService.find(id);
 		ServletOutputStream out = null;   
 		if(attach!=null){  
 			String key = null;
@@ -86,7 +113,8 @@ public class AttachmentController {
 			BufferedInputStream bis = null;
 			BufferedOutputStream  bos = null;
 			try{
-				osso =   client.getObject(baseOssConfig.getBucketName(), key); 
+				OSSClient client = ossClient.downloadOSSClient();
+				osso =   client.getObject(getOssConfig(ossClient).getBucketName(), key); 
 				bis = new BufferedInputStream( osso.getObjectContent());
 				response.setContentType("multipart/form-data");
 				response.setHeader("Content-disposition", "attachment;filename="+URLEncoder.encode(attach.getName(), "utf-8")); 
@@ -102,7 +130,6 @@ public class AttachmentController {
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
-				
 				if(bis!=null){
 					try {
 						bis.close();
@@ -132,5 +159,12 @@ public class AttachmentController {
 			} 
 		}else{ 
 		} 
-	}*/
+	}
+	
+	public static ResOssConfig getOssConfig(OssClient client) {
+		if(resOssConfig == null) {
+			resOssConfig = client.initOssConfig();
+		}
+		return resOssConfig;
+	}
 }

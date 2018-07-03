@@ -71,13 +71,17 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 	}
 
 	@Override
-	public void report(ReqVersion vrb) {
+	public void report(cn.linkmore.common.controller.app.request.ReqVersion vrb, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+	    CacheUser user =  (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		ReqVersion reqVersion = ObjectUtils.copyObject(vrb, new ReqVersion());
+		reqVersion.setUserId(user.getId());
 		boolean falg = false;
-		UserVersion version = this.versionClusterMapper.findById(vrb.getUserId());
+		UserVersion version = this.versionClusterMapper.findById(user.getId());
 		if(version != null) {
 			falg = true;
 		}
-		version = ObjectUtils.copyObject(vrb, new UserVersion());
+		version = ObjectUtils.copyObject(reqVersion, new UserVersion());
 		version.setCommitTime(new Date());
 		if(falg) {
 			this.versionMasterMapper.updateById(version);
@@ -157,20 +161,5 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 		List<UserVersion> list = this.versionClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
-
-	@Override
-	public ResVersionBean current(Integer source) {
-		return this.currentAppVersion(source);
-	}
-
-	@Override
-	public void report(cn.linkmore.common.controller.app.request.ReqVersion vrb, HttpServletRequest request) {
-		String key = TokenUtil.getKey(request);
-	    CacheUser user =  (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-		ReqVersion version = ObjectUtils.copyObject(vrb, new ReqVersion());
-		version.setUserId(user.getId());
-		this.report(version);
-	}
-	
 }
 

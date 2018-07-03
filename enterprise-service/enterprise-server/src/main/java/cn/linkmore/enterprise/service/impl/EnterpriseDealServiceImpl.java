@@ -1,5 +1,6 @@
 package cn.linkmore.enterprise.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,8 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.common.client.BaseDictClient;
+import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EnterpriseDealClusterMapper;
 import cn.linkmore.enterprise.dao.master.EnterpriseDealMasterMapper;
@@ -24,7 +27,6 @@ import cn.linkmore.enterprise.response.ResEnterpriseDeal;
 import cn.linkmore.enterprise.service.EnterpriseDealService;
 import cn.linkmore.security.client.DictClient;
 import cn.linkmore.security.client.PageClient;
-import cn.linkmore.security.response.ResDict;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 
@@ -43,18 +45,24 @@ public class EnterpriseDealServiceImpl implements EnterpriseDealService {
 	private EnterpriseClusterMapper enterpriseClusterMapper;
 	@Autowired
 	private DictClient dictClient;
+	@Autowired
+	private BaseDictClient baseDictClient;
+	
 	public static final String INDUSTRY = "biz-enterprise-industry";
 	
 	@Override
 	public int save(ReqEnterpriseDeal reqDeal) {
-		EnterpriseDeal deal = ObjectUtils.copyObject(reqDeal, new EnterpriseDeal());
+		EnterpriseDeal deal = ObjectUtils.copyObject(reqDeal, new EnterpriseDeal(),null,null,new String[] {"usedDealPayAmount","userDealGiftAmount"});
+		deal.setUsedDealPayAmount(new BigDecimal(reqDeal.getUsedDealPayAmount()));
+		deal.setUserDealGiftAmount(new BigDecimal(reqDeal.getUserDealGiftAmount()));
 		return this.enterpriseDealMasterMapper.save(deal);
 	}
 
 	@Override
 	public int update(ReqEnterpriseDeal reqDeal) {
-		EnterpriseDeal deal = ObjectUtils.copyObject(reqDeal, new EnterpriseDeal());
-		return this.enterpriseDealMasterMapper.update(deal);		
+		EnterpriseDeal deal = ObjectUtils.copyObject(reqDeal, new EnterpriseDeal(),null,null,new String[] {"usedDealPayAmount","userDealGiftAmount"});
+		this.enterpriseDealMasterMapper.updateByIdSelective(deal);		
+		return 0;
 	}
 
 	@Override
@@ -75,11 +83,10 @@ public class EnterpriseDealServiceImpl implements EnterpriseDealService {
 	public List<Tree> findTree() {
 		List<Tree> pchildren = null;
 		List<Tree> children = null;
-		 List<Tree> roots = new ArrayList<>();
-		List<ResDict> findByGroupCode = null;
-		//this.dictClient.findByGroupCode(INDUSTRY);
+		List<Tree> roots = new ArrayList<>();
+		List<ResBaseDict> findByGroupCode = this.baseDictClient.findList(INDUSTRY);
 		Tree root = null;
-		for (ResDict dict : findByGroupCode) {
+		for (ResBaseDict dict : findByGroupCode) {
 			root = new Tree();
 			root.setName(dict.getName());
 			root.setId(dict.getId().toString());
@@ -180,5 +187,18 @@ public class EnterpriseDealServiceImpl implements EnterpriseDealService {
 	public List<ResEnterpriseDeal> listByEnterpriseId(Integer enterpriseId ,Integer isCreate) {
 		return this.enterpriseDealClusterMapper.listByEnterpriseId(enterpriseId,isCreate);
 	}
+
+	@Override
+	public ResEnterpriseDeal selectByDealNumber(String number) {
+		return this.enterpriseDealClusterMapper.selectByDealNumber(number);
+	}
+
+	@Override
+	public void updateCreateStatus(Map<String, Object> map) {
+		this.enterpriseDealMasterMapper.updateCreateStatus(map);
+	}
+	
+	
+	
 	
 }

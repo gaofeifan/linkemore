@@ -19,7 +19,7 @@ import cn.linkmore.prefecture.response.ResOrderOperateLogEntity;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "prefecture-server", path = "/order_operate", fallback=OrderOperateLogClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "prefecture-server", path = "/ops/order_operate", fallback=OrderOperateLogClientHystrix.class,configuration = FeignConfiguration.class)
 public interface OrderOperateLogClient {
 	
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)

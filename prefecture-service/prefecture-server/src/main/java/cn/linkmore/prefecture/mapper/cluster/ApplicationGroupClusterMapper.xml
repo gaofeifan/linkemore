@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.ApplicationGroupClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.ApplicationGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="user_group_id" jdbcType="BIGINT" property="userGroupId" />
+    <result column="control_attribute" jdbcType="SMALLINT" property="controlAttribute" />
+    <result column="control_area" jdbcType="SMALLINT" property="controlArea" />
+    <result column="pre_group_id" jdbcType="BIGINT" property="preGroupId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="cycle_time" jdbcType="SMALLINT" property="cycleTime" />
+    <result column="time_slot" jdbcType="VARCHAR" property="timeSlot" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="probability" jdbcType="SMALLINT" property="probability" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
+   <resultMap id="GroupResultMap" type="cn.linkmore.prefecture.response.ResApplicationGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="user_group_id" jdbcType="BIGINT" property="userGroupId" />
+    <result column="control_attribute" jdbcType="SMALLINT" property="controlAttribute" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, user_group_id, control_attribute, control_area, pre_group_id, pre_id, cycle_time, 
+    time_slot, operator_id, probability, create_time, update_time, status
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_application_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+   
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1) 
+    from t_application_group
+    where 1 = 1
+    <if test="name!=null">  
+    and name like #{name}
+    </if>
+    <if test="status!=null">  
+    and status = #{status} 
+    </if> 
+  </select>
+  <select id="findPage" resultMap="GroupResultMap" parameterType="java.util.HashMap" >
+    select p.id, p.name, p.user_group_id, p.control_attribute, p.operator_id, p.create_time, p.update_time, p.status,s.username operator
+	from t_application_group p 
+	left join t_sec_person s on p.operator_id = s.id 
+	where 1=1 
+    <if test="name!=null">  
+    and p.name like #{name}
+    </if>
+    <if test="status!=null">  
+    and p.status = #{status}
+    </if> 
+    <if test="startTime!=null">
+    <![CDATA[and p.create_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">
+    <![CDATA[and p.create_time <= #{endTime,jdbcType=VARCHAR}]]>
+    </if> 
+    GROUP BY p.id 
+    <if test="property==null">  
+    order by p.create_time desc
+    </if>
+    <if test="property!=null">  
+    order by ${property} ${direction}
+    </if>
+    limit  #{start},#{pageSize}
+  </select>
+  
+  <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_application_group where   
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
+</mapper>

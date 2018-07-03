@@ -37,6 +37,14 @@
     	 #{id}
     </foreach>
     order by type asc
+    
+  </select>
+  <select id="findList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_template_item
+    where delete_status = 0 and  template_id = #{template_id,jdbcType=BIGINT}
+    order by type asc
   </select>
   <select id="selectBuEnterpriseId"  resultMap="BaseResultMap">
    select cti.id,cti.type,cti.face_amount,cti.quantity,cti.source,ct.enterprise_deal_number,ct.name, cti.condition_amount,cti.valid_day, cti.discount FROM t_coupon_template ct INNER JOIN t_coupon_template_item cti ON ct.id = cti.template_id

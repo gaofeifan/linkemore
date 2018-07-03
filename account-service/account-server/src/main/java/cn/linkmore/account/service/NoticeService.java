@@ -1,10 +1,10 @@
 package cn.linkmore.account.service;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.account.request.ReqCreateNotice;
-import cn.linkmore.account.request.ReqNotice;
 import cn.linkmore.account.response.ResNotice;
 import cn.linkmore.account.response.ResNoticeBean;
 import cn.linkmore.account.response.ResPage;
@@ -26,20 +26,6 @@ public interface NoticeService {
 	 * @Version  v2.0
 	 */
 	ResPage page(Long start, HttpServletRequest request);
-
-	/**
-	 * @Description  
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	ResNotice read(ReqNotice reqNotice);
-
-	/**
-	 * @Description  
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	void delete(ReqNotice notice);
 
 	/**
 	 * @Description  阅读--app

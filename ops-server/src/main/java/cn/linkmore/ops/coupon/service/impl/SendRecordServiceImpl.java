@@ -46,7 +46,9 @@ public class SendRecordServiceImpl implements SendRecordService {
 	}
 
 	@Override
-	public void timingForSend() {/*
+	public void timingForSend() {
+		this.sendRecordClient.timingForSend();
+		/*
 		List<CouponSendRecord> recordList = this.couponSendRecordMapper.findTaskList();
 		for(CouponSendRecord couponSendRecord :recordList){
 			if(couponSendRecord.getTaskTime().compareTo(new Date()) <= 0 ){

@@ -1,16 +1,17 @@
 package cn.linkmore.order.service;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
-import cn.linkmore.order.request.ReqOrderDown;
+import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResUserOrder;
 
 /**
@@ -81,5 +82,19 @@ public interface OrdersService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void downMsgPush(Long orderId, Long stallId); 
+	void downMsgPush(Long orderId, Long stallId);
+
+	/**
+	 * @Description  分页查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ViewPage findPage(ViewPageable pageable);
+
+	/**
+	 * @Description  文件导出
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResOrderExcel> exportList(ReqOrderExcel bean); 
 }

@@ -3,15 +3,14 @@ package cn.linkmore.prefecture.service;
 import java.util.List;
 import java.util.Map;
 
-import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
+import cn.linkmore.prefecture.response.ResStallOps;
 
 /**
  * Service接口 - 车位信息
@@ -125,4 +124,6 @@ public interface StallService {
 	 */
 	void saveAndBind(Long preId, String stallName, String sn);
 	
+	
+	List<ResStallOps> findListByParam(Map<String, Object> param);
 }

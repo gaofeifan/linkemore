@@ -50,33 +50,33 @@ public class FeignUserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/nickname", method = RequestMethod.PUT)
+/*	@RequestMapping(value = "/v2.0/nickname", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateNickname(@RequestBody ReqUpdateNickname nickname) {
 		this.userService.updateNickname(nickname);
-	}
+	}*/
 	
 	/**
 	 * @Description  更新性别
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/sex", method = RequestMethod.PUT)
+/*	@RequestMapping(value = "/v2.0/sex", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateSex(@RequestBody ReqUpdateSex sex) {
 		this.userService.updateSex(sex);
-	}
+	}*/
 	
 	/**
 	 * @Description  更新车牌
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/vehicle", method = RequestMethod.PUT)
+	/*@RequestMapping(value = "/v2.0/vehicle", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updateVehicle(@RequestBody ReqUpdateVehicle req) {
 		this.userService.updateVehicle(req);
-	}
+	}*/
 	
 	
 	/**
@@ -119,22 +119,22 @@ public class FeignUserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/wechat/{userId}", method = RequestMethod.DELETE)
+	/*@RequestMapping(value = "/v2.0/wechat/{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void removeWechat(@PathVariable Long userId) {
 		this.userService.removeWechat(userId);
-	}
+	}*/
 	
 	/**
 	 * @Description  app登录
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/login/{mobile}", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/v2.0/login/{mobile}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserLogin appLogin(@PathVariable("mobile") String mobile) {
 		return this.userService.appLogin(mobile);
-	}
+	}*/
 	 
 	/**
 	 * @Description  根据id查询
@@ -185,10 +185,10 @@ public class FeignUserControlle {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/account_name", method = RequestMethod.PUT)
+/*	@RequestMapping(value = "/v2.0/account_name", method = RequestMethod.PUT)
 	public void updateAccountName(@RequestBody ReqUpdateAccount account) {
 		this.userService.updateRealname(account);
-	}
+	}*/
 	
 	@RequestMapping(value = "/v2.0/by_username", method = RequestMethod.GET)
 	@ResponseBody

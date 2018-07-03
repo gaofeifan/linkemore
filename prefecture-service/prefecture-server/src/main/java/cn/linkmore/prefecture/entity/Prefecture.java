@@ -131,8 +131,56 @@ public class Prefecture {
      * 网关分组
      */
     private String gateway;
+    /**
+     * 运营时长 （分钟数）
+     */
+    private Integer runtime;
+    /**
+     * 月租金成本（元）
+     */
+    private Integer monthRent;
+    /**
+     * 租金涨幅 百分比
+     */
+    private String increase;
+    /** 
+     * 计费策略描述
+     */
+    private String strategyDescription;
 
-    public Long getId() {
+    public String getStrategyDescription() {
+		return strategyDescription;
+	}
+
+	public void setStrategyDescription(String strategyDescription) {
+		this.strategyDescription = strategyDescription;
+	}
+
+	public Integer getRuntime() {
+		return runtime;
+	}
+
+	public void setRuntime(Integer runtime) {
+		this.runtime = runtime;
+	}
+
+	public Integer getMonthRent() {
+		return monthRent;
+	}
+
+	public void setMonthRent(Integer monthRent) {
+		this.monthRent = monthRent;
+	}
+
+	public String getIncrease() {
+		return increase;
+	}
+
+	public void setIncrease(String increase) {
+		this.increase = increase;
+	}
+
+	public Long getId() {
         return id;
     }
 

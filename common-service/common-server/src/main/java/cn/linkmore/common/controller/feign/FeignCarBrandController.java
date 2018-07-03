@@ -1,6 +1,7 @@
 package cn.linkmore.common.controller.feign;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.apache.poi.hssf.record.OldCellRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +37,7 @@ import cn.linkmore.util.HttpUtils;
  * @author  GFF
  * @Date     2018年5月11日
  */
+@Controller
 @RestController
 @RequestMapping("/feign/car_brand")
 public class FeignCarBrandController {
@@ -43,9 +47,10 @@ public class FeignCarBrandController {
 	//API域名
     private final static String HOST = "http://jisucxdq.market.alicloudapi.com";
 	//阿里云市场里，购买服务后的code
-    private final static String APP_CODE = "ad0d38987d534d0692e15b67a9fb168c";
+    private final static String APP_CODE = "fac3d2da15bc41b4a2a16ed02a2a7aef";
     //一级品牌url
     private final static String CarBrandPath = "/car/brand";
+//    private final static String CarBrandPath = "/car/detail";
     //二级三级品牌url
     private final static String CarListPath = "/car/carlist";
     
@@ -104,6 +109,15 @@ public class FeignCarBrandController {
 					JSONArray arry = (JSONArray) obj;
 					List<ResCarFirmBean> carFirmList = JSONObject.parseArray(arry.toJSONString(),ResCarFirmBean.class);
 					if(carFirmList.size() != 0){
+						/*for (Map<String,Object> map : resultList) {
+							if(map.get("initial").equals(carBrand.getInitial())) {
+								List<ResCarFirmBean> carFirmMap = (List<ResCarFirmBean>) map.get("childlist");
+								carFirmMap.addAll(carFirmList);
+								map.put("childlist", carFirmMap);
+								resultList.add(map);
+								continue;
+							}
+						}*/
 						//一级品牌拼装
 						Map<String,Object> m = new HashMap<String,Object>();
 						m.put("id", carBrand.getId());
@@ -115,6 +129,12 @@ public class FeignCarBrandController {
 					}
 				}
 			}
+ 	    	resultList.sort(new Comparator<Map<String, Object>>() {
+				@Override
+				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+					return o1.get("initial").toString().compareTo(o2.get("initial").toString());
+				}
+			});
  	    	redisService.set(RedisKey.COMMON_CAR_BRAND_LIST.key, JSON.toJSON(resultList));
  	    	//将成功状态存入redis
  	    	redisService.set("car_brand_status", 0);

@@ -14,6 +14,7 @@ import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqTemplate;
 import cn.linkmore.coupon.request.ReqTemplateItem;
 import cn.linkmore.coupon.response.ResTemplate;
+import cn.linkmore.coupon.response.ResTemplateItem;
 
 @Component
 public class TemplateItemEnClientHystrix implements TemplateItemEnClient {
@@ -32,13 +33,13 @@ public class TemplateItemEnClientHystrix implements TemplateItemEnClient {
 	}
 
 	@Override
-	public Object selectBuDealNumber(String dealNumber) {
+	public List<ResTemplateItem> selectBuDealNumber(String dealNumber) {
 		log.info("template item en client hystrix selectBuDealNumber ");
 		return null;
 	}
 
 	@Override
-	public Object selectBuEnterpriseId(Long id) {
+	public List<ResTemplateItem> selectBuEnterpriseId(Long id) {
 		log.info("template item en client hystrix selectBuEnterpriseId ");
 		return null;
 	}

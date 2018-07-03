@@ -31,45 +31,4 @@ public class StrategyBaseClientHystrix implements StrategyBaseClient {
 		return new HashMap<String,Object>();
 	}
 
-	@Override
-	public int save(ReqStrategyBase reqStrategyBase) {
-		log.info("prefecture service strategy save(Long reqStrategyBase) hystrix");
-		return 0;
-	}
-
-	@Override
-	public int update(ReqStrategyBase reqStrategyBase) {
-		log.info("prefecture service strategy update(Long reqStrategyBase) hystrix");
-		return 0;
-	}
-
-	@Override
-	public int delete(List<Long> ids) {
-		log.info("prefecture service strategy delete(Long ids) hystrix");
-		return 0;
-	}
-
-	@Override
-	public Boolean check(ReqCheck reqCheck) {
-		log.info("prefecture service strategy check(Long ids) hystrix");
-		return false;
-	}
-
-	@Override
-	public ViewPage list(ViewPageable pageable) {
-		log.info("prefecture service strategy list(ViewPageable pageable) hystrix");
-		return null;
-	}
-
-	@Override
-	public List<ResStrategyBase> findList() {
-		log.info("prefecture service strategy findList() hystrix");
-		return new ArrayList<ResStrategyBase>();
-	}
-
-	@Override
-	public List<ResFeeStrategy> findSelectList() {
-		log.info("prefecture service strategy findSelectList() hystrix");
-		return new ArrayList<ResFeeStrategy>();
-	}
 }

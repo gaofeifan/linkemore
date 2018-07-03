@@ -26,26 +26,11 @@ public interface VehicleMarkManageService {
 	List<VehicleMarkManage> findByUserId(Long id);
 
 	/**
-	 * @Description  新增
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	void save(ReqVehicleMark bean);
-
-	/**
-	 * @Description  根据id删除
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	void deleteById(ReqVehMarkIdAndUserId v);
-
-	
-	/**
 	 * @Description  根据userid查询响应数据
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResVechicleMark> findResList(Long userId);
+	List<ResVechicleMark> findResList(HttpServletRequest request);
 
 	/**
 	 * @Description  根据id查询
@@ -73,7 +58,7 @@ public interface VehicleMarkManageService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResVechicleMark> selectResList(HttpServletRequest request);
+//	List<ResVechicleMark> selectResList(HttpServletRequest request);
 	
 	/**
 	 * @Description  根据用户id和车牌id查询

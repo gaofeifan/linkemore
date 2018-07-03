@@ -2,8 +2,6 @@ package cn.linkmore.coupon.client.hystrix;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -13,7 +11,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.client.TemplateClient;
 import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqTemplate;
-import cn.linkmore.coupon.request.ReqTemplateCondition;
+import cn.linkmore.coupon.response.ResQrc;
 import cn.linkmore.coupon.response.ResTemplate;
 
 @Component
@@ -68,8 +66,9 @@ public class TemplateClientHystrix implements TemplateClient {
 	}
 
 	@Override
-	public void download(Long id, HttpServletResponse response) {
+	public ResQrc download(Long id) {
 		log.info("coupon service temp download() hystrix");
+		return null;
 	}
 	
 }

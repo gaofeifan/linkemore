@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.account.entity.UserBlacklist;
+import cn.linkmore.account.response.ResUserBlacklist;
 import cn.linkmore.account.service.BlacklistService;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.exception.DataException;
@@ -206,4 +207,11 @@ public class FeignBlacklistController {
         }
 	}
 */
+	
+
+	@RequestMapping(value = "/v2.0/all", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResUserBlacklist> findList(){
+		return this.blacklistService.findList();
+	}
 }

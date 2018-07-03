@@ -1,6 +1,8 @@
 package cn.linkmore.enterprise.dao.master;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.enterprise.entity.EnterpriseDeal;
 import cn.linkmore.enterprise.response.ResEnterpriseDeal;
@@ -20,4 +22,8 @@ public interface EnterpriseDealMasterMapper {
     int delete(List<Long> ids);
     
     void updateBatch(List<ResEnterpriseDeal> enterpriseDealList);
+    
+    void updateByIdSelective(EnterpriseDeal record);
+
+	void updateCreateStatus(Map<String, Object> map);
 }

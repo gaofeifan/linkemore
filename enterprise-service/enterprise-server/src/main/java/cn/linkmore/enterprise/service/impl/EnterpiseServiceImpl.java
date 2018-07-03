@@ -77,11 +77,11 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 		return list;
 	}
 
-	/*@Override
+	@Override
 	public void setPassword(ReqPerson person) {
 		person.setPassword(PasswordUtil.encode(person.getPassword()));
-		this.personClient.updatePassword(person);
-	}*/
+//		this.personClient.updatePassword(person);
+	}
 
 	@Override
 	public int save(ReqEnterprise record) {

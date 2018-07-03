@@ -17,40 +17,40 @@ public class TemplateItemEnServiceImpl implements TemplateItemEnService {
 
 	@Autowired
 	private TemplateItemEnClient templateItemEnClient;
-	
+		
 	@Override
 	public int update(ReqTemplateItem record) {
-		// TODO Auto-generated method stub
+		this.templateItemEnClient.update(record);
 		return 0;
 	}
 
 	@Override
 	public int save(ReqTemplateItem record) {
-		// TODO Auto-generated method stub
+		this.templateItemEnClient.save(record);
 		return 0;
 	}
 
 	@Override
 	public List<ResTemplateItem> findList(Long templdateId) {
-		// TODO Auto-generated method stub
+//		List<ResTemplateItem> list = this.templateItemEnClient.selectBuEnterpriseId(templdateId);
 		return null;
 	}
 
 	@Override
 	public List<ResTemplateItem> selectBuDealNumber(String dealNumber) {
-		// TODO Auto-generated method stub
-		return null;
+		List<ResTemplateItem> list = this.templateItemEnClient.selectBuDealNumber(dealNumber);
+		return list;
 	}
 
 	@Override
 	public List<ResTemplateItem> selectBuEnterpriseId(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		List<ResTemplateItem> list = this.templateItemEnClient.selectBuEnterpriseId(id);
+		return list;
 	}
 
 	@Override
 	public void updateCouponStatus() {
-		// TODO Auto-generated method stub
+		this.updateCouponStatus();
 	}
 	
 }
