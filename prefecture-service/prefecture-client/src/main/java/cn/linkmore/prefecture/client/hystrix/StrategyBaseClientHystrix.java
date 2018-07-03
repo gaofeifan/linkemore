@@ -1,20 +1,12 @@
 package cn.linkmore.prefecture.client.hystrix;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import cn.linkmore.bean.view.ViewPage;
-import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
-import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStrategy;
-import cn.linkmore.prefecture.request.ReqStrategyBase;
-import cn.linkmore.prefecture.response.ResFeeStrategy;
-import cn.linkmore.prefecture.response.ResStrategyBase;
 /**
  * 远程调用实现 - 计费策略信息
  * @author jiaohanbin
