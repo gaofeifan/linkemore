@@ -1,6 +1,8 @@
 package cn.linkmore.coupon.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,13 +10,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.linkmore.account.client.UserClient;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants;
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -24,9 +34,11 @@ import cn.linkmore.coupon.dao.cluster.SendUserClusterMapper;
 import cn.linkmore.coupon.dao.cluster.TemplateClusterMapper;
 import cn.linkmore.coupon.dao.cluster.TemplateEnClusterMapper;
 import cn.linkmore.coupon.dao.cluster.TemplateItemClusterMapper;
+import cn.linkmore.coupon.dao.cluster.TemplateItemEnClusterMapper;
 import cn.linkmore.coupon.dao.master.CouponMasterMapper;
 import cn.linkmore.coupon.dao.master.SendRecordMasterMapper;
 import cn.linkmore.coupon.dao.master.SendUserMasterMapper;
+import cn.linkmore.coupon.dao.master.TemplateEnMasterMapper;
 import cn.linkmore.coupon.dao.master.TemplateItemEnMasterMapper;
 import cn.linkmore.coupon.dao.master.TemplateMasterMapper;
 import cn.linkmore.coupon.entity.Coupon;
@@ -38,7 +50,12 @@ import cn.linkmore.coupon.response.ResSendRecord;
 import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.coupon.service.SendRecordService;
+import cn.linkmore.enterprise.request.ReqEnterpriseDeal;
+import cn.linkmore.enterprise.response.ResEnterpriseDeal;
+import cn.linkmore.prefecture.client.EnterpriseDealClient;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.third.client.SmsClient;
+import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -48,10 +65,10 @@ import cn.linkmore.util.ObjectUtils;
 public class SendRecordServiceImpl implements SendRecordService {
 	@Autowired
 	private SendRecordClusterMapper sendRecordClusterMapper;
-	
+	@Autowired
+	private SmsClient smsClient;
 	@Autowired
 	private SendRecordMasterMapper sendRecordMasterMapper;
-	
 	@Resource
 	private RedisService redisService;
 	@Autowired
@@ -59,9 +76,13 @@ public class SendRecordServiceImpl implements SendRecordService {
 	@Autowired
 	private TemplateEnClusterMapper templateEnClusterMapper;
 	@Autowired
+	private TemplateItemEnClusterMapper templateItemEnClusterMapper;
+	@Autowired
 	private TemplateItemEnMasterMapper templateItemEnMasterMapper;
-	/*@Autowired
-	private EnterpriseDealMapper enterpriseDealMapper;*/
+	@Autowired
+	private TemplateEnMasterMapper templateEnMasterMapper;
+	@Autowired
+	private EnterpriseDealClient enterpriseDealClient;
 	
 	@Autowired
 	private TemplateClusterMapper templateClusterMapper;
@@ -129,12 +150,12 @@ public class SendRecordServiceImpl implements SendRecordService {
 			this.sendRecordMasterMapper.save(sendRecord);
 			List<SendUser> sendUserList = new ArrayList<SendUser>();
 			for (String phone : set) {
-				//User user = getUser(phone);
+				ResUser user = getUser(phone);
 				SendUser couponSendUser = new SendUser();
 				couponSendUser.setCreateTime(new Date());
-				//couponSendUser.setUserId(user.getId());
+				couponSendUser.setUserId(user.getId());
 				couponSendUser.setRecordId(record.getId());
-				//couponSendUser.setUsername(user.getUsername());
+				couponSendUser.setUsername(user.getUsername());
 				couponSendUser.setTemplateId(record.getTemplateId());
 				sendUserList.add(couponSendUser);
 			}
@@ -191,21 +212,17 @@ public class SendRecordServiceImpl implements SendRecordService {
 	}
 
 	@Override
-	public int saveBusiness(ReqSendRecord record) {/*
-		Subject subject = SecurityUtils.getSubject();
-		Person person = (Person) subject.getSession().getAttribute("person");
-		record.setCreatorId(person.getId().intValue());
-		record.setCreatorName(person.getUsername());
+	public int saveBusiness(ReqSendRecord record) {
 		record.setCreateTime(new Date());
 		record.setType(0);
 		record.setSendTime(new Date());
 		record.setStatus(1);
-		
 		SendRecord sendRecord = ObjectUtils.copyObject(record, new SendRecord());
 		this.sendRecordMasterMapper.save(sendRecord);
 		ResTemplate template = this.templateEnClusterMapper.findById(record.getTemplateId());
 		List<ResTemplateItem> list = this.templateItemEnClusterMapper.findList(template.getId());
-		//EnterpriseDeal deal = this.enterpriseDealClusterMapper.findByDealNumber(template.getEnterpriseDealNumber());
+//		EnterpriseDeal deal = this.enterpriseDealClusterMapper.findByDealNumber(template.getEnterpriseDealNumber());
+		ResEnterpriseDeal deal = this.enterpriseDealClient.selectByDealNumber(template.getEnterpriseDealNumber());
 		Set<String> set = new HashSet<String>();
 		JSONArray jsonArray = JSONObject.parseArray(record.getPhoneJson());
 		for (Object object : jsonArray) {
@@ -213,11 +230,11 @@ public class SendRecordServiceImpl implements SendRecordService {
 			set.add(map.get("phone").toString());
 		}
 		//	判断优惠劵是否大于合同金额
-		BigDecimal dealPayAmount = new BigDecimal(new BigDecimal(deal.getDealPayAmount()).subtract(new BigDecimal(deal.getUsedDealPayAmount())).toString());	//	支付金额
-		BigDecimal dealGiftAmount = new BigDecimal(new BigDecimal(deal.getDealGiftAmount()).subtract(new BigDecimal(deal.getUserDealGiftAmount())).toString());  //	赠送金额
+		BigDecimal dealPayAmount = new BigDecimal(new BigDecimal(deal.getDealPayAmount()).subtract(deal.getUsedDealPayAmount()).toString());	//	支付金额
+		BigDecimal dealGiftAmount = new BigDecimal(new BigDecimal(deal.getDealGiftAmount()).subtract(deal.getUserDealGiftAmount()).toString());  //	赠送金额
 		int sendQuantityCount = 0;
-		dealPayAmount = dealPayAmount.subtract(new BigDecimal(template.getContractAmount()).multiply(new BigDecimal(set.size())));
-		dealGiftAmount = dealGiftAmount.subtract(new BigDecimal(template.getGivenAmount()).multiply(new BigDecimal(set.size())));
+		dealPayAmount = dealPayAmount.subtract(template.getContractAmount().multiply(new BigDecimal(set.size())));
+		dealGiftAmount = dealGiftAmount.subtract(template.getGivenAmount().multiply(new BigDecimal(set.size())));
 		if(dealPayAmount.compareTo(BigDecimal.ZERO) < 0){
 			throw new RuntimeException("订单金额不足0");
 		}
@@ -225,32 +242,32 @@ public class SendRecordServiceImpl implements SendRecordService {
 			throw new RuntimeException("赠送金额不足1");
 		}
 		List<Coupon> coupons = new ArrayList<>();
-		dealPayAmount = new BigDecimal(deal.getUsedDealPayAmount());
-		dealGiftAmount = new BigDecimal(deal.getUserDealGiftAmount());
-		dealPayAmount = dealPayAmount.add(new BigDecimal(template.getContractAmount()).multiply(new BigDecimal(set.size())));
-		dealGiftAmount = dealGiftAmount.add(new BigDecimal(template.getGivenAmount()).multiply(new BigDecimal(set.size())));
-		List<CouponSendUser> couponUsers = new ArrayList<>();
+		dealPayAmount = deal.getUsedDealPayAmount();
+		dealGiftAmount = deal.getUserDealGiftAmount();
+		dealPayAmount = dealPayAmount.add(template.getContractAmount().multiply(new BigDecimal(set.size())));
+		dealGiftAmount = dealGiftAmount.add(template.getGivenAmount().multiply(new BigDecimal(set.size())));
+		List<SendUser> couponUsers = new ArrayList<>();
 		Map<String,Map<String,String>> paramList = new HashMap<>();
 		List<String> username = new ArrayList<>();
 		for (String string : set) {
-			User user = getUser(string);
+			ResUser user = getUser(string);
 			username.add(user.getUsername());
-			CouponSendUser couponSendUser = new CouponSendUser();
+			SendUser couponSendUser = new SendUser();
 			couponSendUser.setCreateTime(new Date());
 			couponSendUser.setUserId(user.getId());
-			couponSendUser.setRecordId(record.getId());
+			couponSendUser.setRecordId(sendRecord.getId());
 			couponSendUser.setTemplateId(record.getTemplateId());
 			couponUsers.add(couponSendUser);
 		}
-		this.couponSendUserMapper.insertBatch(couponUsers);
+		this.sendUserMasterMapper.insertBatch(couponUsers);
 		for (int i = 0 ; i < couponUsers.size() ;i++) {
-			for (CouponTemplateItem ct : list) {
+			for (ResTemplateItem ct : list) {
 				for(int y = 0 ; y < ct.getQuantity();y++){
 					Coupon coupon = new Coupon();
 					coupon.setCreateTime(new Date());
 					coupon.setTemplateId(record.getTemplateId());
 					coupon.setUserId(couponUsers.get(i).getUserId());
-					coupon.setRecordId(record.getId());
+					coupon.setRecordId(sendRecord.getId());
 					coupon.setEnterpriseId(template.getEnterpriseId());
 					coupon.setItemId(ct.getId());
 					coupon.setDiscount(ct.getDiscount());
@@ -276,7 +293,7 @@ public class SendRecordServiceImpl implements SendRecordService {
 			//	发送短信通知
 			//smsService.send(username.get(i), 8,  SmsTemplateId.share_coupon_code, param);
 		}
-		this.couponMapper.insertBatch(coupons);
+		this.couponMasterMapper.insertBatch(coupons);
 		if(template.getSendQuantity() != null){
 			template.setSendQuantity(sendQuantityCount+template.getSendQuantity());
 		}else{
@@ -287,13 +304,24 @@ public class SendRecordServiceImpl implements SendRecordService {
 		calendar.setTime(new Date());
 		Date expiryTime = DateUtils.getPast2String(template.getValidDay(),calendar );
 		template.setExpiryTime(expiryTime);
-		this.couponTemplateEnService.update(template);
+		Template temp = new Template();
+		temp.setExpiryTime(temp.getExpiryTime());
+		temp.setStartTime(template.getStartTime());
+		temp.setSendQuantity(template.getSendQuantity());
+		temp.setId(template.getId());
+//		Template object = ObjectUtils.copyObject(template, new Template(),null,null,new String[] {"contractAmount","givenAmount","items"});
+//		object.setContractAmount(template.getContractAmount().doubleValue());
+//		object.setGivenAmount(template.getGivenAmount().doubleValue());
+		this.templateEnMasterMapper.updateByIdSelective(temp);
 		//	更新合同已使用金额
-		deal.setUsedDealPayAmount(dealPayAmount.doubleValue());
-		deal.setUserDealGiftAmount(dealGiftAmount.doubleValue());
-		this.enterpriseDealMapper.updateByPrimaryKey(deal);
+		deal.setUsedDealPayAmount(dealPayAmount);
+		deal.setUserDealGiftAmount(dealGiftAmount);
+		ReqEnterpriseDeal deal2 = ObjectUtils.copyObject(deal, new ReqEnterpriseDeal(),null,null,new String[] {"usedDealPayAmount","userDealGiftAmount"});
+		deal2.setUsedDealPayAmount(deal.getUsedDealPayAmount().doubleValue());
+		deal2.setUserDealGiftAmount(deal.getUserDealGiftAmount().doubleValue());
+		this.enterpriseDealClient.update(deal2);
 		sendMessage(paramList);
-	*/
+	
 		return 0;
 	}
 
@@ -305,36 +333,41 @@ public class SendRecordServiceImpl implements SendRecordService {
 			public void run() {
 				Set<Entry<String, Map<String, String>>> entrySet = paramList.entrySet();
 				for (Entry<String, Map<String, String>> entry : entrySet) {
-					//smsService.send(entry.getKey(), 8,  SmsTemplateId.share_coupon_code, entry.getValue());
+					ReqSms sms = new ReqSms();
+					sms.setMobile(entry.getKey());
+					sms.setParam( entry.getValue());
+					sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+					smsClient.send(sms);
 				}
 			}
 		}.run();
 	}
 
-	/*private ResUser getUser(String phone){
+	private ResUser getUser(String phone){
 		ResUser user = null;
 		Map<String, Object> param = new HashMap<>();
 		param.put("userName", phone);
-		user = this.userClient..getUserByUserName(param);
+		user = this.userClient.getUserByUserName(phone);
 		if (user != null) {
 			return user;
 		} else {
-			user = new User();
+			user = new ResUser();
 			user.setMobile(phone);
 			user.setUsername(phone);
-			user.setStatus(0);
-			user.setUserType(1);
+			user.setStatus("0");
+			user.setUserType("1");
 			user.setCreateTime(new Date());
-			this.userMapper.insertAndGetId(user);
-			return user;
+			return this.userClient.save(user);
 		}
-	}*/
+	}
 	@Override
-	public void timingForSend() {/*
-		List<CouponSendRecord> recordList = this.couponSendRecordMapper.findTaskList();
-		for(CouponSendRecord couponSendRecord :recordList){
+	public void timingForSend() {
+		List<SendRecord> recordList = this.sendRecordClusterMapper.findTaskList();
+		for(SendRecord couponSendRecord :recordList){
 			if(couponSendRecord.getTaskTime().compareTo(new Date()) <= 0 ){
-				String phoneJson = this.redisTemplate.opsForValue().get(RedisKey.COUPON_SEND_RECORD_MOBILE + couponSendRecord.getId());
+				Object object = this.redisService.get(RedisKey.COUPON_SEND_RECORD_MOBILE.key + couponSendRecord.getId());
+				if(object != null) {
+				String phoneJson = object.toString();
 				String[] list = phoneJson.split(",");
 				Set<String> set = new HashSet<String>();
 				for (String phone : list) {
@@ -342,12 +375,12 @@ public class SendRecordServiceImpl implements SendRecordService {
 						set.add(phone);
 					}
 				}
-				CouponTemplate temp = this.couponTemplateMapper.find(couponSendRecord.getTemplateId());
-				List<CouponTemplateItem> items = couponTemplateItemMapper.findList(couponSendRecord.getTemplateId());
-				List<CouponSendUser> sendUserList = new ArrayList<CouponSendUser>();
+				ResTemplate temp = this.templateClusterMapper.findById(couponSendRecord.getTemplateId());
+				List<ResTemplateItem> items = templateItemClusterMapper.findList(couponSendRecord.getTemplateId());
+				List<SendUser> sendUserList = new ArrayList<SendUser>();
 				for (String phone : set) {
-					User user = getUser(phone);
-					CouponSendUser couponSendUser = new CouponSendUser();
+					ResUser user = getUser(phone);
+					SendUser couponSendUser = new SendUser();
 					couponSendUser.setCreateTime(new Date());
 					couponSendUser.setUserId(user.getId());
 					couponSendUser.setRecordId(couponSendRecord.getId());
@@ -355,13 +388,13 @@ public class SendRecordServiceImpl implements SendRecordService {
 					couponSendUser.setTemplateId(couponSendRecord.getTemplateId());
 					sendUserList.add(couponSendUser);
 				}
-				this.couponSendUserMapper.insertBatch(sendUserList);
+				this.sendRecordMasterMapper.insertBatch(sendUserList);
 				
 				List<Coupon> couponList = new ArrayList<Coupon>();
 				Coupon coupon = null;
-				for(CouponSendUser couponSendUser :sendUserList){
+				for(SendUser couponSendUser :sendUserList){
 					
-					for (CouponTemplateItem item : items) {
+					for (ResTemplateItem item : items) {
 						//停车券里配置多少张发送多少张
 						for (int i = 0; i < item.getQuantity(); i++) {
 							coupon = new Coupon();
@@ -382,20 +415,24 @@ public class SendRecordServiceImpl implements SendRecordService {
 						}
 					}
 				}
-				couponMapper.insertBatch(couponList);
-				for(CouponSendUser couponSendUser :sendUserList){
+				couponMasterMapper.insertBatch(couponList);
+				for(SendUser couponSendUser :sendUserList){
 					Map<String, String> param = new HashMap<String, String>();
 					param.put("money", temp.getUnitAmount().toString());
 					param.put("enterprise","凌猫停车");
-					smsService.send(couponSendUser.getUsername(), 8,  SmsTemplateId.share_coupon_code, param);
+					ReqSms sms = new ReqSms();
+					sms.setMobile(couponSendUser.getUsername());
+					sms.setParam(param);
+					sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+					smsClient.send(sms);
 				}
-				
 				//已结束
 				couponSendRecord.setStatus(1);
 				couponSendRecord.setSendTime(new Date());
-				this.couponSendRecordMapper.updateByPrimaryKey(couponSendRecord);
-				redisTemplate.delete(RedisKey.USER_GROUP_IDS+couponSendRecord.getId());
+				this.sendRecordMasterMapper.update(couponSendRecord);
+				redisService.remove(RedisKey.USER_GROUP_IDS.key+couponSendRecord.getId());
+			}
 			}
 		}
-	*/}
+	}
 }

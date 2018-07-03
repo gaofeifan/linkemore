@@ -182,6 +182,10 @@ public class PayServiceImpl implements PayService {
 	public ResPayCheckout checkout(Long orderId, HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ResUserOrder order = this.ordersClusterMapper.findUserLatest(cu.getId());
+		if(!(order.getStatus().intValue() == OrderStatus.UNPAID.value || order.getStatus().intValue() == OrderStatus.SUSPENDED.value)) {
+			log.error("confirm order.status {}"+ order.getStatus());
+			throw new BusinessException(StatusEnum.ORDER_CHECK_EXPIRE);
+		}
 		log.info("order:{}",JsonUtil.toJson(order));
 		log.info("orderId:{},userId:{}",orderId,cu.getId());
 		log.info("order==null:{},order.getUserId()!=userId:{}",order==null,order.getUserId()!=cu.getId());
