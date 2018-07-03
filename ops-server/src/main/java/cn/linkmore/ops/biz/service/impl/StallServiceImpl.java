@@ -1,6 +1,8 @@
 package cn.linkmore.ops.biz.service.impl;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +14,9 @@ import cn.linkmore.ops.biz.service.StallService;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
+import cn.linkmore.prefecture.response.ResStallOps;
 
 /**
  * 车位
@@ -78,4 +82,11 @@ public class StallServiceImpl implements StallService {
 	public void changedDown(Long id) {
 		this.stallClient.changedDown(id);
 	}
+
+	@Override
+	public List<ResStallOps> findList(Map<String, Object> param) {
+		return this.stallClient.findList(param);
+	}
+	
+	
 }
