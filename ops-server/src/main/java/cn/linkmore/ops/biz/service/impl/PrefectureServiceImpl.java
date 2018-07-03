@@ -14,6 +14,7 @@ import cn.linkmore.common.client.DistrictClient;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.response.ResDistrict;
 import cn.linkmore.common.response.ResOldDict;
+import cn.linkmore.ops.biz.response.ResPrefecture;
 import cn.linkmore.ops.biz.service.PrefectureService;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
@@ -24,6 +25,7 @@ import cn.linkmore.prefecture.response.ResFeeStrategy;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.util.ObjectUtils;
 
 @Service
 public class PrefectureServiceImpl implements PrefectureService {
@@ -164,5 +166,13 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public ResPrefectureDetail checkName(String preName) {
 		return this.prefectureClient.checkName(preName);
 	}
+
+	@Override
+	public List<cn.linkmore.prefecture.response.ResPrefecture> findPreList() {
+		List<cn.linkmore.prefecture.response.ResPrefecture> preList = this.prefectureClient.findPreList();
+		return preList;
+	}
+	
+	
 
 }
