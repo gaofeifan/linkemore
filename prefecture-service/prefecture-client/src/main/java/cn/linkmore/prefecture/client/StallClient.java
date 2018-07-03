@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.client;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,7 @@ import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
+import cn.linkmore.prefecture.response.ResStallOps;
 /**
  * 远程调用 - 车位操作
  * @author jiaohanbin
@@ -134,4 +137,8 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/save_bind", method = RequestMethod.POST)
 	@ResponseBody
 	public void saveAndBind(@RequestParam("preId") Long preId,@RequestParam("stallName") String stallName,@RequestParam("sn") String sn);
+	
+	@RequestMapping(value = "/v2.0/find-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStallOps> findList(Map<String, Object> param);
 }

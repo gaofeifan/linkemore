@@ -113,6 +113,12 @@ public class PrefectureClientHystrix implements PrefectureClient {
 		log.info("prefecture service pres checkName(preName) hystrix");
 		return null;
 	}
+	@Override
+	public List<ResPrefecture> findPreList() {
+		log.info("prefecture service pres findPreList() hystrix");
+		return null;
+	}
+	
 	
 	
 

@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
+import cn.linkmore.prefecture.response.ResStallOps;
 /**
  * 远程调用实现 - 车位信息
  * @author jiaohanbin
@@ -129,4 +132,12 @@ public class StallClientHystrix implements StallClient {
 	public void saveAndBind(Long preId, String stallName, String sn) {
 		log.info("prefecture service stall saveAndBind() hystrix");
 	}
+
+	@Override
+	public List<ResStallOps> findList(Map<String, Object> param) {
+		log.info("prefecture service List<ResStallOps> findList(Map<String, Object> param) hystrix");
+		return null;
+	}
+	
+	
 }

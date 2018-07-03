@@ -160,5 +160,9 @@ public interface PrefectureClient {
 	@RequestMapping(value = "/v2.0/check_name", method = RequestMethod.POST)
 	@ResponseBody
 	public ResPrefectureDetail checkName(@RequestParam("preName") String preName);
+
+	@RequestMapping(value = "/v2.0/pre-list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResPrefecture> findPreList();
 		
 }
