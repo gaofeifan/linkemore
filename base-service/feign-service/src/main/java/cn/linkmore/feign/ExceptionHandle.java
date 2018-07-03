@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -52,7 +53,10 @@ public class ExceptionHandle {
 			HttpServletResponse response) { 
 		response.setStatus(200);
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8"); 
+		response.setContentType("application/json; charset=utf-8");
+		if(ex.getConstraintViolations().size() != 0) {
+			return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION.code,ex.getConstraintViolations().iterator().next().getMessage(),request);
+		}
 		return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request); 
 	}
 	
