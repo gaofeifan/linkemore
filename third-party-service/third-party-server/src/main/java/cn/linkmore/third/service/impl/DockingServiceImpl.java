@@ -1,7 +1,6 @@
 package cn.linkmore.third.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.third.config.DockingConfig;
@@ -15,10 +14,20 @@ public class DockingServiceImpl implements DockingService {
 	@Autowired
 	private DockingConfig dockConfig;
 
-	@Override
-	@Async
+	class OrderThread extends Thread{
+		private ReqOrder ro;
+		public OrderThread(ReqOrder ro) {
+			this.ro = ro;
+		}
+		public void run() {
+			HttpUtil.sendJson(dockConfig.getOrderUrl(), JsonUtil.toJson(ro)); 
+		} 
+	}
+	
+	@Override 
 	public void order(ReqOrder ro) {
-		HttpUtil.sendJson(dockConfig.getOrderUrl(), JsonUtil.toJson(ro)); 
+		Thread thread = new OrderThread(ro);
+		thread.start();
 	} 
 	
 }

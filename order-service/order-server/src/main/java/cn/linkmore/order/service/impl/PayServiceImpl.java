@@ -704,11 +704,30 @@ public class PayServiceImpl implements PayService {
 		//结账调用新版推送消息 
 		Thread thread = new ProduceCheckBookingThread(order);
 		thread.start();
-		push(order.getUserId().toString(),"订单支付通知","支付成功",PushType.ORDER_COMPLETE_NOTICE,true); 
+		thread = new PushThread(order.getUserId().toString(),"订单支付通知","支付成功",PushType.ORDER_COMPLETE_NOTICE,true); 
+		thread.start();
 	}
 	
-	@Async
-	private void push(String uid,String title,String content,PushType type,Boolean status) {
+	class PushThread extends Thread{
+		private String uid;
+		private String title;
+		private String content;
+		private PushType type;
+		private Boolean status;
+		public PushThread(String uid,String title,String content,PushType type,Boolean status) {
+			this.uid = uid;
+			this.title = title;
+			this.content = content;
+			this.type = type;
+			this.status = status;
+		}
+		public void run() {
+			send( uid, title, content, type, status);
+		}
+		
+	}
+	 
+	private void send(String uid,String title,String content,PushType type,Boolean status) {
 		Token token = (Token)this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key+uid.toString());
 		if(token.getClient().intValue()==ClientSource.WXAPP.source) {
 			Map<String,Object> map = new HashMap<String,Object>();
