@@ -88,10 +88,7 @@ public class UserServiceImpl implements UserService {
 
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	private final static long SPACE = 1000L*60*30;
-	
-	private final static String TEST_MOBILE= "18511509492|18801243820|18010161135|18510770300|18612100125|17800242258|13693544138|18810796650|18334787583|18514410536";
-
+	private final static long SPACE = 1000L*60*30; 
 	public static final String CAR_BRAND_LIST = "CAR_BRAND_LIST";
 	@Autowired
 	private AppWechatClient appWechatClient;
@@ -536,12 +533,12 @@ public class UserServiceImpl implements UserService {
 			last.setAccessToken(key);
 		}
 		user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user); 
+		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
 		Token token = new Token();
 		token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 		token.setTimestamp(new Date().getTime());
 		token.setAccessToken(key);
-		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token); 
+		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
 		return last;
 	}
 	
@@ -647,8 +644,9 @@ public class UserServiceImpl implements UserService {
 	 * @param ru 用户信息
 	 */
 	private void updateCache(HttpServletRequest request, CacheUser ru){
-		String key = TokenUtil.getKey(request);
-		this.redisService.set(RedisKey.USER_APP_AUTH_USER.key+key, ru); 
+		String key = TokenUtil.getKey(request); 
+		ru.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
+		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, ru,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
 	}
 
 	@Override
@@ -867,6 +865,11 @@ public class UserServiceImpl implements UserService {
 			param.put("updateTime", new Date());
 			this.userMasterMapper.updateLoginTime(param);
 		}
+		CacheUser cu = this.getCacheUser(request);
+		UserInfo ui = this.userInfoClusterMapper.find(cu.getOpenId());
+		ui.setUserId(user.getId());
+		ui.setBindTime(new Date());
+		this.userInfoMasterMapper.update(ui);
 		String key = TokenUtil.getKey(request); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
 		ru.setId(user.getId());
@@ -877,12 +880,9 @@ public class UserServiceImpl implements UserService {
 		ru.setAlias("u"+user.getId());
 		List<String> tags = new ArrayList<String>();
 		tags.add("miniuser");
-		ru.setTags(tags);
-		CacheUser cu = new CacheUser(); 
-		cu.setId(user.getId());
-		cu.setMobile(user.getUsername());
-		cu.setToken(key);  
-		this.cacheUser(request, cu);  
+		ru.setTags(tags); 
+		cu.setMobile(user.getUsername()); 
+		this.updateCache(request, cu);
 		return ru; 
 	}
 

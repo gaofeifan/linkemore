@@ -541,7 +541,7 @@ public class OrdersServiceImpl implements OrdersService {
 		this.orderMasterMapper.updateLockStatus(param); 
 		log.info("stall downing :{}",switchStatus); 
 		if(switchStatus) {
-			Long count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
+//			Long count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
 //			if(count>0) {
 				this.push(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
 //			}  
@@ -672,12 +672,15 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public void downResult( HttpServletRequest request) {
+	public Integer downResult( HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); 
-		if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+orders.getId())) {
-			throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
-		} 
+		Integer count = 0;
+		Object o =  this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key+orders.getId());
+		if(o!=null) {
+			count = new Integer(o.toString());
+		}
+		return count;
 	}
 
 	@Override

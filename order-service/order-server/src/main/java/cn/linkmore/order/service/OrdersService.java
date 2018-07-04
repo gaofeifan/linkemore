@@ -75,7 +75,7 @@ public interface OrdersService {
 	 * @param ros
 	 * @param request
 	 */
-	void downResult(HttpServletRequest request);
+	Integer downResult(HttpServletRequest request);
 
 	/**
 	 * @Description  降锁消息推送
