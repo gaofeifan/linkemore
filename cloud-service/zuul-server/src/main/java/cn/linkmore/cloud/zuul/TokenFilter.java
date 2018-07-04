@@ -42,6 +42,7 @@ public class TokenFilter extends ZuulFilter {
 			add("/swagger-resources/configuration/security");
 			add("/api-docs");
 			add("/v2/api-docs");
+			add("/app/versions/v2.0/current");
 			add("/app/mini/v2.0/login");
 			add("/app/auth/v2.0/login");
 			add("/app/auth/v2.0/wechat");
