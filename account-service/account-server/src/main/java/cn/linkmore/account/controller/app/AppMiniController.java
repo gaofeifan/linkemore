@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.controller.app.response.ResUser;
 import cn.linkmore.account.service.UserService;
-import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.TokenUtil;
@@ -121,7 +121,6 @@ public class AppMiniController {
         SecretKeySpec keySpec = new SecretKeySpec(Base64.decodeBase64(key), "AES");
         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec); 
         return new String(cipher.doFinal(Base64.decodeBase64(encData)),"UTF-8");
-    }
-
+    } 
 	
 }
