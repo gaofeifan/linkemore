@@ -5,7 +5,7 @@ spring:
     name: order-server
   boot: 
     admin:
-      url: http://192.168.1.232:6002
+      url: http://192.168.1.223:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -15,7 +15,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.232:6003/eureka/ 
+      defaultZone: http://192.168.1.223:6003/eureka/ 
 feign:
   hystrix:
     enabled: true
@@ -79,6 +79,12 @@ redis:
   test-on-create: true 
   sentinel-master: mymaster
   sentinel-nodes: 192.168.1.219:26379 
+  
+base: 
+  online: false
+  order-number: 4
+  recharge-number: 4
+  trade-number: 4
 
 swagger:
   enable: true

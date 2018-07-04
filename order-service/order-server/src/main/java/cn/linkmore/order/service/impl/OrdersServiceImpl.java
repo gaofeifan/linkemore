@@ -46,7 +46,9 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
+import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqBooking;
+import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
@@ -58,7 +60,6 @@ import cn.linkmore.order.dao.master.OrdersMasterMapper;
 import cn.linkmore.order.dao.master.StallAssignMasterMapper;
 import cn.linkmore.order.entity.Booking;
 import cn.linkmore.order.entity.Orders;
-import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrderExcel;
@@ -87,6 +88,9 @@ import cn.linkmore.util.TokenUtil;
 public class OrdersServiceImpl implements OrdersService { 
 	
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private BaseConfig baseConfig;
 	 
 	@Autowired
 	private PrefectureClient prefectureClient;
@@ -149,7 +153,7 @@ public class OrdersServiceImpl implements OrdersService {
 		Date day = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long increment = this.redisService.increment(RedisKey.ORDER_SERIAL_NUMBER.key+sdf.format(day), 1);
-		Double t = Math.pow(10,5);
+		Double t = Math.pow(10,baseConfig.getOrderNumber());
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
 		number.append(t.intValue()+increment);

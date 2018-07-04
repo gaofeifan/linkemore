@@ -37,6 +37,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
+import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqPayConfirm;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.controller.app.response.ResPayCheckout;
@@ -101,6 +102,9 @@ import cn.linkmore.util.XMLUtil;
 public class PayServiceImpl implements PayService {
 	
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private BaseConfig baseConfig;
 	
 	@Autowired
 	private StallClient stallClient; 
@@ -471,7 +475,7 @@ public class PayServiceImpl implements PayService {
 				wechat.setAmount(rechargeRecord.getPaymentAmount().doubleValue());
 				wechat.setNumber(rechargeRecord.getCode());
 				wechat.setOpenId(cu.getOpenId());
-				ResWechatMiniOrder mini = this.wechatMiniClient.order(wechat);
+				ResWechatMiniOrder mini = this.wechatMiniClient.order(wechat); 
 				confirm = new ResOrderConfirm();
 				confirm.setAmount(rechargeRecord.getPaymentAmount()); 
 				confirm.setNumber(rechargeRecord.getCode()); 
@@ -578,7 +582,7 @@ public class PayServiceImpl implements PayService {
 		Date day = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long increment = this.redisService.increment(RedisKey.ORDER_RECHARGE_SERIAL_NUMBER.key+sdf.format(day), 1);
-		Double t = Math.pow(10,5);
+		Double t = Math.pow(10,baseConfig.getRechargeNumber());
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
 		number.append(t.intValue()+increment);
@@ -589,7 +593,7 @@ public class PayServiceImpl implements PayService {
 		Date day = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long increment = this.redisService.increment(RedisKey.ORDER_TRADE_SERIAL_NUMBER.key+sdf.format(day), 1);
-		Double t = Math.pow(10,5);
+		Double t = Math.pow(10,baseConfig.getTradeNumber());
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
 		number.append(t.intValue()+increment);
