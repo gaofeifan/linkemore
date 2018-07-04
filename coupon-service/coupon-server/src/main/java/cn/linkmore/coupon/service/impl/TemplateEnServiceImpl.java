@@ -400,8 +400,8 @@ public class TemplateEnServiceImpl implements TemplateEnService {
 				items.add(item);
 			}
 			oct.setItems(items);
-			oct.setContractAmount(contractAmount.doubleValue());
-			oct.setGivenAmount(givenAmount.doubleValue());
+			oct.setContractAmount(contractAmount);
+			oct.setGivenAmount(givenAmount);
 			oct.setSendQuantity(0);
 			oct.setUnitCount(unitCount);
 			oct.setUnitAmount(unitAmount);

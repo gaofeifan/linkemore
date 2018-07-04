@@ -242,7 +242,6 @@ public class TemplateServiceImpl implements TemplateService {
 			/*item.setDeleteStatus(1);
 			couponTemplateItemMapper.updateByPrimaryKey(item);*/
 		}
-		reqTemp.setSendQuantity(0);
 		reqTemp.setUnitCount(unitCount);
 		reqTemp.setUnitAmount(unitAmount);
 		reqTemp.setTotalAmount(reqTemp.getUnitAmount().multiply(new BigDecimal(reqTemp.getTotalQuantity())));

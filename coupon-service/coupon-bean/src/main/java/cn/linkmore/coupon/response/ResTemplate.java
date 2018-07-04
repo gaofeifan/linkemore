@@ -1,10 +1,7 @@
 package cn.linkmore.coupon.response;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import cn.linkmore.coupon.request.ReqTemplateItem;
 
 public class ResTemplate {
 	private Long id;
