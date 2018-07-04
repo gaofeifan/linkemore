@@ -69,4 +69,6 @@ public interface VehicleMarkManageService {
 
 	int update(ReqVehicleMark bean);
 
+	List<ResVechicleMark> findResList(Long userId);
+
 }

@@ -56,10 +56,10 @@ public class FeignVehicleMarkController{
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	/*@RequestMapping(value = "/v2.0/{userId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/{userId}", method = RequestMethod.GET)
 	public List<ResVechicleMark> list(@PathVariable("userId")Long userId){
 		return vehicleMarkManageService.findResList(userId);
-	}*/
+	}
 	
 	/**
 	 * @Description  根据id查询

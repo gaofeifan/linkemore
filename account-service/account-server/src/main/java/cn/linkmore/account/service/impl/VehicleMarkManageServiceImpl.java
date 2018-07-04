@@ -85,6 +85,8 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 		}
 		throw new RuntimeException("该账户下没有此车牌号");
 	}
+	
+	
 
 /*
 	@Override
@@ -111,6 +113,11 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 		this.deleteById(v);
 	}*/
 	
+	@Override
+	public List<ResVechicleMark> findResList(Long userId) {
+		return this.vehicleMarkManageClusterMapper.findResList(userId);
+	}
+
 	private CacheUser getCache(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		return (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
