@@ -67,7 +67,7 @@ public class ResTemplate {
 
     private BigDecimal givenAmount;
 
-    private Long deleteStatus;
+    private Integer deleteStatus;
     /**
      * 停车券项
      */
@@ -369,11 +369,11 @@ public class ResTemplate {
         this.givenAmount = givenAmount;
     }
 
-    public Long getDeleteStatus() {
+    public Integer getDeleteStatus() {
         return deleteStatus;
     }
 
-    public void setDeleteStatus(Long deleteStatus) {
+    public void setDeleteStatus(Integer deleteStatus) {
         this.deleteStatus = deleteStatus;
     }
 

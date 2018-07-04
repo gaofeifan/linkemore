@@ -97,7 +97,8 @@ public class Constants {
 		SMS_CODE_SEND_SPACE(60), 
 		SMS_CODE_EXP_TIME(600),
 		STALL_LOCK_BOOKING_EXP_TIME(60),
-		STALL_DOWN_FAIL_EXP_TIME(60 * 60);
+		STALL_DOWN_FAIL_EXP_TIME(60 * 60),
+		COUPON_SEND_COUNT_EXP_TIME(60 * 60 * 24);
 		public int time;
 
 		private ExpiredTime(int time) {
@@ -252,6 +253,7 @@ public class Constants {
 		ORDER_TRADE_SERIAL_NUMBER("order:trade:serial_number:"),
 		ORDER_RECHARGE_SERIAL_NUMBER("order:recharge:serial_number:"),
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
+		ORDER_SWITCH_STALL_FAILED_COUNT("order:switch-stall-failure:count"),
 		PREFECTURE_FREE_STALL("prefecture:free_stall:"),
 		PREFECTURE_BUSY_STALL("prefecture:busy_stall:"),
 		WECHAT_TOKEN_KEY("wechat_token"),

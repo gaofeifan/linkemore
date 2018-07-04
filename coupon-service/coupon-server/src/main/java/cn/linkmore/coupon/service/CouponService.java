@@ -56,5 +56,11 @@ public interface CouponService {
 	 * @return
 	 */
 	List<cn.linkmore.coupon.controller.app.response.ResCoupon> paymentList(HttpServletRequest request);
+	/**
+	 * App接口发送优惠券
+	 * @param userId
+	 * @return
+	 */
+	boolean send(Long userId);
 
 }

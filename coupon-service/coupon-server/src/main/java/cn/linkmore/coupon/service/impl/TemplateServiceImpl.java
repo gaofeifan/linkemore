@@ -138,7 +138,7 @@ public class TemplateServiceImpl implements TemplateService {
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject json = jsonArray.getJSONObject(i);
 				TemplateItem item = initCouponTemplateItem(json);
-				item.setTemplateId(reqTemp.getId());
+				item.setTemplateId(temp.getId());
 				unitCount += item.getQuantity();
 				unitAmount = unitAmount.add(item.getFaceAmount().multiply(new BigDecimal(item.getQuantity())));
 				templateItemMasterMapper.save(item);
@@ -224,6 +224,7 @@ public class TemplateServiceImpl implements TemplateService {
 				JSONObject json = jsonArray.getJSONObject(i);
 				TemplateItem item = initEditCouponTemplateItem(json);
 				item.setTemplateId(reqTemp.getId());
+				item.setDeleteStatus(0);
 				unitCount += item.getQuantity();
 				unitAmount = unitAmount.add(item.getFaceAmount().multiply(new BigDecimal(item.getQuantity())));
 				if(item.getId()!=null){
@@ -252,7 +253,7 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public int delete(Long id) {
 		ResTemplate resTemplate = this.templateClusterMapper.findById(id);
-		resTemplate.setDeleteStatus(1L);
+		resTemplate.setDeleteStatus(1);
 		Template template = ObjectUtils.copyObject(resTemplate, new Template());
 		return this.templateMasterMapper.update(template);
 	}
@@ -281,7 +282,9 @@ public class TemplateServiceImpl implements TemplateService {
 			Qrc qrc = new Qrc();
 			qrc.setCreateTime(new Date());
 			qrc.setName(temp.getName());
-			qrc.setOperatorId(temp.getCreatorId().longValue());
+			if(temp.getCreatorId()!=null) {
+				qrc.setOperatorId(temp.getCreatorId().longValue());
+			}
 			qrc.setStatus((short) 1L);
 			qrc.setTemplateId(temp.getId());
 			this.qrcMasterMapper.save(qrc);

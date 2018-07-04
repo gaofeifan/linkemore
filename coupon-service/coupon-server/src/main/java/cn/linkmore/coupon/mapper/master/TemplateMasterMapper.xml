@@ -45,7 +45,7 @@
     delete from t_coupon_template
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.coupon.entity.Template">
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.Template"  useGeneratedKeys="true" keyProperty="id">
     insert into t_coupon_template (id, name, remark, 
       type, enterprise_id, total_quantity, 
       unit_count, unit_amount, total_amount, 

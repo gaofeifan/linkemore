@@ -15,4 +15,9 @@ public interface SubjectClusterMapper {
 	List<ResSubjectBean> findPage(Map<String, Object> param);
 
 	Integer check(Map<String, Object> param);
+	/**
+	 * 查询新专题列表
+	 * @return
+	 */
+	List<ResSubject> findSubjectList();
 }

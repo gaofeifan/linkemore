@@ -46,6 +46,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
+import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
@@ -135,6 +136,8 @@ public class OrdersServiceImpl implements OrdersService {
 	@Autowired
 	private DockingClient dockingClient;
 	
+	@Autowired
+	private CouponClient couponClient;
 	
 	public boolean checkCarFree(String carno) {
 		boolean flag = true;
@@ -628,6 +631,8 @@ public class OrdersServiceImpl implements OrdersService {
 				new CancelStallThread(order.getStallId()).start();
 				Thread thread = new PushThread(order.getUserId().toString(), "订单通知","无空闲车位,订单已关闭",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
 				thread.start();
+				//关闭订单发送优惠券功能
+				couponClient.send(cu.getId());
 			}else {
 				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
 				log.info("get switch stall sn:{}",sn);

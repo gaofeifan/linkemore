@@ -55,4 +55,12 @@ public interface CouponClient {
 	@RequestMapping(value = "/v2.0/order", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ResCoupon> order(@RequestParam(value="userId") Long userId,@RequestParam(value="orderId") Long orderId);
+	/**
+	 * 降锁失败切换车位失败后关闭订单发送优惠券功能
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/send", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean send(@RequestParam(value="userId") Long userId);
 }
