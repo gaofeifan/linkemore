@@ -65,17 +65,23 @@ public class WebSocketServer {
     
     @OnOpen
     public void onOpen(@PathParam("token") String token,Session session) {
-    	RedisService redisService = SpringUtil.getBean(RedisService.class); 
+//    	RedisService redisService = SpringUtil.getBean(RedisService.class); 
     	Boolean success = false;
     	log.info("A websokcet connceted:{}",token);  
-    	if(redisService.exists(RedisKey.USER_APP_AUTH_USER.key+token)) {
-    		this.token = token;
-            this.session = session;
-            webSocketMap.put(this.token,this); 
-            addOnlineCount();  
-            log.info("new user added！current user count :{}" ,getOnlineCount());
-            success = true;
-    	} 
+//    	if(redisService.exists(RedisKey.USER_APP_AUTH_USER.key+token)) {
+//    		this.token = token;
+//            this.session = session;
+//            webSocketMap.put(this.token,this); 
+//            addOnlineCount();  
+//            log.info("new user added！current user count :{}" ,getOnlineCount());
+//            success = true;
+//    	} 
+    	this.token = token;
+        this.session = session;
+        webSocketMap.put(this.token,this); 
+        addOnlineCount();  
+        log.info("new user added！current user count :{}" ,getOnlineCount());
+        success = true;
     	try {
        	 sendMessage(success.toString());
        	new PushThread(this).start();

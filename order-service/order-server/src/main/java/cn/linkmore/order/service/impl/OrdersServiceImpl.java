@@ -46,7 +46,9 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
+import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqBooking;
+import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
@@ -58,7 +60,6 @@ import cn.linkmore.order.dao.master.OrdersMasterMapper;
 import cn.linkmore.order.dao.master.StallAssignMasterMapper;
 import cn.linkmore.order.entity.Booking;
 import cn.linkmore.order.entity.Orders;
-import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrderExcel;
@@ -87,6 +88,9 @@ import cn.linkmore.util.TokenUtil;
 public class OrdersServiceImpl implements OrdersService { 
 	
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private BaseConfig baseConfig;
 	 
 	@Autowired
 	private PrefectureClient prefectureClient;
@@ -149,7 +153,7 @@ public class OrdersServiceImpl implements OrdersService {
 		Date day = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long increment = this.redisService.increment(RedisKey.ORDER_SERIAL_NUMBER.key+sdf.format(day), 1);
-		Double t = Math.pow(10,5);
+		Double t = Math.pow(10,baseConfig.getOrderNumber());
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
 		number.append(t.intValue()+increment);
@@ -157,9 +161,8 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 	private static Set<Long> ORDER_USER_SET = new HashSet<Long>();
 	
-	@Async
 	@Transactional(rollbackFor = RuntimeException.class)
-	public void create(ReqBooking rb,HttpServletRequest request) {  
+	private void order(ReqBooking rb,HttpServletRequest request) { 
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ResStallEntity stall = null;
 		Orders o = null;
@@ -369,8 +372,27 @@ public class OrdersServiceImpl implements OrdersService {
 				content = "订单预约成功";  
 				status = true;
 			}  
-			push(cu.getId().toString(),"车位预约通知",content,PushType.ORDER_CREATE_NOTICE,status);
+			thread = new PushThread(cu.getId().toString(),"车位预约通知",content,PushType.ORDER_CREATE_NOTICE,status);
+			thread.start();
 		} 
+			
+	}
+	
+	class OrderThread extends Thread{
+		private ReqBooking rb;
+		private HttpServletRequest request;
+		public OrderThread(ReqBooking rb,HttpServletRequest request) {
+			this.rb = rb;
+			this.request = request;
+		}
+		public void run() {
+			order(rb,request);
+		}
+	} 
+	
+	public void create(ReqBooking rb,HttpServletRequest request) {
+		Thread thread = new OrderThread(rb,request);
+		thread.start();
 	}
 	public ResUserOrder findStallLatestOrder(Long stallId) {
 		return this.ordersClusterMapper.findStallLatest(stallId); 
@@ -465,6 +487,25 @@ public class OrdersServiceImpl implements OrdersService {
 		detail.copy(order); 
 		return detail; 
 	}
+	
+	class PushThread extends Thread{
+		private String uid;
+		private String title;
+		private String content;
+		private PushType type;
+		private Boolean status;
+		public PushThread(String uid,String title,String content,PushType type,Boolean status) {
+			this.uid = uid;
+			this.title = title;
+			this.content = content;
+			this.type = type;
+			this.status = status;
+		}
+		public void run() {
+			send(uid, title, content, type, status);
+		}
+		
+	}
 	/**
 	 * 推送消息
 	 * @param uid 
@@ -472,10 +513,9 @@ public class OrdersServiceImpl implements OrdersService {
 	 * @param content
 	 * @param type
 	 * @param res
-	 */
-	@Async
-	private void push(String uid,String title,String content,PushType type,Boolean status) {
-		Token token = (Token)this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key+uid.toString()); 
+	 */  
+	private void send(String uid,String title,String content,PushType type,Boolean status) {
+		Token token = (Token)redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key+uid.toString()); 
 		if(token.getClient().intValue()==ClientSource.WXAPP.source) {
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("title", title);
@@ -491,15 +531,11 @@ public class OrdersServiceImpl implements OrdersService {
 			rp.setClient(token.getClient());
 			rp.setType(type);
 			rp.setData(status.toString());
-			this.pushClient.push(rp);
-		}
-		
+			pushClient.push(rp);
+		} 
 	}
-	
-	@Override
-	@Async
 	@Transactional(rollbackFor = RuntimeException.class)
-	public void down(ReqOrderStall ros,HttpServletRequest request) {
+	private void downStall(ReqOrderStall ros,HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
 		Boolean switchStatus = ros.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value&&order.getUserId().longValue()==cu.getId().longValue();
@@ -516,6 +552,23 @@ public class OrdersServiceImpl implements OrdersService {
 			} 
 			this.stallClient.downlock(stall);   
 		}
+	}
+	class DownThread extends Thread{
+		private ReqOrderStall ros;
+		private HttpServletRequest request;
+		public DownThread(ReqOrderStall ros,HttpServletRequest request) {
+			this.ros = ros;
+			this.request = request;
+		}
+		public void run() {
+			downStall(ros,request);
+		}
+	}
+	
+	@Override 
+	public void down(ReqOrderStall ros,HttpServletRequest request) {
+		Thread thread = new DownThread(ros,request);
+		thread.start();
 	}
 	
 	@Override
@@ -536,13 +589,12 @@ public class OrdersServiceImpl implements OrdersService {
 		param.put("orderId", order.getId());
 		this.orderMasterMapper.updateLockStatus(param); 
 		log.info("stall downing :{}",switchStatus); 
-		if(switchStatus) {
-			Long count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
-//			if(count>0) {
-				this.push(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
-//			}  
+		if(switchStatus) { 
+			Thread thread = new PushThread(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
+			thread.start();
 		}else{
-			this.push(order.getUserId().toString(), "预约降锁通知",switchStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
+			Thread thread = new PushThread(order.getUserId().toString(), "预约降锁通知",switchStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
+			thread.start();
 		} 
 	}
 
@@ -554,11 +606,10 @@ public class OrdersServiceImpl implements OrdersService {
 		public void run() {
 			stallClient.cancel(stallId);
 		} 
-	}
-	@Override
-	@Async
+	} 
+	
 	@Transactional(rollbackFor = RuntimeException.class)
-	public void switchStall(ReqSwitch rs,HttpServletRequest request) {
+	private void switching(ReqSwitch rs,HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ResUserOrder order = this.ordersClusterMapper.findDetail(rs.getOrderId());
 		Boolean flag = false;
@@ -575,7 +626,8 @@ public class OrdersServiceImpl implements OrdersService {
 				param.put("status", OrderStatus.COMPLETED.value);
 				this.orderMasterMapper.updateClose(param); 
 				new CancelStallThread(order.getStallId()).start();
-				this.push(order.getUserId().toString(), "订单通知","无空闲车位,订单已关闭",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
+				Thread thread = new PushThread(order.getUserId().toString(), "订单通知","无空闲车位,订单已关闭",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
+				thread.start();
 			}else {
 				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
 				log.info("get switch stall sn:{}",sn);
@@ -596,12 +648,33 @@ public class OrdersServiceImpl implements OrdersService {
 						flag = true;
 					} 
 				}
-				this.push(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
+				Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
+				thread.start();
 			}
 			
 		}else {
-			this.push(order.getUserId().toString(), "车位切换通知","车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, false);
+			Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知","车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, false);
+			thread.start();
 		} 
+	}
+	
+	class SwitchThread extends Thread{
+		private ReqSwitch rs;
+		private HttpServletRequest request;
+		public SwitchThread(ReqSwitch rs,HttpServletRequest request) {
+			this.rs = rs;
+			this.request = request;
+		}
+		public void run() {
+			switching(rs,request);
+		}
+		
+	}
+	
+	@Override  
+	public void switchStall(ReqSwitch rs,HttpServletRequest request) {  
+		Thread thread = new SwitchThread(rs,request);
+		thread.start();
 	}
 
 	@Override
@@ -668,12 +741,15 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public void downResult( HttpServletRequest request) {
+	public Integer downResult( HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); 
-		if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+orders.getId())) {
-			throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
-		} 
+		Integer count = 0;
+		Object o =  this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key+orders.getId());
+		if(o!=null) {
+			count = new Integer(o.toString());
+		}
+		return count;
 	}
 
 	@Override

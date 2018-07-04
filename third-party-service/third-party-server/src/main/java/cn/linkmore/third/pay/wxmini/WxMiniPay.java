@@ -20,10 +20,9 @@ import org.dom4j.io.SAXReader;
 import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import cn.linkmore.third.pay.wxpay.HttpTool;
-import cn.linkmore.third.pay.wxpay.PaySign;
+ 
 import cn.linkmore.third.response.ResWechatMiniOrder;
+import cn.linkmore.util.JsonUtil;
 
 public class WxMiniPay {
 	private static Logger log = LoggerFactory.getLogger(WxMiniPay.class);
@@ -56,11 +55,13 @@ public class WxMiniPay {
 		contentMap.put("total_fee", payprice); // 订单总金额
 		contentMap.put("spbill_create_ip", remoteAddress); // 订单生成的机器IP
 		contentMap.put("notify_url", Constant.CALLBACK); // 异步通知地址
-		contentMap.put("trade_type", Constant.TRADE_TYPE_JS); // 交易类型 
+		contentMap.put("trade_type", Constant.TRADE_TYPE_JS); // 交易类型
+		log.info(JsonUtil.toJson(contentMap));
 		String sign = PaySign.createSign(contentMap);// 签名
 		contentMap.put("sign", sign);
 		// 调用统一下单接口返回的值
 		String result = HttpTool.sendPost(Constant.PREPAY_ID_URL, PaySign.sortmapTomap(contentMap), "UTF-8");
+		log.info(result);
 		// 调用统一接口返回的值XML转换为map格式
 		Map<String, String> map = doXMLParse(result); 
 		SortedMap<String, Object> wxPayParamMap = new TreeMap<String, Object>();

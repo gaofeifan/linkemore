@@ -21,7 +21,7 @@ import cn.linkmore.third.response.ResWechatMiniOrder;
 @FeignClient(value = "third-party-server", path = "/feign/wechat-mini", fallback=WechatMiniClientHystrix.class,configuration = FeignConfiguration.class)
 public interface WechatMiniClient { 
 	/**
-	 * 根据code取用户session
+	 * 根据code获取粉丝
 	 * @param code 授权码
 	 * @return
 	 */
@@ -35,7 +35,7 @@ public interface WechatMiniClient {
 	 */
 	@RequestMapping(value = "/v2.0/order", method = RequestMethod.POST) 
 	@ResponseBody
-	public ResWechatMiniOrder order(@RequestBody ReqWechatMiniOrder wechat) ;
+	public ResWechatMiniOrder order(@RequestBody ReqWechatMiniOrder wechat);
 	/**
 	 * 核验订单
 	 * @param json
@@ -43,6 +43,6 @@ public interface WechatMiniClient {
 	 */
 	@RequestMapping(value = "/v2.0/verify", method = RequestMethod.POST) 
 	@ResponseBody
-	public Boolean verify(@RequestParam("json")String json) ;
+	public Boolean verify(@RequestParam("json")String json);
 
 }

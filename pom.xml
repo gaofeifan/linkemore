@@ -51,5 +51,6 @@
   		<module>security-service</module>
   		<module>enterprise-service</module>
   		<module>report-service</module>
+  		<module>monitor-service</module>
   	</modules>
 </project>

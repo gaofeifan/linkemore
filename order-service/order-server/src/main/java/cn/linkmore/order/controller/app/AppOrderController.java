@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.bean.exception.BusinessException;
-import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
@@ -100,8 +98,8 @@ public class AppOrderController {
 	@RequestMapping(value = "/v2.0/down/result", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> downResult(HttpServletRequest request) { 
-		this.ordersService.downResult(request);
-		return  ResponseEntity.success(null, request);
+		Integer count = this.ordersService.downResult(request);
+		return  ResponseEntity.success(count, request);
 	}
 
 }

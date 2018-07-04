@@ -24,7 +24,7 @@ import cn.linkmore.util.ObjectUtils;
 @Service
 public class BaseDictServiceImpl implements BaseDictService {
 
-	public static final String DOWN_LOCK_ERROR_CAUSE = "cause_down";
+	public static final String DOWN_LOCK_ERROR_CAUSE = "order_stall_down_error";
 	@Resource
 	private BaseDictClusterMapper baseDictClusterMapper;
 

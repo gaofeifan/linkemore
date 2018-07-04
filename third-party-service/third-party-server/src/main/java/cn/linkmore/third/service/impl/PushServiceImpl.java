@@ -7,7 +7,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import cn.jpush.api.JPushClient;
@@ -81,8 +80,7 @@ public class PushServiceImpl implements PushService {
 		return flag;
 	} 
 	
-	@Override
-	@Async
+	@Override 
 	public void push(ReqPush rp) { 
 		log.info("push message:{}",JsonUtil.toJson(rp));
 		if(rp.getClient().intValue()  ==Constants.ClientSource.ANDROID.source) {
@@ -92,8 +90,7 @@ public class PushServiceImpl implements PushService {
 		}
 	}
 	
-	@Override
-	@Async
+	@Override 
 	public void push(List<ReqPush> rps) { 
 		
 		for(ReqPush rp:rps) {

@@ -4,15 +4,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
+
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.LockStatus;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -116,10 +119,7 @@ public class StallServiceImpl implements StallService {
 
 		return flag;
 	}
-
-	@Override
-	@Async
-	public void downlock(ReqOrderStall reqos) {
+	private void downing(ReqOrderStall reqos) {
 		Stall stall = stallClusterMapper.findById(reqos.getStallId());
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
@@ -134,6 +134,22 @@ public class StallServiceImpl implements StallService {
 			} 
 			orderClient.downMsgPush(reqos.getOrderId(),reqos.getStallId()); 
 		}
+	}
+	
+	class DownThread extends Thread{
+		private ReqOrderStall reqos;
+		public DownThread(ReqOrderStall reqos) {
+			this.reqos = reqos;
+		}
+		public void run() {
+			downing(reqos);
+		}
+	}
+	
+	@Override 
+	public void downlock(ReqOrderStall reqos) { 
+		Thread thread = new DownThread(reqos);
+		thread.start();
 	}
 
 	@Override
