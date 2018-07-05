@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
@@ -99,7 +100,14 @@ public class AppOrderController {
 	@ResponseBody
 	public ResponseEntity<?> downResult(HttpServletRequest request) { 
 		Integer count = this.ordersService.downResult(request);
-		return  ResponseEntity.success(count, request);
+		ResponseEntity<?> response = null;
+		if(count==0) {
+			response =  ResponseEntity.success(count, request);
+		}else if(count==1){
+			response =  ResponseEntity.fail(StatusEnum.ORDER_LOCKDOWN_FAIL, request);
+		}else if(count>1) {
+			response = ResponseEntity.fail(StatusEnum.ORDER_FAIL_SWITCHLOCK, request);
+		}
+		return response;
 	}
-
 }

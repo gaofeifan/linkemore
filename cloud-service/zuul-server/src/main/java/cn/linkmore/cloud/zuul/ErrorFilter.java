@@ -37,7 +37,7 @@ public class ErrorFilter extends ZuulFilter {
 
 		try {
 			RequestContext context = getCurrentContext(); 
-			context.getResponse().setCharacterEncoding(CONTENTTYPE);
+			context.getResponse().setCharacterEncoding(CONTENTTYPE); 
 			log.error("error", context.getThrowable());
 			if (null != errorHandler) {
 				context.setResponseStatusCode(errorHandler.getResponseCode());
