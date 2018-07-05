@@ -42,7 +42,7 @@ public interface StallClient {
 	 * 
 	 * @param stallId Long
 	 */
-	@RequestMapping(value = "/v2.0/cancel", method=RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/cancel", method=RequestMethod.GET)
 	@ResponseBody
 	public boolean cancel(@RequestParam("stallId") Long stallId);
 	
