@@ -1,4 +1,4 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.ops;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,7 +11,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.service.SendUserService;
 
 @Controller
-@RequestMapping("/coupon_send_user")
+@RequestMapping("/ops/coupon_send_user")
 public class SendUserController {
 
 	@Autowired

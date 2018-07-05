@@ -1,4 +1,4 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.ops;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import cn.linkmore.coupon.service.BizSubjectService;
 import cn.linkmore.coupon.service.PreSubjectService;
 
 @Controller
-@RequestMapping("/coupon_pre_subject")
+@RequestMapping("/ops/coupon_pre_subject")
 public class PreSubjectController {
 
 	@Autowired

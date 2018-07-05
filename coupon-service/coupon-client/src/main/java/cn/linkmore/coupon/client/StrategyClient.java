@@ -18,7 +18,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @version 2.0
  *
  */
-@FeignClient(value = "coupon-server", path = "/strategy", fallback=StrategyClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "coupon-server", path = "/ops/strategy", fallback=StrategyClientHystrix.class,configuration = FeignConfiguration.class)
 public interface StrategyClient {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)

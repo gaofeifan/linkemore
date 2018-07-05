@@ -1,4 +1,4 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.ops;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +10,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.service.RollbackService;
 
 @Controller
-@RequestMapping("/coupon_rollback")
+@RequestMapping("/ops/coupon_rollback")
 public class RollbackController {
 
 	@Autowired

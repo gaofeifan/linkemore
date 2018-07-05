@@ -1,4 +1,4 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.ops;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +27,7 @@ import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.redis.RedisService;
 
 @Controller
-@RequestMapping("/coupon_template_condition")
+@RequestMapping("/ops/coupon_template_condition")
 public class TemplateConditionController {
 
 	@Autowired

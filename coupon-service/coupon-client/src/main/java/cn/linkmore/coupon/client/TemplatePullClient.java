@@ -20,7 +20,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @version 2.0
  *
  */
-@FeignClient(value = "coupon-server", path = "/coupon_template_pull", fallback=TemplatePullClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "coupon-server", path = "/ops/coupon_template_pull", fallback=TemplatePullClientHystrix.class,configuration = FeignConfiguration.class)
 public interface TemplatePullClient {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
