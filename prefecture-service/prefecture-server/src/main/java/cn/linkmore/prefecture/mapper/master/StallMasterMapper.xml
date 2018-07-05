@@ -105,4 +105,12 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   
+  <update id="offline" parameterType="cn.linkmore.prefecture.entity.Stall" >
+    update v_stall
+    set  
+    status = #{status,jdbcType=INTEGER}, 
+    bind_order_status = #{bindOrderStatus,jdbcType=INTEGER} ,
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
 </mapper>

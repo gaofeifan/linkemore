@@ -126,4 +126,10 @@ public interface StallService {
 	
 	
 	List<ResStallOps> findListByParam(Map<String, Object> param);
+	
+	/**
+	 * 订单关闭释放车位
+	 * @param id
+	 */
+	void close(Long id);
 }

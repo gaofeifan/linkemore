@@ -47,6 +47,13 @@ public class FeignStallController {
 	
 	@Autowired
 	private PrefectureService preService;
+	
+	@RequestMapping(value = "/v2.0/close", method = RequestMethod.PUT)
+	public void close(Long id) {
+		log.info("order closed handle stall:{}",id);
+		this.stallService.close(id);
+	}
+
 
 	/**
 	 * 预约订单时，根据车位锁序列号查询车位

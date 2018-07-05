@@ -23,7 +23,7 @@ import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.redis.RedisService;
 
-@Component
+//@Component
 public class FreeStallInitRunner implements ApplicationRunner {
 	
 	private Logger log = LoggerFactory.getLogger(getClass());

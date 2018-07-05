@@ -15,7 +15,7 @@
     <result column="bind_time" jdbcType="TIMESTAMP" property="bindTime" />
   </resultMap>
    
-  <insert id="save" parameterType="cn.linkmore.account.entity.UserInfo">
+  <insert id="save"  useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.account.entity.UserInfo">
     insert into t_wx_user_info (id, nick_name, gender, 
       city, province, country, 
       avatarurl, union_id, user_id, 
