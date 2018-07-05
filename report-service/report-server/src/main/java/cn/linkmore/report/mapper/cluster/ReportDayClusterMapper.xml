@@ -65,7 +65,9 @@
     <result column="day" jdbcType="VARCHAR" property="day" />
     <result column="rdl" jdbcType="DOUBLE" property="rdl" />
     <result column="jtsc" jdbcType="DOUBLE" property="jtsc" />
+    <result column="shop_runtime" jdbcType="INTEGER" property="shopRuntime" />
     <result column="runtime" jdbcType="DOUBLE" property="runtime" />
+    <result column="runtime_rate" jdbcType="DOUBLE" property="runtimeRate" />
   </resultMap>
   
   <resultMap id="AveragePriceResultMap" type="cn.linkmore.report.response.ResAveragePrice">
@@ -526,7 +528,7 @@
 		DAY
   </select>
   
-  <!-- 运营时长 均停时长 日单量 -->
+  <!-- 运营时长 均停时长 日单量 运营时长比例 -->
   <select id="runTimeList" resultMap="RunTimeResultMap" parameterType="java.util.HashMap">
 	SELECT
     	c.id,
@@ -542,6 +544,7 @@
 			)
 		) AS total_time,
 		pre.stall_total,
+    	IFNULL(pre.runtime,0) as shop_runtime,
 		count(*) AS day_total,
 		ROUND(count(*) / stall_total, 1) AS rdl,
 		ROUND(
@@ -563,7 +566,17 @@
 				)
 			) / 60 / stall_total,
 			1
-		) AS runtime
+		) AS runtime,
+		IFNULL(ROUND(
+			sum(
+				TIMESTAMPDIFF(
+					MINUTE,
+					o.create_time,
+					o.end_time
+				)
+			) / IFNULL(pre.runtime,0) / stall_total,
+			1
+		) ,0) AS runtime_rate
 	FROM
 		o_orders o
 	LEFT JOIN (
@@ -572,6 +585,7 @@
 			p.NAME,
 			p.city_id,
 			p.status,
+			p.runtime,
 			count(*) AS stall_total
 		FROM
 			v_stall s

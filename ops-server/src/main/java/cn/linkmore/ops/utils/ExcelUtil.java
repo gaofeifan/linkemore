@@ -361,7 +361,7 @@ public class ExcelUtil {
 					headerRow.getCell(i).setCellStyle(headerStyle);
 				}
 				rowIndex = rowLength + 5;
-			}else if(entry.getKey().equals(14)){
+			}else if(entry.getKey().equals(15)){
 				SXSSFRow firstTitleRow = sheet.createRow(rowLength+1);
 				firstTitleRow.createCell(0).setCellValue("3、收入");
 				firstTitleRow.getCell(0).setCellStyle(firstTitleStyle);
