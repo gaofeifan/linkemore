@@ -19,7 +19,7 @@
     delete from t_coupon_template_condition
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.coupon.entity.TemplateCondition">
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.TemplateCondition" useGeneratedKeys="true" keyProperty="id">
     insert into t_coupon_template_condition (id, name, template_id, 
       available_time, available_prefecture, status, 
       create_time, is_default)

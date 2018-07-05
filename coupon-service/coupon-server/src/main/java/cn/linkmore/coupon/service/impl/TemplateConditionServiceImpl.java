@@ -65,7 +65,7 @@ public class TemplateConditionServiceImpl implements TemplateConditionService {
 	@Override
 	public int save(ReqTemplateCondition record) {
 		record.setCreateTime(new Date());
-		if(record.getIsDefault().equals(1)){
+		if(record.getIsDefault()!=null && record.getIsDefault().equals(1)){
 			List<ResTemplateCondition> list = this.templateConditionClusterMapper.findConditionList(record.getTemplateId());
 			Map<String,Object> param = new HashMap<String,Object>();
 			for(ResTemplateCondition condition :list){
@@ -77,10 +77,10 @@ public class TemplateConditionServiceImpl implements TemplateConditionService {
 		TemplateCondition tempCondition = ObjectUtils.copyObject(record, new TemplateCondition());
 		int num = this.templateConditionMasterMapper.save(tempCondition);
 		if(StringUtils.isNotBlank(record.getUseTimeJson())){
-			redisService.set(Constants.RedisKey.COUPON_TEMPLATE_CONDITION_USETIME.key+record.getId(), record.getUseTimeJson());
+			redisService.set(Constants.RedisKey.COUPON_TEMPLATE_CONDITION_USETIME.key+tempCondition.getId(), record.getUseTimeJson());
 		}
 		if(StringUtils.isNotBlank(record.getPreIdJson())){
-			redisService.set(Constants.RedisKey.COUPON_TEMPLATE_CONDITION_PREIDS.key+record.getId(), record.getPreIdJson());
+			redisService.set(Constants.RedisKey.COUPON_TEMPLATE_CONDITION_PREIDS.key+tempCondition.getId(), record.getPreIdJson());
 		}
 		return num;
 	}

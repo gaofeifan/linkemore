@@ -154,13 +154,14 @@ public class SendRecordServiceImpl implements SendRecordService {
 				SendUser couponSendUser = new SendUser();
 				couponSendUser.setCreateTime(new Date());
 				couponSendUser.setUserId(user.getId());
-				couponSendUser.setRecordId(record.getId());
+				couponSendUser.setRecordId(sendRecord.getId());
 				couponSendUser.setUsername(user.getUsername());
-				couponSendUser.setTemplateId(record.getTemplateId());
+				couponSendUser.setTemplateId(sendRecord.getTemplateId());
+				couponSendUser.setRollbackFlag(0);
 				sendUserList.add(couponSendUser);
 			}
 			this.sendUserMasterMapper.insertBatch(sendUserList);
-			List<ResTemplateItem> items = templateItemClusterMapper.findList(record.getTemplateId());
+			List<ResTemplateItem> items = templateItemClusterMapper.findList(sendRecord.getTemplateId());
 			List<Coupon> couponList = new ArrayList<Coupon>();
 			Coupon coupon = null;
 			for(SendUser couponSendUser :sendUserList){
@@ -169,9 +170,9 @@ public class SendRecordServiceImpl implements SendRecordService {
 					for (int i = 0; i < item.getQuantity(); i++) {
 						coupon = new Coupon();
 						coupon.setUserId(couponSendUser.getUserId());
-						coupon.setConditionId(record.getConditionId());
-						coupon.setTemplateId(record.getTemplateId());
-						coupon.setRecordId(record.getId());
+						coupon.setConditionId(sendRecord.getConditionId());
+						coupon.setTemplateId(sendRecord.getTemplateId());
+						coupon.setRecordId(sendRecord.getId());
 						coupon.setItemId(item.getId());
 						coupon.setType(item.getType());
 						coupon.setFaceAmount(item.getFaceAmount());
