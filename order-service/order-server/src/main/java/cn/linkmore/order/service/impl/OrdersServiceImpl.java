@@ -193,11 +193,12 @@ public class OrdersServiceImpl implements OrdersService {
 				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
 			}
 			ResVechicleMark  vehicleMark =  vehicleMarkClient.findById(rb.getPlateId());
-			if(vehicleMark.getUserId().longValue()!=cu.getId().longValue()) {
-				bookingStatus =(short) OperateStatus.FAILURE.status;
-				failureReason = (short)OrderFailureReason.CARNO_NONE.value;
-				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
-			}
+//			//为了测试进行注释
+//			if(vehicleMark.getUserId().longValue()!=cu.getId().longValue()) {
+//				bookingStatus =(short) OperateStatus.FAILURE.status;
+//				failureReason = (short)OrderFailureReason.CARNO_NONE.value;
+//				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
+//			}
 			if (!this.checkCarFree(vehicleMark.getVehMark())) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.CARNO_BUSY.value;
@@ -611,6 +612,16 @@ public class OrdersServiceImpl implements OrdersService {
 		} 
 	} 
 	
+	class OfflieStallThread extends Thread{
+		private Long stallId;
+		public OfflieStallThread(Long stallId) {
+			this.stallId = stallId;
+		}
+		public void run() {
+			stallClient.close(stallId);
+		} 
+	}
+	
 	@Transactional(rollbackFor = RuntimeException.class)
 	private void switching(ReqSwitch rs,HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
@@ -640,6 +651,7 @@ public class OrdersServiceImpl implements OrdersService {
 					ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
 					log.info("switch stall:{}",JsonUtil.toJson(stall));
 					if(stall.getStatus().intValue()==StallStatus.FREE.status) {
+						Thread thread = new OfflieStallThread(order.getStallId());
 						order.setStallId(stall.getId());
 						order.setStallName(stall.getStallName());
 						Map<String,Object> param = new HashMap<String,Object>();
@@ -650,6 +662,7 @@ public class OrdersServiceImpl implements OrdersService {
 						param.put("switchStatus", 1);
 						this.orderMasterMapper.updateSwitch(param);
 						this.stallClient.order(stall.getId()); 
+						thread.start();
 						flag = true;
 					} 
 				}

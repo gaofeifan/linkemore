@@ -26,9 +26,13 @@ public class SwaggerConfig {
 	private String basePackage = "";
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage(this.basePackage)).paths(PathSelectors.any())
-				.build();
+		if(this.enable) {
+			return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
+					.apis(RequestHandlerSelectors.basePackage(this.basePackage)).paths(PathSelectors.any())
+					.build();  
+		}else {
+			return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.none()).build();
+		} 
 	}
 
 	private ApiInfo apiInfo() { 

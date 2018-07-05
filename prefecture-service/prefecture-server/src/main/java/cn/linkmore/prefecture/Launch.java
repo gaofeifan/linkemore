@@ -8,6 +8,7 @@ import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
 
@@ -17,6 +18,7 @@ import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServl
 @ComponentScan(basePackages = { "cn.linkmore" })
 @EnableAsync 
 @EnableHystrix
+@EnableScheduling
 public class Launch {
 	public static void main(String[] args) {
 		SpringApplication.run(Launch.class, args);

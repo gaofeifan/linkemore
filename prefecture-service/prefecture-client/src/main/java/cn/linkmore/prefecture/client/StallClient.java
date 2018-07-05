@@ -31,6 +31,12 @@ import cn.linkmore.prefecture.response.ResStallOps;
 public interface StallClient {
 	
 	/**
+	 * 隆锁异常关闭订单
+	 * @param id
+	 */
+	@RequestMapping(value = "/v2.0/close", method = RequestMethod.PUT)
+	public void close(Long id) ;
+	/**
 	 * 预约订单时，根据车位锁序列号查询车位
 	 * 
 	 * @param lockSn String
