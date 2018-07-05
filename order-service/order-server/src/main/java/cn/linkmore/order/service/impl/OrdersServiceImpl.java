@@ -37,6 +37,7 @@ import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallAssignStatus;
 import cn.linkmore.bean.common.Constants.StallStatus;
+import cn.linkmore.bean.common.Constants.SwitchResult;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
@@ -608,7 +609,7 @@ public class OrdersServiceImpl implements OrdersService {
 			this.stallId = stallId;
 		}
 		public void run() {
-			stallClient.cancel(stallId);
+			stallClient.close(stallId);
 		} 
 	} 
 	
@@ -644,6 +645,7 @@ public class OrdersServiceImpl implements OrdersService {
 				thread.start();
 				//关闭订单发送优惠券功能
 				couponClient.send(cu.getId());
+				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), SwitchResult.CLOSED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
 			}else {
 				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
 				log.info("get switch stall sn:{}",sn);
@@ -668,11 +670,13 @@ public class OrdersServiceImpl implements OrdersService {
 				}
 				Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
 				thread.start();
+				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), flag?SwitchResult.SUCCESS.value:SwitchResult.FAILED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
 			}
 			
 		}else {
 			Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知","车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, false);
 			thread.start();
+			this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), SwitchResult.FAILED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
 		} 
 	}
 	

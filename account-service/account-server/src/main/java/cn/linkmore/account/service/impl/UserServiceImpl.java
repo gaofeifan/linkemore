@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -517,10 +518,17 @@ public class UserServiceImpl implements UserService {
 		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ru.getId().toString());
 		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+key); 
 	} 
+	
+	private final static ConcurrentHashMap<Long,Long> LOGIN_USER = new ConcurrentHashMap<Long,Long>();
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
 		Token   last  = null;
 		String key = TokenUtil.getKey(request);
-		synchronized(user.getId()) {
+		Long userId = LOGIN_USER.get(user.getId());
+		if(userId==null) {
+			userId = user.getId();
+			LOGIN_USER.put(user.getId(), user.getId());
+		}
+		synchronized(userId) {
 			last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 			if(last!=null){ 
 				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());

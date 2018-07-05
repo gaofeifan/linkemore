@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.Constants.SwitchResult;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.controller.app.request.ReqBooking;
@@ -25,6 +27,7 @@ import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.service.OrdersService;
+import cn.linkmore.redis.RedisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -45,6 +48,8 @@ public class AppOrderController {
 	
 	@Autowired
 	private OrdersService ordersService;
+	@Autowired
+	private RedisService redisService;
 
 	@ApiOperation(value = "预约下单", notes = "车区ID不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/create", method = RequestMethod.POST)
@@ -52,6 +57,17 @@ public class AppOrderController {
 	public ResponseEntity<?> create(@RequestBody ReqBooking rb, HttpServletRequest request) {
 		this.ordersService.create(rb, request);
 		return ResponseEntity.success(null, request);
+	}
+	
+	@ApiOperation(value = "切换车位回调", notes = "切换车位回调校验结果", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/switch/result", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> switchResult(@RequestParam("orderId")Long orderId,HttpServletRequest request) { 
+		Integer count = (Integer)this.redisService.get(RedisKey.ORDER_SWITCH_RESULT.key+orderId);
+		if(count==null) {
+			count = SwitchResult.FAILED.value;
+		}
+		return  ResponseEntity.success(count, request);
 	}
 	@ApiOperation(value = "切换车位", notes = "原因ID不能为空，备注可为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/switch", method = RequestMethod.POST)

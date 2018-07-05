@@ -91,6 +91,14 @@ public class Constants {
 			this.type = type;
 		}
 	}
+	
+	public enum SwitchResult{
+		FAILED(0),SUCCESS(1),CLOSED(2);
+		public int value;
+		private SwitchResult(int value) {
+			this.value = value;
+		}
+	}
 
 	public enum ExpiredTime {
 		ACCESS_TOKEN_EXP_TIME(60 * 60 * 24 * 30 * 4), 
@@ -98,6 +106,8 @@ public class Constants {
 		SMS_CODE_EXP_TIME(600),
 		STALL_LOCK_BOOKING_EXP_TIME(60),
 		STALL_DOWN_FAIL_EXP_TIME(60 * 60),
+		STALL_ORDER_CLOSED_TIME(60*60*24),
+		ORDER_SWITCH_RESULT_TIME(60*3),
 		COUPON_SEND_COUNT_EXP_TIME(60 * 60 * 24);
 		public int time;
 
@@ -253,7 +263,9 @@ public class Constants {
 		ORDER_TRADE_SERIAL_NUMBER("order:trade:serial_number:"),
 		ORDER_RECHARGE_SERIAL_NUMBER("order:recharge:serial_number:"),
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
+		STALL_ORDER_CLOSED("stall:order-closed:"),
 		ORDER_SWITCH_STALL_FAILED_COUNT("order:switch-stall-failure:count"),
+		ORDER_SWITCH_RESULT("order:switch-result:"),
 		PREFECTURE_FREE_STALL("prefecture:free_stall:"),
 		PREFECTURE_BUSY_STALL("prefecture:busy_stall:"),
 		WECHAT_TOKEN_KEY("wechat_token"),
