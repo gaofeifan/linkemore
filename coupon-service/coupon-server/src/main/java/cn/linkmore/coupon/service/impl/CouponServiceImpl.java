@@ -575,7 +575,7 @@ public class CouponServiceImpl implements CouponService {
 			sms.setMobile(resUser.getUsername());
 			sms.setParam(param);
 			sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
-			//smsClient.send(sms);
+			smsClient.send(sms);
 			this.redisService.set(RedisKey.ORDER_SWITCH_STALL_FAILED_COUNT.key + userId.toString(), count+1, ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time); 
 		}
 		return true;
