@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -162,7 +163,7 @@ public class OrdersServiceImpl implements OrdersService {
 		number.append(t.intValue()+increment);
 		return ORDER_NUMBER_HEADER+ number.toString();
 	}
-	private static Set<Long> ORDER_USER_SET = new HashSet<Long>();
+	private static Set<Long> ORDER_USER_SET = new HashSet<Long>(); 
 	
 	@Transactional(rollbackFor = RuntimeException.class)
 	private void order(ReqBooking rb,HttpServletRequest request) { 
@@ -172,6 +173,7 @@ public class OrdersServiceImpl implements OrdersService {
 		boolean resetRedis = true;
 		short failureReason = 0;
 		short bookingStatus = 0;
+		log.info("booking:{}",JsonUtil.toJson(rb));
 		try {
 			synchronized(this) {
 				if(ORDER_USER_SET.contains(cu.getId())){
@@ -248,6 +250,7 @@ public class OrdersServiceImpl implements OrdersService {
 			log.info("lock,{}", lockSn);
 			
 			ResPrefectureDetail pre = prefectureClient.findById(rb.getPrefectureId());  
+			log.info("pre:{}",JsonUtil.toJson(pre));
 			log.info("order:{}",lockSn);
 			stall = this.stallClient.findByLock(lockSn.trim());
 			log.info("order :{}",JsonUtil.toJson(stall));

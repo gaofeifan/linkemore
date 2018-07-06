@@ -104,7 +104,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_user
-    where mobile = #{mobile}
+    where username = #{mobile}
   </select>
   
   <select id="findPage" parameterType="java.util.HashMap" resultMap="ListUserMap">
