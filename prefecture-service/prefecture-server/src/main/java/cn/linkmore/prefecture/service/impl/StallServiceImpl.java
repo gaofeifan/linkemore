@@ -356,7 +356,10 @@ public class StallServiceImpl implements StallService {
 		Stall stall = stallClusterMapper.findById(id);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) { 
 			Integer count = (Integer)this.redisService.get(RedisKey.STALL_ORDER_CLOSED.key+id);
-			if(count==null||count<3) {
+			if(count==null) {
+				count = 0;
+			}
+			if(count<3) {
 				count = count+1; 
 				stall.setLockStatus(Stall.LOCK_STATUS_UP); 
 				stall.setUpdateTime(new Date());
