@@ -35,7 +35,7 @@ public interface StallClient {
 	 * @param id
 	 */
 	@RequestMapping(value = "/v2.0/close", method = RequestMethod.PUT)
-	public void close(Long id) ;
+	public void close(@RequestParam("id") Long id) ;
 	/**
 	 * 预约订单时，根据车位锁序列号查询车位
 	 * 

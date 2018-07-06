@@ -49,7 +49,7 @@ public class FeignStallController {
 	private PrefectureService preService;
 	
 	@RequestMapping(value = "/v2.0/close", method = RequestMethod.PUT)
-	public void close(Long id) {
+	public void close(@RequestParam("id")Long id) {
 		log.info("order closed handle stall:{}",id);
 		this.stallService.close(id);
 	}
