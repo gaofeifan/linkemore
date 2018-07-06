@@ -16,7 +16,7 @@ import cn.linkmore.common.service.TimingScheduleService;
  * @Date     2018年5月29日
  * @Version  v2.0
  */
-@Component
+//@Component
 public class StartupRunner implements CommandLineRunner,ApplicationContextAware {
 	@Autowired
 	private DefaultSchedulingConfigurer defaultSchedulingConfigurer;

@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -152,7 +151,7 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 		return flag;
 	}  
-	
+	private final static String ORDER_NUMBER_HEADER="LM";
 	private String getOrderNumber() {
 		Date day = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -161,7 +160,7 @@ public class OrdersServiceImpl implements OrdersService {
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
 		number.append(t.intValue()+increment);
-		return number.toString();
+		return ORDER_NUMBER_HEADER+ number.toString();
 	}
 	private static Set<Long> ORDER_USER_SET = new HashSet<Long>();
 	
@@ -195,11 +194,11 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			ResVechicleMark  vehicleMark =  vehicleMarkClient.findById(rb.getPlateId());
 //			//为了测试进行注释
-//			if(vehicleMark.getUserId().longValue()!=cu.getId().longValue()) {
-//				bookingStatus =(short) OperateStatus.FAILURE.status;
-//				failureReason = (short)OrderFailureReason.CARNO_NONE.value;
-//				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
-//			}
+			if(vehicleMark.getUserId().longValue()!=cu.getId().longValue()) {
+				bookingStatus =(short) OperateStatus.FAILURE.status;
+				failureReason = (short)OrderFailureReason.CARNO_NONE.value;
+				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
+			}
 			if (!this.checkCarFree(vehicleMark.getVehMark())) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.CARNO_BUSY.value;

@@ -283,7 +283,7 @@ public class StallServiceImpl implements StallService {
 		Date now = new Date();
 		Integer status = reqStall.getStatus();
 		String sn = reqStall.getLockSn();
-		Long preId = reqStall.getPreId();
+//		Long preId = reqStall.getPreId();
 		reqStall.setUpdateTime(now);
 		if (status.intValue() == 4) {
 			Stall stall = new Stall();
@@ -372,6 +372,7 @@ public class StallServiceImpl implements StallService {
 				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
 				stall.setStatus(StallStatus.OUTLINE.status); 
 				stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
+				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
 				this.stallMasterMapper.offline(stall);
 			}
 			

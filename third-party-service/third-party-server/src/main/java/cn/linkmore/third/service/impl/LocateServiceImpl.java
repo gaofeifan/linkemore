@@ -47,6 +47,7 @@ public class LocateServiceImpl implements LocateService {
 			Map<String,Object> object = null;
 			res = new ResLocate();
 			String result = HttpUtil.sendGet(LOCATE_URL, parameters) ; 
+			log.info("locate result:{}",result);
 			Map<String,String> address = null;
 			Map<String,Object> info = null;
 			Map<String, Object> map = JsonUtil.toObject(result, Map.class);

@@ -137,7 +137,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 	
 	
 	@Value("${server.session.timeout}")
-    private int sessionTimeout = 60;
+    private int sessionTimeout = 120;
  
     @Primary
     @Bean
