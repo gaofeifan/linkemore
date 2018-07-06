@@ -66,8 +66,10 @@
     <result column="day" jdbcType="VARCHAR" property="day" />
     <result column="rdl" jdbcType="DOUBLE" property="rdl" />
     <result column="jtsc" jdbcType="DOUBLE" property="jtsc" />
-    <result column="runtime" jdbcType="DOUBLE" property="runtime" />
     <result column="day_num" jdbcType="INTEGER" property="dayNum" />
+    <result column="shop_runtime" jdbcType="INTEGER" property="shopRuntime" />
+    <result column="runtime" jdbcType="DOUBLE" property="runtime" />
+    <result column="runtime_rate" jdbcType="DOUBLE" property="runtimeRate" />
   </resultMap>
   
   <resultMap id="AveragePriceResultMap" type="cn.linkmore.report.response.ResAveragePrice">
@@ -571,6 +573,7 @@
 		t.stall_total,
 		t.total_time,
 		t.day_total,
+        t.shop_runtime,
 		ROUND(
 			t.day_total / t.day_num / t.stall_total,
 			1
@@ -582,7 +585,11 @@
 		ROUND(
 			t.total_time / t.day_num / 60 / t.stall_total,
 			1
-		) AS runtime
+		) AS runtime,
+    ROUND(
+			t.total_time / t.day_num / t.stall_total / t.shop_runtime,
+			1
+		) AS runtime_rate
 	FROM
 		(
 			SELECT
@@ -610,6 +617,7 @@
 					)
 				) AS total_time,
 				pre.stall_total,
+        pre.runtime as shop_runtime,
 				count(*) AS day_total,
 				ROUND(count(*) / stall_total, 1) AS rdl,
 				ROUND(
@@ -640,6 +648,7 @@
 					p. NAME,
 					p.city_id,
 					p. STATUS,
+          p.runtime,
 					count(*) AS stall_total
 				FROM
 					v_stall s
@@ -657,7 +666,7 @@
 			AND pre.id in
 			<foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
 		       #{id}
-		    </foreach> 
+		  </foreach> 
 			AND TIMESTAMPDIFF(
 				MINUTE,
 				o.create_time,
@@ -678,7 +687,6 @@
 				DAY,
 				day_num
 		) t
-	 
   </select>
   
   <!-- 客单价 -->

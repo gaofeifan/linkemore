@@ -562,6 +562,88 @@ public class ReportMonthExportController {
 		return runtimeMap;
 	}
 	
+	public Map<String, Object> runtimeRateMap(ReqReportMonth reportMonth) throws ParseException {
+		List<ResRunTime> runtimeList = this.reportMonthService.runtimeList(reportMonth);
+		JSONArray ja = new JSONArray();
+		Map<String, Object> map = null;
+
+		int bjStall = 0;
+		int hzStall = 0;
+		Map<String, Object> stallMap = new HashMap<String, Object>();
+		
+		if(CollectionUtils.isNotEmpty(runtimeList) ) {
+			for (ResRunTime resPull : runtimeList) {
+				if (stallMap.get(resPull.getPreName()) == null) {
+					stallMap.put(resPull.getPreName(), resPull.getStallTotal());
+					if (resPull.getCityName().equals("北京")) {
+						bjStall += resPull.getStallTotal();
+					} else if (resPull.getCityName().equals("杭州")) {
+						hzStall += resPull.getStallTotal();
+					}
+				}
+			}
+		}
+
+		if (StringUtils.isNotBlank(reportMonth.getStartTime()) && StringUtils.isNotBlank(reportMonth.getEndTime())
+				&& runtimeList != null) {
+			List<String> monthList = StringUtil.getBetweenMonths(reportMonth.getStartTime(), reportMonth.getEndTime());
+			for (String date : monthList) {
+				map = new HashMap<String, Object>();
+				map.put("day", date);
+				int bjTotalTime = 0;
+				int hzTotalTime = 0;
+				int bjShopRuntime = 0;
+				int hzShopRuntime = 0;
+				double bjRuntimeRate = 0d;
+				double hzRuntimeRate = 0d;
+				double totalRuntimeRate = 0d;
+				int dayNum = 0;
+				for (ResRunTime resRunTime : runtimeList) {
+					if (map.get(resRunTime.getPreName()) == null) {
+						map.put(resRunTime.getPreName(), 0);
+					}
+					if (date.equals(resRunTime.getDay())) {
+						map.put(resRunTime.getPreName(), resRunTime.getRuntimeRate());
+						dayNum = resRunTime.getDayNum();
+						if (resRunTime.getCityName().equals("北京")) {
+							bjTotalTime += resRunTime.getTotalTime();
+							bjShopRuntime += resRunTime.getShopRuntime();
+						} else if (resRunTime.getCityName().equals("杭州")) {
+							hzTotalTime += resRunTime.getTotalTime();
+							hzShopRuntime += resRunTime.getShopRuntime();
+						}
+					}
+				}
+				log.info("bj_total_time ,{} hz_total_time ,{} bj_stall,{} hz_stall_count,{}", bjTotalTime, hzTotalTime,
+						bjStall, hzStall);
+				if (bjStall != 0 && bjShopRuntime != 0) {
+					bjRuntimeRate = new BigDecimal((float) bjTotalTime / bjShopRuntime / bjStall / dayNum)
+							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+				if (hzStall != 0 && hzShopRuntime != 0) {
+					hzRuntimeRate = new BigDecimal((float) hzTotalTime / hzShopRuntime / hzStall / dayNum)
+							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+
+				if ((bjStall + hzStall) != 0 && (bjShopRuntime + hzShopRuntime)!= 0) {
+					totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / (bjShopRuntime + hzShopRuntime) / (bjStall + hzStall) / dayNum)
+							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+
+				map.put("bjTotal", bjRuntimeRate);
+				map.put("hzTotal", hzRuntimeRate);
+				map.put("total", totalRuntimeRate);
+				ja.add(map);
+			}
+		}
+		Map<String, String> headMap = orderTitleMap(reportMonth);
+		Map<String, Object> runtimeMap = new HashMap<String, Object>();
+		runtimeMap.put("head", headMap);
+		runtimeMap.put("value", ja);
+		runtimeMap.put("title", "运营时长比例");
+		return runtimeMap;
+	}
+	
 	
 	public Map<String, Object> rdlMap(ReqReportMonth reportMonth) throws ParseException {
 		List<ResRunTime> runtimeList = this.reportMonthService.runtimeList(reportMonth);
@@ -1218,6 +1300,7 @@ public class ReportMonthExportController {
 			Map<String, Object> newUserOrderMap = newUserOrderMap(reportMonth);
 			Map<String, Object> oldUserOrderMap = oldUserOrderMap(reportMonth);
 			Map<String, Object> runtimeMap = runtimeMap(reportMonth);
+			Map<String, Object> runtimeRateMap = runtimeRateMap(reportMonth);
 			Map<String, Object> rdlMap = rdlMap(reportMonth);
 			Map<String, Object> jtscMap = jtscMap(reportMonth);
 			Map<String, Object> averagePriceMap = averagePriceMap(reportMonth);
@@ -1243,19 +1326,20 @@ public class ReportMonthExportController {
 			exportList.put(8, newUserOrderMap);
 			exportList.put(9, oldUserOrderMap);
 			exportList.put(10, runtimeMap);
-			exportList.put(11, rdlMap);
-			exportList.put(12, jtscMap);
-			exportList.put(13, averagePriceMap);
+			exportList.put(11, runtimeMap);
+			exportList.put(12, rdlMap);
+			exportList.put(13, jtscMap);
+			exportList.put(14, averagePriceMap);
 			
 			//收入
-			exportList.put(14, costMap);
-			exportList.put(15, dealMap);
-			exportList.put(16, dealCostMap);
-			exportList.put(17, cashMap);
-			exportList.put(18, cashDealMap);
-			exportList.put(19, cashCostMap);
-			exportList.put(20, feeMap);
-			exportList.put(21, pullCostMap);
+			exportList.put(15, costMap);
+			exportList.put(16, dealMap);
+			exportList.put(17, dealCostMap);
+			exportList.put(18, cashMap);
+			exportList.put(19, cashDealMap);
+			exportList.put(20, cashCostMap);
+			exportList.put(21, feeMap);
+			exportList.put(22, pullCostMap);
 
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			ExcelUtil.exportReportExcel(exportList, title, os);

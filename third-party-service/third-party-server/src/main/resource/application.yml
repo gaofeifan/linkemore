@@ -26,6 +26,13 @@ eureka:
 feign:
   hystrix:
     enabled: true
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true 
     
 ribbon:
   ConnectTimeout: 6000
