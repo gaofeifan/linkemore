@@ -64,9 +64,29 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
+			<artifactId>monitor-bean</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>redis-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>  
+		<dependency>
+			<groupId>cn.linkmore</groupId>
 			<artifactId>base-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>  
+		 <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+    </dependency>
+     
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+		
 	</dependencies>
 
 	<dependencyManagement>

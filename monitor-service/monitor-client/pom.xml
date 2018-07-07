@@ -18,12 +18,12 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
-			<artifactId>feign-service</artifactId>
+			<artifactId>base-bean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
-			<artifactId>base-bean</artifactId>
+			<artifactId>monitor-bean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
