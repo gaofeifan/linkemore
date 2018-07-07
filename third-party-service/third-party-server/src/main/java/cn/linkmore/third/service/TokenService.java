@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.config.WechatConfig;
+import cn.linkmore.third.response.ResToken;
 import cn.linkmore.third.wechat.core.WeChat;
 import cn.linkmore.third.wechat.vo.Token;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.ObjectUtils;
 
 @Service
 public class TokenService {
@@ -50,5 +52,13 @@ public class TokenService {
 		log.info("获取access_token成功，有效时长{}秒 token:{}", token.getExpiresIn(),token.getAccessToken());  
 		redisService.set(Constants.RedisKey.WECHAT_TOKEN_KEY.key, JsonUtil.toJson(token), Long.valueOf(Constants.RedisKey.WECHAT_TOKEN_EXPIRE.key));
 		return token;
+	}
+
+	public ResToken resetToken(String appid, String appsecret, String key) {
+		Token token = WeChat.getToken(appid, appsecret);
+		ResToken object = ObjectUtils.copyObject(token,new ResToken());
+		log.info("获取access_token成功，有效时长{}秒 token:{}", token.getExpiresIn(),token.getAccessToken());  
+		redisService.set(key, JsonUtil.toJson(object), Long.valueOf(Constants.RedisKey.WECHAT_TOKEN_EXPIRE.key));
+		return object;
 	}
 }
