@@ -197,6 +197,9 @@ public class PayServiceImpl implements PayService {
 			return null;
 		}
 		Account account = this.accountClusterMapper.findById(order.getUserId());
+		if(account==null) {
+			account = this.initAccount(order.getUserId());
+		}
 		ResOrderCheckout roc = new ResOrderCheckout();
 		roc.setAccountAmount(account.getUsableAmount());
 //		List<ResCoupon> rcs = this.couponClient.order(cu.getId(), orderId);
@@ -846,7 +849,7 @@ public class PayServiceImpl implements PayService {
 	private Boolean wechat(String json) {
 		Boolean flag = false;
 		flag = this.appWechatClient.verify(json);
-		log.info("alipay verify :{},result:{}",json,flag);
+		log.info("App Wechat Pay verify :{},result:{}",json,flag);
 		if(flag) {
 			flag = false;
 			Map<String,String> param = JsonUtil.toObject(json, HashMap.class);
@@ -863,7 +866,7 @@ public class PayServiceImpl implements PayService {
 	private Boolean wechatMini(String json) {
 		Boolean flag = false;
 		flag = this.wechatMiniClient.verify(json);
-		log.info("alipay verify :{},result:{}",json,flag);
+		log.info("Mini Wechat verify :{},result:{}",json,flag);
 		if(flag) {
 			flag = false;
 			Map<String,String> param = JsonUtil.toObject(json, HashMap.class);
