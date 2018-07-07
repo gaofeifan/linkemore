@@ -154,6 +154,10 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/session/spring-session/1.3.1.RELEASE/spring-session-1.3.1.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/redis/clients/jedis/2.9.0/jedis-2.9.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter-data-redis/1.5.10.RELEASE/spring-boot-starter-data-redis-1.5.10.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+<<<<<<< HEAD
+=======
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/cloud/spring-cloud-starter-netflix-hystrix/1.4.3.RELEASE/spring-cloud-starter-netflix-hystrix-1.4.3.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+>>>>>>> branch 'master' of git@192.168.1.188:/linkmore-cloud/linkmore.git
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/commons-lang/commons-lang/2.6/commons-lang-2.6.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.8.10/jackson-core-2.8.10.jar" enabled="true" runInBatchMode="false"/>
