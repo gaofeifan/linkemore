@@ -34,8 +34,8 @@ import cn.linkmore.util.BeanUtils;
  * @Date     2018年3月19日
  *
  */
-@EnableScheduling
-@Component
+//@EnableScheduling
+//@Component
 public class DefaultSchedulingConfigurer implements SchedulingConfigurer {
 	//	用于查询任务
 	private final String FIELD_SCHEDULED_FUTURES = "scheduledTasks";

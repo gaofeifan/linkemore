@@ -1,49 +1,48 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.ops;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.request.ReqCheck;
-import cn.linkmore.coupon.request.ReqTheme;
-import cn.linkmore.coupon.response.ResEnterpriseBean;
-import cn.linkmore.coupon.service.ThemeService;
+import cn.linkmore.coupon.request.ReqStrategy;
+import cn.linkmore.coupon.service.StrategyService;
 
-@Controller
-@RequestMapping("/theme")
-public class ThemeController {
+@RestController
+@RequestMapping("/ops/strategy")
+public class StrategyController {
 	
 	@Autowired
-	private ThemeService themeService;
+	private StrategyService strategyService;
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public int save(@RequestBody ReqTheme record){
-		return this.themeService.save(record);
+	public int save(@RequestBody ReqStrategy record){
+		return this.strategyService.save(record);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
-	public int update(@RequestBody ReqTheme record){
-		return this.themeService.update(record);
+	public int update(@RequestBody ReqStrategy record){
+		return this.strategyService.update(record);
 	}
 	
-	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public int delete(@RequestBody List<Long> ids){ 
-		return this.themeService.delete(ids.get(0));
+	public int delete(@RequestParam("id") Long id){ 
+		return this.strategyService.delete(id);
 	}
 	
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean check(@RequestBody ReqCheck reqCheck){
 		Boolean flag = true ;
-		Integer count = this.themeService.check(reqCheck); 
+		Integer count = this.strategyService.check(reqCheck); 
 		if(count>0){
             flag = false;
         }
@@ -53,12 +52,6 @@ public class ThemeController {
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable){
-		return this.themeService.findPage(pageable); 
-	} 
-	
-	@RequestMapping(value = "/v2.0/enterprise_list", method = RequestMethod.GET)
-	@ResponseBody
-	public List<ResEnterpriseBean> enterpriseList(){
-		return this.themeService.findEnterpriseList(); 
+		return this.strategyService.findPage(pageable); 
 	} 
 }

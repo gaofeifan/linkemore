@@ -60,5 +60,10 @@ public interface SubjectService {
 	 * @param id
 	 */
 	int stop(Long id);
+	/**
+	 * 降锁失败专题优惠券列表
+	 * @return
+	 */
+	public List<ResSubject> findSubjectList();
 	
 }

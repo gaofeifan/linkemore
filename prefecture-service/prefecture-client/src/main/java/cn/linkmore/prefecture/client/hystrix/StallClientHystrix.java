@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
@@ -26,11 +28,15 @@ import cn.linkmore.prefecture.response.ResStallOps;
  */ 
 @Component
 public class StallClientHystrix implements StallClient {
-	private  final Logger log = LoggerFactory.getLogger(this.getClass());
+	private  final Logger log = LoggerFactory.getLogger(this.getClass()); 
+	 
+	public void close(Long id) {
+		log.info("prefecture service stall close(Long id) hystrix"); 
+	}
 
 	@Override
 	public void order(Long id) {
-		log.info("prefecture service stall order(String lockSn) hystrix"); 
+		log.info("prefecture service stall order(Long id) hystrix"); 
 	}
 
 	@Override

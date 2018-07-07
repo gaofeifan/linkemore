@@ -28,7 +28,7 @@ import cn.linkmore.report.response.ResUserNum;
  * @version 2.0
  *
  */ 
-@FeignClient(value = "report-server", path = "/report_day", fallback=ReportDayClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "report-server", path = "/ops/report_day", fallback=ReportDayClientHystrix.class,configuration = FeignConfiguration.class)
 public interface ReportDayClient {
 	
 	@RequestMapping(value = "/v2.0/city_list", method = RequestMethod.GET)

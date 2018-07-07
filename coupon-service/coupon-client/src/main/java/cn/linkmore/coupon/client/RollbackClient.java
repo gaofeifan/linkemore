@@ -15,7 +15,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @version 2.0
  *
  */
-@FeignClient(value = "coupon-server", path = "/coupon_rollback", fallback=RollbackClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "coupon-server", path = "/ops/coupon_rollback", fallback=RollbackClientHystrix.class,configuration = FeignConfiguration.class)
 public interface RollbackClient {
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody

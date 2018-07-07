@@ -1,6 +1,7 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.ops;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqTemplate;
+import cn.linkmore.coupon.response.ResQrc;
 import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.coupon.service.QrcService;
@@ -19,8 +22,8 @@ import cn.linkmore.coupon.service.TemplateItemService;
 import cn.linkmore.coupon.service.TemplateService;
 
 @Controller
-@RequestMapping("/coupon_template_subject")
-public class TemplateSubjectController {
+@RequestMapping("/ops/coupon_template")
+public class TemplateController {
 
 	@Autowired
 	private TemplateService templateService;
@@ -68,7 +71,7 @@ public class TemplateSubjectController {
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids) {
-		return	this.templateService.delete(ids.get(0));
+		return this.templateService.delete(ids.get(0));
 	}
 
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
@@ -88,21 +91,31 @@ public class TemplateSubjectController {
 		return this.templateService.findPage(pageable);
 	}
 
-	/**
+	/*
 	 * 启用
 	 */
 	@RequestMapping(value = "/v2.0/start", method = RequestMethod.GET)
 	@ResponseBody
 	public int start(@RequestParam("id") Long id) {
-		return this.templateService.start(id);
+		return	this.templateService.start(id);
 	}
 
-	/**
+	/*
 	 * 禁用
 	 */
 	@RequestMapping(value = "/v2.0/stop", method = RequestMethod.GET)
 	@ResponseBody
 	public int down(@RequestParam("id") Long id) {
 		return	this.templateService.stop(id);
+	}
+
+	/**
+	 * 下载二维码
+	 */
+	@RequestMapping(value = "/v2.0/download", method = RequestMethod.GET)
+	@ResponseBody
+	public ResQrc download(@RequestParam("id") Long id) {
+		ResQrc qrc = qrcService.findByTempId(id);
+		return qrc;
 	}
 }

@@ -1,4 +1,4 @@
-package cn.linkmore.report.controller;
+package cn.linkmore.report.controller.ops;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import cn.linkmore.report.service.ReportDayService;
  *
  */
 @Controller
-@RequestMapping("/report_day")
+@RequestMapping("/ops/report_day")
 public class ReportDayController {
 	@Resource
 	private ReportDayService reportDayService;

@@ -118,4 +118,8 @@ public class SubjectServiceImpl implements SubjectService {
 		param.put("updateTime", new Date());
 		return this.subjectMasterMapper.startOrStop(param);
 	}
+	
+	public List<ResSubject> findSubjectList(){
+		return this.subjectClusterMapper.findSubjectList();
+	}
 }

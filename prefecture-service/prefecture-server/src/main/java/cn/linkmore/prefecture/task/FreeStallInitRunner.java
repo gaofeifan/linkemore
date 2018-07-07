@@ -23,7 +23,7 @@ import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.redis.RedisService;
 
-@Component
+//@Component
 public class FreeStallInitRunner implements ApplicationRunner {
 	
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -47,7 +47,7 @@ public class FreeStallInitRunner implements ApplicationRunner {
 		Map<Long, Set<Object>> map = new HashMap<Long, Set<Object>>();
 		Set<Object> sns = null; 
 		for (Stall stall : list) {
-			if(!this.redisService.exists(RedisKey.PREFECTURE_BUSY_STALL+stall.getLockSn())){
+			if(!this.redisService.exists(RedisKey.PREFECTURE_BUSY_STALL.key+stall.getLockSn())){
 				sns = map.get(stall.getPreId());
 				if (sns == null) {
 					sns = new HashSet<>();

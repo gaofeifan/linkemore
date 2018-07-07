@@ -95,5 +95,10 @@
     and id != #{id} 
   </select>
   
-  
+  <select id="findSubjectList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_subject
+    where status = 1 and type=6
+  </select>
 </mapper>

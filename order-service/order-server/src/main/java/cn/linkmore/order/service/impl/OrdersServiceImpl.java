@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +37,7 @@ import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallAssignStatus;
 import cn.linkmore.bean.common.Constants.StallStatus;
+import cn.linkmore.bean.common.Constants.SwitchResult;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
@@ -46,6 +47,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
+import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
@@ -135,6 +137,8 @@ public class OrdersServiceImpl implements OrdersService {
 	@Autowired
 	private DockingClient dockingClient;
 	
+	@Autowired
+	private CouponClient couponClient;
 	
 	public boolean checkCarFree(String carno) {
 		boolean flag = true;
@@ -148,7 +152,7 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 		return flag;
 	}  
-	
+	private final static String ORDER_NUMBER_HEADER="LM";
 	private String getOrderNumber() {
 		Date day = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -157,9 +161,9 @@ public class OrdersServiceImpl implements OrdersService {
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
 		number.append(t.intValue()+increment);
-		return number.toString();
+		return ORDER_NUMBER_HEADER+ number.toString();
 	}
-	private static Set<Long> ORDER_USER_SET = new HashSet<Long>();
+	private static Set<Long> ORDER_USER_SET = new HashSet<Long>(); 
 	
 	@Transactional(rollbackFor = RuntimeException.class)
 	private void order(ReqBooking rb,HttpServletRequest request) { 
@@ -169,6 +173,7 @@ public class OrdersServiceImpl implements OrdersService {
 		boolean resetRedis = true;
 		short failureReason = 0;
 		short bookingStatus = 0;
+		log.info("booking:{}",JsonUtil.toJson(rb));
 		try {
 			synchronized(this) {
 				if(ORDER_USER_SET.contains(cu.getId())){
@@ -190,6 +195,7 @@ public class OrdersServiceImpl implements OrdersService {
 				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
 			}
 			ResVechicleMark  vehicleMark =  vehicleMarkClient.findById(rb.getPlateId());
+//			//为了测试进行注释
 			if(vehicleMark.getUserId().longValue()!=cu.getId().longValue()) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.CARNO_NONE.value;
@@ -244,6 +250,7 @@ public class OrdersServiceImpl implements OrdersService {
 			log.info("lock,{}", lockSn);
 			
 			ResPrefectureDetail pre = prefectureClient.findById(rb.getPrefectureId());  
+			log.info("pre:{}",JsonUtil.toJson(pre));
 			log.info("order:{}",lockSn);
 			stall = this.stallClient.findByLock(lockSn.trim());
 			log.info("order :{}",JsonUtil.toJson(stall));
@@ -604,9 +611,19 @@ public class OrdersServiceImpl implements OrdersService {
 			this.stallId = stallId;
 		}
 		public void run() {
-			stallClient.cancel(stallId);
+			stallClient.close(stallId);
 		} 
 	} 
+	
+	class OfflieStallThread extends Thread{
+		private Long stallId;
+		public OfflieStallThread(Long stallId) {
+			this.stallId = stallId;
+		}
+		public void run() {
+			stallClient.close(stallId);
+		} 
+	}
 	
 	@Transactional(rollbackFor = RuntimeException.class)
 	private void switching(ReqSwitch rs,HttpServletRequest request) {
@@ -628,6 +645,9 @@ public class OrdersServiceImpl implements OrdersService {
 				new CancelStallThread(order.getStallId()).start();
 				Thread thread = new PushThread(order.getUserId().toString(), "订单通知","无空闲车位,订单已关闭",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
 				thread.start();
+				//关闭订单发送优惠券功能
+				couponClient.send(cu.getId());
+				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), SwitchResult.CLOSED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
 			}else {
 				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
 				log.info("get switch stall sn:{}",sn);
@@ -635,6 +655,7 @@ public class OrdersServiceImpl implements OrdersService {
 					ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
 					log.info("switch stall:{}",JsonUtil.toJson(stall));
 					if(stall.getStatus().intValue()==StallStatus.FREE.status) {
+						Thread thread = new OfflieStallThread(order.getStallId());
 						order.setStallId(stall.getId());
 						order.setStallName(stall.getStallName());
 						Map<String,Object> param = new HashMap<String,Object>();
@@ -645,16 +666,19 @@ public class OrdersServiceImpl implements OrdersService {
 						param.put("switchStatus", 1);
 						this.orderMasterMapper.updateSwitch(param);
 						this.stallClient.order(stall.getId()); 
+						thread.start();
 						flag = true;
 					} 
 				}
 				Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
 				thread.start();
+				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), flag?SwitchResult.SUCCESS.value:SwitchResult.FAILED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
 			}
 			
 		}else {
 			Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知","车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, false);
 			thread.start();
+			this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), SwitchResult.FAILED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
 		} 
 	}
 	

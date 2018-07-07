@@ -3,16 +3,22 @@ package cn.linkmore.redis;
 import java.lang.reflect.Method;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisNode;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.stereotype.Component;
 
@@ -127,5 +133,22 @@ public class RedisConfig extends CachingConfigurerSupport {
 		redisTemplate.afterPropertiesSet();
 		return redisTemplate;
 	}
+	
+	
+	
+	@Value("${server.session.timeout}")
+    private int sessionTimeout = 120;
+ 
+    @Primary
+    @Bean
+    public RedisOperationsSessionRepository sessionRepository(
+        @Qualifier("sessionRedisTemplate") RedisOperations<Object, Object> sessionRedisTemplate,
+        ApplicationEventPublisher applicationEventPublisher) {
+        RedisOperationsSessionRepository sessionRepository = new RedisOperationsSessionRepository(sessionRedisTemplate);
+        sessionRepository.setApplicationEventPublisher(applicationEventPublisher);
+        sessionRepository.setDefaultMaxInactiveInterval(sessionTimeout);
+        return sessionRepository;
+    }
+
 	
 }

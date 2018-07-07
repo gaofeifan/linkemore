@@ -61,15 +61,7 @@ public class AuthenticationRealm extends AuthorizingRealm {
 		 
 		if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
 			ResPerson person = this.personService.findByUsername(username); 
-			/*person = new ResPerson();
-			person.setId(3L);
-			person.setUsername("admin");
-			person.setRealname("管理员");
-			person.setLoginTime(new Date());
-			person.setStatus(1);
-			person.setLockStatus(0);
-			person.setPassword("$2a$10$uKLC230g4nGf3LY2qMD.Dugyo65t40FeFJaCJs15Qeh9dbYyOGha.");
-			*/if (person == null) {
+			if (person == null) {
 				throw new UnknownAccountException();
 			}
 			if (person.getStatus()==0) {

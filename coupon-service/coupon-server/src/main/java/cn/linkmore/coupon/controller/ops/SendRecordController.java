@@ -1,4 +1,4 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.ops;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,7 @@ import cn.linkmore.coupon.request.ReqSendRecord;
 import cn.linkmore.coupon.service.SendRecordService;
 
 @Controller
-@RequestMapping("/coupon_send_record")
+@RequestMapping("/ops/coupon_send_record")
 public class SendRecordController {
 
 	@Autowired

@@ -18,7 +18,21 @@ public class ResRunTime {
 	private Double rdl;//日单量
 	private Double jtsc;//均停时长
 	private Double runtime;//运营时长
+	private Double runtimeRate;//运营时长比例
+	private Integer shopRuntime;//商场运营时长
 	
+	public Double getRuntimeRate() {
+		return runtimeRate;
+	}
+	public void setRuntimeRate(Double runtimeRate) {
+		this.runtimeRate = runtimeRate;
+	}
+	public Integer getShopRuntime() {
+		return shopRuntime;
+	}
+	public void setShopRuntime(Integer shopRuntime) {
+		this.shopRuntime = shopRuntime;
+	}
 	public int getDayNum() {
 		return dayNum;
 	}

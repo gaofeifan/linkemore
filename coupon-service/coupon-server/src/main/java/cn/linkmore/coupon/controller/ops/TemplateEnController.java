@@ -1,4 +1,4 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.ops;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -35,7 +35,7 @@ import cn.linkmore.coupon.service.QrcService;
 import cn.linkmore.coupon.service.TemplateEnService;
 
 @Controller
-@RequestMapping("/coupon_enterprise")
+@RequestMapping("/ops/coupon_enterprise")
 public class TemplateEnController {
 	
 	@Autowired

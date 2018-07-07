@@ -555,6 +555,84 @@ public class ReportDayExportController {
 		runtimeMap.put("title", "运营时长");
 		return runtimeMap;
 	}
+	
+	public Map<String, Object> runtimeRateMap(ReqReportDay reportDay) {
+		List<ResRunTime> runtimeList = this.reportDayService.runtimeList(reportDay);
+		JSONArray ja = new JSONArray();
+		Map<String, Object> map = null;
+
+		int bjStall = 0;
+		int hzStall = 0;
+		Map<String, Object> stallMap = new HashMap<String, Object>();
+		for (ResRunTime resPull : runtimeList) {
+			if (stallMap.get(resPull.getPreName()) == null) {
+				stallMap.put(resPull.getPreName(), resPull.getStallTotal());
+				if (resPull.getCityName().equals("北京")) {
+					bjStall += resPull.getStallTotal();
+				} else if (resPull.getCityName().equals("杭州")) {
+					hzStall += resPull.getStallTotal();
+				}
+			}
+		}
+
+		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+				&& runtimeList != null) {
+			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			for (String date : dateList) {
+				map = new HashMap<String, Object>();
+				map.put("day", date);
+				int bjTotalTime = 0;
+				int hzTotalTime = 0;
+				int bjShopRuntime = 0;
+				int hzShopRuntime = 0;
+				double bjRuntimeRate = 0d;
+				double hzRuntimeRate = 0d;
+				double totalRuntimeRate = 0d;
+				for (ResRunTime resRunTime : runtimeList) {
+					if (map.get(resRunTime.getPreName()) == null) {
+						map.put(resRunTime.getPreName(), 0);
+					}
+					if (date.equals(resRunTime.getDay())) {
+						map.put(resRunTime.getPreName(), resRunTime.getRuntimeRate());
+						if (resRunTime.getCityName().equals("北京")) {
+							bjTotalTime += resRunTime.getTotalTime();
+							bjShopRuntime += resRunTime.getShopRuntime();
+						} else if (resRunTime.getCityName().equals("杭州")) {
+							hzTotalTime += resRunTime.getTotalTime();
+							hzShopRuntime += resRunTime.getShopRuntime();
+						}
+					}
+				}
+				log.info("bj_total_time ,{} hz_total_time ,{} bj_stall,{} hz_stall_count,{}", bjTotalTime, hzTotalTime,
+						bjStall, hzStall);
+				if (bjStall != 0 && bjShopRuntime != 0) {
+					bjRuntimeRate = new BigDecimal((float) bjTotalTime / bjShopRuntime / bjStall)
+							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+				if (hzStall != 0 && hzShopRuntime != 0) {
+					hzRuntimeRate = new BigDecimal((float) hzTotalTime / hzShopRuntime / hzStall)
+							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+
+				if ((bjStall + hzStall) != 0 && (bjShopRuntime + hzShopRuntime)!= 0) {
+					totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / (bjShopRuntime + hzShopRuntime) / (bjStall + hzStall))
+							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}
+
+				map.put("bjTotal", bjRuntimeRate);
+				map.put("hzTotal", hzRuntimeRate);
+				map.put("total", totalRuntimeRate);
+				ja.add(map);
+			}
+		}
+		Map<String, String> headMap = orderTitleMap(reportDay);
+		Map<String, Object> runtimeMap = new HashMap<String, Object>();
+		runtimeMap.put("head", headMap);
+		runtimeMap.put("value", ja);
+		runtimeMap.put("title", "运营时长比例");
+		return runtimeMap;
+	}
+	
 
 	public Map<String, Object> rdlMap(ReqReportDay reportDay) {
 		List<ResRunTime> runtimeList = this.reportDayService.runtimeList(reportDay);
@@ -1221,6 +1299,7 @@ public class ReportDayExportController {
 			Map<String, Object> newUserOrderMap = newUserOrderMap(reportDay);
 			Map<String, Object> oldUserOrderMap = oldUserOrderMap(reportDay);
 			Map<String, Object> runtimeMap = runtimeMap(reportDay);
+			Map<String, Object> runtimeRateMap = runtimeRateMap(reportDay);
 			Map<String, Object> rdlMap = rdlMap(reportDay);
 			Map<String, Object> jtscMap = jtscMap(reportDay);
 			Map<String, Object> averagePriceMap = averagePriceMap(reportDay);
@@ -1246,19 +1325,20 @@ public class ReportDayExportController {
 			exportList.put(8, newUserOrderMap);
 			exportList.put(9, oldUserOrderMap);
 			exportList.put(10, runtimeMap);
-			exportList.put(11, rdlMap);
-			exportList.put(12, jtscMap);
-			exportList.put(13, averagePriceMap);
+			exportList.put(11, runtimeRateMap);
+			exportList.put(12, rdlMap);
+			exportList.put(13, jtscMap);
+			exportList.put(14, averagePriceMap);
 
 			// 收入
-			exportList.put(14, costMap);
-			exportList.put(15, dealMap);
-			exportList.put(16, dealCostMap);
-			exportList.put(17, cashMap);
-			exportList.put(18, cashDealMap);
-			exportList.put(19, cashCostMap);
-			exportList.put(20, feeMap);
-			exportList.put(21, pullCostMap);
+			exportList.put(15, costMap);
+			exportList.put(16, dealMap);
+			exportList.put(17, dealCostMap);
+			exportList.put(18, cashMap);
+			exportList.put(19, cashDealMap);
+			exportList.put(20, cashCostMap);
+			exportList.put(21, feeMap);
+			exportList.put(22, pullCostMap);
 
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			ExcelUtil.exportReportExcel(exportList, title, os);

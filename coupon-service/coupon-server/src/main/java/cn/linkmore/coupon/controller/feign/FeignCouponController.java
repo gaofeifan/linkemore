@@ -47,4 +47,10 @@ public class FeignCouponController {
 	public List<ResCoupon> order(@RequestParam(value="userId") Long userId,@RequestParam(value="orderId") Long orderId){
 		return this.couponService.userOrderEnableList(userId,orderId);
 	}
+	
+	@RequestMapping(value = "/v2.0/send", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean send(@RequestParam(value="userId") Long userId){
+		return this.couponService.send(userId);
+	}
 }

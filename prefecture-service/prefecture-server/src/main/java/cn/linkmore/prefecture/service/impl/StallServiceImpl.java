@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.linkmore.lock.bean.LockBean;
@@ -17,6 +16,7 @@ import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
+import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.LockStatus;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
@@ -283,7 +283,7 @@ public class StallServiceImpl implements StallService {
 		Date now = new Date();
 		Integer status = reqStall.getStatus();
 		String sn = reqStall.getLockSn();
-		Long preId = reqStall.getPreId();
+//		Long preId = reqStall.getPreId();
 		reqStall.setUpdateTime(now);
 		if (status.intValue() == 4) {
 			Stall stall = new Stall();
@@ -349,6 +349,35 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public List<ResStallOps> findListByParam(Map<String, Object> param) {
 		return this.stallClusterMapper.findListByParam(param);
+	}
+
+	@Override
+	public void close(Long id) {
+		Stall stall = stallClusterMapper.findById(id);
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) { 
+			Integer count = (Integer)this.redisService.get(RedisKey.STALL_ORDER_CLOSED.key+id);
+			if(count==null) {
+				count = 0;
+			}
+			if(count<3) {
+				count = count+1; 
+				stall.setLockStatus(Stall.LOCK_STATUS_UP); 
+				stall.setUpdateTime(new Date());
+				stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
+				stall.setStatus(Stall.STATUS_FREE);
+				this.stallMasterMapper.checkout(stall);
+				this.redisService.set(RedisKey.STALL_ORDER_CLOSED.key+id, count,ExpiredTime.STALL_ORDER_CLOSED_TIME.time );  
+				this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+			}else {
+				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
+				stall.setStatus(StallStatus.OUTLINE.status); 
+				stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
+				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
+				this.stallMasterMapper.offline(stall);
+			}
+			
+		}
+		
 	}
 	
 	

@@ -24,7 +24,7 @@ import cn.linkmore.feign.FeignConfiguration;
  * @version 2.0
  *
  */
-@FeignClient(value = "coupon-server", path = "/coupon_send_record", fallback=SendRecordClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "coupon-server", path = "/ops/coupon_send_record", fallback=SendRecordClientHystrix.class,configuration = FeignConfiguration.class)
 public interface SendRecordClient {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)

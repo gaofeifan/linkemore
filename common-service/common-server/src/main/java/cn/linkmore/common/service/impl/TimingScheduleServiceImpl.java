@@ -25,8 +25,8 @@ import cn.linkmore.util.DomainUtil;
 @Service
 public class TimingScheduleServiceImpl implements TimingScheduleService {
 
-	@Autowired
-	private DefaultSchedulingConfigurer defaultSchedulingConfigurer;
+//	@Autowired
+//	private DefaultSchedulingConfigurer defaultSchedulingConfigurer;
 	@Autowired
 	private TimingScheduleClusterMapper timingScheduleMapper;
 	@Autowired
@@ -36,29 +36,29 @@ public class TimingScheduleServiceImpl implements TimingScheduleService {
 	public void save(ReqTimingSchedule timingSchedule) {
 		this.timingScheduleMasterMapper.saveReq(timingSchedule);
 		// 新增定时任务 为启动状态时添加定时任务
-		if (timingSchedule.getStatus() == 1) {
-			defaultSchedulingConfigurer.addTriggerTask(timingSchedule);
-		}
+//		if (timingSchedule.getStatus() == 1) {
+//			defaultSchedulingConfigurer.addTriggerTask(timingSchedule);
+//		}
 	}
 
 	@Override
 	public void update(ReqTimingSchedule timingSchedule) {
 		this.timingScheduleMasterMapper.updateReq(timingSchedule);
 		// 修改定时任务 为启动状态时重置任务 为关闭状态时 取消之前的任务
-		if (timingSchedule.getStatus() == 1) {
-			defaultSchedulingConfigurer.resetTriggerTask(timingSchedule);
-		} else {
-			defaultSchedulingConfigurer.cancelTriggerTask(timingSchedule.getId() + "");
-		}
+//		if (timingSchedule.getStatus() == 1) {
+//			defaultSchedulingConfigurer.resetTriggerTask(timingSchedule);
+//		} else {
+//			defaultSchedulingConfigurer.cancelTriggerTask(timingSchedule.getId() + "");
+//		}
 	}
 
 	@Override
 	public void deleteIds(List<Long> ids) {
 		this.timingScheduleMasterMapper.deleteIds(ids);
-		for (Long id : ids) {
-			// 删除时 取消任务
-			defaultSchedulingConfigurer.cancelTriggerTask(id.toString());
-		}
+//		for (Long id : ids) {
+//			// 删除时 取消任务
+//			defaultSchedulingConfigurer.cancelTriggerTask(id.toString());
+//		}
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class TimingScheduleServiceImpl implements TimingScheduleService {
 	public void delete(Long id) {
 		this.timingScheduleMasterMapper.deleteById(id);
 		// 删除时 取消任务
-		defaultSchedulingConfigurer.cancelTriggerTask(id.toString());
+//		defaultSchedulingConfigurer.cancelTriggerTask(id.toString());
 	}
 
 }

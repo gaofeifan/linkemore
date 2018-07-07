@@ -47,9 +47,9 @@ public class Template {
 	// 更新时间
 	private Date updateTime;
 	// 合同金额
-	private Double contractAmount;
+	private BigDecimal contractAmount;
 	// 赠送金额
-	private Double givenAmount;
+	private BigDecimal givenAmount;
 
 	private Long cityId;
 	private Long preId;
@@ -345,19 +345,19 @@ public class Template {
 		this.remainNumber = remainNumber;
 	}
 
-	public Double getContractAmount() {
+	public BigDecimal getContractAmount() {
 		return contractAmount;
 	}
 
-	public void setContractAmount(Double contractAmount) {
+	public void setContractAmount(BigDecimal contractAmount) {
 		this.contractAmount = contractAmount;
 	}
 
-	public Double getGivenAmount() {
+	public BigDecimal getGivenAmount() {
 		return givenAmount;
 	}
 
-	public void setGivenAmount(Double givenAmount) {
+	public void setGivenAmount(BigDecimal givenAmount) {
 		this.givenAmount = givenAmount;
 	}
 

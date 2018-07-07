@@ -1,4 +1,4 @@
-package cn.linkmore.coupon.controller;
+package cn.linkmore.coupon.controller.ops;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.coupon.service.TemplateItemEnService;
 
 @Controller
-@RequestMapping("/coupon_enterprise_Item")
+@RequestMapping("/ops/coupon_enterprise_Item")
 public class TemplateItemEnController {
 	
 	@Autowired

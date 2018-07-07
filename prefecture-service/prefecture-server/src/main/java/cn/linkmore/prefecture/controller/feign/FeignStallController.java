@@ -47,6 +47,13 @@ public class FeignStallController {
 	
 	@Autowired
 	private PrefectureService preService;
+	
+	@RequestMapping(value = "/v2.0/close", method = RequestMethod.PUT)
+	public void close(@RequestParam("id")Long id) {
+		log.info("order closed handle stall:{}",id);
+		this.stallService.close(id);
+	}
+
 
 	/**
 	 * 预约订单时，根据车位锁序列号查询车位
@@ -65,7 +72,7 @@ public class FeignStallController {
 	 * @param stallId
 	 *            Long
 	 */
-	@RequestMapping(value = "/v2.0/cancel", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/cancel", method = RequestMethod.GET)
 	public boolean cancel(@RequestParam("stallId") Long stallId) {
 		return this.stallService.cancel(stallId);
 	}
@@ -126,7 +133,7 @@ public class FeignStallController {
 	
 	@RequestMapping(value = "/v2.0/find-list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStallOps> findList(Map<String, Object> param){
+	public List<ResStallOps> findList(@RequestBody Map<String, Object> param){
 		List<ResStallOps> list = this.stallService.findListByParam(param);
 		return list;
 	}

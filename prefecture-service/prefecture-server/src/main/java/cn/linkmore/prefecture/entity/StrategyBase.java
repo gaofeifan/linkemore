@@ -18,6 +18,7 @@ public class StrategyBase {
 	public static final int TYPE_PERIOD = 6;
 	public static final int TYPE_HUBIN = 7;
 	public static final int TYPE_XICHENG = 8;
+	public static final int TYPE_OLD_DAY_FEE = 9;//杭州桉天无封顶
 	/**
 	 * 主键
 	 */

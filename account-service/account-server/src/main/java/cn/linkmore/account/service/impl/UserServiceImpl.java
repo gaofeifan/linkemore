@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
@@ -37,17 +37,12 @@ import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.entity.UserInfo;
 import cn.linkmore.account.entity.UserVechicle;
 import cn.linkmore.account.entity.WechatFans;
-import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
-import cn.linkmore.account.request.ReqUpdateNickname;
-import cn.linkmore.account.request.ReqUpdateSex;
-import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
-import cn.linkmore.account.response.ResUserLogin;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
@@ -63,9 +58,9 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.AppWechatClient;
-import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
+import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.third.response.ResFans;
@@ -522,23 +517,32 @@ public class UserServiceImpl implements UserService {
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ru.getId().toString());
 		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+key); 
-	}
+	} 
 	
+	private final static ConcurrentHashMap<Long,Long> LOGIN_USER = new ConcurrentHashMap<Long,Long>();
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
+		Token   last  = null;
 		String key = TokenUtil.getKey(request);
-		Token last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
-		if(last!=null){ 
-			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
-			this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
-			last.setAccessToken(key);
+		Long userId = LOGIN_USER.get(user.getId());
+		if(userId==null) {
+			userId = user.getId();
+			LOGIN_USER.put(user.getId(), user.getId());
 		}
-		user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
-		Token token = new Token();
-		token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-		token.setTimestamp(new Date().getTime());
-		token.setAccessToken(key);
-		this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+		synchronized(userId) {
+			last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+			if(last!=null){ 
+				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
+				last.setAccessToken(key);
+			}
+			user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
+			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+			Token token = new Token();
+			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
+			token.setTimestamp(new Date().getTime());
+			token.setAccessToken(key);
+			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+		} 
 		return last;
 	}
 	
@@ -806,17 +810,19 @@ public class UserServiceImpl implements UserService {
 		if (ui == null) {
 			ui = this.saveUserInfo(rms);
 		}
+		CacheUser cu = new CacheUser(); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
 		if (ui.getUserId() != null) {
 			ResUser user = this.userClusterMapper.findById(ui.getUserId());
 			if (user != null) {
 				ru.setId(user.getId());
 				ru.setMobile(user.getUsername());
+				cu.setMobile(user.getMobile());
 			}
 		}
 		String key = TokenUtil.getKey(request);  
-		ru.setToken(key); 
-		CacheUser cu = new CacheUser(); 
+		ru.setToken(key);  
+		cu.setId(ui.getUserId());
 		cu.setOpenId(rms.getOpenid());
 		cu.setToken(key); 
 		cu.setClient((short)ClientSource.WXAPP.source);
@@ -882,7 +888,8 @@ public class UserServiceImpl implements UserService {
 		tags.add("miniuser");
 		ru.setTags(tags); 
 		cu.setMobile(user.getUsername()); 
-		this.updateCache(request, cu);
+		cu.setId(user.getId());
+		this.cacheUser(request, cu);
 		return ru; 
 	}
 

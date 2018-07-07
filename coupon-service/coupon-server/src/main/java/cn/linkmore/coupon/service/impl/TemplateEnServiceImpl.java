@@ -32,7 +32,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseAttachmentClient;
 import cn.linkmore.common.request.ReqAttachment;
-import cn.linkmore.coupon.controller.TemplateEnController;
+import cn.linkmore.coupon.controller.ops.TemplateEnController;
 import cn.linkmore.coupon.dao.cluster.QrcClusterMapper;
 import cn.linkmore.coupon.dao.cluster.RollbackClusterMapper;
 import cn.linkmore.coupon.dao.cluster.TemplateEnClusterMapper;
@@ -400,8 +400,8 @@ public class TemplateEnServiceImpl implements TemplateEnService {
 				items.add(item);
 			}
 			oct.setItems(items);
-			oct.setContractAmount(contractAmount.doubleValue());
-			oct.setGivenAmount(givenAmount.doubleValue());
+			oct.setContractAmount(contractAmount);
+			oct.setGivenAmount(givenAmount);
 			oct.setSendQuantity(0);
 			oct.setUnitCount(unitCount);
 			oct.setUnitAmount(unitAmount);

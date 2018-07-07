@@ -37,6 +37,17 @@ public class PushServiceImpl implements PushService {
 	private BeanFactory beanFactory;
 	
 	
+	class AndroidThread extends Thread{
+		private ReqPush rp;
+		public AndroidThread(ReqPush rp) {
+			this.rp =rp;
+		}
+		public void run() {
+			android(rp);
+		}
+	}
+	
+	
 	private boolean android(ReqPush rp) {
 		boolean flag = false;
 		JPushClient jpushClient = this.beanFactory.jPushClient(); 
@@ -56,6 +67,16 @@ public class PushServiceImpl implements PushService {
 			flag = true;
 		} catch (Exception e) { }
 		return flag;
+	}
+	
+	class IOSThread extends Thread{
+		private ReqPush rp;
+		public IOSThread(ReqPush rp) {
+			this.rp =rp;
+		}
+		public void run() {
+			ios(rp);
+		}
 	}
 	
 	private boolean ios(ReqPush rp) {
@@ -83,23 +104,26 @@ public class PushServiceImpl implements PushService {
 	@Override 
 	public void push(ReqPush rp) { 
 		log.info("push message:{}",JsonUtil.toJson(rp));
+		Thread thread = null;
 		if(rp.getClient().intValue()  ==Constants.ClientSource.ANDROID.source) {
-			this.android(rp);
+			thread = new AndroidThread(rp);
 		}else {
-			this.ios(rp);
+			thread = new IOSThread(rp);
 		}
+		thread.start();
 	}
 	
 	@Override 
 	public void push(List<ReqPush> rps) { 
-		
+		Thread thread = null;
 		for(ReqPush rp:rps) {
 			try {
 				if(rp.getClient().intValue()  ==Constants.ClientSource.ANDROID.source) {
-					this.android(rp);
+					thread = new AndroidThread(rp);
 				}else {
-					this.ios(rp);
+					thread = new IOSThread(rp);
 				}
+				thread.start();
 			}catch(Exception e) {
 				
 			}
