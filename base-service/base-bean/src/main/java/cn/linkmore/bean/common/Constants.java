@@ -269,7 +269,11 @@ public class Constants {
 		ORDER_SWITCH_RESULT("order:switch-result:"),
 		PREFECTURE_FREE_STALL("freelock_key:"),
 		PREFECTURE_BUSY_STALL("prefecture:busy_stall:"),
-		WECHAT_TOKEN_KEY("wechat_token"), 
+		WECHAT_TOKEN_KEY("wechat_token"),
+		WECHAT_TOKEN_KEY_MONITOR("wechat_token:monitor:"),
+		WECHAT_GET_USER_LIST_MONITOR("wechat_get_user_list:monitor:"),
+		WECHAT_GET_USER_LIST_EXPIRE("500"),
+		WECHAT_TOKEN_EXPIRE("3600"),
 		USER_GROUP_IDS("USER_GROUP_IDS:"),
 		BLACKLIST_ORDER_LIMIT("blacklist:order:limit");
 		public String key;

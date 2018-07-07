@@ -8,17 +8,24 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import cn.linkmore.third.request.ReqTemplateMsg;
+import cn.linkmore.third.response.ResToken;
+import cn.linkmore.third.response.ResWechatUserList;
 import cn.linkmore.third.service.TokenService;
 import cn.linkmore.third.service.WechatService;
 import cn.linkmore.third.wechat.core.ErrCode;
 import cn.linkmore.third.wechat.core.HttpMethod;
 import cn.linkmore.third.wechat.core.WeChat;
 import cn.linkmore.third.wechat.vo.Token;
+import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.ObjectUtils;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
@@ -216,7 +223,49 @@ public class WechatServiceImpl implements WechatService {
             }
         }
         return file;
-    } 
+    }
+
+	@Override
+	public ResToken resetToken(String appid, String appsecret, String key) {
+		return tokenService.resetToken(appid,appsecret,key);
+	}
+
+	@Override
+	public void pushTemplateMsg(ReqTemplateMsg msg) {
+		String url = WeChat.getTemplateMsg(msg.getToken());
+		Map<String, Object> map = new HashMap<>();
+		map.put("touser", msg.getOpenId());
+		map.put("template_id", msg.getTemplateId());
+		map.put("topcolor", msg.getTopcolor());
+		map.put("data", msg.getData());
+		String obj = JsonUtil.toJson(map);
+		JSONObject json = WeChat.httpsRequest(url, HttpMethod.POST, obj);
+		Boolean flag = false; 
+		if (null != json &&json.get("errcode")!=null&& "0".equals(json.get("errcode").toString()) ){
+			flag = true;
+		}else if(null != json){
+			flag = false;
+		}
+		log.info("return msg:"+json.toString()); 
+		log.info("success:"+flag); 
+	}
+
+	@Override
+	public ResWechatUserList getUserList(String token) {
+		String url = WeChat.getUserListUrl(token);
+		JSONObject json = WeChat.httpsRequest(url, HttpMethod.GET, null);
+		Object total = json.get("total");
+		Object count = json.get("count");
+		Object data = json.get("data");
+		JSONObject openids = JSONObject.fromObject(data);
+		List<String> ids = (List<String>) openids.get("openid");
+		ResWechatUserList user = new ResWechatUserList();
+		user.setCount(Integer.parseInt(count.toString()));
+		user.setTotal(Integer.parseInt(total.toString()));
+		user.setOpenIds(ids);
+		return user;
+	} 
+	
 }
 
 

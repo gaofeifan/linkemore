@@ -88,3 +88,8 @@ redis:
   test-on-create: true 
   sentinel-master: mymaster
   sentinel-nodes: 192.168.1.219:26379 
+  
+wechat:
+  app-id: wx855e7752d230e7f5
+  app-secret: 984022bd17e249edc12962fc07bff4ff
+  token: ppyx

@@ -12,7 +12,7 @@ spring:
       force: true 
   boot: 
     admin:
-      url: http://192.168.1.223:6002
+      url: http://192.168.1.232:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -22,7 +22,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.223:6003/eureka/
+      defaultZone: http://192.168.1.232:6003/eureka/
 feign:
   hystrix:
     enabled: true
