@@ -578,13 +578,13 @@ public class CouponServiceImpl implements CouponService {
 			Template template = ObjectUtils.copyObject(temp, new Template());
 			this.templateMasterMapper.update(template);
 			// 发送短信通知
-			Map<String, String> param = new HashMap<String, String>();
-			param.put("money", temp.getUnitAmount().toString());
-			param.put("enterprise", "凌猫停车");
+//			Map<String, String> param = new HashMap<String, String>();
+//			param.put("money", temp.getUnitAmount().toString());
+//			param.put("enterprise", "凌猫停车");
 			ReqSms sms = new ReqSms();
 			sms.setMobile(resUser.getUsername());
-			sms.setParam(param);
-			sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+//			sms.setParam(param);
+			sms.setSt(Constants.SmsTemplate.ORDER_CLOSED_NOTICE);
 			smsClient.send(sms);
 			this.redisService.set(RedisKey.ORDER_SWITCH_STALL_FAILED_COUNT.key + userId.toString(), count + 1,
 					ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
