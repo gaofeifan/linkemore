@@ -30,6 +30,11 @@
 			<artifactId>base-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>monitor-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
