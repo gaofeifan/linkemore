@@ -108,6 +108,7 @@ public class Constants {
 		STALL_DOWN_FAIL_EXP_TIME(60 * 60),
 		STALL_ORDER_CLOSED_TIME(60*60*24),
 		ORDER_SWITCH_RESULT_TIME(60*3),
+		WECHAT_TOKEN_EXPIRE(3600),
 		COUPON_SEND_COUNT_EXP_TIME(60 * 60 * 24);
 		public int time;
 
@@ -254,7 +255,7 @@ public class Constants {
 		USER_APP_USER_CODE("user_app:user:code:"), 
 		USER_APP_USER_MOBILE("user_app:user:mobile:"), 
 		USER_APP_USER_CHANGE_MOBILE("user_app:user:change-mobile:"), 
-		COMMON_CAR_BRAND_LIST("common:car_brand:list"), 
+		COMMON_CAR_BRAND_LIST("car_brand_list"), 
 		COUPON_TEMPLATE_CONDITION_USETIME("COUPON_TEMP_CONDITION_USETIME:"), 
 		COUPON_TEMPLATE_CONDITION_PREIDS( "COUPON_TEMP_CONDITION_PREIDS:"),
 		COUPON_SEND_RECORD_MOBILE( "COUPON_SEND_RECORD_MOBILE:"),
@@ -266,10 +267,9 @@ public class Constants {
 		STALL_ORDER_CLOSED("stall:order-closed:"),
 		ORDER_SWITCH_STALL_FAILED_COUNT("order:switch-stall-failure:count"),
 		ORDER_SWITCH_RESULT("order:switch-result:"),
-		PREFECTURE_FREE_STALL("prefecture:free_stall:"),
+		PREFECTURE_FREE_STALL("freelock_key:"),
 		PREFECTURE_BUSY_STALL("prefecture:busy_stall:"),
-		WECHAT_TOKEN_KEY("wechat_token"),
-		WECHAT_TOKEN_EXPIRE("3600"),
+		WECHAT_TOKEN_KEY("wechat_token"), 
 		USER_GROUP_IDS("USER_GROUP_IDS:"),
 		BLACKLIST_ORDER_LIMIT("blacklist:order:limit");
 		public String key;

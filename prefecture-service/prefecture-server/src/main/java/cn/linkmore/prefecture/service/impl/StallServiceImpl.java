@@ -283,7 +283,7 @@ public class StallServiceImpl implements StallService {
 		Date now = new Date();
 		Integer status = reqStall.getStatus();
 		String sn = reqStall.getLockSn();
-		Long preId = reqStall.getPreId();
+//		Long preId = reqStall.getPreId();
 		reqStall.setUpdateTime(now);
 		if (status.intValue() == 4) {
 			Stall stall = new Stall();
@@ -356,7 +356,10 @@ public class StallServiceImpl implements StallService {
 		Stall stall = stallClusterMapper.findById(id);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) { 
 			Integer count = (Integer)this.redisService.get(RedisKey.STALL_ORDER_CLOSED.key+id);
-			if(count==null||count<3) {
+			if(count==null) {
+				count = 0;
+			}
+			if(count<3) {
 				count = count+1; 
 				stall.setLockStatus(Stall.LOCK_STATUS_UP); 
 				stall.setUpdateTime(new Date());
@@ -369,6 +372,7 @@ public class StallServiceImpl implements StallService {
 				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
 				stall.setStatus(StallStatus.OUTLINE.status); 
 				stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
+				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
 				this.stallMasterMapper.offline(stall);
 			}
 			

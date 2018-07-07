@@ -1,6 +1,5 @@
 package cn.linkmore.prefecture.service.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,7 +48,6 @@ import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
-import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
@@ -150,11 +148,16 @@ public class PrefectureServiceImpl implements PrefectureService {
 		log.info("get_stall_count pre size :{}", preList.size());
 		List<ResPrefectureList> list = new ArrayList<ResPrefectureList>();
 		ResPrefectureList pre = null;
+		Long count = 0L;
 		if(CollectionUtils.isNotEmpty(preList)) {
 			for(ResPrefecture resPre:preList) {
 				pre = new ResPrefectureList();
 				pre.setId(resPre.getId());
-				pre.setLeisureStall(getFreeStall(resPre.getId()));
+				count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + resPre.getId());
+				if(count==null) {
+					count = 0L;
+				}
+				pre.setLeisureStall(count.intValue());
 				list.add(pre);
 			}
 		}
@@ -165,14 +168,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 	 * @param preId
 	 * @return
 	 */
-	public Integer getFreeStall(Long preId) {
-		List<ResStall> stallList = this.stallClusterMapper.findStallsByPreId(preId);
-		int count = 0;
-		if(stallList!=null) {
-			count = stallList.size();
-		}
-		return count;
-	}
+//	public Integer getFreeStall(Long preId) {
+//		List<ResStall> stallList = this.stallClusterMapper.findStallsByPreId(preId);
+//		int count = 0;
+//		if(stallList!=null) {
+//			count = stallList.size();
+//		}
+//		return count;
+//	}
 	@Override
 	public ViewPage findPage(ViewPageable pageable) { 
 		Map<String,Object> param = new HashMap<String,Object>(); 
@@ -353,12 +356,17 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			} 
 		}
+		Long count = 0L;
 		for(ResPrefecture prb: preList){ 
 			prb.setPlateId(plateId);
 			prb.setPlateNumber(plateNumber);
 			prb.setChargeTime(prb.getChargeTime() + "分钟");
 			prb.setChargePrice(prb.getChargePrice() + "元");
-			prb.setLeisureStall(getFreeStall(prb.getId()));
+			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getId());
+			if(count==null) {
+				count = 0L;
+			}
+			prb.setLeisureStall(count.intValue());
 			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()), new Double(rp.getLongitude())));
 		}
 		

@@ -25,30 +25,31 @@ public class TokenService {
 
 	public Token getToken() {
 		Token token = null;
-		String json = (String) redisService.get(Constants.RedisKey.WECHAT_TOKEN_KEY.key); 
-		if(StringUtils.isNotBlank(json)){
-			try{
-				token = JsonUtil.toObject(json, Token.class);
-			}catch(Exception e){ 
-				StringBuffer sb = new StringBuffer();
-				StackTraceElement[] stackArray = e.getStackTrace();  
-		        for (int i = 0; i < stackArray.length; i++) {  
-		            StackTraceElement element = stackArray[i];  
-		            sb.append(element.toString() + "\n");  
-		        }   
-				log.info(sb.toString());
-			} 
-		}
-		if(null == token) {
-			token = this.resetToken();
-		}
+//		String json = (String) redisService.get(Constants.RedisKey.WECHAT_TOKEN_KEY.key); 
+//		if(StringUtils.isNotBlank(json)){
+//			try{
+//				token = JsonUtil.toObject(json, Token.class);
+//			}catch(Exception e){ 
+//				StringBuffer sb = new StringBuffer();
+//				StackTraceElement[] stackArray = e.getStackTrace();  
+//		        for (int i = 0; i < stackArray.length; i++) {  
+//		            StackTraceElement element = stackArray[i];  
+//		            sb.append(element.toString() + "\n");  
+//		        }   
+//				log.info(sb.toString());
+//			} 
+//		}
+//		if(null == token) {
+//			token = this.resetToken();
+//		}
 		return token;
 	}  
 	
 	public Token resetToken(){
-		Token token = WeChat.getToken(wechatConfig.getAppId(), wechatConfig.getAppSecret()); 
-		log.info("获取access_token成功，有效时长{}秒 token:{}", token.getExpiresIn(),token.getAccessToken());  
-		redisService.set(Constants.RedisKey.WECHAT_TOKEN_KEY.key, JsonUtil.toJson(token), Long.valueOf(Constants.RedisKey.WECHAT_TOKEN_EXPIRE.key));
+		Token token = null;
+//		token = WeChat.getToken(wechatConfig.getAppId(), wechatConfig.getAppSecret()); 
+//		log.info("获取access_token成功，有效时长{}秒 token:{}", token.getExpiresIn(),token.getAccessToken());  
+//		redisService.set(Constants.RedisKey.WECHAT_TOKEN_KEY.key, JsonUtil.toJson(token), Constants.ExpiredTime.WECHAT_TOKEN_EXPIRE.time);
 		return token;
 	}
 }

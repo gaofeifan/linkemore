@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -152,7 +152,7 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 		return flag;
 	}  
-	
+	private final static String ORDER_NUMBER_HEADER="LM";
 	private String getOrderNumber() {
 		Date day = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -161,9 +161,9 @@ public class OrdersServiceImpl implements OrdersService {
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
 		number.append(t.intValue()+increment);
-		return number.toString();
+		return ORDER_NUMBER_HEADER+ number.toString();
 	}
-	private static Set<Long> ORDER_USER_SET = new HashSet<Long>();
+	private static Set<Long> ORDER_USER_SET = new HashSet<Long>(); 
 	
 	@Transactional(rollbackFor = RuntimeException.class)
 	private void order(ReqBooking rb,HttpServletRequest request) { 
@@ -173,6 +173,7 @@ public class OrdersServiceImpl implements OrdersService {
 		boolean resetRedis = true;
 		short failureReason = 0;
 		short bookingStatus = 0;
+		log.info("booking:{}",JsonUtil.toJson(rb));
 		try {
 			synchronized(this) {
 				if(ORDER_USER_SET.contains(cu.getId())){
@@ -195,11 +196,11 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			ResVechicleMark  vehicleMark =  vehicleMarkClient.findById(rb.getPlateId());
 //			//为了测试进行注释
-//			if(vehicleMark.getUserId().longValue()!=cu.getId().longValue()) {
-//				bookingStatus =(short) OperateStatus.FAILURE.status;
-//				failureReason = (short)OrderFailureReason.CARNO_NONE.value;
-//				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
-//			}
+			if(vehicleMark.getUserId().longValue()!=cu.getId().longValue()) {
+				bookingStatus =(short) OperateStatus.FAILURE.status;
+				failureReason = (short)OrderFailureReason.CARNO_NONE.value;
+				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
+			}
 			if (!this.checkCarFree(vehicleMark.getVehMark())) {
 				bookingStatus =(short) OperateStatus.FAILURE.status;
 				failureReason = (short)OrderFailureReason.CARNO_BUSY.value;
@@ -249,6 +250,7 @@ public class OrdersServiceImpl implements OrdersService {
 			log.info("lock,{}", lockSn);
 			
 			ResPrefectureDetail pre = prefectureClient.findById(rb.getPrefectureId());  
+			log.info("pre:{}",JsonUtil.toJson(pre));
 			log.info("order:{}",lockSn);
 			stall = this.stallClient.findByLock(lockSn.trim());
 			log.info("order :{}",JsonUtil.toJson(stall));
