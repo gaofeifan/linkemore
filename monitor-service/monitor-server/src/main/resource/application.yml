@@ -1,5 +1,7 @@
 server:
   port: 8100 
+  session:
+    timeout: 60
 spring:
   application:
     name: monitor-server
@@ -72,7 +74,7 @@ swagger:
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
   base-package: cn.linkmore.monitor.controller.app
-    
+     
 redis:
   host: 192.168.1.218
   port: 6379
