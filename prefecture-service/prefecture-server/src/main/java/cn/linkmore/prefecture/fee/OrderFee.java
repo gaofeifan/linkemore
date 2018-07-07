@@ -45,6 +45,7 @@ public class OrderFee {
 			case StrategyBase.TYPE_PERIOD:result=PeriodFee.getPeriodBilling(base, startDate, stopDate);break;
 			case  StrategyBase.TYPE_HUBIN:result=HubinFee.getBilling(base, startDate, stopDate);break;
 			case  StrategyBase.TYPE_XICHENG:result=XichengFee.getBilling(base, startDate, stopDate);break;
+			case StrategyBase.TYPE_OLD_DAY_FEE:result=OldDayFee.getBilling(base, startDate, stopDate);break;
 		} 
 		return result;
 	}
