@@ -27,89 +27,93 @@ public class SixHourTopFee {
 	public final static String DAY_NIGHT = "18:00:00";
 	private final static Logger log = LoggerFactory.getLogger(SixHourTopFee.class);
 
-	public static Map<String, Object> getBilling(StrategyBase base, Date startDate, Date stopDate)
-			throws ParseException {
-
+	public static Map<String, Object> getBilling(StrategyBase base, Date startDate, Date stopDate) {
+		// 此处开始时间-免费时长 因30分钟免费，但过30分钟按一小时计费对应orderFee 34-36 line
+		long freeTime = base.getFreeMins() * 60 * 1000;
+		startDate = new Date(startDate.getTime() - freeTime);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("day", 0l);
 		map.put("night", 0l);
 		map.put("dayAmount", 0d);
 		map.put("totalAmount", 0d);
 		map.put("nightAmount", 0d);
+		try {
+			double totalFee = 0d;
+			double topFee = (base.getTopDaily().intValue() / base.getTimelyLong()) * base.getBasePrice().doubleValue();
+			double fee = 0d;
+			// 当前日期
+			SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
+			String startDay = sdfDay.format(startDate);
+			String stopDay = sdfDay.format(stopDate);
+			// 当前时间
+			SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
+			String startTime = sdfTime.format(startDate);
+			String stopTime = sdfTime.format(stopDate);
 
-		double totalFee = 0d;
-		double topFee = (base.getTopDaily().intValue() / base.getTimelyLong()) * base.getBasePrice().doubleValue();
-		double fee = 0d;
-		// 当前日期
-		SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
-		String startDay = sdfDay.format(startDate);
-		String stopDay = sdfDay.format(stopDate);
-		// 当前时间
-		SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
-		String startTime = sdfTime.format(startDate);
-		String stopTime = sdfTime.format(stopDate);
+			// 比较开始结束日期
+			int dayFlag = stopDay.compareTo(startDay);
+			int day = 0;
+			if (dayFlag > 0) {
+				day = getDiffDay(startDay, stopDay);
+			}
+			log.info("----------diff day of start {} and stop {} and day {}", startDay, stopDay, day);
 
-		// 比较开始结束日期
-		int dayFlag = stopDay.compareTo(startDay);
-		int day = 0;
-		if (dayFlag > 0) {
-			day = getDiffDay(startDay, stopDay);
-		}
-		log.info("----------diff day of start {} and stop {} and day {}", startDay, stopDay, day);
+			// 日期比较
+			SimpleDateFormat sdfCompare = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String startDateStr = startDay + " " + DAY_END;
+			String endDateStr = stopDay + " " + DAY_START;
+			Date compareStartDate = sdfCompare.parse(startDateStr);
+			Date compareEndDate = sdfCompare.parse(endDateStr);
 
-		// 日期比较
-		SimpleDateFormat sdfCompare = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String startDateStr = startDay + " " + DAY_END;
-		String endDateStr = stopDay + " " + DAY_START;
-		Date compareStartDate = sdfCompare.parse(startDateStr);
-		Date compareEndDate = sdfCompare.parse(endDateStr);
+			Long time = stopDate.getTime() - startDate.getTime();
+			int actualTime = getMinTime(time);
+			map.put("resideTime", actualTime);
 
-		Long time = stopDate.getTime() - startDate.getTime();
-		int actualTime = getMinTime(time);
-		map.put("resideTime", actualTime);
-
-		if (actualTime <= 30) {
-			log.info("间隔时间<30m,免费停车");
-			return map;
-		} else if (actualTime <= 360) {
-			totalFee = getFee(actualTime, base);
-			log.info("间隔时间<6h,累计计费");
-		} else {
-			if (startDay.equals(stopDay)) {
-				totalFee = topFee;
-				log.info("间隔时间>6h 同一天封顶计费");
+			if (actualTime <= 30) {
+				log.info("间隔时间<30m,免费停车");
+				return map;
+			} else if (actualTime <= 360) {
+				totalFee = getFee(actualTime, base);
+				log.info("间隔时间<6h,累计计费");
 			} else {
-				int startFlag = startTime.compareTo(DAY_NIGHT);
-				int stopFlag = stopTime.compareTo(DAY_MORNING);
-				if (startFlag < 0 && stopFlag > 0) {
-					// 停车当日超过6h，封顶计费，次日停车超过6h 封顶计费
-					totalFee = (day + 2) * topFee;
-					log.info("----------停车当日超过6h，封顶计费，次日停车超过6h 封顶计费");
-				} else if (startFlag < 0 && stopFlag < 0) {
-					totalFee = (day + 1) * topFee;
-					Long timeLong = stopDate.getTime() - compareEndDate.getTime();
-					int stop = getMinTime(timeLong);
-					fee = getFee(stop, base);
-					totalFee += fee;
-					log.info("----------停车当日超过6h，封顶计费，次日停车不超过6h,次日时间累计计费");
-				} else if (startFlag > 0 && stopFlag > 0) {
-					totalFee = (day + 1) * topFee;
-					Long timeLong = compareStartDate.getTime() - startDate.getTime();
-					int start = getMinTime(timeLong);
-					fee = getFee(start, base);
-					totalFee += fee;
-					log.info("----------停车当日不超过6h，当日累计计费，次日停车超过6h 封顶计费");
+				if (startDay.equals(stopDay)) {
+					totalFee = topFee;
+					log.info("间隔时间>6h 同一天封顶计费");
 				} else {
-					totalFee = day * topFee;
-					Long timeLong = stopDate.getTime() - startDate.getTime() - day * 24 * 60 * 60 * 1000;
-					int startStop = getMinTime(timeLong);
-					fee = getFee(startStop, base);
-					totalFee += fee;
-					log.info("----------停车当日不超过6h，次日停车不超过6h 累计2段时间计费，不封顶");
+					int startFlag = startTime.compareTo(DAY_NIGHT);
+					int stopFlag = stopTime.compareTo(DAY_MORNING);
+					if (startFlag < 0 && stopFlag > 0) {
+						// 停车当日超过6h，封顶计费，次日停车超过6h 封顶计费
+						totalFee = (day + 2) * topFee;
+						log.info("----------停车当日超过6h，封顶计费，次日停车超过6h 封顶计费");
+					} else if (startFlag < 0 && stopFlag < 0) {
+						totalFee = (day + 1) * topFee;
+						Long timeLong = stopDate.getTime() - compareEndDate.getTime();
+						int stop = getMinTime(timeLong);
+						fee = getFee(stop, base);
+						totalFee += fee;
+						log.info("----------停车当日超过6h，封顶计费，次日停车不超过6h,次日时间累计计费");
+					} else if (startFlag > 0 && stopFlag > 0) {
+						totalFee = (day + 1) * topFee;
+						Long timeLong = compareStartDate.getTime() - startDate.getTime();
+						int start = getMinTime(timeLong);
+						fee = getFee(start, base);
+						totalFee += fee;
+						log.info("----------停车当日不超过6h，当日累计计费，次日停车超过6h 封顶计费");
+					} else {
+						totalFee = day * topFee;
+						Long timeLong = stopDate.getTime() - startDate.getTime() - day * 24 * 60 * 60 * 1000;
+						int startStop = getMinTime(timeLong);
+						fee = getFee(startStop, base);
+						totalFee += fee;
+						log.info("----------停车当日不超过6h，次日停车不超过6h 累计2段时间计费，不封顶");
+					}
 				}
 			}
+			map.put("totalAmount", totalFee);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		map.put("totalAmount", totalFee);
 		return map;
 	}
 
@@ -203,6 +207,7 @@ public class SixHourTopFee {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for (Start start : list) {
 			Date startDate = sdf.parse(start.getStartDay());
+			startDate = new Date(startDate.getTime() + base.getFreeMins() * 60 * 1000l);
 			Date endDate = sdf.parse(start.getEndDay());
 			Map<String, Object> map = getBilling(base, startDate, endDate);
 			log.info("----------map=" + map);
