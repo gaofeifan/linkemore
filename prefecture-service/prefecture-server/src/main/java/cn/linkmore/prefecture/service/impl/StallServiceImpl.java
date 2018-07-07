@@ -96,27 +96,36 @@ public class StallServiceImpl implements StallService {
 		}
 		return flag;
 	}
-
-	@Override
-	public boolean checkout(Long stallId) {
-		boolean flag = false;
-		Stall stall = stallClusterMapper.findById(stallId);
-		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			//结账离场应该进行升锁操作
+	class StallUpThread extends Thread{ 
+		private Stall stall;
+		public StallUpThread(Stall stall) {
+			this.stall = stall; 
+		}
+		public void run() {
 			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
 			int code = res.getMsgCode();
 			log.info("lock msg:{}", JsonUtil.toJson(res));
-			if (code == 200) {
-				flag = true;
-				stall.setLockStatus(Stall.LOCK_STATUS_UP);
-				this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+			if (code == 200) {  
+				redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn()); 
 			}
+		}
+	}
+	
+
+	@Override
+	public boolean checkout(Long stallId) { 
+		log.info("checkout stall :{}",stallId);
+		boolean flag = false;
+		Stall stall = stallClusterMapper.findById(stallId);
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			flag = true;
 			stall.setUpdateTime(new Date());
+			stall.setLockStatus(Stall.LOCK_STATUS_UP);
 			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
 			stall.setStatus(Stall.STATUS_FREE);
 			this.stallMasterMapper.checkout(stall);
-		}
-
+			new StallUpThread(stall).start();
+		} 
 		return flag;
 	}
 	private void downing(ReqOrderStall reqos) {
