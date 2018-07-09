@@ -175,58 +175,60 @@ public class ReportDayOrderController {
 		List<ResStallAverage> averageList = this.reportDayService.stallAverageList(reportDay);
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = null;
-		int bjStall = 0;
-		int hzStall = 0;
-		Map<String, Object> stallMap = new HashMap<String, Object>();
-		for (ResStallAverage resPull : averageList) {
-			if (stallMap.get(resPull.getPreName()) == null) {
-				stallMap.put(resPull.getPreName(), resPull.getStallTotal());
-				if (resPull.getCityName().equals("北京")) {
-					bjStall += resPull.getStallTotal();
-				} else if (resPull.getCityName().equals("杭州")) {
-					hzStall += resPull.getStallTotal();
+		if(CollectionUtils.isNotEmpty(averageList)) {
+			int bjStall = 0;
+			int hzStall = 0;
+			Map<String, Object> stallMap = new HashMap<String, Object>();
+			for (ResStallAverage resPull : averageList) {
+				if (stallMap.get(resPull.getPreName()) == null) {
+					stallMap.put(resPull.getPreName(), resPull.getStallTotal());
+					if (resPull.getCityName().equals("北京")) {
+						bjStall += resPull.getStallTotal();
+					} else if (resPull.getCityName().equals("杭州")) {
+						hzStall += resPull.getStallTotal();
+					}
 				}
 			}
-		}
 
-		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
-				&& averageList != null) {
-			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
-			for (String date : dateList) {
-				map = new HashMap<String, Object>();
-				map.put("day", date);
-				int bjTotal = 0;
-				int hzTotal = 0;
-				double bjTotalAverage = 0d;
-				double hzTotalAverage = 0d;
-				double totalAverage = 0d;
-				for (ResStallAverage resPull : averageList) {
-					if (map.get(resPull.getPreName()) == null) {
-						map.put(resPull.getPreName(), 0);
-					}
-					if (date.equals(resPull.getDay())) {
-						map.put(resPull.getPreName(), resPull.getAverage());
-						if (resPull.getCityName().equals("北京")) {
-							bjTotal += resPull.getDayTotal();
-						} else if (resPull.getCityName().equals("杭州")) {
-							hzTotal += resPull.getDayTotal();
+			if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+					&& averageList != null) {
+				List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+				for (String date : dateList) {
+					map = new HashMap<String, Object>();
+					map.put("day", date);
+					int bjTotal = 0;
+					int hzTotal = 0;
+					double bjTotalAverage = 0d;
+					double hzTotalAverage = 0d;
+					double totalAverage = 0d;
+					for (ResStallAverage resPull : averageList) {
+						if (map.get(resPull.getPreName()) == null) {
+							map.put(resPull.getPreName(), 0);
+						}
+						if (date.equals(resPull.getDay())) {
+							map.put(resPull.getPreName(), resPull.getAverage());
+							if (resPull.getCityName().equals("北京")) {
+								bjTotal += resPull.getDayTotal();
+							} else if (resPull.getCityName().equals("杭州")) {
+								hzTotal += resPull.getDayTotal();
+							}
 						}
 					}
+					if (bjStall != 0) {
+						bjTotalAverage = new BigDecimal((float) bjTotal / bjStall).setScale(1, BigDecimal.ROUND_HALF_UP)
+								.doubleValue();
+					}
+					if (hzStall != 0) {
+						hzTotalAverage = new BigDecimal((float) hzTotal / hzStall).setScale(1, BigDecimal.ROUND_HALF_UP)
+								.doubleValue();
+					}
+					totalAverage = new BigDecimal((float) (bjTotal + hzTotal) / (bjStall + hzStall))
+							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					map.put("bjTotal", bjTotalAverage);
+					map.put("hzTotal", hzTotalAverage);
+					map.put("total", totalAverage);
+					list.add(map);
 				}
-				if (bjStall != 0) {
-					bjTotalAverage = new BigDecimal((float) bjTotal / bjStall).setScale(1, BigDecimal.ROUND_HALF_UP)
-							.doubleValue();
-				}
-				if (hzStall != 0) {
-					hzTotalAverage = new BigDecimal((float) hzTotal / hzStall).setScale(1, BigDecimal.ROUND_HALF_UP)
-							.doubleValue();
-				}
-				totalAverage = new BigDecimal((float) (bjTotal + hzTotal) / (bjStall + hzStall))
-						.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				map.put("bjTotal", bjTotalAverage);
-				map.put("hzTotal", hzTotalAverage);
-				map.put("total", totalAverage);
-				list.add(map);
 			}
 		}
 		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
@@ -391,65 +393,65 @@ public class ReportDayOrderController {
 		List<ResRunTime> runtimeList = this.reportDayService.runtimeList(reportDay);
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = null;
-
-		int bjStall = 0;
-		int hzStall = 0;
-		Map<String, Object> stallMap = new HashMap<String, Object>();
-		for (ResRunTime resPull : runtimeList) {
-			if (stallMap.get(resPull.getPreName()) == null) {
-				stallMap.put(resPull.getPreName(), resPull.getStallTotal());
-				if (resPull.getCityName().equals("北京")) {
-					bjStall += resPull.getStallTotal();
-				} else if (resPull.getCityName().equals("杭州")) {
-					hzStall += resPull.getStallTotal();
+		if(CollectionUtils.isNotEmpty(runtimeList)) {
+			int bjStall = 0;
+			int hzStall = 0;
+			Map<String, Object> stallMap = new HashMap<String, Object>();
+			for (ResRunTime resPull : runtimeList) {
+				if (stallMap.get(resPull.getPreName()) == null) {
+					stallMap.put(resPull.getPreName(), resPull.getStallTotal());
+					if (resPull.getCityName().equals("北京")) {
+						bjStall += resPull.getStallTotal();
+					} else if (resPull.getCityName().equals("杭州")) {
+						hzStall += resPull.getStallTotal();
+					}
 				}
 			}
-		}
 
-		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
-				&& runtimeList != null) {
-			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
-			for (String date : dateList) {
-				map = new HashMap<String, Object>();
-				map.put("day", date);
-				int bjTotalTime = 0;
-				int hzTotalTime = 0;
-				double bjTotalAverage = 0d;
-				double hzTotalAverage = 0d;
-				double totalAverage = 0d;
-				for (ResRunTime resRunTime : runtimeList) {
-					if (map.get(resRunTime.getPreName()) == null) {
-						map.put(resRunTime.getPreName(), 0);
-					}
-					if (date.equals(resRunTime.getDay())) {
-						map.put(resRunTime.getPreName(), resRunTime.getRuntime());
-						if (resRunTime.getCityName().equals("北京")) {
-							bjTotalTime += resRunTime.getTotalTime();
-						} else if (resRunTime.getCityName().equals("杭州")) {
-							hzTotalTime += resRunTime.getTotalTime();
+			if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())) {
+				List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+				for (String date : dateList) {
+					map = new HashMap<String, Object>();
+					map.put("day", date);
+					int bjTotalTime = 0;
+					int hzTotalTime = 0;
+					double bjTotalAverage = 0d;
+					double hzTotalAverage = 0d;
+					double totalAverage = 0d;
+					for (ResRunTime resRunTime : runtimeList) {
+						if (map.get(resRunTime.getPreName()) == null) {
+							map.put(resRunTime.getPreName(), 0);
+						}
+						if (date.equals(resRunTime.getDay())) {
+							map.put(resRunTime.getPreName(), resRunTime.getRuntime());
+							if (resRunTime.getCityName().equals("北京")) {
+								bjTotalTime += resRunTime.getTotalTime();
+							} else if (resRunTime.getCityName().equals("杭州")) {
+								hzTotalTime += resRunTime.getTotalTime();
+							}
 						}
 					}
-				}
-				log.info("bj_total_time ,{} hz_total_time ,{} bj_stall,{} hz_stall_count,{}", bjTotalTime, hzTotalTime,
-						bjStall, hzStall);
-				if (bjStall != 0) {
-					bjTotalAverage = new BigDecimal((float) bjTotalTime / 60 / bjStall)
-							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				}
-				if (hzStall != 0) {
-					hzTotalAverage = new BigDecimal((float) hzTotalTime / 60 / hzStall)
-							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				}
+					log.info("bj_total_time ,{} hz_total_time ,{} bj_stall,{} hz_stall_count,{}", bjTotalTime, hzTotalTime,
+							bjStall, hzStall);
+					if (bjStall != 0) {
+						bjTotalAverage = new BigDecimal((float) bjTotalTime / 60 / bjStall)
+								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
+					if (hzStall != 0) {
+						hzTotalAverage = new BigDecimal((float) hzTotalTime / 60 / hzStall)
+								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
 
-				if ((bjStall + hzStall) != 0) {
-					totalAverage = new BigDecimal((float) (bjTotalTime + hzTotalTime) / 60 / (bjStall + hzStall))
-							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				}
+					if ((bjStall + hzStall) != 0) {
+						totalAverage = new BigDecimal((float) (bjTotalTime + hzTotalTime) / 60 / (bjStall + hzStall))
+								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
 
-				map.put("bjTotal", bjTotalAverage);
-				map.put("hzTotal", hzTotalAverage);
-				map.put("total", totalAverage);
-				list.add(map);
+					map.put("bjTotal", bjTotalAverage);
+					map.put("hzTotal", hzTotalAverage);
+					map.put("total", totalAverage);
+					list.add(map);
+				}
 			}
 		}
 		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
@@ -468,69 +470,70 @@ public class ReportDayOrderController {
 		List<ResRunTime> runtimeList = this.reportDayService.runtimeList(reportDay);
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = null;
-
-		int bjStall = 0;
-		int hzStall = 0;
-		Map<String, Object> stallMap = new HashMap<String, Object>();
-		for (ResRunTime resPull : runtimeList) {
-			if (stallMap.get(resPull.getPreName()) == null) {
-				stallMap.put(resPull.getPreName(), resPull.getStallTotal());
-				if (resPull.getCityName().equals("北京")) {
-					bjStall += resPull.getStallTotal();
-				} else if (resPull.getCityName().equals("杭州")) {
-					hzStall += resPull.getStallTotal();
+		if(CollectionUtils.isNotEmpty(runtimeList)) {
+			int bjStall = 0;
+			int hzStall = 0;
+			Map<String, Object> stallMap = new HashMap<String, Object>();
+			for (ResRunTime resPull : runtimeList) {
+				if (stallMap.get(resPull.getPreName()) == null) {
+					stallMap.put(resPull.getPreName(), resPull.getStallTotal());
+					if (resPull.getCityName().equals("北京")) {
+						bjStall += resPull.getStallTotal();
+					} else if (resPull.getCityName().equals("杭州")) {
+						hzStall += resPull.getStallTotal();
+					}
 				}
 			}
-		}
 
-		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
-				&& runtimeList != null) {
-			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
-			for (String date : dateList) {
-				map = new HashMap<String, Object>();
-				map.put("day", date);
-				int bjTotalTime = 0;
-				int hzTotalTime = 0;
-				int bjShopRuntime = 0;
-				int hzShopRuntime = 0;
-				double bjRuntimeRate = 0d;
-				double hzRuntimeRate = 0d;
-				double totalRuntimeRate = 0d;
-				for (ResRunTime resRunTime : runtimeList) {
-					if (map.get(resRunTime.getPreName()) == null) {
-						map.put(resRunTime.getPreName(), 0);
-					}
-					if (date.equals(resRunTime.getDay())) {
-						map.put(resRunTime.getPreName(), resRunTime.getRuntimeRate());
-						if (resRunTime.getCityName().equals("北京")) {
-							bjTotalTime += resRunTime.getTotalTime();
-							bjShopRuntime += resRunTime.getShopRuntime();
-						} else if (resRunTime.getCityName().equals("杭州")) {
-							hzTotalTime += resRunTime.getTotalTime();
-							hzShopRuntime += resRunTime.getShopRuntime();
+			if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
+					&& runtimeList != null) {
+				List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+				for (String date : dateList) {
+					map = new HashMap<String, Object>();
+					map.put("day", date);
+					int bjTotalTime = 0;
+					int hzTotalTime = 0;
+					int bjShopRuntime = 0;
+					int hzShopRuntime = 0;
+					double bjRuntimeRate = 0d;
+					double hzRuntimeRate = 0d;
+					double totalRuntimeRate = 0d;
+					for (ResRunTime resRunTime : runtimeList) {
+						if (map.get(resRunTime.getPreName()) == null) {
+							map.put(resRunTime.getPreName(), 0);
+						}
+						if (date.equals(resRunTime.getDay())) {
+							map.put(resRunTime.getPreName(), resRunTime.getRuntimeRate());
+							if (resRunTime.getCityName().equals("北京")) {
+								bjTotalTime += resRunTime.getTotalTime();
+								bjShopRuntime += resRunTime.getShopRuntime();
+							} else if (resRunTime.getCityName().equals("杭州")) {
+								hzTotalTime += resRunTime.getTotalTime();
+								hzShopRuntime += resRunTime.getShopRuntime();
+							}
 						}
 					}
-				}
-				log.info("bj_total_time ,{} hz_total_time ,{} bj_stall,{} hz_stall_count,{}", bjTotalTime, hzTotalTime,
-						bjStall, hzStall);
-				if (bjStall != 0 && bjShopRuntime != 0) {
-					bjRuntimeRate = new BigDecimal((float) bjTotalTime / bjShopRuntime / bjStall)
-							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				}
-				if (hzStall != 0 && hzShopRuntime != 0) {
-					hzRuntimeRate = new BigDecimal((float) hzTotalTime / hzShopRuntime / hzStall)
-							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				}
+					log.info("bj_total_time ,{} hz_total_time ,{} bj_stall,{} hz_stall_count,{}", bjTotalTime, hzTotalTime,
+							bjStall, hzStall);
+					if (bjStall != 0 && bjShopRuntime != 0) {
+						bjRuntimeRate = new BigDecimal((float) bjTotalTime / bjShopRuntime / bjStall)
+								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
+					if (hzStall != 0 && hzShopRuntime != 0) {
+						hzRuntimeRate = new BigDecimal((float) hzTotalTime / hzShopRuntime / hzStall)
+								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
 
-				if ((bjStall + hzStall) != 0 && (bjShopRuntime + hzShopRuntime)!= 0) {
-					totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / (bjShopRuntime + hzShopRuntime) / (bjStall + hzStall))
-							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				}
+					if ((bjStall + hzStall) != 0 && (bjShopRuntime + hzShopRuntime)!= 0) {
+						totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / (bjShopRuntime + hzShopRuntime) / (bjStall + hzStall))
+								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
 
-				map.put("bjTotal", bjRuntimeRate);
-				map.put("hzTotal", hzRuntimeRate);
-				map.put("total", totalRuntimeRate);
-				list.add(map);
+					map.put("bjTotal", bjRuntimeRate);
+					map.put("hzTotal", hzRuntimeRate);
+					map.put("total", totalRuntimeRate);
+					list.add(map);
+				}
 			}
 		}
 		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
@@ -549,64 +552,64 @@ public class ReportDayOrderController {
 		List<ResRunTime> runtimeList = this.reportDayService.runtimeList(reportDay);
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = null;
-
-		int bjStall = 0;
-		int hzStall = 0;
-		Map<String, Object> stallMap = new HashMap<String, Object>();
-		for (ResRunTime resPull : runtimeList) {
-			if (stallMap.get(resPull.getPreName()) == null) {
-				stallMap.put(resPull.getPreName(), resPull.getStallTotal());
-				if (resPull.getCityName().equals("北京")) {
-					bjStall += resPull.getStallTotal();
-				} else if (resPull.getCityName().equals("杭州")) {
-					hzStall += resPull.getStallTotal();
+		if(CollectionUtils.isNotEmpty(runtimeList)) {
+			int bjStall = 0;
+			int hzStall = 0;
+			Map<String, Object> stallMap = new HashMap<String, Object>();
+			for (ResRunTime resPull : runtimeList) {
+				if (stallMap.get(resPull.getPreName()) == null) {
+					stallMap.put(resPull.getPreName(), resPull.getStallTotal());
+					if (resPull.getCityName().equals("北京")) {
+						bjStall += resPull.getStallTotal();
+					} else if (resPull.getCityName().equals("杭州")) {
+						hzStall += resPull.getStallTotal();
+					}
 				}
 			}
-		}
 
-		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
-				&& runtimeList != null) {
-			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
-			for (String date : dateList) {
-				map = new HashMap<String, Object>();
-				map.put("day", date);
-				int bjOrderTotal = 0;
-				int hzOrderTotal = 0;
-				double bjTotalAverage = 0d;
-				double hzTotalAverage = 0d;
-				double totalAverage = 0d;
-				for (ResRunTime resRunTime : runtimeList) {
-					if (map.get(resRunTime.getPreName()) == null) {
-						map.put(resRunTime.getPreName(), 0);
-					}
-					if (date.equals(resRunTime.getDay())) {
-						map.put(resRunTime.getPreName(), resRunTime.getRdl());
-						if (resRunTime.getCityName().equals("北京")) {
-							bjOrderTotal += resRunTime.getDayTotal();
-						} else if (resRunTime.getCityName().equals("杭州")) {
-							hzOrderTotal += resRunTime.getDayTotal();
+			if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())) {
+				List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+				for (String date : dateList) {
+					map = new HashMap<String, Object>();
+					map.put("day", date);
+					int bjOrderTotal = 0;
+					int hzOrderTotal = 0;
+					double bjTotalAverage = 0d;
+					double hzTotalAverage = 0d;
+					double totalAverage = 0d;
+					for (ResRunTime resRunTime : runtimeList) {
+						if (map.get(resRunTime.getPreName()) == null) {
+							map.put(resRunTime.getPreName(), 0);
+						}
+						if (date.equals(resRunTime.getDay())) {
+							map.put(resRunTime.getPreName(), resRunTime.getRdl());
+							if (resRunTime.getCityName().equals("北京")) {
+								bjOrderTotal += resRunTime.getDayTotal();
+							} else if (resRunTime.getCityName().equals("杭州")) {
+								hzOrderTotal += resRunTime.getDayTotal();
+							}
 						}
 					}
-				}
-				log.info("bj_order_total ,{} hz_order_total ,{} bj_stall ,{} hz_stall_count,{}", bjOrderTotal,
-						hzOrderTotal, bjStall, hzStall);
-				if (bjStall != 0) {
-					bjTotalAverage = new BigDecimal((float) bjOrderTotal / bjStall)
-							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				}
-				if (hzStall != 0) {
-					hzTotalAverage = new BigDecimal((float) hzOrderTotal / hzStall)
-							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				}
-				if ((bjStall + hzStall) != 0) {
-					totalAverage = new BigDecimal((float) (bjOrderTotal + hzOrderTotal) / (bjStall + hzStall))
-							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-				}
+					log.info("bj_order_total ,{} hz_order_total ,{} bj_stall ,{} hz_stall_count,{}", bjOrderTotal,
+							hzOrderTotal, bjStall, hzStall);
+					if (bjStall != 0) {
+						bjTotalAverage = new BigDecimal((float) bjOrderTotal / bjStall)
+								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
+					if (hzStall != 0) {
+						hzTotalAverage = new BigDecimal((float) hzOrderTotal / hzStall)
+								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
+					if ((bjStall + hzStall) != 0) {
+						totalAverage = new BigDecimal((float) (bjOrderTotal + hzOrderTotal) / (bjStall + hzStall))
+								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
 
-				map.put("bjTotal", bjTotalAverage);
-				map.put("hzTotal", hzTotalAverage);
-				map.put("total", totalAverage);
-				list.add(map);
+					map.put("bjTotal", bjTotalAverage);
+					map.put("hzTotal", hzTotalAverage);
+					map.put("total", totalAverage);
+					list.add(map);
+				}
 			}
 		}
 		return new ResultMap<List<Map<String, Object>>>(0, "", list, list.size());
