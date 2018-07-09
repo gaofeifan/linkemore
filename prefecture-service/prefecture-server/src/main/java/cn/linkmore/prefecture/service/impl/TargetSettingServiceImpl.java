@@ -1,26 +1,37 @@
 package cn.linkmore.prefecture.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.dao.cluster.TargetDayClusterMapper;
-import cn.linkmore.prefecture.dao.cluster.TargetMounthClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.TargetMonthClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.TargetSettingClusterMapper;
+import cn.linkmore.prefecture.dao.master.TargetDayMasterMapper;
+import cn.linkmore.prefecture.dao.master.TargetMonthMasterMapper;
 import cn.linkmore.prefecture.dao.master.TargetSettingMasterMapper;
+import cn.linkmore.prefecture.entity.TargetDay;
+import cn.linkmore.prefecture.entity.TargetMounth;
 import cn.linkmore.prefecture.entity.TargetSetting;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqTargetSetting;
+import cn.linkmore.prefecture.response.ResPreMounthAmount;
+import cn.linkmore.prefecture.response.ResPreOrderAmount;
+import cn.linkmore.prefecture.response.ResPreUserAmount;
 import cn.linkmore.prefecture.response.ResTargetSetting;
 import cn.linkmore.prefecture.service.TargetSettingService;
 import cn.linkmore.util.DomainUtil;
@@ -39,8 +50,16 @@ public class TargetSettingServiceImpl implements TargetSettingService {
 	@Autowired
 	private TargetSettingMasterMapper targetSettingMasterMapper;
 	
-	private Logger log = LoggerFactory.getLogger(getClass()); 
+	@Autowired
+	private TargetDayClusterMapper targetDayClusterMapper;
+	@Autowired
+	private TargetDayMasterMapper targetDayMasterMapper;
 	
+	@Autowired
+	private TargetMonthClusterMapper targetMonthClusterMapper;
+	@Autowired
+	private TargetMonthMasterMapper targetMonthMasterMapper;
+		
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String,Object> param = new HashMap<String,Object>(); 
@@ -102,18 +121,13 @@ public class TargetSettingServiceImpl implements TargetSettingService {
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
 		return this.targetSettingClusterMapper.check(param); 
-	}
-
-	@Override
-	public void dayTargetScheduled() {
-		
 	} 
 	
-	/*@Override
+	@Override
 	public void dayTargetScheduled(){ 
-		List<PreTargetSetting> ptsList = this.preTargetSettingMapper.findList(new HashMap<String,Object>());
-		Map<Long,PreTargetSetting> map = new HashMap<Long,PreTargetSetting>(); 
-		for(PreTargetSetting pts:ptsList){
+		List<TargetSetting> ptsList = this.targetSettingClusterMapper.findList(new HashMap<String,Object>());
+		Map<Long,TargetSetting> map = new HashMap<Long,TargetSetting>(); 
+		for(TargetSetting pts:ptsList){
 			map.put(pts.getPrefectureId(), pts);
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -122,32 +136,32 @@ public class TargetSettingServiceImpl implements TargetSettingService {
 		Date tomorrow =  new Date(new Date().getTime()+1000L*60*60*24);
 		param.put("startDay", sdf.format(today));
 		param.put("endDay", sdf.format(tomorrow));
-		List<PrefectureUserAmount> puas = this.preDayTargetMapper.findPrefectureUserAmount(param);
+		List<ResPreUserAmount> puas = this.targetDayClusterMapper.findPrefectureUserAmount(param);
 		Map<Long,Long> puaMap = new HashMap<Long,Long>();
-		for(PrefectureUserAmount pua :puas){
+		for(ResPreUserAmount pua :puas){
 			puaMap.put(pua.getPrefectureId(),pua.getUserCount());
 		} 
-		List<PrefectureOrderAmount> poas = this.preDayTargetMapper.findPrefectureOrderAmount(param);
+		List<ResPreOrderAmount> poas = this.targetDayClusterMapper.findPrefectureOrderAmount(param);
 		Map<Long,Long> poaMap = new HashMap<Long,Long>();
-		for(PrefectureOrderAmount poa :poas){
+		for(ResPreOrderAmount poa :poas){
 			poaMap.put(poa.getPrefectureId(),poa.getOrderCount());
 		}
 		String mounth = new SimpleDateFormat("yyyy-MM").format(today); 
-		List<PreMounthTarget> pmtList = this.preMounthTargetMapper.findMounthList(mounth); 
-		Map<Long,PreMounthTarget> pmtMap = new HashMap<Long,PreMounthTarget>();
+		List<TargetMounth> pmtList = this.targetMonthClusterMapper.findMounthList(mounth); 
+		Map<Long,TargetMounth> pmtMap = new HashMap<Long,TargetMounth>();
 		List<Long> mounthIds = new ArrayList<Long>();
-		for(PreMounthTarget pmt:pmtList){
+		for(TargetMounth pmt:pmtList){
 			pmtMap.put(pmt.getPrefectureId(),pmt);
 			mounthIds.add(pmt.getId());
 		}
-		List<PreMounthTarget> npmtList = new ArrayList<PreMounthTarget>();
-		PreMounthTarget pmt = null;
-		Map<Long,PreTargetSetting> ptsMap = new HashMap<Long,PreTargetSetting>(); 
-		for(PreTargetSetting pts:ptsList){
+		List<TargetMounth> npmtList = new ArrayList<TargetMounth>();
+		TargetMounth pmt = null;
+		Map<Long,TargetSetting> ptsMap = new HashMap<Long,TargetSetting>(); 
+		for(TargetSetting pts:ptsList){
 			ptsMap.put(pts.getPrefectureId(), pts);
 			pmt = pmtMap.get(pts.getPrefectureId());
 			if(pmt==null){
-				pmt = new PreMounthTarget();
+				pmt = new TargetMounth();
 				pmt.setCreateTime(today);
 				pmt.setUpdateTime(today);
 				pmt.setPrefectureId(pts.getPrefectureId());
@@ -161,18 +175,18 @@ public class TargetSettingServiceImpl implements TargetSettingService {
 			}
 		} 
 		if(npmtList.size()>0){
-			this.preMounthTargetMapper.batchSave(npmtList);
-			for(PreMounthTarget p:npmtList){
+			this.targetMonthMasterMapper.batchSave(npmtList);
+			for(TargetMounth p:npmtList){
 				pmtMap.put(p.getPrefectureId(), p);
 				pmtList.add(p);
 				mounthIds.add(p.getId());
 			}
 		} 
-		List<PreDayTarget> pdtList = this.preDayTargetMapper.findDayList(sdf.format(today));
+		List<TargetDay> pdtList = this.targetDayClusterMapper.findDayList(sdf.format(today));
 		Long userCount = 0L;
 		Long orderCount = 0L;
-		PreTargetSetting pts = null;
-		for(PreDayTarget pdt:pdtList){
+		TargetSetting pts = null;
+		for(TargetDay pdt:pdtList){
 			pts = map.get(pdt.getPrefectureId());
 			userCount =puaMap.get(pts.getPrefectureId()) ;
 			orderCount = poaMap.get(pts.getPrefectureId());
@@ -186,18 +200,18 @@ public class TargetSettingServiceImpl implements TargetSettingService {
 			map.remove(pdt.getPrefectureId());
 		} 
 		if(pdtList!=null&&pdtList.size()>0){
-			this.preDayTargetMapper.batchUpdate(pdtList);
+			this.targetDayMasterMapper.batchUpdate(pdtList);
 		}
 		
-		PreDayTarget pdt = null; 
-		List<PreDayTarget> npdtList = new ArrayList<PreDayTarget>();
+		TargetDay pdt = null; 
+		List<TargetDay> npdtList = new ArrayList<TargetDay>();
 		Set<Long> keys = map.keySet();
 		for(Long key:keys){
 			pts = map.get(key);
 			userCount =puaMap.get(pts.getPrefectureId()) ;
 			orderCount = poaMap.get(pts.getPrefectureId());
 			pmt = pmtMap.get(pts.getPrefectureId()); 
-			pdt = new PreDayTarget();
+			pdt = new TargetDay();
 			pdt.setCreateTime(today);
 			pdt.setUpdateTime(new Date());
 			pdt.setDay(sdf.format(today));
@@ -211,16 +225,16 @@ public class TargetSettingServiceImpl implements TargetSettingService {
 			npdtList.add(pdt);
 		} 
 		if(npdtList!=null&&npdtList.size()>0){
-			this.preDayTargetMapper.batchSave(npdtList);
+			this.targetDayMasterMapper.batchSave(npdtList);
 		} 
 		
-		List<PrefectureMounthAmount> pfas = this.preDayTargetMapper.findMounthAmount(mounthIds);
-		Map<Long,PrefectureMounthAmount> pfaMap = new HashMap<Long,PrefectureMounthAmount>();
-		for(PrefectureMounthAmount pfa:pfas){
+		List<ResPreMounthAmount> pfas = this.targetDayClusterMapper.findMounthAmount(mounthIds);
+		Map<Long,ResPreMounthAmount> pfaMap = new HashMap<Long,ResPreMounthAmount>();
+		for(ResPreMounthAmount pfa:pfas){
 			pfaMap.put(pfa.getMounthId(), pfa);
 		}
-		PrefectureMounthAmount pfa = null;
-		for(PreMounthTarget mt:pmtList){
+		ResPreMounthAmount pfa = null;
+		for(TargetMounth mt:pmtList){
 			pfa = pfaMap.get(mt.getId());
 			if(pfa!=null){
 				mt.setCurrentOrderCount(pfa.getOrderCount().intValue());
@@ -229,7 +243,7 @@ public class TargetSettingServiceImpl implements TargetSettingService {
 			}
 		}
 		if(pmtList!=null&&pmtList.size()>0){
-			this.preMounthTargetMapper.batchUpdate(pmtList);
+			this.targetMonthMasterMapper.batchUpdate(pmtList);
 		} 
-	}*/
+	}
 }

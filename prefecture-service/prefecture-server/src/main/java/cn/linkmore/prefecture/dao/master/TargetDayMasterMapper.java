@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.prefecture.entity.TargetDay;
@@ -10,4 +12,8 @@ public interface TargetDayMasterMapper {
     int save(TargetDay record);
 
     int update(TargetDay record);
+
+	void batchUpdate(List<TargetDay> pdtList);
+
+	void batchSave(List<TargetDay> npdtList);
 }

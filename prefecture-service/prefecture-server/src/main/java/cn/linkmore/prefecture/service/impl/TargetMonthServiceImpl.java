@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.prefecture.dao.cluster.TargetMounthClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.TargetMonthClusterMapper;
 import cn.linkmore.prefecture.response.ResTargetMounth;
 import cn.linkmore.prefecture.service.TargetMonthService;
 import cn.linkmore.util.DomainUtil;
@@ -26,7 +26,7 @@ import cn.linkmore.util.DomainUtil;
 @Service
 public class TargetMonthServiceImpl implements TargetMonthService {
 	@Autowired
-	private TargetMounthClusterMapper targetMounthClusterMapper;
+	private TargetMonthClusterMapper targetMounthClusterMapper;
 	
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {

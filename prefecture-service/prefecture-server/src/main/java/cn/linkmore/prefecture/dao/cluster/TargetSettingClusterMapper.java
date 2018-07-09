@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.dao.cluster;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,5 +18,7 @@ public interface TargetSettingClusterMapper {
 	List<ResTargetSetting> findPage(Map<String, Object> param);
 
 	Integer check(Map<String, Object> param);
+
+	List<TargetSetting> findList(HashMap<String, Object> hashMap);
 
 }
