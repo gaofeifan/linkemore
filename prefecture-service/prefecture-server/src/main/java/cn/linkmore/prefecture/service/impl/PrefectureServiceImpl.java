@@ -139,12 +139,28 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	@Override
-	public List<ResPrefectureList> getStallCount() {
+	public List<ResPrefectureList> getStallCount(HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
 		//此处cityId暂时为空，返回所有的车区信息
 		paramMap.put("cityId", null);
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
+		
+		if(cu!=null && cu.getId()!=null){ 
+			ResUserStaff us = this.userStaffClient.findById(cu.getId());
+			if(us!=null&&us.getStatus().intValue() == UserStaffStatus.ON.status){
+				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
+				if(preList1!=null){
+					if(preList==null){
+						preList = preList1;
+					}else{
+						preList.addAll(preList1);
+					}
+				}
+			} 
+		}
+		
 		log.info("get_stall_count pre size :{}", preList.size());
 		List<ResPrefectureList> list = new ArrayList<ResPrefectureList>();
 		ResPrefectureList pre = null;

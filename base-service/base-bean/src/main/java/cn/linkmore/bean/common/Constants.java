@@ -218,9 +218,11 @@ public class Constants {
 	}
 
 	public enum SmsTemplate {
-		USER_APP_LOGIN_CODE(1, "user_app_login_code"), SHARE_COUPON_NOTICE(2,
-				"share_coupon_notice"), ORDER_SUSPEND_NOTICE(3,
-						"order_suspend_notice"), ORDER_SEARCH_NOTICE_(4, "order_search_notice");
+		USER_APP_LOGIN_CODE(1, "user_app_login_code"), 
+		SHARE_COUPON_NOTICE(2,"share_coupon_notice"), 
+		ORDER_SUSPEND_NOTICE(3,"order_suspend_notice"),  
+		ORDER_SEARCH_NOTICE_(4, "order_search_notice"),
+		ORDER_CLOSED_NOTICE(5,"order_closed_coupon_notice");
 		public int type;
 		public String id;
 

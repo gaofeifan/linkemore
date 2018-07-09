@@ -93,8 +93,9 @@ public class SmsServiceImpl implements SmsService {
 	        request.setTemplateCode(getTemplateCode(req.getSt())); 
 	        request.setTemplateParam(JsonUtil.toJson(req.getParam())); 
 	        SendSmsResponse response = client.getAcsResponse(request);  
-			log.info("requestId:{},req:{}",response.getRequestId(),JsonUtil.toJson(req)); 
+			log.info("send sms success requestId:{},req:{}",response.getRequestId(),JsonUtil.toJson(req)); 
 		} catch (ClientException e) {  
+			log.info("send sms failure");
 			StringBuffer sb = new StringBuffer();
 			StackTraceElement[] stacks = e.getStackTrace();  
 	        for (int i = 0; i < stacks.length; i++) {  

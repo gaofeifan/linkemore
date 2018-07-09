@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.third.pay.wxpay.PaySign;
+import cn.linkmore.third.pay.wxmini.PaySign;
 import cn.linkmore.third.request.ReqWechatMiniOrder;
 import cn.linkmore.third.response.ResMiniSession;
 import cn.linkmore.third.response.ResWechatMiniOrder;

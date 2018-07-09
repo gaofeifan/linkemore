@@ -79,7 +79,7 @@ public class AppPrefectureController {
 	public ResponseEntity<List<ResPrefectureList>> refreshFreeStall(HttpServletRequest request) {
 		ResponseEntity<List<ResPrefectureList>> response = null ;  
 		try {
-			List<ResPrefectureList> list = this.prefectureService.getStallCount();
+			List<ResPrefectureList> list = this.prefectureService.getStallCount(request);
 			response = ResponseEntity.success(list, request);
 		}catch(BusinessException e){
 			response = ResponseEntity.fail(e.getStatusEnum(), request);

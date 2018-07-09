@@ -51,7 +51,7 @@ public interface PrefectureService {
 	 * 查询所有车区空闲车位
 	 * @return
 	 */
-	List<ResPrefectureList> getStallCount();
+	List<ResPrefectureList> getStallCount(HttpServletRequest request);
 	
 	/**
 	 * 查询分页
