@@ -209,20 +209,20 @@
 				) t1
 			LEFT JOIN (
 				SELECT
-					DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+					t.DAY,
 					IFNULL(count(*), 0) AS day_total
 				FROM
-					t_coupon_send_user t
+				(select DISTINCT t.user_id,DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,t.template_id from t_coupon_send_user t) t
 				LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
 				LEFT JOIN t_user u ON u.id = t.user_id
 				WHERE
 					temp.type = 2
 				AND temp. STATUS = 1
 				<if test="startTime!=null">
-			    	AND t.create_time &gt; #{startTime}
+			    	AND t.DAY &gt;= #{startTime}
 			    </if> 
 			    <if test="endTime!=null">
-			    	AND t.create_time &lt; #{endTime}
+			    	AND t.DAY &lt; #{endTime}
 			    </if> 
 				GROUP BY
 					DAY
@@ -252,10 +252,10 @@
 				SELECT
 					c.id,
 					c.city_name,
-					DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+					DAY,
 					count(*) AS day_total
 				FROM
-					t_coupon_send_user t
+				(select DISTINCT t.user_id,DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,t.template_id from t_coupon_send_user t) t
 				LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
 				LEFT JOIN v_prefecture pre ON temp.pre_id = pre.id
 				LEFT JOIN t_city c ON pre.city_id = c.id
@@ -264,10 +264,10 @@
 				AND temp. STATUS = 1
 				AND pre. STATUS = 0
 				<if test="startTime!=null">
-			    	AND t.create_time &gt; #{startTime}
+			    	AND t.day &gt;= #{startTime}
 			    </if> 
 			    <if test="endTime!=null">
-			    	AND t.create_time &lt; #{endTime}
+			    	AND t.day &lt; #{endTime}
 			    </if> 
 				GROUP BY
 					c.id,
@@ -287,10 +287,10 @@
 		c.city_name,
 		pre.id AS pre_id,
 		pre. NAME AS pre_name,
-		DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+		DAY,
 		count(*) AS day_total
 	FROM
-		t_coupon_send_user t
+		(select DISTINCT t.user_id,DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,t.template_id from t_coupon_send_user t) t
 	LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
 	LEFT JOIN v_prefecture pre ON temp.pre_id = pre.id
 	LEFT JOIN t_city c ON pre.city_id = c.id
@@ -303,10 +303,10 @@
        #{id}
     </foreach> 
 	<if test="startTime!=null">
-		AND t.create_time &gt; #{startTime}
+		AND t.day &gt;= #{startTime}
 	</if> 
 	<if test="endTime!=null">
-		AND t.create_time &lt; #{endTime}
+		AND t.day &lt; #{endTime}
 	</if>
 	GROUP BY
 		c.id,
@@ -322,12 +322,12 @@
 		c.city_name,
 		pre.id AS pre_id,
 		pre. NAME AS pre_name,
-		DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,
+		DAY,
 		count(*) AS day_total,
 		pre.stall_total,
 		ROUND(count(*) / pre.stall_total, 1) AS average
 	FROM
-		t_coupon_send_user t
+		(select DISTINCT t.user_id,DATE_FORMAT(t.create_time, '%Y-%m-%d') AS DAY,t.template_id from t_coupon_send_user t) t
 	LEFT JOIN t_coupon_template temp ON t.template_id = temp.id
 	LEFT JOIN (
 		SELECT
@@ -354,10 +354,10 @@
        #{id}
     </foreach> 
 	<if test="startTime!=null">
-		AND t.create_time &gt; #{startTime}
+		AND t.DAY &gt;= #{startTime}
 	</if> 
 	<if test="endTime!=null">
-		AND t.create_time &lt; #{endTime}
+		AND t.DAY &lt; #{endTime}
 	</if>
 	GROUP BY
 		c.id,
