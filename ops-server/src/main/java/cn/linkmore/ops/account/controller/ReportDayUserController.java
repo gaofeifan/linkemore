@@ -336,7 +336,7 @@ public class ReportDayUserController {
 			sNewUser = new HashMap<String, Object>();
 			sNewUser.put("day", newUser.getDay());
 			sNewUser.put("hzPull", newUser.getHzPull());
-			sNewUser.put("bjPull", newUser.getHzPull());
+			sNewUser.put("bjPull", newUser.getBjPull());
 			sNewUser.put("hzCooperation", newUser.getHzCooperation());
 			sNewUser.put("bjCooperation", newUser.getBjCooperation());
 			sNewUser.put("hzUnderTran", newUser.getHzUnderTran());
