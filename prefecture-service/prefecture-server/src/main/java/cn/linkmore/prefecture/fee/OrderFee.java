@@ -43,9 +43,10 @@ public class OrderFee {
 			case StrategyBase.TYPE_TOP_DAILY_24H:result=TimeTopFee.getBilling(base, startDate, stopDate);break;
 			case StrategyBase.TYPE_TOP_DAILY_24H_FRIST_XHORS:result = WonderFee.getTOPDaily24HFRISTXHORSMap(base, startDate, stopDate);break;
 			case StrategyBase.TYPE_PERIOD:result=PeriodFee.getPeriodBilling(base, startDate, stopDate);break;
-			case  StrategyBase.TYPE_HUBIN:result=HubinFee.getBilling(base, startDate, stopDate);break;
-			case  StrategyBase.TYPE_XICHENG:result=XichengFee.getBilling(base, startDate, stopDate);break;
+			case StrategyBase.TYPE_HUBIN:result=HubinFee.getBilling(base, startDate, stopDate);break;
+			case StrategyBase.TYPE_XICHENG:result=XichengFee.getBilling(base, startDate, stopDate);break;
 			case StrategyBase.TYPE_OLD_DAY_FEE:result=OldDayFee.getBilling(base, startDate, stopDate);break;
+			case StrategyBase.TYPE_TY_D32_FEE:result=SixHourTopFee.getBilling(base, startDate, stopDate);break;
 		} 
 		return result;
 	}
