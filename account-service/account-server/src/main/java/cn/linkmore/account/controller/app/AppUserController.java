@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
+import cn.linkmore.account.controller.app.request.ReqUpdateNickname;
+import cn.linkmore.account.controller.app.request.ReqUpdateRealname;
 import cn.linkmore.account.controller.app.request.ReqUpdateVehicle;
 import cn.linkmore.account.controller.app.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
@@ -71,8 +73,8 @@ public class AppUserController {
 	@ApiOperation(value="更新昵称",notes="昵称不能为空，用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/nickname", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> updateNickname(@ApiParam(value="昵称",required=true) @Length(min=1,max=10,message="昵称长度为1-10个字符")  @NotBlank(message="昵称不能为空") @RequestParam("nickname") String nickname,HttpServletRequest request) {
-		this.userService.updateNickname(nickname,request);
+	public ResponseEntity<?> updateNickname(@RequestBody @Validated ReqUpdateNickname nickname,HttpServletRequest request) {
+		this.userService.updateNickname(nickname.getNickname(),request);
 		return ResponseEntity.success(null, request);
 	}
 	
@@ -84,8 +86,8 @@ public class AppUserController {
 	@ApiOperation(value="更新账号名称",notes="账号名称不能为空，用户需要登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/realname", method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<?> updateRealname(@ApiParam(value="账号名称",required=true) @Length(min=1,max=4,message="长度为1-4个字符")  @NotBlank(message="账号名称不能为空") @RequestParam("realname") String realname,HttpServletRequest request) {
-		this.userService.updateRealname(realname,request);
+	public ResponseEntity<?> updateRealname(@RequestBody @Validated ReqUpdateRealname realname,HttpServletRequest request) {
+		this.userService.updateRealname(realname.getRealname(),request);
 		return ResponseEntity.success("账户更新成功", request);
 	}
 	
