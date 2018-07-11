@@ -119,9 +119,7 @@
       status = #{status,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateReadStatus" >
-    update t_notice
-    set 
-      status = 1
+  <update id="updateReadStatus" parameterType="java.lang.Long" >
+  update t_notice_read SET read_status = 1 WHERE user_id = #{id}
   </update>
 </mapper>

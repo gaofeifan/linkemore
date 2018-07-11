@@ -76,18 +76,20 @@ public class NoticeServiceImpl implements NoticeService {
 		List<Long> longs = noticeClusterMapper.findNoticeReadDel( ru.getId());
 		Date now = new Date();
 		for (int i = 0; i < resPageNotic.size(); i++) {
-			Date time = resPageNotic.get(i).getPushTime();
-			String duration = DateUtils.getDuration(now, time);
-			resPageNotic.get(i).setPushedTime(duration);
-			for (Long del : longs) {
-				if (resPageNotic.get(i).getId() == del) {
-					resPageNotic.get(i).setRead_status(NOTICE_OPER_READ);
+			if(resPageNotic.get(i).getPushTime() != null) {
+				Date time = resPageNotic.get(i).getPushTime();
+				String duration = DateUtils.getDuration(now, time);
+				resPageNotic.get(i).setPushedTime(duration);
+				for (Long del : longs) {
+					if (resPageNotic.get(i).getId() == del) {
+						resPageNotic.get(i).setRead_status(NOTICE_OPER_READ);
+					}
 				}
 			}
 		}
 		ResPage<ResPageNotice> page = new ResPage<ResPageNotice>();
 		int i = noticeClusterMapper.findNotReadCount( ru.getId());
-		Integer flag = this.noticeClusterMapper.findNotReadNotice();
+		Integer flag = this.noticeClusterMapper.findNotReadNotice(ru.getId());
 		page.setRows(resPageNotic);
 		page.setRecords((long) i);
 		if(flag > 0) {
@@ -299,8 +301,10 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public void updateRead() {
-		this.noticeMasterMapper.updateReadStatus();
+	public void updateRead(HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		this.noticeMasterMapper.updateReadStatus(ru.getId());
 	}
 	
 	
