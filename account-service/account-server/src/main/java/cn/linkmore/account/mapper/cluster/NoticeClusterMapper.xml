@@ -44,17 +44,17 @@
     FROM
         t_notice t
     LEFT JOIN t_notice_read r ON t.id = r.notice_id
-    WHERE
-    t.status = 0
-     AND   t.id NOT IN (
+     WHERE
+      status = 0
+     <!--  and  t.id NOT IN (
             SELECT
                 nr.notice_id
             FROM
                 t_notice_read nr
             WHERE
-                nr.delete_status = 1
-            AND nr.user_id = #{uid}
-        )
+
+             nr.user_id = #{uid}
+        ) -->
     GROUP BY t.id
     ORDER BY t.push_time desc
     limit #{start,jdbcType=BIGINT},10
@@ -123,10 +123,42 @@
     </if> 
   </select>
   
-   <select id="findNotReadNotice" resultType="Integer">
-    select 
-    count(1)
-    from t_notice
-    where status = 0
+   <select id="findNotReadNotice" parameterType="java.lang.Long" resultType="Integer">
+   
+SELECT
+	count(t.id)
+    FROM
+        t_notice t
+    LEFT JOIN t_notice_read r ON t.id = r.notice_id AND r.user_id = #{id}
+     WHERE
+      status = 0
+      and  t.id NOT IN (
+            SELECT
+                nr.notice_id
+            FROM
+                t_notice_read nr
+            WHERE
+
+             nr.user_id = #{id}
+        ) 
+  </select>
+   <select id="findNotReadList" parameterType="java.lang.Long" resultType="java.lang.Long">
+   
+SELECT
+	t.id
+    FROM
+        t_notice t
+    LEFT JOIN t_notice_read r ON t.id = r.notice_id AND r.user_id = #{id}
+     WHERE
+      status = 0
+      and  t.id NOT IN (
+            SELECT
+                nr.notice_id
+            FROM
+                t_notice_read nr
+            WHERE
+
+             nr.user_id = #{id}
+        ) 
   </select>
 </mapper>

@@ -1,7 +1,6 @@
 package cn.linkmore.account.service;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.account.request.ReqCreateNotice;
@@ -88,7 +87,8 @@ public interface NoticeService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void updateRead();
+	void updateRead(HttpServletRequest request);
+
 
 
 

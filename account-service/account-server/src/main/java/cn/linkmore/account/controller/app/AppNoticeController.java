@@ -63,7 +63,7 @@ public class AppNoticeController {
     @RequestMapping(value = "/update-read", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> updateRead(HttpServletRequest request) {
-    	noticeService.updateRead();
+    	noticeService.updateRead(request);
         return ResponseEntity.success("更新成功", request);
     }
     /**

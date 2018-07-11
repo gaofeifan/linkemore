@@ -25,6 +25,17 @@
       #{createTime,jdbcType=TIMESTAMP}, #{deleteStatus,jdbcType=BIGINT}, #{readStatus,jdbcType=BIGINT}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
+  <insert id="saveBatch" parameterType="cn.linkmore.account.entity.NoticeRead">
+    insert into t_notice_read (id, notice_id, user_id, 
+      create_time, delete_status, read_status, 
+      update_time)
+	values 
+    <foreach collection="list" item="item" index="index" separator=",">
+     (#{item.id,jdbcType=BIGINT}, #{item.noticeId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, 
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.deleteStatus,jdbcType=BIGINT}, #{item.readStatus,jdbcType=BIGINT}, 
+      #{item.updateTime,jdbcType=TIMESTAMP})
+       </foreach>
+  </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.account.entity.NoticeRead">
     insert into t_notice_read
     <trim prefix="(" suffix=")" suffixOverrides=",">
