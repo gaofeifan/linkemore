@@ -44,17 +44,6 @@
     FROM
         t_notice t
     LEFT JOIN t_notice_read r ON t.id = r.notice_id
-    WHERE
-    t.status = 0
-     AND   t.id NOT IN (
-            SELECT
-                nr.notice_id
-            FROM
-                t_notice_read nr
-            WHERE
-                nr.delete_status = 1
-            AND nr.user_id = #{uid}
-        )
     GROUP BY t.id
     ORDER BY t.push_time desc
     limit #{start,jdbcType=BIGINT},10
