@@ -1,5 +1,7 @@
 package cn.linkmore.account.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.account.entity.NoticeRead;
 
@@ -42,5 +44,12 @@ public interface NoticeReadMasterMapper {
     int updateById(NoticeRead record);
 
 	void updateReadStatus();
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void saveBatch(List<NoticeRead> list);
 
 }

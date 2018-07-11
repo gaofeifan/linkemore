@@ -119,8 +119,6 @@ public class NoticeServiceImpl implements NoticeService {
             }else {
             	content = "open couponList";
             }
-
-
         }else {
 
         NoticeRead noticeRead = new NoticeRead();
@@ -304,7 +302,20 @@ public class NoticeServiceImpl implements NoticeService {
 	public void updateRead(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
-		this.noticeMasterMapper.updateReadStatus(ru.getId());
+		List<Long> noticeIds = this.noticeClusterMapper.findNotReadList(ru.getId());
+		List<NoticeRead> list = new ArrayList<>();
+		NoticeRead read = null;
+		for (Long nid : noticeIds) {
+			read = new NoticeRead();
+			read.setNoticeId(nid);
+			read.setUserId(ru.getId());
+			read.setUpdateTime(new Date());
+			read.setCreateTime(new Date());
+			read.setReadStatus(1L);
+			read.setDeleteStatus(0L);
+			list.add(read);
+		}
+		this.readMasterMapper.saveBatch(list);
 	}
 	
 	

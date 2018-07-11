@@ -104,5 +104,12 @@ public interface NoticeClusterMapper {
 
 	Integer findNotReadNotice(Long id);
 
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<Long> findNotReadList(Long id);
+
 
 }
