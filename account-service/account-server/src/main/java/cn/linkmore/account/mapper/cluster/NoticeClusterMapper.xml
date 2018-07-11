@@ -45,7 +45,8 @@
         t_notice t
     LEFT JOIN t_notice_read r ON t.id = r.notice_id
      WHERE
-        t.id NOT IN (
+      status = 0
+      and  t.id NOT IN (
             SELECT
                 nr.notice_id
             FROM

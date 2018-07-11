@@ -102,7 +102,7 @@ public interface NoticeClusterMapper {
 	 */
 	List<Notice> findPage(Map<String, Object> param);
 
-	Integer findNotReadNotice();
+	Integer findNotReadNotice(Long id);
 
 
 }

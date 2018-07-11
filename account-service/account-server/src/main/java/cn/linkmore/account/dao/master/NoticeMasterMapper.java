@@ -47,5 +47,5 @@ public interface NoticeMasterMapper {
      */
     int updateById(Notice record);
 
-	void updateReadStatus();
+	void updateReadStatus(Long id);
 }
