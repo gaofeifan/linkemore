@@ -78,6 +78,7 @@ import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.WebsocketClient;
+import cn.linkmore.third.request.ReqOrder;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
@@ -156,7 +157,7 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 		return flag;
 	}  
-	private final static String ORDER_NUMBER_HEADER="LM";
+//	private final static String ORDER_NUMBER_HEADER="LM";
 	private final static Long ORDER_NUMBER_AMOUNT = 1000000000L;
 	private String getOrderNumber() {
 		Long time = new Date().getTime()%ORDER_NUMBER_AMOUNT;
@@ -167,7 +168,7 @@ public class OrdersServiceImpl implements OrdersService {
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
 		number.append(t.longValue()+increment+time);
-		return ORDER_NUMBER_HEADER+ number.toString();
+		return  number.toString();
 	}
 	private static Set<Long> ORDER_USER_SET = new HashSet<Long>(); 
 	
@@ -651,7 +652,31 @@ public class OrdersServiceImpl implements OrdersService {
 			stallClient.close(stallId);
 		} 
 	}
-	
+	class ProduceCheckBookingThread extends Thread{
+		private ResUserOrder order;
+		public ProduceCheckBookingThread(ResUserOrder order){
+			this.order = order;
+		}
+		public void run(){ 
+			try {
+				if(StringUtils.isNotBlank(order.getDockId())){ 
+					ReqOrder ro = new ReqOrder();
+					ro.setActualAmount(order.getActualAmount());
+					ro.setTotalAmount(order.getTotalAmount());
+					ro.setDockId(order.getDockId());
+					ro.setBeginTime(order.getCreateTime());
+					ro.setEndTime(order.getEndTime());
+					ro.setPlateNo(order.getPlateNo());
+					ro.setPreId(order.getPreId());
+					ro.setStatus(order.getStatus());
+					ro.setOrderNo(order.getOrderNo());
+					dockingClient.order(ro); 
+				}
+			} catch (Exception e) {
+				log.info("call park producer error with check booking msg");
+			}
+		}
+	}
 	@Transactional(rollbackFor = RuntimeException.class)
 	private void switching(ReqSwitch rs,HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
@@ -669,6 +694,10 @@ public class OrdersServiceImpl implements OrdersService {
 				param.put("statusHistory", OrderStatusHistory.CLOSED.code);
 				param.put("status", OrderStatus.COMPLETED.value);
 				this.orderMasterMapper.updateClose(param); 
+				order.setStatus(OrderStatus.COMPLETED.value);
+				order.setEndTime(current);
+				order.setUpdateTime(current);
+				new ProduceCheckBookingThread(order).start();
 				new CancelStallThread(order.getStallId()).start();
 				Thread thread = new PushThread(order.getUserId().toString(), "订单通知","无空闲车位,订单已关闭",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
 				thread.start();
