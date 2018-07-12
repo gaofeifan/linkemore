@@ -77,6 +77,12 @@ public class User {
     
     private String realname;
 
+    
+    /**
+     *  手机号登录 0   微信登录  1   微信登录绑定老手机号  2    微信登录绑定老手机号 3
+     */ 
+    private Short fansStatus;
+    
     public Long getId() {
         return id;
     }
@@ -333,6 +339,12 @@ public class User {
 		this.realname = realname;
 	}
 
-    
-    
+	public Short getFansStatus() {
+		return fansStatus;
+	}
+
+	public void setFansStatus(Short fansStatus) {
+		this.fansStatus = fansStatus;
+	}
+	
 }

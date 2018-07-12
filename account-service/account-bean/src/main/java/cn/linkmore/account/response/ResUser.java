@@ -100,6 +100,8 @@ public class ResUser {
     
     private String realname;
 
+    private Short fansStatus;
+    
     public Long getId() {
         return id;
     }
@@ -354,6 +356,14 @@ public class ResUser {
 
 	public void setRealname(String realname) {
 		this.realname = realname;
+	}
+
+	public Short getFansStatus() {
+		return fansStatus;
+	}
+
+	public void setFansStatus(Short fansStatus) {
+		this.fansStatus = fansStatus;
 	}
 
     

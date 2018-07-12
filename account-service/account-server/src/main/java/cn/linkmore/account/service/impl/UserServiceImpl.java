@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
@@ -97,10 +98,8 @@ public class UserServiceImpl implements UserService {
 	private PushClient pushClient;
 	@Resource
 	private UserAppfansClusterMapper userAppfansClusterMapper;
-	
 	@Resource
 	private UserAppfansMasterMapper userAppfansMasterMapper;
-	
 	@Resource
 	private UserVechicleClusterMapper userVechicleClusterMapper;
 	@Resource
@@ -373,7 +372,8 @@ public class UserServiceImpl implements UserService {
 			user.setIsAppRegister((short) 1);
 			user.setAppRegisterTime(new Date());
 			user.setIsWechatBind((short) 0);
-			this.userMasterMapper.insert(user);
+			user.setFansStatus((short)0);
+			this.userMasterMapper.save(user);
 			Account account = new Account();
 			account.setId(user.getId());
 			account.setAmount(0.00d);
@@ -396,6 +396,7 @@ public class UserServiceImpl implements UserService {
 			param.put("lastLoginTime", new Date());
 			param.put("updateTime", new Date());
 			this.userMasterMapper.updateLoginTime(param);
+			this.updateFansStatus((short)0, user.getId());
 		}
 		String key = TokenUtil.getKey(request); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
@@ -436,10 +437,10 @@ public class UserServiceImpl implements UserService {
 			db.setStatus((short)1);
 			db.setRegisterStatus((short)0);
 			this.userAppfansMasterMapper.insertSelective(db);  
-		}else{  
-			db.setStatus((short)1); 
+		}else{
+			db.setStatus((short)1);
 			this.userAppfansMasterMapper.updateByIdSelective(db);  
-		}  
+		}
 		ResUser user = null;
 		if(db.getUserId()!=null){
 			user = this.userClusterMapper.findById(db.getUserId());
@@ -465,6 +466,7 @@ public class UserServiceImpl implements UserService {
 			u.setIsAppRegister((short)1);
 			u.setAppRegisterTime(new Date());
 			u.setIsWechatBind((short)0);
+			u.setFansStatus((short)1);
 			this.userMasterMapper.insertSelective(u);  
 			user = this.userClusterMapper.findById(u.getId());
 			Account account = new Account();
@@ -491,6 +493,7 @@ public class UserServiceImpl implements UserService {
 			param.put("lastLoginTime", new Date());
 			param.put("updateTime", new Date());
 			this.userMasterMapper.updateLoginTime(param);
+			updateFansStatus((short)1, user.getId());
 		}  
 		String key = TokenUtil.getKey(request); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
@@ -517,7 +520,7 @@ public class UserServiceImpl implements UserService {
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ru.getId().toString());
 		this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+key); 
-	} 
+	}
 	
 	private final static ConcurrentHashMap<Long,Long> LOGIN_USER = new ConcurrentHashMap<Long,Long>();
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
@@ -614,6 +617,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public cn.linkmore.account.controller.app.response.ResUser bindMobile(ReqMobileBind rmb, HttpServletRequest request) {
 		Object cache = this.redisService.get(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
 		if(cache==null) {
@@ -630,21 +634,48 @@ public class UserServiceImpl implements UserService {
 		if(this.redisService.exists(RedisKey.USER_APP_USER_CHANGE_MOBILE.key+ru.getId())) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_CHANGE_MOBILE);
 		} 
-		ReqUpdateMobile rum = new ReqUpdateMobile(); 
-		rum.setMobile(rmb.getMobile());
-		rum.setUserId(ru.getId());
-		this.updateMobile(rum);
-		ResUserDetails details = this.detail(request);
-		cn.linkmore.account.controller.app.response.ResUser user = new cn.linkmore.account.controller.app.response.ResUser();
-		user.setId(details.getId());
-		user.setMobile(rmb.getMobile());
-		user.setRealname(details.getRealname());
-		user.setSex(details.getSex());
-		user.setToken(ru.getToken());
-		ru.setMobile(user.getMobile());
-		this.updateCache(request, ru); 
-		this.redisService.set(RedisKey.USER_APP_USER_CHANGE_MOBILE.key+ru.getId(), user.getMobile(), 60*60*24*30); 
-		return user;
+		if(ru.getMobile().length() > 11) {
+			ResUser user = this.userClusterMapper.findByMobile(rmb.getMobile());
+			UserAppfans appfans = this.userAppfansClusterMapper.findById(ru.getMobile());
+			appfans.setUserId(user.getId());
+			this.userAppfansMasterMapper.updateByIdSelective(appfans);
+			//this.userMasterMapper.deleteById(ru.getId());
+			this.updateFansStatus((short)2, user.getId());
+			cn.linkmore.account.controller.app.response.ResUser resUser = new cn.linkmore.account.controller.app.response.ResUser();
+			resUser.setId(user.getId());
+			resUser.setMobile(user.getMobile());
+			resUser.setToken(key); 
+			resUser.setRealname(user.getRealname());
+			resUser.setSex(user.getSex());
+			resUser.setAlias("u"+user.getId());
+			List<String> tags = new ArrayList<String>();
+			resUser.setTags(tags);
+			tags.add("appuser");
+			
+			CacheUser cu = new CacheUser();
+			cu.setId(user.getId());
+			cu.setMobile(user.getUsername());
+			cu.setToken(key); 
+			this.cacheUser(request, cu);
+			return resUser;
+		}else {
+			ReqUpdateMobile rum = new ReqUpdateMobile(); 
+			rum.setMobile(rmb.getMobile());
+			rum.setUserId(ru.getId());
+			this.updateMobile(rum);
+			this.updateFansStatus((short)3, ru.getId());
+			ResUserDetails details = this.detail(request);
+			cn.linkmore.account.controller.app.response.ResUser user = new cn.linkmore.account.controller.app.response.ResUser();
+			user.setId(details.getId());
+			user.setMobile(rmb.getMobile());
+			user.setRealname(details.getRealname());
+			user.setSex(details.getSex());
+			user.setToken(ru.getToken());
+			ru.setMobile(user.getMobile());
+			this.updateCache(request, ru); 
+			this.redisService.set(RedisKey.USER_APP_USER_CHANGE_MOBILE.key+ru.getId(), user.getMobile(), 60*60*24*30); 
+			return user;
+		}
 	}
 	
 	/**
@@ -914,6 +945,14 @@ public class UserServiceImpl implements UserService {
 			} 
 		} 
 		return this.bindWechatMobile(rmb.getMobile(), request);
+	}
+	
+	private void updateFansStatus(Short fansStaus,Long id) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("id", id);
+		param.put("updateTime", new Date());
+		param.put("fansStatus",fansStaus);
+		this.userMasterMapper.updateFansStatus(param);
 	}
 	
 }

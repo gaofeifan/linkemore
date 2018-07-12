@@ -34,6 +34,7 @@
     <result column="login_count" jdbcType="INTEGER" property="loginCount" />
     <result column="order_count" jdbcType="INTEGER" property="orderCount" />
     <result column="complete_order_count" jdbcType="INTEGER" property="completeOrderCount" />
+    <result column="fans_status" jdbcType="SMALLINT" property="fansStatus" />
   </resultMap>
   <sql id="Base_Column_List">
     id, username, password, nickname, sex, status, user_type, enterprise_name, ent_admin_name, 
@@ -56,7 +57,7 @@
       update_time, hobby_brand_id, is_app_register, 
       is_wechat_bind, app_register_time, wechat_bind_time, 
       type, login_count, order_count, 
-      complete_order_count,realname)
+      complete_order_count,realname,fans_status)
     values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=SMALLINT}, #{status,jdbcType=VARCHAR}, 
       #{userType,jdbcType=VARCHAR}, #{enterpriseName,jdbcType=VARCHAR}, #{entAdminName,jdbcType=VARCHAR}, 
@@ -67,7 +68,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{hobbyBrandId,jdbcType=BIGINT}, #{isAppRegister,jdbcType=SMALLINT}, 
       #{isWechatBind,jdbcType=SMALLINT}, #{appRegisterTime,jdbcType=TIMESTAMP}, #{wechatBindTime,jdbcType=TIMESTAMP}, 
       #{type,jdbcType=SMALLINT}, #{loginCount,jdbcType=INTEGER}, #{orderCount,jdbcType=INTEGER}, 
-      #{completeOrderCount,jdbcType=INTEGER},#{realname,jdbcType=VARCHAR})
+      #{completeOrderCount,jdbcType=INTEGER},#{realname,jdbcType=VARCHAR},#{fansStatus,jdbcType=SMALLINT})
   </insert>
   <insert id="insertSelective" parameterType="cn.linkmore.account.entity.User" useGeneratedKeys="true" keyProperty="id">
     insert into t_user
@@ -168,6 +169,9 @@
       <if test="realname != null">
         realname,
       </if>
+      <if test="fansStatus != null">
+        fans_status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -265,6 +269,9 @@
       </if>
       <if test="realname != null">
         #{realname,jdbcType=VARCHAR},
+      </if>
+       <if test="fansStatus != null">
+        #{fansStatus,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>
@@ -364,6 +371,9 @@
       <if test="realname != null">
         realname = #{realname,jdbcType=INTEGER},
       </if>
+       <if test="fansStatus != null">
+        fans_status = #{fansStatus,jdbcType=SMALLINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -399,12 +409,19 @@
       login_count = #{loginCount,jdbcType=INTEGER},
       order_count = #{orderCount,jdbcType=INTEGER},
       complete_order_count = #{completeOrderCount,jdbcType=INTEGER},
-      realname = #{realname,jdbcType=VARCHAR}
+      realname = #{realname,jdbcType=VARCHAR},
+      fans_status = #{fansStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByColumn" parameterType="java.util.Map">
     update t_user
    		 set ${column} = #{value},
+    	update_time = #{updateTime}
+    where id = #{id}
+  </update>
+  <update id="updateFansStatus" parameterType="java.util.Map">
+    update t_user
+   		 set fans_status = #{fansStatus},
     	update_time = #{updateTime}
     where id = #{id}
   </update>
@@ -437,7 +454,7 @@
   </update>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.linkmore.account.response.ResUser" >
-    insert into t_user (id, username, password, 
+     insert into t_user (id, username, password, 
       nickname, sex, status, 
       user_type, enterprise_name, ent_admin_name, 
       industry, parent_id, mobile, 
@@ -446,7 +463,8 @@
       icon, last_login_time, create_time, 
       update_time, hobby_brand_id, is_app_register, 
       is_wechat_bind, app_register_time, wechat_bind_time, 
-      type)
+      type, login_count, order_count, 
+      complete_order_count,realname,fans_status)
     values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{nickname,jdbcType=VARCHAR}, #{sex,jdbcType=SMALLINT}, #{status,jdbcType=VARCHAR}, 
       #{userType,jdbcType=VARCHAR}, #{enterpriseName,jdbcType=VARCHAR}, #{entAdminName,jdbcType=VARCHAR}, 
@@ -456,6 +474,8 @@
       #{icon,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{hobbyBrandId,jdbcType=BIGINT}, #{isAppRegister,jdbcType=SMALLINT}, 
       #{isWechatBind,jdbcType=SMALLINT}, #{appRegisterTime,jdbcType=TIMESTAMP}, #{wechatBindTime,jdbcType=TIMESTAMP}, 
-      #{type,jdbcType=SMALLINT})
+      #{type,jdbcType=SMALLINT}, #{loginCount,jdbcType=INTEGER}, #{orderCount,jdbcType=INTEGER}, 
+      #{completeOrderCount,jdbcType=INTEGER},#{realname,jdbcType=VARCHAR},#{fansStatus,jdbcType=SMALLINT})
+ 
   </insert>
 </mapper>
