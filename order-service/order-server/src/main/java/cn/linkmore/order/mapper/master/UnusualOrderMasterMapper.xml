@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.order.dao.master.UnusualOrderMasterMapper">
+  
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into t_admin_unusual_order (stall_id, stall_name, prefecture_id, 
+      order_id, order_no, order_start_time, 
+      order_end_time, order_status, lock_down_status, 
+      lock_down_time, category, order_operate_time, 
+      order_mobile, create_time)
+    values
+    <foreach collection ="list" item="order" separator =",">
+      (#{order.stallId,jdbcType=BIGINT}, #{order.stallName,jdbcType=VARCHAR}, #{order.prefectureId,jdbcType=BIGINT}, 
+      #{order.orderId,jdbcType=BIGINT}, #{order.orderNo,jdbcType=VARCHAR}, #{order.orderStartTime,jdbcType=TIMESTAMP}, 
+      #{order.orderEndTime,jdbcType=TIMESTAMP}, #{order.orderStatus,jdbcType=SMALLINT}, #{order.lockDownStatus,jdbcType=SMALLINT}, 
+      #{order.lockDownTime,jdbcType=TIMESTAMP}, #{order.category,jdbcType=SMALLINT}, #{order.orderOperateTime,jdbcType=TIMESTAMP}, 
+      #{order.orderMobile,jdbcType=VARCHAR}, #{order.createTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  
+  
+</mapper>

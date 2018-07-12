@@ -9,6 +9,7 @@ import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderOps;
 import cn.linkmore.order.response.ResUserOrder;
 @Mapper
 public interface OrdersClusterMapper {
@@ -80,5 +81,19 @@ public interface OrdersClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<ResOrderExcel> exportList(ReqOrderExcel bean);
+
+	/**
+	 * 定时任务
+	 * @return
+	 */
+	List<ResOrderOps> appointmentTimeoutList();
+
+	List<ResOrderOps> lockDownTimeoutList();
+
+	List<ResOrderOps> unreleaseCloseOrders();
+
+	List<ResOrderOps> unreleaseHangOrders();
+
+	List<ResOrderOps> unreleaseCompleteOrders();
 
 }
