@@ -315,7 +315,9 @@ public class NoticeServiceImpl implements NoticeService {
 			read.setDeleteStatus(0L);
 			list.add(read);
 		}
-		this.readMasterMapper.saveBatch(list);
+		if(list.size() != 0) {
+			this.readMasterMapper.saveBatch(list);
+		}
 	}
 	
 	
