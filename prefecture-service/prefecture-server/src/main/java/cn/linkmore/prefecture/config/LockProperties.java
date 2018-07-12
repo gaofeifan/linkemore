@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "lock")
 public class LockProperties {
 	private String huaqingUrl; 
+	private String oldUrl;
 	private String linkmoreUrl;
 	public String getHuaqingUrl() {
 		return huaqingUrl;
@@ -19,5 +20,12 @@ public class LockProperties {
 	}
 	public void setLinkmoreUrl(String linkmoreUrl) {
 		this.linkmoreUrl = linkmoreUrl;
+	}
+	public String getOldUrl() {
+		return oldUrl;
+	}
+	public void setOldUrl(String oldUrl) {
+		this.oldUrl = oldUrl;
 	} 
+	
 }

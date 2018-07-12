@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.dao.cluster.FeedbackClusterMapper;
@@ -34,7 +36,7 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
-
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private FeedbackClusterMapper feedbackClusterMapper;
 	@Resource
@@ -92,6 +94,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 		}
 		Feedback feedback = new Feedback();
 		feedback.setContent(content);
+		log.info(content);
 		feedback.setCreateTime(new Date());
 		feedback.setUpdateTime(new Date());
 		feedback.setUserId(user.getId());

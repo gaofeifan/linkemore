@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.client.OrderClient;
+import cn.linkmore.prefecture.config.LockProperties;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
 import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
@@ -55,6 +57,8 @@ import cn.linkmore.util.ObjectUtils;
 @Service
 public class StallServiceImpl implements StallService {
 
+	@Autowired
+	private LockProperties lockProperties;
 	@Autowired
 	private StallMasterMapper stallMasterMapper;
 	@Autowired
@@ -102,6 +106,12 @@ public class StallServiceImpl implements StallService {
 			this.stall = stall; 
 		}
 		public void run() {
+			String url = lockProperties.getLinkmoreUrl();
+			if(preIds.contains(stall.getPreId().longValue())){
+				log.info("old lock api......");
+				lockFactory.getAbuttingBean().setLinkmoreUrl(lockProperties.getOldUrl());
+			}  
+			lockFactory.getAbuttingBean().setLinkmoreUrl(url);
 			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
 			int code = res.getMsgCode();
 			log.info("lock msg:{}", JsonUtil.toJson(res));
@@ -128,11 +138,28 @@ public class StallServiceImpl implements StallService {
 		} 
 		return flag;
 	}
+	
+	private static List<Long> preIds = new ArrayList<Long>(){
+		private static final long serialVersionUID = 1L;
+		{   
+			add(1L);
+			add(14L);
+			add(15L);
+			add(16L); 
+		}
+	};  
+	
 	private void downing(ReqOrderStall reqos) {
 		Stall stall = stallClusterMapper.findById(reqos.getStallId());
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			log.info("download");
+			String url = lockProperties.getLinkmoreUrl();
+			if(preIds.contains(stall.getPreId().longValue())){
+				log.info("old lock api......");
+				lockFactory.getAbuttingBean().setLinkmoreUrl(lockProperties.getOldUrl());
+			}  
+			lockFactory.getAbuttingBean().setLinkmoreUrl(url);
 			ResponseMessage<LockBean> res = lockFactory.lockDown(stall.getLockSn());
 			log.info("res:{}", JsonUtil.toJson(res));
 			int code = res.getMsgCode();
@@ -166,6 +193,12 @@ public class StallServiceImpl implements StallService {
 		boolean flag = true;
 		Stall stall = stallClusterMapper.findById(stallId);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			String url = lockProperties.getLinkmoreUrl();
+			if(preIds.contains(stall.getPreId().longValue())){
+				log.info("old lock api......");
+				lockFactory.getAbuttingBean().setLinkmoreUrl(lockProperties.getOldUrl());
+			}  
+			lockFactory.getAbuttingBean().setLinkmoreUrl(url);
 			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
 			int code = res.getMsgCode();
 			if (code != 200) {

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,10 +57,12 @@ import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.cluster.StallAssignClusterMapper;
 import cn.linkmore.order.dao.master.BookingMasterMapper;
+import cn.linkmore.order.dao.master.OrdersDetailMasterMapper;
 import cn.linkmore.order.dao.master.OrdersMasterMapper;
 import cn.linkmore.order.dao.master.StallAssignMasterMapper;
 import cn.linkmore.order.entity.Booking;
 import cn.linkmore.order.entity.Orders;
+import cn.linkmore.order.entity.OrdersDetail;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrderExcel;
@@ -104,6 +105,9 @@ public class OrdersServiceImpl implements OrdersService {
 	private OrdersClusterMapper ordersClusterMapper; 
 	@Autowired
 	private OrdersMasterMapper orderMasterMapper; 
+	
+	@Autowired
+	private OrdersDetailMasterMapper ordersDetailMasterMapper; 
 	
 	@Autowired
 	private BookingMasterMapper bookingMasterMapper;  
@@ -153,14 +157,16 @@ public class OrdersServiceImpl implements OrdersService {
 		return flag;
 	}  
 	private final static String ORDER_NUMBER_HEADER="LM";
+	private final static Long ORDER_NUMBER_AMOUNT = 1000000000L;
 	private String getOrderNumber() {
+		Long time = new Date().getTime()%ORDER_NUMBER_AMOUNT;
 		Date day = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long increment = this.redisService.increment(RedisKey.ORDER_SERIAL_NUMBER.key+sdf.format(day), 1);
 		Double t = Math.pow(10,baseConfig.getOrderNumber());
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
-		number.append(t.intValue()+increment);
+		number.append(t.longValue()+increment+time);
 		return ORDER_NUMBER_HEADER+ number.toString();
 	}
 	private static Set<Long> ORDER_USER_SET = new HashSet<Long>(); 
@@ -307,6 +313,26 @@ public class OrdersServiceImpl implements OrdersService {
 			o.setStallLocal(pre.getName() + stall.getStallName());
 			o.setStallGuidance(pre.getAddress() + stall.getStallName()); 
 			this.orderMasterMapper.save(o); 
+			
+			OrdersDetail od = new OrdersDetail();
+			od.setAccountId(cu.getId());
+			od.setBeginTime(current);
+			od.setCouponsMoney(new BigDecimal(0.0D));
+			od.setCreateTime(current);
+			od.setDayFee(new BigDecimal(0.0D));
+			od.setDayTime(0);
+			od.setNightFee(new BigDecimal(0.0D));
+			od.setEndTime(new Date());
+			od.setNightTime(0);
+			od.setOrdNo(o.getOrderNo());
+			od.setStallName(stall.getStallName());
+			od.setStrategyId(pre.getStrategyId());
+			od.setParkName(pre.getName());
+			od.setUpdateTime(current);
+			o.setStallLocal(pre.getName() + stall.getStallName());
+			o.setStallGuidance(pre.getAddress() + stall.getStallName()); 
+			od.setOrderId(o.getId()); 
+			this.ordersDetailMasterMapper.save(od);
 			this.stallClient.order(stall.getId()); 
 			bookingStatus = (short)OperateStatus.SUCCESS.status;
 			failureReason = (short)OrderFailureReason.NONE.value;   
@@ -582,25 +608,26 @@ public class OrdersServiceImpl implements OrdersService {
 	public void downMsgPush(Long orderId, Long stallId) {
 		ResUserOrder order = this.ordersClusterMapper.findDetail(orderId);
 		Boolean switchStatus = false;
+		Boolean downStatus = true;
 		if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId())) {
 			Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
 			if(Integer.valueOf(count.toString())>1) {
 				switchStatus = true;
 			}
-		}else {
-			this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+order.getId());
+			downStatus = false;
 		}
+		
 		Map<String,Object> param = new HashMap<String,Object>(); 
 		param.put("lockDownStatus",switchStatus?OperateStatus.SUCCESS.status:OperateStatus.FAILURE.status);
 		param.put("lockDownTime", new Date());
 		param.put("orderId", order.getId());
 		this.orderMasterMapper.updateLockStatus(param); 
 		log.info("stall downing :{}",switchStatus); 
-		if(switchStatus) { 
+		if(switchStatus&&!downStatus) { 
 			Thread thread = new PushThread(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
 			thread.start();
 		}else{
-			Thread thread = new PushThread(order.getUserId().toString(), "预约降锁通知",switchStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
+			Thread thread = new PushThread(order.getUserId().toString(), "预约降锁通知",downStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
 			thread.start();
 		} 
 	}

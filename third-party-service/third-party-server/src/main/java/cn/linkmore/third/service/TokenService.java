@@ -59,7 +59,7 @@ public class TokenService {
 		Token token = WeChat.getToken(appid, appsecret);
 		ResToken object = ObjectUtils.copyObject(token,new ResToken());
 		log.info("获取access_token成功，有效时长{}秒 token:{}", token.getExpiresIn(),token.getAccessToken());  
-		redisService.set(key, JsonUtil.toJson(object), Long.valueOf(Constants.RedisKey.WECHAT_TOKEN_EXPIRE.key));
+		redisService.set(key, JsonUtil.toJson(object), Constants.ExpiredTime.WECHAT_TOKEN_EXPIRE.time);
 		return object;
 	}
 }

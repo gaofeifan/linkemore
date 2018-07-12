@@ -35,10 +35,20 @@ public class ResOrderDetail{
 	private Short payType;
 	@ApiModelProperty(value = "总金额")
 	private BigDecimal totalAmount;
+	@ApiModelProperty(value = "总金额[字符串]")
+	private String stotalAmount;
+	
 	@ApiModelProperty(value = "停车券金额")
 	private BigDecimal couponAmount;
+	@ApiModelProperty(value = "停车券金额[字符串]")
+	private String scouponAmount;
+	
 	@ApiModelProperty(value = "支付金额")
 	private BigDecimal actualAmount;
+	
+	@ApiModelProperty(value = "支付金额[字符串]")
+	private String sactualAmount;
+	
 	@ApiModelProperty(value = "停车时长")
 	private String parkingTime;
 	@ApiModelProperty(value = "离开免费时长")
@@ -139,6 +149,33 @@ public class ResOrderDetail{
 	}
 	
 	
+	public String getStotalAmount() {
+		if(this.totalAmount==null) {
+			this.totalAmount = new BigDecimal(0d);
+		}
+		return this.totalAmount.setScale(2,   BigDecimal.ROUND_HALF_UP).toString();
+	}
+	public void setStotalAmount(String stotalAmount) {
+		this.stotalAmount = stotalAmount;
+	}
+	public String getScouponAmount() {
+		if(this.couponAmount==null) {
+			this.couponAmount = new BigDecimal(0d);
+		}
+		return this.couponAmount.setScale(2,   BigDecimal.ROUND_HALF_UP).toString();
+	}
+	public void setScouponAmount(String scouponAmount) {
+		this.scouponAmount = scouponAmount;
+	}
+	public String getSactualAmount() {
+		if(this.actualAmount==null) {
+			this.actualAmount = new BigDecimal(0d);
+		}
+		return this.actualAmount.setScale(2,   BigDecimal.ROUND_HALF_UP).toString();
+	}
+	public void setSactualAmount(String sactualAmount) {
+		this.sactualAmount = sactualAmount;
+	}
 	public String getParkingTime() {
 		return parkingTime;
 	}

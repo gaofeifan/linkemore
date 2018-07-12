@@ -691,7 +691,8 @@ public class PayServiceImpl implements PayService {
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("id", order.getId());
 		param.put("status", OrderStatus.COMPLETED.value);
-		param.put("updateTime",current);
+		param.put("updateTime",current); 
+		param.put("endTime", current); 
 		param.put("payTime", current);
 		param.put("tradeId", payTradeRecord.getId());
 		this.orderMasterMapper.updatePayment(param); 
