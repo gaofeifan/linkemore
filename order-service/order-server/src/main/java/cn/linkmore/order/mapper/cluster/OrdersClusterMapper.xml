@@ -271,4 +271,59 @@
   </select>
   
   
+  <select id="appointmentTimeoutList" resultMap="OpsResultMap">
+    select 
+    <include refid="Ops_Column_List" />
+    from o_orders o left join v_stall s on o.stall_id = s.id left join v_prefecture p on o.pre_id = p.id
+    where 1 = 1 and o.lock_down_status is null and o.status = 1 and
+    <![CDATA[ DATE_ADD(o.create_time,INTERVAL 30 minute) <= now()]]>
+  </select>
+  
+  <select id="lockDownTimeoutList" resultMap="OpsResultMap">
+    select 
+    <include refid="Ops_Column_List" />
+    from o_orders o left join v_stall s on o.stall_id = s.id left join v_prefecture p on o.pre_id = p.id
+    where 1 = 1 and o.lock_down_status is not null and o.status = 1 and
+    <![CDATA[ DATE_ADD(o.lock_down_time,INTERVAL 4 HOUR) <= now()]]>
+  </select>
+  
+  <select id="unreleaseCloseOrders" resultMap="OpsResultMap">
+    select 
+    oo.id, oo.user_id, oo.pre_id, oo.stall_id, oo.order_no, oo.pay_type, oo.total_amount, oo.actual_amount, oo.status, 
+    oo.begin_time, oo.username, oo.end_time, oo.plate_no, oo.create_time, oo.update_time, oo.dock_id,oo.status_history,
+    po.name prefecture_name,po.stall_name, oo.status_time,oo.lock_down_status,oo.lock_down_time
+    from o_orders oo INNER JOIN 
+	(select max(o.id) oid,v.id vid,v.stall_name,v.status vstatus,pre.name 
+	from o_orders o inner join v_stall v on o.stall_id = v.id 
+	INNER JOIN v_prefecture pre on o.pre_id = pre.id 
+	where v.status = 2 group by v.id) po on oo.id = po.oid
+	and oo.status_history=2 and oo.status_time is not null
+  </select>
+  
+  <select id="unreleaseHangOrders" resultMap="OpsResultMap">
+    select 
+    oo.id, oo.user_id, oo.pre_id, oo.stall_id, oo.order_no, oo.pay_type, oo.total_amount, oo.actual_amount, oo.status, 
+    oo.begin_time, oo.username, oo.end_time, oo.plate_no, oo.create_time, oo.update_time, oo.dock_id,oo.status_history,
+    po.name prefecture_name,po.stall_name, oo.status_time,oo.lock_down_status,oo.lock_down_time
+    from o_orders oo INNER JOIN 
+	(select max(o.id) oid,v.id vid,v.stall_name,v.status vstatus,pre.name 
+	from o_orders o inner join v_stall v on o.stall_id = v.id 
+	INNER JOIN v_prefecture pre on o.pre_id = pre.id 
+	where v.status = 2 group by v.id) po on oo.id = po.oid
+	and oo.status_history=1 and oo.status_time is not null
+  </select>
+  
+  <select id="unreleaseCompleteOrders" resultMap="OpsResultMap">
+    select 
+    oo.id, oo.user_id, oo.pre_id, oo.stall_id, oo.order_no, oo.pay_type, oo.total_amount, oo.actual_amount, oo.status, 
+    oo.begin_time, oo.username, oo.end_time, oo.plate_no, oo.create_time, oo.update_time, oo.dock_id,oo.status_history,
+    po.name prefecture_name,po.stall_name, oo.status_time,oo.lock_down_status,oo.lock_down_time
+    from o_orders oo INNER JOIN 
+	(select max(o.id) oid,v.id vid,v.stall_name,v.status vstatus,pre.name 
+	from o_orders o inner join v_stall v on o.stall_id = v.id 
+	INNER JOIN v_prefecture pre on o.pre_id = pre.id 
+	where v.status = 2 group by v.id) po on oo.id = po.oid
+	and oo.status_history=0 and oo.status=3
+  </select>
+  
 </mapper>
