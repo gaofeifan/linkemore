@@ -39,14 +39,14 @@
       status = #{status,jdbcType=SMALLINT},
       order_id = #{orderId,jdbcType=BIGINT},
       order_no = #{orderNo,jdbcType=VARCHAR}, 
-      order_time = #{orderTime,jdbcType=TIMESTAMP},  
+      order_time = #{orderTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="cancelUpdate" parameterType="cn.linkmore.order.entity.StallAssign">
     update t_admin_stall_assign
     set  
       status = #{status,jdbcType=SMALLINT}, 
-      cancel_time = #{cancelTime,jdbcType=TIMESTAMP},  
+      cancel_time = #{cancelTime,jdbcType=TIMESTAMP} 
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

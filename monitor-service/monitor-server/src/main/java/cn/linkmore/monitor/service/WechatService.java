@@ -65,7 +65,7 @@ public class WechatService {
 	private Token resetToken(String appid, String appsecret, String key) {
 		Token token = WeChat.getToken(appid, appsecret);
 		log.info("获取access_token成功，有效时长{}秒 token:{}", token.getExpiresIn(),token.getAccessToken());  
-		redisService.set(key, JsonUtil.toJson(token), Long.valueOf(Constants.RedisKey.WECHAT_TOKEN_EXPIRE.key));
+		redisService.set(key, JsonUtil.toJson(token), Constants.ExpiredTime.WECHAT_TOKEN_EXPIRE.time);
 		return token;
 	}
 	
@@ -128,7 +128,7 @@ public class WechatService {
 			userList.setCount(Integer.parseInt(count.toString()));
 			userList.setTotal(Integer.parseInt(total.toString()));
 			userList.setOpenIds(ids);
-			redisService.set(Constants.RedisKey.WECHAT_GET_USER_LIST_MONITOR.key,JsonUtil.toJson(userList), Long.valueOf(Constants.RedisKey.WECHAT_GET_USER_LIST_EXPIRE.key));
+			redisService.set(Constants.RedisKey.WECHAT_GET_USER_LIST_MONITOR.key,JsonUtil.toJson(userList), Constants.ExpiredTime.WECHAT_GET_USER_LIST_EXPIRE.time);
 		}
 		return userList;
 	}

@@ -170,6 +170,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 				pre = new ResPrefectureList();
 				pre.setId(resPre.getId());
 				count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + resPre.getId());
+				log.info("preId {} free stall count {}",resPre.getId(), count);
 				if(count==null) {
 					count = 0L;
 				}

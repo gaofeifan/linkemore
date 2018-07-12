@@ -523,10 +523,15 @@ public class UserServiceImpl implements UserService {
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
 		Token   last  = null;
 		String key = TokenUtil.getKey(request);
-		Long userId = LOGIN_USER.get(user.getId());
-		if(userId==null) {
-			userId = user.getId();
-			LOGIN_USER.put(user.getId(), user.getId());
+		Long userId = null;
+		if(user.getId()!=null) {
+			userId = LOGIN_USER.get(user.getId());
+			if(userId==null) {
+				userId = user.getId();
+				LOGIN_USER.put(user.getId(), user.getId());
+			}
+		} else {
+			userId = 0L;
 		}
 		synchronized(userId) {
 			last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
