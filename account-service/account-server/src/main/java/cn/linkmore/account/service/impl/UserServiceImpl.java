@@ -346,16 +346,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser appLogin(ReqAuthLogin rl, HttpServletRequest request) {
-		if(!("6666".equals(rl.getCode()))) {
-			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
-			if(cache==null) {
-				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
+//		if(!("6666".equals(rl.getCode()))) {
+//			
+//		}
+		Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
+		if(cache==null) {
+			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
+		}else {
+			if(!cache.toString().equals(rl.getCode())) {
+				throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
 			}else {
-				if(!cache.toString().equals(rl.getCode())) {
-					throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
-				}else {
-					this.redisService.remove(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
-				}
+				this.redisService.remove(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
 			}
 		}
 		ResUser user = this.findByMobile(rl.getMobile());
