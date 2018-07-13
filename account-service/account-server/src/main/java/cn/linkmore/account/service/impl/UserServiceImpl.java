@@ -638,10 +638,10 @@ public class UserServiceImpl implements UserService {
 		ResUser user = this.userClusterMapper.findByMobile(rmb.getMobile());
 		if(ru.getMobile().length() > 11 && user != null) {
 			UserAppfans appfans = this.userAppfansClusterMapper.findById(ru.getMobile());
+			this.userAppfansMasterMapper.updateFansUserId(user.getId());
 			appfans.setUserId(user.getId());
 			this.userAppfansMasterMapper.updateByIdSelective(appfans);
 			//this.userMasterMapper.deleteById(ru.getId());
-			this.userAppfansMasterMapper.updateFansUserId(user.getId());
 			this.updateFansStatus((short)2, user.getId());
 			cn.linkmore.account.controller.app.response.ResUser resUser = new cn.linkmore.account.controller.app.response.ResUser();
 			resUser.setId(user.getId());
@@ -673,7 +673,7 @@ public class UserServiceImpl implements UserService {
 			u.setRealname(details.getRealname());
 			u.setSex(details.getSex());
 			u.setToken(ru.getToken());
-			ru.setMobile(user.getMobile());
+			ru.setMobile(rmb.getMobile());
 			this.updateCache(request, ru); 
 			this.redisService.set(RedisKey.USER_APP_USER_CHANGE_MOBILE.key+ru.getId(), u.getMobile(), 60*60*24*30); 
 			return u;
