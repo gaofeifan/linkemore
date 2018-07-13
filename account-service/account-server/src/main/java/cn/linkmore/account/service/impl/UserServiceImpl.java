@@ -634,12 +634,13 @@ public class UserServiceImpl implements UserService {
 		if(this.redisService.exists(RedisKey.USER_APP_USER_CHANGE_MOBILE.key+ru.getId())) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_CHANGE_MOBILE);
 		} 
-		if(ru.getMobile().length() > 11) {
-			ResUser user = this.userClusterMapper.findByMobile(rmb.getMobile());
+		ResUser user = this.userClusterMapper.findByMobile(rmb.getMobile());
+		if(ru.getMobile().length() > 11 && user != null) {
 			UserAppfans appfans = this.userAppfansClusterMapper.findById(ru.getMobile());
 			appfans.setUserId(user.getId());
 			this.userAppfansMasterMapper.updateByIdSelective(appfans);
 			//this.userMasterMapper.deleteById(ru.getId());
+			this.userAppfansMasterMapper.updateFansUserId(user.getId());
 			this.updateFansStatus((short)2, user.getId());
 			cn.linkmore.account.controller.app.response.ResUser resUser = new cn.linkmore.account.controller.app.response.ResUser();
 			resUser.setId(user.getId());
@@ -665,16 +666,16 @@ public class UserServiceImpl implements UserService {
 			this.updateMobile(rum);
 			this.updateFansStatus((short)3, ru.getId());
 			ResUserDetails details = this.detail(request);
-			cn.linkmore.account.controller.app.response.ResUser user = new cn.linkmore.account.controller.app.response.ResUser();
-			user.setId(details.getId());
-			user.setMobile(rmb.getMobile());
-			user.setRealname(details.getRealname());
-			user.setSex(details.getSex());
-			user.setToken(ru.getToken());
+			cn.linkmore.account.controller.app.response.ResUser u = new cn.linkmore.account.controller.app.response.ResUser();
+			u.setId(details.getId());
+			u.setMobile(rmb.getMobile());
+			u.setRealname(details.getRealname());
+			u.setSex(details.getSex());
+			u.setToken(ru.getToken());
 			ru.setMobile(user.getMobile());
 			this.updateCache(request, ru); 
-			this.redisService.set(RedisKey.USER_APP_USER_CHANGE_MOBILE.key+ru.getId(), user.getMobile(), 60*60*24*30); 
-			return user;
+			this.redisService.set(RedisKey.USER_APP_USER_CHANGE_MOBILE.key+ru.getId(), u.getMobile(), 60*60*24*30); 
+			return u;
 		}
 	}
 	
@@ -954,5 +955,4 @@ public class UserServiceImpl implements UserService {
 		param.put("fansStatus",fansStaus);
 		this.userMasterMapper.updateFansStatus(param);
 	}
-	
 }

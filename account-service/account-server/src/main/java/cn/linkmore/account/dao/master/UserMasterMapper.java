@@ -92,6 +92,7 @@ public interface UserMasterMapper {
 	void save(ResUser user);
 
 	void updateFansStatus(Map<String, Object> param);
+	
 
 
 }

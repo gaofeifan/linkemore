@@ -61,4 +61,11 @@ public interface UserAppfansMasterMapper {
 	 */
 	void deleteByUserId(Long userId);
 
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateFansUserId(Long id);
+
 }

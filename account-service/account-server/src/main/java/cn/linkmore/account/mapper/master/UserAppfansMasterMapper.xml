@@ -129,4 +129,10 @@
       status = #{status}
     where user_id = #{userId}
   </update>
+  <update id="updateFansUserId" parameterType="java.lang.Long">
+    update t_user_appfans
+    set
+      user_id = null
+    where user_id = #{userId}
+  </update>
 </mapper>

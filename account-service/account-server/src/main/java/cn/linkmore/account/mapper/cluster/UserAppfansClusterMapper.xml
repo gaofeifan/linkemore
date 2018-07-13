@@ -35,5 +35,6 @@
     <include refid="Base_Column_List" />
     from t_user_appfans
     where user_id = #{userId}
+    limit 0,1
   </select>
 </mapper>
