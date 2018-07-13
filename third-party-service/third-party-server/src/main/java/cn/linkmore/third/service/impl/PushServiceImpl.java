@@ -17,6 +17,7 @@ import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.PushPayload.Builder;
 import cn.jpush.api.push.model.audience.Audience;
 import cn.linkmore.bean.common.Constants;
+import cn.linkmore.third.config.BaseConfig;
 import cn.linkmore.third.config.BeanFactory;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.service.PushService;
@@ -35,6 +36,9 @@ public class PushServiceImpl implements PushService {
 	
 	@Autowired
 	private BeanFactory beanFactory;
+	
+	@Autowired
+	private BaseConfig baseConfig;
 	
 	
 	class AndroidThread extends Thread{
@@ -92,7 +96,7 @@ public class PushServiceImpl implements PushService {
 				.addExtra("data", rp.getData())
 				.setMsgContent(rp.getContent()).build());
 		ios.setPlatform(Platform.ios());
-		ios.setOptions(Options.newBuilder().setApnsProduction(false).build());
+		ios.setOptions(Options.newBuilder().setApnsProduction(baseConfig.getOnline()).build());
 		PushPayload iosppl = ios.build();
 		try {
 			jpushClient.sendPush(iosppl);
