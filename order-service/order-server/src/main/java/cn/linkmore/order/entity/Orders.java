@@ -92,6 +92,11 @@ public class Orders {
      * 订单用户类型(0普通，1奥迪内部用户)
      */
     private Short userType;
+    
+    /**
+     * 客户端[0小程序,1Android,2IOS]
+     */
+    private Short clientType;
     /**
      * 订单操作时间[挂起关闭]
      */
@@ -388,6 +393,14 @@ public class Orders {
 
 	public void setPayTime(Date payTime) {
 		this.payTime = payTime;
+	}
+
+	public Short getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(Short clientType) {
+		this.clientType = clientType;
 	}  
 	
 }

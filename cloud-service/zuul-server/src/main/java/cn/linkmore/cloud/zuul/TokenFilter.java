@@ -26,7 +26,7 @@ public class TokenFilter extends ZuulFilter {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass()); 
 	private static final String API_APP_PATH="/app/";
 	private static final String API_WS_PATH = "/ws/";
-	private static final String API_OPS_PATH="/ops/";
+	private static final String API_OPS_PATH="/admin/";
 	private static final String API_FEIGN_PATH="/feign/"; 
 	private static final String SWAGGER_PATH = "/webjars/";
 	

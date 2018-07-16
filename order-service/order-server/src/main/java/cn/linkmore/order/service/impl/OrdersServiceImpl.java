@@ -159,8 +159,8 @@ public class OrdersServiceImpl implements OrdersService {
 	private final static String ORDER_NUMBER_HEADER="LM";
 	private final static Long ORDER_NUMBER_AMOUNT = 1000000000L;
 	private String getOrderNumber() {
-		Long time = new Date().getTime()%ORDER_NUMBER_AMOUNT;
 		Date day = new Date();
+		Long time = day.getTime()%ORDER_NUMBER_AMOUNT; 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long increment = this.redisService.increment(RedisKey.ORDER_SERIAL_NUMBER.key+sdf.format(day), 1);
 		Double t = Math.pow(10,baseConfig.getOrderNumber());
@@ -300,7 +300,7 @@ public class OrdersServiceImpl implements OrdersService {
 			o.setTotalAmount(new BigDecimal(0.0D));
 			o.setUserId(cu.getId());
 			o.setUsername(o.getUsername());
-
+			o.setClientType(cu.getClient());
 			// 更新车位状态 
 			// 订单详情 
 			Long dictId = pre.getBaseDictId();
