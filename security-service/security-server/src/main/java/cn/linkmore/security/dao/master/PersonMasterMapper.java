@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.security.entity.Person;
+import cn.linkmore.security.request.ReqPerson;
 /**
  * 账户
  * @author jiaohanbin
@@ -24,5 +25,7 @@ public interface PersonMasterMapper {
 	int delete(List<Long> ids);
 
 	int unlock(Long id);
+
+	void updatePassword(ReqPerson person);
 	
 }

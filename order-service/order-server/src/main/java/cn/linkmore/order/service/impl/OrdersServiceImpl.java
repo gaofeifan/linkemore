@@ -155,8 +155,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 		}
 		return flag;
-	}  
-	private final static String ORDER_NUMBER_HEADER="LM";
+	}   
 	private final static Long ORDER_NUMBER_AMOUNT = 1000000000L;
 	private String getOrderNumber() {
 		Date day = new Date();
@@ -167,7 +166,7 @@ public class OrdersServiceImpl implements OrdersService {
 		StringBuffer number = new StringBuffer();
 		number.append(sdf.format(day));
 		number.append(t.longValue()+increment+time);
-		return ORDER_NUMBER_HEADER+ number.toString();
+		return  number.toString();
 	}
 	private static Set<Long> ORDER_USER_SET = new HashSet<Long>(); 
 	

@@ -85,8 +85,6 @@ public class TimingScheduleController {
 			msg = new ViewMsg("删除失败",false);
 		}
 		return msg;
-		
-		
 	} 
 	
 	@RequestMapping(value = "/check", method = RequestMethod.POST)
@@ -105,5 +103,4 @@ public class TimingScheduleController {
 			return false;
 		}
 	}
-	
 }

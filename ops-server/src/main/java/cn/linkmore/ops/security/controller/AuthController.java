@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
@@ -16,9 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import cn.linkmore.ops.security.request.ReqPerson;
 import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.security.service.PersonService;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.PasswordUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -142,15 +147,30 @@ public class AuthController {
 	}
 
 	@ApiOperation(value = "更新密码", notes = "更新密码", consumes = "application/json")
-	@RequestMapping(value = "/update_password", method = RequestMethod.GET)
+	@RequestMapping(value = "/update_password", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> updatePasswrod(@RequestParam("oldPassword") String oldPassword,
 			@RequestParam("password") String password) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
+		ResPerson resPerson = this.personService.findByUsername(person.getUsername());
+		ReqPerson reqPerson = ObjectUtils.copyObject(resPerson, new ReqPerson());
 		try {
-			this.personService.updatePassword(person, oldPassword, password);
+			if(StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)){
+				throw new RuntimeException("密码不能为空");
+			}
+			if(StringUtils.isNotBlank(reqPerson.getPassword())){
+				if(PasswordUtil.checkPassword(oldPassword, reqPerson.getPassword())){
+					reqPerson.setPassword(password);
+					this.personService.update(reqPerson);
+					subject.getSession().removeAttribute("person");
+					subject.logout();
+					map.put("logout", true);
+				}else{
+					throw new RuntimeException("原始密码错误");
+				}
+			}
 			map.put("update", true);
 		} catch (RuntimeException e) {
 			map.put("update", false);

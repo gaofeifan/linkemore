@@ -9,6 +9,7 @@ public class ResOrderConfirm {
 	private String alipay; 
 	private ResOrderWeixin weixin; 
 	private String apple;
+	private String union;
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -44,6 +45,12 @@ public class ResOrderConfirm {
 	}
 	public void setApple(String apple) {
 		this.apple = apple;
+	}
+	public String getUnion() {
+		return union;
+	}
+	public void setUnion(String union) {
+		this.union = union;
 	}
 	 
 }
