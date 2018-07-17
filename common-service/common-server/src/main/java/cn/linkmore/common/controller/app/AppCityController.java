@@ -1,9 +1,10 @@
 package cn.linkmore.common.controller.app;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,10 +37,10 @@ public class AppCityController {
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<ResCity>> list(
-			@Range(min=73, max=137,message="经度请确保在中国范围内")
+//			@Range(min=73, max=137,message="经度请确保在中国范围内")
 			@NotBlank(message="经度不能为空") 
 			@RequestParam(value="longitude",required=true)String longitude,
-			@Range(min=3, max=54,message="纬度请确保在中国范围内")
+//			@Range(min=3, max=54,message="纬度请确保在中国范围内")
 			@NotBlank(message="纬度不能为空")
 			@RequestParam(value="latitude",required=true)String latitude, 
 			HttpServletRequest request) {

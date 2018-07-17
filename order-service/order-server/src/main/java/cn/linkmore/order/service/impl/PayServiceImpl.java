@@ -211,7 +211,13 @@ public class PayServiceImpl implements PayService {
 		roc.setCouponCount(0);
 		roc.setParkingTime(new Long((roc.getEndTime().getTime()-roc.getStartTime().getTime())/(1000L*60)).intValue());
 		roc.setOrderId(orderId);
-		roc.setPayType((short)TradePayType.WECHAT.type);
+		if(cu.getClient().shortValue()==ClientSource.ANDROID.source) {
+			roc.setPayType((short)TradePayType.WECHAT.type);
+		}else if(cu.getClient().shortValue()==ClientSource.IOS.source) {
+			roc.setPayType((short)TradePayType.APPLE.type);
+		}else {
+			roc.setPayType((short)TradePayType.WECHAT.type);
+		} 
 		roc.setPlateNumber(order.getPlateNo());
 		ResPrefectureDetail pre = this.prefectureClient.findById(order.getPreId());
 		if(pre!=null) {
@@ -286,6 +292,9 @@ public class PayServiceImpl implements PayService {
 				res.setWeixin(weixin);
 			}else if(confirm.getPayType().shortValue()==TradePayType.APPLE.type){
 				res.setApple(confirm.getApple());
+				res.setNumber(confirm.getNumber());
+			}else if(confirm.getPayType().shortValue()==TradePayType.UNION.type){
+				res.setUnion(confirm.getUnion());
 				res.setNumber(confirm.getNumber());
 			}
 		}
@@ -470,6 +479,19 @@ public class PayServiceImpl implements PayService {
 				confirm.setNumber(rechargeRecord.getCode()); 
 				confirm.setPayType((short)TradePayType.APPLE.type); 
 				confirm.setApple(tn);
+				log.info("apple confir :{}",JsonUtil.toJson(confirm));
+				return getConfirmResult(confirm);
+			}else if(roc.getPayType() == TradePayType.UNION.type){
+				ReqApplePay rap = new ReqApplePay();
+				rap.setTimestramp(new Date().getTime());
+				rap.setAmount(rechargeRecord.getPaymentAmount().doubleValue());
+				rap.setNumber(rechargeRecord.getCode());
+				String tn = this.applePayClient.order(rap);
+				confirm = new ResOrderConfirm();
+				confirm.setAmount(rechargeRecord.getPaymentAmount()); 
+				confirm.setNumber(rechargeRecord.getCode()); 
+				confirm.setPayType((short)TradePayType.UNION.type); 
+				confirm.setUnion(tn);
 				log.info("apple confir :{}",JsonUtil.toJson(confirm));
 				return getConfirmResult(confirm);
 			}else if(roc.getPayType() == TradePayType.WECHAT_MINI.type) { 

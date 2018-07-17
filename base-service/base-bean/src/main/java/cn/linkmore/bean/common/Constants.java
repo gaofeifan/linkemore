@@ -38,7 +38,8 @@ public class Constants {
 		ALIPAY( 1),
 		WECHAT ( 2), 
 		APPLE (3),
-		WECHAT_MINI (4);
+		WECHAT_MINI (4),
+		UNION(5);
 		public int type;
 		private TradePayType(int type) {
 			this.type = type;
