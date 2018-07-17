@@ -108,8 +108,8 @@ public class PersonController {
 	
 	@RequestMapping(value = "/v2.0/update_password", method = RequestMethod.POST)
 	@ResponseBody
-	public void updatePassword(@RequestBody ResPerson resPerson){
-		this.personService.updatePassword(resPerson);
+	public void updatePassword(@RequestBody ReqPerson reqPerson,@RequestParam("oldPassword") String oldPassword,@RequestParam("password") String password){
+		this.personService.updatePassword(reqPerson, oldPassword, password);
 	}
 	
 	@RequestMapping(value = "/v2.0/id", method = RequestMethod.GET)

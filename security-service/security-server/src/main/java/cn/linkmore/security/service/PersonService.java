@@ -99,6 +99,6 @@ public interface PersonService {
 
 
 
-	void updatePassword(ResPerson person);
+	void updatePassword(ReqPerson person, String oldPassword, String password);
 
 }

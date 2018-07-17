@@ -114,10 +114,24 @@ public class PersonServiceImpl implements PersonService {
 	}
 	
 	@Override
-	public void updatePassword(ResPerson person){
-			Person p = new Person();
-			p = ObjectUtils.copyObject(person, p);
-			this.personMasterMapper.update(p);
+	public void updatePassword(ReqPerson person,String oldPassword,String newPassword){
+		ResPerson db = this.personClusterMapper.findById(person.getId());
+		if(StringUtils.isBlank(oldPassword) || StringUtils.isBlank(newPassword)){
+			throw new RuntimeException("密码不能为空");
+		}
+		if(StringUtils.isNotBlank(db.getPassword())){
+			if(PasswordUtil.checkPassword(oldPassword, db.getPassword())){
+				db.setPassword(PasswordUtil.encode(newPassword));
+				Person p = new Person();
+				p = ObjectUtils.copyObject(db, p);
+				this.personMasterMapper.update(p);
+				Subject subject = SecurityUtils.getSubject();
+				subject.getSession().removeAttribute("person");
+				subject.logout();
+			}else{
+				throw new RuntimeException("原始密码错误");
+			}
+		}
 	}
 	
 	@Override
