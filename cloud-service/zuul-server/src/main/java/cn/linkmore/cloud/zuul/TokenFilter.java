@@ -25,6 +25,8 @@ public class TokenFilter extends ZuulFilter {
 
 	private  final Logger log = LoggerFactory.getLogger(this.getClass()); 
 	private static final String API_APP_PATH="/app/";
+	private static final String API_ENT_PATH="/ent/";
+	private static final String API_STAFF_PATH="/staff/";
 	private static final String API_WS_PATH = "/ws/";
 	private static final String API_OPS_PATH="/admin/";
 	private static final String API_FEIGN_PATH="/feign/"; 
@@ -42,9 +44,11 @@ public class TokenFilter extends ZuulFilter {
 			add("/swagger-resources/configuration/security");
 			add("/api-docs");
 			add("/v2/api-docs");
+			
+			 
 			add("/app/versions/v2.0/current");
 			add("/app/mini/v2.0/login");
-			add("/app/auth/v2.0/login");
+			add("/app/auth/v2.0/login"); 
 			add("/app/auth/v2.0/wechat");
 			add("/app/auth/v2.0/send");  
 			add("/app/prefectures/v2.0/map/list"); 
@@ -55,6 +59,12 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/callback/v2.0/wechat/order");
 			add("/app/callback/v2.0/alipay/order");
 			add("/app/callback/v2.0/apple/order");
+			
+			 
+			add("/ent/mini/v2.0/login");
+			add("/ent/auth/v2.0/login");
+			add("/ent/auth/v2.0/send");  
+			
 		}
 	};  
 	
