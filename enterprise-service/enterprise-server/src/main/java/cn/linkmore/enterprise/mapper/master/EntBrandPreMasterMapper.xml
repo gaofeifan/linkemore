@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.master.EntBrandPreMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntBrandPre">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+    <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="period" jdbcType="SMALLINT" property="period" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
+    <result column="strategy_name" jdbcType="VARCHAR" property="strategyName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
+    create_time, update_time, strategy_id, strategy_name
+  </sql>
+  
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_ent_brand_pre
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntBrandPre">
+    insert into t_ent_brand_pre (id, ent_id, ent_name, 
+      logo_url, pre_id, pre_name, 
+      period, start_time, end_time, 
+      status, create_time, update_time, 
+      strategy_id, strategy_name)
+    values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
+      #{logoUrl,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, 
+      #{period,jdbcType=SMALLINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{strategyId,jdbcType=BIGINT}, #{strategyName,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandPre">
+    update t_ent_brand_pre
+    set ent_id = #{entId,jdbcType=BIGINT},
+      ent_name = #{entName,jdbcType=VARCHAR},
+      logo_url = #{logoUrl,jdbcType=VARCHAR},
+      pre_id = #{preId,jdbcType=BIGINT},
+      pre_name = #{preName,jdbcType=VARCHAR},
+      period = #{period,jdbcType=SMALLINT},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      strategy_id = #{strategyId,jdbcType=BIGINT},
+      strategy_name = #{strategyName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
