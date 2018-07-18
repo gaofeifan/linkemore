@@ -15,6 +15,7 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.security.client.hystrix.RoleClientHystrix;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqRole;
+import cn.linkmore.security.response.ResRole;
 /**
  * 远程调用 - 账户角色
  * @author jiaohanbin
@@ -56,5 +57,6 @@ public interface RoleClient {
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.POST)
 	@ResponseBody
 	public void bind(@RequestParam("id") Long id,@RequestParam("pids") String pids,@RequestParam("eids") String eids);
+
 	
 }

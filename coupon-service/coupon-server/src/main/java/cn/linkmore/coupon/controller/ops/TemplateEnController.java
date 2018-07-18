@@ -235,6 +235,13 @@ public class TemplateEnController {
 		List<ResTemplate> list = this.templateEnService.selectByEnterpriseId(id);
 		return list;
 	}
+	
+	
+	/*private Person getPerson(HttpServletRequest request){
+		Subject subject = SecurityUtils.getSubject();
+		Person person = (Person)subject.getSession().getAttribute("person"); 
+		return person;
+	}*/
 
 	
 	/**

@@ -417,9 +417,7 @@ public class StallServiceImpl implements StallService {
 				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
 				this.stallMasterMapper.offline(stall);
 			}
-			
 		}
-		
 	}
 	
 	

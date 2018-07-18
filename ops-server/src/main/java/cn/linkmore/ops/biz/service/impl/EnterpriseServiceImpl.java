@@ -16,12 +16,15 @@ import cn.linkmore.ops.security.request.ReqPerson;
  * @Version  v2.0
  */
 import cn.linkmore.prefecture.client.EnterpriseClient;
+import cn.linkmore.security.client.PersonClient;
+import cn.linkmore.util.ObjectUtils;
 @Service
 public class EnterpriseServiceImpl implements EnterpriseService {
 
 	@Resource
 	private EnterpriseClient enterpriseClient;
-
+	@Resource
+	private PersonClient personClient;
 	@Override
 	public int save(ReqEnterprise record) {
 		this.enterpriseClient.save(record);
@@ -71,6 +74,10 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 	@Override
 	public void setPassword(ReqPerson person) {
 //		this.enterpriseClient.setPassword(person);
+		cn.linkmore.security.request.ReqPerson obj = new cn.linkmore.security.request.ReqPerson();
+		obj.setPassword(person.getPassword());
+		obj.setId(person.getId());
+		this.personClient.updatePassword(obj);
 	}
 	
 	

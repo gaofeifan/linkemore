@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiParam;
 public class ReqFeedbackContent {
 
 	@NotBlank(message = "内容不能为空")
-	@Length(min=3,max=255,message="内容长度需要在3-255之间")
+	@Length(min=3,max=300,message="内容长度需要在3-300之间")
 	@ApiParam(value = "内容", required = true)
 	private String content;
 

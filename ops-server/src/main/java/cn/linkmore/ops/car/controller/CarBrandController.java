@@ -29,7 +29,6 @@ public class CarBrandController {
 	
     private  Logger log = LoggerFactory.getLogger(getClass());
     
-
 	/**
      *  获取所有车辆一级二级三级品牌
      *  大众
@@ -39,7 +38,6 @@ public class CarBrandController {
      *  	上汽大众
      *  		凌度
      *  		帕萨特
-     *  
      *  发送HTTP请求，为保证数据正常，休眠了3秒， 完成请求需要大概10分钟
 	 * @Author   GFF 
 	 * @Date       2018年3月15日

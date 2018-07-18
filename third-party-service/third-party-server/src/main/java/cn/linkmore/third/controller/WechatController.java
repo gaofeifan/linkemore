@@ -1,7 +1,5 @@
 package cn.linkmore.third.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,13 +7,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import cn.linkmore.third.request.ReqReAccessToken;
 import cn.linkmore.third.request.ReqTemplateMsg;
 import cn.linkmore.third.response.ResToken;
 import cn.linkmore.third.response.ResWechatUserList;
 import cn.linkmore.third.service.WechatService;
-import cn.linkmore.util.JsonUtil;
 /**
  * Controller - 微信服务号
  * @author liwenlong
@@ -51,7 +47,4 @@ public class WechatController {
 		ResWechatUserList userList = this.wechatService.getUserList(token);
 		return userList;
 	}
-	
-	
-	
 }

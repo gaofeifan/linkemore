@@ -79,4 +79,8 @@ public interface PersonClient {
 	@RequestMapping(value = "/v2.0/id", method = RequestMethod.GET)
 	@ResponseBody
 	public ResPerson findById(@RequestParam("id") Long id);
+
+	@RequestMapping(value = "/v2.0/password", method = RequestMethod.POST)
+	@ResponseBody
+	public void updatePassword(@RequestBody ReqPerson person);
 }
