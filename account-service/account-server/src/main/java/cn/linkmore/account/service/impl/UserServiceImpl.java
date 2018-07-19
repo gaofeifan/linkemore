@@ -759,7 +759,7 @@ public class UserServiceImpl implements UserService {
 		param.put("value", null);
 		param.put("id", ru.getId());
 		param.put("updateTime", new Date());
-		this.userMasterMapper.updateByColumn(param );
+		this.userMasterMapper.updateByColumn(param);
 	}
 /*	@Override
 	public void updateRealname(String accountName, HttpServletRequest request) {
