@@ -13,6 +13,10 @@
     delete from t_ent_auth_pre
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteByAuthId" parameterType="java.lang.Long">
+    delete from t_ent_auth_pre
+    where auth_id = #{authId,jdbcType=BIGINT}
+  </delete>
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntAuthPre">
     insert into t_ent_auth_pre (id, pre_id, auth_id
       )
@@ -22,11 +26,11 @@
   <insert id="saveBatch" parameterType="java.util.List">
     insert into t_ent_auth_pre (id, pre_id, auth_id
       )
-    values 
-     <foreach collection="list" item="item" index="index" separator=",">
-	    (#{item.id,jdbcType=BIGINT}, #{item.preId,jdbcType=BIGINT}, #{item.authId,jdbcType=BIGINT}
-	      )
-      </foreach>
+    values
+   <foreach collection="list" item="item" index="index" separator=",">
+     (#{item.id,jdbcType=BIGINT}, #{item.preId,jdbcType=BIGINT}, #{item.authId,jdbcType=BIGINT}
+      )
+    </foreach>
   </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntAuthPre">
     insert into t_ent_auth_pre

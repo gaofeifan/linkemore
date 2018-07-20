@@ -189,6 +189,8 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 				stalls.add(stall);
 			}
 		}
+		this.entAuthPreMasterMapper.deleteByAuthId(bind.getId());
+		this.entAuthStallMasterMapper.deleteByAuthId(bind.getId());
 		this.entAuthPreMasterMapper.saveBatch(pres);
 		this.entAuthStallMasterMapper.saveBatch(stalls);
 	}
@@ -196,12 +198,12 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 	@Override
 	public Map<String, Object> resource(Long id) {
 		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("operateId", id);
+		param.put("authId", id);
 		List<EntAuthPre> res = this.entAuthPreClusterMapper.findList(param);
 		List<EntAuthStall> rps = this.entAuthStallClusterMapper.findList(param);
-		param.put("res", res);
-		param.put("rps", rps);
-		return null;
+		param.put("pres", res);
+		param.put("stas", rps);
+		return param;
 	}
 	
 	

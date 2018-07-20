@@ -14,19 +14,23 @@
     delete from t_ent_auth_stall
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteByAuthId" parameterType="java.lang.Long">
+    delete from t_ent_auth_stall
+    where auth_id = #{authId,jdbcType=BIGINT}
+  </delete>
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntAuthStall">
     insert into t_ent_auth_stall (id, pre_id, stall_id, 
       auth_id)
     values (#{id,jdbcType=BIGINT}, #{preId,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, 
       #{authId,jdbcType=BIGINT})
   </insert>
-  <insert id="saveBatch" parameterType="java.util.List">
+  <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntAuthStall">
     insert into t_ent_auth_stall (id, pre_id, stall_id, 
       auth_id)
     values 
-      <foreach collection="list" item="item" index="index" separator=",">
-	    (#{item.id,jdbcType=BIGINT}, #{item.preId,jdbcType=BIGINT}, #{item.stallId,jdbcType=BIGINT}, 
-	      #{item.authId,jdbcType=BIGINT})
+     <foreach collection="list" item="item" index="index" separator=",">
+    (#{item.id,jdbcType=BIGINT}, #{item.preId,jdbcType=BIGINT}, #{item.stallId,jdbcType=BIGINT}, 
+      #{item.authId,jdbcType=BIGINT})
       </foreach>
   </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntAuthStall">

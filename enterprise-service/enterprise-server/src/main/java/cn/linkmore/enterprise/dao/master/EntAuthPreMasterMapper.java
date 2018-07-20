@@ -54,4 +54,11 @@ public interface EntAuthPreMasterMapper {
 	 * @Version  v2.0
 	 */
 	void saveBatch(List<EntAuthPre> pres);
+
+	/**
+	 * @Description  根据权限id删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void deleteByAuthId(Long id);
 }

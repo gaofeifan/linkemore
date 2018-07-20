@@ -54,4 +54,11 @@ public interface EntAuthStallMasterMapper {
 	 * @Version  v2.0
 	 */
 	void saveBatch(List<EntAuthStall> stalls);
+
+	/**
+	 * @Description  根据权限删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void deleteByAuthId(Long id);
 }

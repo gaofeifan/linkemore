@@ -13,11 +13,24 @@
     delete from t_ent_staff_auth
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteByStaffId" parameterType="java.lang.Long">
+    delete from t_ent_staff_auth
+    where staff_id = #{staffId,jdbcType=BIGINT}
+  </delete>
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntStaffAuth">
     insert into t_ent_staff_auth (id, staff_id, auth_id
       )
     values (#{id,jdbcType=BIGINT}, #{staffId,jdbcType=BIGINT}, #{authId,jdbcType=BIGINT}
       )
+  </insert>
+  <insert id="saveBatch" parameterType="java.util.List">
+    insert into t_ent_staff_auth (id, staff_id, auth_id
+      )
+    values 
+     <foreach collection="list" item="item" index="index" separator=",">
+	    (#{item.id,jdbcType=BIGINT}, #{item.staffId,jdbcType=BIGINT}, #{item.authId,jdbcType=BIGINT}
+	      )
+    </foreach>
   </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntStaffAuth">
     insert into t_ent_staff_auth

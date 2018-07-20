@@ -215,10 +215,6 @@ public class StaffServiceImpl implements StaffService {
 		return code;
 	}
 
-	@Override
-	public void save() {
-		
-	}
 	
 }
 

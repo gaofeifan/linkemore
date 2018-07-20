@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.enterprise.controller.ent.request.ReqAuthLogin;
 import cn.linkmore.enterprise.controller.ent.request.ReqAuthSend;
+import cn.linkmore.enterprise.controller.ent.request.ReqStaffAuthBind;
 import cn.linkmore.enterprise.controller.ent.response.ResStaff;
 
 /**
@@ -44,7 +45,5 @@ public interface StaffService {
 	 * @Version  v2.0
 	 */
 	void send(ReqAuthSend rs);
-
-	void save();
 
 }
