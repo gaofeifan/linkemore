@@ -23,10 +23,4 @@ public interface EntStaffAuthClusterMapper {
      */
     EntStaffAuth findById(Long id);
 
-	/**
-	 * @Description  根据条件查询
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	List<EntOperateAuth> findList(Map<String, Object> map);
 }

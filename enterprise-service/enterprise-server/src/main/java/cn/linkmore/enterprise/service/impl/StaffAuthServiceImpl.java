@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.view.Tree;
+import cn.linkmore.enterprise.dao.cluster.EntOperateAuthClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntStaffAuthMasterMapper;
 import cn.linkmore.enterprise.entity.EntOperateAuth;
@@ -27,6 +28,8 @@ public class StaffAuthServiceImpl implements StaffAuthService {
 
 	@Resource
 	private EntStaffAuthClusterMapper entStaffAuthClusterMapper;
+	@Resource
+	private EntOperateAuthClusterMapper entOperateAuthClusterMapper;
 	@Resource
 	private EntStaffAuthMasterMapper entStaffAuthMasterMapper;
 	
@@ -49,7 +52,7 @@ public class StaffAuthServiceImpl implements StaffAuthService {
 	public Tree tree() {
 		Map<String,Object> map = new HashMap<>();
 		map.put("status", 1);
-		List<EntOperateAuth> auths = this.entStaffAuthClusterMapper.findList(map);
+		List<EntOperateAuth> auths = this.entOperateAuthClusterMapper.findList(map);
 		Tree root = new Tree();
 		root.setName("权限树");
 		root.setId("0");
@@ -77,7 +80,7 @@ public class StaffAuthServiceImpl implements StaffAuthService {
 	public Map<String, Object> resouce(Long staffId) {
 		Map<String ,Object> map = new HashMap<>();
 		map.put("staffId", staffId);
-		List<EntOperateAuth> list = this.entStaffAuthClusterMapper.findList(map);
+		List<EntOperateAuth> list = this.entOperateAuthClusterMapper.findList(map);
 		map.put("authIds", list);
 		return map;
 	}

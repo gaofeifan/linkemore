@@ -35,4 +35,11 @@ public interface EntOperateAuthClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<EntOperateAuth> findPage(Map<String, Object> param);
+
+	/**
+	 * @Description  查询list
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<EntOperateAuth> findList(Map<String, Object> map);
 }
