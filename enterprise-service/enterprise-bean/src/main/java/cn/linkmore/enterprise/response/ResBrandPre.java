@@ -1,4 +1,4 @@
-package cn.linkmore.enterprise.entity;
+package cn.linkmore.enterprise.response;
 
 import java.util.Date;
 /**
@@ -7,7 +7,7 @@ import java.util.Date;
  * @version 2.0
  *
  */
-public class EntBrandPre {
+public class ResBrandPre {
 	//主键
     private Long id;
     //企业id
@@ -178,5 +178,4 @@ public class EntBrandPre {
 	public void setStrategyDescription(String strategyDescription) {
 		this.strategyDescription = strategyDescription;
 	}
-    
 }

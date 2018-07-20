@@ -2,16 +2,12 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.controller.app.request.ReqBrandApplicant;
-import cn.linkmore.enterprise.entity.EntBrandApplicant;
+import cn.linkmore.enterprise.entity.EntBrandUser;
 import cn.linkmore.enterprise.request.ReqCheck;
 
-public interface EntBrandApplicantService {
+public interface EntBrandUserService {
 
 	/**
 	 * 分页查询
@@ -27,14 +23,14 @@ public interface EntBrandApplicantService {
 	 * @param param
 	 * @return
 	 */
-	List<EntBrandApplicant> findList(Map<String, Object> param);
+	List<EntBrandUser> findList(Map<String, Object> param);
 
 	/**
 	 * 保存
 	 * 
 	 * @param record
 	 */
-	int save(EntBrandApplicant record);
+	int save(EntBrandUser record);
 
 	/**
 	 * 更新
@@ -42,7 +38,7 @@ public interface EntBrandApplicantService {
 	 * @param record
 	 * @return
 	 */
-	int update(EntBrandApplicant record);
+	int update(EntBrandUser record);
 
 	/**
 	 * 删除
@@ -58,7 +54,5 @@ public interface EntBrandApplicantService {
 	 * @return
 	 */
 	Integer check(ReqCheck reqCheck);
-
-	Boolean brandApplicant(ReqBrandApplicant reqBrandApplicant, HttpServletRequest request);
 
 }

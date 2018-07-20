@@ -63,4 +63,24 @@ public interface CouponClient {
 	@RequestMapping(value = "/v2.0/send", method = RequestMethod.GET)
 	@ResponseBody
 	public boolean send(@RequestParam(value="userId") Long userId);
+	
+	/**
+	 * 品牌车位发送优惠券功能
+	 * @param b 
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/send_brand_coupon", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean sendBrandCoupon(@RequestParam(value="isBrandUser") Boolean isBrandUser, @RequestParam(value="entId") Long entId, @RequestParam(value="userId") Long userId);
+
+	/**
+	 * 查询当前用户是否已申请品牌优惠券
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/find_brand_coupon", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResCoupon> findBrandCouponList(@RequestParam(value="entId") Long entId, @RequestParam(value="userId") Long userId);
+	
 }

@@ -1,8 +1,10 @@
 package cn.linkmore.enterprise.dao.cluster;
 
+import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
-import cn.linkmore.enterprise.entity.EntBrandPre;
+import cn.linkmore.enterprise.controller.app.response.ResEntBrandPre;
+import cn.linkmore.enterprise.response.ResBrandPre;
 
 /**
  * 品牌车区
@@ -12,9 +14,23 @@ import cn.linkmore.enterprise.entity.EntBrandPre;
  */
 @Mapper
 public interface EntBrandPreClusterMapper {
+	
+	/**
+	 * 查询普通用户能查看的品牌车区列表
+	 * @param paramMap
+	 * @return
+	 */
+	List<ResEntBrandPre> findBrandPre(Map<String, Object> paramMap);
+	/**
+	 * 查询员工用户能查看的品牌车区列表
+	 * @param paramMap
+	 * @return
+	 */
+	List<ResEntBrandPre> findStaffBrandPre(Map<String, Object> paramMap);
 
-    EntBrandPre findById(Long id);
+    ResBrandPre findById(Long id);
 
 	Integer check(Map<String, Object> param);
+	
 
 }

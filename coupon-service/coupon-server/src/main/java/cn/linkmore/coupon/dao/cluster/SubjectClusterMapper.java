@@ -16,8 +16,13 @@ public interface SubjectClusterMapper {
 
 	Integer check(Map<String, Object> param);
 	/**
-	 * 查询新专题列表
+	 * 查询切换车位失败专题列表
 	 * @return
 	 */
 	List<ResSubject> findSubjectList();
+	/**
+	 * 查询品牌专题列表
+	 * @return
+	 */
+	List<ResSubject> findBrandSubjectList();
 }

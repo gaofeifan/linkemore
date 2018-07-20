@@ -13,9 +13,18 @@ import cn.linkmore.enterprise.entity.EntBrandApplicant;
  */
 @Mapper
 public interface EntBrandApplicantClusterMapper {
+	
+	/**
+	 * 根据企业id和手机号查询是否已申请过品牌认证
+	 * @param entId
+	 * @param mobile
+	 * @return
+	 */
+	Integer findBrandApplicant(Map<String, Object> map);
 
     EntBrandApplicant findById(Long id);
 
 	Integer check(Map<String, Object> param);
+	
 
 }

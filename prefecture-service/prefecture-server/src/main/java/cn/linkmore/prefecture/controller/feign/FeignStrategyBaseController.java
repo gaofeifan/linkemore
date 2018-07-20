@@ -61,6 +61,20 @@ public class FeignStrategyBaseController {
 	}
 	
 	/**
+	 * 根据主键查询计费策略详情信息
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value="/v2.0/{id}",method = RequestMethod.GET)
+	@ResponseBody
+	public ResStrategyBase findById(Long id){
+		StrategyBase strategyBase = this.strategyBaseService.findById(id);
+		ResStrategyBase resStrtegy = new ResStrategyBase();
+		resStrtegy.setFreeMins(strategyBase.getFreeMins());
+		return resStrtegy;
+	}
+	
+	/**
 	 * 新增
 	 * @param reqStrategyBase
 	 * @return

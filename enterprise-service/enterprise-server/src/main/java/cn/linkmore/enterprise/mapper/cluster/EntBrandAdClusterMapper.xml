@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.EntBrandAdClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntBrandAd">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResBrandAd">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
@@ -27,4 +27,20 @@
     from t_ent_brand_ad
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findScreenList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_ad
+    where screen = 1 and status = 1
+  </select>
+  
+  <select id="findBrandPreAdList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_ad
+    where screen = 0 and status = 1 and ent_id = #{entId,jdbcType=BIGINT}
+    and pre_id = #{preId, jdbcType=BIGINT}
+  </select>
+  
 </mapper>

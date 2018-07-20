@@ -62,5 +62,21 @@ public interface CouponService {
 	 * @return
 	 */
 	boolean send(Long userId);
+	/**
+	 * 发送企业品牌优惠券
+	 * @param isBrandUser 
+	 * @param entId 
+	 * @param userId
+	 * @return
+	 */
+	boolean sendBrandCoupon(Boolean isBrandUser, Long entId,Long userId);
+	
+	/**
+	 * 查询当前用户是否已申请企业品牌优惠券
+	 * @param entId
+	 * @param userId
+	 * @return
+	 */
+	List<ResCoupon> findBrandCouponList(Long entId,Long userId);
 
 }

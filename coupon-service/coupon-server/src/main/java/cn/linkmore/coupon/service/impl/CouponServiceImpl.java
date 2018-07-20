@@ -1,8 +1,11 @@
 package cn.linkmore.coupon.service.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -590,5 +593,101 @@ public class CouponServiceImpl implements CouponService {
 					ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
 		}
 		return true;
+	}
+	
+	
+	@Override
+	@Transactional
+	public boolean sendBrandCoupon(Boolean isBrandUser, Long entId, Long userId) {
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String currentDay = sdf.format(date);
+		Calendar curDate = Calendar.getInstance();
+        Calendar nextDayDate = new GregorianCalendar(curDate.get(Calendar.YEAR), curDate.get(Calendar.MONTH), curDate.get(Calendar.DATE)+1, 0, 0, 0);
+        int expireTime = (int) ((nextDayDate.getTimeInMillis() - curDate.getTimeInMillis())/1000);
+        Integer count = 0;
+		if (this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay) != null) {
+			count = (Integer) this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay);
+		}else {
+			this.redisService.set(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay, 0 , expireTime);
+		}
+      
+        List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
+		ResUser resUser = userClient.findById(userId);		
+		if (CollectionUtils.isNotEmpty(list) && resUser != null) {
+			ResSubject subject = list.get(0);
+			ResTemplate temp = this.templateClusterMapper.findById(subject.getTemplateId());
+			SendRecord sendRecord = new SendRecord();
+			sendRecord.setTemplateId(temp.getId());
+			sendRecord.setCreateTime(new Date());
+			sendRecord.setType(0);
+			sendRecord.setStatus(1);
+			sendRecord.setSendTime(new Date());
+			sendRecordMasterMapper.save(sendRecord);
+			SendUser couponSendUser = new SendUser();
+			couponSendUser.setCreateTime(new Date());
+			couponSendUser.setUserId(userId);
+			couponSendUser.setRecordId(sendRecord.getId());
+			couponSendUser.setTemplateId(sendRecord.getTemplateId());
+			couponSendUser.setRollbackFlag(0);
+			couponSendUser.setCreateTime(new Date());
+			sendUserMasterMapper.save(couponSendUser);
+			List<ResTemplateItem> items = templateItemClusterMapper.findList(sendRecord.getTemplateId());
+			List<Coupon> couponList = new ArrayList<Coupon>();
+			Coupon coupon = null;
+			for (ResTemplateItem item : items) {
+				// 停车券里配置多少张发送多少张
+				for (int i = 0; i < item.getQuantity(); i++) {
+					coupon = new Coupon();
+					//设置企业id
+					coupon.setEnterpriseId(entId);
+					coupon.setUserId(couponSendUser.getUserId());
+					coupon.setConditionId(sendRecord.getConditionId());
+					coupon.setTemplateId(sendRecord.getTemplateId());
+					coupon.setRecordId(sendRecord.getId());
+					coupon.setItemId(item.getId());
+					coupon.setType(item.getType());
+					coupon.setFaceAmount(item.getFaceAmount());
+					coupon.setDiscount(item.getDiscount());
+					coupon.setConditionAmount(item.getConditionAmount());
+					coupon.setValidTime(DateUtils.getDate(new Date(), 0, 0, item.getValidDay(), 0, 0, 0));
+					coupon.setStatus((short) 0);
+					coupon.setCreateTime(new Date());
+					coupon.setSendUserId(couponSendUser.getId());
+					couponList.add(coupon);
+				}
+			}
+			couponMasterMapper.insertBatch(couponList);
+			// 更新发送用户数量
+			temp.setSendQuantity(temp.getSendQuantity() + 1);
+			Template template = ObjectUtils.copyObject(temp, new Template());
+			this.templateMasterMapper.update(template);
+			// 发送短信通知
+			ReqSms sms = new ReqSms();
+			sms.setMobile(resUser.getUsername());
+			if(isBrandUser) {
+				sms.setSt(Constants.SmsTemplate.BRAND_USER_INVITE_NOTICE);
+			}else {
+				sms.setSt(Constants.SmsTemplate.UN_BRAND_USER_INVITE_NOTICE);
+			}
+			smsClient.send(sms);
+			this.redisService.set(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay, count + 1);
+		}
+		return true;
+	}
+
+	@Override
+	public List<ResCoupon> findBrandCouponList(Long entId, Long userId) {
+		List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
+		List<ResCoupon> couponList = new ArrayList<ResCoupon>();
+		if (CollectionUtils.isNotEmpty(list)) {
+			ResSubject subject = list.get(0);
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("userId", userId);
+			map.put("templateId", subject.getTemplateId());
+			map.put("enterpriseId", entId);
+			couponList = couponClusterMapper.findBrandCouponList(map);
+		}
+		return couponList;
 	}
 }

@@ -1,10 +1,10 @@
 package cn.linkmore.enterprise.dao.cluster;
 
+import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
+import cn.linkmore.enterprise.response.ResBrandAd;
 
-import cn.linkmore.enterprise.entity.EntBrandAd;
 /**
  * 品牌广告
  * @author jiaohanbin
@@ -13,9 +13,23 @@ import cn.linkmore.enterprise.entity.EntBrandAd;
  */
 @Mapper
 public interface EntBrandAdClusterMapper {
-
-    EntBrandAd findById(Long id);
+	
+	// APP 使用接口
+	/**
+	 * 开屏广告
+	 * @return
+	 */
+	List<ResBrandAd> findScreenList();
+	/**
+	 * 品牌车区广告
+	 * @param map
+	 * @return
+	 */
+	List<ResBrandAd> findBrandPreAdList(Map<String, Object> map);
+	
+    ResBrandAd findById(Long id);
 
 	Integer check(Map<String, Object> param);
+	
     
 }

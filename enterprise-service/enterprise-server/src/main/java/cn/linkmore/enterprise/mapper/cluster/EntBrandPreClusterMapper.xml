@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.EntBrandPreClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntBrandPre">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResBrandPre">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
@@ -16,10 +16,30 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
     <result column="strategy_name" jdbcType="VARCHAR" property="strategyName" />
+    <result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
+    <result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
+    <result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
   </resultMap>
+  
+  <resultMap id="ResResultMap" type="cn.linkmore.enterprise.controller.app.response.ResEntBrandPre">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="logo_url" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
+    <result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+  	<result column="latitude" jdbcType="DECIMAL" property="latitude" />
+  	<result column="longitude" jdbcType="DECIMAL" property="longitude" />
+  	<result column="address" jdbcType="VARCHAR" property="address" />
+  </resultMap>
+  
+  
   <sql id="Base_Column_List">
     id, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
-    create_time, update_time, strategy_id, strategy_name
+    create_time, update_time, strategy_id, strategy_name, charge_price, charge_time, strategy_description
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -27,4 +47,58 @@
     from t_ent_brand_pre
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findBrandPre" parameterType="java.util.HashMap" resultMap="ReseResultMap">
+    SELECT
+		p.id,
+		p.ent_id,
+		p.ent_name,
+		p.pre_id,
+		p.pre_name,
+		p.charge_price,
+		p.charge_time,
+		p.logo_url AS image_url,
+		v.city_id,
+		v.latitude,
+		v.longitude,
+		v.address
+	FROM
+		t_ent_brand_pre p
+	LEFT JOIN v_prefecture v ON p.pre_id = v.id
+	WHERE
+		v.status = 0
+	AND (v.type IS NULL OR v.type = 0)
+	AND v.category = 0
+	AND p. STATUS = 1
+	<if test="cityId != null">
+		and v.city_id ={#cityId,jdbcType=BIGINT}
+	</if>
+  </select>
+  
+  <select id="findStaffBrandPre" parameterType="java.util.HashMap" resultMap="ReseResultMap">
+    SELECT
+		p.id,
+		p.ent_id,
+		p.ent_name,
+		p.pre_id,
+		p.pre_name,
+		p.charge_price,
+		p.charge_time,
+		p.logo_url AS image_url,
+		v.city_id,
+		v.latitude,
+		v.longitude,
+		v.address
+	FROM
+		t_ent_brand_pre p
+	LEFT JOIN v_prefecture v ON p.pre_id = v.id
+	WHERE
+		v.status = 0
+	AND v.category != 0
+	AND p. STATUS = 1
+	<if test="cityId != null">
+		and v.city_id ={#cityId,jdbcType=BIGINT}
+	</if>
+  </select>
+  
 </mapper>
