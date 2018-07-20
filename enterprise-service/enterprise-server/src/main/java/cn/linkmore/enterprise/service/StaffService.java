@@ -1,13 +1,8 @@
 package cn.linkmore.enterprise.service;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
-import cn.linkmore.bean.view.Tree;
 import cn.linkmore.enterprise.controller.ent.request.ReqAuthLogin;
 import cn.linkmore.enterprise.controller.ent.request.ReqAuthSend;
-import cn.linkmore.enterprise.controller.ent.request.ReqStaffAuthBind;
 import cn.linkmore.enterprise.controller.ent.response.ResStaff;
 
 /**

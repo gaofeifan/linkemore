@@ -1,9 +1,11 @@
 package cn.linkmore.enterprise.dao.master;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 /**
  * 企业用户权限---写
@@ -68,4 +70,5 @@ public interface EntStaffAuthMasterMapper {
 	 * @Version  v2.0
 	 */
 	void deleteByStaffId(Long staffId);
+
 }

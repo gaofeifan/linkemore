@@ -1,4 +1,4 @@
-package cn.linkmore.enterprise.controller.ent.request;
+package cn.linkmore.enterprise.request;
 
 import java.util.List;
 

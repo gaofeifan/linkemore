@@ -1,16 +1,20 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.enterprise.controller.ent.request.ReqStaffAuthBind;
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntStaffAuthMasterMapper;
+import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
+import cn.linkmore.enterprise.request.ReqStaffAuthBind;
 import cn.linkmore.enterprise.service.StaffAuthService;
 /**
  * 员工接口实现
@@ -42,10 +46,43 @@ public class StaffAuthServiceImpl implements StaffAuthService {
 	}
 
 	@Override
-	public void tree() {
-		
+	public Tree tree() {
+		Map<String,Object> map = new HashMap<>();
+		map.put("status", 1);
+		List<EntOperateAuth> auths = this.entStaffAuthClusterMapper.findList(map);
+		Tree root = new Tree();
+		root.setName("权限树");
+		root.setId("0");
+		root.setIsParent(false);
+		root.setCode("0");
+		root.setOpen(true);
+		root.setmId("0");
+		List<Tree> chiList = new ArrayList<>();
+		Tree chi = null;
+		for (EntOperateAuth auth : auths) {
+			chi = new Tree();
+			chi.setName(auth.getName());
+			chi.setId(auth.getId().toString());
+			chi.setIsParent(false);
+			chi.setCode(auth.getId().toString());
+			chi.setOpen(true);
+			chi.setmId(auth.getId().toString());
+			chiList.add(chi);
+		}
+		root.setChildren(chiList);
+		return root;
 	}
 
+	@Override
+	public Map<String, Object> resouce(Long staffId) {
+		Map<String ,Object> map = new HashMap<>();
+		map.put("staffId", staffId);
+		List<EntOperateAuth> list = this.entStaffAuthClusterMapper.findList(map);
+		map.put("authIds", list);
+		return map;
+	}
+
+	
 	
 	
 	

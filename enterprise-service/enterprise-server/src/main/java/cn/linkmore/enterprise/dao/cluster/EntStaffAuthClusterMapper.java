@@ -1,7 +1,11 @@
 package cn.linkmore.enterprise.dao.cluster;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 /**
  * 企业用户权限---读
@@ -12,5 +16,17 @@ import cn.linkmore.enterprise.entity.EntStaffAuth;
 @Mapper
 public interface EntStaffAuthClusterMapper {
 
+    /**
+     * @Description  
+     * @Author   GFF 
+     * @Version  v2.0
+     */
     EntStaffAuth findById(Long id);
+
+	/**
+	 * @Description  根据条件查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<EntOperateAuth> findList(Map<String, Object> map);
 }

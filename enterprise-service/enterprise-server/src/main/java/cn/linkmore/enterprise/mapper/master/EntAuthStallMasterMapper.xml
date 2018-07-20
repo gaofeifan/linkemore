@@ -24,7 +24,7 @@
     values (#{id,jdbcType=BIGINT}, #{preId,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, 
       #{authId,jdbcType=BIGINT})
   </insert>
-  <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntAuthStall">
+  <insert id="saveBatch" parameterType="java.util.List">
     insert into t_ent_auth_stall (id, pre_id, stall_id, 
       auth_id)
     values 

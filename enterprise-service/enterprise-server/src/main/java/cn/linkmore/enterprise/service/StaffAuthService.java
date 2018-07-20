@@ -1,6 +1,8 @@
 package cn.linkmore.enterprise.service;
 
-import cn.linkmore.enterprise.controller.ent.request.ReqStaffAuthBind;
+import java.util.Map;
+import cn.linkmore.bean.view.Tree;
+import cn.linkmore.enterprise.request.ReqStaffAuthBind;
 
 /**
  * 
@@ -18,10 +20,18 @@ public interface StaffAuthService {
 	void bind(ReqStaffAuthBind staff);
 
 	/**
+	 * @return 
 	 * @Description  查询树桩数据
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void tree();
+	Tree tree();
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Map<String, Object> resouce(Long staffId);
 
 }

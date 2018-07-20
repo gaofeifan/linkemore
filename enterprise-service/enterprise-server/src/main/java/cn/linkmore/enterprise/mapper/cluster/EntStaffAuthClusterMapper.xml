@@ -15,4 +15,17 @@
     from t_ent_staff_auth
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff_auth
+    where 
+    1 = 1
+    <if test="status != null">
+	    status = #{status,jdbcType=BIGINT}
+    </if>
+    <if test="staffId != null">
+	    staff_id = #{staffId,jdbcType=BIGINT}
+    </if>
+  </select>
 </mapper>
