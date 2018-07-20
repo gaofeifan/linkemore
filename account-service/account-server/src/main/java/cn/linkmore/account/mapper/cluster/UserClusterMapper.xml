@@ -272,6 +272,12 @@
   	select * from t_user u where u.user_type =1
   	and  u.username = #{userName}
   </select>
+  <select id="findListByMobile" resultMap="ResBaseResultMap" parameterType="java.util.List">
+  	select * from t_user u where
+   <foreach collection="list"  index="index" item="mobile" open="(" separator="," close=")"  >
+	  	and  u.username = #{mobile}
+   </foreach>
+  </select>
   
   
 </mapper>

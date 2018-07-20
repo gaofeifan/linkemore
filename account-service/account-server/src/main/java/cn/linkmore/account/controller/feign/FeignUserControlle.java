@@ -1,6 +1,7 @@
 package cn.linkmore.account.controller.feign;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -194,5 +195,17 @@ public class FeignUserControlle {
 	@ResponseBody
 	public ResUser getUserByUserName(@RequestParam("userName") String userName) {
 		return this.userService.getUserByUserName(userName);
+	}
+	
+	@RequestMapping(value = "/by-mobile", method = RequestMethod.GET)
+	@ResponseBody
+	public Long getUserIdByMobile(@RequestParam("mobile") String mobile) {
+		return this.userService.getUserIdByMobile(mobile);
+	}
+	
+	@RequestMapping(value = "/by-mobile", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Long> getUserMapByMobile(@RequestBody List<String> mobile) {
+		return this.userService.getUserMapByMobile(mobile);
 	}
 }

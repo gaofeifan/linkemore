@@ -16,4 +16,32 @@
     from t_ent_operate_auth
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+  select count(1) from t_ent_operate_auth
+  where 1 = 1
+   <if test="name!=null">  
+    and name = #{name}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status}
+    </if> 
+  </select>
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+   select <include refid="Base_Column_List"></include> from t_ent_operate_auth
+  where 1 = 1
+   <if test="name!=null">  
+    and name = #{name}
+    </if> 
+    <if test="status!=null">  
+    and status = #{status}
+    </if> 
+    <if test="property==null">  
+     order by id desc
+    </if>
+     <if test="property!=null">  
+     order by ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER} 
+  </select>
 </mapper>

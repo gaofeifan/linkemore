@@ -21,4 +21,10 @@
     from t_ent_staff
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findByMobile" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff
+    where mobile = #{mobile,jdbcType=VARCHAR}
+  </select>
 </mapper>

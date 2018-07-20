@@ -20,6 +20,12 @@
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{entId,jdbcType=BIGINT}, 
       #{status,jdbcType=SMALLINT})
   </insert>
+  <insert id="saveReq" parameterType="cn.linkmore.enterprise.controller.ops.request.ReqOperateAuth">
+    insert into t_ent_operate_auth (id, name, ent_id, 
+      status)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{entId,jdbcType=BIGINT}, 
+      #{status,jdbcType=SMALLINT})
+  </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntOperateAuth">
     insert into t_ent_operate_auth
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -51,7 +57,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.entity.EntOperateAuth">
+  <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.controller.ops.request.ReqOperateAuth">
     update t_ent_operate_auth
     <set>
       <if test="name != null">
@@ -72,5 +78,11 @@
       ent_id = #{entId,jdbcType=BIGINT},
       status = #{status,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateStatus" parameterType="java.util.HashMap">
+    update t_ent_operate_auth
+    set
+      status = #{status}
+    where id = #{id}
   </update>
 </mapper>
