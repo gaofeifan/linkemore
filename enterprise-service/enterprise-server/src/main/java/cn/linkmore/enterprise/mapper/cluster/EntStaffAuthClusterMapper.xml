@@ -22,4 +22,11 @@
     from t_ent_staff_auth
     where staff_id = #{0}
   </select>
+  
+  <select id="findList" parameterType="java.util.Map"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff_auth
+    where staff_id = #{staffId} and status = #{status}
+  </select>
 </mapper>

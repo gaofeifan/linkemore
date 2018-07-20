@@ -23,4 +23,11 @@ public interface EntStaffAuthClusterMapper {
      */
     EntStaffAuth findById(Long id);
 
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<EntStaffAuth> findList(Map<String, Object> map);
+
 }
