@@ -101,4 +101,11 @@
     from t_coupon_subject
     where status = 1 and type=6
   </select>
+  
+  <select id="findBrandSubjectList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_coupon_subject
+    where status = 1 and type=7
+  </select>
 </mapper>

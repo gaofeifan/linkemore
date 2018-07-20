@@ -28,4 +28,13 @@ public interface EntAuthStallClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<EntAuthStall> findList(Map<String, Object> param);
+
+	/**
+	 * 查询员工权限
+	 * 
+	 * @author luzhishen
+	 * @Date 2018年7月20日
+	 * @Version v1.0
+	 */
+	List<EntAuthStall> findByEntStaffId(Long stallId);
 }

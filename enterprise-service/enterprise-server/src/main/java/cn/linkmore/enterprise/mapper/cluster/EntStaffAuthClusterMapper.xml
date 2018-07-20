@@ -27,5 +27,13 @@
     <if test="staffId != null">
 	    staff_id = #{staffId,jdbcType=BIGINT}
     </if>
+    </select>
+  
+  
+  <select id="findByEntStaffId"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff_auth
+    where staff_id = #{0}
   </select>
 </mapper>

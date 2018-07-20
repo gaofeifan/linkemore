@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
 import cn.linkmore.prefecture.request.ReqStrategy;
+import cn.linkmore.prefecture.response.ResStrategyBase;
 /**
  * 远程调用实现 - 计费策略信息
  * @author jiaohanbin
@@ -21,6 +22,12 @@ public class StrategyBaseClientHystrix implements StrategyBaseClient {
 	public Map<String, Object> fee(ReqStrategy reqStrategy) {
 		log.info("prefecture service strategy fee(Long strategyId) hystrix");
 		return new HashMap<String,Object>();
+	}
+
+	@Override
+	public ResStrategyBase findById(Long id) {
+		log.info("prefecture service strategy findById(Long id) hystrix");
+		return null;
 	}
 
 }

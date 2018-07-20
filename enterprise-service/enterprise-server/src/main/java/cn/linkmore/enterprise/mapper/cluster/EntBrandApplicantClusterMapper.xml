@@ -19,4 +19,11 @@
     from t_ent_brand_applicant
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findBrandApplicant" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(*)
+    from t_ent_brand_applicant
+    where ent_id = #{entId,jdbcType=BIGINT}
+    and mobile = #{mobile,jdbcType=VARCHAR}
+  </select>
 </mapper>

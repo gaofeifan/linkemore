@@ -16,10 +16,13 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
     <result column="strategy_name" jdbcType="VARCHAR" property="strategyName" />
+    <result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
+    <result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
+    <result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
   </resultMap>
   <sql id="Base_Column_List">
     id, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
-    create_time, update_time, strategy_id, strategy_name
+    create_time, update_time, strategy_id, strategy_name, charge_price, charge_time, strategy_description
   </sql>
   
   <delete id="delete" parameterType="java.lang.Long">
@@ -31,12 +34,14 @@
       logo_url, pre_id, pre_name, 
       period, start_time, end_time, 
       status, create_time, update_time, 
-      strategy_id, strategy_name)
+      strategy_id, strategy_name, charge_price, charge_time, strategy_description)
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
       #{logoUrl,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, 
       #{period,jdbcType=SMALLINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{strategyId,jdbcType=BIGINT}, #{strategyName,jdbcType=VARCHAR})
+      #{strategyId,jdbcType=BIGINT}, #{strategyName,jdbcType=VARCHAR},
+      #{chargePrice,jdbcType=VARCHAR}, #{chargeTime,jdbcType=INTEGER},#{strategyDescription,jdbcType=VARCHAR}
+      )
   </insert>
   
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandPre">
@@ -53,7 +58,10 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       strategy_id = #{strategyId,jdbcType=BIGINT},
-      strategy_name = #{strategyName,jdbcType=VARCHAR}
+      strategy_name = #{strategyName,jdbcType=VARCHAR},
+      charge_price = #{chargePrice,jdbcType=VARCHAR},
+      charge_time = #{chargeTime,jdbcType=INTEGER},
+      strategy_description = #{strategyDescription,jdbcType=VARCHAR},
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -2,8 +2,12 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.controller.app.request.ReqBrandApplicant;
 import cn.linkmore.enterprise.entity.EntBrandApplicant;
 import cn.linkmore.enterprise.request.ReqCheck;
 
@@ -54,5 +58,7 @@ public interface EntBrandApplicantService {
 	 * @return
 	 */
 	Integer check(ReqCheck reqCheck);
+
+	Boolean brandApplicant(ReqBrandApplicant reqBrandApplicant, HttpServletRequest request);
 
 }

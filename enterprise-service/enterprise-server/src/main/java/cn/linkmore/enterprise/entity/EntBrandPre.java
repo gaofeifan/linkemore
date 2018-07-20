@@ -36,6 +36,12 @@ public class EntBrandPre {
     private Long strategyId;
     //计费策略名称
     private String strategyName;
+    //计费价格
+    private String chargePrice;
+    //计费时间
+    private int chargeTime;
+    //计费策略描述
+    private String strategyDescription;
 
     public Long getId() {
         return id;
@@ -148,4 +154,29 @@ public class EntBrandPre {
     public void setStrategyName(String strategyName) {
         this.strategyName = strategyName == null ? null : strategyName.trim();
     }
+
+	public String getChargePrice() {
+		return chargePrice;
+	}
+
+	public void setChargePrice(String chargePrice) {
+		this.chargePrice = chargePrice;
+	}
+
+	public int getChargeTime() {
+		return chargeTime;
+	}
+
+	public void setChargeTime(int chargeTime) {
+		this.chargeTime = chargeTime;
+	}
+
+	public String getStrategyDescription() {
+		return strategyDescription;
+	}
+
+	public void setStrategyDescription(String strategyDescription) {
+		this.strategyDescription = strategyDescription;
+	}
+    
 }

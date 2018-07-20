@@ -224,7 +224,9 @@ public class Constants {
 		SHARE_COUPON_NOTICE(2,"share_coupon_notice"), 
 		ORDER_SUSPEND_NOTICE(3,"order_suspend_notice"),  
 		ORDER_SEARCH_NOTICE_(4, "order_search_notice"),
-		ORDER_CLOSED_NOTICE(5,"order_closed_coupon_notice");
+		ORDER_CLOSED_NOTICE(5,"order_closed_coupon_notice"),
+		BRAND_USER_INVITE_NOTICE(6,"share_coupon_notice"),
+		UN_BRAND_USER_INVITE_NOTICE(7,"share_coupon_notice");
 		public int type;
 		public String id;
 
@@ -263,6 +265,7 @@ public class Constants {
 		USER_APP_USER_CODE("user_app:user:code:"), 
 		USER_APP_USER_MOBILE("user_app:user:mobile:"), 
 		USER_APP_USER_CHANGE_MOBILE("user_app:user:change-mobile:"), 
+		USER_APP_BRAND_COUPON("user_app:brand:coupon:"),
 		COMMON_CAR_BRAND_LIST("common:car-brand:"), 
 		COUPON_TEMPLATE_CONDITION_USETIME("COUPON_TEMP_CONDITION_USETIME:"), 
 		COUPON_TEMPLATE_CONDITION_PREIDS( "COUPON_TEMP_CONDITION_PREIDS:"),

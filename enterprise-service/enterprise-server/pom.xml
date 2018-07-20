@@ -81,6 +81,12 @@
 		
 		<dependency>
 			<groupId>cn.linkmore</groupId>
+			<artifactId>coupon-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>cn.linkmore</groupId>
 			<artifactId>security-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>

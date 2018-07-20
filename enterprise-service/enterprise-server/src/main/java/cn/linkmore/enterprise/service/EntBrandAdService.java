@@ -2,12 +2,36 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
 import cn.linkmore.enterprise.entity.EntBrandAd;
 import cn.linkmore.enterprise.request.ReqCheck;
 
 public interface EntBrandAdService {
+	/**
+	 * 查询是否展示开屏广告
+	 * @param cityId 
+	 * @param request
+	 * @return
+	 */
+	ResEntBrandAd findBrandAdScreen(Long cityId, HttpServletRequest request);
+	/**
+	 * 品牌用户发送优惠券
+	 * @param entId
+	 * @param request
+	 */
+	boolean send(Long entId, HttpServletRequest request);
+	/**
+	 * 根据品牌车区id查询品牌车区广告详情
+	 * @param id
+	 * @param request
+	 * @return
+	 */
+	ResEntBrandAd findBrandPreAd(Long id, HttpServletRequest request);
 
 	/**
 	 * 分页查询
@@ -54,5 +78,6 @@ public interface EntBrandAdService {
 	 * @return
 	 */
 	Integer check(ReqCheck reqCheck);
+	
 
 }
