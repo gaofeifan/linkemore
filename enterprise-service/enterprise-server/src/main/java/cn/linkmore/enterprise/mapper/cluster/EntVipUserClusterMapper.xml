@@ -20,4 +20,11 @@
     from t_ent_vip_user
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findByIdEntPreId"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_vip_user
+    where ent_pre_id = #{0}
+  </select>
 </mapper>

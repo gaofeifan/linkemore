@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.dao.cluster;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntRentUser;
@@ -13,5 +15,7 @@ import cn.linkmore.enterprise.entity.EntRentUser;
 public interface EntRentUserClusterMapper {
 
     EntRentUser findById(Long id);
+
+	List<EntRentUser> findByIdEntPreId(Long entPreId);
 
 }

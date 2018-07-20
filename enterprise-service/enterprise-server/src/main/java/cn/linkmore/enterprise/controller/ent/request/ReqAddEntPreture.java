@@ -11,8 +11,6 @@ public class ReqAddEntPreture {
     private String preName;
 	@ApiModelProperty(value = "企业id", required = true)
     private Long entId;
-	@ApiModelProperty(value = "企业名称", required = true)
-    private String entName;
 
 
 	public String getPreName() {
@@ -31,12 +29,5 @@ public class ReqAddEntPreture {
 		this.entId = entId;
 	}
 
-	public String getEntName() {
-		return entName;
-	}
-
-	public void setEntName(String entName) {
-		this.entName = entName;
-	}
     
 }
