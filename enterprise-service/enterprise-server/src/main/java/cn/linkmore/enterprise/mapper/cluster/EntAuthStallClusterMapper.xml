@@ -16,4 +16,10 @@
     from t_ent_auth_stall
     where id = #{id,jdbcType=BIGINT}
   </select>
+   <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_auth_stall
+    where auth_id = #{authId}
+    </select>
 </mapper>

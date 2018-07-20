@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.bean.view.Tree;
@@ -43,6 +45,6 @@ public interface StaffService {
 	 */
 	void send(ReqAuthSend rs);
 
-	Tree tree();
+	void save();
 
 }

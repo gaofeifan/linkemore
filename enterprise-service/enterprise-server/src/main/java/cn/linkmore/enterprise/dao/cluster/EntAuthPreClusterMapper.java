@@ -1,5 +1,8 @@
 package cn.linkmore.enterprise.dao.cluster;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntAuthPre;
@@ -12,5 +15,17 @@ import cn.linkmore.enterprise.entity.EntAuthPre;
 @Mapper
 public interface EntAuthPreClusterMapper {
 
+    /**
+     * @Description  根据id查询
+     * @Author   GFF 
+     * @Version  v2.0
+     */
     EntAuthPre findById(Long id);
+
+	/**
+	 * @Description	根据map查询  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<EntAuthPre> findList(Map<String, Object> param);
 }

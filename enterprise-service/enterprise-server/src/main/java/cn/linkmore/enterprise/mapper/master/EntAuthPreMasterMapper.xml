@@ -19,6 +19,15 @@
     values (#{id,jdbcType=BIGINT}, #{preId,jdbcType=BIGINT}, #{authId,jdbcType=BIGINT}
       )
   </insert>
+  <insert id="saveBatch" parameterType="java.util.List">
+    insert into t_ent_auth_pre (id, pre_id, auth_id
+      )
+    values 
+     <foreach collection="list" item="item" index="index" separator=",">
+	    (#{item.id,jdbcType=BIGINT}, #{item.preId,jdbcType=BIGINT}, #{item.authId,jdbcType=BIGINT}
+	      )
+      </foreach>
+  </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntAuthPre">
     insert into t_ent_auth_pre
     <trim prefix="(" suffix=")" suffixOverrides=",">

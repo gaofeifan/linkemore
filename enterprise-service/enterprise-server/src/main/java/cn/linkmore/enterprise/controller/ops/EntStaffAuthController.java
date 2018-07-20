@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.controller.ops;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,15 +28,9 @@ public class EntStaffAuthController {
 	
 	@RequestMapping(method=RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> save(){
-		
-		return null;
+	public void save(){
+		this.staffService.save();
 	}
 
-	@RequestMapping(value="/tree" , method=RequestMethod.POST)
-	@ResponseBody
-	public Tree tree(){
-		return this.staffService.tree();
-	}
 
 }

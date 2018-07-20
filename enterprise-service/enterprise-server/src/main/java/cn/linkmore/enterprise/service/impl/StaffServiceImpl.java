@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +29,13 @@ import cn.linkmore.enterprise.controller.ent.request.ReqAuthSend;
 import cn.linkmore.enterprise.controller.ent.response.ResStaff;
 import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntStaffMasterMapper;
-import cn.linkmore.enterprise.entity.EntAuthStall;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.StaffService;
 import cn.linkmore.prefecture.client.PrefectureClient;
+import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
@@ -54,8 +56,6 @@ public class StaffServiceImpl implements StaffService {
 	private final static long SPACE = 1000L*60*30; 
 	@Resource
 	private PrefectureClient prefectureClient;
-	@Resource
-	private EnterpriseService enterpriseService;
 	@Resource
 	private PushClient pushClient;
 	@Resource
@@ -216,15 +216,9 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	@Override
-	public Tree tree() {
-		List<ResEnterprise> list = this.enterpriseService.findList(null);
-		List<EntPrefecture> preList = new ArrayList<>();
-		List<EntAuthStall> stallList = new ArrayList<>();
+	public void save() {
 		
-		
-		return null;
 	}
-	
 	
 }
 
