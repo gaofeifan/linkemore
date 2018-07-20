@@ -15,4 +15,12 @@
     from t_ent_staff_auth
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  
+  <select id="findByEntStaffId"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff_auth
+    where staff_id = #{0}
+  </select>
 </mapper>
