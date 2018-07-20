@@ -31,7 +31,6 @@ public enum StatusEnum {
 	ACCOUNT_PLATE_EXISTS(8003022,"添加失败,车牌号已存在! "), 
 	ACCOUNT_PLATE_NONE(8003023 ,"删除失败,车牌号不存在 "), 
 	
-	
 	COUPON_USER_NO_EQUIRE(8004001,"非当前用户停车券"),
 	
 	

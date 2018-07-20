@@ -14,4 +14,6 @@ public interface EntStaffClusterMapper {
 
     EntStaff findById(Long id);
 
+	EntStaff findByMobile(String mobile);
+
 }

@@ -120,7 +120,7 @@ public class Constants {
 	}
 
 	public enum ClientSource {
-		WXAPP(0), ANDROID(1), IOS(2);
+		WXAPP(0), ANDROID(1), IOS(2),APPLET(3);
 		public int source;
 
 		private ClientSource(int source) {
@@ -256,6 +256,10 @@ public class Constants {
 		USER_APP_AUTH_USER("user_app:auth:user:"), 
 		USER_APP_AUTH_CODE("user_app:auth:code:"), 
 		USER_APP_AUTH_MOBILE("user_app:auth:mobile:"), 
+		STAFF_ENT_AUTH_TOKEN("staff_ent:auth:uid:"), 
+		STAFF_ENT_AUTH_USER("staff_ent:auth:user:"), 
+		STAFF_ENT_AUTH_CODE("staff_ent:auth:code:"), 
+		STAFF_ENT_AUTH_MOBILE("staff_ent:auth:mobile:"), 
 		USER_APP_USER_CODE("user_app:user:code:"), 
 		USER_APP_USER_MOBILE("user_app:user:mobile:"), 
 		USER_APP_USER_CHANGE_MOBILE("user_app:user:change-mobile:"), 

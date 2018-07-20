@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.dao.master;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntStaff;
@@ -22,4 +24,6 @@ public interface EntStaffMasterMapper {
     int updateByIdSelective(EntStaff record);
 
     int updateById(EntStaff record);
+
+	void updateByColumn(Map<String, Object> map);
 }

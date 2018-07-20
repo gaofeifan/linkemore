@@ -173,4 +173,13 @@ public interface UserClient {
 	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
 	@ResponseBody
 	public ResUser save(@RequestBody ResUser user);
+	
+
+	@RequestMapping(value = "/by-mobile", method = RequestMethod.GET)
+	@ResponseBody
+	public Long getUserIdByMobile(@RequestParam("mobile") String mobile);
+	
+	@RequestMapping(value = "/by-mobile", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Long> getUserMapByMobile(@RequestBody List<String> mobile);
 }
