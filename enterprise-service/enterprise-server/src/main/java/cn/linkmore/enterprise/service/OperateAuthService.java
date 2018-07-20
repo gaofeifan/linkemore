@@ -6,8 +6,8 @@ import java.util.Map;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.controller.ops.request.ReqOperateAuth;
-import cn.linkmore.enterprise.controller.ops.request.ReqOperateBind;
+import cn.linkmore.enterprise.request.ReqOperateAuth;
+import cn.linkmore.enterprise.request.ReqOperateBind;
 
 /**
  * 操作权限

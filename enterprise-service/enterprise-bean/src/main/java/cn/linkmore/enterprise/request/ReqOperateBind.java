@@ -1,4 +1,4 @@
-package cn.linkmore.enterprise.controller.ops.request;
+package cn.linkmore.enterprise.request;
 
 public class ReqOperateBind {
 

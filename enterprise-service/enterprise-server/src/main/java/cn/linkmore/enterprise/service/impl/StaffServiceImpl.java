@@ -37,10 +37,13 @@ import cn.linkmore.enterprise.service.StaffService;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
+import cn.linkmore.third.client.WechatClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
+import cn.linkmore.third.response.ResFans;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 /**
@@ -60,6 +63,8 @@ public class StaffServiceImpl implements StaffService {
 	private PushClient pushClient;
 	@Resource
 	private SmsClient smsClient;
+	@Resource
+	private AppWechatClient appWechatClient;
 	@Resource
 	private RedisService redisService;
 	@Resource
@@ -168,8 +173,14 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	@Override
-	public ResStaff wxLogin(String code, HttpServletRequest request) {
-		return null;
+	public void bindLogin(String code, HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
+		ResFans fans = this.appWechatClient.getFans(code);
+		Map<String, Object> map = new HashMap<>();
+		map.put("sql", "open_id = "+fans.getId());
+		map.put("id", ru.getId());
+		this.entStaffMasterMapper.updateByColumn(map );
 	}
 
 	@Override

@@ -4,8 +4,8 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import cn.linkmore.enterprise.controller.ops.request.ReqOperateAuth;
 import cn.linkmore.enterprise.entity.EntOperateAuth;
+import cn.linkmore.enterprise.request.ReqOperateAuth;
 /**
  * 操作权限--写
  * @author   GFF

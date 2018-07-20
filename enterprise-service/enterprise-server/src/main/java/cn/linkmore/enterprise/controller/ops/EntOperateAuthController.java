@@ -1,6 +1,5 @@
 package cn.linkmore.enterprise.controller.ops;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.controller.ops.request.ReqOperateAuth;
-import cn.linkmore.enterprise.controller.ops.request.ReqOperateBind;
+import cn.linkmore.enterprise.request.ReqOperateAuth;
+import cn.linkmore.enterprise.request.ReqOperateBind;
 import cn.linkmore.enterprise.service.OperateAuthService;
-import cn.linkmore.security.response.ResRoleElement;
-import cn.linkmore.security.response.ResRolePage;
 
 /**
  * @author   GFF

@@ -20,7 +20,7 @@
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{entId,jdbcType=BIGINT}, 
       #{status,jdbcType=SMALLINT})
   </insert>
-  <insert id="saveReq" parameterType="cn.linkmore.enterprise.controller.ops.request.ReqOperateAuth">
+  <insert id="saveReq" parameterType="cn.linkmore.enterprise.request.ReqOperateAuth">
     insert into t_ent_operate_auth (id, name, ent_id, 
       status)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{entId,jdbcType=BIGINT}, 
@@ -57,7 +57,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.controller.ops.request.ReqOperateAuth">
+  <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.request.ReqOperateAuth">
     update t_ent_operate_auth
     <set>
       <if test="name != null">

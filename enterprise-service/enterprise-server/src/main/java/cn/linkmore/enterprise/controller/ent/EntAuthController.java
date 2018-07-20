@@ -58,14 +58,14 @@ public class EntAuthController {
 	@ApiOperation(value = "微信登录", notes = "微信登录", consumes = "application/json")
 	@RequestMapping(value = "/wechat", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<ResStaff> login( 
+	public ResponseEntity<?> login( 
 			@RequestParam(value="code")  
 			@NotBlank(message="授权码不能为空") 
 			@Size(min =32,max=36,message="授权码为无效")
 			String code, HttpServletRequest request) {
-		ResponseEntity<ResStaff> response = null;
-		ResStaff urb = this.staffService.wxLogin(code, request);
-		response = ResponseEntity.success( urb, request);
+		ResponseEntity<?> response = null;
+		this.staffService.bindLogin(code, request);
+		response = ResponseEntity.success( "绑定成功", request);
 		return response;
 	}  
 	

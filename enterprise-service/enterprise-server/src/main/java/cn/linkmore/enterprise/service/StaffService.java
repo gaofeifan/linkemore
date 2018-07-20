@@ -32,7 +32,7 @@ public interface StaffService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResStaff wxLogin(String code, HttpServletRequest request);
+	void bindLogin(String code, HttpServletRequest request);
 
 	/**
 	 * @Description  发送短信验证法
@@ -40,5 +40,6 @@ public interface StaffService {
 	 * @Version  v2.0
 	 */
 	void send(ReqAuthSend rs);
+
 
 }

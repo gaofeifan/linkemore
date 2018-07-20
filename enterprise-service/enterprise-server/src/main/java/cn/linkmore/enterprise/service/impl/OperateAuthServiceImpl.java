@@ -10,13 +10,10 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.account.response.ResFeedBack;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.controller.ops.request.ReqOperateAuth;
-import cn.linkmore.enterprise.controller.ops.request.ReqOperateBind;
 import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntAuthStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntOperateAuthClusterMapper;
@@ -27,12 +24,12 @@ import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntAuthStall;
 import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.entity.EntPrefecture;
+import cn.linkmore.enterprise.request.ReqOperateAuth;
+import cn.linkmore.enterprise.request.ReqOperateBind;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.OperateAuthService;
 import cn.linkmore.prefecture.response.ResStallEntity;
-import cn.linkmore.security.response.ResRoleElement;
-import cn.linkmore.security.response.ResRolePage;
 import cn.linkmore.util.DomainUtil;
 
 /**
