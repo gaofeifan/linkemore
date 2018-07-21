@@ -26,6 +26,8 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
   </resultMap>
   
   <sql id="Base_Column_List">
@@ -78,7 +80,7 @@
   </select>
   
   <select id="findList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
-  	select id, stall_name, lock_sn
+  	select id, stall_name, lock_sn, status, type
 	from v_stall 
 	where 1=1 
 	<if test="name!=null">  

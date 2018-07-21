@@ -18,7 +18,27 @@ public class ResStall {
 	 * 车位锁编号
 	 */
 	private String lockSn;
+	/**
+	 * 车位状态 状态:1，空闲；2，使用中；3,预下线；4，下线  5 故障
+	 */
+	private Integer status;
+	/**
+	 * 分类 0自营，1临停，2长租，3VIP
+	 */
+	private short type;
 	
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public short getType() {
+		return type;
+	}
+	public void setType(short type) {
+		this.type = type;
+	}
 	public Long getId() {
 		return id;
 	}
