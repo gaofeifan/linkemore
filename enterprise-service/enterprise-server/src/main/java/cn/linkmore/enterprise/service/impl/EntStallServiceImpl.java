@@ -11,13 +11,18 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.bean.common.Constants.StallStatus;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
+import cn.linkmore.enterprise.controller.ent.response.ResEntTypeStalls;
 import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
+import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.prefecture.client.StallClient;
+import cn.linkmore.prefecture.response.ResStall;
 
 /**
  * @author luzhishen
@@ -32,6 +37,9 @@ public class EntStallServiceImpl implements EntStallService {
 	
 	@Autowired
 	private EntAuthPreClusterMapper entAuthPreClusterMapper;
+	
+	@Autowired
+	private EntPrefectureClusterMapper entPrefectureClusterMapper;
 	
 	@Autowired
 	private StallClient stallClient;
@@ -57,14 +65,100 @@ public class EntStallServiceImpl implements EntStallService {
 		List<ResEntStalls> entStallList = new ArrayList<>();
 		ResEntStalls resEntStalls = null;
 		Map<String,Object> params = null;
+		List<ResStall> stalls = null;
+		EntPrefecture entPrefeture = null;
 		for(int i = 0; i < preSize ; i ++){
 			entAuthPre = entAuthPres.get(i);
+			if(entAuthPre == null){
+				continue;
+			}
+			entPrefeture = entPrefectureClusterMapper.findByPreId(entAuthPre.getPreId());
+			if(entPrefeture == null){
+				continue;
+			}
 			resEntStalls = new ResEntStalls();
+			resEntStalls.setPreId(entAuthPre.getPreId());
+			resEntStalls.setPreName(entPrefeture.getPreName());
+			
 			params = new HashMap<String,Object>();
 			params.put("preId", entAuthPre.getPreId());
-//			stallClient.
+			stalls = stallClient.findStallList(params);
+			int preStalls = stalls.size();
+			int preUseStalls = 0;
+			
+			int preVipTypeStalls = 0;
+			int preVipUseTypeStalls = 0;
+			
+			int preRentTypeStalls = 0;
+			int preRentUseTypeStalls = 0;
+			
+			int preTempTypeStalls = 0;
+			int preTempUseTypeStalls = 0;
+			
+			Map<String,ResEntTypeStalls> typeSum = new HashMap<>();
+			
+			for(int j = 0 ; i < preStalls; j++){
+				ResStall resStall=stalls.get(j);
+				if(resStall.getStatus() == StallStatus.USED.status){
+					preUseStalls ++;
+				}
+			}
+			
+			for(int j = 0 ; i < preStalls; j++){
+				ResStall resStall=stalls.get(j);
+				//临停
+				if(resStall.getType() == 1 ){
+					preTempTypeStalls ++;
+				}
+				//临停使用
+				if(resStall.getType() == 1 && resStall.getStatus() == StallStatus.USED.status){
+					preTempUseTypeStalls ++;
+				}
+				//长租
+				if(resStall.getType() == 2 ){
+					preRentTypeStalls ++;
+				}
+				//长租使用
+				if(resStall.getType() == 2 && resStall.getStatus() == StallStatus.USED.status){
+					preRentUseTypeStalls ++;
+				}
+				//vip
+				if(resStall.getType() == 3 ){
+					preVipTypeStalls ++;
+				}
+				//vip使用
+				if(resStall.getType() == 3 && resStall.getStatus() == StallStatus.USED.status){
+					preVipUseTypeStalls ++;
+				}
+				
+			}
+			
+			resEntStalls.setPreStalls(preStalls);
+			resEntStalls.setPreUseStalls(preUseStalls);
+			
+			ResEntTypeStalls vipStalls = new ResEntTypeStalls();
+			vipStalls.setPreTypeStalls(3);
+			vipStalls.setTypeName("vip车位");
+			vipStalls.setPreTypeStalls(preVipTypeStalls);
+			vipStalls.setPreUseTypeStalls(preVipUseTypeStalls);
+			typeSum.put("vip", vipStalls);
+			ResEntTypeStalls rentStalls = new ResEntTypeStalls();
+			rentStalls.setPreTypeStalls(2);
+			rentStalls.setTypeName("长租车位");
+			rentStalls.setPreTypeStalls(preRentTypeStalls);
+			rentStalls.setPreUseTypeStalls(preRentUseTypeStalls);
+			typeSum.put("rent", rentStalls);
+			ResEntTypeStalls tempStalls = new ResEntTypeStalls();
+			tempStalls.setPreTypeStalls(1);
+			tempStalls.setTypeName("临停车位");
+			tempStalls.setPreTypeStalls(preTempTypeStalls);
+			tempStalls.setPreUseTypeStalls(preTempUseTypeStalls);
+			typeSum.put("temp", tempStalls);
+			resEntStalls.setTypeStalls(typeSum);
+			
+			entStallList.add(resEntStalls);
 		}
-		return null;
+		return entStallList;
 	}
 
 }

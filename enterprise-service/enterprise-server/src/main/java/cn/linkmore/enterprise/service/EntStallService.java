@@ -15,7 +15,7 @@ import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 public interface EntStallService {
 
 	/**
-	 * 查询车场信息
+	 * 通过员工ID查询车场信息
 	 * 
 	 * @author luzhishen
 	 * @Date 2018年7月20日

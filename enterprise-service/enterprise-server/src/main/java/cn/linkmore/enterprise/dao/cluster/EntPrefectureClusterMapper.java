@@ -12,4 +12,6 @@ import cn.linkmore.enterprise.entity.EntPrefecture;
 @Mapper
 public interface EntPrefectureClusterMapper {
     EntPrefecture findById(Long id);
+
+	EntPrefecture findByPreId(Long preId);
 }

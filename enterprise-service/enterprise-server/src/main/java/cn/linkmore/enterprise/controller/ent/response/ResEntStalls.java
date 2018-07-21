@@ -17,17 +17,21 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("企业车场车位统计")
 public class ResEntStalls {
 	
-	@ApiModelProperty(value = "车区id",required = true)
+	@ApiModelProperty(value = "车区id")
 	private Long preId;
 	
-	@ApiModelProperty(value = "车区名称",required = true)
+	@ApiModelProperty(value = "车区名称")
 	private String preName;
 	
 	@ApiModelProperty(value = "车区车位总数")
-	private Map<String,Object> preStallSum;
+	private int preStalls ;
 	
-	@ApiModelProperty(value = "车区类型车位总数")
-	private Map<String,Object> typeSum;
+	@ApiModelProperty(value = "车区车位使用总数")
+	private int preUseStalls;
+	
+	@ApiModelProperty(value = "车区车位类型使用总数")
+	private Map<String,ResEntTypeStalls> typeStalls;
+	
 
 	public Long getPreId() {
 		return preId;
@@ -45,22 +49,28 @@ public class ResEntStalls {
 		this.preName = preName;
 	}
 
-	public Map<String, Object> getPreStallSum() {
-		return preStallSum;
+	public int getPreStalls() {
+		return preStalls;
 	}
 
-	public void setPreStallSum(Map<String, Object> preStallSum) {
-		this.preStallSum = preStallSum;
+	public void setPreStalls(int preStalls) {
+		this.preStalls = preStalls;
 	}
 
-	public Map<String, Object> getTypeSum() {
-		return typeSum;
+	public int getPreUseStalls() {
+		return preUseStalls;
 	}
 
-	public void setTypeSum(Map<String, Object> typeSum) {
-		this.typeSum = typeSum;
+	public void setPreUseStalls(int preUseStalls) {
+		this.preUseStalls = preUseStalls;
 	}
-	
-	
+
+	public Map<String, ResEntTypeStalls> getTypeStalls() {
+		return typeStalls;
+	}
+
+	public void setTypeStalls(Map<String, ResEntTypeStalls> typeStalls) {
+		this.typeStalls = typeStalls;
+	}
 
 }

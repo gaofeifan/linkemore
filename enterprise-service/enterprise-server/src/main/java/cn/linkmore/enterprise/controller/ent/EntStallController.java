@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
-import cn.linkmore.enterprise.controller.app.request.ReqEntStalls;
+import cn.linkmore.enterprise.controller.ent.request.ReqPreStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.service.EntStallService;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.TokenUtil;
 import io.swagger.annotations.Api;
@@ -43,7 +44,7 @@ public class EntStallController {
 	private EntStallService entStallService;
 	
 	@ApiOperation(value = "查询企业下停车场信息", notes = "查询企业下停车场信息", consumes = "application/json")
-	@RequestMapping(value = "/select-ent-stalls",method = RequestMethod.POST)
+	@RequestMapping(value = "/select-pre-stalls",method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResEntStalls> selectEntStalls(HttpServletRequest request){
 		List<ResEntStalls> list = null;
@@ -54,7 +55,22 @@ public class EntStallController {
 			return list;
 		}
 		list = entStallService.selectEntStalls(ru.getId());
-		return null;
+		return list;
+	}
+	
+	@ApiOperation(value = "查询停车场车位列表", notes = "查询停车场车位列表", consumes = "application/json")
+	@RequestMapping(value = "/select-stalls",method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStall> selectEntStalls(@RequestBody ReqPreStall reqPreStall ,HttpServletRequest request){
+		List<ResStall> list = null;
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		if(ru == null){
+			list = new ArrayList<ResStall>();
+			return list;
+		}
+//		list = entStallService.selectStalls(reqPreStall.);
+		return list;
 	}
 	 
 

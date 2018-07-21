@@ -22,4 +22,11 @@
     from t_ent_prefecture
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findByPreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_prefecture
+    where pre_id = #{0}
+  </select>
 </mapper>
