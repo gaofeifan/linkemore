@@ -17,6 +17,7 @@ import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.service.EntStallService;
+import cn.linkmore.prefecture.client.StallClient;
 
 /**
  * @author luzhishen
@@ -31,6 +32,9 @@ public class EntStallServiceImpl implements EntStallService {
 	
 	@Autowired
 	private EntAuthPreClusterMapper entAuthPreClusterMapper;
+	
+	@Autowired
+	private StallClient stallClient;
 	
 	@Override
 	public List<ResEntStalls> selectEntStalls(Long id) {
@@ -49,9 +53,16 @@ public class EntStallServiceImpl implements EntStallService {
 		List<EntAuthPre> entAuthPres= entAuthPreClusterMapper.findList(param);
 		int preSize = entAuthPres.size();
 		EntAuthPre entAuthPre = null;
+		
+		List<ResEntStalls> entStallList = new ArrayList<>();
+		ResEntStalls resEntStalls = null;
+		Map<String,Object> params = null;
 		for(int i = 0; i < preSize ; i ++){
 			entAuthPre = entAuthPres.get(i);
-			
+			resEntStalls = new ResEntStalls();
+			params = new HashMap<String,Object>();
+			params.put("preId", entAuthPre.getPreId());
+			stallClient.findList(params);
 		}
 		return null;
 	}
