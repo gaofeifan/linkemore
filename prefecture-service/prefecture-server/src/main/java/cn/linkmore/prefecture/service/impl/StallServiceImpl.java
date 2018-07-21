@@ -36,6 +36,7 @@ import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StallLock;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqOrderStall;
+import cn.linkmore.prefecture.request.ReqPreStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -418,6 +419,12 @@ public class StallServiceImpl implements StallService {
 				this.stallMasterMapper.offline(stall);
 			}
 		}
+	}
+
+	@Override
+	public List<ResStall> findStallList(List<Long> stallIds) {
+		List<ResStall> list = this.stallClusterMapper.findTreeList(stallIds);
+		return list;
 	}
 	
 	

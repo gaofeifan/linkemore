@@ -118,10 +118,25 @@ public class ResUserOrder {
     private BigDecimal couponAmount;
     
     private Long tradeId;
-    
+    /**
+     * 企业id
+     */
     private Long entId;
+    
+    /**
+     * 车位类型 分类0自营，1临停，2长租，3VIP
+     */
+    private Short stallType;
 
-    public Long getEntId() {
+    public Short getStallType() {
+		return stallType;
+	}
+
+	public void setStallType(Short stallType) {
+		this.stallType = stallType;
+	}
+
+	public Long getEntId() {
 		return entId;
 	}
 

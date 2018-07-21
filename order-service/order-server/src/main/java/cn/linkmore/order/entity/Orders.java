@@ -133,17 +133,17 @@ public class Orders {
     /**
      * 车位类型 分类0自营，1临停，2长租，3VIP
      */
-    private short stallType;
+    private Short stallType;
     /**
      * 企业id
      */
     private Long entId;
     
-    public short getStallType() {
+    public Short getStallType() {
 		return stallType;
 	}
 
-	public void setStallType(short stallType) {
+	public void setStallType(Short stallType) {
 		this.stallType = stallType;
 	}
 

@@ -927,63 +927,6 @@ public class OrdersServiceImpl implements OrdersService {
 		} 
 	}
 	
-	@Transactional(rollbackFor = RuntimeException.class)
-	private void switchingBrand(ReqSwitch rs,HttpServletRequest request) {
-		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
-		ResUserOrder order = this.ordersClusterMapper.findDetail(rs.getOrderId());
-		Boolean flag = false;
-		if(order.getStatus().intValue()==OrderStatus.UNPAID.value&&cu.getId().intValue()==order.getUserId().intValue()) {
-			Long count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId() + order.getEntId()); 
-			if(count.intValue()<=0) { 
-				Map<String,Object> param = new HashMap<String,Object>();
-				Date current = new Date();
-				param.put("id", order.getId()); 
-				param.put("endTime", current);
-				param.put("updateTime", current);
-				param.put("statusTime", current);
-				param.put("statusHistory", OrderStatusHistory.CLOSED.code);
-				param.put("status", OrderStatus.COMPLETED.value);
-				this.orderMasterMapper.updateClose(param); 
-				new CancelStallThread(order.getStallId()).start();
-				Thread thread = new PushThread(order.getUserId().toString(), "订单通知","无空闲车位,订单已关闭",PushType.ORDER_AUTO_CLOSE_NOTICE, true);
-				thread.start();
-				//关闭订单发送优惠券功能
-				couponClient.send(cu.getId());
-				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), SwitchResult.CLOSED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
-			}else {
-				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId() + order.getEntId()); 
-				log.info("get switch stall sn:{}",sn);
-				if(sn!=null) {
-					ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
-					log.info("switch stall:{}",JsonUtil.toJson(stall));
-					if(stall.getStatus().intValue()==StallStatus.FREE.status) {
-						Thread thread = new OfflieStallThread(order.getStallId());
-						order.setStallId(stall.getId());
-						order.setStallName(stall.getStallName());
-						Map<String,Object> param = new HashMap<String,Object>();
-						param.put("id", order.getId());
-						param.put("stallId", stall.getId());
-						param.put("stallName", stall.getStallName());
-						param.put("switchTime", new Date());
-						param.put("switchStatus", 1);
-						this.orderMasterMapper.updateSwitch(param);
-						this.stallClient.order(stall.getId()); 
-						thread.start();
-						flag = true;
-					} 
-				}
-				Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知",flag? "车位切换成功":"车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
-				thread.start();
-				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), flag?SwitchResult.SUCCESS.value:SwitchResult.FAILED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
-			}
-			
-		}else {
-			Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知","车位切换失败",PushType.ORDER_SWITCH_RESULT_NOTICE, false);
-			thread.start();
-			this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), SwitchResult.FAILED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
-		} 
-	}
-	
 	class SwitchThread extends Thread{
 		private ReqSwitch rs;
 		private HttpServletRequest request;
@@ -993,19 +936,6 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 		public void run() {
 			switching(rs,request);
-		}
-		
-	}
-	
-	class SwitchBrandThread extends Thread{
-		private ReqSwitch rs;
-		private HttpServletRequest request;
-		public SwitchBrandThread(ReqSwitch rs,HttpServletRequest request) {
-			this.rs = rs;
-			this.request = request;
-		}
-		public void run() {
-			switchingBrand(rs,request);
 		}
 		
 	}
@@ -1122,13 +1052,6 @@ public class OrdersServiceImpl implements OrdersService {
 	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) {
 		Thread thread = new OrderBrandThread(rb,request);
 		thread.start();
-	}
-
-	@Override
-	public void switchBrandStall(ReqSwitch rs, HttpServletRequest request) {
-		Thread thread = new SwitchBrandThread(rs,request);
-		thread.start();
-		
 	}
 	
 }

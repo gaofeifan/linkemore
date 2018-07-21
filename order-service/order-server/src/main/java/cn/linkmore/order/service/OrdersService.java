@@ -104,10 +104,5 @@ public interface OrdersService {
 	 * @param request
 	 */
 	void brandCreate(ReqBrandBooking rbb, HttpServletRequest request);
-	/**
-	 * 切换品牌车位
-	 * @param rs
-	 * @param request
-	 */
-	void switchBrandStall(ReqSwitch rs, HttpServletRequest request); 
+	
 }

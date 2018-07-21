@@ -7,6 +7,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqOrderStall;
+import cn.linkmore.prefecture.request.ReqPreStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -132,4 +133,11 @@ public interface StallService {
 	 * @param id
 	 */
 	void close(Long id);
+	
+	/**
+	 * 查询车位列表
+	 * @param stallIds
+	 * @return
+	 */
+	List<ResStall> findStallList(List<Long> stallIds);
 }

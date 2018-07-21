@@ -84,15 +84,7 @@ public class AppOrderController {
 	public ResponseEntity<?> switchStall( @RequestBody ReqSwitch rs, HttpServletRequest request) {
 		this.ordersService.switchStall(rs, request);
 		return ResponseEntity.success(null, request);
-	} 
-	
-	@ApiOperation(value = "切换品牌车位", notes = "原因ID不能为空，备注可为空", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/brand-switch", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<?> switchBrandStall( @RequestBody ReqSwitch rs, HttpServletRequest request) {
-		this.ordersService.switchBrandStall(rs, request);
-		return ResponseEntity.success(null, request);
-	} 
+	}
 
 	@ApiOperation(value = "当前订单", notes = "结账离场[组织数据,计算费用，计算时长]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/current", method = RequestMethod.GET)
