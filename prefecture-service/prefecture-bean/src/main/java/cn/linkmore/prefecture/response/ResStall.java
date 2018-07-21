@@ -26,7 +26,17 @@ public class ResStall {
 	 * 分类 0自营，1临停，2长租，3VIP
 	 */
 	private short type;
+	/**
+	 * 车牌号
+	 */
+	private String plateNo;
 	
+	public String getPlateNo() {
+		return plateNo;
+	}
+	public void setPlateNo(String plateNo) {
+		this.plateNo = plateNo;
+	}
 	public Integer getStatus() {
 		return status;
 	}
