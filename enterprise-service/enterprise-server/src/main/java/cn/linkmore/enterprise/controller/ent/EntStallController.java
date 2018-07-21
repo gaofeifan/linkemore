@@ -4,7 +4,9 @@
 package cn.linkmore.enterprise.controller.ent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,7 +23,6 @@ import cn.linkmore.enterprise.controller.ent.request.ReqOperatStall;
 import cn.linkmore.enterprise.controller.ent.request.ReqPreStall;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
-import cn.linkmore.enterprise.controller.ent.response.ResOperatStall;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.redis.RedisService;
@@ -94,18 +95,40 @@ public class EntStallController {
 	@ApiOperation(value = "操作车位", notes = "操作车位", consumes = "application/json")
 	@RequestMapping(value = "/operate-stall",method = RequestMethod.POST)
 	@ResponseBody
-	public ResOperatStall selectEntDetailStalls(@RequestBody ReqOperatStall reqOperatStall,HttpServletRequest request){
-		
+	public Map<String,Object> operatStalls(@RequestBody ReqOperatStall reqOperatStall,HttpServletRequest request){
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 		if(ru == null){
 			return null;
 		}
-		
-		if(reqOperatStall == null){
+		Map<String,Object> message  = this.entStallService.operatStalls(ru.getId(),reqOperatStall.getStallId(),reqOperatStall.getState());
+		return message;
+	}
+	
+	@ApiOperation(value = "车位上线", notes = "车位上线", consumes = "application/json")
+	@RequestMapping(value = "/change-up",method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String,Object> changeUp(Long stall_id,HttpServletRequest request){
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		if(ru == null){
 			return null;
 		}
-		return null;
+		Map<String,Object> message  = this.entStallService.change(ru.getId(),stall_id,1);
+		return message;
+	}
+	
+	@ApiOperation(value = "车位下线", notes = "车位下线", consumes = "application/json")
+	@RequestMapping(value = "/change-down",method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String,Object> changeDown(Long stall_id,HttpServletRequest request){
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		if(ru == null){
+			return null;
+		}
+		Map<String,Object> message  = this.entStallService.change(ru.getId(),stall_id,2);
+		return message;
 	}
 	
 	

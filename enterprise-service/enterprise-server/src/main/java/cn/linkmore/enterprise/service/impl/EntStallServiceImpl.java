@@ -227,4 +227,56 @@ public class EntStallServiceImpl implements EntStallService {
 		return resDetailStall;
 	}
 
+	@Override
+	public Map<String,Object> operatStalls(Long staffId, Long stallId, Integer state) {
+		
+		//需要异步记录操作锁
+		
+		Map<String,Object> result = new HashMap<>();
+		ResStallEntity resStallEntity= this.stallClient.findById(stallId);
+		if(StringUtil.isBlank(resStallEntity.getLockSn())){
+			return null;
+		}
+		//1 降下 2 升起
+		if(state == 1){
+			ResponseMessage<LockBean> res=lockFactory.lockDown(resStallEntity.getLockSn());
+			if(res.isResult()){
+				result.put("result", res.isResult());
+				result.put("result", res.getMsg());
+				return result ;
+			}
+		}else if(state == 2){
+			ResponseMessage<LockBean> res=lockFactory.lockUp(resStallEntity.getLockSn());
+			if(res.isResult()){
+				result.put("result", res.isResult());
+				result.put("result", res.getMsg());
+				return result ;
+			}
+		}
+		result.put("result", false);
+		result.put("result", "操作失败");
+		return result ;
+	}
+
+	@Override
+	public Map<String, Object> change(Long id, Long stall_id, int changeStatus) {
+		Map<String, Object> map = new HashMap<>();
+		int  result = 0;
+		if(changeStatus == 1){
+			List<Long> ids=new ArrayList<>();
+			ids.add(stall_id);
+			 result = this.stallClient.changedUp(ids);
+		}else if(changeStatus == 2){
+			result = this.stallClient.changedDown(stall_id);
+		}
+		if(result == 0){
+			map.put("result",false);
+			map.put("message","上线失败");
+			return map;
+		}
+		map.put("result",false);
+		map.put("message","上线成功");
+		return map;
+	}
+
 }

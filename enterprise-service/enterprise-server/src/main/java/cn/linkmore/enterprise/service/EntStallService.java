@@ -4,6 +4,7 @@
 package cn.linkmore.enterprise.service;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
@@ -42,5 +43,23 @@ public interface EntStallService {
 	 * @Version v1.0
 	 */
 	ResDetailStall selectEntDetailStalls(Long stallId);
+
+	/**
+	 * 
+	 * 
+	 * @author luzhishen
+	 * @Date 2018年7月21日
+	 * @Version v1.0
+	 */
+	Map<String, Object> operatStalls(Long staffId, Long stallId, Integer state);
+
+	/**
+	 * 车位上下线（changeStatus：1上线 2 下线）
+	 * 
+	 * @author luzhishen
+	 * @Date 2018年7月21日
+	 * @Version v1.0
+	 */
+	Map<String, Object> change(Long id, Long stall_id, int changeStatus);
 
 }
