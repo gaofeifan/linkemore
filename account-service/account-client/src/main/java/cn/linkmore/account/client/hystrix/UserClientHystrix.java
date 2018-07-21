@@ -140,7 +140,7 @@ public class UserClientHystrix implements UserClient{
 
 	@Override
 	public ResUser save(ResUser user) {
-		log.info("account service ResUser getUserByUserName(Map<String, Object> param) hystrix"); 
+		log.info("account service ResUser save(ResUser user) hystrix"); 
 		return null;
 	}
 	

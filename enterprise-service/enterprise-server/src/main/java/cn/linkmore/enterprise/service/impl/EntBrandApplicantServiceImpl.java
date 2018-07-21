@@ -134,9 +134,8 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		if(num > 0) {
 			throw new BusinessException(StatusEnum.BRAND_APPLICANT_FAIL);
 		}
-		
-		if (this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay) != null) {
-			count = (Integer) this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay);
+		if (this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay) != null) {
+			count = (Integer) this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay);
 			// 计数次数 >= 日申请次数，当天广告失效
 			if (resBrandAd.getApplyCount() <= count) {
 				throw new BusinessException(StatusEnum.BRAND_APPLICANT_ENT_BRAND_AD_FAIL);

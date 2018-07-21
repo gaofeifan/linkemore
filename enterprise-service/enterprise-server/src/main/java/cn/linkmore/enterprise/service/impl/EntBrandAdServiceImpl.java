@@ -154,6 +154,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		if (cu != null) {
 			flag = this.couponClient.sendBrandCoupon(true, entId, cu.getId());
 		}
+		flag = this.couponClient.sendBrandCoupon(true, entId, 699L);
 		return flag;
 	}
 
