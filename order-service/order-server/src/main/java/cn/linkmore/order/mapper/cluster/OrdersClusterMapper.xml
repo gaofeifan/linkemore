@@ -90,6 +90,7 @@
     <result column="coupon_id" jdbcType="BIGINT" property="couponId" />
     <result column="coupon_amount" jdbcType="DECIMAL" property="couponAmount" />  
     <result column="trade_id" jdbcType="BIGINT" property="tradeId" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
   </resultMap>
    <resultMap id="OpsResultMap" type="cn.linkmore.order.response.ResOrderOps">
     <id column="id" jdbcType="BIGINT" property="id" />

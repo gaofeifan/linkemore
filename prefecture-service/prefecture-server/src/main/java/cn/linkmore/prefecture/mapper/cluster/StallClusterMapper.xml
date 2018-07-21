@@ -20,6 +20,8 @@
     <result column="lock_battery" jdbcType="INTEGER" property="lockBattery" />
     <result column="lock_voltage" jdbcType="DOUBLE" property="lockVoltage" />
     <result column="bind_order_status" jdbcType="SMALLINT" property="bindOrderStatus" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="brand" jdbcType="SMALLINT" property="brand" />
   </resultMap>
   
   <resultMap id="ResponseResultMap" type="cn.linkmore.prefecture.response.ResStall">
@@ -55,7 +57,8 @@
   
   <select id="findByLockSn" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
-    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, lock_voltage
+    status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, lock_voltage,
+    type, brand
     from v_stall
     where lock_sn = #{lockSn,jdbcType=VARCHAR} limit 0,1
   </select>

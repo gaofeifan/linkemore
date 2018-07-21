@@ -130,8 +130,32 @@ public class Orders {
     private Short switchStatus;
     
     private Date payTime;
+    /**
+     * 车位类型 分类0自营，1临停，2长租，3VIP
+     */
+    private short stallType;
+    /**
+     * 企业id
+     */
+    private Long entId;
+    
+    public short getStallType() {
+		return stallType;
+	}
 
-    public Long getId() {
+	public void setStallType(short stallType) {
+		this.stallType = stallType;
+	}
+
+	public Long getEntId() {
+		return entId;
+	}
+
+	public void setEntId(Long entId) {
+		this.entId = entId;
+	}
+
+	public Long getId() {
         return id;
     }
 

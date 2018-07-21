@@ -118,8 +118,18 @@ public class ResUserOrder {
     private BigDecimal couponAmount;
     
     private Long tradeId;
+    
+    private Long entId;
 
-    public Long getId() {
+    public Long getEntId() {
+		return entId;
+	}
+
+	public void setEntId(Long entId) {
+		this.entId = entId;
+	}
+
+	public Long getId() {
         return id;
     }
 

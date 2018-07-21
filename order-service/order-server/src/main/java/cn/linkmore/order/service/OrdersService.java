@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.controller.app.request.ReqBooking;
+import cn.linkmore.order.controller.app.request.ReqBrandBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
@@ -96,5 +97,17 @@ public interface OrdersService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResOrderExcel> exportList(ReqOrderExcel bean); 
+	List<ResOrderExcel> exportList(ReqOrderExcel bean);
+	/**
+	 * 品牌预约车位
+	 * @param rbb
+	 * @param request
+	 */
+	void brandCreate(ReqBrandBooking rbb, HttpServletRequest request);
+	/**
+	 * 切换品牌车位
+	 * @param rs
+	 * @param request
+	 */
+	void switchBrandStall(ReqSwitch rs, HttpServletRequest request); 
 }

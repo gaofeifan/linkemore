@@ -16,6 +16,9 @@ public class ResEntBrandPreLeisure {
 
 	@ApiModelProperty(value = "空闲车位数量")
 	private Integer leisureStall;
+	
+	@ApiModelProperty(value = "凌猫车区空闲车位数量")
+	private Integer linkmoreLeisureStall;
 
 	public Long getId() {
 		return id;
@@ -32,5 +35,12 @@ public class ResEntBrandPreLeisure {
 	public void setLeisureStall(Integer leisureStall) {
 		this.leisureStall = leisureStall;
 	}
-	
+
+	public Integer getLinkmoreLeisureStall() {
+		return linkmoreLeisureStall;
+	}
+
+	public void setLinkmoreLeisureStall(Integer linkmoreLeisureStall) {
+		this.linkmoreLeisureStall = linkmoreLeisureStall;
+	}
 }

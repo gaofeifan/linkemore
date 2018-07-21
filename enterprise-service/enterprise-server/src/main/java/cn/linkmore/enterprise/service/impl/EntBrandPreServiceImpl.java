@@ -119,16 +119,20 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			}
 		}
 		Long count = 0L;
+		Long linkmoreCount = 0L;
 		for(ResEntBrandPre prb: preList){ 
 			prb.setPlateId(plateId);
 			prb.setPlateNumber(plateNumber);
 			prb.setChargeTime(prb.getChargeTime() + "分钟");
 			prb.setChargePrice(prb.getChargePrice() + "元");
-			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getId());
+			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getPreId() + prb.getEntId());
+			linkmoreCount = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getPreId());
 			if(count==null) {
 				count = 0L;
 			}
-			
+			if(linkmoreCount==null) {
+				linkmoreCount = 0L;
+			}
 			if(cu!=null && cu.getId()!=null){
 				//是否为授权用户
 				Integer num = entBrandUserClusterMapper.findBrandUser(prb.getEntId(),cu.getId());
@@ -139,6 +143,7 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			}
 			
 			prb.setLeisureStall(count.intValue());
+			prb.setLinkmoreLeisureStall(linkmoreCount.intValue());
 			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()), new Double(rp.getLongitude())));
 		}
 		
@@ -199,16 +204,23 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		List<ResEntBrandPreLeisure> list = new ArrayList<ResEntBrandPreLeisure>();
 		ResEntBrandPreLeisure pre = null;
 		Long count = 0L;
+		Long linkmoreCount = 0L;
 		if(CollectionUtils.isNotEmpty(preList)) {
 			for(ResEntBrandPre resPre : preList) {
 				pre = new ResEntBrandPreLeisure();
 				pre.setId(resPre.getId());
-				count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + resPre.getId());
-				log.info("preId {} free stall count {}",resPre.getId(), count);
+				count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + resPre.getPreId() + resPre.getEntId());
+				log.info("preId {} entId{} free stall count {}",resPre.getId(),resPre.getEntId(), count);
+				linkmoreCount = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + resPre.getPreId());
+				log.info("preId {} free stall count {}",resPre.getId(),resPre.getEntId(), count);
 				if(count==null) {
 					count = 0L;
 				}
+				if(linkmoreCount==null) {
+					linkmoreCount = 0L;
+				}
 				pre.setLeisureStall(count.intValue());
+				pre.setLinkmoreLeisureStall(linkmoreCount.intValue());
 				list.add(pre);
 			}
 		}

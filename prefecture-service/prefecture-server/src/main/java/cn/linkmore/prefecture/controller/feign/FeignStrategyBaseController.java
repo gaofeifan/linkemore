@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,7 +68,7 @@ public class FeignStrategyBaseController {
 	 */
 	@RequestMapping(value="/v2.0/{id}",method = RequestMethod.GET)
 	@ResponseBody
-	public ResStrategyBase findById(Long id){
+	public ResStrategyBase findById(@PathVariable("id") Long id){
 		StrategyBase strategyBase = this.strategyBaseService.findById(id);
 		ResStrategyBase resStrtegy = new ResStrategyBase();
 		resStrtegy.setFreeMins(strategyBase.getFreeMins());

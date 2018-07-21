@@ -18,6 +18,8 @@ public class ResOrder {
 	private Long stallId;
 	@ApiModelProperty(value = "车区ID")
 	private Long prefectureId;
+	@ApiModelProperty(value = "企业ID")
+	private Long entId;	
 	@ApiModelProperty(value = "车位名称")
 	private String stallName;
 	@ApiModelProperty(value = "车位导航图")
@@ -69,6 +71,12 @@ public class ResOrder {
 	}
 	public void setPrefectureId(Long prefectureId) {
 		this.prefectureId = prefectureId;
+	}
+	public Long getEntId() {
+		return entId;
+	}
+	public void setEntId(Long entId) {
+		this.entId = entId;
 	}
 	public String getStallName() {
 		return stallName;
@@ -189,6 +197,7 @@ public class ResOrder {
 		this.setEndTime(end);
 		this.setParkingTime(new Long((end.getTime()-start.getTime())/(60*1000L)).intValue());
 		this.setPlateNumber(ruo.getPlateNo());
+		this.setEntId(ruo.getEntId());
 		this.setPrefectureId(ruo.getPreId());
 		this.setStallId(ruo.getStallId());
 		this.setStatus(ruo.getStatus().shortValue());
