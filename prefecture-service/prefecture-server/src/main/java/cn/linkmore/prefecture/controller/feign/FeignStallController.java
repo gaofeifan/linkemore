@@ -132,7 +132,7 @@ public class FeignStallController {
 		return stallEntity;
 	}
 	
-	@RequestMapping(value = "/v2.0/find_list", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/stall-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStall> findStallList(@RequestBody Map<String, Object> param){
 		List<ResStall> list = this.stallService.findList(param);

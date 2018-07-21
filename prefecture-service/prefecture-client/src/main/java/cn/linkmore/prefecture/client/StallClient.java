@@ -98,7 +98,7 @@ public interface StallClient {
 	public ResStallEntity findByLock(@PathVariable("sn") String sn);
 	
 	
-	@RequestMapping(value = "/v2.0/find_list", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/stall-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStall> findStallList(@RequestBody Map<String, Object> param);
 	
