@@ -87,6 +87,9 @@
     <if test="status!=null">  
     and status = #{status}
     </if> 
+    <if test="type!=null">  
+    and type = #{type}
+    </if> 
     <if test="preId!=null">  
     and pre_id = #{preId}
     </if>
