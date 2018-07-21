@@ -7,7 +7,6 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqOrderStall;
-import cn.linkmore.prefecture.request.ReqPreStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
