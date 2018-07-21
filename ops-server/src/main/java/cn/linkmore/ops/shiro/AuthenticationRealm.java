@@ -58,7 +58,7 @@ public class AuthenticationRealm extends AuthorizingRealm {
 		String username = authenticationToken.getUsername();
 		String password = new String(authenticationToken.getPassword()); 
 		String ip = authenticationToken.getHost();
-		 
+		log.info("username {} password {}", username , password); 
 		if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
 			ResPerson person = this.personService.findByUsername(username); 
 			if (person == null) {

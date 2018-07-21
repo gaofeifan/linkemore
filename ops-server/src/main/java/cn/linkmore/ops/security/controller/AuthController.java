@@ -11,12 +11,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.ops.security.request.ReqPerson;
 import cn.linkmore.ops.security.response.ResPerson;
@@ -38,7 +42,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/admin/auth")
 public class AuthController {
-
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private PersonService personService;
 
@@ -48,6 +52,7 @@ public class AuthController {
 	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
+		log.info("session person {}, request method{}",JSON.toJSON(person),request.getMethod());
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (person != null) {
 			map.put("login", true);
@@ -141,6 +146,8 @@ public class AuthController {
 		Subject subject = SecurityUtils.getSubject();
 		subject.getSession().removeAttribute("person");
 		subject.logout();
+		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
+		log.info("logout session person {}",JSON.toJSON(person));
 		map.put("logout", true);
 		map.put("timestamp", new Date().getTime());
 		return map;
