@@ -79,6 +79,11 @@ public class FeignUserControlle {
 		this.userService.updateVehicle(req);
 	}*/
 	
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
+	@ResponseBody
+	public ResUser save(@RequestBody ResUser user) {
+		return userService.save(user);
+	}
 	
 	/**
 	 * @Description  查询详情

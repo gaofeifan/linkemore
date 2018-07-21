@@ -170,7 +170,7 @@ public interface UserClient {
 	@ResponseBody
 	public ResUser getUserByUserName(@RequestBody Map<String, Object> param);
 
-	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
 	public ResUser save(@RequestBody ResUser user);
 	

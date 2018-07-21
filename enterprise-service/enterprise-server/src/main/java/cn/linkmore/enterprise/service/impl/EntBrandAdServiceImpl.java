@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.client.CouponClient;
@@ -115,6 +117,8 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 						return null;
 					}
 				}
+			}else {
+				return null;
 			}
 			
 			CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
@@ -163,6 +167,9 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		ResEntBrandAd resEntBrandAd = null;
 		ResBrandAd resBrandAd = null;
 		ResBrandPre brandPre = this.entBrandPreClusterMapper.findById(id);
+		if(brandPre == null) {
+			throw new BusinessException(StatusEnum.VALID_EXCEPTION);
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("entId", brandPre.getEntId());
 		map.put("preId", brandPre.getPreId());

@@ -1,5 +1,6 @@
 package cn.linkmore.enterprise.controller.app.request;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -11,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class ReqBrandApplicant {
 	
 	@ApiModelProperty(value = "企业ID", required = true)
-	@NotBlank(message="企业ID不能为空") 
+	@Min(value=0,message="企业ID为大于0的长整数")
 	private Long entId;
 	
 	@ApiModelProperty(value = "手机号，必填", required = true)
