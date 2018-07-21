@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.enterprise.controller.ent.request.ReqOperatStall;
 import cn.linkmore.enterprise.controller.ent.request.ReqPreStall;
+import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
+import cn.linkmore.enterprise.controller.ent.response.ResOperatStall;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.redis.RedisService;
@@ -66,12 +69,44 @@ public class EntStallController {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 		if(ru == null){
-			list = new ArrayList<ResStall>();
+			list = new ArrayList<>();
 			return list;
 		}
-//		list = entStallService.selectStalls(reqPreStall.);
+		if(reqPreStall == null){
+			list = new ArrayList<>();
+			return list;
+		}
+		list = entStallService.selectStalls(ru.getId(),reqPreStall.getPreId(),reqPreStall.getType());
 		return list;
 	}
 	 
-
+	@ApiOperation(value = "查询车位详细信息", notes = "查询车位详细信息", consumes = "application/json")
+	@RequestMapping(value = "/select-detail-stalls",method = RequestMethod.POST)
+	@ResponseBody
+	public ResDetailStall selectEntDetailStalls(Long stall_id ,HttpServletRequest request){
+		if(stall_id == null){
+			return null;
+		}
+		ResDetailStall detailStall = this.entStallService.selectEntDetailStalls(stall_id);
+		return detailStall;
+	}
+	
+	@ApiOperation(value = "操作车位", notes = "操作车位", consumes = "application/json")
+	@RequestMapping(value = "/operate-stall",method = RequestMethod.POST)
+	@ResponseBody
+	public ResOperatStall selectEntDetailStalls(@RequestBody ReqOperatStall reqOperatStall,HttpServletRequest request){
+		
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		if(ru == null){
+			return null;
+		}
+		
+		if(reqOperatStall == null){
+			return null;
+		}
+		return null;
+	}
+	
+	
 }

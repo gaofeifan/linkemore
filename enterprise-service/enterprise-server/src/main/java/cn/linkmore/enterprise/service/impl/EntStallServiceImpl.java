@@ -11,10 +11,16 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.linkmore.lock.bean.LockBean;
+import com.linkmore.lock.factory.LockFactory;
+import com.linkmore.lock.response.ResponseMessage;
+
 import cn.linkmore.bean.common.Constants.StallStatus;
+import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResEntTypeStalls;
 import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.EntAuthStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
@@ -23,6 +29,8 @@ import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.response.ResStall;
+import cn.linkmore.prefecture.response.ResStallEntity;
+import cn.linkmore.util.StringUtil;
 
 /**
  * @author luzhishen
@@ -42,7 +50,13 @@ public class EntStallServiceImpl implements EntStallService {
 	private EntPrefectureClusterMapper entPrefectureClusterMapper;
 	
 	@Autowired
+	private EntAuthStallClusterMapper entAuthStallClusterMapper;
+	
+	@Autowired
 	private StallClient stallClient;
+	
+	@Autowired
+	private LockFactory lockFactory;
 	
 	@Override
 	public List<ResEntStalls> selectEntStalls(Long id) {
@@ -155,10 +169,62 @@ public class EntStallServiceImpl implements EntStallService {
 			tempStalls.setPreUseTypeStalls(preTempUseTypeStalls);
 			typeSum.put("temp", tempStalls);
 			resEntStalls.setTypeStalls(typeSum);
-			
 			entStallList.add(resEntStalls);
 		}
 		return entStallList;
+	}
+
+	@Override
+	public List<ResStall> selectStalls(Long staffId,Long preId, Short type) {
+		
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("staffId", staffId);
+		map.put("status", 1);
+		List<EntStaffAuth> entStaffAuths= entStaffAuthClusterMapper.findList(map);
+		int size = entStaffAuths.size();
+		if(size == 0){
+			return new ArrayList<ResStall>();
+		}
+		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
+		Map<String, Object> param = new HashMap<String,Object>();
+		param.put("authId", entStaffAuth.getAuthId());
+		List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
+		
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("preId", preId);
+		params.put("type", type);
+		List<ResStall> stalls = null;
+		
+		for(ResStall resStall:stalls){
+			//临停
+			if(resStall.getType() == 1){
+				
+			}
+			//长租
+			if(resStall.getType() == 2){
+				
+			}
+			//vip
+			if(resStall.getType() == 3){
+				
+			}
+		}
+		return stalls;
+	}
+
+	@Override
+	public ResDetailStall selectEntDetailStalls(Long stallId) {
+		ResStallEntity resStallEntity= this.stallClient.findById(stallId);
+		if(StringUtil.isBlank(resStallEntity.getLockSn())){
+			return null;
+		}
+		ResponseMessage<LockBean> res= lockFactory.getLockInfo(resStallEntity.getLockSn());
+		LockBean lockBean=res.getData();
+		ResDetailStall resDetailStall = new ResDetailStall();
+		resDetailStall.setBetty(lockBean.getElectricity());
+		resDetailStall.setSlaveCode(resStallEntity.getLockSn());
+		resDetailStall.setStatus(lockBean.getLockState());
+		return resDetailStall;
 	}
 
 }
