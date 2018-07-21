@@ -62,7 +62,7 @@ public class EntStallServiceImpl implements EntStallService {
 			resEntStalls = new ResEntStalls();
 			params = new HashMap<String,Object>();
 			params.put("preId", entAuthPre.getPreId());
-			stallClient.findList(params);
+//			stallClient.
 		}
 		return null;
 	}
