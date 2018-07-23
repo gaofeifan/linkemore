@@ -31,7 +31,6 @@ public enum StatusEnum {
 	ACCOUNT_PLATE_EXISTS(8003022,"添加失败,车牌号已存在! "), 
 	ACCOUNT_PLATE_NONE(8003023 ,"删除失败,车牌号不存在 "), 
 	
-	
 	COUPON_USER_NO_EQUIRE(8004001,"非当前用户停车券"),
 	
 	
@@ -80,7 +79,13 @@ public enum StatusEnum {
 	ORDER_REASON_CARNO_NONE(8005038,"无空闲车位，请重新预约"),
 	ORDER_REASON_SWITCHSTALL_ORDINARY_FAIL(8005051,"更换车位失败，请点击结账离场；若产生费用，请联系客服"),
 	ORDER_REASON_SWITCHSTALL_FAIL(8005052,"切换车位失败"),
-	ORDER_LOCKUP_FAIL(8005060,"升起地锁失败！");
+	ORDER_LOCKUP_FAIL(8005060,"升起地锁失败！"),
+	
+	BRAND_APPLICANT_FAIL(8005061,"你已申请过该品牌专享车位资格，请等待审核"),
+	BRAND_APPLICANT_ENT_FAIL(8005062,"申请企业信息不存在"),
+	BRAND_APPLICANT_ENT_BRAND_FAIL(8005063,"当前企业未投放品牌广告"),
+	BRAND_APPLICANT_ENT_BRAND_AD_FAIL(8005064,"今日品牌活动推广已结束");
+	
 	public int code;
 	public String label;
 

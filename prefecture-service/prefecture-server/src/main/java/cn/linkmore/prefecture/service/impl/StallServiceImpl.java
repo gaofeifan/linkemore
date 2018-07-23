@@ -417,9 +417,13 @@ public class StallServiceImpl implements StallService {
 				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
 				this.stallMasterMapper.offline(stall);
 			}
-			
 		}
-		
+	}
+
+	@Override
+	public List<ResStall> findStallList(List<Long> stallIds) {
+		List<ResStall> list = this.stallClusterMapper.findTreeList(stallIds);
+		return list;
 	}
 	
 	

@@ -120,7 +120,6 @@ public class AppUserController {
 		return ResponseEntity.success(null, request);
 	}
 	
-	
 	/**
 	 * @Description  查询详情
 	 * @Author   GFF 

@@ -120,7 +120,7 @@ public class Constants {
 	}
 
 	public enum ClientSource {
-		WXAPP(0), ANDROID(1), IOS(2);
+		WXAPP(0), ANDROID(1), IOS(2),APPLET(3);
 		public int source;
 
 		private ClientSource(int source) {
@@ -224,7 +224,9 @@ public class Constants {
 		SHARE_COUPON_NOTICE(2,"share_coupon_notice"), 
 		ORDER_SUSPEND_NOTICE(3,"order_suspend_notice"),  
 		ORDER_SEARCH_NOTICE_(4, "order_search_notice"),
-		ORDER_CLOSED_NOTICE(5,"order_closed_coupon_notice");
+		ORDER_CLOSED_NOTICE(5,"order_closed_coupon_notice"),
+		BRAND_USER_INVITE_NOTICE(6,"share_coupon_notice"),
+		UN_BRAND_USER_INVITE_NOTICE(7,"share_coupon_notice");
 		public int type;
 		public String id;
 
@@ -256,9 +258,14 @@ public class Constants {
 		USER_APP_AUTH_USER("user_app:auth:user:"), 
 		USER_APP_AUTH_CODE("user_app:auth:code:"), 
 		USER_APP_AUTH_MOBILE("user_app:auth:mobile:"), 
+		STAFF_ENT_AUTH_TOKEN("staff_ent:auth:uid:"), 
+		STAFF_ENT_AUTH_USER("staff_ent:auth:user:"), 
+		STAFF_ENT_AUTH_CODE("staff_ent:auth:code:"), 
+		STAFF_ENT_AUTH_MOBILE("staff_ent:auth:mobile:"), 
 		USER_APP_USER_CODE("user_app:user:code:"), 
 		USER_APP_USER_MOBILE("user_app:user:mobile:"), 
 		USER_APP_USER_CHANGE_MOBILE("user_app:user:change-mobile:"), 
+		USER_APP_BRAND_COUPON("user_app:brand:coupon:"),
 		COMMON_CAR_BRAND_LIST("common:car-brand:"), 
 		COUPON_TEMPLATE_CONDITION_USETIME("COUPON_TEMP_CONDITION_USETIME:"), 
 		COUPON_TEMPLATE_CONDITION_PREIDS( "COUPON_TEMP_CONDITION_PREIDS:"),

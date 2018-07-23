@@ -132,4 +132,11 @@ public interface StallService {
 	 * @param id
 	 */
 	void close(Long id);
+	
+	/**
+	 * 查询车位列表
+	 * @param stallIds
+	 * @return
+	 */
+	List<ResStall> findStallList(List<Long> stallIds);
 }

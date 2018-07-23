@@ -247,5 +247,25 @@ public interface UserService {
 	 */
 	cn.linkmore.account.controller.app.response.ResUser bindNormalMobile(ReqMobileBind rmb, HttpServletRequest request);
 
+	/**
+	 * @Description  通过手机号获取用户id
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Long getUserIdByMobile(String mobile);
+
+	/**
+	 * @Description  通过手机号批量获取用户id
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Map<String, Long> getUserMapByMobile(List<String> mobile);
+	/**
+	 * 创建用户
+	 * @param user
+	 * @return
+	 */
+	ResUser save(ResUser user);
+
 
 }

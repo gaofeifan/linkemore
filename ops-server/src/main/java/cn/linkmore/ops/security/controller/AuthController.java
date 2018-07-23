@@ -7,18 +7,27 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
+
+import cn.linkmore.ops.security.request.ReqPerson;
 import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.security.service.PersonService;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.PasswordUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -33,7 +42,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/admin/auth")
 public class AuthController {
-
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private PersonService personService;
 
@@ -43,6 +52,7 @@ public class AuthController {
 	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
+		log.info("session person {}, request method{}",JSON.toJSON(person),request.getMethod());
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (person != null) {
 			map.put("login", true);
@@ -136,21 +146,38 @@ public class AuthController {
 		Subject subject = SecurityUtils.getSubject();
 		subject.getSession().removeAttribute("person");
 		subject.logout();
+		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
+		log.info("logout session person {}",JSON.toJSON(person));
 		map.put("logout", true);
 		map.put("timestamp", new Date().getTime());
 		return map;
 	}
 
 	@ApiOperation(value = "更新密码", notes = "更新密码", consumes = "application/json")
-	@RequestMapping(value = "/update_password", method = RequestMethod.GET)
+	@RequestMapping(value = "/update_password", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> updatePasswrod(@RequestParam("oldPassword") String oldPassword,
 			@RequestParam("password") String password) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
+		ResPerson resPerson = this.personService.findByUsername(person.getUsername());
+		ReqPerson reqPerson = ObjectUtils.copyObject(resPerson, new ReqPerson());
 		try {
-			this.personService.updatePassword(person, oldPassword, password);
+			if(StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)){
+				throw new RuntimeException("密码不能为空");
+			}
+			if(StringUtils.isNotBlank(reqPerson.getPassword())){
+				if(PasswordUtil.checkPassword(oldPassword, reqPerson.getPassword())){
+					reqPerson.setPassword(password);
+					this.personService.update(reqPerson);
+					subject.getSession().removeAttribute("person");
+					subject.logout();
+					map.put("logout", true);
+				}else{
+					throw new RuntimeException("原始密码错误");
+				}
+			}
 			map.put("update", true);
 		} catch (RuntimeException e) {
 			map.put("update", false);

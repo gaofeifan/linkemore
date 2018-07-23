@@ -6,10 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
@@ -759,7 +759,7 @@ public class UserServiceImpl implements UserService {
 		param.put("value", null);
 		param.put("id", ru.getId());
 		param.put("updateTime", new Date());
-		this.userMasterMapper.updateByColumn(param );
+		this.userMasterMapper.updateByColumn(param);
 	}
 /*	@Override
 	public void updateRealname(String accountName, HttpServletRequest request) {
@@ -957,4 +957,62 @@ public class UserServiceImpl implements UserService {
 		param.put("fansStatus",fansStaus);
 		this.userMasterMapper.updateFansStatus(param);
 	}
+
+	@Override
+	public Long getUserIdByMobile(String mobile) {
+		ResUser user = this.userClusterMapper.findByMobile(mobile);
+		return user.getId();
+	}
+
+	@Override
+	public Map<String,Long> getUserMapByMobile(List<String> mobile) {
+		Map<String,Long> ids = new HashMap<>();
+		List<ResUser> users = this.userClusterMapper.findListByMobile(mobile);
+		for (String name : mobile) {
+			for (ResUser resUser : users) {
+				if(name.equals(resUser.getUsername())) {
+					ids.put(name, resUser.getId());
+					break;
+				}
+			}
+			ResUser user = new ResUser();
+			user.setMobile(name);
+			user.setUsername(name);
+			user.setPassword("");
+			user.setUserType("1");
+			user.setStatus("1");
+			user.setLastLoginTime(new Date());
+			user.setCreateTime(new Date());
+			user.setUpdateTime(new Date());
+			user.setIsAppRegister((short) 1);
+			user.setAppRegisterTime(new Date());
+			user.setIsWechatBind((short) 0);
+			user.setFansStatus((short)0);
+			this.userMasterMapper.save(user);
+			Account account = new Account();
+			account.setId(user.getId());
+			account.setAmount(0.00d);
+			account.setUsableAmount(0.00d);
+			account.setFrozenAmount(0.00d);
+			account.setRechagePaymentAmount(0.00d);
+			account.setRechargeAmount(0.00d);
+			account.setAccType(1);
+			account.setStatus((short) 1);
+			account.setOrderAmount(0.00d);
+			account.setOrderPaymentAmount(0.00d);
+			account.setCreateTime(new Date());
+			accountMasterMapper.insert(account);
+			ids.put(name, user.getId());
+		}
+		return ids;
+	}
+
+	@Override
+	public ResUser save(ResUser user) {
+		log.info("user {}",JSON.toJSON(user));
+		this.userMasterMapper.save(user);
+		log.info("userId {}",user.getId());
+		return user;
+	}
+	
 }

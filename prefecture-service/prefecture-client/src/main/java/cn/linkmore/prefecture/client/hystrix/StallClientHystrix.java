@@ -2,14 +2,10 @@ package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -17,6 +13,7 @@ import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
@@ -60,6 +57,18 @@ public class StallClientHystrix implements StallClient {
 	public Boolean checkout(Long stallId) {
 		log.info("prefecture service stall checkout(Long stallId) hystrix");
 		return false;
+	}
+	
+	@Override
+	public List<ResStall> findStallList(Map<String, Object> param) {
+		log.info("prefecture service stall findStallList(Map param) hystrix");
+		return null;
+	}
+	
+	@Override
+	public List<ResStall> findPreStallList(List<Long> stallIds) {
+		log.info("prefecture service stall findPreStallList(List<Long> stallIds) hystrix");
+		return null;
 	}
 
 	@Override
@@ -144,5 +153,5 @@ public class StallClientHystrix implements StallClient {
 		log.info("prefecture service List<ResStallOps> findList(Map<String, Object> param) hystrix");
 		return null;
 	}
-	
+
 }

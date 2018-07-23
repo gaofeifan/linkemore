@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.request.ReqPreOrderCount;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderPlate;
+import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.request.ReqOrderStall;
@@ -50,4 +53,22 @@ public class FeignOrderController {
 	List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean){
 		return this.ordersService.exportList(bean);
 	}
+	
+	@RequestMapping(value = "/by-stall", method = RequestMethod.POST)
+	@ResponseBody
+	List<ResPreOrderCount> findPreCountByIds(@RequestBody List<Long> ids){
+		return this.ordersService.findPreCountByIds(ids);
+	}
+	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/plate-by-preid", method = RequestMethod.POST)
+	@ResponseBody
+	List<ResOrderPlate> findPlateByPreId(@RequestParam("preId")Long preId){
+		return this.ordersService.findPlateByPreId(preId);
+	}
+	
 }

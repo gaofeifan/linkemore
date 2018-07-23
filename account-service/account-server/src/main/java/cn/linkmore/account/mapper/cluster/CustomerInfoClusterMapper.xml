@@ -61,7 +61,7 @@
 		LEFT JOIN t_user u on c.id = u.id 
 		where 1 = 1
     <if test="operator!=null">
-		AND s.realname LIKE #{operator}
+		AND s.realname like #{operator}
 	</if>
     <if test="createTime!=null">
     <![CDATA[and DATE_FORMAT(c.create_time,'%Y-%m-%d') >= #{createTime}]]>

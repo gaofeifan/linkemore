@@ -41,4 +41,16 @@ public class CouponClientHystrix implements CouponClient {
 		return false;
 	}
 
+	@Override
+	public boolean sendBrandCoupon(Boolean isBrandUser, Long entId, Long userId) {
+		log.info("coupon client hystrix sendBrandCoupon userId {}",userId);
+		return false;
+	}
+
+	@Override
+	public List<ResCoupon> findBrandCouponList(Long entId, Long userId) {
+		log.info("coupon client hystrix findBrandCouponList userId {}",userId);
+		return null;
+	}
+
 }

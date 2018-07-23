@@ -9,7 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.request.ReqBind;
@@ -137,10 +140,24 @@ public class UserClientHystrix implements UserClient{
 
 	@Override
 	public ResUser save(ResUser user) {
-		log.info("account service ResUser getUserByUserName(Map<String, Object> param) hystrix"); 
+		log.info("account service ResUser save(ResUser user) hystrix"); 
 		return null;
 	}
 	
+
+	@RequestMapping(value = "/by-mobile", method = RequestMethod.GET)
+	@ResponseBody
+	public Long getUserIdByMobile(@RequestParam("mobile") String mobile) {
+		log.info("account service ResUser getUserByUserName(Map<String, Object> param) hystrix");
+		return null;
+	}
+	
+	@RequestMapping(value = "/by-mobile", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Long> getUserMapByMobile(@RequestBody List<String> mobile) {
+		log.info("account service ResUser getUserByUserName(Map<String, Object> param) hystrix");
+		return null;
+	}
 	
 	
 	

@@ -12,6 +12,8 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderPlate;
+import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResUserOrder;
 
 @Component
@@ -40,6 +42,19 @@ public class OrderClientHystrix implements OrderClient {
 		log.info("downMsgPush order :{}",bean);
 		return null;
 	}
+
+	@Override
+	public List<ResPreOrderCount> findPreCountByIds(List<Long> ids) {
+		log.info("feign order List<ResPreOrderCount> findPreCountByIds(List<Long> ids) ");
+		return null;
+	}
+
+	@Override
+	public List<ResOrderPlate> findPlateByPreId(Long preId) {
+		log.info("feign order List<ResOrderPlate> findPlateByPreId(Long preId) ");
+		return null;
+	}
+	
 	
 	
 	

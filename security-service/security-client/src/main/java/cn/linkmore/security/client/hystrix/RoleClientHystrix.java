@@ -13,6 +13,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.client.RoleClient;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqRole;
+import cn.linkmore.security.response.ResRole;
 /**
  * 远程调用实现 - 角色信息
  * @author jiaohanbin
@@ -69,4 +70,7 @@ public class RoleClientHystrix implements RoleClient {
 	public void bind(Long id, String pids, String eids) {
 		log.info("role bind");
 	}
+
+	
+	
 }

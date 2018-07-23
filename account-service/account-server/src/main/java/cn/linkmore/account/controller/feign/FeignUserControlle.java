@@ -1,6 +1,7 @@
 package cn.linkmore.account.controller.feign;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.request.ReqUpdateAccount;
 import cn.linkmore.account.request.ReqUpdateMobile;
@@ -78,6 +81,12 @@ public class FeignUserControlle {
 		this.userService.updateVehicle(req);
 	}*/
 	
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
+	@ResponseBody
+	public ResUser save(@RequestBody ResUser user) {
+		log.info("----------user---------"+JSON.toJSON(user));
+		return userService.save(user);
+	}
 	
 	/**
 	 * @Description  查询详情
@@ -194,5 +203,17 @@ public class FeignUserControlle {
 	@ResponseBody
 	public ResUser getUserByUserName(@RequestParam("userName") String userName) {
 		return this.userService.getUserByUserName(userName);
+	}
+	
+	@RequestMapping(value = "/by-mobile", method = RequestMethod.GET)
+	@ResponseBody
+	public Long getUserIdByMobile(@RequestParam("mobile") String mobile) {
+		return this.userService.getUserIdByMobile(mobile);
+	}
+	
+	@RequestMapping(value = "/by-mobile", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Long> getUserMapByMobile(@RequestBody List<String> mobile) {
+		return this.userService.getUserMapByMobile(mobile);
 	}
 }

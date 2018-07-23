@@ -1,6 +1,7 @@
 package cn.linkmore.coupon.dao.cluster;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -21,6 +22,12 @@ public interface CouponClusterMapper {
      * @return
      */
 	List<ResCoupon> findEnabledList(Long userId);
+	/**
+	 * 根据用户id和tempid查询当前用户已获得品牌优惠券列表
+	 * @param map
+	 * @return
+	 */
+	List<ResCoupon> findBrandCouponList(Map<String, Object> map);
  
 
 }
