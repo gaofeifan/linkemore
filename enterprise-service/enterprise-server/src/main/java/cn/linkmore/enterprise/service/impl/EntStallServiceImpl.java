@@ -191,10 +191,7 @@ public class EntStallServiceImpl implements EntStallService {
 		param.put("authId", entStaffAuth.getAuthId());
 		List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
 		
-		Map<String, Object> params = new HashMap<String,Object>();
-		params.put("preId", preId);
-		params.put("type", type);
-		List<ResStall> stalls = null;
+		List<ResStall> stalls = this.stallClient.findPreStallList(stallIds);
 		
 		for(ResStall resStall:stalls){
 			//临停
