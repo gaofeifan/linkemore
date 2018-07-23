@@ -138,7 +138,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			}
 			if (cu != null && cu.getId() != null) {
 				// 是否为授权用户
-				Integer num = entBrandUserClusterMapper.findBrandUser(prb.getEntId(), cu.getId());
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("entId", prb.getEntId());
+				map.put("userId", cu.getId());
+				Integer num = entBrandUserClusterMapper.findBrandUser(map);
 				// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
 				if (num > 0) {
 					prb.setBrandUserFlag(true);

@@ -18,10 +18,11 @@ public interface EntBrandUserClusterMapper {
 	 * @param userId
 	 * @return
 	 */
-	Integer findBrandUser(Long entId, Long userId);
+	Integer findBrandUser(Map<String, Object> map);
 
     EntBrandUser findById(Long id);
 
 	Integer check(Map<String, Object> param);
+
 
 }

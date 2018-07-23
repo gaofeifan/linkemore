@@ -2,6 +2,8 @@ package cn.linkmore.enterprise.controller.app;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +32,8 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags="Brand",description="品牌广告")
 @RequestMapping(value="/app/brands")
 public class AppEntBrandAdController {
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private EntBrandAdService entBrandAdService;

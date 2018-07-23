@@ -57,7 +57,7 @@
 		p.pre_name,
 		p.charge_price,
 		p.charge_time,
-		p.logo_url AS image_url,
+		p.logo_url,
 		v.city_id,
 		v.latitude,
 		v.longitude,
