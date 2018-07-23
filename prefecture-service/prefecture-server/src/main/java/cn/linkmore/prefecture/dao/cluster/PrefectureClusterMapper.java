@@ -2,11 +2,13 @@ package cn.linkmore.prefecture.dao.cluster;
 
 import java.util.List;
 import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
+import cn.linkmore.prefecture.response.ResPreGateway;
 import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 /**
@@ -58,6 +60,12 @@ public interface PrefectureClusterMapper {
 	List<cn.linkmore.prefecture.response.ResPrefecture> findPreList();
 
 	List<ResPrefectureDetail> findList(Map<String, Object> param);
+	
+	/**
+	 * 查询所有车区
+	 * @return
+	 */
+	List<ResPreGateway> findPreGateList();
 	
 	
 }

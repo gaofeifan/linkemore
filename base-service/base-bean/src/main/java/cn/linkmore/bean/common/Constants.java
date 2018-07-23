@@ -53,6 +53,21 @@ public class Constants {
 			this.type = type;
 		}
 	} 
+	public enum PrefectureStatus{
+		ONLINE(0),OFFLINE(1);
+		public int status;
+		private PrefectureStatus(int status) {
+			this.status = status;
+		}
+	}
+	
+	public enum PrefectureCategory{
+		COMMON(0),TEST(1),ENTERPRISE(2);
+		public int category;
+		private PrefectureCategory(int category) {
+			this.category = category;
+		}
+	}
 	public enum StallStatus{
 		FREE(1),USED(2),OUTLINE(4);
 		public int status;
@@ -201,7 +216,7 @@ public class Constants {
 		}
 	}
 	public enum LockStatus{
-		UP(1),DOWN(2); 
+		DOWN(0),UP(1),DOWNING(2),UPING(3); 
 		public int status;
 		private LockStatus(int status) {
 			this.status = status;
