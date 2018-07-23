@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.service;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,19 +11,14 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.bouncycastle.crypto.tls.HashAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
-import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.security.CacheUser;
-import cn.linkmore.enterprise.entity.EntAuthStall;
-import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.prefecture.client.PrefectureClient;
-import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.TokenUtil;
 
@@ -42,7 +38,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private PrefectureClient prefectureClient;
 	@Resource
 	private OrderClient orderClient;
-	@Autowired
 	@Override
 	public List<cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount> findPreList(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);

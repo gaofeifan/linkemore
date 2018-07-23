@@ -82,7 +82,9 @@ public enum StatusEnum {
 	ORDER_LOCKUP_FAIL(8005060,"升起地锁失败！"),
 	
 	BRAND_APPLICANT_FAIL(8005061,"你已申请过该品牌专享车位资格，请等待审核"),
-	BRAND_APPLICANT_ENT_FAIL(8005062,"申请企业信息不存在");
+	BRAND_APPLICANT_ENT_FAIL(8005062,"申请企业信息不存在"),
+	BRAND_APPLICANT_ENT_BRAND_FAIL(8005063,"当前企业未投放品牌广告"),
+	BRAND_APPLICANT_ENT_BRAND_AD_FAIL(8005064,"今日品牌活动推广已结束");
 	
 	public int code;
 	public String label;

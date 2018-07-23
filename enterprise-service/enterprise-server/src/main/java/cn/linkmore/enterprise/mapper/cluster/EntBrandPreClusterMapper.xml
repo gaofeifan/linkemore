@@ -48,7 +48,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
-  <select id="findBrandPre" parameterType="java.util.HashMap" resultMap="ReseResultMap">
+  <select id="findBrandPre" parameterType="java.util.HashMap" resultMap="ResResultMap">
     SELECT
 		p.id,
 		p.ent_id,
@@ -75,7 +75,7 @@
 	</if>
   </select>
   
-  <select id="findStaffBrandPre" parameterType="java.util.HashMap" resultMap="ReseResultMap">
+  <select id="findStaffBrandPre" parameterType="java.util.HashMap" resultMap="ResResultMap">
     SELECT
 		p.id,
 		p.ent_id,

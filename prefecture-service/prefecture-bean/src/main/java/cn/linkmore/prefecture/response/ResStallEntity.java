@@ -88,8 +88,32 @@ public class ResStallEntity {
 	 * 绑定订单状态
 	 */
     private Short bindOrderStatus;
+    /**
+     * 分类0自营，1临停，2长租，3VIP
+     */
+    private Short type;
+    /**
+     * 0普通 ，1品牌[自营属性]
+     */
+    private Short brand;
+    
+    public Short getType() {
+		return type;
+	}
 
-    public Long getId() {
+	public void setType(Short type) {
+		this.type = type;
+	}
+
+	public Short getBrand() {
+		return brand;
+	}
+
+	public void setBrand(Short brand) {
+		this.brand = brand;
+	}
+
+	public Long getId() {
         return id;
     }
 

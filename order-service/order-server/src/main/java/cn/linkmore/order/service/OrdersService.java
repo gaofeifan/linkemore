@@ -1,7 +1,6 @@
 package cn.linkmore.order.service;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.bean.view.ViewPage;
@@ -115,4 +114,11 @@ public interface OrdersService {
 	 * @Version  v2.0
 	 */
 	List<ResOrderPlate> findPlateByPreId(Long preId); 
+	/**
+	 * 品牌预约车位
+	 * @param rbb
+	 * @param request
+	 */
+	void brandCreate(ReqBrandBooking rbb, HttpServletRequest request);
+	
 }

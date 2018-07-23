@@ -14,6 +14,9 @@ public class ResEntBrandPre {
 	@ApiModelProperty(value = "空闲车位数量")
 	private Integer leisureStall;
 	
+	@ApiModelProperty(value = "凌猫车区空闲车位数量")
+	private Integer linkmoreLeisureStall;
+	
 	@ApiModelProperty(value = "经度")
 	private Double longitude;
 	
@@ -190,5 +193,13 @@ public class ResEntBrandPre {
 
 	public void setBrandUserFlag(Boolean brandUserFlag) {
 		this.brandUserFlag = brandUserFlag;
+	}
+
+	public Integer getLinkmoreLeisureStall() {
+		return linkmoreLeisureStall;
+	}
+
+	public void setLinkmoreLeisureStall(Integer linkmoreLeisureStall) {
+		this.linkmoreLeisureStall = linkmoreLeisureStall;
 	}
 }

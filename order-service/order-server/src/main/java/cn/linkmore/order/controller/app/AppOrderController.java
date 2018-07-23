@@ -21,6 +21,7 @@ import cn.linkmore.bean.common.Constants.SwitchResult;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.controller.app.request.ReqBooking;
+import cn.linkmore.order.controller.app.request.ReqBrandBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
@@ -59,6 +60,14 @@ public class AppOrderController {
 		return ResponseEntity.success(null, request);
 	}
 	
+	@ApiOperation(value = "品牌预约下单", notes = "品牌预约下单", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/brand-create", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> brandCreate(@RequestBody ReqBrandBooking rbb, HttpServletRequest request) {
+		this.ordersService.brandCreate(rbb, request);
+		return ResponseEntity.success(null, request);
+	}
+	
 	@ApiOperation(value = "切换车位回调", notes = "切换车位回调校验结果[0失败、1成功、2关闭订单]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/switch/result", method = RequestMethod.GET)
 	@ResponseBody
@@ -75,7 +84,7 @@ public class AppOrderController {
 	public ResponseEntity<?> switchStall( @RequestBody ReqSwitch rs, HttpServletRequest request) {
 		this.ordersService.switchStall(rs, request);
 		return ResponseEntity.success(null, request);
-	} 
+	}
 
 	@ApiOperation(value = "当前订单", notes = "结账离场[组织数据,计算费用，计算时长]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/current", method = RequestMethod.GET)

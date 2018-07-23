@@ -22,4 +22,7 @@
     from t_ent_auth_stall
     where auth_id = #{authId}
     </select>
+    <select id="findStallList" resultType="java.lang.Long" parameterType="java.util.Map">
+    	select stall_id from t_ent_auth_stall  where auth_id = #{authId}
+    </select>
 </mapper>

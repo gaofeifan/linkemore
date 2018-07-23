@@ -18,6 +18,7 @@ import cn.linkmore.prefecture.client.hystrix.StallClientHystrix;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
@@ -95,6 +96,16 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/lock/{sn}", method=RequestMethod.GET)
 	@ResponseBody
 	public ResStallEntity findByLock(@PathVariable("sn") String sn);
+	
+	
+	@RequestMapping(value = "/v2.0/stall-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStall> findStallList(@RequestBody Map<String, Object> param);
+	
+	@RequestMapping(value = "/v2.0/pre-stall-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStall> findPreStallList(@RequestBody List<Long> stallIds);
+	
 	
 	/*****************************************************************/
 	

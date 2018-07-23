@@ -18,6 +18,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
@@ -129,6 +130,20 @@ public class FeignStallController {
 	public ResStallEntity findByLock(@PathVariable("sn") String sn) {
 		ResStallEntity stallEntity = this.stallService.findByLock(sn);
 		return stallEntity;
+	}
+	
+	@RequestMapping(value = "/v2.0/pre-stall-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStall> findPreStallList(@RequestBody List<Long> stallIds){
+		List<ResStall> list = this.stallService.findStallList(stallIds);
+		return list;
+	}
+	
+	@RequestMapping(value = "/v2.0/stall-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStall> findStallList(@RequestBody Map<String, Object> param){
+		List<ResStall> list = this.stallService.findList(param);
+		return list;
 	}
 	
 	@RequestMapping(value = "/v2.0/find-list", method = RequestMethod.POST)

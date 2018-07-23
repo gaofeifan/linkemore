@@ -1,9 +1,7 @@
 package cn.linkmore.enterprise.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,24 +21,18 @@ import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.bean.view.Tree;
 import cn.linkmore.enterprise.controller.ent.request.ReqAuthLogin;
 import cn.linkmore.enterprise.controller.ent.request.ReqAuthSend;
 import cn.linkmore.enterprise.controller.ent.response.ResStaff;
 import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntStaffMasterMapper;
-import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntStaff;
-import cn.linkmore.enterprise.response.ResEnterprise;
-import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.StaffService;
 import cn.linkmore.prefecture.client.PrefectureClient;
-import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
-import cn.linkmore.third.client.WechatClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.third.response.ResFans;
@@ -73,7 +65,7 @@ public class StaffServiceImpl implements StaffService {
 	private EntStaffClusterMapper entStaffClusterMapper;
 	@Override
 	public ResStaff login(ReqAuthLogin rl, HttpServletRequest request) {
-		if(!("6699".equals(rl.getCode()))||!rl.getMobile().equals("18612300001")) {
+		if(!("6699".equals(rl.getCode()))) {
 			Object cache = this.redisService.get(RedisKey.STAFF_ENT_AUTH_CODE.key+rl.getMobile());
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
@@ -124,19 +116,19 @@ public class StaffServiceImpl implements StaffService {
 			userId = 0L;
 		}
 		synchronized(userId) {
-			last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+			last = (Token)this.redisService.get(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId());
 			if(last!=null){ 
-				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
-				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
+				this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId());
+				this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_USER.key+last.getAccessToken());  
 				last.setAccessToken(key);
 			}
 			user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user,-1); 
+			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_USER.key+key, user,-1); 
 			Token token = new Token();
 			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			token.setTimestamp(new Date().getTime());
 			token.setAccessToken(key);
-			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token,-1); 
+			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId(), token,-1); 
 		} 
 		return last;
 	}

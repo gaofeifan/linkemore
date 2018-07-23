@@ -1,7 +1,6 @@
 package cn.linkmore.enterprise.controller.ent;
 
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 

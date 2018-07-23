@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.linkmore.enterprise.controller.app.request;
+package cn.linkmore.enterprise.controller.ent.request;
 
 import io.swagger.annotations.ApiModel;
 

@@ -260,6 +260,12 @@ public interface UserService {
 	 * @Version  v2.0
 	 */
 	Map<String, Long> getUserMapByMobile(List<String> mobile);
+	/**
+	 * 创建用户
+	 * @param user
+	 * @return
+	 */
+	ResUser save(ResUser user);
 
 
 }

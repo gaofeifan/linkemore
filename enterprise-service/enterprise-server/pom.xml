@@ -7,28 +7,28 @@
 		<groupId>cn.linkmore</groupId>
 		<artifactId>enterprise-service</artifactId>
 		<version>2.0.0.1-RELEASE</version>
-	</parent> 
-	<artifactId>enterprise-server</artifactId> 
+	</parent>
+	<artifactId>enterprise-server</artifactId>
 	<name>enterprise-server</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
 		<dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency> 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-zipkin</artifactId>
-        </dependency>
-        <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-zipkin</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>de.codecentric</groupId>
 			<artifactId>spring-boot-admin-starter-client</artifactId>
 			<version>${spring-boot-admin.version}</version>
@@ -42,12 +42,12 @@
 			<groupId>cn.linkmore</groupId>
 			<artifactId>mysql-service</artifactId>
 			<version>${project.version}</version>
-		</dependency> 
-		 <dependency>
+		</dependency>
+		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>redis-service</artifactId>
 			<version>${project.version}</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>
@@ -57,8 +57,8 @@
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-util</artifactId>
 			<version>${project.version}</version>
-		</dependency> 
-        <dependency>
+		</dependency>
+		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>coupon-bean</artifactId>
 			<version>${project.version}</version>
@@ -78,13 +78,13 @@
 			<artifactId>common-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>coupon-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>security-client</artifactId>
@@ -104,8 +104,41 @@
 			<groupId>cn.linkmore</groupId>
 			<artifactId>third-party-client</artifactId>
 			<version>${project.version}</version>
-		</dependency> 
+		</dependency>
+
+		<dependency>
+			<groupId>com.linkmore</groupId>
+			<artifactId>linkmore-lock-sdk</artifactId>
+			<version>${linkmore-lock-sdk.version}</version>
+		</dependency>
 	</dependencies>
+	
+	<repositories> 
+        <repository> 
+            <id>nexus</id> 
+            <name>rongxin private nexus</name> 
+            <url>http://192.168.1.217:8081/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases> 
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots> 
+        </repository> 
+    </repositories> 
+    <pluginRepositories> 
+        <pluginRepository> 
+            <id>nexus</id> 
+            <name>rongxin private nexus</name> 
+            <url>http://192.168.1.217:8081/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases> 
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots> 
+        </pluginRepository> 
+    </pluginRepositories>
 
 	<dependencyManagement>
 		<dependencies>
@@ -126,5 +159,5 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build> 
+	</build>
 </project>
