@@ -139,4 +139,10 @@ public interface StallService {
 	 * @return
 	 */
 	List<ResStall> findStallList(List<Long> stallIds);
+	/**
+	 * 根据类型和stallIds查询车位信息
+	 * @param param
+	 * @return
+	 */
+	List<ResStall> findPreStallList(Map<String, Object> param);
 }

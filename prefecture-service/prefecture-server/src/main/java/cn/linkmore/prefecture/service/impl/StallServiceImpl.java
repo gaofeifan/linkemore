@@ -425,6 +425,12 @@ public class StallServiceImpl implements StallService {
 		List<ResStall> list = this.stallClusterMapper.findTreeList(stallIds);
 		return list;
 	}
+
+	@Override
+	public List<ResStall> findPreStallList(Map<String, Object> param) {
+		List<ResStall> list = this.stallClusterMapper.findPreStallList(param);
+		return list;
+	}
 	
 	
 }

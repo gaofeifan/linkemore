@@ -104,7 +104,7 @@ public interface StallClient {
 	
 	@RequestMapping(value = "/v2.0/pre-stall-list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStall> findPreStallList(@RequestBody List<Long> stallIds);
+	public List<ResStall> findPreStallList(@RequestBody Map<String, Object> param);
 	
 	
 	/*****************************************************************/

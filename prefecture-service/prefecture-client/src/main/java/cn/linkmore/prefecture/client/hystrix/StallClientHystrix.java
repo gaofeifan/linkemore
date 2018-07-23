@@ -66,8 +66,8 @@ public class StallClientHystrix implements StallClient {
 	}
 	
 	@Override
-	public List<ResStall> findPreStallList(List<Long> stallIds) {
-		log.info("prefecture service stall findPreStallList(List<Long> stallIds) hystrix");
+	public List<ResStall> findPreStallList(Map<String, Object> param) {
+		log.info("prefecture service stall findPreStallList(Map<String, Object> param) hystrix");
 		return null;
 	}
 
