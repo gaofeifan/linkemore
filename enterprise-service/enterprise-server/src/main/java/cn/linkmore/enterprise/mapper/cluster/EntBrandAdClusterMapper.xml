@@ -39,8 +39,13 @@
     select 
     <include refid="Base_Column_List" />
     from t_ent_brand_ad
-    where screen = 0 and status = 1 and ent_id = #{entId,jdbcType=BIGINT}
-    and pre_id = #{preId, jdbcType=BIGINT}
+    where screen = 0 and status = 1 
+    <if test="entId!=null">
+    	 and ent_id = #{entId,jdbcType=BIGINT}
+    </if>
+    <if test="preId!=null">
+    	 and pre_id = #{preId, jdbcType=BIGINT}
+    </if>
   </select>
   
 </mapper>
