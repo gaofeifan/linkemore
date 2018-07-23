@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +36,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
+import cn.linkmore.notice.client.UserSocketClient;
 import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqPayConfirm;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
@@ -79,7 +79,6 @@ import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.ApplePayClient;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
-import cn.linkmore.third.client.WebsocketClient;
 import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqAppWechatOrder;
@@ -179,7 +178,7 @@ public class PayServiceImpl implements PayService {
 	private PushClient pushClient;
 	
 	@Autowired
-	private WebsocketClient websocketClient;
+	private UserSocketClient userSocketClient;
 	 
 
 	@Override
@@ -761,7 +760,8 @@ public class PayServiceImpl implements PayService {
 			map.put("type", type.id);
 			map.put("content", content);
 			map.put("status", status);
-			this.websocketClient.push(JsonUtil.toJson(map), token.getAccessToken());
+			CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+token.getAccessToken());
+			userSocketClient.push(JsonUtil.toJson(map),cu.getOpenId());
 		}else {
 			ReqPush rp = new ReqPush();
 			rp.setAlias(uid);

@@ -12,11 +12,15 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisNode;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -134,6 +138,20 @@ public class RedisConfig extends CachingConfigurerSupport {
 		return redisTemplate;
 	}
 	
+	
+	@Bean  
+    RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,  
+                                            MessageListenerAdapter listenerAdapter) {   
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();  
+        container.setConnectionFactory(connectionFactory);    
+        container.addMessageListener(listenerAdapter, new PatternTopic(redisProperties.getChannel()));   
+        return container;  
+    }  
+  
+    @Bean  
+    MessageListenerAdapter listenerAdapter(RedisMessageHandler handler) {   
+        return new MessageListenerAdapter(handler, "handle");  
+    }   
 	
 	
 	@Value("${server.session.timeout}")

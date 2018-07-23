@@ -40,7 +40,9 @@ public class WechatMiniServiceImpl implements WechatMiniService {
 		param.put("appid", WechatMiniConfig.getAppId());
 		param.put("secret", WechatMiniConfig.getAppSecret());
 		param.put("js_code", code);
+		log.info("param:{}",JsonUtil.toJson(param));
 		String json = HttpUtil.sendGet(SESSION_URL, param);
+		log.info("result:{}",json);
 		ResMiniSession rms = JsonUtil.toObject(json, ResMiniSession.class);
 		return rms;
 	}

@@ -52,5 +52,6 @@
   		<module>enterprise-service</module>
   		<module>report-service</module>
   		<module>monitor-service</module>
+  		<module>notice-service</module>
   	</modules>
 </project>
