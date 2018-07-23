@@ -47,6 +47,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.coupon.client.CouponClient;
+import cn.linkmore.notice.client.UserSocketClient;
 import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqBrandBooking;
@@ -80,7 +81,6 @@ import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
-import cn.linkmore.third.client.WebsocketClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
@@ -136,7 +136,7 @@ public class OrdersServiceImpl implements OrdersService {
 	@Autowired
 	private PushClient pushClient;
 	@Autowired
-	private WebsocketClient websocketClient;
+	private UserSocketClient userSocketClient;
 	
 	@Autowired
 	private UserClient userClient;
@@ -174,8 +174,7 @@ public class OrdersServiceImpl implements OrdersService {
 	private static Set<Long> ORDER_USER_SET = new HashSet<Long>(); 
 	
 	@Transactional(rollbackFor = RuntimeException.class)
-	private void order(ReqBooking rb,HttpServletRequest request) { 
-		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+	private void order(ReqBooking rb,CacheUser cu) {  
 		ResStallEntity stall = null;
 		Orders o = null;
 		boolean resetRedis = true;
@@ -621,13 +620,14 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	class OrderThread extends Thread{
 		private ReqBooking rb;
-		private HttpServletRequest request;
-		public OrderThread(ReqBooking rb,HttpServletRequest request) {
+		private CacheUser cu;
+		public OrderThread(ReqBooking rb,CacheUser cu) {
 			this.rb = rb;
-			this.request = request;
+			this.cu = cu;
 		}
 		public void run() {
-			order(rb,request);
+			log.info("order thread starting");
+			order(rb,cu);
 		}
 	} 
 	
@@ -643,8 +643,10 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 	} 
 	
-	public void create(ReqBooking rb,HttpServletRequest request) {
-		Thread thread = new OrderThread(rb,request);
+	public void create(ReqBooking rb,HttpServletRequest request) { 
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		log.info("create order ing rb:{},cu:{}",JsonUtil.toJson(rb),JsonUtil.toJson(cu));
+		Thread thread = new OrderThread(rb,cu);
 		thread.start();
 	}
 	public ResUserOrder findStallLatestOrder(Long stallId) {
@@ -768,14 +770,16 @@ public class OrdersServiceImpl implements OrdersService {
 	 * @param res
 	 */  
 	private void send(String uid,String title,String content,PushType type,Boolean status) {
-		Token token = (Token)redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key+uid.toString()); 
-		if(token.getClient().intValue()==ClientSource.WXAPP.source) {
+		Token token = (Token)redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key+uid.toString());  
+		log.info("send:{}",JsonUtil.toJson(token));
+		if(token.getClient().intValue()==ClientSource.WXAPP.source) {  
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("title", title);
 			map.put("type", type.id);
 			map.put("content", content);
-			map.put("status", status);
-			websocketClient.push(JsonUtil.toJson(map), token.getAccessToken());
+			map.put("status", status); 
+			CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+token.getAccessToken());
+			userSocketClient.push(JsonUtil.toJson(map),cu.getOpenId());
 		}else { 
 			ReqPush rp = new ReqPush();
 			rp.setAlias(uid);
@@ -788,8 +792,7 @@ public class OrdersServiceImpl implements OrdersService {
 		} 
 	}
 	@Transactional(rollbackFor = RuntimeException.class)
-	private void downStall(ReqOrderStall ros,HttpServletRequest request) {
-		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+	private void downStall(ReqOrderStall ros,CacheUser cu) { 
 		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
 		Boolean switchStatus = ros.getStallId().intValue()==order.getStallId()&&order.getStatus()==OrderStatus.UNPAID.value&&order.getUserId().longValue()==cu.getId().longValue();
 		if(switchStatus) {
@@ -808,19 +811,20 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 	class DownThread extends Thread{
 		private ReqOrderStall ros;
-		private HttpServletRequest request;
-		public DownThread(ReqOrderStall ros,HttpServletRequest request) {
+		private CacheUser cu;
+		public DownThread(ReqOrderStall ros,CacheUser cu) {
 			this.ros = ros;
-			this.request = request;
+			this.cu = cu;
 		}
 		public void run() {
-			downStall(ros,request);
+			downStall(ros,cu);
 		}
 	}
 	
 	@Override 
 	public void down(ReqOrderStall ros,HttpServletRequest request) {
-		Thread thread = new DownThread(ros,request);
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		Thread thread = new DownThread(ros,cu);
 		thread.start();
 	}
 	
@@ -847,7 +851,7 @@ public class OrdersServiceImpl implements OrdersService {
 			Thread thread = new PushThread(order.getUserId().toString(), "预约切换通知","车位锁降下失败建议切换车位",PushType.ORDER_SWITCH_STATUS_NOTICE, true);
 			thread.start();
 		}else{
-			Thread thread = new PushThread(order.getUserId().toString(), "预约降锁通知",downStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, switchStatus);
+			Thread thread = new PushThread(order.getUserId().toString(), "预约降锁通知",downStatus? "车位锁降下成功":"车位锁降下失败",PushType.LOCK_DOWN_NOTICE, downStatus);
 			thread.start();
 		} 
 	}
@@ -873,8 +877,8 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 	
 	@Transactional(rollbackFor = RuntimeException.class)
-	private void switching(ReqSwitch rs,HttpServletRequest request) {
-		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+	private void switching(ReqSwitch rs,CacheUser cu) {
+		
 		ResUserOrder order = this.ordersClusterMapper.findDetail(rs.getOrderId());
 		Boolean flag = false;
 		if(order.getStatus().intValue()==OrderStatus.UNPAID.value&&cu.getId().intValue()==order.getUserId().intValue()) {
@@ -882,7 +886,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if(count.intValue()<=0) { 
 				Map<String,Object> param = new HashMap<String,Object>();
 				Date current = new Date();
-				param.put("id", order.getId()); 
+				param.put("id", order.getId());
 				param.put("endTime", current);
 				param.put("updateTime", current);
 				param.put("statusTime", current);
@@ -931,20 +935,21 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	class SwitchThread extends Thread{
 		private ReqSwitch rs;
-		private HttpServletRequest request;
-		public SwitchThread(ReqSwitch rs,HttpServletRequest request) {
+		private CacheUser cu;
+		public SwitchThread(ReqSwitch rs,CacheUser cu) {
 			this.rs = rs;
-			this.request = request;
+			this.cu = cu;
 		}
 		public void run() {
-			switching(rs,request);
+			switching(rs,cu);
 		}
 		
 	}
 	
 	@Override  
 	public void switchStall(ReqSwitch rs,HttpServletRequest request) {  
-		Thread thread = new SwitchThread(rs,request);
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
+		Thread thread = new SwitchThread(rs,cu);
 		thread.start();
 	}
 
@@ -1065,6 +1070,6 @@ public class OrdersServiceImpl implements OrdersService {
 	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) {
 		Thread thread = new OrderBrandThread(rb,request);
 		thread.start();
-	}
+	} 
 	
 }
