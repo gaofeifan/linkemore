@@ -24,6 +24,7 @@ import cn.linkmore.enterprise.dao.cluster.EntAuthStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
+import cn.linkmore.enterprise.entity.EntAuthStall;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.service.EntStallService;
@@ -278,5 +279,12 @@ public class EntStallServiceImpl implements EntStallService {
 		map.put("message","上线成功");
 		return map;
 	}
+
+	@Override
+	public List<Long> findByStaffId(Long id) {
+		return this.entStaffAuthClusterMapper.findByStaffId(id);
+	}
+	
+	
 
 }

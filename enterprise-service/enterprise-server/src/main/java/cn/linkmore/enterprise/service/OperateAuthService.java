@@ -6,6 +6,7 @@ import java.util.Map;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.request.ReqOperateBind;
 
@@ -79,5 +80,6 @@ public interface OperateAuthService {
 	 * @Version  v2.0
 	 */
 	Map<String, Object> resource(Long id);
+
 
 }

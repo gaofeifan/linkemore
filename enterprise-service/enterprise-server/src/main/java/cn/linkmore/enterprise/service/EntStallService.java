@@ -5,7 +5,6 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
-
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.prefecture.response.ResStall;
@@ -27,8 +26,12 @@ public interface EntStallService {
 	List<ResEntStalls> selectEntStalls(Long id);
 
 	/**
-	 * 查询车位列表信息
-	 * 
+	 * @Description  根据员工查询可操作车位
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<Long> findByStaffId(Long id);
+	/** 查询车位列表信息
 	 * @author luzhishen
 	 * @Date 2018年7月21日
 	 * @Version v1.0

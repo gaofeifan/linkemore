@@ -2,6 +2,7 @@ package cn.linkmore.order.service;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.controller.app.request.ReqBooking;
@@ -13,6 +14,8 @@ import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderPlate;
+import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResUserOrder;
 
 /**
@@ -98,6 +101,20 @@ public interface OrdersService {
 	 * @Version  v2.0
 	 */
 	List<ResOrderExcel> exportList(ReqOrderExcel bean);
+
+	/**
+	 * @Description  查询车区当日统计
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPreOrderCount> findPreCountByIds(List<Long> ids);
+
+	/**
+	 * @Description  根据车区id查询车牌号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResOrderPlate> findPlateByPreId(Long preId); 
 	/**
 	 * 品牌预约车位
 	 * @param rbb

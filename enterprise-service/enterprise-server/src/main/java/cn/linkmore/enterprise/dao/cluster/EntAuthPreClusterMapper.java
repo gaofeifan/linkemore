@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntAuthPre;
+import cn.linkmore.enterprise.entity.EntOperateAuth;
 /**
  * 权限专区---读
  * @author   GFF
@@ -28,4 +29,11 @@ public interface EntAuthPreClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<EntAuthPre> findList(Map<String, Object> param);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	EntOperateAuth findByStaffId(Long id);
 }

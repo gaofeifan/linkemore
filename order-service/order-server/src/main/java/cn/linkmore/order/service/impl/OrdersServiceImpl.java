@@ -67,6 +67,8 @@ import cn.linkmore.order.entity.OrdersDetail;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderPlate;
+import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.PrefectureClient;
@@ -1048,6 +1050,17 @@ public class OrdersServiceImpl implements OrdersService {
 	public List<ResOrderExcel> exportList(ReqOrderExcel bean) {
 		return this.ordersClusterMapper.exportList(bean);
 	}
+	
+	@Override
+	public List<ResPreOrderCount> findPreCountByIds(List<Long> ids) {
+		return this.ordersClusterMapper.findPreCountByIds(ids);
+	}
+	@Override
+	public List<ResOrderPlate> findPlateByPreId(Long preId) {
+		List<ResOrderPlate> plates = this.ordersClusterMapper.findPlateByPreId(preId);
+		return plates;
+	}
+	
 	@Override
 	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) {
 		Thread thread = new OrderBrandThread(rb,request);

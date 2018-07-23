@@ -29,4 +29,15 @@
     from t_ent_staff_auth
     where staff_id = #{staffId} and status = #{status}
   </select>
+  <select id="findByStaffId" parameterType="java.lang.Long"  resultType="java.lang.Long">
+  SELECT
+	esa.staff_id
+FROM
+	t_ent_operate_auth eoa
+LEFT JOIN t_ent_auth_pre eap ON eap.auth_id = eoa.id
+LEFT JOIN t_ent_prefecture ep ON ep.id = eap.pre_id
+LEFT JOIN t_ent_auth_stall eas ON eas.auth_id = eoa.id AND eas.pre_id = eap.id
+LEFT JOIN t_ent_staff_auth esa ON esa.auth_id = esa.auth_id
+WHERE esa.staff_id = #{staffId}
+  </select>
 </mapper>
