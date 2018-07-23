@@ -1,4 +1,4 @@
-package cn.linkmore.third.controller;
+package cn.linkmore.notice.controller;
 
 import java.io.IOException;
 
@@ -10,25 +10,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.third.ws.WebSocketServer;
+import cn.linkmore.notice.socket.UserSocketServer;
 
+/**
+ * 凌猫停车 - Websocket通知
+ * @author liwenlong
+ * @version 2.0
+ *
+ */
 @RestController
-@RequestMapping("/feign/ws")
-public class WebsocketController {
-	
+@RequestMapping("/feign/user-socket")
+public class FeignUserSocketController { 
+		
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@RequestMapping(value = "/v2.0/send", method = RequestMethod.POST) 
 	@ResponseBody
-	public Boolean push(@RequestParam("message")String message,@RequestParam("token")String token) { 
-		log.info("push token:{} ws message:{}",token,message);
+	public Boolean push(@RequestParam("message")String message,@RequestParam("openid")String openid) { 
+		log.info("push openid:{} ws message:{}",openid,message);
 		Boolean success = false;
 		try {
-			WebSocketServer.send(token, message);
+			UserSocketServer.send(openid, message);
 			success = true;
 		} catch (IOException e) { 
 			e.printStackTrace();
 		}
 		return success;
 	}
-}
+} 

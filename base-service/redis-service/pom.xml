@@ -20,5 +20,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>base-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 </project>

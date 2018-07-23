@@ -8,7 +8,7 @@ import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
 
@@ -16,8 +16,8 @@ import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServl
 @EnableFeignClients(basePackages = { "cn.linkmore" })
 @ComponentScan(basePackages = { "cn.linkmore" })
 @EnableAsync 
-@EnableHystrix 
-@EnableWebSocket
+@EnableHystrix  
+@EnableRedisHttpSession
 public class Launch {
 	public static void main(String[] args) {
 		SpringApplication.run(Launch.class, args);

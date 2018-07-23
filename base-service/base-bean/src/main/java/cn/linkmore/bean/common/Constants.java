@@ -244,7 +244,9 @@ public class Constants {
 		ORDER_SWITCH_STATUS_NOTICE(4,"ORDER_SWITCH_STATUS_NOTICE"),
 		ORDER_COMPLETE_NOTICE(5,"ORDER_COMPLETE_NOTICE"),
 		OPS_MESSAGE_NOTICE(6,"OPS_MESSAGE_NOTICE"),
-		ORDER_AUTO_CLOSE_NOTICE(7,"ORDER_AUTO_CLOSE_NOTICE");
+		ORDER_AUTO_CLOSE_NOTICE(7,"ORDER_AUTO_CLOSE_NOTICE"),
+		ORDER_STAFF_CLOSED_NOTICE(8,"ORDER_STAFF_CLOSED_NOTICE"),
+		ORDER_STAFF_SUSPEND_NOTICE(9,"ORDER_STAFF_SUSPEND_NOTICE"); 
 		public int type;
 		public String id; 
 		private PushType(int type, String id) {
@@ -254,6 +256,7 @@ public class Constants {
 	}
 
 	public enum RedisKey {
+		USER_WXAPP_AUTH_TOKEN("user_wxapp:auth:openid:"),
 		USER_APP_AUTH_TOKEN("user_app:auth:uid:"), 
 		USER_APP_AUTH_USER("user_app:auth:user:"), 
 		USER_APP_AUTH_CODE("user_app:auth:code:"), 

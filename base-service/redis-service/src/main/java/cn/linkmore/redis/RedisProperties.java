@@ -23,6 +23,8 @@ public class RedisProperties {
 	private boolean testOnCreate;
 	private boolean testWhileIdle;
 	
+	private String channel;
+	
 	public String getHost() {
 		return host;
 	}
@@ -133,5 +135,14 @@ public class RedisProperties {
 
 	public void setPoolMinIdle(int poolMinIdle) {
 		this.poolMinIdle = poolMinIdle;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
 	} 
+	
 }

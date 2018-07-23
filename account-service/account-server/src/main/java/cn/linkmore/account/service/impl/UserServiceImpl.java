@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -540,16 +541,23 @@ public class UserServiceImpl implements UserService {
 		synchronized(userId) {
 			last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 			if(last!=null){ 
+				if(user.getOpenId()!=null) { 
+					this.redisService.remove(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId());  
+				}
 				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
-				last.setAccessToken(key);
+				last.setAccessToken(key); 
 			}
 			user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+			
 			Token token = new Token();
 			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			token.setTimestamp(new Date().getTime());
 			token.setAccessToken(key);
+			if(user.getClient().intValue()==ClientSource.WXAPP.source) {
+				this.redisService.set(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+			}
 			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
 		} 
 		return last;
@@ -858,6 +866,7 @@ public class UserServiceImpl implements UserService {
 				cu.setMobile(user.getMobile());
 			}
 		}
+		ru.setAlias(rms.getOpenid());
 		String key = TokenUtil.getKey(request);  
 		ru.setToken(key);  
 		cu.setId(ui.getUserId());

@@ -11,9 +11,12 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+
+import cn.linkmore.util.JsonUtil;
 
 /**
  * Service - Redis操作
@@ -26,7 +29,11 @@ public class RedisService {
 
 	@SuppressWarnings("rawtypes")
 	@Autowired
-	private RedisTemplate redisTemplate;
+	private RedisTemplate redisTemplate; 
+	
+	
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
 	
 	/**
 	 * 随机从set集合中获取一个数
@@ -61,6 +68,14 @@ public class RedisService {
 	public void remove(String key, Object value) {
 		SetOperations<String, Object> set = redisTemplate.opsForSet();
 		set.remove(key, value);
+	}
+	
+	/**
+	 * 
+	 * @param notice
+	 */
+	public void send(RedisNotice notice	) { 
+		stringRedisTemplate.convertAndSend(notice.getRecipient(), JsonUtil.toJson(notice));
 	}
 
 	/**
