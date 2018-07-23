@@ -122,13 +122,13 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		}
 		Long count = 0L;
 		Long linkmoreCount = 0L;
-		for (ResEntBrandPre prb : preList) {
-			prb.setPlateId(plateId);
-			prb.setPlateNumber(plateNumber);
-			prb.setChargeTime(prb.getChargeTime() + "分钟");
-			prb.setChargePrice(prb.getChargePrice() + "元");
-			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getPreId() + prb.getEntId());
-			linkmoreCount = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getPreId());
+		for (ResEntBrandPre ebp : preList) {
+			ebp.setPlateId(plateId);
+			ebp.setPlateNumber(plateNumber);
+			ebp.setChargeTime(ebp.getChargeTime() + "分钟");
+			ebp.setChargePrice(ebp.getChargePrice() + "元");
+			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + ebp.getPreId() + ebp.getEntId());
+			linkmoreCount = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + ebp.getPreId());
 			log.info("count {} linkmoreCount {}", count, linkmoreCount);
 			if (count == null) {
 				count = 0L;
@@ -139,18 +139,18 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			if (cu != null && cu.getId() != null) {
 				// 是否为授权用户
 				Map<String,Object> map = new HashMap<String,Object>();
-				map.put("entId", prb.getEntId());
+				map.put("entId", ebp.getEntId());
 				map.put("userId", cu.getId());
 				Integer num = entBrandUserClusterMapper.findBrandUser(map);
 				// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
 				if (num > 0) {
-					prb.setBrandUserFlag(true);
+					ebp.setBrandUserFlag(true);
 				}
 			}
 
-			prb.setLeisureStall(count.intValue());
-			prb.setLinkmoreLeisureStall(linkmoreCount.intValue());
-			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()),
+			ebp.setLeisureStall(count.intValue());
+			ebp.setLinkmoreLeisureStall(linkmoreCount.intValue());
+			ebp.setDistance(MapUtil.getDistance(ebp.getLatitude(), ebp.getLongitude(), new Double(rp.getLatitude()),
 					new Double(rp.getLongitude())));
 		}
 
@@ -230,6 +230,18 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 				}
 				pre.setLeisureStall(count.intValue());
 				pre.setLinkmoreLeisureStall(linkmoreCount.intValue());
+				
+				if (cu != null && cu.getId() != null) {
+					// 是否为授权用户
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("entId", resPre.getEntId());
+					map.put("userId", cu.getId());
+					Integer num = entBrandUserClusterMapper.findBrandUser(map);
+					// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
+					if (num > 0) {
+						pre.setBrandUserFlag(true);
+					}
+				}
 				list.add(pre);
 			}
 		}

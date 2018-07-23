@@ -19,6 +19,9 @@ public class ResEntBrandPreLeisure {
 	
 	@ApiModelProperty(value = "凌猫车区空闲车位数量")
 	private Integer linkmoreLeisureStall;
+	
+	@ApiModelProperty(value = "是否品牌授权用户")
+	private Boolean brandUserFlag = false;
 
 	public Long getId() {
 		return id;
@@ -42,5 +45,13 @@ public class ResEntBrandPreLeisure {
 
 	public void setLinkmoreLeisureStall(Integer linkmoreLeisureStall) {
 		this.linkmoreLeisureStall = linkmoreLeisureStall;
+	}
+
+	public Boolean getBrandUserFlag() {
+		return brandUserFlag;
+	}
+
+	public void setBrandUserFlag(Boolean brandUserFlag) {
+		this.brandUserFlag = brandUserFlag;
 	}
 }

@@ -85,7 +85,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 						.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay) != null) {
 					count = (Integer) this.redisService
 							.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay);
-					log.info("opening brand pre send coupon ent {} day {} count {}",resBrandAd.getEntId(), currentDay, count);
+					log.info("opening brand pre send coupon ent-day{}{} count {}",resBrandAd.getEntId(), currentDay, count);
 					// 计数次数 >= 日申请次数，当天广告失效
 					if (resBrandAd.getApplyCount() <= count) {
 						return null;
@@ -108,7 +108,6 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 				map.put("entId", resBrandAd.getEntId());
 				map.put("userId", cu.getId());
 				Integer num = entBrandUserClusterMapper.findBrandUser(map);
-				log.info("map {} num {}",map, num);
 				// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
 				if (num > 0) {
 					resBrandAd.setBrandUserFlag(true);
@@ -158,11 +157,15 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(map);
 		if (CollectionUtils.isNotEmpty(list)) {
 			resBrandAd = list.get(0);
+			if(resBrandAd.getLimitStatus()== 0 && resBrandAd.getAdStatus()==0) {
+				//非受限用户且不发送广告
+				return null;
+			}
 			if (this.redisService
 					.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay) != null) {
 				count = (Integer) this.redisService
 						.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay);
-				log.info("brand pre send coupon ent{} day {} count {}",resBrandAd.getEntId(), currentDay, count);
+				log.info("brand pre send coupon ent-day {}{} count {}",resBrandAd.getEntId(), currentDay, count);
 				// 计数次数 >= 日申请次数，当天广告失效
 				if (resBrandAd.getApplyCount() <= count) {
 					return null;
@@ -174,7 +177,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 			if (cu != null && cu.getId() != null) {
 				// 当前用户是否已接受优惠券信息，接受之后则以后不在提示
 				List<ResCoupon> couponList = couponClient.findBrandCouponList(resBrandAd.getEntId(), cu.getId());
-				if (CollectionUtils.isNotEmpty(couponList) && couponList.size() > 0) {
+				if (CollectionUtils.isNotEmpty(couponList)) {
 					return null;
 				}
 				map.put("userId", cu.getId());

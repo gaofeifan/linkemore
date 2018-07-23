@@ -23,8 +23,6 @@ import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.security.client.PersonClient;
 import cn.linkmore.security.client.RoleClient;
 import cn.linkmore.security.request.ReqPerson;
-import cn.linkmore.security.request.ReqPersonRole;
-import cn.linkmore.security.response.ResRole;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.PasswordUtil;
@@ -47,6 +45,12 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 
 	@Resource
 	private PersonClient personClient;
+	
+	@Override
+	public ResEnterprise findById(Long id) {
+		ResEnterprise resEnterprise = this.enterpriseClusterMapper.findById(id);
+		return resEnterprise;
+	}
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
