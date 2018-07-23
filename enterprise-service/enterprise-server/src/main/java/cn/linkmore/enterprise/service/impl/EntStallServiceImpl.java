@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,9 @@ import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResEntTypeStalls;
@@ -24,14 +28,15 @@ import cn.linkmore.enterprise.dao.cluster.EntAuthStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
-import cn.linkmore.enterprise.entity.EntAuthStall;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.StringUtil;
+import cn.linkmore.util.TokenUtil;
 
 /**
  * @author luzhishen
@@ -54,15 +59,21 @@ public class EntStallServiceImpl implements EntStallService {
 	private EntAuthStallClusterMapper entAuthStallClusterMapper;
 	
 	@Autowired
+	private RedisService redisService;
+	
+	@Autowired
 	private StallClient stallClient;
 	
 	@Autowired
 	private LockFactory lockFactory;
 	
 	@Override
-	public List<ResEntStalls> selectEntStalls(Long id) {
+	public List<ResEntStalls> selectEntStalls(HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		
 		Map<String, Object> map = new HashMap<String,Object>();
-		map.put("staffId", id);
+		map.put("staffId", ru.getId());
 		map.put("status", 1);
 		List<EntStaffAuth> entStaffAuths= entStaffAuthClusterMapper.findList(map);
 		int size = entStaffAuths.size();
@@ -176,10 +187,12 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public List<ResStall> selectStalls(Long staffId,Long preId, Short type) {
+	public List<ResStall> selectStalls(HttpServletRequest request,Long preId, Short type) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 		
 		Map<String, Object> map = new HashMap<String,Object>();
-		map.put("staffId", staffId);
+		map.put("staffId", ru.getId());
 		map.put("status", 1);
 		List<EntStaffAuth> entStaffAuths= entStaffAuthClusterMapper.findList(map);
 		int size = entStaffAuths.size();
@@ -226,7 +239,9 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public Map<String,Object> operatStalls(Long staffId, Long stallId, Integer state) {
+	public Map<String,Object> operatStalls(HttpServletRequest request, Long stallId, Integer state) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 		
 		//需要异步记录操作锁
 		
@@ -257,7 +272,11 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public Map<String, Object> change(Long id, Long stall_id, int changeStatus) {
+	public Map<String, Object> change(HttpServletRequest request, Long stall_id, int changeStatus) {
+		
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		
 		Map<String, Object> map = new HashMap<>();
 		int  result = 0;
 		if(changeStatus == 1){
