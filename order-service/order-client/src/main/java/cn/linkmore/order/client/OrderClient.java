@@ -14,6 +14,8 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.OrderClientHystrix;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderPlate;
+import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResUserOrder;
 
 @FeignClient(value = "order-server", path = "/feign/orders", fallback=OrderClientHystrix.class,configuration = FeignConfiguration.class)
@@ -49,4 +51,17 @@ public interface OrderClient {
 	@RequestMapping(value = "/export", method = RequestMethod.POST)
 	@ResponseBody
 	List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean); 
+	
+	@RequestMapping(value = "/by-stall", method = RequestMethod.POST)
+	@ResponseBody
+	List<ResPreOrderCount> findPreCountByIds(@RequestBody List<Long> ids);
+	
+	/**
+	 * @Description  根据车区查询车牌号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/plate-by-preid", method = RequestMethod.POST)
+	@ResponseBody
+	List<ResOrderPlate> findPlateByPreId(@RequestParam("preId")Long preId);
 }

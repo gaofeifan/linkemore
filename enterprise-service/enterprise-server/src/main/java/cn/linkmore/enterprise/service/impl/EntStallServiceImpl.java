@@ -15,6 +15,7 @@ import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
+import cn.linkmore.enterprise.entity.EntAuthStall;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.service.EntStallService;
 
@@ -55,5 +56,12 @@ public class EntStallServiceImpl implements EntStallService {
 		}
 		return null;
 	}
+
+	@Override
+	public List<Long> findByStaffId(Long id) {
+		return this.entStaffAuthClusterMapper.findByStaffId(id);
+	}
+	
+	
 
 }

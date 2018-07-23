@@ -84,9 +84,4 @@ public class StaffAuthServiceImpl implements StaffAuthService {
 		map.put("authIds", list);
 		return map;
 	}
-
-	
-	
-	
-	
 }

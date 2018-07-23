@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.enterprise.entity.EntAuthStall;
 import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 /**
@@ -29,5 +30,12 @@ public interface EntStaffAuthClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<EntStaffAuth> findList(Map<String, Object> map);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<Long> findByStaffId(Long id);
 
 }
