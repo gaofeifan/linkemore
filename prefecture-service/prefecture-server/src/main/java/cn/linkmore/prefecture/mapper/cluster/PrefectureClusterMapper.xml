@@ -56,6 +56,12 @@
   	<result column="name" property="name" />
   </resultMap>
   
+   <resultMap id="ResPreGateMap" type="cn.linkmore.prefecture.response.ResPreGateway">
+  	<id column="id" property="preId"/>
+  	<result column="gateway" jdbcType="VARCHAR" property="number" />
+  	<result column="category" property="category" jdbcType="SMALLINT" />
+  </resultMap>
+  
   <resultMap id="ResPreListMap" type="cn.linkmore.prefecture.response.ResPreList">
   	<id column="id" property="id"/>
   	<result column="name" property="name" />
@@ -289,4 +295,13 @@
     order by  ${property} ${direction}
     </if>
   </select>
+  
+  
+  <select id="findPreGateList" resultMap="ResPreGateMap" >
+    select  id  , gateway,category
+    from v_prefecture 
+    where  status = 0
+  </select> 
+  
+  
 </mapper>
