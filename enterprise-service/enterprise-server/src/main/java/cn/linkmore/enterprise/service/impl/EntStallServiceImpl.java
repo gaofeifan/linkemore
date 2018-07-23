@@ -208,8 +208,10 @@ public class EntStallServiceImpl implements EntStallService {
 		Map<String, Object> param = new HashMap<String,Object>();
 		param.put("authId", entStaffAuth.getAuthId());
 		List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
-		
-		List<ResStall> stalls = this.stallClient.findPreStallList(stallIds);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("type", type);
+		params.put("list", stallIds);
+		List<ResStall> stalls = this.stallClient.findPreStallList(params);
 		
 		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
 		//设置车位对应的车牌号
