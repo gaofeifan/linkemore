@@ -31,6 +31,8 @@ import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.service.EntStallService;
+import cn.linkmore.order.client.OrderClient;
+import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -63,6 +65,9 @@ public class EntStallServiceImpl implements EntStallService {
 	
 	@Autowired
 	private StallClient stallClient;
+	
+	@Autowired
+	private OrderClient orderClient;
 	
 	@Autowired
 	private LockFactory lockFactory;
@@ -206,18 +211,14 @@ public class EntStallServiceImpl implements EntStallService {
 		
 		List<ResStall> stalls = this.stallClient.findPreStallList(stallIds);
 		
+		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
+		//设置车位对应的车牌号
 		for(ResStall resStall:stalls){
-			//临停
-			if(resStall.getType() == 1){
-				
-			}
-			//长租
-			if(resStall.getType() == 2){
-				
-			}
-			//vip
-			if(resStall.getType() == 3){
-				
+			for(ResOrderPlate orderPlate : orders){
+				if(resStall.getId() == orderPlate.getStallId()){
+					resStall.setPlateNo(orderPlate.getPlateNo());
+					break;
+				}
 			}
 		}
 		return stalls;
