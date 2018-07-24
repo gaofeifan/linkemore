@@ -9,6 +9,7 @@ import java.math.BigDecimal;
  */
 public class ResPreOrderCount {
 	
+
 	/**
 	 * 车区名称
 	 */
@@ -20,21 +21,17 @@ public class ResPreOrderCount {
 	private Long preId;
 	
 	/**
-	 * 订单金额
+	 * 今日总额
 	 */ 
-	private BigDecimal orderAmount;
+	private BigDecimal dayAmount;
 
 	/**
-	 * 车位id
+	 * 今日订单
 	 */ 
-	private Long stallId;
+	private Integer dayOrder;
 
 	public String getPreName() {
 		return preName;
-	}
-
-	public void setPreName(String preName) {
-		this.preName = preName;
 	}
 
 
@@ -42,24 +39,30 @@ public class ResPreOrderCount {
 		return preId;
 	}
 
+
 	public void setPreId(Long preId) {
 		this.preId = preId;
 	}
 
-	public BigDecimal getOrderAmount() {
-		return orderAmount;
+
+	public void setPreName(String preName) {
+		this.preName = preName;
 	}
 
-	public void setOrderAmount(BigDecimal orderAmount) {
-		this.orderAmount = orderAmount;
+
+	public BigDecimal getDayAmount() {
+		return dayAmount;
 	}
 
-	public Long getStallId() {
-		return stallId;
+	public void setDayAmount(BigDecimal dayAmount) {
+		this.dayAmount = dayAmount;
 	}
 
-	public void setStallId(Long stallId) {
-		this.stallId = stallId;
+	public Integer getDayOrder() {
+		return dayOrder;
 	}
-	
+
+	public void setDayOrder(Integer dayOrder) {
+		this.dayOrder = dayOrder;
+	}
 }

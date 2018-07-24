@@ -281,8 +281,8 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public List<Long> findByStaffId(Long id) {
-		return this.entStaffAuthClusterMapper.findByStaffId(id);
+	public List<Long> findStaffId(Map<String, Long> map) {
+		return this.entStaffAuthClusterMapper.findByStaffId(map);
 	}
 	
 	

@@ -30,7 +30,8 @@ public interface EntStallService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<Long> findByStaffId(Long id);
+	List<Long> findStaffId(Map<String, Long> map);
+
 	/** 查询车位列表信息
 	 * @author luzhishen
 	 * @Date 2018年7月21日
@@ -64,5 +65,6 @@ public interface EntStallService {
 	 * @Version v1.0
 	 */
 	Map<String, Object> change(Long id, Long stall_id, int changeStatus);
+
 
 }

@@ -36,6 +36,6 @@ public interface EntStaffAuthClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<Long> findByStaffId(Long id);
+	List<Long> findByStaffId(Map<String, Long> map);
 
 }
