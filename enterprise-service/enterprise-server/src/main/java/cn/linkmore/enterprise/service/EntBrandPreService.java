@@ -13,9 +13,12 @@ import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreLeisure;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreStrategy;
 import cn.linkmore.enterprise.entity.EntBrandPre;
 import cn.linkmore.enterprise.request.ReqCheck;
+import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
 
 public interface EntBrandPreService {
+	
+	ResBrandPre findById(Long id);
 
 	/**
 	 * 分页查询
@@ -70,4 +73,5 @@ public interface EntBrandPreService {
 	List<ResEntBrandPreLeisure> getStallCount(HttpServletRequest request);
 
 	List<ResBrandPreStall> preStallList();
+
 }

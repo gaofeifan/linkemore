@@ -1,17 +1,23 @@
 package cn.linkmore.order.dao.cluster;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.order.controller.app.response.ResMonthCount;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResChargeDetail;
+import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderOps;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
+import cn.linkmore.order.response.ResTrafficFlow;
+import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
 @Mapper
 public interface OrdersClusterMapper {
@@ -111,5 +117,54 @@ public interface OrdersClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<ResOrderPlate> findPlateByPreId(Long preId);
+
+	/**
+	 * @Description  查询车区今日收入
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	BigDecimal findPreDayIncome(List<Long> authStall);
+
+	/**
+	 * @Description  查询车流量
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer findTrafficFlow(Map<String, Object> map);
+
+	/**
+	 * @Description  根据条件查询实收入
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	BigDecimal findProceeds(Map<String, Object> map);
+
+	/**
+	 * @Description  查询列表明细
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResChargeDetail> findChargeDetail(Map<String, Object> param);
+
+	/**
+	 * @Description  查询车流量列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResTrafficFlowList> findTrafficFlowList(Map<String, Object> param);
+
+	/**
+	 * @Description  查询收入列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResIncomeList> findIncomeList(Map<String, Object> param);
+
+	/**
+	 * @Description 查询月统计
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResMonthCount> findMonthCount(Map<String, Object> param);
 
 }

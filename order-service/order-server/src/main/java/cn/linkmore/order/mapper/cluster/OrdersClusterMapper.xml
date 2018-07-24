@@ -329,17 +329,106 @@
   </select>
   <select id="findPreCountByIds" parameterType="java.util.List" resultType="cn.linkmore.order.response.ResPreOrderCount">
    SELECT
-   pre_id preId,pre_name preName,actual_amount orderAmount,stall_id stallId
-   FROM 
-	o_orders  
-	where
-	 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time
-	 and stall_id in
-   <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
-   		#{id}
- 	</foreach>
+		pre_id preId,
+		pre_name preName,
+		sum(actual_amount) dayAmount,
+		count(1) dayOrder
+	FROM
+		o_orders
+	WHERE
+		 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and stall_id IN 
+	   <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
+			#{id}
+	 	</foreach>
+	GROUP BY pre_id
   </select>
-  <select id="findPlateByPreId" parameterType="java.lang.Long" resultType="cn.linkmore.order.response.ResOrderPlate">
+  <select id="findPreDayIncome" parameterType="java.util.List" resultType="java.math.BigDecimal">
+   SELECT
+		sum(actual_amount) dayAmount
+	FROM
+		o_orders
+	WHERE
+		 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and stall_id IN 
+	   <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
+			#{id}
+	 	</foreach>
+  </select>
+  <select id="findTrafficFlow" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+   SELECT
+		count(1)
+	FROM
+		o_orders
+	<where>
+	status = 3 
+		<if test="startTime != null">
+		 AND end_time >=  DATE_FORMAT(startTime,'%Y-%m-%d')
+		</if>
+		and stall_id IN 
+	    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
+			#{id}
+	 	</foreach>
+	</where>
+  </select>
+  <select id="findProceeds" parameterType="java.util.HashMap" resultType="java.math.BigDecimal">
+   SELECT
+		sum(actual_amount)
+	FROM
+		o_orders
+	<where>
+		status = 3 
+		<if test="startTime != null">
+		 AND end_time >=  DATE_FORMAT(startTime,'%Y-%m-%d')
+		</if>
+		and stall_id IN 
+	    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
+			#{id}
+	 	</foreach>
+	</where>
+  </select>
+  <select id="findChargeDetail" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResChargeDetail">
+   SELECT
+	plate_no plateNo,begin_time startTime,actual_amount orderAmount,end_time endTime,DATE_FORMAT(end_time,'%m') month
+	FROM
+		o_orders
+	<where>
+		status = 3 
+		and stall_id IN 
+	    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
+			#{id}
+	 	</foreach>
+	</where>
+	order by ent_time desc
+  </select>
+  <select id="findTrafficFlowList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResTrafficFlowList">
+    SELECT
+		end_time date,count(1) carDayTotal,DATE_FORMAT(end_time,'%m') month
+		FROM
+			o_orders
+		WHERE
+		status = 3 
+		and stall_id IN 
+    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
+		#{id}
+ 	</foreach>
+	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
+	ORDER BY end_time DESC
+  </select>
+  <select id="findIncomeList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResIncomeList">
+	SELECT end_time date,actual_amount dayAmount,DATE_FORMAT(end_time,'%m') month FROM o_orders 	where	status = 3 
+	and stall_id IN 
+    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
+		#{id}
+ 	</foreach>
+	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
+	ORDER BY end_time DESC
+  </select>
+  <select id="findMonthCount" parameterType="java.util.Map" resultType="cn.linkmore.order.controller.app.response.ResMonthCount">
+ 	select DATE_FORMAT(end_time,'%m') month,SUM(actual_amount) monthAmount,COUNT(1) monthCarCount
+	 FROM o_orders 	where	status = 3 
+	GROUP BY DATE_FORMAT(end_time,'%Y-%m')
+	ORDER BY end_time DESC	
+  </select>
+  <select id="findPlateByPreId" parameterType="java.lang.Long" resultType="cn.linkmore.order.controller.app.response.ResMonthCount">
  	SELECT plate_no plateNo,stall_id stallId,stall_name stallName FROM o_orders WHERE pre_id = #{preId} AND status = 1
   </select>
   

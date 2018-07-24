@@ -17,6 +17,8 @@ public class ResStallBatteryLog {
     private Integer totalNum;
 
     private Long adminId;
+    
+    private String adminName;
 
     private Date createTime;
 
@@ -59,8 +61,16 @@ public class ResStallBatteryLog {
     public void setAdminId(Long adminId) {
         this.adminId = adminId;
     }
+    
+    public String getAdminName() {
+		return adminName;
+	}
 
-    public Date getCreateTime() {
+	public void setAdminName(String adminName) {
+		this.adminName = adminName;
+	}
+
+	public Date getCreateTime() {
         return createTime;
     }
 

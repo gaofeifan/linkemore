@@ -215,4 +215,14 @@ public class DateUtils {
 			return minutes + "分钟";
 			
 		}
+		
+		/**
+		 * @Description  获取月
+		 * @Author   GFF 
+		 * @Version  v2.0
+		 */
+		public static int getMonth(Date date) {
+			Calendar c = Calendar.getInstance();
+			return c.get(Calendar.MONTH)+1;
+		}
 }

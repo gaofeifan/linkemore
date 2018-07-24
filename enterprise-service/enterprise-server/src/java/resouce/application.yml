@@ -1,5 +1,5 @@
 server:
-  port: 8006
+  port: 8007 
   session:
     timeout: 60
 spring:
@@ -23,7 +23,7 @@ feign:
     enabled: true
  
 master-db:   
-  url: jdbc:mysql://192.168.1.218:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -43,7 +43,7 @@ master-db:
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   
 cluster-db:   
-  url: jdbc:mysql://192.168.1.219:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -68,17 +68,17 @@ security:
     
 swagger:
   enable: true
-  title: 凌猫停车券服务接口文档
+  title: 凌猫企业服务接口文档
   description: 本文档为内部文档，仅供内部前端及测试人员参考。 完全基于RESTful接口说明
   version: 2.0
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
-  base-package: cn.linkmore.coupon.controller.app
+  base-package: cn.linkmore.enterprise.controller.ent
     
 redis:
   host: 192.168.1.218
   port: 6379
-  database: 2
+  database: 1
   timeout: 5000
   password: ppyx1234
   pool-max-active: 500
@@ -90,3 +90,8 @@ redis:
   test-on-create: true 
   sentinel-master: mymaster
   sentinel-nodes: 192.168.1.219:26379 
+  channel: enterprise
+  
+sdk:
+  linkmore_url: http://192.168.1.211:8086
+  

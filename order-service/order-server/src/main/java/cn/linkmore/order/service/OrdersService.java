@@ -1,6 +1,9 @@
 package cn.linkmore.order.service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.bean.view.ViewPage;
@@ -13,9 +16,15 @@ import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResChargeDetail;
+import cn.linkmore.order.response.ResChargeList;
+import cn.linkmore.order.response.ResIncome;
+import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
+import cn.linkmore.order.response.ResTrafficFlow;
+import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
 
 /**
@@ -121,5 +130,47 @@ public interface OrdersService {
 	 * @param request
 	 */
 	void brandCreate(ReqBrandBooking rbb, HttpServletRequest request);
+
+	/**
+	 * @Description  查询车区今日收入
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	BigDecimal findPreDayIncome(List<Long> authStall);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer findTrafficFlow(Map<String, Object> map);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	BigDecimal findProceeds(Map<String, Object> map);
+
+	/**
+	 * @Description  查询收费明细
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResChargeList findChargeDetail(Map<String, Object> param);
+
+	/**
+	 * @Description  查询车流量list
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param);
+
+	/**
+	 * @Description  查询收入列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResIncome> findIncomeList(Map<String, Object> param);
 	
 }

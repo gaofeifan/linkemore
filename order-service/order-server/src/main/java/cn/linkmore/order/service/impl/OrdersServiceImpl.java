@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -54,6 +55,7 @@ import cn.linkmore.order.controller.app.request.ReqBrandBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
+import cn.linkmore.order.controller.app.response.ResMonthCount;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
@@ -67,9 +69,16 @@ import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.OrdersDetail;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResCharge;
+import cn.linkmore.order.response.ResChargeDetail;
+import cn.linkmore.order.response.ResChargeList;
+import cn.linkmore.order.response.ResIncome;
+import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
+import cn.linkmore.order.response.ResTrafficFlow;
+import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.PrefectureClient;
@@ -82,6 +91,7 @@ import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.request.ReqPush;
+import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
@@ -1070,6 +1080,85 @@ public class OrdersServiceImpl implements OrdersService {
 	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) {
 		Thread thread = new OrderBrandThread(rb,request);
 		thread.start();
-	} 
+	}
+
+	@Override
+	public BigDecimal findPreDayIncome(List<Long> authStall) {
+		return this.ordersClusterMapper.findPreDayIncome(authStall);
+	}
+
+	@Override
+	public Integer findTrafficFlow(Map<String,Object> map) {
+		return this.ordersClusterMapper.findTrafficFlow(map);
+	}
+
+	@Override
+	public BigDecimal findProceeds(Map<String,Object> map) {
+		return this.ordersClusterMapper.findProceeds(map);
+	}
+
+	@Override
+	public ResChargeList findChargeDetail(Map<String, Object> param) {
+		List<ResCharge> charges = new ArrayList<>();
+		List<ResChargeDetail> list = this.ordersClusterMapper.findChargeDetail(param);;
+		List<ResMonthCount> count = this.ordersClusterMapper.findMonthCount(param);
+		ResCharge charge = null;
+		List<ResChargeDetail> chargeDetails = null;
+		for (ResMonthCount resMonthCount : count) {
+			charge = new ResCharge();
+			chargeDetails = new ArrayList<>();
+			for (ResChargeDetail detail : list) {
+				if(detail.getMonth() == resMonthCount.getMonth()) {
+					String str = DateUtils.getDuration(new Date(),detail.getEndTime());
+					detail.setStopTime(str);
+					chargeDetails.add(detail);
+				}
+			}
+			charge.setCharge(charges);
+			charge.setDate(chargeDetails.get(0).getStartTime());
+			charges.add(charge);
+		}
+		BigDecimal decimal = this.ordersClusterMapper.findPreDayIncome((List<Long>)param.get("stallIds"));
+		ResChargeList chargeList = new ResChargeList();
+		chargeList.setDetails(charges);
+		chargeList.setTodayIncome(decimal);
+		return chargeList;
+	}
 	
+	@Override
+	public List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param) {
+		List<ResTrafficFlow> flowLists = new ArrayList<>();
+		List<ResTrafficFlowList> list = this.ordersClusterMapper.findTrafficFlowList(param);
+		List<ResMonthCount> monthCount = this.ordersClusterMapper.findMonthCount(param);
+		ResTrafficFlow flow = null;
+		for (ResMonthCount resMothCount : monthCount) {
+			List<ResTrafficFlowList> collect = list.stream().filter(month -> month.getMonth() == resMothCount.getMonth()).collect(Collectors.toList());
+			if(collect.size() != 0) {
+				flow = new ResTrafficFlow();
+				flow.setDate(collect.get(0).getTime());
+				flow.setCarDayTotal(resMothCount.getMonthCarCount());
+				flowLists.add(flow);
+			}
+		}
+		return flowLists;
+	}
+
+	@Override
+	public List<ResIncome> findIncomeList(Map<String, Object> param) {
+		List<ResIncome> incomes = new ArrayList<>();
+		List<ResIncomeList> list = this.ordersClusterMapper.findIncomeList(param);
+		List<ResMonthCount> months = this.ordersClusterMapper.findMonthCount(param);
+		ResIncome income = null;
+		for (ResMonthCount resMonthCount : months) {
+			List<ResIncomeList> collect = list.stream().filter(month -> month.getMonth() == resMonthCount.getMonth()).collect(Collectors.toList());
+			if(collect.size() != 0 ) {
+				income = new ResIncome();
+				income.setList(collect);
+				income.setDate(collect.get(0).getDate());
+				income.setMonthAmount(resMonthCount.getMonthAmount());
+				incomes.add(income);
+			}
+		}
+		return incomes;
+	}
 }
