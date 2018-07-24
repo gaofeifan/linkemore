@@ -3,4 +3,6 @@
 	<sms tpl="SMS_52350243" id="user_app_login_code" desc="登录验证码"/> 
 	<sms tpl="SMS_77145014" id="share_coupon_notice" desc="常规发送停车券和分享领券"/>
 	<sms tpl="SMS_139225782" id="order_closed_coupon_notice" desc="无车位订单关闭通知"/>
+	<sms tpl="SMS_140110591" id="unsub_brand_coupon_notice" desc="未授权品牌送券通知"/>
+	<sms tpl="SMS_140105600" id="subed_brand_coupon_notice" desc="已授权品牌送券通知"/>
 </config>

@@ -240,8 +240,8 @@ public class Constants {
 		ORDER_SUSPEND_NOTICE(3,"order_suspend_notice"),  
 		ORDER_SEARCH_NOTICE_(4, "order_search_notice"),
 		ORDER_CLOSED_NOTICE(5,"order_closed_coupon_notice"),
-		BRAND_USER_INVITE_NOTICE(6,"brand_user_invite_notice"),
-		UN_BRAND_USER_INVITE_NOTICE(7,"un_brand_user_invite_notice");
+		BRAND_USER_INVITE_NOTICE(6,"subed_brand_coupon_notice"),
+		UN_BRAND_USER_INVITE_NOTICE(7,"unsub_brand_coupon_notice");
 		public int type;
 		public String id;
 
