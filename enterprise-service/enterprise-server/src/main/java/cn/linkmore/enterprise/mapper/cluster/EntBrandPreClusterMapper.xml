@@ -21,6 +21,15 @@
     <result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
   </resultMap>
   
+  <resultMap id="PreResultMap" type="cn.linkmore.enterprise.response.ResBrandPreStall">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
+  
   <resultMap id="ResResultMap" type="cn.linkmore.enterprise.controller.app.response.ResEntBrandPre">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
@@ -46,6 +55,10 @@
     <include refid="Base_Column_List" />
     from t_ent_brand_pre
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findList" resultMap="PreResultMap">
+    select id,pre_id,pre_name,ent_id,ent_name,status from t_ent_brand_pre where status = 1
   </select>
   
   <select id="findBrandPre" parameterType="java.util.HashMap" resultMap="ResResultMap">

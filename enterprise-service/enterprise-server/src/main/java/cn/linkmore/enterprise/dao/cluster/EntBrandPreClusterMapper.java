@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
+import cn.linkmore.enterprise.response.ResBrandPreStall;
 
 /**
  * 品牌车区
@@ -31,6 +32,8 @@ public interface EntBrandPreClusterMapper {
     ResBrandPre findById(Long id);
 
 	Integer check(Map<String, Object> param);
+	
+	List<ResBrandPreStall> findList();
 	
 
 }

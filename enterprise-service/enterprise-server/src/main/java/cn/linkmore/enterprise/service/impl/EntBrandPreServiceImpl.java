@@ -27,11 +27,14 @@ import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreCity;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreLeisure;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreStrategy;
 import cn.linkmore.enterprise.dao.cluster.EntBrandPreClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.EntBrandStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandPreMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandPre;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.response.ResBrandPre;
+import cn.linkmore.enterprise.response.ResBrandPreStall;
+import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.enterprise.service.EntBrandPreService;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
@@ -58,6 +61,9 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 
 	@Resource
 	private EntBrandPreClusterMapper entBrandPreClusterMapper;
+	
+	@Resource
+	private EntBrandStallClusterMapper entBrandStallClusterMapper;
 
 	@Resource
 	private EntBrandUserClusterMapper entBrandUserClusterMapper;
@@ -280,5 +286,15 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
 		return this.entBrandPreClusterMapper.check(param);
+	}
+
+	@Override
+	public List<ResBrandPreStall> preStallList() {
+		List<ResBrandPreStall> preStallList = this.entBrandPreClusterMapper.findList();
+		for(ResBrandPreStall preStall : preStallList) {
+			List<ResBrandStall> brandStalls = this.entBrandStallClusterMapper.findByBrandPreId(preStall.getId());
+			preStall.setStallList(brandStalls);
+		}
+		return preStallList;
 	}
 }

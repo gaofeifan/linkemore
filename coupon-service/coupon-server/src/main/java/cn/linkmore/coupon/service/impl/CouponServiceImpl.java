@@ -679,7 +679,7 @@ public class CouponServiceImpl implements CouponService {
 			log.info("enterprise name = {}",enterprise.getName());
 			Map<String, String> param = new HashMap<String, String>();
 			if(enterprise != null) {
-				param.put("enterprise", enterprise.getName());
+				param.put("brand", enterprise.getName());
 			}
 			sms.setParam(param);
 			sms.setMobile(resUser.getUsername());
