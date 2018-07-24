@@ -79,7 +79,7 @@ public class StaffServiceImpl implements StaffService {
 		}
 		String key = TokenUtil.getKey(request);
 		EntStaff staff = entStaffClusterMapper.findByMobile(rl.getMobile());
-		if(staff == null || staff.getType() == 0) {
+		if(staff == null || staff.getStatus() == 0) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
 		}
 		staff.setLoginTime(new Date());
@@ -89,7 +89,7 @@ public class StaffServiceImpl implements StaffService {
 		rs.setMobile(staff.getMobile());
 		rs.setRealname(staff.getRealname());
 		rs.setToken(key);
-		rs.setStatus(rs.getStatus());
+		rs.setStatus(staff.getStatus());
 		CacheUser u = new CacheUser();
 		u.setId(staff.getId());
 		u.setMobile(staff.getMobile());
@@ -179,9 +179,9 @@ public class StaffServiceImpl implements StaffService {
 	public void send(ReqAuthSend rs) {
 		log.info("send:{}",JsonUtil.toJson(rs));
 		log.info("token:{}",DigestUtils.md5Hex(rs.getMobile()+rs.getTimestamp()+"v2.0"));
-		if(!DigestUtils.md5Hex(rs.getMobile()+rs.getTimestamp()+"v2.0").equals(rs.getToken())) {
-			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
-		} 
+//		if(!DigestUtils.md5Hex(rs.getMobile()+rs.getTimestamp()+"v2.0").equals(rs.getToken())) {
+//			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
+//		} 
 		long space = new Date().getTime()-new Long(rs.getTimestamp()).longValue(); 
 		log.info("space:{},SPACE:{} verify:{}",space,SPACE,space>SPACE||space<-SPACE);
 		if(space>SPACE||space<-SPACE) {
@@ -198,9 +198,9 @@ public class StaffServiceImpl implements StaffService {
 		sms.setParam(param);
 		sms.setSt(Constants.SmsTemplate.USER_APP_LOGIN_CODE);
 		boolean success = this.smsClient.send(sms);   
-		if(success){ 
-			this.redisService.set(RedisKey.USER_APP_AUTH_CODE.key+rs.getMobile(), code, 60*10); 
-			this.redisService.set(RedisKey.USER_APP_AUTH_MOBILE.key+rs.getMobile(), rs.getMobile(),1);
+		if(success){
+			this.redisService.set(RedisKey.STAFF_ENT_AUTH_CODE.key+rs.getMobile(), code, 60*10); 
+			this.redisService.set(RedisKey.STAFF_ENT_AUTH_MOBILE.key+rs.getMobile(), rs.getMobile(),1);
 		}else{
 			throw new BusinessException(StatusEnum.USER_APP_SMS_FAILED);
 		} 		

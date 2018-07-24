@@ -53,7 +53,7 @@ public class EntAuthController {
 		this.staffService.logout(request);
 		response = ResponseEntity.success("用户退出成功", request);
 		return response;
-	} 
+	}
 	
 	@ApiOperation(value = "微信登录", notes = "微信登录", consumes = "application/json")
 	@RequestMapping(value = "/wechat", method = RequestMethod.GET)
