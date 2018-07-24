@@ -2,7 +2,7 @@ package cn.linkmore.enterprise.service;
 
 public interface EntPreService {
 
-	int saveEntPre(Long entId, String preName);
+	int saveEntPre(Long preId,Long entId, String preName);
 
 	int deleteEntPre(Long id);
 
