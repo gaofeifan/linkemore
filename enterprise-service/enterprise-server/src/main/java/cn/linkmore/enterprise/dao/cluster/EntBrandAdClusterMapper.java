@@ -27,9 +27,14 @@ public interface EntBrandAdClusterMapper {
 	 */
 	List<ResBrandAd> findBrandPreAdList(Map<String, Object> map);
 	
+	// OPS 使用接口
     ResBrandAd findById(Long id);
 
 	Integer check(Map<String, Object> param);
+	
+	Integer count(Map<String, Object> param);
+	
+	List<ResBrandAd> findPage(Map<String, Object> param);
 	
     
 }

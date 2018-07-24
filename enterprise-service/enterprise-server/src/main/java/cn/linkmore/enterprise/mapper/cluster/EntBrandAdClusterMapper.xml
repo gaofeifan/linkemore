@@ -50,4 +50,31 @@
     </if>
   </select>
   
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_ad
+    where 1 = 1
+    <!-- <if test="name!=null">  
+    and name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="account!=null">  
+    and account = #{account,jdbcType=VARCHAR}
+    </if>  -->
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_ent_brand_ad
+    where 1= 1
+  </select>
+  
 </mapper>

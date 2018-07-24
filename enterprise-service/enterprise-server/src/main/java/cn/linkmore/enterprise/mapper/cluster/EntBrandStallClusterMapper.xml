@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.EntBrandStallClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntBrandStall">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResBrandStall">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="brand_pre_id" jdbcType="BIGINT" property="brandPreId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
@@ -35,5 +35,31 @@
     <include refid="Base_Column_List" />
     from t_ent_brand_stall
     where brand_pre_id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_stall
+    where 1 = 1
+    <if test="brandPreId!=null">  
+   		 and brand_pre_id = #{brandPreId,jdbcType=BIGINT}
+    </if>
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_ent_brand_stall
+    where 1= 1
+    <if test="brandPreId!=null">  
+   		 and brand_pre_id = #{brandPreId,jdbcType=BIGINT}
+    </if> 
   </select>
 </mapper>
