@@ -8,6 +8,10 @@ import java.util.Date;
  *
  */
 public class Stall { 
+	public static final int STATUS_FREE = 1;
+	public static final int STATUS_BUSY = 2; 
+	public static final int STATUS_OFFLINED = 4;
+	public static final int STATUS_FAULT = 5;
 	/**
 	 * 主键
 	 */
