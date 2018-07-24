@@ -123,6 +123,9 @@ public class ResUserOrder {
      */
     private Long entId;
     
+    
+    private Long brandId;
+    
     /**
      * 车位类型 分类0自营，1临停，2长租，3VIP
      */
@@ -382,6 +385,14 @@ public class ResUserOrder {
 
 	public void setTradeId(Long tradeId) {
 		this.tradeId = tradeId;
+	}
+
+	public Long getBrandId() {
+		return brandId;
+	}
+
+	public void setBrandId(Long brandId) {
+		this.brandId = brandId;
 	}  
 	
 }

@@ -99,6 +99,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>enterprise-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>

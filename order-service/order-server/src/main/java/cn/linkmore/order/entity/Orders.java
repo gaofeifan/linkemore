@@ -139,6 +139,11 @@ public class Orders {
      */
     private Long entId;
     
+    /**
+     * 品牌ID
+     */
+    private Long brandId;
+    
     public Short getStallType() {
 		return stallType;
 	}
@@ -425,6 +430,14 @@ public class Orders {
 
 	public void setClientType(Short clientType) {
 		this.clientType = clientType;
+	}
+
+	public Long getBrandId() {
+		return brandId;
+	}
+
+	public void setBrandId(Long brandId) {
+		this.brandId = brandId;
 	}  
 	
 }

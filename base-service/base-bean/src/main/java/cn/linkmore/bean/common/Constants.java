@@ -298,6 +298,7 @@ public class Constants {
 		ORDER_SWITCH_STALL_FAILED_COUNT("order:switch-stall-failure:count:"),
 		ORDER_SWITCH_RESULT("order:switch-result:"),
 		PREFECTURE_FREE_STALL("freelock_key:"),
+		PREFECTURE_BRAND_FREE_STALL("prefecture:brand-free-stall:"),
 		PREFECTURE_BUSY_STALL("prefecture:busy-stall:"),
 //		WECHAT_TOKEN_KEY("wechat:token"),
 		WECHAT_TOKEN_KEY_MONITOR("monitor:wechat_token:"),
