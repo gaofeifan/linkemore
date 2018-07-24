@@ -19,10 +19,10 @@ public class ReqBrandBooking {
 	@NotBlank(message="车牌不能为空") 
 	private Long plateId;
 	
-	@ApiModelProperty(value = "企业ID", required = true)
-	@Min(value=0,message="企业ID为大于0的长整数")
-	@NotBlank(message="企业ID不能为空") 
-	private Long entId;
+	@ApiModelProperty(value = "品牌ID", required = true)
+	@Min(value=0,message="品牌为大于0的长整数")
+	@NotBlank(message="品牌ID不能为空") 
+	private Long brandId;
 	
 	public Long getPrefectureId() {
 		return prefectureId;
@@ -36,10 +36,11 @@ public class ReqBrandBooking {
 	public void setPlateId(Long plateId) {
 		this.plateId = plateId;
 	}
-	public Long getEntId() {
-		return entId;
+	public Long getBrandId() {
+		return brandId;
 	}
-	public void setEntId(Long entId) {
-		this.entId = entId;
+	public void setBrandId(Long brandId) {
+		this.brandId = brandId;
 	}
+	 
 }
