@@ -8,6 +8,13 @@ import java.util.Date;
  *
  */
 public class StallOperateLog {
+	
+	public static final short SOURCE_APP = 2;  
+	public static final Integer STATUS_TRUE = 1;
+	public static final Integer STATUS_FALSE = 0;
+	public static final short OPERATION_ONLINE= 1;
+	public static final short OPERATION_OFFLINE = 2;
+	public static final short OPERATION_RELEASE= 3;
     private Long id;
 
     private Long operatorId;

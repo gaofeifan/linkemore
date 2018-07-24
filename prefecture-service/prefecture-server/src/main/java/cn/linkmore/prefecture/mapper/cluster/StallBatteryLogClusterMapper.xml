@@ -9,6 +9,17 @@
     <result column="admin_id" jdbcType="BIGINT" property="adminId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+  
+  <resultMap id="ResResultMap" type="cn.linkmore.prefecture.response.ResStallBatteryLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="voltage" jdbcType="DOUBLE" property="voltage" />
+    <result column="total_num" jdbcType="INTEGER" property="totalNum" />
+    <result column="admin_id" jdbcType="BIGINT" property="adminId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="realname" property="adminName" jdbcType="VARCHAR" />
+  </resultMap>
+  
   <sql id="Base_Column_List">
     id, stall_id, voltage, total_num, admin_id, create_time
   </sql>
@@ -18,5 +29,13 @@
     from t_stall_battery_log
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectStallBatteryLog" resultMap="ResResultsMap" parameterType="java.lang.Long">
+		select
+		t.id, t.stall_id, t.voltage, t.total_num, t.admin_id,
+		t.create_time,au.realname
+		from t_stall_battery_log t left join t_admin_user au on au.id = t.admin_id
+		where t.stall_id = #{stallId,jdbcType=BIGINT} order by t.create_time desc
+	</select>
   
 </mapper>

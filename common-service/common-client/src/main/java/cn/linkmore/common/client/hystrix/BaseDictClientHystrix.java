@@ -31,6 +31,11 @@ public class BaseDictClientHystrix implements BaseDictClient {
 	}
 
 	@Override
+	public List<ResBaseDict> findListByCodes(List<String> codes) {
+		log.info("common service dict  findListByCodes(List<String> codes) hystrix");
+		return null;
+	}
+	@Override
 	public void save(ReqBaseDict baseDict) {
 		log.info("common service dict  save(ReqBaseDict baseDict) hystrix");
 	}
@@ -61,5 +66,5 @@ public class BaseDictClientHystrix implements BaseDictClient {
 		log.info("common service old dict  findBillSystemList() hystrix");
 		return new ArrayList<ResOldDict>();
 	}
-	
+
 }
