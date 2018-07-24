@@ -297,4 +297,9 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		}
 		return preStallList;
 	}
+
+	@Override
+	public ResBrandPre findById(Long id) {
+		return this.entBrandPreClusterMapper.findById(id);
+	}
 }
