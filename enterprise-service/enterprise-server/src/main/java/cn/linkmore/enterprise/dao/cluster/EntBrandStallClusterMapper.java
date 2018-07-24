@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntBrandStall;
+import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResBrandStall;
 
 /**
@@ -17,10 +18,14 @@ import cn.linkmore.enterprise.response.ResBrandStall;
 @Mapper
 public interface EntBrandStallClusterMapper {
 
-    EntBrandStall findById(Long id);
+    ResBrandStall findById(Long id);
 
 	Integer check(Map<String, Object> param);
 
 	List<ResBrandStall> findByBrandPreId(Long id);
+
+	Integer count(Map<String, Object> param);
+
+	List<ResBrandStall> findPage(Map<String, Object> param);
 
 }

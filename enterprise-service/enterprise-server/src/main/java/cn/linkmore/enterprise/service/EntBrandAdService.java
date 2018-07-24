@@ -10,6 +10,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
 import cn.linkmore.enterprise.entity.EntBrandAd;
 import cn.linkmore.enterprise.request.ReqCheck;
+import cn.linkmore.enterprise.request.ReqEntBrandAd;
 
 public interface EntBrandAdService {
 	/**
@@ -50,21 +51,6 @@ public interface EntBrandAdService {
 	List<EntBrandAd> findList(Map<String, Object> param);
 
 	/**
-	 * 保存
-	 * 
-	 * @param record
-	 */
-	int save(EntBrandAd record);
-
-	/**
-	 * 更新
-	 * 
-	 * @param record
-	 * @return
-	 */
-	int update(EntBrandAd record);
-
-	/**
 	 * 删除
 	 * 
 	 * @param ids
@@ -78,6 +64,24 @@ public interface EntBrandAdService {
 	 * @return
 	 */
 	Integer check(ReqCheck reqCheck);
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	int delete(List<Long> ids);
+	/**
+	 * 保存
+	 * 
+	 * @param record
+	 */
+	int save(ReqEntBrandAd reqEntBrandAd);
+	/**
+	 * 更新
+	 * @param reqEntBrandAd
+	 * @return
+	 */
+	int update(ReqEntBrandAd reqEntBrandAd);
 	
 
 }

@@ -1,17 +1,22 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -19,6 +24,7 @@ import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.app.request.ReqBrandPre;
@@ -32,6 +38,7 @@ import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandPreMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandPre;
 import cn.linkmore.enterprise.request.ReqCheck;
+import cn.linkmore.enterprise.request.ReqEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
 import cn.linkmore.enterprise.response.ResBrandStall;
@@ -41,7 +48,9 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
 import cn.linkmore.prefecture.response.ResStrategyBase;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.MapUtil;
+import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
 
 /**
@@ -256,7 +265,26 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
-		return null;
+
+		Map<String, Object> param = new HashMap<String, Object>();
+		List<ViewFilter> filters = pageable.getFilters();
+		if (StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if (filters != null && filters.size() > 0) {
+			for (ViewFilter filter : filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if (StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.entBrandPreClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<ResBrandPre> list = this.entBrandPreClusterMapper.findPage(param);
+		return new ViewPage(count, pageable.getPageSize(), list);
 	}
 
 	@Override
@@ -265,13 +293,19 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	}
 
 	@Override
-	public int save(EntBrandPre record) {
-		return entBrandPreMasterMapper.save(record);
+	public int save(ReqEntBrandPre record) {
+		EntBrandPre entBrandPre = null;
+		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
+		entBrandPre.setCreateTime(new Date());
+		entBrandPre.setUpdateTime(new Date());
+		return entBrandPreMasterMapper.save(entBrandPre);
 	}
 
 	@Override
-	public int update(EntBrandPre record) {
-		return entBrandPreMasterMapper.update(record);
+	public int update(ReqEntBrandPre record) {
+		EntBrandPre entBrandPre = null;
+		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
+		return entBrandPreMasterMapper.update(entBrandPre);
 	}
 
 	@Override
@@ -301,5 +335,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	@Override
 	public ResBrandPre findById(Long id) {
 		return this.entBrandPreClusterMapper.findById(id);
+	}
+
+	@Override
+	public int delete(List<Long> ids) {
+		return entBrandPreMasterMapper.deleteByIds(ids);
 	}
 }

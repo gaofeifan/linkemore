@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.client.CouponClient;
@@ -28,10 +30,12 @@ import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandAdMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandAd;
 import cn.linkmore.enterprise.request.ReqCheck;
+import cn.linkmore.enterprise.request.ReqEntBrandAd;
 import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.service.EntBrandAdService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
 
@@ -40,7 +44,6 @@ import cn.linkmore.util.TokenUtil;
  * 
  * @author jiaohanbin
  * @version 2.0
- *
  */
 @Service
 public class EntBrandAdServiceImpl implements EntBrandAdService {
@@ -85,7 +88,8 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 						.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay) != null) {
 					count = (Integer) this.redisService
 							.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay);
-					log.info("opening brand pre send coupon ent-day{}{} count {}",resBrandAd.getEntId(), currentDay, count);
+					log.info("opening brand pre send coupon ent-day{}{} count {}", resBrandAd.getEntId(), currentDay,
+							count);
 					// 计数次数 >= 日申请次数，当天广告失效
 					if (resBrandAd.getApplyCount() <= count) {
 						return null;
@@ -97,14 +101,14 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 			CacheUser cu = (CacheUser) this.redisService
 					.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-			
+
 			if (cu != null && cu.getId() != null) {
 				// 当前用户是否已接受优惠券信息，接受之后则以后不在提示
 				List<ResCoupon> couponList = couponClient.findBrandCouponList(resBrandAd.getEntId(), cu.getId());
 				if (CollectionUtils.isNotEmpty(couponList)) {
 					return null;
 				}
-				Map<String,Object> map = new HashMap<String,Object>();
+				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("entId", resBrandAd.getEntId());
 				map.put("userId", cu.getId());
 				Integer num = entBrandUserClusterMapper.findBrandUser(map);
@@ -129,7 +133,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		boolean flag = false;
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		if (cu != null && cu.getId() != null) {
-			//判断是否已经发送了品牌优惠
+			// 判断是否已经发送了品牌优惠
 			List<ResCoupon> couponList = couponClient.findBrandCouponList(entId, cu.getId());
 			if (CollectionUtils.isEmpty(couponList)) {
 				flag = this.couponClient.sendBrandCoupon(true, entId, cu.getId());
@@ -157,15 +161,15 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(map);
 		if (CollectionUtils.isNotEmpty(list)) {
 			resBrandAd = list.get(0);
-			if(resBrandAd.getLimitStatus()== 0 && resBrandAd.getAdStatus()==0) {
-				//非受限用户且不发送广告
+			if (resBrandAd.getLimitStatus() == 0 && resBrandAd.getAdStatus() == 0) {
+				// 非受限用户且不发送广告
 				return null;
 			}
 			if (this.redisService
 					.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay) != null) {
 				count = (Integer) this.redisService
 						.get(RedisKey.USER_APP_BRAND_COUPON.key + resBrandAd.getEntId() + currentDay);
-				log.info("brand pre send coupon ent-day {}{} count {}",resBrandAd.getEntId(), currentDay, count);
+				log.info("brand pre send coupon ent-day {}{} count {}", resBrandAd.getEntId(), currentDay, count);
 				// 计数次数 >= 日申请次数，当天广告失效
 				if (resBrandAd.getApplyCount() <= count) {
 					return null;
@@ -194,10 +198,28 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		}
 		return resEntBrandAd;
 	}
-	
+
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
-		return null;
+		Map<String, Object> param = new HashMap<String, Object>();
+		List<ViewFilter> filters = pageable.getFilters();
+		if (StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if (filters != null && filters.size() > 0) {
+			for (ViewFilter filter : filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if (StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.entBrandAdClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<ResBrandAd> list = this.entBrandAdClusterMapper.findPage(param);
+		return new ViewPage(count, pageable.getPageSize(), list);
 	}
 
 	@Override
@@ -206,13 +228,18 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	}
 
 	@Override
-	public int save(EntBrandAd record) {
-		return entBrandAdMasterMapper.save(record);
+	public int save(ReqEntBrandAd record) {
+		EntBrandAd entBrandAd = null;
+		entBrandAd = ObjectUtils.copyObject(record, new EntBrandAd());
+		entBrandAd.setCreateTime(new Date());
+		return entBrandAdMasterMapper.save(entBrandAd);
 	}
 
 	@Override
-	public int update(EntBrandAd record) {
-		return entBrandAdMasterMapper.update(record);
+	public int update(ReqEntBrandAd record) {
+		EntBrandAd entBrandAd = null;
+		entBrandAd = ObjectUtils.copyObject(record, new EntBrandAd());
+		return entBrandAdMasterMapper.update(entBrandAd);
 	}
 
 	@Override
@@ -227,6 +254,11 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
 		return this.entBrandAdClusterMapper.check(param);
+	}
+
+	@Override
+	public int delete(List<Long> ids) {
+		return entBrandAdMasterMapper.deleteByIds(ids);
 	}
 
 }
