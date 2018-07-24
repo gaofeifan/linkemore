@@ -16,10 +16,12 @@
     <result column="screen" jdbcType="SMALLINT" property="screen" />
     <result column="status" jdbcType="SMALLINT" property="status" />
     <result column="city_ids" jdbcType="VARCHAR" property="cityIds" />
+    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+    <result column="ad_status" jdbcType="SMALLINT" property="adStatus" />
   </resultMap>
   <sql id="Base_Column_List">
     id, ent_id, ent_name, logo_url, pre_id, pre_name, view_image, view_url, create_time, 
-    end_time, apply_count, screen, status, city_ids
+    end_time, apply_count, screen, status, city_ids, limit_status, ad_status
   </sql>
   <delete id="delete" parameterType="java.lang.Long">
     delete from t_ent_brand_ad
@@ -30,12 +32,13 @@
       logo_url, pre_id, pre_name, 
       view_image, view_url, create_time, 
       end_time, apply_count, screen, 
-      status, city_ids)
+      status, city_ids, limit_status, ad_status)
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
       #{logoUrl,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, 
       #{viewImage,jdbcType=VARCHAR}, #{viewUrl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{endTime,jdbcType=TIMESTAMP}, #{applyCount,jdbcType=INTEGER}, #{screen,jdbcType=SMALLINT}, 
-      #{status,jdbcType=SMALLINT}, #{cityIds,jdbcType=VARCHAR})
+      #{status,jdbcType=SMALLINT}, #{cityIds,jdbcType=VARCHAR},#{limitStatus,jdbcType=SMALLINT},
+      #{adStatus,jdbcType=SMALLINT})
   </insert>
   
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandAd">
@@ -52,7 +55,9 @@
       apply_count = #{applyCount,jdbcType=INTEGER},
       screen = #{screen,jdbcType=SMALLINT},
       status = #{status,jdbcType=SMALLINT},
-      city_ids = #{cityIds,jdbcType=VARCHAR}
+      city_ids = #{cityIds,jdbcType=VARCHAR},
+      limit_status = #{limitStatus,jdbcType=SMALLINT},
+      ad_status = #{adStatus,jdbcType=SMALLINT},
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

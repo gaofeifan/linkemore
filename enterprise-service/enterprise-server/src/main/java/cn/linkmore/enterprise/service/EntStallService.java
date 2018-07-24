@@ -5,6 +5,9 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.prefecture.response.ResStall;
@@ -23,7 +26,7 @@ public interface EntStallService {
 	 * @Date 2018年7月20日
 	 * @Version v1.0
 	 */
-	List<ResEntStalls> selectEntStalls(Long id);
+	List<ResEntStalls> selectEntStalls(HttpServletRequest request);
 
 	/**
 	 * @Description  根据员工查询可操作车位
@@ -37,7 +40,7 @@ public interface EntStallService {
 	 * @Date 2018年7月21日
 	 * @Version v1.0
 	 */
-	List<ResStall> selectStalls(Long staffId,Long preId, Short type);
+	List<ResStall> selectStalls(HttpServletRequest request,Long preId, Short type);
 
 	/**
 	 * 查询车位详细信息
@@ -55,7 +58,7 @@ public interface EntStallService {
 	 * @Date 2018年7月21日
 	 * @Version v1.0
 	 */
-	Map<String, Object> operatStalls(Long staffId, Long stallId, Integer state);
+	Map<String, Object> operatStalls(HttpServletRequest request, Long stallId, Integer state);
 
 	/**
 	 * 车位上下线（changeStatus：1上线 2 下线）
@@ -64,7 +67,7 @@ public interface EntStallService {
 	 * @Date 2018年7月21日
 	 * @Version v1.0
 	 */
-	Map<String, Object> change(Long id, Long stall_id, int changeStatus);
+	Map<String, Object> change(HttpServletRequest request, Long stall_id, int changeStatus);
 
 
 }

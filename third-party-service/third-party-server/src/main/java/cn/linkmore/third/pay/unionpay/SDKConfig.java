@@ -106,6 +106,7 @@ public class SDKConfig {
 		config.setMiddleCertPath(uc.getMiddleCertPath());
 		config.setRootCertPath(uc.getRootCertPath());
 		config.setIfValidateCNName(uc.getOnline());
+		config.setValidateCertDir("");
 	}  
 	/**
 	 * 获取config对象.

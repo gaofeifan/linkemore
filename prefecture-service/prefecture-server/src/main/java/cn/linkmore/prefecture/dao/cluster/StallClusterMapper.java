@@ -76,5 +76,11 @@ public interface StallClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<ResStallOps> findListByParam(Map<String, Object> param);
+	/**
+	 * pengfei
+	 * @param param
+	 * @return
+	 */
+	List<ResStall> findPreStallList(Map<String, Object> param);
 	
 }

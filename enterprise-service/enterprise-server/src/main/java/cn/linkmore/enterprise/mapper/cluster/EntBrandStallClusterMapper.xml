@@ -10,6 +10,16 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="SMALLINT" property="status" />
   </resultMap>
+  
+  <resultMap id="ResResultMap" type="cn.linkmore.enterprise.response.ResBrandStall">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="brand_pre_id" jdbcType="BIGINT" property="brandPreId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, brand_pre_id, stall_id, stall_name, create_time, update_time, status
   </sql>
@@ -18,5 +28,12 @@
     <include refid="Base_Column_List" />
     from t_ent_brand_stall
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findByBrandPreId" parameterType="java.lang.Long" resultMap="ResResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_stall
+    where brand_pre_id = #{id,jdbcType=BIGINT}
   </select>
 </mapper>

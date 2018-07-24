@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -73,6 +75,7 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 	@Override
 	@Transactional
 	public Boolean brandApplicant(ReqBrandApplicant reqBrandApplicant, HttpServletRequest request) {
+		Boolean flag = false;
 		EntBrandApplicant brandApplicant = new EntBrandApplicant();
 		Map<String, Object> map = new HashMap<String, Object>();
 		ResBrandAd resBrandAd = null;
@@ -96,10 +99,11 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		}
 
 		List<ResBrandAd> brandAdList = entBrandAdClusterMapper.findBrandPreAdList(map);
-		if (CollectionUtils.isEmpty(brandAdList)) {
-			throw new BusinessException(StatusEnum.BRAND_APPLICANT_ENT_BRAND_FAIL);
-		} else {
+		log.info("resBrandAd{}", JSON.toJSON(brandAdList));
+		if (CollectionUtils.isNotEmpty(brandAdList)) {
 			resBrandAd = brandAdList.get(0);
+		} else {
+			throw new BusinessException(StatusEnum.BRAND_APPLICANT_ENT_BRAND_FAIL);
 		}
 
 		Integer num = this.entBrandApplicantClusterMapper.findBrandApplicant(map);
@@ -114,20 +118,20 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 				throw new BusinessException(StatusEnum.BRAND_APPLICANT_ENT_BRAND_AD_FAIL);
 			}
 		}
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		if (cu != null) {
-			brandApplicant.setUserId(cu.getId());
-			ResUser resUser = userClient.findById(cu.getId());
-			brandApplicant.setUsername(resUser.getUsername());
-		}
+		
 		brandApplicant.setMobile(mobile);
 		brandApplicant.setCreateTime(new Date());
-		entBrandApplicantMasterMapper.save(brandApplicant);
 		// 若用户不存在则创建用户
 		ResUser user = getUser(mobile);
-		// 发送优惠券功能
-		couponClient.sendBrandCoupon(false, entId, user.getId());
-		return true;
+		if(user != null) {
+			brandApplicant.setUserId(user.getId());
+			brandApplicant.setUsername(user.getUsername());
+			// 发送优惠券功能
+			couponClient.sendBrandCoupon(false, entId, user.getId());
+			flag = true;
+		}
+		entBrandApplicantMasterMapper.save(brandApplicant);
+		return flag;
 	}
 
 	private ResUser getUser(String phone) {

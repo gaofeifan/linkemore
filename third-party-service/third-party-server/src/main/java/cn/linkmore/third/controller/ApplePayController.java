@@ -46,12 +46,13 @@ public class ApplePayController {
 	public Boolean verify(@RequestParam("json")String json) {
 		Map<String,String> param = JsonUtil.toObject(json,HashMap.class);
 		Boolean flag = false;
-		unionPayConfig.setCertDir("");
+		unionPayConfig.setCertDir(""); 
 		SDKConfig.init(unionPayConfig);
 		log.info("config:{}",JsonUtil.toJson(unionPayConfig));
+		log.info("json:{}",json);
 		log.info("sdk:{}",JsonUtil.toJson(SDKConfig.getConfig()));
-		//AcpService.validate(param,"UTF-8")&&"00".equals(param.get("respCode"))
-		if("00".equals(param.get("respCode"))) {
+		//AcpService.validate(param,"UTF-8");
+		if("00".equals(param.get("respCode"))&&unionPayConfig.getMerId().equals(param.get("merId"))) {
 			flag = true;
 		}
 		return flag;

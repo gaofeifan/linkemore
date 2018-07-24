@@ -53,6 +53,21 @@ public class Constants {
 			this.type = type;
 		}
 	} 
+	public enum PrefectureStatus{
+		ONLINE(0),OFFLINE(1);
+		public int status;
+		private PrefectureStatus(int status) {
+			this.status = status;
+		}
+	}
+	
+	public enum PrefectureCategory{
+		COMMON(0),TEST(1),ENTERPRISE(2);
+		public int category;
+		private PrefectureCategory(int category) {
+			this.category = category;
+		}
+	}
 	public enum StallStatus{
 		FREE(1),USED(2),OUTLINE(4);
 		public int status;
@@ -201,7 +216,7 @@ public class Constants {
 		}
 	}
 	public enum LockStatus{
-		UP(1),DOWN(2); 
+		DOWN(0),UP(1),DOWNING(2),UPING(3); 
 		public int status;
 		private LockStatus(int status) {
 			this.status = status;
@@ -225,8 +240,8 @@ public class Constants {
 		ORDER_SUSPEND_NOTICE(3,"order_suspend_notice"),  
 		ORDER_SEARCH_NOTICE_(4, "order_search_notice"),
 		ORDER_CLOSED_NOTICE(5,"order_closed_coupon_notice"),
-		BRAND_USER_INVITE_NOTICE(6,"share_coupon_notice"),
-		UN_BRAND_USER_INVITE_NOTICE(7,"share_coupon_notice");
+		BRAND_USER_INVITE_NOTICE(6,"subed_brand_coupon_notice"),
+		UN_BRAND_USER_INVITE_NOTICE(7,"unsub_brand_coupon_notice");
 		public int type;
 		public String id;
 
@@ -244,7 +259,9 @@ public class Constants {
 		ORDER_SWITCH_STATUS_NOTICE(4,"ORDER_SWITCH_STATUS_NOTICE"),
 		ORDER_COMPLETE_NOTICE(5,"ORDER_COMPLETE_NOTICE"),
 		OPS_MESSAGE_NOTICE(6,"OPS_MESSAGE_NOTICE"),
-		ORDER_AUTO_CLOSE_NOTICE(7,"ORDER_AUTO_CLOSE_NOTICE");
+		ORDER_AUTO_CLOSE_NOTICE(7,"ORDER_AUTO_CLOSE_NOTICE"),
+		ORDER_STAFF_CLOSED_NOTICE(8,"ORDER_STAFF_CLOSED_NOTICE"),
+		ORDER_STAFF_SUSPEND_NOTICE(9,"ORDER_STAFF_SUSPEND_NOTICE"); 
 		public int type;
 		public String id; 
 		private PushType(int type, String id) {
@@ -254,6 +271,7 @@ public class Constants {
 	}
 
 	public enum RedisKey {
+		USER_WXAPP_AUTH_TOKEN("user_wxapp:auth:openid:"),
 		USER_APP_AUTH_TOKEN("user_app:auth:uid:"), 
 		USER_APP_AUTH_USER("user_app:auth:user:"), 
 		USER_APP_AUTH_CODE("user_app:auth:code:"), 

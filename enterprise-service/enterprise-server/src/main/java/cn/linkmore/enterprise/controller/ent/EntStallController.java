@@ -4,7 +4,6 @@
 package cn.linkmore.enterprise.controller.ent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,16 +16,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.bean.common.Constants.RedisKey;
-import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.enterprise.controller.ent.request.ReqOperatStall;
 import cn.linkmore.enterprise.controller.ent.request.ReqPreStall;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.prefecture.response.ResStall;
-import cn.linkmore.redis.RedisService;
-import cn.linkmore.util.TokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -42,9 +37,6 @@ import io.swagger.annotations.ApiOperation;
 public class EntStallController {
 	
 	@Autowired
-	private RedisService redisService;
-	
-	@Autowired
 	private EntStallService entStallService;
 	
 	@ApiOperation(value = "查询企业下停车场信息", notes = "查询企业下停车场信息", consumes = "application/json")
@@ -52,13 +44,7 @@ public class EntStallController {
 	@ResponseBody
 	public List<ResEntStalls> selectEntStalls(HttpServletRequest request){
 		List<ResEntStalls> list = null;
-		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
-		if(ru == null){
-			list = new ArrayList<ResEntStalls>();
-			return list;
-		}
-		list = entStallService.selectEntStalls(ru.getId());
+		list = entStallService.selectEntStalls(request);
 		return list;
 	}
 	
@@ -67,17 +53,11 @@ public class EntStallController {
 	@ResponseBody
 	public List<ResStall> selectEntStalls(@RequestBody ReqPreStall reqPreStall ,HttpServletRequest request){
 		List<ResStall> list = null;
-		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
-		if(ru == null){
-			list = new ArrayList<>();
-			return list;
-		}
 		if(reqPreStall == null){
 			list = new ArrayList<>();
 			return list;
 		}
-		list = entStallService.selectStalls(ru.getId(),reqPreStall.getPreId(),reqPreStall.getType());
+		list = entStallService.selectStalls(request,reqPreStall.getPreId(),reqPreStall.getType());
 		return list;
 	}
 	 
@@ -96,12 +76,10 @@ public class EntStallController {
 	@RequestMapping(value = "/operate-stall",method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String,Object> operatStalls(@RequestBody ReqOperatStall reqOperatStall,HttpServletRequest request){
-		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
-		if(ru == null){
+		if(reqOperatStall == null){
 			return null;
 		}
-		Map<String,Object> message  = this.entStallService.operatStalls(ru.getId(),reqOperatStall.getStallId(),reqOperatStall.getState());
+		Map<String,Object> message  = this.entStallService.operatStalls(request,reqOperatStall.getStallId(),reqOperatStall.getState());
 		return message;
 	}
 	
@@ -109,12 +87,7 @@ public class EntStallController {
 	@RequestMapping(value = "/change-up",method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String,Object> changeUp(Long stall_id,HttpServletRequest request){
-		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
-		if(ru == null){
-			return null;
-		}
-		Map<String,Object> message  = this.entStallService.change(ru.getId(),stall_id,1);
+		Map<String,Object> message  = this.entStallService.change(request,stall_id,1);
 		return message;
 	}
 	
@@ -122,12 +95,10 @@ public class EntStallController {
 	@RequestMapping(value = "/change-down",method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String,Object> changeDown(Long stall_id,HttpServletRequest request){
-		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
-		if(ru == null){
+		if(stall_id == null){
 			return null;
 		}
-		Map<String,Object> message  = this.entStallService.change(ru.getId(),stall_id,2);
+		Map<String,Object> message  = this.entStallService.change(request,stall_id,2);
 		return message;
 	}
 	

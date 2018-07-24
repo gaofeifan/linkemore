@@ -134,8 +134,8 @@ public class FeignStallController {
 	
 	@RequestMapping(value = "/v2.0/pre-stall-list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStall> findPreStallList(@RequestBody List<Long> stallIds){
-		List<ResStall> list = this.stallService.findStallList(stallIds);
+	public List<ResStall> findPreStallList(@RequestBody Map<String, Object> param){
+		List<ResStall> list = this.stallService.findPreStallList(param);
 		return list;
 	}
 	

@@ -36,6 +36,10 @@ public class EntBrandAd {
     private Short status;
     //城市id数组
     private String cityIds;
+    //0不受限，1受限[仅品牌用户可约]
+    private Short limitStatus;
+    //0不发广告 1发广告 近当limitStatus=0起作用
+    private Short adStatus;
 
     public Long getId() {
         return id;
@@ -148,4 +152,20 @@ public class EntBrandAd {
     public void setCityIds(String cityIds) {
         this.cityIds = cityIds == null ? null : cityIds.trim();
     }
+
+	public Short getLimitStatus() {
+		return limitStatus;
+	}
+
+	public void setLimitStatus(Short limitStatus) {
+		this.limitStatus = limitStatus;
+	}
+
+	public Short getAdStatus() {
+		return adStatus;
+	}
+
+	public void setAdStatus(Short adStatus) {
+		this.adStatus = adStatus;
+	}
 }

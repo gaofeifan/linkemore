@@ -19,6 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants;
@@ -52,8 +55,10 @@ import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.coupon.response.ResWeekTime;
 import cn.linkmore.coupon.service.CouponService;
+import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.FeignEnterpriseClient;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
 import cn.linkmore.prefecture.request.ReqStrategy;
@@ -119,6 +124,9 @@ public class CouponServiceImpl implements CouponService {
 	private TemplateMasterMapper templateMasterMapper;
 	@Resource
 	private UserClient userClient;
+	
+	@Autowired
+	private FeignEnterpriseClient enterpriseClient;
 
 	private static final short WEEK_TIME = 1;
 	private static final short DAY_TIME = 2;
@@ -608,12 +616,15 @@ public class CouponServiceImpl implements CouponService {
         Integer count = 0;
 		if (this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay) != null) {
 			count = (Integer) this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay);
+			log.info("entId{} count {} " ,entId, count);
 		}else {
+			log.info("current day create the key with expireTime ");
 			this.redisService.set(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay, 0 , expireTime);
 		}
       
         List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
-		ResUser resUser = userClient.findById(userId);		
+		ResUser resUser = userClient.findById(userId);
+		log.info("current userId {} , user {} ", userId, JSON.toJSON(resUser));
 		if (CollectionUtils.isNotEmpty(list) && resUser != null) {
 			ResSubject subject = list.get(0);
 			ResTemplate temp = this.templateClusterMapper.findById(subject.getTemplateId());
@@ -664,6 +675,13 @@ public class CouponServiceImpl implements CouponService {
 			this.templateMasterMapper.update(template);
 			// 发送短信通知
 			ReqSms sms = new ReqSms();
+			ResEnterprise enterprise = enterpriseClient.findById(entId);
+			log.info("enterprise name = {}",enterprise.getName());
+			Map<String, String> param = new HashMap<String, String>();
+			if(enterprise != null) {
+				param.put("brand", enterprise.getName());
+			}
+			sms.setParam(param);
 			sms.setMobile(resUser.getUsername());
 			if(isBrandUser) {
 				sms.setSt(Constants.SmsTemplate.BRAND_USER_INVITE_NOTICE);

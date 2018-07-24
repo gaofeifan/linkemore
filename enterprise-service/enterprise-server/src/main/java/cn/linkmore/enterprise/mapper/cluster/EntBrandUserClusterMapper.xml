@@ -24,7 +24,12 @@
   <select id="findBrandUser" resultType="java.lang.Integer" parameterType="java.util.HashMap">
     select count(*)
     from t_ent_brand_user
-    where user_id = #{userId,jdbcType=BIGINT}
-    and ent_id = #{entId,jdbcType=BIGINT}
+    where 1 = 1 
+    <if test="userId!=null">
+    	and user_id = #{userId,jdbcType=BIGINT}
+    </if> 
+    <if test="entId!=null">
+    	and ent_id = #{entId,jdbcType=BIGINT}
+    </if> 
   </select>
 </mapper>

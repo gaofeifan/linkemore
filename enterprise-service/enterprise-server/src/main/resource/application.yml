@@ -73,7 +73,7 @@ swagger:
   version: 2.0
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
-  base-package: cn.linkmore.enterprise.controller.app
+  base-package: cn.linkmore.enterprise.controller.ent
     
 redis:
   host: 192.168.1.218
@@ -90,6 +90,7 @@ redis:
   test-on-create: true 
   sentinel-master: mymaster
   sentinel-nodes: 192.168.1.219:26379 
+  channel: enterprise
   
 sdk:
   linkmore_url: http://192.168.1.211:8086

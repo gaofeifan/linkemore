@@ -92,9 +92,9 @@ public class StallServiceImpl implements StallService {
 		Boolean flag = false;
 		Stall stall = stallClusterMapper.findById(stallId);
 		if (stall != null) {
-			stall.setStatus(Stall.STATUS_FREE);
-			stall.setLockStatus(Stall.LOCK_STATUS_UP);
-			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
+			stall.setStatus(StallStatus.FREE.status);
+			stall.setLockStatus(LockStatus.UP.status);
+			stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
 			stallMasterMapper.cancel(stall);
 			flag = true;
 		}
@@ -130,9 +130,9 @@ public class StallServiceImpl implements StallService {
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			flag = true;
 			stall.setUpdateTime(new Date());
-			stall.setLockStatus(Stall.LOCK_STATUS_UP);
-			stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
-			stall.setStatus(Stall.STATUS_FREE);
+			stall.setStatus(StallStatus.FREE.status);
+			stall.setLockStatus(LockStatus.UP.status);
+			stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
 			this.stallMasterMapper.checkout(stall);
 			new StallUpThread(stall).start();
 		} 
@@ -164,7 +164,7 @@ public class StallServiceImpl implements StallService {
 			log.info("res:{}", JsonUtil.toJson(res));
 			int code = res.getMsgCode();
 			if (code == 200) {
-				stall.setLockStatus(Stall.LOCK_STATUS_DOWN);
+				stall.setLockStatus(LockStatus.DOWN.status);
 				stallMasterMapper.lockdown(stall);
 				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqos.getOrderId());
 			} 
@@ -206,7 +206,7 @@ public class StallServiceImpl implements StallService {
 				flag = false;
 				throw new BusinessException(StatusEnum.ORDER_LOCKUP_FAIL);
 			}
-			stall.setLockStatus(Stall.LOCK_STATUS_UP);
+			stall.setLockStatus(LockStatus.UP.status);
 			stallMasterMapper.lockdown(stall);
 		}
 		return flag;
@@ -403,10 +403,10 @@ public class StallServiceImpl implements StallService {
 			}
 			if(count<3) {
 				count = count+1; 
-				stall.setLockStatus(Stall.LOCK_STATUS_UP); 
-				stall.setUpdateTime(new Date());
-				stall.setBindOrderStatus(Stall.BIND_ORDER_STATUS_NONE);
-				stall.setStatus(Stall.STATUS_FREE);
+				stall.setStatus(StallStatus.FREE.status);
+				stall.setLockStatus(LockStatus.UP.status);
+				stall.setBindOrderStatus((short)BindOrderStatus.FREE.status); 
+				stall.setUpdateTime(new Date()); 
 				this.stallMasterMapper.checkout(stall);
 				this.redisService.set(RedisKey.STALL_ORDER_CLOSED.key+id, count,ExpiredTime.STALL_ORDER_CLOSED_TIME.time );  
 				this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
@@ -423,6 +423,12 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public List<ResStall> findStallList(List<Long> stallIds) {
 		List<ResStall> list = this.stallClusterMapper.findTreeList(stallIds);
+		return list;
+	}
+
+	@Override
+	public List<ResStall> findPreStallList(Map<String, Object> param) {
+		List<ResStall> list = this.stallClusterMapper.findPreStallList(param);
 		return list;
 	}
 	

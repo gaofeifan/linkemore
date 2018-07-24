@@ -84,6 +84,5 @@ public interface EnterpriseService {
 	 */
 	List<ResEnterprise> selectAll();
 
-
-
+	ResEnterprise findById(Long id);
 }
