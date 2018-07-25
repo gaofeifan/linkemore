@@ -109,7 +109,7 @@ public class FeignOrderController {
 	 */
 	@RequestMapping(value = "/charge-detail", method = RequestMethod.POST)
 	@ResponseBody
-	ResChargeList findChargeDetail(Map<String, Object> param){
+	public ResChargeList findChargeDetail(@RequestBody Map<String, Object> param){
 		return this.ordersService.findChargeDetail(param);
 	}
 
@@ -120,7 +120,7 @@ public class FeignOrderController {
 	 */
 	@RequestMapping(value = "/traffic-flow-list", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param){
+	List<ResTrafficFlow> findTrafficFlowList(@RequestBody Map<String, Object> param){
 		return this.ordersService.findTrafficFlowList(param);
 	}
 
@@ -131,7 +131,7 @@ public class FeignOrderController {
 	 */
 	@RequestMapping(value = "/income-list", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResIncome> findIncomeList(Map<String, Object> param){
+	List<ResIncome> findIncomeList(@RequestBody Map<String, Object> param){
 		return this.ordersService.findIncomeList(param);
 	}
 }

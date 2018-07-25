@@ -30,20 +30,17 @@
     where staff_id = #{staffId} and status = #{status}
   </select>
   <select id="findByStaffId" parameterType="java.util.HashMap"  resultType="java.lang.Long">
-  SELECT
-	esa.staff_id
-FROM
-	t_ent_operate_auth eoa
-LEFT JOIN t_ent_auth_pre eap ON eap.auth_id = eoa.id
-LEFT JOIN t_ent_prefecture ep ON ep.id = eap.pre_id
-LEFT JOIN t_ent_auth_stall eas ON eas.auth_id = eoa.id AND eas.pre_id = eap.id
-LEFT JOIN t_ent_staff_auth esa ON esa.auth_id = esa.auth_id
+SELECT eas.stall_id FROM
+t_ent_staff es 
+LEFT JOIN t_ent_staff_auth esa ON esa.staff_id = es.id
+LEFT JOIN t_ent_operate_auth eoa ON eoa.id = esa.auth_id
+LEFT JOIN t_ent_auth_stall eas ON eas.auth_id = eoa.id
 <where>
 	<if test="staffId != null">
 		esa.staff_id = #{staffId} 
 	</if>
 	<if test="preId != null">
-		and eap.pre_id = #{preId}
+		and eas.pre_id = #{preId}
 	</if>
 </where>
   </select>

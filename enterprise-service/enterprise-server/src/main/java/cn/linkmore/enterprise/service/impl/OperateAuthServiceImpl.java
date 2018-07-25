@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -26,6 +28,7 @@ import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.request.ReqOperateBind;
+import cn.linkmore.enterprise.request.ReqStallList;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.OperateAuthService;
@@ -164,27 +167,26 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 
 	@Override
 	public void bind(ReqOperateBind bind) {
-		String[] preIds = bind.getPreIds().split(",");
-		String[] stallIds = bind.getStallIds().split(",");
+		List<ReqStallList> list = bind.getStallList();
+		Set<Long> collect = list.stream().map(stall -> stall.getPreId()).collect(Collectors.toSet());
 		List<EntAuthPre> pres = new ArrayList<>();
 		List<EntAuthStall> stalls = new ArrayList<>();
 		EntAuthPre pre  = null;
 		EntAuthStall stall = null;
-		for (String id : preIds) {
-			if(StringUtils.isNoneBlank(id)) {
+		for (Long id : collect) {
+			if(id != null) {
 				pre = new EntAuthPre();
 				pre.setAuthId(bind.getId());
-				pre.setPreId(Long.decode(id));
+				pre.setPreId(id);
 				pres.add(pre);
 			}
 		}
-		for (String id : stallIds) {
-			if(StringUtils.isNoneBlank(id)) {
-				stall = new EntAuthStall();
-				stall.setAuthId(bind.getId());
-				stall.setPreId(Long.decode(id));
-				stalls.add(stall);
-			}
+		for (ReqStallList reqStallList : list) {
+			stall = new EntAuthStall();
+			stall.setAuthId(bind.getId());
+			stall.setPreId(reqStallList.getPreId());
+			stall.setStallId(reqStallList.getStallId());
+			stalls.add(stall);
 		}
 		this.entAuthPreMasterMapper.deleteByAuthId(bind.getId());
 		this.entAuthStallMasterMapper.deleteByAuthId(bind.getId());

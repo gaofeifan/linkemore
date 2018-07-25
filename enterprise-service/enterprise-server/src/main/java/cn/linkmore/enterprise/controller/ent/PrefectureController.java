@@ -23,8 +23,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping("/prefecture")
-@Api("车区运营")
+@RequestMapping("/ent/prefecture")
+@Api(tags = "prefecture",description="车区运营", produces = "application/json")
 public class PrefectureController {
 
 	@Resource
@@ -48,7 +48,7 @@ public class PrefectureController {
 	@RequestMapping(value="/proceeds" ,method=RequestMethod.GET)
 	@ApiOperation(value = "根据条件查询车场实收入", notes = "根据条件查询车场实收入", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<BigDecimal> findProceeds(@ApiParam(value="type",required=true,name="类型 0 7天 1 15天 2 30天") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
+	public ResponseEntity<BigDecimal> findProceeds(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
 		BigDecimal income = this.prefectureService.findProceeds(type,preId,request);
 		return ResponseEntity.success(income,request);
 	}
@@ -56,7 +56,7 @@ public class PrefectureController {
 	@RequestMapping(value="/traffic-flow" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场车流量统计", notes = "查询车场车流量统计", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<Integer> findTrafficFlow(@ApiParam(value="type",required=true,name="类型 0 7天 1 15天 2 30天") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
+	public ResponseEntity<Integer> findTrafficFlow(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
 		Integer income = this.prefectureService.findTrafficFlow(type,preId,request);
 		return ResponseEntity.success(income,request);
 	}
@@ -64,7 +64,7 @@ public class PrefectureController {
 	@RequestMapping(value="/charge-detail" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场实时收费明细", notes = "查询车场实时收费明细", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<List<ResChargeList>> findChargeDetail(@ApiParam(value="type",required=true,name="类型 0 7天 1 15天 2 30天") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
+	public ResponseEntity<List<ResChargeList>> findChargeDetail(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
 		List<ResChargeList> list = this.prefectureService.findChargeDetail(type,preId,request);
 		return ResponseEntity.success(list, request);
 	}
@@ -72,7 +72,7 @@ public class PrefectureController {
 	@RequestMapping(value="/traffic-flow-list" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场每日车流量列表", notes = "查询车场每日车流量列表", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<List<ResTrafficFlow>> findTrafficFlowList(@ApiParam(value="type",required=true,name="类型 0 7天 1 15天 2 30天") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
+	public ResponseEntity<List<ResTrafficFlow>> findTrafficFlowList(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
 		List<ResTrafficFlow> list = this.prefectureService.findTrafficFlowList(type,preId,request);
 		return ResponseEntity.success(list, request);
 	}
@@ -80,7 +80,7 @@ public class PrefectureController {
 	@RequestMapping(value="/income-list" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场每日收入列表", notes = "查询车场每日收入列表", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<List<ResIncome>> findIncomeList(@ApiParam(value="type",required=true,name="类型 0 7天 1 15天 2 30天") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
+	public ResponseEntity<List<ResIncome>> findIncomeList(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
 		List<ResIncome> list = this.prefectureService.findIncomeList(type,preId,request);
 		return ResponseEntity.success(list, request);
 	}

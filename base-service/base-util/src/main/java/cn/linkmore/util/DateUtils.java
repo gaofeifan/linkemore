@@ -225,4 +225,15 @@ public class DateUtils {
 			Calendar c = Calendar.getInstance();
 			return c.get(Calendar.MONTH)+1;
 		}
+
+		public static Date format(String decode) {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				return format.parse(decode);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
 }

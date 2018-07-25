@@ -80,19 +80,19 @@ public interface OrderClient {
 
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
 	@ResponseBody
-	Integer findTrafficFlow(Map<String, Object> map);
+	Integer findTrafficFlow(@RequestBody Map<String, Object> map);
 
 	@RequestMapping(value = "/proceeds", method = RequestMethod.POST)
 	@ResponseBody
-	BigDecimal findProceeds(Map<String, Object> map);
+	BigDecimal findProceeds(@RequestBody Map<String, Object> map);
 
 	@RequestMapping(value = "/charge-detail", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResChargeList> findChargeDetail(Map<String, Object> param);
+	List<ResChargeList> findChargeDetail(@RequestBody Map<String, Object> param);
 
 	@RequestMapping(value = "/traffic-flow-list", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param);
+	List<ResTrafficFlow> findTrafficFlowList(@RequestBody Map<String, Object> param);
 
 	/**
 	 * @Description  查询收费列表
@@ -101,5 +101,5 @@ public interface OrderClient {
 	 */
 	@RequestMapping(value = "/income-list", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResIncome> findIncomeList(Map<String, Object> param);
+	List<ResIncome> findIncomeList(@RequestBody Map<String, Object> param);
 }

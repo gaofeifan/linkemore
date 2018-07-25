@@ -1,28 +1,12 @@
 package cn.linkmore.enterprise.request;
 
+import java.util.List;
+
 public class ReqOperateBind {
 
-	private String preIds;
-	
-	private String stallIds;
-	
 	private Long id;
 
-	public String getPreIds() {
-		return preIds;
-	}
-
-	public void setPreIds(String preIds) {
-		this.preIds = preIds;
-	}
-
-	public String getStallIds() {
-		return stallIds;
-	}
-
-	public void setStallIds(String stallIds) {
-		this.stallIds = stallIds;
-	}
+	private List<ReqStallList> stallList;
 
 	public Long getId() {
 		return id;
@@ -31,6 +15,12 @@ public class ReqOperateBind {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	
+
+	public List<ReqStallList> getStallList() {
+		return stallList;
+	}
+
+	public void setStallList(List<ReqStallList> stallList) {
+		this.stallList = stallList;
+	}
 }
