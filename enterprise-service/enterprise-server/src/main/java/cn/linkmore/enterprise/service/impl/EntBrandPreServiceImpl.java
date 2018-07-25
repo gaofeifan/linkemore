@@ -102,7 +102,9 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		List<ResEntBrandPre> preList = entBrandPreClusterMapper.findBrandPre(paramMap);
 		Long plateId = null;
 		String plateNumber = null;
-		if (cu != null && cu.getId() != null) {
+		List<Long> entIds  = null;
+		if (cu != null && cu.getId() != null) {  
+			entIds = entBrandUserClusterMapper.findUserEntList(cu.getId()); 
 			ResUserOrder ro = this.orderClient.last(cu.getId());
 			List<ResVechicleMark> plates = this.vehicleMarkClient.list(cu.getId());
 			if (ro != null) {
@@ -142,7 +144,7 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			ebp.setPlateNumber(plateNumber);
 			ebp.setChargeTime(ebp.getChargeTime() + "分钟");
 			ebp.setChargePrice(ebp.getChargePrice() + "元");
-			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + ebp.getPreId() + ebp.getEntId());
+			count = this.redisService.size(RedisKey.PREFECTURE_BRAND_FREE_STALL.key +ebp.getId());
 			linkmoreCount = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + ebp.getPreId());
 			log.info("count {} linkmoreCount {}", count, linkmoreCount);
 			if (count == null) {
@@ -151,16 +153,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			if (linkmoreCount == null) {
 				linkmoreCount = 0L;
 			}
-			if (cu != null && cu.getId() != null) {
-				// 是否为授权用户
-				Map<String,Object> map = new HashMap<String,Object>();
-				map.put("entId", ebp.getEntId());
-				map.put("userId", cu.getId());
-				Integer num = entBrandUserClusterMapper.findBrandUser(map);
-				// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
-				if (num > 0) {
-					ebp.setBrandUserFlag(true);
-				}
+			if (entIds!=null&&entIds.contains(ebp.getEntId())) {
+				ebp.setBrandUserFlag(true);
+			}else {
+				ebp.setBrandUserFlag(false);
 			}
 
 			ebp.setLeisureStall(count.intValue());
@@ -208,8 +204,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		// 此处cityId暂时为空，返回所有的车区信息
 		paramMap.put("cityId", null);
 		List<ResEntBrandPre> preList = entBrandPreClusterMapper.findBrandPre(paramMap);
-
-		if (cu != null && cu.getId() != null) {
+		List<Long> entIds  = null;
+		if (cu != null && cu.getId() != null) {  
+			entIds = entBrandUserClusterMapper.findUserEntList(cu.getId()); 
+			
 			ResUserStaff us = this.userStaffClient.findById(cu.getId());
 			if (us != null && us.getStatus().intValue() == UserStaffStatus.ON.status) {
 				List<ResEntBrandPre> preList1 = entBrandPreClusterMapper.findStaffBrandPre(paramMap);
@@ -233,29 +231,16 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 				pre = new ResEntBrandPreLeisure();
 				pre.setId(resPre.getId());
 				count = this.redisService
-						.size(RedisKey.PREFECTURE_FREE_STALL.key + resPre.getPreId() + resPre.getEntId());
-				log.info("preId {} entId{} free stall count {}", resPre.getId(), resPre.getEntId(), count);
+						.size(RedisKey.PREFECTURE_BRAND_FREE_STALL.key  + pre.getId());
+				log.info("brandId {} free stall count {}", resPre.getId(), count);
 				linkmoreCount = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + resPre.getPreId());
-				log.info("preId {} free stall count {}", resPre.getId(), count);
-				if (count == null) {
-					count = 0L;
-				}
-				if (linkmoreCount == null) {
-					linkmoreCount = 0L;
-				}
+				log.info("preId {} free stall count {}", resPre.getId(), linkmoreCount); 
 				pre.setLeisureStall(count.intValue());
-				pre.setLinkmoreLeisureStall(linkmoreCount.intValue());
-				
-				if (cu != null && cu.getId() != null) {
-					// 是否为授权用户
-					Map<String,Object> map = new HashMap<String,Object>();
-					map.put("entId", resPre.getEntId());
-					map.put("userId", cu.getId());
-					Integer num = entBrandUserClusterMapper.findBrandUser(map);
-					// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
-					if (num > 0) {
-						pre.setBrandUserFlag(true);
-					}
+				pre.setLinkmoreLeisureStall(linkmoreCount.intValue()); 
+				if(entIds!=null&&entIds.contains(resPre.getEntId())) {
+					pre.setBrandUserFlag(true);
+				}else {
+					pre.setBrandUserFlag(false);
 				}
 				list.add(pre);
 			}
