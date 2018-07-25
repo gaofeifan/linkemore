@@ -409,7 +409,7 @@ public class StallServiceImpl implements StallService {
 				stall.setUpdateTime(new Date()); 
 				this.stallMasterMapper.checkout(stall);
 				this.redisService.set(RedisKey.STALL_ORDER_CLOSED.key+id, count,ExpiredTime.STALL_ORDER_CLOSED_TIME.time );  
-				this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+				//this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			}else {
 				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
 				stall.setStatus(StallStatus.OUTLINE.status); 
