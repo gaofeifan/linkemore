@@ -743,14 +743,14 @@ public class OrdersServiceImpl implements OrdersService {
 				//关闭订单发送优惠券功能
 				couponClient.send(cu.getId());
 				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key+rs.getOrderId().longValue(), SwitchResult.CLOSED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
-			}else {
-				Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
+			}else { 
+				
+				Object sn = null; 
 				if(order.getBrandId()!=null) {
 					sn = redisService.pop(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + order.getBrandId()); 
 				}else {
 					sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId()); 
-				} 
-				
+				}  
 				log.info("get switch stall sn:{}",sn);
 				if(sn!=null) {
 					ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());

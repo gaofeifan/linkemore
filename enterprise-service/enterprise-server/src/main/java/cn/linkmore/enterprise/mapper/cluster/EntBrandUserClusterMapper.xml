@@ -21,6 +21,14 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
+  
+  
+  <select id="findUserEntList" resultType="java.lang.Long" parameterType="java.lang.Long">
+    select ent_id
+    from t_ent_brand_user
+    where  user_id = #{userId,jdbcType=BIGINT}
+  </select>
+  
   <select id="findBrandUser" resultType="java.lang.Integer" parameterType="java.util.HashMap">
     select count(*)
     from t_ent_brand_user
