@@ -2,8 +2,9 @@ package cn.linkmore.enterprise.dao.cluster;
 
 import java.util.List;
 import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
-import cn.linkmore.enterprise.entity.EntBrandUser;
+
 import cn.linkmore.enterprise.response.ResBrandUser;
 /**
  * 授权品牌用户
@@ -29,6 +30,13 @@ public interface EntBrandUserClusterMapper {
 	Integer count(Map<String, Object> param);
 
 	List<ResBrandUser> findPage(Map<String, Object> param);
+
+	/**
+	 * 查询用户对应的企业ID
+	 * @param userId
+	 * @return
+	 */
+	List<Long> findUserEntList(Long userId);
 
 
 }
