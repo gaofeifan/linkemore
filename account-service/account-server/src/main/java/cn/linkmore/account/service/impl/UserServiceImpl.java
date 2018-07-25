@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +26,7 @@ import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.dao.cluster.UserAppfansClusterMapper;
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
 import cn.linkmore.account.dao.cluster.UserInfoClusterMapper;
+import cn.linkmore.account.dao.cluster.UserStaffClusterMapper;
 import cn.linkmore.account.dao.cluster.UserVechicleClusterMapper;
 import cn.linkmore.account.dao.cluster.WechatFansClusterMapper;
 import cn.linkmore.account.dao.master.AccountMasterMapper;
@@ -45,6 +47,7 @@ import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
+import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
@@ -123,6 +126,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private WechatFansClusterMapper wechatFansClusterMapper;
+	
+	@Autowired
+	private UserStaffClusterMapper UserStaffClusterMapper;
 
 	@Override
 	public void updateNickname(String nickname, HttpServletRequest request) {
@@ -344,10 +350,11 @@ public class UserServiceImpl implements UserService {
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
 		this.updateByColumn("realname", accountName, ru.getId());
 	}
-
+	private final static String STAFF_CODE = "6699";
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser appLogin(ReqAuthLogin rl, HttpServletRequest request) {
-		if(!("6699".equals(rl.getCode()))||!rl.getMobile().equals("18612300001")) {
+		ResUserStaff rus = UserStaffClusterMapper.findByMobile(rl.getMobile()); 
+		if(!(rus!=null&&STAFF_CODE.equals(rl.getCode()))) {
 			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
