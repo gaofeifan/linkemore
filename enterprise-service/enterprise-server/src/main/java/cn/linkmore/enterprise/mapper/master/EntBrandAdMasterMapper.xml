@@ -60,4 +60,11 @@
       ad_status = #{adStatus,jdbcType=SMALLINT},
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <delete id="deleteById" parameterType="java.util.List">
+    delete from t_ent_brand_ad
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>
+  </delete>
 </mapper>

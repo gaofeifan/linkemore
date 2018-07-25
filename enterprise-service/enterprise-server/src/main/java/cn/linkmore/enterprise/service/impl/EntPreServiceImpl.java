@@ -34,7 +34,7 @@ public class EntPreServiceImpl implements EntPreService {
 	private EntVipUserClusterMapper entVipUserClusterMapper;
 
 	@Override
-	public int saveEntPre(Long entId, String preName) {
+	public int saveEntPre(Long preId,Long entId, String preName) {
 		
 		if(entId == null || entId == 0){
 			return 0;
@@ -45,6 +45,7 @@ public class EntPreServiceImpl implements EntPreService {
 		}
 		EntPrefecture record = new EntPrefecture();
 		record.setEntId(entId);
+		record.setPreId(preId);
 		record.setEntName(resEnterprise.getName());
 		record.setPreName(preName);
 		

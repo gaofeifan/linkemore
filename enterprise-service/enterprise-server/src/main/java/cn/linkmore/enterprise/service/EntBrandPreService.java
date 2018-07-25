@@ -13,6 +13,7 @@ import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreLeisure;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreStrategy;
 import cn.linkmore.enterprise.entity.EntBrandPre;
 import cn.linkmore.enterprise.request.ReqCheck;
+import cn.linkmore.enterprise.request.ReqEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
 
@@ -39,9 +40,9 @@ public interface EntBrandPreService {
 	/**
 	 * 保存
 	 * 
-	 * @param record
+	 * @param reqEntBrandPre
 	 */
-	int save(EntBrandPre record);
+	int save(ReqEntBrandPre reqEntBrandPre);
 
 	/**
 	 * 更新
@@ -49,7 +50,7 @@ public interface EntBrandPreService {
 	 * @param record
 	 * @return
 	 */
-	int update(EntBrandPre record);
+	int update(ReqEntBrandPre record);
 
 	/**
 	 * 删除
@@ -58,6 +59,12 @@ public interface EntBrandPreService {
 	 * @return
 	 */
 	int delete(Long id);
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	int delete(List<Long> ids);
 
 	/**
 	 * 检验属性存在
@@ -73,5 +80,6 @@ public interface EntBrandPreService {
 	List<ResEntBrandPreLeisure> getStallCount(HttpServletRequest request);
 
 	List<ResBrandPreStall> preStallList();
+
 
 }

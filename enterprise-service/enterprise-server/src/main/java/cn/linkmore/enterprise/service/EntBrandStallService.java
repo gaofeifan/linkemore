@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Map;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.entity.EntBrandStall;
+import cn.linkmore.enterprise.request.ReqEntBrandStall;
 import cn.linkmore.enterprise.request.ReqCheck;
+import cn.linkmore.enterprise.response.ResBrandStall;
 
 public interface EntBrandStallService {
 
@@ -23,14 +24,14 @@ public interface EntBrandStallService {
 	 * @param param
 	 * @return
 	 */
-	List<EntBrandStall> findList(Map<String, Object> param);
+	List<ResBrandStall> findList(Map<String, Object> param);
 
 	/**
 	 * 保存
 	 * 
 	 * @param record
 	 */
-	int save(EntBrandStall record);
+	int save(ReqEntBrandStall record);
 
 	/**
 	 * 更新
@@ -38,7 +39,7 @@ public interface EntBrandStallService {
 	 * @param record
 	 * @return
 	 */
-	int update(EntBrandStall record);
+	int update(ReqEntBrandStall record);
 
 	/**
 	 * 删除

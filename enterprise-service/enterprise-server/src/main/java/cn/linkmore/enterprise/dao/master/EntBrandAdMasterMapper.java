@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntBrandAd;
@@ -10,4 +12,6 @@ public interface EntBrandAdMasterMapper {
     int save(EntBrandAd record);
 
     int update(EntBrandAd record);
+
+	int deleteByIds(List<Long> ids);
 }

@@ -41,7 +41,7 @@ public class EntPreController {
 		if(reqAddEntPreture ==  null){
 			return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request);
 		}
-		int result = entPreService.saveEntPre(reqAddEntPreture.getEntId(),reqAddEntPreture.getPreName());
+		int result = entPreService.saveEntPre(reqAddEntPreture.getPreId(),reqAddEntPreture.getEntId(),reqAddEntPreture.getPreName());
 		if(result == 0){
 			return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request);
 		}

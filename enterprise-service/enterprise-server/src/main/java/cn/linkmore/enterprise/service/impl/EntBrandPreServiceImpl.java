@@ -1,17 +1,22 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -19,6 +24,7 @@ import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.app.request.ReqBrandPre;
@@ -32,6 +38,7 @@ import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandPreMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandPre;
 import cn.linkmore.enterprise.request.ReqCheck;
+import cn.linkmore.enterprise.request.ReqEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
 import cn.linkmore.enterprise.response.ResBrandStall;
@@ -41,7 +48,9 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
 import cn.linkmore.prefecture.response.ResStrategyBase;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.MapUtil;
+import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
 
 /**
@@ -93,7 +102,9 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		List<ResEntBrandPre> preList = entBrandPreClusterMapper.findBrandPre(paramMap);
 		Long plateId = null;
 		String plateNumber = null;
-		if (cu != null && cu.getId() != null) {
+		List<Long> entIds  = null;
+		if (cu != null && cu.getId() != null) {  
+			entIds = entBrandUserClusterMapper.findUserEntList(cu.getId()); 
 			ResUserOrder ro = this.orderClient.last(cu.getId());
 			List<ResVechicleMark> plates = this.vehicleMarkClient.list(cu.getId());
 			if (ro != null) {
@@ -133,7 +144,7 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			ebp.setPlateNumber(plateNumber);
 			ebp.setChargeTime(ebp.getChargeTime() + "分钟");
 			ebp.setChargePrice(ebp.getChargePrice() + "元");
-			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + ebp.getPreId() + ebp.getEntId());
+			count = this.redisService.size(RedisKey.PREFECTURE_BRAND_FREE_STALL.key +ebp.getId());
 			linkmoreCount = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + ebp.getPreId());
 			log.info("count {} linkmoreCount {}", count, linkmoreCount);
 			if (count == null) {
@@ -142,16 +153,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			if (linkmoreCount == null) {
 				linkmoreCount = 0L;
 			}
-			if (cu != null && cu.getId() != null) {
-				// 是否为授权用户
-				Map<String,Object> map = new HashMap<String,Object>();
-				map.put("entId", ebp.getEntId());
-				map.put("userId", cu.getId());
-				Integer num = entBrandUserClusterMapper.findBrandUser(map);
-				// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
-				if (num > 0) {
-					ebp.setBrandUserFlag(true);
-				}
+			if (entIds!=null&&entIds.contains(ebp.getEntId())) {
+				ebp.setBrandUserFlag(true);
+			}else {
+				ebp.setBrandUserFlag(false);
 			}
 
 			ebp.setLeisureStall(count.intValue());
@@ -199,8 +204,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		// 此处cityId暂时为空，返回所有的车区信息
 		paramMap.put("cityId", null);
 		List<ResEntBrandPre> preList = entBrandPreClusterMapper.findBrandPre(paramMap);
-
-		if (cu != null && cu.getId() != null) {
+		List<Long> entIds  = null;
+		if (cu != null && cu.getId() != null) {  
+			entIds = entBrandUserClusterMapper.findUserEntList(cu.getId()); 
+			
 			ResUserStaff us = this.userStaffClient.findById(cu.getId());
 			if (us != null && us.getStatus().intValue() == UserStaffStatus.ON.status) {
 				List<ResEntBrandPre> preList1 = entBrandPreClusterMapper.findStaffBrandPre(paramMap);
@@ -224,29 +231,16 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 				pre = new ResEntBrandPreLeisure();
 				pre.setId(resPre.getId());
 				count = this.redisService
-						.size(RedisKey.PREFECTURE_FREE_STALL.key + resPre.getPreId() + resPre.getEntId());
-				log.info("preId {} entId{} free stall count {}", resPre.getId(), resPre.getEntId(), count);
+						.size(RedisKey.PREFECTURE_BRAND_FREE_STALL.key  + pre.getId());
+				log.info("brandId {} free stall count {}", resPre.getId(), count);
 				linkmoreCount = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + resPre.getPreId());
-				log.info("preId {} free stall count {}", resPre.getId(), count);
-				if (count == null) {
-					count = 0L;
-				}
-				if (linkmoreCount == null) {
-					linkmoreCount = 0L;
-				}
+				log.info("preId {} free stall count {}", resPre.getId(), linkmoreCount); 
 				pre.setLeisureStall(count.intValue());
-				pre.setLinkmoreLeisureStall(linkmoreCount.intValue());
-				
-				if (cu != null && cu.getId() != null) {
-					// 是否为授权用户
-					Map<String,Object> map = new HashMap<String,Object>();
-					map.put("entId", resPre.getEntId());
-					map.put("userId", cu.getId());
-					Integer num = entBrandUserClusterMapper.findBrandUser(map);
-					// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
-					if (num > 0) {
-						pre.setBrandUserFlag(true);
-					}
+				pre.setLinkmoreLeisureStall(linkmoreCount.intValue()); 
+				if(entIds!=null&&entIds.contains(resPre.getEntId())) {
+					pre.setBrandUserFlag(true);
+				}else {
+					pre.setBrandUserFlag(false);
 				}
 				list.add(pre);
 			}
@@ -256,7 +250,26 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
-		return null;
+
+		Map<String, Object> param = new HashMap<String, Object>();
+		List<ViewFilter> filters = pageable.getFilters();
+		if (StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if (filters != null && filters.size() > 0) {
+			for (ViewFilter filter : filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if (StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.entBrandPreClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<ResBrandPre> list = this.entBrandPreClusterMapper.findPage(param);
+		return new ViewPage(count, pageable.getPageSize(), list);
 	}
 
 	@Override
@@ -265,13 +278,19 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	}
 
 	@Override
-	public int save(EntBrandPre record) {
-		return entBrandPreMasterMapper.save(record);
+	public int save(ReqEntBrandPre record) {
+		EntBrandPre entBrandPre = null;
+		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
+		entBrandPre.setCreateTime(new Date());
+		entBrandPre.setUpdateTime(new Date());
+		return entBrandPreMasterMapper.save(entBrandPre);
 	}
 
 	@Override
-	public int update(EntBrandPre record) {
-		return entBrandPreMasterMapper.update(record);
+	public int update(ReqEntBrandPre record) {
+		EntBrandPre entBrandPre = null;
+		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
+		return entBrandPreMasterMapper.update(entBrandPre);
 	}
 
 	@Override
@@ -301,5 +320,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	@Override
 	public ResBrandPre findById(Long id) {
 		return this.entBrandPreClusterMapper.findById(id);
+	}
+
+	@Override
+	public int delete(List<Long> ids) {
+		return entBrandPreMasterMapper.deleteByIds(ids);
 	}
 }

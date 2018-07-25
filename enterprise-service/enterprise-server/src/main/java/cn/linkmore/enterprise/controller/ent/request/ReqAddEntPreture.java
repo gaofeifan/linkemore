@@ -6,7 +6,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("新增企业车区")
 public class ReqAddEntPreture {
 	
-
+	@ApiModelProperty(value = "车区Id", required = true)
+    private Long preId;
+	
 	@ApiModelProperty(value = "车区名称", required = true)
     private String preName;
 	@ApiModelProperty(value = "企业id", required = true)
@@ -29,5 +31,11 @@ public class ReqAddEntPreture {
 		this.entId = entId;
 	}
 
-    
+	public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
 }
