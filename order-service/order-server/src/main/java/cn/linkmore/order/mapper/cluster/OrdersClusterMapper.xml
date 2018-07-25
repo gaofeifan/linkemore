@@ -397,7 +397,7 @@
 			#{id}
 	 	</foreach>
 	</where>
-	order by ent_time desc
+	order by end_time desc
   </select>
   <select id="findTrafficFlowList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResTrafficFlowList">
     SELECT
