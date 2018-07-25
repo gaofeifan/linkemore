@@ -195,7 +195,7 @@ public class OrdersServiceImpl implements OrdersService {
 		boolean resetRedis = true;
 		short failureReason = 0;
 		short bookingStatus = 0;
-		log.info("cu:{} booking preId:{},plateId:{}",cu.getMobile(),prefectureId,plateId);
+		log.info("cu:{} booking preId:{},plateId:{},brandId:{}",cu.getMobile(),prefectureId,plateId,brandId);
 		try {
 			synchronized(this) {
 				if(ORDER_USER_SET.contains(cu.getId())){
@@ -233,6 +233,7 @@ public class OrdersServiceImpl implements OrdersService {
 			boolean assign = false;
 			if(brandId!=null) {
 				brand = entBrandPreClient.findById(brandId);
+				log.info("brandId {},brand {}",JSON.toJSON(brand));
 				Object sn = redisService.pop(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + brandId);
 				if(sn!=null) {
 					this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key+sn.toString(), sn.toString(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
@@ -314,8 +315,6 @@ public class OrdersServiceImpl implements OrdersService {
 			o.setCreateTime(current);
 			o.setUpdateTime(current); 
 			o.setEndTime(current);
-			
-			o.setBrandId(brandId);
 			o.setStrategyId(pre.getStrategyId());  
 			// 支付类型1免费2优惠券3账户
 			// 初始化支付类型为账户支付
@@ -340,6 +339,11 @@ public class OrdersServiceImpl implements OrdersService {
 			} 
 			o.setStallLocal(pre.getName() + stall.getStallName());
 			o.setStallGuidance(pre.getAddress() + stall.getStallName()); 
+			o.setStallType(stall.getType());
+			if(brand!=null) {
+				o.setBrandId(brandId);
+				o.setEntId(brand.getEntId());
+			}
 			this.orderMasterMapper.save(o); 
 			
 			OrdersDetail od = new OrdersDetail();
@@ -357,13 +361,6 @@ public class OrdersServiceImpl implements OrdersService {
 			od.setStrategyId(pre.getStrategyId());
 			od.setParkName(pre.getName());
 			od.setUpdateTime(current);
-			o.setStallLocal(pre.getName() + stall.getStallName());
-			o.setStallGuidance(pre.getAddress() + stall.getStallName()); 
-			o.setStallType(stall.getType());
-			if(brand!=null) {
-				o.setBrandId(brandId);
-				o.setEntId(brand.getEntId());
-			}
 			od.setOrderId(o.getId()); 
 			this.ordersDetailMasterMapper.save(od);
 			this.stallClient.order(stall.getId()); 
@@ -479,6 +476,7 @@ public class OrdersServiceImpl implements OrdersService {
 			this.cu = cu;
 		}
 		public void run() {
+			log.info("brand order thread starting {}", rb.getBrandId());
 			order(rb.getPrefectureId(),rb.getPlateId(),rb.getBrandId(),cu);
 		}
 	} 
