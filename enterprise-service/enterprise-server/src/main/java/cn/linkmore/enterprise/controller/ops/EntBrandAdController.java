@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
+import cn.linkmore.enterprise.response.ResBrandAd;
+import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.service.EntBrandAdService;
 import cn.linkmore.prefecture.request.ReqCheck;
 
@@ -87,6 +89,12 @@ public class EntBrandAdController {
 	@ResponseBody
 	public int delete(@RequestParam("id") Long id) {
 		return this.entBrandAdService.delete(id);
+	}
+	
+	@RequestMapping(value = "/v2.0/find", method = RequestMethod.POST)
+	@ResponseBody
+	public ResBrandAd findById(@RequestParam("id") Long id) {
+		return this.entBrandAdService.findById(id);
 	}
 
 }

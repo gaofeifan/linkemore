@@ -70,7 +70,7 @@
       strategy_name = #{strategyName,jdbcType=VARCHAR},
       charge_price = #{chargePrice,jdbcType=VARCHAR},
       charge_time = #{chargeTime,jdbcType=INTEGER},
-      strategy_description = #{strategyDescription,jdbcType=VARCHAR},
+      strategy_description = #{strategyDescription,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

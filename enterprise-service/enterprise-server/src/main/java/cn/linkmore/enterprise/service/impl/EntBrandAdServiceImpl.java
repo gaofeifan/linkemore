@@ -261,4 +261,9 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		return entBrandAdMasterMapper.deleteByIds(ids);
 	}
 
+	@Override
+	public ResBrandAd findById(Long id) {
+		return entBrandAdClusterMapper.findById(id);
+	}
+
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
+import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.prefecture.client.OpsEntBrandAdClient;
 /**
  * 远程调用实现 - 企业品牌广告信息
@@ -39,6 +40,12 @@ public class OpsEntBrandAdClientHystrix implements OpsEntBrandAdClient {
 	public int delete(Long id) {
 		log.info("enterprise service int delete() hystrix");
 		return 0;
+	}
+
+	@Override
+	public ResBrandAd findById(Long id) {
+		log.info("enterprise service ResBrandAd findById() hystrix");
+		return null;
 	}
 }
 

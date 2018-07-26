@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandPre;
+import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.service.EntBrandPreService;
 import cn.linkmore.prefecture.request.ReqCheck;
 
@@ -41,24 +42,10 @@ public class EntBrandPreController {
 	/**
 	 * 删除品牌车区
 	 */
-	@RequestMapping(value = "/v2.0/delete-ids", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids) {
 		return this.entBrandPreService.delete(ids);
-	}
-	
-	/**
-	 * 检查名称重复
-	 */
-	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
-	@ResponseBody
-	public Boolean check(@RequestBody ReqCheck reqCheck) {
-		Boolean flag = true;
-		/*Integer count = this.entBrandPreService.check(reqCheck);
-		if (count > 0) {
-			flag = false;
-		}*/		
-		return flag;
 	}
 	
 	/**
@@ -78,15 +65,11 @@ public class EntBrandPreController {
 	public int update(@RequestBody ReqEntBrandPre reqEntBrandPre) {
 		return this.entBrandPreService.update(reqEntBrandPre);
 	}
-	/**
-	 * 删除
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
+	
+	@RequestMapping(value = "/v2.0/find", method = RequestMethod.POST)
 	@ResponseBody
-	public int delete(@RequestParam("id") Long id) {
-		return this.entBrandPreService.delete(id);
+	public ResBrandPre findById(@RequestParam("id") Long id) {
+		return this.entBrandPreService.findById(id);
 	}
 
 }

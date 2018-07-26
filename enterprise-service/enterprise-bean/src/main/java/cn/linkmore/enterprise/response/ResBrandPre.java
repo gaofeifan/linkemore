@@ -42,6 +42,8 @@ public class ResBrandPre {
     private int chargeTime;
     //计费策略描述
     private String strategyDescription;
+    //车位总数
+    private int stallTotal;
 
     public Long getId() {
         return id;
@@ -177,5 +179,13 @@ public class ResBrandPre {
 
 	public void setStrategyDescription(String strategyDescription) {
 		this.strategyDescription = strategyDescription;
+	}
+
+	public int getStallTotal() {
+		return stallTotal;
+	}
+
+	public void setStallTotal(int stallTotal) {
+		this.stallTotal = stallTotal;
 	}
 }

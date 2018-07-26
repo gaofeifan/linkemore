@@ -19,6 +19,7 @@
     <result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
     <result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
     <result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
+    <result column="stall_total" jdbcType="INTEGER" property="stallTotal" />
   </resultMap>
   
   <resultMap id="PreResultMap" type="cn.linkmore.enterprise.response.ResBrandPreStall">
@@ -115,9 +116,8 @@
   </select>
   
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_ent_brand_pre
+    select  pre.* ,count(sta.id) as stall_total
+    from t_ent_brand_pre pre left join t_ent_brand_stall sta on pre.id = sta.brand_pre_id
     where 1 = 1
     <!-- <if test="name!=null">  
     and name like #{name,jdbcType=VARCHAR}
@@ -125,6 +125,7 @@
     <if test="account!=null">  
     and account = #{account,jdbcType=VARCHAR}
     </if>  -->
+     GROUP BY pre.id 
     <if test="property==null">  
      order by create_time desc
     </if>

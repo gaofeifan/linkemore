@@ -283,6 +283,7 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
 		entBrandPre.setCreateTime(new Date());
 		entBrandPre.setUpdateTime(new Date());
+		entBrandPre.setStatus((short)0);
 		return entBrandPreMasterMapper.save(entBrandPre);
 	}
 
@@ -290,6 +291,8 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	public int update(ReqEntBrandPre record) {
 		EntBrandPre entBrandPre = null;
 		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
+		entBrandPre.setUpdateTime(new Date());
+		entBrandPre.setLogoUrl("http://www.baidu.com");
 		return entBrandPreMasterMapper.update(entBrandPre);
 	}
 

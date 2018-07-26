@@ -1,9 +1,12 @@
 package cn.linkmore.ops.biz.service;
 
+import java.util.List;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandPre;
+import cn.linkmore.enterprise.response.ResBrandPre;
 
 /**
  * @author   jiaohanbin
@@ -16,9 +19,9 @@ public interface EntBrandPreService {
 
 	int update(ReqEntBrandPre record);
 
-	int delete(Long id);
-
-	//Boolean check(ReqCheck reqCheck);
+	int delete(List<Long> ids);
 
 	ViewPage findPage(ViewPageable pageable);
+
+	ResBrandPre findById(Long id);
 }

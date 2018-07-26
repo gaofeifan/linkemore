@@ -11,6 +11,8 @@ import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
 import cn.linkmore.enterprise.entity.EntBrandAd;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
+import cn.linkmore.enterprise.response.ResBrandAd;
+import cn.linkmore.enterprise.response.ResBrandPre;
 
 public interface EntBrandAdService {
 	/**
@@ -82,6 +84,11 @@ public interface EntBrandAdService {
 	 * @return
 	 */
 	int update(ReqEntBrandAd reqEntBrandAd);
-	
+	/**
+	 * 查询详情
+	 * @param id
+	 * @return
+	 */
+	ResBrandAd findById(Long id);
 
 }
