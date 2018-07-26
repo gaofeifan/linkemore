@@ -127,14 +127,14 @@ public class EntStallServiceImpl implements EntStallService {
 			
 			Map<String,ResEntTypeStalls> typeSum = new HashMap<>();
 			
-			for(int j = 0 ; i < preStalls; j++){
+			for(int j = 0 ; j < preStalls; j++){
 				ResStall resStall=stalls.get(j);
 				if(resStall.getStatus() == StallStatus.USED.status){
 					preUseStalls ++;
 				}
 			}
 			
-			for(int j = 0 ; i < preStalls; j++){
+			for(int j = 0 ; j < preStalls; j++){
 				ResStall resStall=stalls.get(j);
 				//临停
 				if(resStall.getType() == 1 ){
