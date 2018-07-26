@@ -351,6 +351,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if (brand != null) {
 				o.setBrandId(brandId);
 				o.setEntId(brand.getEntId());
+				o.setStrategyId(brand.getStrategyId());
 			}
 			this.orderMasterMapper.save(o);
 
