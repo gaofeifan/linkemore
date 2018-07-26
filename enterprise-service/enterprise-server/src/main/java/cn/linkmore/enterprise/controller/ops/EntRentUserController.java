@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.enterprise.controller.ent.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.controller.ent.request.ReqAddEntRentUser;
-import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntPreture;
 import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntRentUser;
 import cn.linkmore.enterprise.service.EntRentUserService;
 import io.swagger.annotations.Api;

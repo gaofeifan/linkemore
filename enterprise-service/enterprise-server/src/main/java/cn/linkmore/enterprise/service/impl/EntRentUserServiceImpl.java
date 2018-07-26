@@ -3,9 +3,12 @@
  */
 package cn.linkmore.enterprise.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.account.client.UserClient;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
@@ -13,6 +16,7 @@ import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntRentUserService;
+import cn.linkmore.util.StringUtil;
 
 /**
  * 长租用户信息
@@ -23,6 +27,8 @@ import cn.linkmore.enterprise.service.EntRentUserService;
 @Service
 public class EntRentUserServiceImpl implements EntRentUserService {
 	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private EntRentUserMasterMapper entRentUserMasterMapper;
 	
@@ -30,6 +36,9 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	private EnterpriseClusterMapper enterpriseClusterMapper;
 	@Autowired
 	private EntPrefectureClusterMapper  entPrefectureClusterMapper;
+	
+	@Autowired
+	private UserClient userClient;
 
 	/* (non-Javadoc)
 	 * @see cn.linkmore.enterprise.service.EntRentUserService#saveEntRentUser(java.lang.Long, java.lang.Long, java.lang.Long, java.lang.String, java.lang.String, java.lang.String)
@@ -45,7 +54,9 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		if(entPrefecture == null){
 			return 0;
 		}
-		
+		if(StringUtil.isBlank(mobile)){
+			return 0;
+		}
 		EntRentUser record = new EntRentUser();
 		record.setEntId(entId);
 		record.setEntPreId(entPreId);
@@ -54,6 +65,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		record.setRealname(realname);
 		record.setPlate(plate);
 		
+		Long userId = userClient.getUserIdByMobile(mobile);
+		if(userId == null){
+			logger.info("{}手机号不存在",mobile);
+		}
+		record.setUserId(userId);
 		return this.entRentUserMasterMapper.save(record);
 	}
 
@@ -71,10 +87,21 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	@Override
 	public int updateEntRentUser(Long id, String mobile, String realname, String plate) {
 		EntRentUser record = new EntRentUser();
+		if(id == null){
+			return 0;
+		}
+		if(StringUtil.isBlank(mobile)){
+			return 0;
+		}
 		record.setId(id);
 		record.setMobile(mobile);
 		record.setRealname(realname);
 		record.setPlate(plate);
+		Long userId = userClient.getUserIdByMobile(mobile);
+		if(userId == null){
+			logger.info("{}手机号不存在",mobile);
+		}
+		record.setUserId(userId);
 		return this.entRentUserMasterMapper.updateByIdSelective(record);
 	}
 
