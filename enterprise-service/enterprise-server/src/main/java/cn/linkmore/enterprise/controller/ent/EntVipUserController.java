@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(tags = "vip",description="企业vip用户", produces = "application/json")
 @RestController
-@RequestMapping("/vip")
+@RequestMapping("/ent/vip")
 public class EntVipUserController {
 	
 	@Autowired

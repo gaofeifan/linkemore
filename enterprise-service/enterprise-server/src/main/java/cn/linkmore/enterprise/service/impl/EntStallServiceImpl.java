@@ -79,7 +79,6 @@ public class EntStallServiceImpl implements EntStallService {
 		
 		Map<String, Object> map = new HashMap<String,Object>();
 		map.put("staffId", ru.getId());
-		map.put("status", 1);
 		List<EntStaffAuth> entStaffAuths= entStaffAuthClusterMapper.findList(map);
 		int size = entStaffAuths.size();
 		if(size == 0){

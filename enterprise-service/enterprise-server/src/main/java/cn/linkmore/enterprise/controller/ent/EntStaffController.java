@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags = "staff",description="企业员工", produces = "application/json")
 @RestController
-@RequestMapping("/staff")
+@RequestMapping("/ent/staff")
 public class EntStaffController {
 	
 	@Autowired

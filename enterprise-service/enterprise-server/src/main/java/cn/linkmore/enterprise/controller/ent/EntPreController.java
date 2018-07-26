@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags = "preture",description="企业车区", produces = "application/json")
 @RestController
-@RequestMapping("/enterprise")
+@RequestMapping("/ent/enterprise")
 public class EntPreController {
 	
 	@Autowired
