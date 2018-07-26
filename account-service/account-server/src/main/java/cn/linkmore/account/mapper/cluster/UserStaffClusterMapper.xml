@@ -18,6 +18,14 @@
   <sql id="Base_Column_List">
     id, username, realname, status, create_time
   </sql>
+  
+  <select id="findByMobile" parameterType="java.lang.String" resultMap="ResBaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_staff
+    where username = #{username,jdbcType=VARCHAR}
+    and status = 1
+  </select>
   <select id="findById" parameterType="java.lang.Long" resultMap="ResBaseResultMap">
     select 
     <include refid="Base_Column_List" />

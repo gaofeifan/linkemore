@@ -21,6 +21,13 @@ public interface UserStaffClusterMapper {
      * @Version  v2.0
      */
     ResUserStaff findById(Long id);
+    
+    /**
+     * 根据手机号获取
+     * @param mobile
+     * @return
+     */
+    ResUserStaff findByMobile(String mobile);
 
 	/**
 	 * @Description  校验
