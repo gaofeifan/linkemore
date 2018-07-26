@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(tags = "rent",description="企业rent用户", produces = "application/json")
 @RestController
-@RequestMapping("/rent")
+@RequestMapping("/ent/rent")
 public class EntRentUserController {
 	
 	@Autowired

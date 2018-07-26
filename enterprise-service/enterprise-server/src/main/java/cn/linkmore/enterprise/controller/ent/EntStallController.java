@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(tags = "stall",description="企业车位", produces = "application/json")
 @RestController
-@RequestMapping("/stall")
+@RequestMapping("/ent/stall")
 public class EntStallController {
 	
 	@Autowired
