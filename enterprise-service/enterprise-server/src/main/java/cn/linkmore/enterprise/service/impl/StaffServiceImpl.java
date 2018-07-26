@@ -117,18 +117,18 @@ public class StaffServiceImpl implements StaffService {
 		}
 		synchronized(userId) {
 			last = (Token)this.redisService.get(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId());
-			if(last!=null){ 
+			if(last!=null){
 				this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId());
 				this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_USER.key+last.getAccessToken());  
 				last.setAccessToken(key);
 			}
 			user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_USER.key+key, user,60*60*24*360); 
+			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_USER.key+key, user); 
 			Token token = new Token();
 			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			token.setTimestamp(new Date().getTime());
 			token.setAccessToken(key);
-			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId(), token,60*60*24*360); 
+			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId(), token); 
 		} 
 		return last;
 	}
