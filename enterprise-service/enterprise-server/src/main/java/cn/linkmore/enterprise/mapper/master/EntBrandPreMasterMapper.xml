@@ -73,4 +73,18 @@
       strategy_description = #{strategyDescription,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="startOrStop" parameterType="java.util.HashMap">
+    update t_ent_brand_pre
+    set update_time = #{updateTime,jdbcType=TIMESTAMP},
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
 </mapper>

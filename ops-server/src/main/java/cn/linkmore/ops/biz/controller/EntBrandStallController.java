@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.exception.DataException;
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -28,6 +29,12 @@ public class EntBrandStallController {
 	@Resource
 	private EntBrandStallService entBrandStallService;
 
+	@RequestMapping(value = "/tree", method = RequestMethod.POST)
+	@ResponseBody
+	public Tree tree(HttpServletRequest request) {
+		return entBrandStallService.findTree();
+	}
+	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg save(ReqEntBrandStall record) {

@@ -24,9 +24,11 @@ import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.enterprise.controller.app.request.ReqBrandPre;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPre;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreCity;
@@ -46,8 +48,10 @@ import cn.linkmore.enterprise.service.EntBrandPreService;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResStrategyBase;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -328,5 +332,62 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	@Override
 	public int delete(List<Long> ids) {
 		return entBrandPreMasterMapper.deleteByIds(ids);
+	}
+
+	@Override
+	public int start(Long id) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		ResBrandPre brandPre = findById(id);
+		param.put("id", id);
+		param.put("status", 1);
+		param.put("updateTime", new Date());
+		if(brandPre.getStartTime() == null){
+			param.put("startTime", new Date());
+			if(brandPre.getPeriod() != null){
+				//根据开启时间 + 有效天数 = 计算到期时间
+				Date endDate = DateUtils.getDate(new Date(), 0, 0, brandPre.getPeriod(), 0, 0, 0);
+				param.put("endTime", endDate);
+			}
+		}
+		return this.entBrandPreMasterMapper.startOrStop(param);
+	}
+
+	@Override
+	public int stop(Long id) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("id", id);
+		param.put("status", 2);
+		param.put("updateTime", new Date());
+		return this.entBrandPreMasterMapper.startOrStop(param);
+	}
+
+	public Tree findTree() {
+		Map<String, Object> param = new HashMap<>();
+		param.put("status", "0");
+		List<ResPre> preList = entBrandPreClusterMapper.findTreeList(param);
+		Tree tree = null;
+		List<Tree> rtrees = new ArrayList<Tree>();
+		Map<Long, Tree> ttreeMap = new HashMap<>();
+		for (ResPre pre : preList) {
+			tree = new Tree();
+			tree.setId("" + pre.getId());
+			tree.setName(pre.getName());
+			tree.setIsParent(false);
+			tree.setCode(pre.getId().toString());
+			tree.setmId(pre.getId().toString());
+			tree.setOpen(true);
+			tree.setChildren(new ArrayList<Tree>());
+			rtrees.add(tree);
+			ttreeMap.put(pre.getId(), tree);
+		}
+		Tree root = new Tree();
+		root.setName("品牌车区树");
+		root.setId("0");
+		root.setIsParent(false);
+		root.setCode("0");
+		root.setOpen(true);
+		root.setmId("0");
+		root.setChildren(rtrees);
+		return root;
 	}
 }

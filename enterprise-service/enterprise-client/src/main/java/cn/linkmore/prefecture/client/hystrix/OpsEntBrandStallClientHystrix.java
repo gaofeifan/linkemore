@@ -3,6 +3,8 @@ package cn.linkmore.prefecture.client.hystrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandStall;
@@ -39,6 +41,12 @@ public class OpsEntBrandStallClientHystrix implements OpsEntBrandStallClient {
 	public int delete(Long id) {
 		log.info("enterprise service int delete() hystrix");
 		return 0;
+	}
+
+	@Override
+	public Tree tree() {
+		log.info("enterprise service int tree() hystrix");
+		return null;
 	}
 }
 

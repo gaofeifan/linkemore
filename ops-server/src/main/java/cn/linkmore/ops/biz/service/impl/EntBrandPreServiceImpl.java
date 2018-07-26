@@ -50,4 +50,16 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	public ResBrandPre findById(Long id) {
 		return this.entBrandPreClient.findById(id);
 	}
+
+	@Override
+	public int stop(Long id) {
+		return this.entBrandPreClient.stop(id);
+		
+	}
+
+	@Override
+	public int start(Long id) {
+		return this.entBrandPreClient.start(id);
+		
+	}
 }

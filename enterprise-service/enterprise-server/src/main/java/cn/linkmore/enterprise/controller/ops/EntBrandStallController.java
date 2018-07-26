@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandStall;
+import cn.linkmore.enterprise.service.EntBrandPreService;
 import cn.linkmore.enterprise.service.EntBrandStallService;
 import cn.linkmore.prefecture.request.ReqCheck;
 
@@ -24,6 +27,9 @@ public class EntBrandStallController {
 	
 	@Resource
 	private EntBrandStallService entBrandStallService;
+	
+	@Resource
+	private EntBrandPreService entBrandPreService;
 
 	/**
 	 * 车区列表分页
@@ -63,6 +69,12 @@ public class EntBrandStallController {
 	@ResponseBody
 	public int delete(@RequestParam("id") Long id) {
 		return this.entBrandStallService.delete(id);
+	}
+	
+	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
+	@ResponseBody
+	public Tree tree() {
+		return entBrandPreService.findTree();
 	}
 
 }

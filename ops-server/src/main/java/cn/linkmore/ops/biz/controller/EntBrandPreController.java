@@ -92,6 +92,40 @@ public class EntBrandPreController {
 		}
 		return msg;
 	}
+	
+	@RequestMapping(value = "/start", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg changedUp(@RequestBody Long id) {
+		ViewMsg msg = null;
+		try {
+			this.entBrandPreService.start(id);
+			msg = new ViewMsg("启用成功", true);
+		} catch (RuntimeException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+			return msg;
+		} catch (Exception e) {
+			msg = new ViewMsg("启用失败", false);
+			return msg;
+		}
+		return msg;
+	}
+
+	@RequestMapping(value = "/stop", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg changedDown(@RequestBody Long id) {
+		ViewMsg msg = null;
+		try {
+			this.entBrandPreService.stop(id);
+			msg = new ViewMsg("禁用成功", true);
+		} catch (RuntimeException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+			return msg;
+		} catch (Exception e) {
+			msg = new ViewMsg("禁用失败", false);
+			return msg;
+		}
+		return msg;
+	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody

@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandStall;
@@ -48,4 +50,8 @@ public interface OpsEntBrandStallClient {
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestParam("id") Long id);
+
+	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
+	@ResponseBody
+	public Tree tree();
 }

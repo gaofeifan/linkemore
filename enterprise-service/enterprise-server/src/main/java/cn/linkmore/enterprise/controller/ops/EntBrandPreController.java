@@ -71,5 +71,23 @@ public class EntBrandPreController {
 	public ResBrandPre findById(@RequestParam("id") Long id) {
 		return this.entBrandPreService.findById(id);
 	}
+	
+	/*
+	 * 启用
+	 */
+	@RequestMapping(value = "/v2.0/start", method = RequestMethod.GET)
+	@ResponseBody
+	public int start(@RequestParam("id") Long id) {
+		return	this.entBrandPreService.start(id);
+	}
+
+	/*
+	 * 禁用
+	 */
+	@RequestMapping(value = "/v2.0/stop", method = RequestMethod.GET)
+	@ResponseBody
+	public int stop(@RequestParam("id") Long id) {
+		return	this.entBrandPreService.stop(id);
+	}
 
 }

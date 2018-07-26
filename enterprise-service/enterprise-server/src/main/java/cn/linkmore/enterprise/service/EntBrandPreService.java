@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.app.request.ReqBrandPre;
@@ -80,6 +81,12 @@ public interface EntBrandPreService {
 	List<ResEntBrandPreLeisure> getStallCount(HttpServletRequest request);
 
 	List<ResBrandPreStall> preStallList();
+
+	int start(Long id);
+
+	int stop(Long id);
+
+	Tree findTree();
 
 
 }

@@ -49,6 +49,18 @@ public class OpsEntBrandPreClientHystrix implements OpsEntBrandPreClient {
 		log.info("enterprise service int delete(ids) hystrix");
 		return 0;
 	}
+
+	@Override
+	public int start(Long id) {
+		log.info("enterprise service int start(ids) hystrix");
+		return 0;
+	}
+
+	@Override
+	public int stop(Long id) {
+		log.info("enterprise service int stop(ids) hystrix");
+		return 0;
+	}
 	
 }
 

@@ -24,4 +24,8 @@ public interface EntBrandPreService {
 	ViewPage findPage(ViewPageable pageable);
 
 	ResBrandPre findById(Long id);
+
+	int stop(Long id);
+
+	int start(Long id);
 }

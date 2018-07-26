@@ -2,6 +2,8 @@ package cn.linkmore.ops.biz.service.impl;
 
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandStall;
@@ -40,5 +42,10 @@ public class EntBrandStallServiceImpl implements EntBrandStallService {
 	public ViewPage findPage(ViewPageable pageable) {
 		ViewPage page = this.entBrandStallClient.list(pageable);
 		return page;
+	}
+
+	@Override
+	public Tree findTree() {
+		return this.entBrandStallClient.tree();
 	}
 }
