@@ -237,10 +237,11 @@ public class EntStallServiceImpl implements EntStallService {
 		ResponseMessage<LockBean> res= lockFactory.getLockInfo(resStallEntity.getLockSn());
 		LockBean lockBean=res.getData();
 		ResDetailStall resDetailStall = new ResDetailStall();
+		resDetailStall.setSlaveCode(resStallEntity.getLockSn());
 		if(lockBean == null){
-			resDetailStall.setSlaveCode(resStallEntity.getLockSn());
 			return resDetailStall;
 		}
+		
 		resDetailStall.setBetty(lockBean.getElectricity());
 		resDetailStall.setStatus(lockBean.getLockState());
 		return resDetailStall;

@@ -1,4 +1,4 @@
-package cn.linkmore.enterprise.controller.ent;
+package cn.linkmore.enterprise.controller.ops;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(tags = "rent",description="企业rent用户", produces = "application/json")
 @RestController
-@RequestMapping("/ent/rent")
+@RequestMapping("/ops/rent")
 public class EntRentUserController {
 	
 	@Autowired

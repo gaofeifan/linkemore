@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.linkmore.enterprise.controller.ent;
+package cn.linkmore.enterprise.controller.ops;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags = "staff",description="企业员工", produces = "application/json")
 @RestController
-@RequestMapping("/ent/staff")
+@RequestMapping("/ops/staff")
 public class EntStaffController {
 	
 	@Autowired
