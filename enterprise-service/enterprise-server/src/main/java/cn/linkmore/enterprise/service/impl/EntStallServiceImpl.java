@@ -167,19 +167,19 @@ public class EntStallServiceImpl implements EntStallService {
 			resEntStalls.setPreUseStalls(preUseStalls);
 			
 			ResEntTypeStalls vipStalls = new ResEntTypeStalls();
-			vipStalls.setPreTypeStalls(3);
+			vipStalls.setType((short) 3);
 			vipStalls.setTypeName("vip车位");
 			vipStalls.setPreTypeStalls(preVipTypeStalls);
 			vipStalls.setPreUseTypeStalls(preVipUseTypeStalls);
 			typeSum.put("vip", vipStalls);
 			ResEntTypeStalls rentStalls = new ResEntTypeStalls();
-			rentStalls.setPreTypeStalls(2);
+			rentStalls.setType((short) 2);
 			rentStalls.setTypeName("长租车位");
 			rentStalls.setPreTypeStalls(preRentTypeStalls);
 			rentStalls.setPreUseTypeStalls(preRentUseTypeStalls);
 			typeSum.put("rent", rentStalls);
 			ResEntTypeStalls tempStalls = new ResEntTypeStalls();
-			tempStalls.setPreTypeStalls(1);
+			tempStalls.setType((short) 1);
 			tempStalls.setTypeName("临停车位");
 			tempStalls.setPreTypeStalls(preTempTypeStalls);
 			tempStalls.setPreUseTypeStalls(preTempUseTypeStalls);
@@ -215,6 +215,9 @@ public class EntStallServiceImpl implements EntStallService {
 		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
 		//设置车位对应的车牌号
 		for(ResStall resStall:stalls){
+			if(orders == null ){
+				break;
+			}
 			for(ResOrderPlate orderPlate : orders){
 				if(resStall.getId() == orderPlate.getStallId()){
 					resStall.setPlateNo(orderPlate.getPlateNo());
@@ -234,8 +237,11 @@ public class EntStallServiceImpl implements EntStallService {
 		ResponseMessage<LockBean> res= lockFactory.getLockInfo(resStallEntity.getLockSn());
 		LockBean lockBean=res.getData();
 		ResDetailStall resDetailStall = new ResDetailStall();
+		if(lockBean == null){
+			resDetailStall.setSlaveCode(resStallEntity.getLockSn());
+			return resDetailStall;
+		}
 		resDetailStall.setBetty(lockBean.getElectricity());
-		resDetailStall.setSlaveCode(resStallEntity.getLockSn());
 		resDetailStall.setStatus(lockBean.getLockState());
 		return resDetailStall;
 	}
@@ -250,26 +256,24 @@ public class EntStallServiceImpl implements EntStallService {
 		Map<String,Object> result = new HashMap<>();
 		ResStallEntity resStallEntity= this.stallClient.findById(stallId);
 		if(StringUtil.isBlank(resStallEntity.getLockSn())){
-			return null;
+			result.put("result", false);
+			result.put("result", "操作失败");
+			return result;
 		}
+		ResponseMessage<LockBean> res = null;
 		//1 降下 2 升起
 		if(state == 1){
-			ResponseMessage<LockBean> res=lockFactory.lockDown(resStallEntity.getLockSn());
-			if(res.isResult()){
-				result.put("result", res.isResult());
-				result.put("result", res.getMsg());
-				return result ;
-			}
+			res=lockFactory.lockDown(resStallEntity.getLockSn());
 		}else if(state == 2){
-			ResponseMessage<LockBean> res=lockFactory.lockUp(resStallEntity.getLockSn());
-			if(res.isResult()){
-				result.put("result", res.isResult());
-				result.put("result", res.getMsg());
-				return result ;
-			}
+			res=lockFactory.lockUp(resStallEntity.getLockSn());
 		}
-		result.put("result", false);
-		result.put("result", "操作失败");
+		if(res == null){
+			result.put("result", false);
+			result.put("result", "操作失败");
+			return result ;
+		}
+		result.put("result", res.isResult());
+		result.put("result", res.getMsg());
 		return result ;
 	}
 
@@ -290,11 +294,11 @@ public class EntStallServiceImpl implements EntStallService {
 		}
 		if(result == 0){
 			map.put("result",false);
-			map.put("message","上线失败");
+			map.put("message","操作失败");
 			return map;
 		}
 		map.put("result",false);
-		map.put("message","上线成功");
+		map.put("message","操作成功");
 		return map;
 	}
 

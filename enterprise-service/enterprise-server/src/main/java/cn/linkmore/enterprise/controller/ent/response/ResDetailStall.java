@@ -55,4 +55,5 @@ public class ResDetailStall {
 	public void setBetty(int betty) {
 		this.betty = betty;
 	}
+
 }
