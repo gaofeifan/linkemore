@@ -22,8 +22,18 @@ public class ReqEntBrandStall {
     private Date updateTime;
     //0未启用，1启用，2禁用
     private Short status;
+    
+    private String stallIdJson;
 
-    public Long getId() {
+    public String getStallIdJson() {
+		return stallIdJson;
+	}
+
+	public void setStallIdJson(String stallIdJson) {
+		this.stallIdJson = stallIdJson;
+	}
+
+	public Long getId() {
         return id;
     }
 

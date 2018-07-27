@@ -27,5 +27,7 @@ public interface EntBrandStallClusterMapper {
 	Integer count(Map<String, Object> param);
 
 	List<ResBrandStall> findPage(Map<String, Object> param);
+	
+	List<ResBrandStall> findByIds(List<Long> ids);
 
 }

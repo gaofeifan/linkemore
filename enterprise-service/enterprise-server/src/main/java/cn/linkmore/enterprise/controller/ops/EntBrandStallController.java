@@ -1,20 +1,19 @@
 package cn.linkmore.enterprise.controller.ops;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandStall;
 import cn.linkmore.enterprise.service.EntBrandPreService;
 import cn.linkmore.enterprise.service.EntBrandStallService;
-import cn.linkmore.prefecture.request.ReqCheck;
 
 /**
  * @Description - 品牌车位
@@ -67,8 +66,8 @@ public class EntBrandStallController {
 	 */
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public int delete(@RequestParam("id") Long id) {
-		return this.entBrandStallService.delete(id);
+	public int delete(@RequestBody List<Long> ids) {
+		return this.entBrandStallService.delete(ids);
 	}
 	
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)

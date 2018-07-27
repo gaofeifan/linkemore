@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -253,5 +256,12 @@ public class FeignStallController {
 	@ResponseBody
 	public void saveAndBind(@RequestParam("preId") Long preId,@RequestParam("stallName") String stallName,@RequestParam("sn") String sn) {
 		this.stallService.saveAndBind(preId, stallName, sn);
+	}
+	
+	@RequestMapping(value = "/v2.0/update-brand", method = RequestMethod.POST)
+	@ResponseBody
+	public int updateBrand(@RequestBody List<Long> stallIds) {
+		log.info("stallIds = {}",JSON.toJSON(stallIds));
+		return this.stallService.updateBrand(stallIds);
 	}
 }

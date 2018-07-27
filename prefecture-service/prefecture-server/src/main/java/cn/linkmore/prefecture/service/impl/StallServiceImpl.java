@@ -339,12 +339,12 @@ public class StallServiceImpl implements StallService {
 				if(lockBean == null) {
 					throw new RuntimeException("车位锁通讯失败");
 				}
-				if (lockBean.getOpenState() != 1) {
+				/*if (lockBean.getOpenState() != 1) {
 					lockFactory.lockUp(sn);
 				}
 				int openState = lockBean.getOpenState();
 				reqStall.setLockStatus(openState);
-				reqStall.setLockBattery((int) lockBean.getVoltage());
+				reqStall.setLockBattery((int) lockBean.getVoltage());*/
 				
 				
 				Stall stall = new Stall();
@@ -430,6 +430,11 @@ public class StallServiceImpl implements StallService {
 	public List<ResStall> findPreStallList(Map<String, Object> param) {
 		List<ResStall> list = this.stallClusterMapper.findPreStallList(param);
 		return list;
+	}
+
+	@Override
+	public int updateBrand(List<Long> ids) {
+		return this.stallMasterMapper.updateBrand(ids);
 	}
 	
 	

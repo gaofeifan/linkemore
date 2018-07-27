@@ -6,17 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -28,7 +25,6 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.enterprise.controller.app.request.ReqBrandPre;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPre;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreCity;
@@ -48,7 +44,6 @@ import cn.linkmore.enterprise.service.EntBrandPreService;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
-import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResStrategyBase;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DateUtils;
@@ -362,18 +357,16 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	}
 
 	public Tree findTree() {
-		Map<String, Object> param = new HashMap<>();
-		param.put("status", "0");
-		List<ResPre> preList = entBrandPreClusterMapper.findTreeList(param);
+		List<ResBrandPreStall> preList = entBrandPreClusterMapper.findList();
 		Tree tree = null;
 		List<Tree> rtrees = new ArrayList<Tree>();
 		Map<Long, Tree> ttreeMap = new HashMap<>();
-		for (ResPre pre : preList) {
+		for (ResBrandPreStall pre : preList) {
 			tree = new Tree();
 			tree.setId("" + pre.getId());
-			tree.setName(pre.getName());
+			tree.setName(pre.getPreName());
 			tree.setIsParent(false);
-			tree.setCode(pre.getId().toString());
+			tree.setCode(pre.getPreId().toString());
 			tree.setmId(pre.getId().toString());
 			tree.setOpen(true);
 			tree.setChildren(new ArrayList<Tree>());

@@ -22,6 +22,11 @@ public class ResBrandStall {
     private Date updateTime;
     //0未启用，1启用，2禁用
     private Short status;
+    //列表页面展示字段
+    private Short bindOrderStatus;
+    private Integer stallStatus;
+    private Integer lockStatus;
+    private String lockSn;
 
     public Long getId() {
         return id;
@@ -78,4 +83,37 @@ public class ResBrandStall {
     public void setStatus(Short status) {
         this.status = status;
     }
+
+	public Short getBindOrderStatus() {
+		return bindOrderStatus;
+	}
+
+	public void setBindOrderStatus(Short bindOrderStatus) {
+		this.bindOrderStatus = bindOrderStatus;
+	}
+
+	public Integer getStallStatus() {
+		return stallStatus;
+	}
+
+	public void setStallStatus(Integer stallStatus) {
+		this.stallStatus = stallStatus;
+	}
+
+	public Integer getLockStatus() {
+		return lockStatus;
+	}
+
+	public void setLockStatus(Integer lockStatus) {
+		this.lockStatus = lockStatus;
+	}
+
+	public String getLockSn() {
+		return lockSn;
+	}
+
+	public void setLockSn(String lockSn) {
+		this.lockSn = lockSn;
+	}
+    
 }

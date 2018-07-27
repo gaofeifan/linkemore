@@ -110,6 +110,9 @@
     <if test="preId!=null">  
     and pre_id = #{preId}
     </if>
+    <if test="brand!=null">  
+    and brand = #{brand}
+    </if>
     <if test="property==null">  
     order by lock_voltage desc
     </if>

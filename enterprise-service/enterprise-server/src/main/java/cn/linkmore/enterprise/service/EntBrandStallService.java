@@ -42,18 +42,12 @@ public interface EntBrandStallService {
 	int update(ReqEntBrandStall record);
 
 	/**
-	 * 删除
-	 * 
-	 * @param ids
-	 * @return
-	 */
-	int delete(Long id);
-
-	/**
 	 * 检验属性存在
 	 * @param reqCheck
 	 * @return
 	 */
 	Integer check(ReqCheck reqCheck);
+
+	int delete(List<Long> ids);
 
 }
