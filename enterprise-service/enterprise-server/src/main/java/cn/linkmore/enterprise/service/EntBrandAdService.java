@@ -90,5 +90,8 @@ public interface EntBrandAdService {
 	 * @return
 	 */
 	ResBrandAd findById(Long id);
+	
+	int start(Long id);
+	int stop(Long id);
 
 }

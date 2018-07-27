@@ -44,7 +44,7 @@
    		 and ebs.brand_pre_id = #{brandPreId,jdbcType=BIGINT}
     </if>
     <if test="stallName!=null">  
-   		 and ebs.stall_name like #{stallName,jdbcType=VARCHAR}
+   		 and s.stall_name like #{stallName,jdbcType=VARCHAR}
     </if>
     <if test="lockSn!=null">  
    		 and s.lock_sn like #{lockSn,jdbcType=VARCHAR}
@@ -69,7 +69,7 @@
    		 and ebs.brand_pre_id = #{brandPreId,jdbcType=BIGINT}
     </if> 
     <if test="stallName!=null">  
-   		 and ebs.stall_name = #{stallName,jdbcType=VARCHAR}
+   		 and s.stall_name = #{stallName,jdbcType=VARCHAR}
     </if>
     <if test="lockSn!=null">  
    		 and s.lock_sn like #{lockSn,jdbcType=VARCHAR}

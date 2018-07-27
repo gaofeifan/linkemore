@@ -233,6 +233,16 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		EntBrandAd entBrandAd = null;
 		entBrandAd = ObjectUtils.copyObject(record, new EntBrandAd());
 		entBrandAd.setCreateTime(new Date());
+		entBrandAd.setStatus((short)0);
+		if(entBrandAd.getLimitStatus() == null) {
+			entBrandAd.setLimitStatus((short)0);
+		}
+		if(entBrandAd.getAdStatus() == null) {
+			entBrandAd.setAdStatus((short)0);
+		}
+		if(entBrandAd.getScreen() == null) {
+			entBrandAd.setScreen((short)0);
+		}
 		return entBrandAdMasterMapper.save(entBrandAd);
 	}
 
@@ -265,6 +275,24 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	@Override
 	public ResBrandAd findById(Long id) {
 		return entBrandAdClusterMapper.findById(id);
+	}
+
+	@Override
+	public int start(Long id) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("id", id);
+		param.put("status", 1);
+		param.put("endTime", new Date());
+		return this.entBrandAdMasterMapper.startOrStop(param);
+	}
+	
+	@Override
+	public int stop(Long id) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("id", id);
+		param.put("status", 2);
+		param.put("endTime", new Date());
+		return this.entBrandAdMasterMapper.startOrStop(param);
 	}
 
 }

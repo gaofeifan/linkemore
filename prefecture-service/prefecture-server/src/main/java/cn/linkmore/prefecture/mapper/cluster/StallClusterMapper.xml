@@ -30,6 +30,7 @@
     <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
   </resultMap>
   
   <sql id="Base_Column_List">
@@ -64,7 +65,7 @@
   </select>
   
   <select id="findStallsByPreId" parameterType="java.lang.Long" resultMap="ResponseResultMap">
-  	select id,stall_name,lock_sn from v_stall where status = 1 and pre_id = #{preId}
+  	select id,stall_name,lock_sn,pre_id from v_stall where status = 1 and pre_id = #{preId}
   </select>
   
   <select id="findAll" resultMap="BaseResultMap" >
@@ -95,7 +96,7 @@
   </select>
   
   <select id="findList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
-  	select id, stall_name, lock_sn, status, type
+  	select id, stall_name, lock_sn, status, type, pre_id
 	from v_stall 
 	where 1=1 
 	<if test="name!=null">  

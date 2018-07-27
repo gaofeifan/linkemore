@@ -30,7 +30,17 @@ public class ResStall {
 	 * 车牌号
 	 */
 	private String plateNo;
+	/**
+	 * 车区id
+	 */
+	private Long preId;
 	
+	public Long getPreId() {
+		return preId;
+	}
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
 	public String getPlateNo() {
 		return plateNo;
 	}

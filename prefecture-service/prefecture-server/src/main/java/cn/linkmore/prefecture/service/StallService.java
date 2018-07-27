@@ -146,5 +146,5 @@ public interface StallService {
 	 */
 	List<ResStall> findPreStallList(Map<String, Object> param);
 	
-	int updateBrand(List<Long> ids);
+	int updateBrand(Map<String, Object> param);
 }

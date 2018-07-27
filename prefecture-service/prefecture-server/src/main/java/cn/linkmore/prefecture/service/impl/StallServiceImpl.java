@@ -433,8 +433,15 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public int updateBrand(List<Long> ids) {
-		return this.stallMasterMapper.updateBrand(ids);
+	public int updateBrand(Map<String, Object> param) {
+		log.info("param = {}",param);
+		String brand = (String) param.get("brand");
+		List<Long> ids = (List<Long>) param.get("list");
+		if("0".equals(brand)) {
+			return this.stallMasterMapper.updateBrand(ids);
+		}else {
+			return this.stallMasterMapper.updateBrandStall(ids);
+		}
 	}
 	
 	

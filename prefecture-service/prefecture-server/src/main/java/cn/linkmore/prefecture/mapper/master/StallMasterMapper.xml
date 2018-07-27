@@ -115,13 +115,20 @@
   
    <update id="updateBrand" parameterType="java.util.List">
     update v_stall
-    set brand = 0 
+    set brand = 0
     where id in 
-    <foreach collection="list" index="index" item="item" 
-        separator="," open="(" close=")">
-        #{item.id,jdbcType=BIGINT}
-    </foreach>
-    
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>  
+  </update>
+  
+  <update id="updateBrandStall" parameterType="java.util.List">
+    update v_stall
+    set brand = 1
+    where id in 
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>  
   </update>
   
 </mapper>

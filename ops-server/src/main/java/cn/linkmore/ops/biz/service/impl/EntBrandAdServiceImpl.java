@@ -1,5 +1,7 @@
 package cn.linkmore.ops.biz.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewPage;
@@ -34,18 +36,6 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	}
 
 	@Override
-	public int delete(Long id) {
-		this.entBrandAdClient.delete(id);
-		return 0;
-	}
-
-	/*@Override
-	public Boolean check(ReqCheck reqCheck) {
-		Boolean check = this.entBrandAdClient.check(reqCheck);
-		return check;
-	}*/
-
-	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		ViewPage page = this.entBrandAdClient.list(pageable);
 		return page;
@@ -54,6 +44,22 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	@Override
 	public ResBrandAd findById(Long id) {
 		return this.entBrandAdClient.findById(id);
+	}
+
+	@Override
+	public int delete(List<Long> ids) {
+		return this.entBrandAdClient.delete(ids);
+	}
+
+	@Override
+	public int start(Long id) {
+		
+		return this.entBrandAdClient.start(id);
+	}
+
+	@Override
+	public int stop(Long id) {
+		return this.entBrandAdClient.stop(id);
 	}
 	
 }
