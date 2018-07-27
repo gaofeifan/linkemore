@@ -1,5 +1,7 @@
 package cn.linkmore.ops.biz.service;
 
+import java.util.List;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
@@ -19,9 +21,13 @@ public interface EntBrandAdService {
 
 	int update(ReqEntBrandAd record);
 
-	int delete(Long id);
-
 	ViewPage findPage(ViewPageable pageable);
 
 	ResBrandAd findById(Long id);
+
+	int delete(List<Long> ids);
+
+	int start(Long id);
+	
+	int stop(Long id);
 }

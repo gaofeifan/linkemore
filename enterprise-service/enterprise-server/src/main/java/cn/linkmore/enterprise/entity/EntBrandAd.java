@@ -31,15 +31,15 @@ public class EntBrandAd {
     //日申请量上限
     private Integer applyCount;
     //开屏展示[0否，1是]广告只有一张
-    private Short screen;
+    private Short screen = 0;
     //0未启用，1启用，2禁用
     private Short status;
     //城市id数组
     private String cityIds;
     //0不受限，1受限[仅品牌用户可约]
-    private Short limitStatus;
+    private Short limitStatus = 0;
     //0不发广告 1发广告 近当limitStatus=0起作用
-    private Short adStatus;
+    private Short adStatus = 0;
 
     public Long getId() {
         return id;

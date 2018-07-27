@@ -42,7 +42,7 @@ public class EntBrandAdController {
 	/**
 	 * 删除品牌车区
 	 */
-	@RequestMapping(value = "/v2.0/delete-ids", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids) {
 		return this.entBrandAdService.delete(ids);
@@ -80,21 +80,28 @@ public class EntBrandAdController {
 		return this.entBrandAdService.update(reqEntBrandAd);
 	}
 	
-	/**
-	 * 删除
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
-	@ResponseBody
-	public int delete(@RequestParam("id") Long id) {
-		return this.entBrandAdService.delete(id);
-	}
-	
 	@RequestMapping(value = "/v2.0/find", method = RequestMethod.POST)
 	@ResponseBody
 	public ResBrandAd findById(@RequestParam("id") Long id) {
 		return this.entBrandAdService.findById(id);
+	}
+	
+	/*
+	 * 启用
+	 */
+	@RequestMapping(value = "/v2.0/start", method = RequestMethod.GET)
+	@ResponseBody
+	public int start(@RequestParam("id") Long id) {
+		return	this.entBrandAdService.start(id);
+	}
+
+	/*
+	 * 禁用
+	 */
+	@RequestMapping(value = "/v2.0/stop", method = RequestMethod.GET)
+	@ResponseBody
+	public int stop(@RequestParam("id") Long id) {
+		return	this.entBrandAdService.stop(id);
 	}
 
 }

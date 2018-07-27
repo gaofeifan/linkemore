@@ -79,10 +79,10 @@ public class EntBrandAdController {
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg delete(Long id) {
+	public ViewMsg delete(@RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			this.entBrandAdService.delete(id);
+			this.entBrandAdService.delete(ids);
 			msg = new ViewMsg("删除成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
@@ -143,6 +143,40 @@ public class EntBrandAdController {
 	@ResponseBody
 	public ResBrandAd detail(@RequestBody Long id) {
 		return this.entBrandAdService.findById(id);
+	}
+	
+	@RequestMapping(value = "/start", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg changedUp(@RequestBody Long id) {
+		ViewMsg msg = null;
+		try {
+			this.entBrandAdService.start(id);
+			msg = new ViewMsg("启用成功", true);
+		} catch (RuntimeException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+			return msg;
+		} catch (Exception e) {
+			msg = new ViewMsg("启用失败", false);
+			return msg;
+		}
+		return msg;
+	}
+
+	@RequestMapping(value = "/stop", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg changedDown(@RequestBody Long id) {
+		ViewMsg msg = null;
+		try {
+			this.entBrandAdService.stop(id);
+			msg = new ViewMsg("禁用成功", true);
+		} catch (RuntimeException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+			return msg;
+		} catch (Exception e) {
+			msg = new ViewMsg("禁用失败", false);
+			return msg;
+		}
+		return msg;
 	}
 
 }

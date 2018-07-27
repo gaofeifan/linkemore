@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.dao.master;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -66,4 +67,10 @@ public interface StallMasterMapper {
 	 * @return
 	 */
 	int updateBrand(List<Long> ids);
+	/**
+	 * 批量更新车位为品牌车位
+	 * @param ids
+	 * @return
+	 */
+	int updateBrandStall(List<Long> ids);
 }

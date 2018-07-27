@@ -160,5 +160,5 @@ public interface StallClient {
 	
 	@RequestMapping(value = "/v2.0/update-brand", method = RequestMethod.POST)
 	@ResponseBody
-	public int updateBrand(@RequestBody List<Long> stallIds);
+	public int updateBrand(@RequestBody Map<String, Object> map);
 }

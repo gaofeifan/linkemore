@@ -155,8 +155,8 @@ public class StallClientHystrix implements StallClient {
 	}
 
 	@Override
-	public int updateBrand(List<Long> stallIds) {
-		log.info("prefecture service int updateBrand(List<Long> stallIds) hystrix");
+	public int updateBrand(Map<String, Object> map) {
+		log.info("prefecture service int updateBrand(Map<String, Object> map) hystrix");
 		return 0;
 	}
 

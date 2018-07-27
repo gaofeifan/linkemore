@@ -23,7 +23,6 @@ import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.PrefectureService;
 import cn.linkmore.prefecture.response.ResFeeStrategy;
 import cn.linkmore.prefecture.response.ResPreList;
-import cn.linkmore.prefecture.response.ResPrefectureDetail;
 /**
  * 企业品牌车区
  * @author   jiaohanbin

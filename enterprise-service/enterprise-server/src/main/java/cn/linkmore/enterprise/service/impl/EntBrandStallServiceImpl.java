@@ -72,7 +72,9 @@ public class EntBrandStallServiceImpl implements EntBrandStallService {
 	public int save(ReqEntBrandStall record) {
 		if(StringUtils.isNotBlank(record.getStallIdJson())) {
 			String[] stallIds = record.getStallIdJson().split(",");
+			List<Long> ids = new ArrayList<Long>();
 			for(String id: stallIds) {
+				ids.add(Long.valueOf(id));
 				EntBrandStall brandStall = new EntBrandStall();
 				brandStall = ObjectUtils.copyObject(record, brandStall);
 				brandStall.setStallId(Long.valueOf(id));
@@ -81,6 +83,10 @@ public class EntBrandStallServiceImpl implements EntBrandStallService {
 				brandStall.setStatus((short)1);
 				entBrandStallMasterMapper.save(brandStall);
 			}
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("brand", "1");
+			map.put("list", ids);
+			this.stallClient.updateBrand(map);
 		}
 		return 0;
 	}
@@ -109,7 +115,10 @@ public class EntBrandStallServiceImpl implements EntBrandStallService {
 			for(ResBrandStall stall: stallList) {
 				stallIds.add(stall.getStallId());
 			}
-			this.stallClient.updateBrand(stallIds);
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("brand", "0");
+			map.put("list", stallIds);
+			this.stallClient.updateBrand(map);
 		}
 		return entBrandStallMasterMapper.delete(ids);
 	}
