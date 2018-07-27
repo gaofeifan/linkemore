@@ -1,10 +1,12 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntRentUserClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntVipUserClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper;
@@ -26,6 +28,8 @@ public class EntPreServiceImpl implements EntPreService {
 	
 	@Autowired
 	private EntPrefectureMasterMapper entPrefectureMasterMapper;
+	@Autowired
+	private EntPrefectureClusterMapper entPrefectureClusterMapper;
 	@Autowired
 	private EnterpriseClusterMapper enterpriseClusterMapper;
 	@Autowired
@@ -73,5 +77,13 @@ public class EntPreServiceImpl implements EntPreService {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public List<EntPrefecture> findList(Map<String, Object> map) {
+		List<EntPrefecture> list = this.entPrefectureClusterMapper.findList(map);
+		return list;
+	}
+	
+	
 
 }

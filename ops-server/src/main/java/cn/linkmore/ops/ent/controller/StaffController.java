@@ -59,10 +59,10 @@ public class StaffController {
 		return msg;
 	}
 	
-	@RequestMapping(value = "/resource", method = RequestMethod.GET)
+	@RequestMapping(value = "/resource", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String,Object> resource(Long resource) {
-		Map<String,Object> map = this.staffService.resource(resource);
+	public Map<String,Object> resource(Long id) {
+		Map<String,Object> map = this.staffService.resource(id);
 		return map;
 	}
 }

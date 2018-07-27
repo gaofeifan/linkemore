@@ -30,6 +30,7 @@ import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.request.ReqOperateBind;
 import cn.linkmore.enterprise.request.ReqStallList;
 import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.enterprise.service.EntPreService;
 import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.OperateAuthService;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -57,10 +58,12 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 	private EntAuthStallClusterMapper entAuthStallClusterMapper;
 	@Resource
 	private EntAuthStallMasterMapper entAuthStallMasterMapper;
+	@Resource
+	private EntPreService entPreService;
 	@Override
 	public List<Tree> tree() {
 		List<ResEnterprise> list = this.enterpriseService.findList(null);
-		List<EntPrefecture> preList = new ArrayList<>();
+		List<EntPrefecture> preList = this.entPreService.findList(null);
 		List<ResStallEntity> stallList = new ArrayList<>();
 		List<Tree> pchildren = null;
 		List<Tree> children = null;
@@ -72,13 +75,13 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 			root = new Tree();
 			root.setName(ent.getName());
 			root.setId(ent.getId().toString());
-			root.setIsParent(false);
 			root.setCode(ent.getId().toString());
 			root.setOpen(true);
 			root.setmId(ent.getId().toString());
+			root.setpId("0");
 			children = new ArrayList<>();
 			for (EntPrefecture entPrefecture : preList) {
-				if(entPrefecture.getEntId() == ent.getId()) {
+				if(entPrefecture.getEntId().equals(ent.getId())) {
 					chi = new Tree();
 					chi.setName(entPrefecture.getPreName());
 					chi.setId(entPrefecture.getId().toString());
@@ -86,6 +89,8 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 					chi.setCode(entPrefecture.getId().toString());
 					chi.setOpen(true);
 					chi.setmId(entPrefecture.getId().toString());
+					chi.setpId(entPrefecture.getEntId().toString());
+					children.add(chi);
 					pchildren = new ArrayList<>();
 					for (ResStallEntity stall : stallList) {
 						if(stall.getPreId() == entPrefecture.getPreId()) {
@@ -96,16 +101,19 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 							pchi.setCode(stall.getId().toString());
 							pchi.setOpen(true);
 							pchi.setmId(stall.getId().toString());
+							pchi.setpId(stall.getPreId().toString());
 							pchildren.add(pchi);
 						}
 					}
-					chi.setChildren(pchildren);
-					children.add(chi);
+					if(pchildren.size() != 0) {
+						chi.setChildren(pchildren);
+					}
 				}
-				
 			}
-			root.setChildren(children);
-			roots.add(root);
+			if(children.size() != 0) {
+				root.setChildren(children);
+				roots.add(root);
+			}
 		}
 		return roots;
 	}

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
@@ -12,7 +13,13 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.request.ReqOperateBind;
 import cn.linkmore.prefecture.client.OpsOperateAuthClient;
-
+/**
+ * 操作权限
+ * @author   GFF
+ * @Date     2018年7月27日
+ * @Version  v2.0
+ */
+@Component
 public class OpsOperateAuthClientHystrix implements OpsOperateAuthClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Override

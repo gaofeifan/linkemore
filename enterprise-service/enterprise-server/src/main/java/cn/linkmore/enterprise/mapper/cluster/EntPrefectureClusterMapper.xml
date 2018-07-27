@@ -29,4 +29,11 @@
     from t_ent_prefecture
     where pre_id = #{0}
   </select>
+  <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_prefecture
+    where 1 = 1
+  </select>
+  
 </mapper>
