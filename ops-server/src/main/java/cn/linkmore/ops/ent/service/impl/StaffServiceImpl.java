@@ -28,16 +28,7 @@ public class StaffServiceImpl implements StaffService {
 	@Resource
 	private OpsStaffAuthClient staffClient;
 	
-	@Override
-	public ViewPage findPage(ViewPageable pageable) {
-		ViewPage viewPage = this.staffClient.findPage(pageable);
-		return viewPage;
-	}
-
-	@Override
-	public Tree tree(HttpServletRequest request) {
-		return this.staffClient.tree();
-	}
+	
 
 	@Override
 	public void bind(ReqBindStaffAuth staffAuth) {
@@ -56,6 +47,17 @@ public class StaffServiceImpl implements StaffService {
 	public Map<String, Object> resource(Long resource) {
 		return this.staffClient.resouce(resource);
 	}
+
+	@Override
+	public ViewPage findPage(ViewPageable pageable) {
+		return this.staffClient.findPage(pageable);
+	}
+
+	@Override
+	public Tree tree(HttpServletRequest request) {
+		return this.staffClient.tree();
+	}
+
 
 	
 	

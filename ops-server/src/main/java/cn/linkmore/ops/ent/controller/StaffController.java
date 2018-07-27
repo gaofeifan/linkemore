@@ -61,16 +61,8 @@ public class StaffController {
 	
 	@RequestMapping(value = "/resource", method = RequestMethod.GET)
 	@ResponseBody
-	public ViewMsg resource(Long resource) {
-		ViewMsg msg = null;
-		try {
-			Map<String,Object> map = this.staffService.resource(resource);
-			msg = new ViewMsg("保存成功", true);
-		} catch (DataException e) {
-			msg = new ViewMsg(e.getMessage(), false);
-		} catch (Exception e) {
-			msg = new ViewMsg("保存失败", false);
-		}
-		return msg;
+	public Map<String,Object> resource(Long resource) {
+		Map<String,Object> map = this.staffService.resource(resource);
+		return map;
 	}
 }
