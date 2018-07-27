@@ -41,7 +41,10 @@
     select 
     <include refid="Base_Column_List" />
     from t_ent_brand_ad
-    where screen = 0 and status = 1 
+    where status = 1 
+    <if test="screen!=null">
+    	 and screen = 0
+    </if>
     <if test="entId!=null">
     	 and ent_id = #{entId,jdbcType=BIGINT}
     </if>

@@ -1,5 +1,8 @@
 package cn.linkmore.ops.biz.service;
 
+import java.util.List;
+
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandStall;
@@ -15,7 +18,9 @@ public interface EntBrandStallService {
 
 	int update(ReqEntBrandStall record);
 
-	int delete(Long id);
+	int delete(List<Long> ids);
 
 	ViewPage findPage(ViewPageable pageable);
+
+	Tree findTree();
 }

@@ -27,7 +27,7 @@ public class EntBrandPre {
     //结束时间
     private Date endTime;
     //状态0未启用，1启用，2禁用
-    private Short status;
+    private Short status = 0;
     //创建时间
     private Date createTime;
     //更新时间
@@ -39,7 +39,7 @@ public class EntBrandPre {
     //计费价格
     private String chargePrice;
     //计费时间
-    private int chargeTime;
+    private Integer chargeTime;
     //计费策略描述
     private String strategyDescription;
 
@@ -163,11 +163,11 @@ public class EntBrandPre {
 		this.chargePrice = chargePrice;
 	}
 
-	public int getChargeTime() {
+	public Integer getChargeTime() {
 		return chargeTime;
 	}
 
-	public void setChargeTime(int chargeTime) {
+	public void setChargeTime(Integer chargeTime) {
 		this.chargeTime = chargeTime;
 	}
 

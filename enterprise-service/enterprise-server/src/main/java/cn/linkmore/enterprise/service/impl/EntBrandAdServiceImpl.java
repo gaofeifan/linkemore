@@ -158,6 +158,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("entId", brandPre.getEntId());
 		map.put("preId", brandPre.getPreId());
+		map.put("screen", 0);
 		List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(map);
 		if (CollectionUtils.isNotEmpty(list)) {
 			resBrandAd = list.get(0);
@@ -259,6 +260,11 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	@Override
 	public int delete(List<Long> ids) {
 		return entBrandAdMasterMapper.deleteByIds(ids);
+	}
+
+	@Override
+	public ResBrandAd findById(Long id) {
+		return entBrandAdClusterMapper.findById(id);
 	}
 
 }

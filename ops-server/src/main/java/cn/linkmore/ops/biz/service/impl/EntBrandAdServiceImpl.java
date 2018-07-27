@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
+import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.ops.biz.service.EntBrandAdService;
 import cn.linkmore.prefecture.client.OpsEntBrandAdClient;
 import cn.linkmore.security.client.PersonClient;
@@ -48,6 +49,11 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	public ViewPage findPage(ViewPageable pageable) {
 		ViewPage page = this.entBrandAdClient.list(pageable);
 		return page;
+	}
+
+	@Override
+	public ResBrandAd findById(Long id) {
+		return this.entBrandAdClient.findById(id);
 	}
 	
 }

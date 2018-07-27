@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +17,8 @@ import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
+import cn.linkmore.enterprise.response.ResBrandAd;
+import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EntBrandAdService;
 import cn.linkmore.ops.biz.service.EnterpriseService;
@@ -100,7 +103,7 @@ public class EntBrandAdController {
 	 * 企业列表
 	 * @return
 	 */
-	@RequestMapping(value = "/ent_list", method = RequestMethod.POST)
+	@RequestMapping(value = "/ent-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResEnterprise> selectAll() {
 		return (List<ResEnterprise>) this.enterpriseService.selectAll();
@@ -109,7 +112,7 @@ public class EntBrandAdController {
 	/*
 	 * 专区下拉列表
 	 */
-	@RequestMapping(value = "/pre_list", method = RequestMethod.POST)
+	@RequestMapping(value = "/pre-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPreList> selectList() {
 		return this.preService.findSelectList();
@@ -118,7 +121,7 @@ public class EntBrandAdController {
 	/*
 	 * 城市列表
 	 */
-	@RequestMapping(value = "/city_list", method = RequestMethod.POST)
+	@RequestMapping(value = "/city-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResCity> cityList() {
 		return this.preService.findCityList();
@@ -127,10 +130,19 @@ public class EntBrandAdController {
 	/*
 	 * 周期列表
 	 */
-	@RequestMapping(value = "/period_list", method = RequestMethod.POST)
+	@RequestMapping(value = "/period-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResBaseDict> periodList() {
 		return this.baseDictClient.findList("period");
+	}
+	
+	/*
+	 * 根据id获取一条数据
+	 */
+	@RequestMapping(value = "/detail", method = RequestMethod.POST)
+	@ResponseBody
+	public ResBrandAd detail(@RequestBody Long id) {
+		return this.entBrandAdService.findById(id);
 	}
 
 }

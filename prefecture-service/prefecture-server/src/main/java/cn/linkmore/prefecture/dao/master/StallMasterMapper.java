@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.prefecture.entity.Stall;
@@ -57,4 +59,11 @@ public interface StallMasterMapper {
 	 * @param stall
 	 */
 	void offline(Stall stall);
+	
+	/**
+	 * 批量更新车位为普通车位
+	 * @param ids
+	 * @return
+	 */
+	int updateBrand(List<Long> ids);
 }

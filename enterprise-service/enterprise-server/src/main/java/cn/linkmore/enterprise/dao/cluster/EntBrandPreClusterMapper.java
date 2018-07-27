@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
+import cn.linkmore.prefecture.response.ResPre;
 
 /**
  * 品牌车区
@@ -41,5 +42,7 @@ public interface EntBrandPreClusterMapper {
 	Integer count(Map<String, Object> param);
 	
 	List<ResBrandPre> findPage(Map<String, Object> param);
+	
+	List<ResPre> findTreeList(Map<String, Object> param);
 
 }

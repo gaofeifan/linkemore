@@ -1,4 +1,4 @@
-package cn.linkmore.enterprise.controller.ent;
+package cn.linkmore.enterprise.controller.ops;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(tags = "vip",description="企业vip用户", produces = "application/json")
 @RestController
-@RequestMapping("/vip")
+@RequestMapping("/ops/vip")
 public class EntVipUserController {
 	
 	@Autowired

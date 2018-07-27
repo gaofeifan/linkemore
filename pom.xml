@@ -34,7 +34,7 @@
 		<fastjson.version>1.2.7</fastjson.version> 
 		<net.sf.json.lib.version>2.4</net.sf.json.lib.version>
 		<commons.lang.version>2.6</commons.lang.version>
-		<linkmore-lock-sdk.version>1.0.2-RELEASES</linkmore-lock-sdk.version>
+		<linkmore-lock-sdk.version>1.0.3-RELEASES</linkmore-lock-sdk.version>
 		<shiro.version>1.2.3</shiro.version>
 		<poi.version>3.15</poi.version>
 	</properties>   

@@ -113,4 +113,15 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   
+   <update id="updateBrand" parameterType="java.util.List">
+    update v_stall
+    set brand = 0 
+    where id in 
+    <foreach collection="list" index="index" item="item" 
+        separator="," open="(" close=")">
+        #{item.id,jdbcType=BIGINT}
+    </foreach>
+    
+  </update>
+  
 </mapper>

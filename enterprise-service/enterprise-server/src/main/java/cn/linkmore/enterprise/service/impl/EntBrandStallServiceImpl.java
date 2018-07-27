@@ -1,9 +1,13 @@
 package cn.linkmore.enterprise.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewFilter;
@@ -16,6 +20,7 @@ import cn.linkmore.enterprise.request.ReqEntBrandStall;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.enterprise.service.EntBrandStallService;
+import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 /**
@@ -31,6 +36,9 @@ public class EntBrandStallServiceImpl implements EntBrandStallService {
 	
 	@Resource
 	private EntBrandStallClusterMapper entBrandStallClusterMapper;
+	
+	@Resource
+	private StallClient stallClient;
 	
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
@@ -62,9 +70,19 @@ public class EntBrandStallServiceImpl implements EntBrandStallService {
 
 	@Override
 	public int save(ReqEntBrandStall record) {
-		EntBrandStall brandStall = new EntBrandStall();
-		brandStall = ObjectUtils.copyObject(record, brandStall);
-		return entBrandStallMasterMapper.save(brandStall);
+		if(StringUtils.isNotBlank(record.getStallIdJson())) {
+			String[] stallIds = record.getStallIdJson().split(",");
+			for(String id: stallIds) {
+				EntBrandStall brandStall = new EntBrandStall();
+				brandStall = ObjectUtils.copyObject(record, brandStall);
+				brandStall.setStallId(Long.valueOf(id));
+				brandStall.setCreateTime(new Date());
+				brandStall.setUpdateTime(new Date());
+				brandStall.setStatus((short)1);
+				entBrandStallMasterMapper.save(brandStall);
+			}
+		}
+		return 0;
 	}
 
 	@Override
@@ -75,17 +93,25 @@ public class EntBrandStallServiceImpl implements EntBrandStallService {
 	}
 
 	@Override
-	public int delete(Long id) {
-		return entBrandStallMasterMapper.delete(id);
-	}
-
-	@Override
 	public Integer check(ReqCheck reqCheck) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("property", reqCheck.getProperty());
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
 		return this.entBrandStallClusterMapper.check(param);
+	}
+
+	@Override
+	public int delete(List<Long> ids) {
+		List<ResBrandStall> stallList = this.entBrandStallClusterMapper.findByIds(ids);
+		List<Long> stallIds = new ArrayList<Long>();
+		if(CollectionUtils.isNotEmpty(stallList)) {
+			for(ResBrandStall stall: stallList) {
+				stallIds.add(stall.getStallId());
+			}
+			this.stallClient.updateBrand(stallIds);
+		}
+		return entBrandStallMasterMapper.delete(ids);
 	}
 	
 }

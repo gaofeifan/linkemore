@@ -4,6 +4,8 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
+import cn.linkmore.enterprise.response.ResBrandAd;
+import cn.linkmore.enterprise.response.ResBrandPre;
 
 /**
  * 品牌广告
@@ -19,7 +21,7 @@ public interface EntBrandAdService {
 
 	int delete(Long id);
 
-	//Boolean check(ReqCheck reqCheck);
-
 	ViewPage findPage(ViewPageable pageable);
+
+	ResBrandAd findById(Long id);
 }

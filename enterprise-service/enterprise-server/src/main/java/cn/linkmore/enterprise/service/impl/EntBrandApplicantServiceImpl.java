@@ -83,7 +83,7 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		String mobile = reqBrandApplicant.getMobile();
 		map.put("entId", entId);
 		map.put("mobile", mobile);
-
+		map.put("screen", null);
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		String currentDay = sdf.format(date);

@@ -23,7 +23,7 @@ public class ResDetailStall {
 	/**
 	 * 锁升降状态
 	 */
-	@ApiModelProperty("锁状态(1:升起 2：降下)")
+	@ApiModelProperty("锁状态(1:竖起状态 0：躺下)")
 	private int status;
 	
 	/**
@@ -55,4 +55,5 @@ public class ResDetailStall {
 	public void setBetty(int betty) {
 		this.betty = betty;
 	}
+
 }

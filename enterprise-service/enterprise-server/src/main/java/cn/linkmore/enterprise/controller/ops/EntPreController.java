@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cn.linkmore.enterprise.controller.ent;
+package cn.linkmore.enterprise.controller.ops;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags = "preture",description="企业车区", produces = "application/json")
 @RestController
-@RequestMapping("/enterprise")
+@RequestMapping("/ops/enterprise")
 public class EntPreController {
 	
 	@Autowired

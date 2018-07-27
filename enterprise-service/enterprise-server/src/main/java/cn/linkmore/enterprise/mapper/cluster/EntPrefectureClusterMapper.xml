@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.linkmore.enterprise.dao.cluster.cluster.EntPrefectureClusterMapper">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntPrefecture">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />

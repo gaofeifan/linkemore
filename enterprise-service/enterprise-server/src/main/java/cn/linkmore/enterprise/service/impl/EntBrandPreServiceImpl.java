@@ -6,17 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -24,6 +21,7 @@ import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -48,6 +46,7 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
 import cn.linkmore.prefecture.response.ResStrategyBase;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -283,6 +282,7 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
 		entBrandPre.setCreateTime(new Date());
 		entBrandPre.setUpdateTime(new Date());
+		entBrandPre.setStatus((short)0);
 		return entBrandPreMasterMapper.save(entBrandPre);
 	}
 
@@ -290,6 +290,8 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	public int update(ReqEntBrandPre record) {
 		EntBrandPre entBrandPre = null;
 		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
+		entBrandPre.setUpdateTime(new Date());
+		entBrandPre.setLogoUrl("http://www.baidu.com");
 		return entBrandPreMasterMapper.update(entBrandPre);
 	}
 
@@ -325,5 +327,60 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	@Override
 	public int delete(List<Long> ids) {
 		return entBrandPreMasterMapper.deleteByIds(ids);
+	}
+
+	@Override
+	public int start(Long id) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		ResBrandPre brandPre = findById(id);
+		param.put("id", id);
+		param.put("status", 1);
+		param.put("updateTime", new Date());
+		if(brandPre.getStartTime() == null){
+			param.put("startTime", new Date());
+			if(brandPre.getPeriod() != null){
+				//根据开启时间 + 有效天数 = 计算到期时间
+				Date endDate = DateUtils.getDate(new Date(), 0, 0, brandPre.getPeriod(), 0, 0, 0);
+				param.put("endTime", endDate);
+			}
+		}
+		return this.entBrandPreMasterMapper.startOrStop(param);
+	}
+
+	@Override
+	public int stop(Long id) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("id", id);
+		param.put("status", 2);
+		param.put("updateTime", new Date());
+		return this.entBrandPreMasterMapper.startOrStop(param);
+	}
+
+	public Tree findTree() {
+		List<ResBrandPreStall> preList = entBrandPreClusterMapper.findList();
+		Tree tree = null;
+		List<Tree> rtrees = new ArrayList<Tree>();
+		Map<Long, Tree> ttreeMap = new HashMap<>();
+		for (ResBrandPreStall pre : preList) {
+			tree = new Tree();
+			tree.setId("" + pre.getId());
+			tree.setName(pre.getPreName());
+			tree.setIsParent(false);
+			tree.setCode(pre.getPreId().toString());
+			tree.setmId(pre.getId().toString());
+			tree.setOpen(true);
+			tree.setChildren(new ArrayList<Tree>());
+			rtrees.add(tree);
+			ttreeMap.put(pre.getId(), tree);
+		}
+		Tree root = new Tree();
+		root.setName("品牌车区树");
+		root.setId("0");
+		root.setIsParent(false);
+		root.setCode("0");
+		root.setOpen(true);
+		root.setmId("0");
+		root.setChildren(rtrees);
+		return root;
 	}
 }
