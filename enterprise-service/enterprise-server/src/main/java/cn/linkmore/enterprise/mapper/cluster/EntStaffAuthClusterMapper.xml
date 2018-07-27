@@ -27,7 +27,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_ent_staff_auth
-    where staff_id = #{staffId} and status = #{status}
+    where staff_id = #{staffId}
   </select>
   <select id="findByStaffId" parameterType="java.util.HashMap"  resultType="java.lang.Long">
 SELECT eas.stall_id FROM

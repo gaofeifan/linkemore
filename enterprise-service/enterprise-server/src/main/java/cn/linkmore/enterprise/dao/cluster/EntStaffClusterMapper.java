@@ -1,6 +1,9 @@
 package cn.linkmore.enterprise.dao.cluster;
 
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntStaff;
@@ -16,5 +19,19 @@ public interface EntStaffClusterMapper {
     EntStaff findById(Long id);
 
 	EntStaff findByMobile(String mobile);
+
+	/**
+	 * @Description  查询总数
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer count(Map<String, Object> param);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<EntStaff> findPage(Map<String, Object> param);
 
 }

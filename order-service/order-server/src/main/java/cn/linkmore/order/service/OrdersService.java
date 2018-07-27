@@ -143,14 +143,14 @@ public interface OrdersService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	Integer findTrafficFlow(Map<String, Object> map);
+	Map<String, Object> findTrafficFlow(Map<String, Object> map);
 
 	/**
 	 * @Description  
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	BigDecimal findProceeds(Map<String, Object> map);
+	Map<String, Object> findProceeds(Map<String, Object> map);
 
 	/**
 	 * @Description  查询收费明细

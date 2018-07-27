@@ -7,7 +7,7 @@ public class ResCharge {
 
 	private Date date;
 	
-	private List<ResCharge> charge;
+	private List<ResChargeDetail> charge;
 
 	public Date getDate() {
 		return date;
@@ -17,12 +17,12 @@ public class ResCharge {
 		this.date = date;
 	}
 
-	public List<ResCharge> getCharge() {
+	public List<ResChargeDetail> getCharge() {
 		return charge;
 	}
 
-	public void setCharge(List<ResCharge> charge) {
+	public void setCharge(List<ResChargeDetail> charge) {
 		this.charge = charge;
 	}
-	
+
 }

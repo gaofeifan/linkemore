@@ -77,6 +77,7 @@ import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderPlate;
+import cn.linkmore.order.response.ResPreDataList;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResTrafficFlowList;
@@ -974,17 +975,27 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public Integer findTrafficFlow(Map<String, Object> map) {
+	public Map<String, Object> findTrafficFlow(Map<String, Object> map) {
 		Date date = getDateByType((short) Short.parseShort(map.get("startTime").toString()));
 		map.put("startTime", date);
-		return this.ordersClusterMapper.findTrafficFlow(map);
+		Integer integer = this.ordersClusterMapper.findTrafficFlow(map);
+		List<ResPreDataList> list = this.ordersClusterMapper.findPreDataList(map);
+		map = new HashMap<>();
+		map.put("number", integer);
+		map.put("list", list);
+		return map;
 	}
 
 	@Override
-	public BigDecimal findProceeds(Map<String, Object> map) {
+	public Map<String, Object> findProceeds(Map<String, Object> map) {
 		Date date = getDateByType((short) Short.parseShort(map.get("startTime").toString()));
 		map.put("startTime", date);
-		return this.ordersClusterMapper.findProceeds(map);
+		BigDecimal decimal = this.ordersClusterMapper.findProceeds(map);
+		List<ResPreDataList> list = this.ordersClusterMapper.findPreDataList(map);
+		map = new HashMap<>();
+		map.put("amount", decimal);
+		map.put("list", list);
+		return map;
 	}
 
 	@Override
@@ -1006,7 +1017,7 @@ public class OrdersServiceImpl implements OrdersService {
 					chargeDetails.add(detail);
 				}
 			}
-			charge.setCharge(charges);
+			charge.setCharge(chargeDetails);
 			charge.setDate(chargeDetails.get(0).getStartTime());
 			charges.add(charge);
 		}
@@ -1030,10 +1041,11 @@ public class OrdersServiceImpl implements OrdersService {
 					.filter(month -> month.getMonth() == resMothCount.getMonth()).collect(Collectors.toList());
 			if (collect.size() != 0) {
 				flow = new ResTrafficFlow();
-				flow.setDate(collect.get(0).getTime());
-				flow.setCarDayTotal(resMothCount.getMonthCarCount());
-				flowLists.add(flow);
+				flow.setTime(collect.get(0).getDate());
+				flow.setCarMonthTotal(resMothCount.getMonthCarCount());
+				flow.setTrafficFlows(collect);
 			}
+			flowLists.add(flow);
 		}
 		return flowLists;
 	}

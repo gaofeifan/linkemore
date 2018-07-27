@@ -4,16 +4,24 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.bean.view.ViewFilter;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.EntAuthStallClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntStaffMasterMapper;
 import cn.linkmore.enterprise.entity.EntAuthStall;
 import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.service.EntStaffService;
+import cn.linkmore.util.DomainUtil;
 
 /**
  * 企业员工信息
@@ -26,6 +34,9 @@ public class EntStaffServiceImpl implements EntStaffService {
 	
 	@Autowired
 	private EntStaffMasterMapper entStaffMasterMapper;
+
+	@Autowired
+	private EntStaffClusterMapper entStaffClusterMapper;
 	
 	@Autowired
 	private EntAuthStallClusterMapper entAuthStallClusterMapper;
@@ -72,4 +83,28 @@ public class EntStaffServiceImpl implements EntStaffService {
 		return this.entStaffMasterMapper.updateByIdSelective(record);
 	}
 
+	@Override
+	public ViewPage findPage(ViewPageable pageable) {
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		List<ViewFilter> filters = pageable.getFilters();
+		if(StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if(filters!=null&&filters.size()>0) {
+			for(ViewFilter filter:filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.entStaffClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<EntStaff> list = this.entStaffClusterMapper.findPage(param);
+		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+
+	
 }

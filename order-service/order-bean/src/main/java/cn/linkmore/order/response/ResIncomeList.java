@@ -9,8 +9,6 @@ public class ResIncomeList {
 	
 	private BigDecimal dayAmount;
 
-	private BigDecimal amount;
-	
 	private int month;
 	
 	public Date getDate() {
@@ -27,14 +25,6 @@ public class ResIncomeList {
 
 	public void setDayAmount(BigDecimal dayAmount) {
 		this.dayAmount = dayAmount;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
 	}
 
 	public int getMonth() {

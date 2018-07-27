@@ -1,6 +1,7 @@
 package cn.linkmore.order.client;
 
 import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Map;
 
@@ -16,15 +17,12 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.OrderClientHystrix;
 import cn.linkmore.order.request.ReqOrderExcel;
-import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncome;
-import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
-import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
 
 @FeignClient(value = "order-server", path = "/feign/orders", fallback=OrderClientHystrix.class,configuration = FeignConfiguration.class)
@@ -80,11 +78,11 @@ public interface OrderClient {
 
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
 	@ResponseBody
-	Integer findTrafficFlow(@RequestBody Map<String, Object> map);
+	Map<String,Object> findTrafficFlow(@RequestBody Map<String, Object> map);
 
 	@RequestMapping(value = "/proceeds", method = RequestMethod.POST)
 	@ResponseBody
-	BigDecimal findProceeds(@RequestBody Map<String, Object> map);
+	Map<String,Object> findProceeds(@RequestBody Map<String, Object> map);
 
 	@RequestMapping(value = "/charge-detail", method = RequestMethod.POST)
 	@ResponseBody

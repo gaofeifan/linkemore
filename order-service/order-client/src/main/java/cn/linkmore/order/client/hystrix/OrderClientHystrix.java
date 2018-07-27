@@ -67,13 +67,13 @@ public class OrderClientHystrix implements OrderClient {
 	}
 
 	@Override
-	public Integer findTrafficFlow(Map<String, Object> map) {
+	public Map<String,Object> findTrafficFlow(Map<String, Object> map) {
 		log.info("feign Integer findTrafficFlow(Map<String, Object> map");
 		return null;
 	}
 
 	@Override
-	public BigDecimal findProceeds(Map<String, Object> map) {
+	public Map<String,Object> findProceeds(Map<String, Object> map) {
 		log.info("feign BigDecimal findProceeds(Map<String, Object> map)");
 		return null;
 	}

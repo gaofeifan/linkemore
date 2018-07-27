@@ -87,7 +87,7 @@ public class FeignOrderController {
 	
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer findTrafficFlow(@RequestBody Map<String,Object> map){
+	public Map<String, Object> findTrafficFlow(@RequestBody Map<String,Object> map){
 		return this.ordersService.findTrafficFlow(map);
 	}
 
@@ -98,7 +98,7 @@ public class FeignOrderController {
 	 */
 	@RequestMapping(value = "/proceeds", method = RequestMethod.POST)
 	@ResponseBody
-	public BigDecimal findProceeds(@RequestBody Map<String,Object> map) {
+	public Map<String, Object> findProceeds(@RequestBody Map<String,Object> map) {
 		return this.ordersService.findProceeds(map);
 	}
 	

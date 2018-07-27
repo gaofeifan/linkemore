@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import cn.linkmore.bean.view.Tree;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEnterpriseDeal;
 import cn.linkmore.enterprise.request.ReqStaffAuthBind;
 import cn.linkmore.prefecture.client.OpsStaffAuthClient;
@@ -32,6 +34,11 @@ public class OpsStaffAuthClientHystrix implements OpsStaffAuthClient {
 	@Override
 	public Map<String, Object> resouce(Long staffId) {
 		log.info("ops staffauth service  Map<String, Object> resouce(Long staffId) hystrix");
+		return null;
+	}
+	@Override
+	public ViewPage findPage(ViewPageable pageable) {
+		log.info("ops staffauth service  ViewPage findPage(ViewPageable pageable) hystrix");
 		return null;
 	}
 	

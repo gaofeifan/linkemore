@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.linkmore.enterprise.controller.ent.response.ResDayIncome;
+import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlow;
+import cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncome;
@@ -27,7 +30,7 @@ public interface PrefectureService {
 	 * @Version  v2.0
 	 */
 
-	List<cn.linkmore.order.response.ResPreOrderCount> findPreList(HttpServletRequest request);
+	List<ResPreOrderCount> findPreList(HttpServletRequest request);
 
 	/**
 	 * @param request 
@@ -43,14 +46,14 @@ public interface PrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	BigDecimal findProceeds(Short type,Long preId, HttpServletRequest request);
+	cn.linkmore.enterprise.controller.ent.response.ResIncomeList findProceeds(Short type,Long preId, HttpServletRequest request);
 
 	/**
 	 * @Description  查询车流量
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	Integer findTrafficFlow(Short type,Long preId, HttpServletRequest request);
+	cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow findTrafficFlow(Short type,Long preId, HttpServletRequest request);
 
 	/**
 	 * @Description  查询费明细
@@ -64,14 +67,14 @@ public interface PrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResTrafficFlow> findTrafficFlowList(Short type, Long preId, HttpServletRequest request);
+	List<ResDayTrafficFlow> findTrafficFlowList(Short type, Long preId, HttpServletRequest request);
 
 	/**
 	 * @Description  查询收入列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResIncome> findIncomeList(Short type, Long preId, HttpServletRequest request);
+	List<ResDayIncome> findIncomeList(Short type, Long preId, HttpServletRequest request);
 
 
 	

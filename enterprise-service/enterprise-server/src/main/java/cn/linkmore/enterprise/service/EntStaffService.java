@@ -1,5 +1,8 @@
 package cn.linkmore.enterprise.service;
 
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
+
 public interface EntStaffService {
 
 	/**
@@ -28,5 +31,12 @@ public interface EntStaffService {
 	 * @Version v1.0
 	 */
 	int updateEntStaff(Long id, Long entId, String mobile, String realname, Short type, Short status);
+
+	/**
+	 * @Description  分页查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ViewPage findPage(ViewPageable pageable);
 
 }

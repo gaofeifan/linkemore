@@ -50,7 +50,6 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 			add("/v2/api-docs");
 			add("/ent/auth/login");
 			add("/ent/auth/send");
-			add("/ent/auth/logout");
 			add("/error");
 		}
 	};

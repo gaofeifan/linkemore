@@ -1,40 +1,29 @@
 package cn.linkmore.order.response;
 
 import java.util.Date;
-import java.util.List;
 
 public class ResTrafficFlowList {
 
-	private Date time;
-	
-	private Integer carMonthTotal;
-	
+	private Date date;
+
+	private Integer carDayTotal;
+
 	private int month;
-	
-	private List<ResTrafficFlow> trafficFlows;
 
-	public Date getTime() {
-		return time;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
-	public Integer getCarMonthTotal() {
-		return carMonthTotal;
+	public Integer getCarDayTotal() {
+		return carDayTotal;
 	}
 
-	public void setCarMonthTotal(Integer carMonthTotal) {
-		this.carMonthTotal = carMonthTotal;
-	}
-
-	public List<ResTrafficFlow> getTrafficFlows() {
-		return trafficFlows;
-	}
-
-	public void setTrafficFlows(List<ResTrafficFlow> trafficFlows) {
-		this.trafficFlows = trafficFlows;
+	public void setCarDayTotal(Integer carDayTotal) {
+		this.carDayTotal = carDayTotal;
 	}
 
 	public int getMonth() {
@@ -44,6 +33,5 @@ public class ResTrafficFlowList {
 	public void setMonth(int month) {
 		this.month = month;
 	}
-	
-	
+
 }

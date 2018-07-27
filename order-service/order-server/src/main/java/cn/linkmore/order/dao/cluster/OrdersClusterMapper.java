@@ -15,6 +15,7 @@ import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderOps;
 import cn.linkmore.order.response.ResOrderPlate;
+import cn.linkmore.order.response.ResPreDataList;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResTrafficFlowList;
@@ -166,5 +167,12 @@ public interface OrdersClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<ResMonthCount> findMonthCount(Map<String, Object> param);
+
+	/**
+	 * @Description  查询车场数据列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPreDataList> findPreDataList(Map<String, Object> map);
 
 }
