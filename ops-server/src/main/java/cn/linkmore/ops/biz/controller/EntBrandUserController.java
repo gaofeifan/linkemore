@@ -1,8 +1,11 @@
 package cn.linkmore.ops.biz.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -59,10 +62,10 @@ public class EntBrandUserController {
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg delete(Long id) {
+	public ViewMsg delete(@RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			this.entBrandUserService.delete(id);
+			this.entBrandUserService.delete(ids);
 			msg = new ViewMsg("删除成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);

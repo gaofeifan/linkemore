@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.client.hystrix;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -36,7 +38,7 @@ public class OpsEntBrandUserClientHystrix implements OpsEntBrandUserClient {
 	}
 
 	@Override
-	public int delete(Long id) {
+	public int delete(List<Long> ids) {
 		log.info("enterprise service int delete() hystrix");
 		return 0;
 	}

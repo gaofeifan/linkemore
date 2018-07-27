@@ -50,14 +50,12 @@
       pre_name = #{preName,jdbcType=VARCHAR},
       view_image = #{viewImage,jdbcType=VARCHAR},
       view_url = #{viewUrl,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       apply_count = #{applyCount,jdbcType=INTEGER},
       screen = #{screen,jdbcType=SMALLINT},
-      status = #{status,jdbcType=SMALLINT},
       city_ids = #{cityIds,jdbcType=VARCHAR},
       limit_status = #{limitStatus,jdbcType=SMALLINT},
-      ad_status = #{adStatus,jdbcType=SMALLINT},
+      ad_status = #{adStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

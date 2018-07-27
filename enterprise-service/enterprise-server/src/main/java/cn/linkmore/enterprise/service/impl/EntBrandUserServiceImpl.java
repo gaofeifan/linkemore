@@ -74,17 +74,17 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	}
 
 	@Override
-	public int delete(Long id) {
-		return entBrandUserMasterMapper.delete(id);
-	}
-
-	@Override
 	public Integer check(ReqCheck reqCheck) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("property", reqCheck.getProperty());
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
 		return this.entBrandUserClusterMapper.check(param);
+	}
+
+	@Override
+	public int delete(List<Long> ids) {
+		return entBrandUserMasterMapper.delete(ids);
 	}
 	
 }

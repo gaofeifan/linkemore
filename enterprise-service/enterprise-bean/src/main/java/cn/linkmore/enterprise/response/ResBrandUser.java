@@ -10,10 +10,6 @@ public class ResBrandUser {
     private Long id;
     //企业id
     private Long entId;
-    //品牌车企id
-    private Long entPreId;
-    //车区id
-    private Long preId;
     //手机号
     private String mobile;
     //真实姓名
@@ -37,22 +33,6 @@ public class ResBrandUser {
 
     public void setEntId(Long entId) {
         this.entId = entId;
-    }
-
-    public Long getEntPreId() {
-        return entPreId;
-    }
-
-    public void setEntPreId(Long entPreId) {
-        this.entPreId = entPreId;
-    }
-
-    public Long getPreId() {
-        return preId;
-    }
-
-    public void setPreId(Long preId) {
-        this.preId = preId;
     }
 
     public String getMobile() {

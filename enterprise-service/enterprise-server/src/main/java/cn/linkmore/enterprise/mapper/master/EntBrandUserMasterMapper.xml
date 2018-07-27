@@ -4,36 +4,29 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntBrandUser">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
-    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
-    <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="plate_no" jdbcType="VARCHAR" property="plateNo" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
   </resultMap>
-  <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate_no, user_id
-  </sql>
   
-  <delete id="delete" parameterType="java.lang.Long">
+  <delete id="delete" parameterType="java.util.List">
     delete from t_ent_brand_user
-    where id = #{id,jdbcType=BIGINT}
+    where id in  
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>
   </delete>
   
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntBrandUser">
-    insert into t_ent_brand_user (id, ent_id, ent_pre_id, 
-      pre_id, mobile, realname, 
-      plate_no, user_id)
-    values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
-      #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
-      #{plateNo,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT})
+    insert into t_ent_brand_user (id, ent_id, mobile, realname, plate_no, user_id)
+    values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT},  #{mobile,jdbcType=VARCHAR},
+     #{realname,jdbcType=VARCHAR}, #{plateNo,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT})
   </insert>
 
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandUser">
     update t_ent_brand_user
     set ent_id = #{entId,jdbcType=BIGINT},
-      ent_pre_id = #{entPreId,jdbcType=BIGINT},
-      pre_id = #{preId,jdbcType=BIGINT},
       mobile = #{mobile,jdbcType=VARCHAR},
       realname = #{realname,jdbcType=VARCHAR},
       plate_no = #{plateNo,jdbcType=VARCHAR},
