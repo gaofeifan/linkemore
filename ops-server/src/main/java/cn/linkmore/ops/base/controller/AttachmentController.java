@@ -28,7 +28,6 @@ import cn.linkmore.common.request.ReqAttachment;
 import cn.linkmore.common.response.ResBaseAttachment;
 import cn.linkmore.ops.base.service.AttachmentService;
 import cn.linkmore.third.client.OssClient;
-import cn.linkmore.third.response.ResOssConfig;
 
 @Controller
 @RequestMapping("/admin/base/attachment")
@@ -37,8 +36,6 @@ public class AttachmentController {
 	@Resource
 	private OssClient ossClient;
 	
-	public static ResOssConfig resOssConfig = null;
-
 	@Resource
 	private AttachmentService attachmentService;
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -63,7 +60,7 @@ public class AttachmentController {
 		return this.attachmentService.findPage(pageable); 
 	} 
 	
-	@RequestMapping(value="/image_upload",method=RequestMethod.POST)  
+/*	@RequestMapping(value="/image_upload",method=RequestMethod.POST)  
 	@ResponseBody
     public ViewMsg imageUpload(@RequestParam("file") MultipartFile file,HttpServletRequest request) {  
 		 ViewMsg msg = null; 
@@ -89,13 +86,13 @@ public class AttachmentController {
 			msg = new ViewMsg("上传失败",false);
 		}  
         return msg;
-    } 
+    } */
 	/**
 	 * 处理下载请求
 	 * @param id 主键
 	 * @param response
 	 */ 
-	@RequestMapping(value = "/download", method = RequestMethod.POST) 
+/*	@RequestMapping(value = "/download", method = RequestMethod.POST) 
  	public void download(Long id,HttpServletResponse response,HttpServletRequest request){ 
 		ResBaseAttachment attach = this.attachmentService.find(id);
 		ServletOutputStream out = null;   
@@ -166,5 +163,5 @@ public class AttachmentController {
 			resOssConfig = client.initOssConfig();
 		}
 		return resOssConfig;
-	}
+	}*/
 }

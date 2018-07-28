@@ -1,27 +1,14 @@
 package cn.linkmore.ops.base.service.impl;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.aliyun.oss.OSSClient;
+import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseAttachmentClient;
-import cn.linkmore.common.request.ReqAttachment;
 import cn.linkmore.common.response.ResBaseAttachment;
 import cn.linkmore.ops.base.service.AttachmentService;
 import cn.linkmore.third.client.OssClient;
-import cn.linkmore.third.response.ResOssConfig;
 
 /**
  * 文件上传---接口实习那么
@@ -52,9 +39,9 @@ public class AttachmentServiceImpl implements AttachmentService {
 		return this.attachmentClient.find(id);
 	}
 
-	@Override
+//	@Override
 //	@Transactional(rollbackFor=RuntimeException.class)
-	public ReqAttachment saveImage(MultipartFile file, ResOssConfig resOssConfig) { 
+	/*public ReqAttachment saveImage(MultipartFile file, ResOssConfig resOssConfig) { 
 		ReqAttachment image = new ReqAttachment();  
 		image.setCreateTime(new Date()); 
 		image.setSource((short) 0);
@@ -139,7 +126,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 		}  
 		return attach;
 	}
-
+*/
 	
 	
 	

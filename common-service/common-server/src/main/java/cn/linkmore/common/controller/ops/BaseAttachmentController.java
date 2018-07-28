@@ -46,14 +46,14 @@ public class BaseAttachmentController {
 	
 	@RequestMapping(value="/image_upload",method=RequestMethod.POST)  
 	@ResponseBody
-    public ResBaseAttachment imageUpload(@RequestBody MultipartFile file) { 
+	public ResBaseAttachment imageUpload(@RequestParam("file")  MultipartFile file) { 
 		BaseAttachment attach = this.attachmentService.saveImage(file);
 		return ObjectUtils.copyObject(attach, new ResBaseAttachment());
-    } 
+	} 
 	
 	@RequestMapping(value="/file_upload",method=RequestMethod.POST)  
 	@ResponseBody
-    public ResBaseAttachment fileUpload(@RequestBody MultipartFile file) {
+    public ResBaseAttachment fileUpload(@RequestParam("file")  MultipartFile file) {
 		BaseAttachment attach = this.attachmentService.saveFile(file); 
 		return ObjectUtils.copyObject(attach, new ResBaseAttachment());
     }

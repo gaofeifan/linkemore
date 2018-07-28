@@ -17,7 +17,7 @@
     delete from t_base_attachment
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.common.entity.BaseAttachment">
+  <insert id="save" parameterType="cn.linkmore.common.entity.BaseAttachment" useGeneratedKeys="true" keyProperty="id">
     insert into t_base_attachment (id, name, suffix, 
       type, size, source, 
       create_time)
@@ -25,7 +25,7 @@
       #{type,jdbcType=SMALLINT}, #{size,jdbcType=INTEGER}, #{source,jdbcType=SMALLINT}, 
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="saveSelective" parameterType="cn.linkmore.common.entity.BaseAttachment">
+  <insert id="saveSelective" parameterType="cn.linkmore.common.entity.BaseAttachment" useGeneratedKeys="true" keyProperty="id">
     insert into t_base_attachment
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
