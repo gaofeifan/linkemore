@@ -156,7 +156,7 @@ public interface StallClient {
 	
 	@RequestMapping(value = "/v2.0/find-list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStallOps> findList(Map<String, Object> param);
+	public List<ResStallOps> findListByParam(@RequestBody Map<String, Object> param);
 	
 	@RequestMapping(value = "/v2.0/update-brand", method = RequestMethod.POST)
 	@ResponseBody

@@ -33,7 +33,9 @@ import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntPreService;
 import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.OperateAuthService;
+import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.response.ResStallEntity;
+import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.util.DomainUtil;
 
 /**
@@ -60,11 +62,13 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 	private EntAuthStallMasterMapper entAuthStallMasterMapper;
 	@Resource
 	private EntPreService entPreService;
+	@Resource
+	private StallClient stallClient;
 	@Override
 	public List<Tree> tree() {
 		List<ResEnterprise> list = this.enterpriseService.findList(null);
 		List<EntPrefecture> preList = this.entPreService.findList(null);
-		List<ResStallEntity> stallList = new ArrayList<>();
+		List<ResStallOps> stallList = stallClient.findListByParam(null);
 		List<Tree> pchildren = null;
 		List<Tree> children = null;
 		List<Tree> roots = new ArrayList<>();
@@ -92,7 +96,7 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 					chi.setpId(entPrefecture.getEntId().toString());
 					children.add(chi);
 					pchildren = new ArrayList<>();
-					for (ResStallEntity stall : stallList) {
+					for (ResStallOps stall : stallList) {
 						if(stall.getPreId() == entPrefecture.getPreId()) {
 							pchi = new Tree();
 							pchi.setName(stall.getStallName());

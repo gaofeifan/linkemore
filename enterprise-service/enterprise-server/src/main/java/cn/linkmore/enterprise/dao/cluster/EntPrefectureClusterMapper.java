@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 /**
  * 企业车区--读
@@ -24,4 +25,18 @@ public interface EntPrefectureClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<EntPrefecture> findList(Map<String, Object> map);
+
+	/**
+	 * @Description  分页查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<EntOperateAuth> findPage(Map<String, Object> param);
+
+	/**
+	 * @Description  查询总数
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer count(Map<String, Object> param);
 }
