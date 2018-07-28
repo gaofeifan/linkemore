@@ -151,7 +151,7 @@ public class FeignStallController {
 	
 	@RequestMapping(value = "/v2.0/find-list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStallOps> findList(@RequestBody Map<String, Object> param){
+	public List<ResStallOps> findListByParam(@RequestBody Map<String, Object> param){
 		List<ResStallOps> list = this.stallService.findListByParam(param);
 		return list;
 	}
