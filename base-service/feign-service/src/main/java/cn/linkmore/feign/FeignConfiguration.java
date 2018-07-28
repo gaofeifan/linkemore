@@ -6,10 +6,16 @@ import org.springframework.context.annotation.Configuration;
 
 import feign.Logger;
 import feign.Request;
-import feign.Retryer; 
-
+import feign.Retryer;
+import feign.codec.Encoder;
+import feign.form.spring.SpringFormEncoder;
 @Configuration
 public class FeignConfiguration { 
+	
+	@Bean
+	public Encoder feignFormEncoder() {
+		return new SpringFormEncoder();
+	}
 	@Bean  
     Logger.Level feignLoggerLevel() {
         return Logger.Level.FULL;  

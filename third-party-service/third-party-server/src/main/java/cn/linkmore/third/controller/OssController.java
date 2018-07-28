@@ -3,13 +3,12 @@ package cn.linkmore.third.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.aliyun.oss.OSSClient;
-
-import cn.linkmore.third.config.OssConfig;
-import cn.linkmore.third.response.ResOssConfig;
 import cn.linkmore.third.service.OssService;
 /**
  * Controller - OSS服务
@@ -19,36 +18,19 @@ import cn.linkmore.third.service.OssService;
 @RestController
 @RequestMapping("/feign/oss")
 public class OssController {
+	
 	@Autowired
 	private OssService ossService;
 	
-	@RequestMapping(value = "/v2.0/upload", method = RequestMethod.GET) 
+	@RequestMapping(value = "/v2.0/upload/file", method = RequestMethod.PUT) 
 	@ResponseBody
-	public OSSClient uploadOSSClient(){
-		return this.ossService.uploadOSSClient();
-	}
-
-	@RequestMapping(value = "/v2.0/download", method = RequestMethod.GET) 
-	@ResponseBody
-	public OSSClient downloadOSSClient(){
-		return this.ossService.downloadOSSClient();
+	public void uploadFile(@RequestPart(value = "file", required = true) MultipartFile file,@RequestParam(value = "id", required = true)Long id){
+		this.ossService.uploadFile(file,id);
 	}
 	
-	@RequestMapping(value = "/v2.0/init", method = RequestMethod.GET) 
+	@RequestMapping(value = "/v2.0/upload/image", method = RequestMethod.PUT) 
 	@ResponseBody
-	public ResOssConfig initOssConfig(){
-		OssConfig ossConfig = this.ossService.ossConfig();
-		ResOssConfig config = null;
-		if(ossConfig!=null) {
-			config = new ResOssConfig();
-			config.setAccessKeyId(ossConfig.getAccessKeyId());
-			config.setAccessKeySecret(ossConfig.getAccessKeySecret());
-			config.setBucketName(ossConfig.getBucketName());
-			config.setDownloadEndpoint(ossConfig.getDownloadEndpoint());
-			config.setDownloadUrlExpiration(ossConfig.getDownloadUrlExpiration());
-			config.setTempDir(ossConfig.getTempDir());
-			config.setUploadEndpoint(ossConfig.getUploadEndpoint()); 
-		}
-		return config;
-	}
+	public void uploadImage(@RequestPart(value = "image", required = true) MultipartFile image,@RequestParam(value = "id", required = true)Long id){
+		this.ossService.uploadImage(image,id);
+	} 
 }
