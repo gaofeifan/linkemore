@@ -1,6 +1,7 @@
 package cn.linkmore.third.client;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -8,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import cn.linkmore.feign.FeignConfiguration;
-import cn.linkmore.third.client.hystrix.OssClientHystrix; 
+import cn.linkmore.third.client.OssClient.MultipartSupportConfig;
+import cn.linkmore.third.client.hystrix.OssClientHystrix;
+import feign.codec.Encoder;
+import feign.form.spring.SpringFormEncoder; 
 
 /**
  * Client - Oss文件服务
@@ -17,7 +20,7 @@ import cn.linkmore.third.client.hystrix.OssClientHystrix;
  * @version 2.0
  *
  */
-@FeignClient(value = "third-party-server", path = "/feign/oss", fallback=OssClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/oss", fallback=OssClientHystrix.class,configuration = MultipartSupportConfig.class)
 public interface OssClient {
 	/**
 	 * 普通文件上传
@@ -38,4 +41,11 @@ public interface OssClient {
 	public void uploadImage(@RequestPart(value = "image", required = true) MultipartFile image,@RequestParam(value = "id", required = true)Long id);
 
 	
+	class MultipartSupportConfig {
+		@Bean
+		public Encoder feignFormEncoder() {
+			return new SpringFormEncoder();
+		}
+	}
+
 }
