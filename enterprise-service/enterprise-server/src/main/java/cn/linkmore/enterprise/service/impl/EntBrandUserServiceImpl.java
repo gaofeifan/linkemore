@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.view.ViewFilter;
@@ -17,7 +16,6 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandUserMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandUser;
-import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandUser;
 import cn.linkmore.enterprise.response.ResBrandUser;
 import cn.linkmore.enterprise.service.EntBrandUserService;
@@ -103,17 +101,21 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	}
 
 	@Override
-	public Integer check(ReqCheck reqCheck) {
+	public int delete(List<Long> ids) {
+		return entBrandUserMasterMapper.delete(ids);
+	}
+
+	@Override
+	public Integer check(ReqEntBrandUser record) {
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("property", reqCheck.getProperty());
-		param.put("value", reqCheck.getValue());
-		param.put("id", reqCheck.getId());
+		param.put("entId", record.getEntId());
+		param.put("mobile", record.getMobile());
 		return this.entBrandUserClusterMapper.check(param);
 	}
 
 	@Override
-	public int delete(List<Long> ids) {
-		return entBrandUserMasterMapper.delete(ids);
+	public int insertBatch(List<ReqEntBrandUser> reqUserList) {
+		return this.entBrandUserMasterMapper.insertBatch(reqUserList);
 	}
 	
 }

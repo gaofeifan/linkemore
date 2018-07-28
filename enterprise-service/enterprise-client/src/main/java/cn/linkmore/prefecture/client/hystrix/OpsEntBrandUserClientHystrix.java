@@ -42,5 +42,17 @@ public class OpsEntBrandUserClientHystrix implements OpsEntBrandUserClient {
 		log.info("enterprise service int delete() hystrix");
 		return 0;
 	}
+
+	@Override
+	public int check(ReqEntBrandUser record) {
+		log.info("enterprise service int check() hystrix");
+		return 0;
+	}
+
+	@Override
+	public int insertBatch(List<ReqEntBrandUser> reqUserList) {
+		log.info("enterprise service int insertBatch() hystrix");
+		return 0;
+	}
 }
 

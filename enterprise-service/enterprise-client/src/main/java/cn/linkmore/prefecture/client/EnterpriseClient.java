@@ -1,16 +1,19 @@
 package cn.linkmore.prefecture.client;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterprise;
+import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.EnterpriseClientHystrix;
 /**
@@ -43,8 +46,10 @@ public interface EnterpriseClient {
 	
 	@RequestMapping(value = "/selectAll", method = RequestMethod.POST)
 	@ResponseBody
-	public Object selectAll();
+	public List<ResEnterprise> selectAll();
 
-
+	@RequestMapping(value = "/find", method = RequestMethod.POST)
+	@ResponseBody
+	public ResEnterprise findName(@RequestBody Map<String,Object> param);
 	
 }

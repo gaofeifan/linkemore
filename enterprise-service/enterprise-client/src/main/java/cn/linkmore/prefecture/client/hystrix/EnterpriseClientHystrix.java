@@ -1,5 +1,8 @@
 package cn.linkmore.prefecture.client.hystrix;
 
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -8,6 +11,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterprise;
+import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.prefecture.client.EnterpriseClient;
 /**
  * 远程调用实现 - 锁操作日志信息
@@ -54,9 +58,15 @@ public class EnterpriseClientHystrix implements EnterpriseClient {
 	}
 
 	@Override
-	public Object selectAll() {
+	public List<ResEnterprise> selectAll() {
 		log.info("prefecture service Object selectAll() hystrix");
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResEnterprise findName(Map<String, Object> param) {
+		log.info("prefecture service ResEnterprise find() hystrix");
 		return null;
 	}
 	

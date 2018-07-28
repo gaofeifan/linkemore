@@ -51,9 +51,11 @@ public interface EntBrandUserService {
 
 	/**
 	 * 检验属性存在
-	 * @param reqCheck
+	 * @param record
 	 * @return
 	 */
-	Integer check(ReqCheck reqCheck);
+	Integer check(ReqEntBrandUser record);
+
+	int insertBatch(List<ReqEntBrandUser> reqUserList);
 
 }

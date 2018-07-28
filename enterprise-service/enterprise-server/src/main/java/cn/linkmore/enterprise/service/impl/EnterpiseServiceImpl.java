@@ -154,6 +154,9 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 		return this.enterpriseClusterMapper.findAll();
 	}
 
-	
-	
+	@Override
+	public ResEnterprise findName(Map<String, Object> map) {
+		return this.enterpriseClusterMapper.findName(map);
+	}
+
 }

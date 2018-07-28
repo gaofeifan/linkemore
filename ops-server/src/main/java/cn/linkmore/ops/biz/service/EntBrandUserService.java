@@ -20,4 +20,6 @@ public interface EntBrandUserService {
 	int delete(List<Long> ids);
 
 	ViewPage findPage(ViewPageable pageable);
+
+	int insertBatch(List<ReqEntBrandUser> reqUserList);
 }
