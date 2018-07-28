@@ -23,6 +23,15 @@
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT},  #{mobile,jdbcType=VARCHAR},
      #{realname,jdbcType=VARCHAR}, #{plateNo,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT})
   </insert>
+  
+  <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into t_ent_brand_user (id, ent_id, mobile, realname, plate_no, user_id)
+    values
+      <foreach collection ="list" item="item" separator =",">
+         (#{item.id,jdbcType=BIGINT}, #{item.entId,jdbcType=BIGINT}, #{item.mobile,jdbcType=VARCHAR}, 
+      	#{item.realname,jdbcType=VARCHAR}, #{item.plateNo,jdbcType=VARCHAR},#{item.userId,jdbcType=BIGINT})
+      </foreach >
+  </insert>
 
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandUser">
     update t_ent_brand_user

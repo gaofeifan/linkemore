@@ -85,4 +85,6 @@ public interface EnterpriseService {
 	List<ResEnterprise> selectAll();
 
 	ResEnterprise findById(Long id);
+
+	ResEnterprise findName(Map<String, Object> map);
 }

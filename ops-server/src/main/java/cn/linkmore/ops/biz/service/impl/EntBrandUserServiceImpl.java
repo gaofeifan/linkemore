@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandUser;
@@ -22,8 +24,11 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	
 	@Override
 	public int save(ReqEntBrandUser record) {
-		this.entBrandUserClient.save(record);
-		return 0;
+		int num = this.entBrandUserClient.check(record);
+		if(num > 0) {
+			throw new DataException("当前授权用户已存在");
+		}
+		return this.entBrandUserClient.save(record);
 	}
 
 	@Override
@@ -41,5 +46,10 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	@Override
 	public int delete(List<Long> ids) {
 		return this.entBrandUserClient.delete(ids);
+	}
+
+	@Override
+	public int insertBatch(List<ReqEntBrandUser> reqUserList) {
+		return this.entBrandUserClient.insertBatch(reqUserList);
 	}
 }

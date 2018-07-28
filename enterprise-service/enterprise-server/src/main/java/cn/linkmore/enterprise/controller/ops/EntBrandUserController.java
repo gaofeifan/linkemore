@@ -65,5 +65,23 @@ public class EntBrandUserController {
 	public int delete(@RequestBody List<Long> ids) {
 		return this.entBrandUserService.delete(ids);
 	}
+	
+	/**
+	 * 校验
+	 */
+	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
+	@ResponseBody
+	public int check(@RequestBody ReqEntBrandUser record) {
+		return this.entBrandUserService.check(record);
+	}
+	
+	/**
+	 * 批量插入
+	 */
+	@RequestMapping(value = "/v2.0/insertBatch", method = RequestMethod.POST)
+	@ResponseBody
+	public int insertBatch(@RequestBody List<ReqEntBrandUser> reqUserList) {
+		return this.entBrandUserService.insertBatch(reqUserList);
+	}
 
 }

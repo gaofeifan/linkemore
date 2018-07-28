@@ -1,9 +1,13 @@
 package cn.linkmore.ops.biz.service;
 
+import java.util.List;
+import java.util.Map;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterprise;
+import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.security.request.ReqPerson;
 
 /**
@@ -25,8 +29,10 @@ public interface EnterpriseService {
 
 	ViewPage findPage(ViewPageable pageable);
 
-	Object selectAll();
+	List<ResEnterprise> selectAll();
 
 	void setPassword(ReqPerson person);
+
+	ResEnterprise find(Map<String,Object> param);
 
 }
