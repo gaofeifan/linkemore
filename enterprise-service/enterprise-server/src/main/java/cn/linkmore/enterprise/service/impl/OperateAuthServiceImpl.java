@@ -68,7 +68,7 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 	public List<Tree> tree() {
 		List<ResEnterprise> list = this.enterpriseService.findList(null);
 		List<EntPrefecture> preList = this.entPreService.findList(null);
-		List<ResStallOps> stallList = stallClient.findListByParam(null);
+		List<ResStallOps> stallList = stallClient.findListByParam(new HashMap<>());
 		List<Tree> pchildren = null;
 		List<Tree> children = null;
 		List<Tree> roots = new ArrayList<>();

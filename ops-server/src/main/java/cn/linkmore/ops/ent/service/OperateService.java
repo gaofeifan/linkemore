@@ -67,6 +67,6 @@ public interface OperateService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void delete(List<Long> ids);
+	void delete(Long id);
 
 }
