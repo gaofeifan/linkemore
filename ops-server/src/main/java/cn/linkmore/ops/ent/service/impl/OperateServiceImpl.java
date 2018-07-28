@@ -57,8 +57,8 @@ public class OperateServiceImpl implements OperateService {
 	}
 
 	@Override
-	public void delete(List<Long> ids) {
-//		this.opsOperateAuthClient.delete(ids);
+	public void delete(Long id) {
+		this.opsOperateAuthClient.delete(id);
 	}
 
 }

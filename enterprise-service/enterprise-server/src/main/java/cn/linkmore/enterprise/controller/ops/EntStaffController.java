@@ -111,4 +111,21 @@ public class EntStaffController {
 		return this.entStaffService.findPage(pageable);
 	}
 	
+	@RequestMapping(value = "delete",method = RequestMethod.DELETE)
+	@ResponseBody
+	public void delete(@RequestParam("id")Long id) {
+		this.entStaffService.deleteEntStaff(id);
+	}
+	
+	@RequestMapping(value = "save",method = RequestMethod.POST)
+	@ResponseBody
+	public void save(@RequestBody cn.linkmore.enterprise.request.ReqAddEntStaff staff) {
+		this.entStaffService.saveEntStaff(staff.getEntId(), staff.getMobile(), staff.getRealname(), staff.getType());
+	}
+
+	@RequestMapping(value = "update",method = RequestMethod.PUT)
+	@ResponseBody
+	public void update(@RequestBody cn.linkmore.enterprise.request.ReqAddEntStaff staff) {
+		this.entStaffService.updateEntStaff(staff.getId(), staff.getEntId(), staff.getMobile(), staff.getRealname(), staff.getType(), staff.getStatus());
+	}
 }

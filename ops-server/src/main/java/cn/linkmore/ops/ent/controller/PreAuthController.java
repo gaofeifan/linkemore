@@ -94,10 +94,10 @@ public class PreAuthController {
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg delete( List<Long> ids) {
+	public ViewMsg delete(Long id) {
 		ViewMsg msg = null;
 		try {
-			this.operateService.delete(ids);
+			this.operateService.delete(id);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);

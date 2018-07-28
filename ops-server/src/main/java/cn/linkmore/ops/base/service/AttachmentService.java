@@ -1,13 +1,11 @@
 package cn.linkmore.ops.base.service;
 
 import org.springframework.web.multipart.MultipartFile;
-
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.request.ReqAttachment;
 import cn.linkmore.common.response.ResAttachment;
 import cn.linkmore.common.response.ResBaseAttachment;
-import cn.linkmore.third.response.ResOssConfig;
 
 /**
  * 文件上传
@@ -44,13 +42,13 @@ public interface AttachmentService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */	
-	ReqAttachment saveImage(MultipartFile file, ResOssConfig resOssConfig);
-
+	/*ReqAttachment saveImage(MultipartFile file, ResOssConfig resOssConfig);
+*/
 	/**
 	 * @Description  保存文件
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ReqAttachment saveFile(MultipartFile file, ResOssConfig resOssConfig);
+	/*ReqAttachment saveFile(MultipartFile file, ResOssConfig resOssConfig);*/
 
 }

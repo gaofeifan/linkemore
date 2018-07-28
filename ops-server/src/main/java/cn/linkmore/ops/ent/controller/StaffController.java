@@ -1,12 +1,10 @@
 package cn.linkmore.ops.ent.controller;
 
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +14,7 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqAddEntStaff;
 import cn.linkmore.ops.ent.request.ReqBindStaffAuth;
 import cn.linkmore.ops.ent.service.StaffService;
 
@@ -50,7 +49,7 @@ public class StaffController {
 		ViewMsg msg = null;
 		try {
 			this.staffService.bind(staffAuth);
-			msg = new ViewMsg("保存成功", true);
+			msg = new ViewMsg("保存成功", true); 
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
@@ -64,5 +63,49 @@ public class StaffController {
 	public Map<String,Object> resource(Long id) {
 		Map<String,Object> map = this.staffService.resource(id);
 		return map;
+	}
+
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg delete(Long id) {
+		ViewMsg msg = null;
+		try {
+			this.staffService.delete(id);
+			msg = new ViewMsg("保存成功", true); 
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("保存失败", false);
+		}
+		return msg;
+	}
+	
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg save(ReqAddEntStaff staff) {
+		ViewMsg msg = null;
+		try {
+			this.staffService.save(staff);
+			msg = new ViewMsg("保存成功", true); 
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("保存失败", false);
+		}
+		return msg;
+	}
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg update(ReqAddEntStaff staff) {
+		ViewMsg msg = null;
+		try {
+			this.staffService.update(staff);
+			msg = new ViewMsg("保存成功", true); 
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("保存失败", false);
+		}
+		return msg;
 	}
 }

@@ -1,7 +1,6 @@
 package cn.linkmore.common.client;
 
 import java.io.InputStream;
-
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +16,7 @@ import cn.linkmore.common.client.hystrix.BaseAttachmentClientHystrix;
 import cn.linkmore.common.request.ReqAttachment;
 import cn.linkmore.common.response.ResBaseAttachment;
 import cn.linkmore.feign.FeignConfiguration;
+import cn.linkmore.util.ObjectUtils;
 /**
  * 数据词典
  * @author   GFF
@@ -36,11 +36,11 @@ public interface BaseAttachmentClient {
 	
 	@RequestMapping(value="/image_upload",method=RequestMethod.POST)  
 	@ResponseBody
-    public ResBaseAttachment imageUpload(@RequestBody MultipartFile file);
+	public ResBaseAttachment imageUpload(@RequestParam("file")  MultipartFile file); 
 	
 	@RequestMapping(value="/file_upload",method=RequestMethod.POST)  
 	@ResponseBody
-    public ResBaseAttachment fileUpload(@RequestBody MultipartFile file);
+    public ResBaseAttachment fileUpload(@RequestParam("file")  MultipartFile file);
 	
 	@RequestMapping(value="/create_image",method=RequestMethod.POST)  
 	@ResponseBody

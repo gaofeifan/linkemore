@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqAddEntStaff;
 import cn.linkmore.enterprise.request.ReqEnterpriseDeal;
 import cn.linkmore.enterprise.request.ReqStaffAuthBind;
 import cn.linkmore.prefecture.client.OpsStaffAuthClient;
@@ -41,6 +42,23 @@ public class OpsStaffAuthClientHystrix implements OpsStaffAuthClient {
 		log.info("ops staffauth service  ViewPage findPage(ViewPageable pageable) hystrix");
 		return null;
 	}
+	@Override
+	public void delete(Long id) {
+		log.info("ops staffauth service  void delete(Long id) hystrix");
+		
+	}
+	@Override
+	public void save(ReqAddEntStaff staff) {
+		log.info("ops staffauth service  void save(List ...) hystrix");
+		
+	}
+	@Override
+	public void update(ReqAddEntStaff staff) {
+		log.info("ops staffauth service  void update(List ...) hystrix");
+		
+	}
+	
+	
 	
 	
 

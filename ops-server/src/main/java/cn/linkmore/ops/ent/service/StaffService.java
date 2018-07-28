@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqAddEntStaff;
 import cn.linkmore.ops.ent.request.ReqBindStaffAuth;
 
 /**
@@ -44,5 +45,26 @@ public interface StaffService {
 	 * @Version  v2.0
 	 */
 	Map<String, Object> resource(Long resource);
+
+	/**
+	 * @Description  删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void delete(Long id);
+
+	/**
+	 * @Description  更新
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void update(ReqAddEntStaff staff);
+
+	/**
+	 * @Description  新增
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void save(ReqAddEntStaff staff);
 
 }

@@ -1,6 +1,7 @@
 package cn.linkmore.coupon.service.impl;
 
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -53,7 +54,6 @@ import cn.linkmore.coupon.utils.CouponUtils;
 import cn.linkmore.prefecture.client.EnterpriseDealClient;
 import cn.linkmore.third.client.OssClient;
 import cn.linkmore.third.client.WechatClient;
-import cn.linkmore.third.response.ResOssConfig;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;

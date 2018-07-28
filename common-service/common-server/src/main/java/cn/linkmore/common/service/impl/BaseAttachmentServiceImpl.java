@@ -29,7 +29,6 @@ import cn.linkmore.common.entity.BaseAttachment;
 import cn.linkmore.common.request.ReqAttachment;
 import cn.linkmore.common.service.BaseAttachmentService;
 import cn.linkmore.third.client.OssClient;
-import cn.linkmore.third.response.ResOssConfig;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 /**
@@ -48,15 +47,6 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 	
 	@Resource
 	private OssClient ossClient;
-	
-	private static ResOssConfig resOssConfig = null;
-	
-	private ResOssConfig getOssConfig() {
-		if(resOssConfig==null) {
-			resOssConfig = this.ossClient.initOssConfig();
-		}
-		return resOssConfig;
-	}
 	
 	@Override
 	public BaseAttachment find(Long id){
@@ -98,59 +88,7 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		int index = file.getOriginalFilename().lastIndexOf("."); 
 		image.setSuffix(file.getOriginalFilename().substring(index)); 
 		this.attachmentmasterMapper.save(image);  
-		FileOutputStream out = null;
-		InputStream is = null;
-		try { 
-			ossClient.uploadOSSClient().putObject(resOssConfig.getBucketName(), image.getOriginalUrl(), file.getInputStream());
-			File mini = new File(resOssConfig.getTempDir()+file.getOriginalFilename());
-			try{ 
-				int outputWidth = 600;
-				is = file.getInputStream();
-				Image img = ImageIO.read(is);
-				int newWidth;
-				int newHeight;
-				int w = img.getWidth(null);
-				if (w <= 600) {
-					outputWidth = w;
-				}
-				double rate1 = ((double) img.getWidth(null)) / (double) outputWidth;
-				double rate = rate1;
-				newWidth = (int) (((double) img.getWidth(null)) / rate);
-				newHeight = (int) (((double) img.getHeight(null)) / rate);
-				BufferedImage tag = new BufferedImage((int) newWidth,
-						(int) newHeight, BufferedImage.TYPE_INT_RGB);
-
-				tag.getGraphics().drawImage(
-						img.getScaledInstance(newWidth, newHeight,
-								Image.SCALE_SMOOTH), 0, 0, null);
-				out = new FileOutputStream(mini);
-				ImageIO.write(tag, "jpg", out);
-				out.flush();  
-			}catch(IOException e){
-				e.printStackTrace();
-				throw new RuntimeException();
-			} finally{
-				if(out!=null){
-					try {
-						out.close();
-					} catch (IOException e) { 
-						e.printStackTrace();
-					}
-				}
-			} 
-			is = new FileInputStream(mini);
-			ossClient.uploadOSSClient().putObject(resOssConfig.getBucketName(), image.getCompressUrl(),new FileInputStream(mini));  
-		}  catch (IOException e) { 
-			throw new RuntimeException();
-		}finally{
-			if(is!=null){
-				try {
-					is.close();
-				} catch (IOException e) { 
-					e.printStackTrace();
-				}
-			}  
-		} 
+		ossClient.uploadImage(file, image.getId());
 		return image;
 	} 
 	
@@ -158,8 +96,8 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 	@Override
 	@Transactional(rollbackFor=RuntimeException.class)
 	public boolean delete(Long id) { 
-		BaseAttachment attach = this.attachmentClusterMapper.findById(id); 
 		boolean flag = false;
+		/*BaseAttachment attach = this.attachmentClusterMapper.findById(id); 
 		try{ 
 			switch(attach.getType()){
 				case 0:{
@@ -173,9 +111,9 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 				};break;
 			}
 		}catch(Exception e){
-		} 
+		} */
 		this.attachmentmasterMapper.deleteById(id);
-		return flag; 
+		return flag = true; 
 	}
 
 	@Override
@@ -190,11 +128,7 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		int index = file.getOriginalFilename().lastIndexOf("."); 
 		attach.setSuffix(file.getOriginalFilename().substring(index)); 
 		this.attachmentmasterMapper.save(attach);
-		try { 
-			ossClient.uploadOSSClient().putObject(resOssConfig.getBucketName(), attach.getFileUrl(), file.getInputStream());
-		}  catch (IOException e) { 
-			throw new RuntimeException();
-		}  
+		ossClient.uploadFile(file, attach.getId());
 		return attach;
 	}
 
@@ -210,7 +144,7 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		image.setSuffix(fileName.substring(index));
 		this.attachmentmasterMapper.save(image);
 		try { 
-			ossClient.uploadOSSClient().putObject(resOssConfig.getBucketName(), image.getOriginalUrl(), is); 
+//			ossClient.uploadImage(image, id); 
 		} catch (Exception e) { 
 			throw new RuntimeException();
 		}finally{
