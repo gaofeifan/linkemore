@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.controller.ops;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,8 +62,8 @@ public class EntBrandUserController {
 	 */
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public int delete(@RequestParam("id") Long id) {
-		return this.entBrandUserService.delete(id);
+	public int delete(@RequestBody List<Long> ids) {
+		return this.entBrandUserService.delete(ids);
 	}
 
 }

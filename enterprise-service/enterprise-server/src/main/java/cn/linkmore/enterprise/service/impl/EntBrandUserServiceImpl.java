@@ -1,11 +1,16 @@
 package cn.linkmore.enterprise.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import cn.linkmore.account.client.UserClient;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -31,6 +36,10 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	
 	@Resource
 	private EntBrandUserClusterMapper entBrandUserClusterMapper;
+	
+	@Autowired
+	private UserClient userClient;
+
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -63,7 +72,27 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	public int save(ReqEntBrandUser record) {
 		EntBrandUser brandUser = new EntBrandUser();
 		brandUser = ObjectUtils.copyObject(record, brandUser);
+		ResUser user = getUser(brandUser.getMobile());
+		if(user != null) {
+			brandUser.setUserId(user.getId());
+		}
 		return entBrandUserMasterMapper.save(brandUser);
+	}
+	
+	private ResUser getUser(String phone) {
+		ResUser user = null;
+		user = this.userClient.getUserByUserName(phone);
+		if (user != null) {
+			return user;
+		} else {
+			user = new ResUser();
+			user.setMobile(phone);
+			user.setUsername(phone);
+			user.setStatus("0");
+			user.setUserType("1");
+			user.setCreateTime(new Date());
+			return this.userClient.save(user);
+		}
 	}
 
 	@Override
@@ -74,17 +103,17 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	}
 
 	@Override
-	public int delete(Long id) {
-		return entBrandUserMasterMapper.delete(id);
-	}
-
-	@Override
 	public Integer check(ReqCheck reqCheck) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("property", reqCheck.getProperty());
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
 		return this.entBrandUserClusterMapper.check(param);
+	}
+
+	@Override
+	public int delete(List<Long> ids) {
+		return entBrandUserMasterMapper.delete(ids);
 	}
 	
 }

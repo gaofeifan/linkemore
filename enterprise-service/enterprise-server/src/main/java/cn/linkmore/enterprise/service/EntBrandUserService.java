@@ -47,7 +47,7 @@ public interface EntBrandUserService {
 	 * @param ids
 	 * @return
 	 */
-	int delete(Long id);
+	int delete(List<Long> ids);
 
 	/**
 	 * 检验属性存在

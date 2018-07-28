@@ -1,5 +1,7 @@
 package cn.linkmore.ops.biz.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewPage;
@@ -31,14 +33,13 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	}
 
 	@Override
-	public int delete(Long id) {
-		this.entBrandUserClient.delete(id);
-		return 0;
-	}
-
-	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		ViewPage page = this.entBrandUserClient.list(pageable);
 		return page;
+	}
+
+	@Override
+	public int delete(List<Long> ids) {
+		return this.entBrandUserClient.delete(ids);
 	}
 }
