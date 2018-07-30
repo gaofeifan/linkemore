@@ -2,6 +2,7 @@ package cn.linkmore.third.client;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,11 +42,12 @@ public interface OssClient {
 	public void uploadImage(@RequestPart(value = "image", required = true) MultipartFile image,@RequestParam(value = "id", required = true)Long id);
 
 	
-	class MultipartSupportConfig {
-		@Bean
-		public Encoder feignFormEncoder() {
-			return new SpringFormEncoder();
-		}
-	}
+	@Configuration
+    class MultipartSupportConfig {
+        @Bean
+        public Encoder feignFormEncoder() {
+            return new SpringFormEncoder();
+        }
+    }
 
 }
