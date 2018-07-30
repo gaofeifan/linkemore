@@ -106,7 +106,7 @@ public class EntBrandAdController {
 	@RequestMapping(value = "/ent-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResEnterprise> selectAll() {
-		return (List<ResEnterprise>) this.enterpriseService.selectAll();
+		return this.enterpriseService.selectAll();
 	}
 	
 	/*

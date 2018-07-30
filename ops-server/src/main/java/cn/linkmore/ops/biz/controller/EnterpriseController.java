@@ -1,5 +1,7 @@
 package cn.linkmore.ops.biz.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +15,7 @@ import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEnterprise;
+import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.security.request.ReqPerson;
 /**
@@ -104,7 +107,7 @@ public class EnterpriseController {
 	
 	@RequestMapping(value = "/selectAll", method = RequestMethod.POST)
 	@ResponseBody
-	public Object selectAll() {
+	public List<ResEnterprise> selectAll() {
 		return this.enterpriseService.selectAll();
 	}
 
