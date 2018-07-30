@@ -62,8 +62,6 @@
       pre_id = #{preId,jdbcType=BIGINT},
       pre_name = #{preName,jdbcType=VARCHAR},
       period = #{period,jdbcType=SMALLINT},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=SMALLINT},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       strategy_id = #{strategyId,jdbcType=BIGINT},

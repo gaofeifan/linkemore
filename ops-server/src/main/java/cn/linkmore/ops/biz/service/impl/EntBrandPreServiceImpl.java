@@ -1,7 +1,7 @@
 package cn.linkmore.ops.biz.service.impl;
 
 import java.util.List;
-
+import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewPage;
@@ -54,12 +54,15 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	@Override
 	public int stop(Long id) {
 		return this.entBrandPreClient.stop(id);
-		
 	}
 
 	@Override
 	public int start(Long id) {
 		return this.entBrandPreClient.start(id);
-		
+	}
+	
+	@Override
+	public int count(Map<String, Object> map) {
+		return this.entBrandPreClient.count(map);
 	}
 }

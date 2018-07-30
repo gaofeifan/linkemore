@@ -141,4 +141,22 @@
     where 1= 1
   </select>
   
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_ent_brand_pre
+    where 1= 1
+    
+    <if test="entId!=null">  
+      and ent_id = #{entId,jdbcType=BIGINT}
+    </if>
+    <if test="preId!=null">  
+      and pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+    <if test="id!=null">  
+      and id != #{id,jdbcType=BIGINT}
+    </if>
+  </select>
+  
+  
+  
 </mapper>

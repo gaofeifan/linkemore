@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,12 @@ public class OpsEntBrandAdClientHystrix implements OpsEntBrandAdClient {
 	public ResBrandAd findById(Long id) {
 		log.info("enterprise service ResBrandAd findById() hystrix");
 		return null;
+	}
+
+	@Override
+	public int count(Map<String, Object> map) {
+		log.info("enterprise service int count() hystrix");
+		return 0;
 	}
 }
 

@@ -1,6 +1,9 @@
 package cn.linkmore.ops.biz.controller;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,6 @@ import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
 import cn.linkmore.enterprise.response.ResBrandAd;
-import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EntBrandAdService;
 import cn.linkmore.ops.biz.service.EnterpriseService;
@@ -50,8 +52,18 @@ public class EntBrandAdController {
 	public ViewMsg save(ReqEntBrandAd record) {
 		ViewMsg msg = null;
 		try {
-			this.entBrandAdService.save(record);
-			msg = new ViewMsg("保存成功", true);
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("entId", record.getEntId());
+			map.put("preId", record.getPreId());
+			map.put("id", new Date().getTime());
+			int count = this.entBrandAdService.count(map);
+			if(count > 0 ) {
+				msg = new ViewMsg("当前品牌车区广告已存在", false);
+			}else {
+				this.entBrandAdService.save(record);
+				msg = new ViewMsg("保存成功", true);
+			}
+			
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
@@ -67,8 +79,17 @@ public class EntBrandAdController {
 	public ViewMsg update(ReqEntBrandAd record) {
 		ViewMsg msg = null;
 		try {
-			this.entBrandAdService.update(record);
-			msg = new ViewMsg("保存成功", true);
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("entId", record.getEntId());
+			map.put("preId", record.getPreId());
+			map.put("id", record.getId());
+			int count = this.entBrandAdService.count(map);
+			if(count > 0 ) {
+				msg = new ViewMsg("当前品牌车区广告已存在", false);
+			}else {
+				this.entBrandAdService.update(record);
+				msg = new ViewMsg("保存成功", true);
+			}
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {

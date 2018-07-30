@@ -1,6 +1,7 @@
 package cn.linkmore.ops.biz.service;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -30,4 +31,6 @@ public interface EntBrandAdService {
 	int start(Long id);
 	
 	int stop(Long id);
+
+	int count(Map<String, Object> map);
 }

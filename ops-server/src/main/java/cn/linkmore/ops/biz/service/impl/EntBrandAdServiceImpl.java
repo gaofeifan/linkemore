@@ -1,6 +1,7 @@
 package cn.linkmore.ops.biz.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,11 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	@Override
 	public int stop(Long id) {
 		return this.entBrandAdClient.stop(id);
+	}
+
+	@Override
+	public int count(Map<String, Object> map) {
+		return this.entBrandAdClient.count(map);
 	}
 	
 }

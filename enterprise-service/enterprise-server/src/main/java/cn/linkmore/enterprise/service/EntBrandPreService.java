@@ -13,7 +13,6 @@ import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreCity;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreLeisure;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreStrategy;
 import cn.linkmore.enterprise.entity.EntBrandPre;
-import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
@@ -69,10 +68,10 @@ public interface EntBrandPreService {
 
 	/**
 	 * 检验属性存在
-	 * @param reqCheck
+	 * @param map
 	 * @return
 	 */
-	Integer check(ReqCheck reqCheck);
+	Integer check(Map<String, Object> map);
 
 	List<ResEntBrandPreCity> list(ReqBrandPre rp, HttpServletRequest request);
 
@@ -87,6 +86,4 @@ public interface EntBrandPreService {
 	int stop(Long id);
 
 	Tree findTree();
-
-
 }

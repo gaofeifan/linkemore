@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,5 +71,12 @@ public interface OpsEntBrandPreClient {
 	@RequestMapping(value = "/v2.0/stop", method = RequestMethod.GET)
 	@ResponseBody
 	public int stop(@RequestParam("id") Long id) ;
+	
+	/*
+	 * 检查是否存在
+	 */
+	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
+	@ResponseBody
+	public int count(@RequestBody Map<String, Object> map);
 
 }

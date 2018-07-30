@@ -2,17 +2,13 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
 import cn.linkmore.enterprise.entity.EntBrandAd;
-import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
 import cn.linkmore.enterprise.response.ResBrandAd;
-import cn.linkmore.enterprise.response.ResBrandPre;
 
 public interface EntBrandAdService {
 	/**
@@ -62,10 +58,10 @@ public interface EntBrandAdService {
 
 	/**
 	 * 检验属性存在
-	 * @param reqCheck
+	 * @param map
 	 * @return
 	 */
-	Integer check(ReqCheck reqCheck);
+	Integer check(Map<String, Object> map);
 	/**
 	 * 批量删除
 	 * @param ids
