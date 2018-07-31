@@ -49,7 +49,7 @@
   
   
   <sql id="Base_Column_List">
-    id, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
+    id, name, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
     create_time, update_time, strategy_id, strategy_name, charge_price, charge_time, strategy_description
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
