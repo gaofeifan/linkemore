@@ -1,6 +1,10 @@
 package cn.linkmore.ops.biz.controller;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +53,17 @@ public class EntBrandPreController {
 	public ViewMsg save(ReqEntBrandPre record) {
 		ViewMsg msg = null;
 		try {
-			this.entBrandPreService.save(record);
-			msg = new ViewMsg("保存成功", true);
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("entId", record.getEntId());
+			map.put("preId", record.getPreId());
+			map.put("id", new Date().getTime());
+			int count = this.entBrandPreService.count(map);
+			if(count > 0) {
+				msg = new ViewMsg("当前品牌车区已存在", false);
+			}else {
+				this.entBrandPreService.save(record);
+				msg = new ViewMsg("保存成功", true);
+			}
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
@@ -66,8 +79,17 @@ public class EntBrandPreController {
 	public ViewMsg update(ReqEntBrandPre record) {
 		ViewMsg msg = null;
 		try {
-			this.entBrandPreService.update(record);
-			msg = new ViewMsg("保存成功", true);
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("entId", record.getEntId());
+			map.put("preId", record.getPreId());
+			map.put("id", record.getId());
+			int count = this.entBrandPreService.count(map);
+			if(count > 0) {
+				msg = new ViewMsg("当前品牌车区已存在", false);
+			}else {
+				this.entBrandPreService.update(record);
+				msg = new ViewMsg("保存成功", true);
+			}
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {

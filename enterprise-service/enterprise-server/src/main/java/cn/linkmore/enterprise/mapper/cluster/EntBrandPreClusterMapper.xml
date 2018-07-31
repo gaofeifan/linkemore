@@ -3,6 +3,7 @@
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.EntBrandPreClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResBrandPre">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
@@ -48,7 +49,7 @@
   
   
   <sql id="Base_Column_List">
-    id, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
+    id, name, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
     create_time, update_time, strategy_id, strategy_name, charge_price, charge_time, strategy_description
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -65,6 +66,7 @@
   <select id="findBrandPre" parameterType="java.util.HashMap" resultMap="ResResultMap">
     SELECT
 		p.id,
+		p.name,
 		p.ent_id,
 		p.ent_name,
 		p.pre_id,
@@ -92,6 +94,7 @@
   <select id="findStaffBrandPre" parameterType="java.util.HashMap" resultMap="ResResultMap">
     SELECT
 		p.id,
+		p.name,
 		p.ent_id,
 		p.ent_name,
 		p.pre_id,
@@ -140,5 +143,23 @@
     from t_ent_brand_pre
     where 1= 1
   </select>
+  
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_ent_brand_pre
+    where 1= 1
+    
+    <if test="entId!=null">  
+      and ent_id = #{entId,jdbcType=BIGINT}
+    </if>
+    <if test="preId!=null">  
+      and pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+    <if test="id!=null">  
+      and id != #{id,jdbcType=BIGINT}
+    </if>
+  </select>
+  
+  
   
 </mapper>

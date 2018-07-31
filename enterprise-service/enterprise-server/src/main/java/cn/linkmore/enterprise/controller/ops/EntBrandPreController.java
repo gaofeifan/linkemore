@@ -1,7 +1,7 @@
 package cn.linkmore.enterprise.controller.ops;
 
 import java.util.List;
-
+import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +14,6 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.service.EntBrandPreService;
-import cn.linkmore.prefecture.request.ReqCheck;
 
 /**
  * @Description - 品牌企业车区
@@ -88,6 +87,12 @@ public class EntBrandPreController {
 	@ResponseBody
 	public int stop(@RequestParam("id") Long id) {
 		return	this.entBrandPreService.stop(id);
+	}
+	
+	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
+	@ResponseBody
+	public int count(@RequestBody Map<String, Object> map) {
+		return this.entBrandPreService.check(map);
 	}
 
 }

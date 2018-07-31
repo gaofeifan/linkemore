@@ -5,7 +5,6 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
-    <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="view_image" jdbcType="VARCHAR" property="viewImage" />
@@ -20,7 +19,7 @@
     <result column="ad_status" jdbcType="SMALLINT" property="adStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_name, logo_url, pre_id, pre_name, view_image, view_url, create_time, 
+    id, ent_id, ent_name, pre_id, pre_name, view_image, view_url, create_time, 
     end_time, apply_count, screen, status, city_ids, limit_status, ad_status
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -77,6 +76,21 @@
     <if test="entName!=null">  
     and ent_name like #{entName,jdbcType=VARCHAR}
     </if>  
+  </select>
+  
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_ent_brand_ad where 1 = 1
+    
+    <if test="entId!=null">  
+    	and ent_id = #{entId,jdbcType=BIGINT}
+    </if>  
+    <if test="preId!=null">  
+    	and pre_id = #{preId,jdbcType=BIGINT}
+    </if>  
+    <if test="id!=null">  
+    	and id != #{id,jdbcType=BIGINT}
+    </if> 
   </select>
   
 </mapper>

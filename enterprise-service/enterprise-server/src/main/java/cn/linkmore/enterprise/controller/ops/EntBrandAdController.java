@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.controller.ops;
 
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,9 +13,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
 import cn.linkmore.enterprise.response.ResBrandAd;
-import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.service.EntBrandAdService;
-import cn.linkmore.prefecture.request.ReqCheck;
 
 /**
  * @Description - 品牌企业广告
@@ -48,18 +47,14 @@ public class EntBrandAdController {
 		return this.entBrandAdService.delete(ids);
 	}
 	
-	/**
-	 * 检查名称重复
+	/*
+	 * 检查是否存在
 	 */
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean check(@RequestBody ReqCheck reqCheck) {
-		Boolean flag = true;
-		/*Integer count = this.entBrandAdService.check(reqCheck);
-		if (count > 0) {
-			flag = false;
-		}*/		
-		return flag;
+	public int count(@RequestBody Map<String, Object> map) {
+		Integer count = this.entBrandAdService.check(map);
+		return count;
 	}
 	
 	/**

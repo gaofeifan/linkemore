@@ -10,6 +10,8 @@ import java.util.Date;
 public class ReqEntBrandPre {
 	//主键
     private Long id;
+    //品牌车区名称
+    private String name;
     //企业id
     private Long entId;
     //企业名称
@@ -51,7 +53,15 @@ public class ReqEntBrandPre {
         this.id = id;
     }
 
-    public Long getEntId() {
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Long getEntId() {
         return entId;
     }
 

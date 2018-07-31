@@ -3,6 +3,7 @@
 <mapper namespace="cn.linkmore.enterprise.dao.master.EntBrandPreMasterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntBrandPre">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
@@ -40,12 +41,13 @@
   
   
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntBrandPre">
-    insert into t_ent_brand_pre (id, ent_id, ent_name, 
+    insert into t_ent_brand_pre (id, name, ent_id, ent_name, 
       logo_url, pre_id, pre_name, 
       period, start_time, end_time, 
       status, create_time, update_time, 
       strategy_id, strategy_name, charge_price, charge_time, strategy_description)
-    values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{entId,jdbcType=BIGINT}, 
+    #{entName,jdbcType=VARCHAR}, 
       #{logoUrl,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, 
       #{period,jdbcType=SMALLINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
@@ -56,14 +58,13 @@
   
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandPre">
     update t_ent_brand_pre
-    set ent_id = #{entId,jdbcType=BIGINT},
+    set name = #{name,jdbcType=VARCHAR},
+      ent_id = #{entId,jdbcType=BIGINT},
       ent_name = #{entName,jdbcType=VARCHAR},
       logo_url = #{logoUrl,jdbcType=VARCHAR},
       pre_id = #{preId,jdbcType=BIGINT},
       pre_name = #{preName,jdbcType=VARCHAR},
       period = #{period,jdbcType=SMALLINT},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=SMALLINT},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       strategy_id = #{strategyId,jdbcType=BIGINT},

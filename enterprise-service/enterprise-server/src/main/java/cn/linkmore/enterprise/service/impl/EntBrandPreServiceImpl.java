@@ -35,7 +35,6 @@ import cn.linkmore.enterprise.dao.cluster.EntBrandStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandPreMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandPre;
-import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
@@ -301,15 +300,6 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 	}
 
 	@Override
-	public Integer check(ReqCheck reqCheck) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("property", reqCheck.getProperty());
-		param.put("value", reqCheck.getValue());
-		param.put("id", reqCheck.getId());
-		return this.entBrandPreClusterMapper.check(param);
-	}
-
-	@Override
 	public List<ResBrandPreStall> preStallList() {
 		List<ResBrandPreStall> preStallList = this.entBrandPreClusterMapper.findList();
 		for(ResBrandPreStall preStall : preStallList) {
@@ -383,4 +373,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		root.setChildren(rtrees);
 		return root;
 	}
+
+	@Override
+	public Integer check(Map<String, Object> map) {
+		return this.entBrandPreClusterMapper.check(map);
+	}
+
 }

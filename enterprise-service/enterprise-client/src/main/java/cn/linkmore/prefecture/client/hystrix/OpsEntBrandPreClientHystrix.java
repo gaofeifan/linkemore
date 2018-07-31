@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,12 @@ public class OpsEntBrandPreClientHystrix implements OpsEntBrandPreClient {
 	@Override
 	public int stop(Long id) {
 		log.info("enterprise service int stop(ids) hystrix");
+		return 0;
+	}
+
+	@Override
+	public int count(Map<String, Object> map) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 	

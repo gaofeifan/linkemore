@@ -1,10 +1,10 @@
 package cn.linkmore.ops.biz.service;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
 
@@ -28,4 +28,6 @@ public interface EntBrandPreService {
 	int stop(Long id);
 
 	int start(Long id);
+	
+	int count(Map<String, Object> map);
 }

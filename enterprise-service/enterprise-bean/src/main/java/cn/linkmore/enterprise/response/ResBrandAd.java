@@ -14,8 +14,6 @@ public class ResBrandAd {
     private Long entId;
     //企业名称
     private String entName;
-    //logo链接
-    private String logoUrl;
     //车区id
     private Long preId;
     //车区名称
@@ -81,14 +79,6 @@ public class ResBrandAd {
 
     public void setEntName(String entName) {
         this.entName = entName == null ? null : entName.trim();
-    }
-
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl == null ? null : logoUrl.trim();
     }
 
     public Long getPreId() {

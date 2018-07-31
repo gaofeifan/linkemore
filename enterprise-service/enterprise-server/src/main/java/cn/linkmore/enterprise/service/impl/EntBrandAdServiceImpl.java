@@ -29,7 +29,6 @@ import cn.linkmore.enterprise.dao.cluster.EntBrandPreClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandAdMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandAd;
-import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
 import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResBrandPre;
@@ -124,6 +123,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 		if (resBrandAd != null) {
 			resEntBrandAd = ObjectUtils.copyObject(resBrandAd, new ResEntBrandAd());
+			resEntBrandAd.setViewUrl(resBrandAd.getViewUrl()+"?companyId="+resBrandAd.getEntId());
 		}
 		return resEntBrandAd;
 	}
@@ -196,6 +196,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 		if (resBrandAd != null) {
 			resEntBrandAd = ObjectUtils.copyObject(resBrandAd, new ResEntBrandAd());
+			resEntBrandAd.setViewUrl(resBrandAd.getViewUrl()+"?companyId="+resBrandAd.getEntId());
 		}
 		return resEntBrandAd;
 	}
@@ -259,12 +260,8 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	}
 
 	@Override
-	public Integer check(ReqCheck reqCheck) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("property", reqCheck.getProperty());
-		param.put("value", reqCheck.getValue());
-		param.put("id", reqCheck.getId());
-		return this.entBrandAdClusterMapper.check(param);
+	public Integer check(Map<String, Object> map) {
+		return this.entBrandAdClusterMapper.check(map);
 	}
 
 	@Override
