@@ -8,6 +8,8 @@ public class EntOperateAuth {
     private Long entId;
 
     private Short status;
+    
+    private String entName;
 
     public Long getId() {
         return id;
@@ -40,4 +42,14 @@ public class EntOperateAuth {
     public void setStatus(Short status) {
         this.status = status;
     }
+
+	public String getEntName() {
+		return entName;
+	}
+
+	public void setEntName(String entName) {
+		this.entName = entName;
+	}
+    
+    
 }

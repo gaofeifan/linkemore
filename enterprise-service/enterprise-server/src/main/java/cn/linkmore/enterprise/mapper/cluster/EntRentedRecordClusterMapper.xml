@@ -12,6 +12,7 @@
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, ent_id, ent_pre_id, plate_no, down_time, leave_time, stall_id, stall_name, pre_id, 
@@ -23,4 +24,38 @@
     from t_ent_rented_record
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="findPage" parameterType="java.util.HashMap"
+		resultMap="BaseResultMap">
+		select
+		  record.id, record.ent_id, record.ent_pre_id, record.plate_no, record.down_time, record.leave_time, record.stall_id, record.stall_name, record.pre_id, 
+    record.pre_name,en.name ent_name
+		from t_ent_rented_record record left join t_biz_enterprise en on record.ent_id = en.id
+		where 1 = 1
+		<if test="preName != null">
+			AND pre_name = #{preName}
+		</if>
+		<if test="EntName != null">
+			AND ent_name = #{entName}
+		</if>
+		<if test="property==null">
+			order by down_time desc
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
+		limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		select
+		count(1)
+		from t_ent_rented_record
+		where 1 = 1
+		<if test="preName != null">
+			AND pre_name = #{preName}
+		</if>
+		<if test="EntName != null">
+			AND ent_name = #{entName}
+		</if>
+	</select>
 </mapper>

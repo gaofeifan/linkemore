@@ -1,14 +1,11 @@
 package cn.linkmore.ops.ent.service.impl;
 
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.request.ReqOperateAuth;
+import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.ops.ent.service.PrefectrueService;
 import cn.linkmore.prefecture.client.PrefectrueClient;
 /**
@@ -29,18 +26,19 @@ public class PrefectrueServiceImpl implements PrefectrueService {
 	}
 
 	@Override
-	public void save(ReqOperateAuth auth) {
-
+	public void save(ReqAddEntPreture auth) {
+		this.prefectrueClient.save(auth);
 	}
 
 	@Override
-	public void update(ReqOperateAuth auth) {
-
+	public void update(ReqAddEntPreture auth) {
+		this.prefectrueClient.update(auth);
 	}
 
 	@Override
 	public void delete(List<Long> ids) {
-
+		this.prefectrueClient.delete(ids);
 	}
+
 
 }

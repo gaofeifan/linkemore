@@ -1,12 +1,15 @@
 package cn.linkmore.ops.ent.controller;
 
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.bean.exception.DataException;
@@ -67,15 +70,15 @@ public class StaffController {
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg delete(Long id) {
+	public ViewMsg delete(@RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			this.staffService.delete(id);
-			msg = new ViewMsg("保存成功", true); 
+			this.staffService.delete(ids.get(0));
+			msg = new ViewMsg("删除成功", true); 
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
-			msg = new ViewMsg("保存失败", false);
+			msg = new ViewMsg("删除失败", false);
 		}
 		return msg;
 	}
@@ -100,11 +103,39 @@ public class StaffController {
 		ViewMsg msg = null;
 		try {
 			this.staffService.update(staff);
-			msg = new ViewMsg("保存成功", true); 
+			msg = new ViewMsg("修改成功", true); 
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
-			msg = new ViewMsg("保存失败", false);
+			msg = new ViewMsg("修改失败", false);
+		}
+		return msg;
+	}
+	@RequestMapping(value = "/stop", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg stop(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.staffService.stop(ids.get(0));
+			msg = new ViewMsg("修改成功", true); 
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("修改失败", false);
+		}
+		return msg;
+	}
+	@RequestMapping(value = "/start", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg start(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.staffService.start(ids.get(0));
+			msg = new ViewMsg("修改成功", true); 
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("修改失败", false);
 		}
 		return msg;
 	}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.request.ReqOperateAuth;
 
 /**
@@ -26,14 +27,14 @@ public interface PrefectrueService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void save(ReqOperateAuth auth);
+	void save(ReqAddEntPreture auth);
 
 	/**
 	 * @Description  更新
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void update(ReqOperateAuth auth);
+	void update(ReqAddEntPreture auth);
 
 	/**
 	 * @Description  删除

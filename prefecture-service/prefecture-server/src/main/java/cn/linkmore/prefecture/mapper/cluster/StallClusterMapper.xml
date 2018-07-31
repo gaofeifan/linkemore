@@ -174,8 +174,10 @@
 	*
 	FROM
 		v_stall l
-	WHERE
-	l.pre_id = #{preId}
+	WHERE 1=1
+	<if test="preId != null">
+		and l.pre_id = #{preId}
+	</if>
     <if test="status!=null">  
     and l.status = #{status}
     </if>

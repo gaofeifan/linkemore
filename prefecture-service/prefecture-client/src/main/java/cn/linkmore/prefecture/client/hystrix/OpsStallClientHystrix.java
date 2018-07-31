@@ -12,6 +12,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.client.OpsStallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
@@ -100,6 +101,12 @@ public class OpsStallClientHystrix implements OpsStallClient {
 	@Override
 	public List<ResStallOps> findList(Map<String, Object> param) {
 		log.info("prefecture service List<ResStallOps> findList(Map<String, Object> param) hystrix");
+		return null;
+	}
+
+	@Override
+	public List<ResStall> findStallList(Map<String, Object> param) {
+		log.info("prefecture service List<ResStall> findStallList(Map<String, Object> param) hystrix");
 		return null;
 	}
 	

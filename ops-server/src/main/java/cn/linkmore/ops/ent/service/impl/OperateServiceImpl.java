@@ -61,4 +61,15 @@ public class OperateServiceImpl implements OperateService {
 		this.opsOperateAuthClient.delete(id);
 	}
 
+	@Override
+	public void stop(Long id) {
+		this.opsOperateAuthClient.stop(id);
+	}
+
+	@Override
+	public void start(Long id) {
+		this.opsOperateAuthClient.start(id);
+	}
+
+	
 }

@@ -2,7 +2,6 @@ package cn.linkmore.enterprise.controller.ops;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.enterprise.controller.ent.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.controller.ent.request.ReqAddEntVipUser;
-import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntPreture;
 import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntVipUser;
 import cn.linkmore.enterprise.service.EntVipUserService;
 import io.swagger.annotations.Api;

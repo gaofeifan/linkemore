@@ -50,4 +50,11 @@ public interface OpsStaffAuthClient {
 	@RequestMapping(value = "update",method = RequestMethod.PUT)
 	@ResponseBody
 	public void update(@RequestBody ReqAddEntStaff staff);
+	
+	@RequestMapping(value = "start",method = RequestMethod.PUT)
+	@ResponseBody
+	public void start(@RequestParam("id") Long id);
+	@RequestMapping(value = "stop",method = RequestMethod.PUT)
+	@ResponseBody
+	public void stop(@RequestParam("id") Long id);
 }

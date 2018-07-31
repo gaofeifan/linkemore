@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntOperateAuth">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="status" jdbcType="SMALLINT" property="status" />
   </resultMap>
@@ -28,7 +29,9 @@
     </if> 
   </select>
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-   select <include refid="Base_Column_List"></include> from t_ent_operate_auth
+   select 
+    op.id, op.name, op.ent_id, op.status,en.name ent_name
+   from t_ent_operate_auth op left join t_biz_enterprise en on op.ent_id = en.id
   where 1 = 1
    <if test="name!=null">  
     and name = #{name}

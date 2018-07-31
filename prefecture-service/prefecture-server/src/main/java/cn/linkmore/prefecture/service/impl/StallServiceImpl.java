@@ -71,7 +71,6 @@ public class StallServiceImpl implements StallService {
 	private OrderClient orderClient;
 	@Autowired
 	private StallLockMasterMapper stallLockMasterMapper;
-	
 	@Autowired
 	private StallLockClusterMapper stallLockClusterMapper;
 
