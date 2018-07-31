@@ -3,6 +3,7 @@
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.EntBrandPreClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResBrandPre">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
@@ -65,6 +66,7 @@
   <select id="findBrandPre" parameterType="java.util.HashMap" resultMap="ResResultMap">
     SELECT
 		p.id,
+		p.name,
 		p.ent_id,
 		p.ent_name,
 		p.pre_id,
@@ -92,6 +94,7 @@
   <select id="findStaffBrandPre" parameterType="java.util.HashMap" resultMap="ResResultMap">
     SELECT
 		p.id,
+		p.name,
 		p.ent_id,
 		p.ent_name,
 		p.pre_id,

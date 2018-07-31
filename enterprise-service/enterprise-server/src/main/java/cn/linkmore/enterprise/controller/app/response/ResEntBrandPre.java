@@ -8,6 +8,9 @@ public class ResEntBrandPre {
 	@ApiModelProperty(value = "主键")
 	private Long id; 
 	
+	@ApiModelProperty(value = "品牌车区名称")
+	private String name;
+	
 	@ApiModelProperty(value = "车区名称")
 	private String preName;
 	
@@ -65,6 +68,14 @@ public class ResEntBrandPre {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Integer getLeisureStall() {
