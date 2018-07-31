@@ -5,7 +5,6 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
-    <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="view_image" jdbcType="VARCHAR" property="viewImage" />
@@ -20,7 +19,7 @@
     <result column="ad_status" jdbcType="SMALLINT" property="adStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_name, logo_url, pre_id, pre_name, view_image, view_url, create_time, 
+    id, ent_id, ent_name, pre_id, pre_name, view_image, view_url, create_time, 
     end_time, apply_count, screen, status, city_ids, limit_status, ad_status
   </sql>
   <delete id="delete" parameterType="java.lang.Long">
@@ -28,24 +27,20 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntBrandAd">
-    insert into t_ent_brand_ad (id, ent_id, ent_name, 
-      logo_url, pre_id, pre_name, 
-      view_image, view_url, create_time, 
-      end_time, apply_count, screen, 
+    insert into t_ent_brand_ad (id, ent_id, ent_name, pre_id, pre_name, 
+      view_image, view_url, create_time, end_time, apply_count, screen, 
       status, city_ids, limit_status, ad_status)
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
-      #{logoUrl,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, 
-      #{viewImage,jdbcType=VARCHAR}, #{viewUrl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{endTime,jdbcType=TIMESTAMP}, #{applyCount,jdbcType=INTEGER}, #{screen,jdbcType=SMALLINT}, 
-      #{status,jdbcType=SMALLINT}, #{cityIds,jdbcType=VARCHAR},#{limitStatus,jdbcType=SMALLINT},
-      #{adStatus,jdbcType=SMALLINT})
+      #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, #{viewImage,jdbcType=VARCHAR}, 
+      #{viewUrl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{applyCount,jdbcType=INTEGER}, #{screen,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT}, 
+      #{cityIds,jdbcType=VARCHAR},#{limitStatus,jdbcType=SMALLINT}, #{adStatus,jdbcType=SMALLINT})
   </insert>
   
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandAd">
     update t_ent_brand_ad
     set ent_id = #{entId,jdbcType=BIGINT},
       ent_name = #{entName,jdbcType=VARCHAR},
-      logo_url = #{logoUrl,jdbcType=VARCHAR},
       pre_id = #{preId,jdbcType=BIGINT},
       pre_name = #{preName,jdbcType=VARCHAR},
       view_image = #{viewImage,jdbcType=VARCHAR},

@@ -19,9 +19,6 @@ public class ResEntBrandAd {
 	@ApiModelProperty(value = "企业名称")
     private String entName;
     
-	@ApiModelProperty(value = "logo链接")
-    private String logoUrl;
-    
 	@ApiModelProperty(value = "车区id")
     private Long preId;
     
@@ -59,14 +56,6 @@ public class ResEntBrandAd {
 
     public void setEntName(String entName) {
         this.entName = entName == null ? null : entName.trim();
-    }
-
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl == null ? null : logoUrl.trim();
     }
 
     public Long getPreId() {
