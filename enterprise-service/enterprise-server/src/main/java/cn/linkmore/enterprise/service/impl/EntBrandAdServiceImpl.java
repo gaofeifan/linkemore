@@ -196,6 +196,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 		if (resBrandAd != null) {
 			resEntBrandAd = ObjectUtils.copyObject(resBrandAd, new ResEntBrandAd());
+			resEntBrandAd.setViewUrl(resBrandAd.getViewUrl()+"?companyId="+resBrandAd.getEntId());
 		}
 		return resEntBrandAd;
 	}
