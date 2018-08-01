@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntBrandPre">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="contract" jdbcType="VARCHAR" property="contract" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
@@ -41,13 +42,13 @@
   
   
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntBrandPre">
-    insert into t_ent_brand_pre (id, name, ent_id, ent_name, 
+    insert into t_ent_brand_pre (id, name, contract, ent_id, ent_name, 
       logo_url, pre_id, pre_name, 
       period, start_time, end_time, 
       status, create_time, update_time, 
       strategy_id, strategy_name, charge_price, charge_time, strategy_description)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{entId,jdbcType=BIGINT}, 
-    #{entName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{contract,jdbcType=VARCHAR}, 
+    #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
       #{logoUrl,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, 
       #{period,jdbcType=SMALLINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
@@ -59,6 +60,7 @@
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandPre">
     update t_ent_brand_pre
     set name = #{name,jdbcType=VARCHAR},
+      contract = #{contract,jdbcType=VARCHAR},
       ent_id = #{entId,jdbcType=BIGINT},
       ent_name = #{entName,jdbcType=VARCHAR},
       logo_url = #{logoUrl,jdbcType=VARCHAR},

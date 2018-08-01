@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResBrandPre">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="contract" jdbcType="VARCHAR" property="contract" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
@@ -49,7 +50,7 @@
   
   
   <sql id="Base_Column_List">
-    id, name, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
+    id, name, contract, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
     create_time, update_time, strategy_id, strategy_name, charge_price, charge_time, strategy_description
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -67,6 +68,7 @@
     SELECT
 		p.id,
 		p.name,
+		p.contract,
 		p.ent_id,
 		p.ent_name,
 		p.pre_id,
@@ -95,6 +97,7 @@
     SELECT
 		p.id,
 		p.name,
+		p.contract,
 		p.ent_id,
 		p.ent_name,
 		p.pre_id,
