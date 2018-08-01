@@ -27,4 +27,23 @@
     from t_ent_vip_user
     where ent_pre_id = #{0}
   </select>
+  
+    <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_vip_user
+	where 
+     1 = 1
+   	   
+	    	limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+    <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select 
+   	 count(1)
+    from t_ent_vip_user
+	where 
+     1 = 1
+    	
+    	
+  </select>
 </mapper>

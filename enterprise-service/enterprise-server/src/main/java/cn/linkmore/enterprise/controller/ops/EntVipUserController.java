@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.ent.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.controller.ent.request.ReqAddEntVipUser;
 import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntPreture;
@@ -75,6 +77,13 @@ public class EntVipUserController {
 			return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request);
 		}
 		return ResponseEntity.success("修改成功", request);
+	}
+    
+    @RequestMapping(value = "/page",method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage findPage(@RequestBody ViewPageable pageable) {
+    	System.out.println("调用");
+		return this.entVipUserService.findPage(pageable);
 	}
 
 }
