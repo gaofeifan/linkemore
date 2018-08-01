@@ -75,7 +75,6 @@ zuul:
       path: /admin/**  
       serviceId: ops-server 
       sensitiveHeaders: Authorization 
-  
 security:
   basic:
     enabled: false 

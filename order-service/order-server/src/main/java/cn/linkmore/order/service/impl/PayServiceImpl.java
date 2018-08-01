@@ -292,7 +292,7 @@ public class PayServiceImpl implements PayService {
 			}else if(confirm.getPayType().shortValue()==TradePayType.APPLE.type){
 				res.setApple(confirm.getApple());
 				res.setNumber(confirm.getNumber());
-			}else if(confirm.getPayType().shortValue()==TradePayType.UNION.type){
+			}else if(confirm.getPayType().shortValue()==TradePayType.UNION.type||confirm.getPayType().shortValue()==TradePayType.HUAWEI.type||confirm.getPayType().shortValue()==TradePayType.XIAOMI.type){
 				res.setUnion(confirm.getUnion());
 				res.setNumber(confirm.getNumber());
 			}
@@ -476,11 +476,11 @@ public class PayServiceImpl implements PayService {
 				confirm = new ResOrderConfirm();
 				confirm.setAmount(rechargeRecord.getPaymentAmount()); 
 				confirm.setNumber(rechargeRecord.getCode()); 
-				confirm.setPayType((short)TradePayType.APPLE.type); 
+				confirm.setPayType((short)roc.getPayType()); 
 				confirm.setApple(tn);
 				log.info("apple confir :{}",JsonUtil.toJson(confirm));
 				return getConfirmResult(confirm);
-			}else if(roc.getPayType() == TradePayType.UNION.type){
+			}else if(roc.getPayType() == TradePayType.UNION.type||roc.getPayType() == TradePayType.HUAWEI.type||roc.getPayType() == TradePayType.XIAOMI.type){
 				ReqApplePay rap = new ReqApplePay();
 				rap.setTimestramp(new Date().getTime());
 				rap.setAmount(rechargeRecord.getPaymentAmount().doubleValue());
@@ -489,7 +489,7 @@ public class PayServiceImpl implements PayService {
 				confirm = new ResOrderConfirm();
 				confirm.setAmount(rechargeRecord.getPaymentAmount()); 
 				confirm.setNumber(rechargeRecord.getCode()); 
-				confirm.setPayType((short)TradePayType.UNION.type); 
+				confirm.setPayType((short)roc.getPayType()); 
 				confirm.setUnion(tn);
 				log.info("apple confir :{}",JsonUtil.toJson(confirm));
 				return getConfirmResult(confirm);

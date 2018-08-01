@@ -11,7 +11,7 @@ public class ResPayConfirm {
 	private Double amount;
 	@ApiModelProperty(value = "流水号")
 	private String number;
-	@ApiModelProperty(value = "支付分类[0账户余额，1支付宝，2微信，3银联Apple Pay,4小程序,5银联云闪付]")
+	@ApiModelProperty(value = "支付分类[0账户余额，1支付宝，2微信，3银联Apple Pay,4小程序,5银联云闪付,6华为Pay、7小米Pay]")
 	private Short payType;
 	@ApiModelProperty(value = "支付宝支付")
 	private String alipay;

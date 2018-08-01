@@ -11,6 +11,9 @@ public class ResEntBrandPre {
 	@ApiModelProperty(value = "品牌车区名称")
 	private String name;
 	
+	@ApiModelProperty(value = "联系方式")
+	private String contract;
+	
 	@ApiModelProperty(value = "车区名称")
 	private String preName;
 	
@@ -76,6 +79,14 @@ public class ResEntBrandPre {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getContract() {
+		return contract;
+	}
+
+	public void setContract(String contract) {
+		this.contract = contract;
 	}
 
 	public Integer getLeisureStall() {

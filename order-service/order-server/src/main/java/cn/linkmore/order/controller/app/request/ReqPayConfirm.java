@@ -8,7 +8,7 @@ public class ReqPayConfirm {
 	@ApiModelProperty(value = "订单ID")
 	private Long orderId;
 	
-	@ApiModelProperty(value = "支付类型[1支付宝、2微信、3银联]")
+	@ApiModelProperty(value = "支付类型[1支付宝、2微信、3ApplePay、5银联云闪付、6华为Pay、7小米Pay]")
 	private Short payType;
 	
 	@ApiModelProperty(value = "停车券ID")

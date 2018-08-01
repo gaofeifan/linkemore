@@ -34,7 +34,6 @@ import cn.linkmore.enterprise.service.EntPreService;
 import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.OperateAuthService;
 import cn.linkmore.prefecture.client.OpsStallClient;
-import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.util.DomainUtil;
 
