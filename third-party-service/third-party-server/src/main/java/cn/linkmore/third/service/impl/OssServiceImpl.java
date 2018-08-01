@@ -61,8 +61,7 @@ public class OssServiceImpl implements OssService {
 		url.append(FILE_PATH).append(date).append(id).append(suffix);
 		try {
 			beanFactory.uploadOSSClient().putObject(ossConfig.getBucketName(), url.toString(), file.getInputStream());
-		} catch (Exception e) { 
-			log.info("oss handle file error...");
+		} catch (Exception e) {  
 			throw new BusinessException(StatusEnum.THIRD_FILE_UPLOAD_ERROR);
 		} 
 	}
@@ -82,9 +81,8 @@ public class OssServiceImpl implements OssService {
 			beanFactory.uploadOSSClient().putObject(ossConfig.getBucketName(), url.toString(), image.getInputStream()); 
 			File mini = new File(ossConfig.getTempDir()+image.getOriginalFilename());
 			try{ 
-				int outputWidth = 600;
-				is = image.getInputStream();
-				Image img = ImageIO.read(is);
+				int outputWidth = 600; 
+				Image img = ImageIO.read(image.getInputStream());
 				int newWidth;
 				int newHeight;
 				int w = img.getWidth(null);
@@ -114,21 +112,24 @@ public class OssServiceImpl implements OssService {
 						e.printStackTrace();
 					}
 				}
-				if(is!=null){
-					try {
-						is.close();
-					} catch (IOException e) { 
-						e.printStackTrace();
-					}
-				}  
 			} 
 			is = new FileInputStream(mini);
 			url = new StringBuffer();
 			url.append(IMAGE_PATH).append(date).append(id).append(IMAGE_MINI).append(suffix);
 			beanFactory.uploadOSSClient().putObject(ossConfig.getBucketName(), url.toString(),new FileInputStream(mini));  
+			is.close();
 		}  catch (Exception e) { 
 			throw new BusinessException(StatusEnum.THIRD_IMAGE_UPLOAD_ERROR);
-		} 
+		} finally {
+
+			if(is!=null){
+				try {
+					is.close();
+				} catch (IOException e) { 
+					e.printStackTrace();
+				}
+			}  
+		}
 		 
 	}
  
