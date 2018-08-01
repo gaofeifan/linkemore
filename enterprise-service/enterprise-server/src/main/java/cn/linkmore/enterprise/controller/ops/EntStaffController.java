@@ -128,4 +128,15 @@ public class EntStaffController {
 	public void update(@RequestBody cn.linkmore.enterprise.request.ReqAddEntStaff staff) {
 		this.entStaffService.updateEntStaff(staff.getId(), staff.getEntId(), staff.getMobile(), staff.getRealname(), staff.getType(), staff.getStatus());
 	}
+	
+	@RequestMapping(value = "start",method = RequestMethod.PUT)
+	@ResponseBody
+	public void start(@RequestParam("id") Long id) {
+		this.entStaffService.start(id);
+	}
+	@RequestMapping(value = "stop",method = RequestMethod.PUT)
+	@ResponseBody
+	public void stop(@RequestParam("id") Long id) {
+		this.entStaffService.stop(id);
+	}
 }

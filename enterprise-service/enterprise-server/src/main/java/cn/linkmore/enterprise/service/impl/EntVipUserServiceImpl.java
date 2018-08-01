@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.HashMap;
@@ -8,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import cn.linkmore.enterprise.dao.cluster.EntVipUserClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntVipUserMasterMapper;
 import cn.linkmore.enterprise.entity.EntPrefecture;
-import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.entity.EntVipUser;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntVipUserService;

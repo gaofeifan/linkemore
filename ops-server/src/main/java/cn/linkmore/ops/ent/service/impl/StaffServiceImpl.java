@@ -74,6 +74,16 @@ public class StaffServiceImpl implements StaffService {
 		this.staffClient.save(staff);
 	}
 
+	@Override
+	public void start(Long id) {
+		this.staffClient.start(id);
+	}
+
+	@Override
+	public void stop(Long id) {
+		this.staffClient.stop(id);
+	}
+
 	
 
 	

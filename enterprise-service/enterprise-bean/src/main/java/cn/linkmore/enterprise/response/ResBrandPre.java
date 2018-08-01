@@ -12,6 +12,8 @@ public class ResBrandPre {
     private Long id;
     //品牌车区名称
     private String name;
+    //联系方式
+    private String contract;
     //企业id
     private Long entId;
     //企业名称
@@ -61,6 +63,14 @@ public class ResBrandPre {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getContract() {
+		return contract;
+	}
+
+	public void setContract(String contract) {
+		this.contract = contract;
 	}
 
 	public Long getEntId() {

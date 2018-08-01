@@ -69,4 +69,18 @@ public interface OperateService {
 	 */
 	void delete(Long id);
 
+	/**
+	 * @Description  禁用
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void stop(Long id);
+
+	/**
+	 * @Description  启动
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void start(Long id);
+
 }

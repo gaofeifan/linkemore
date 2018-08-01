@@ -67,4 +67,18 @@ public interface StaffService {
 	 */
 	void save(ReqAddEntStaff staff);
 
+	/**
+	 * @Description  启动
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void start(Long id);
+
+	/**
+	 * @Description  禁用
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void stop(Long id);
+
 }

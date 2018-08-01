@@ -33,9 +33,8 @@ import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntPreService;
 import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.OperateAuthService;
-import cn.linkmore.prefecture.client.StallClient;
-import cn.linkmore.prefecture.response.ResStallEntity;
-import cn.linkmore.prefecture.response.ResStallOps;
+import cn.linkmore.prefecture.client.OpsStallClient;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.util.DomainUtil;
 
 /**
@@ -63,12 +62,12 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 	@Resource
 	private EntPreService entPreService;
 	@Resource
-	private StallClient stallClient;
+	private OpsStallClient stallClient;
 	@Override
 	public List<Tree> tree() {
 		List<ResEnterprise> list = this.enterpriseService.findList(null);
 		List<EntPrefecture> preList = this.entPreService.findList(null);
-		List<ResStallOps> stallList = stallClient.findListByParam(new HashMap<>());
+		List<ResStall> stallList = stallClient.findStallList(new HashMap<String, Object>());
 		List<Tree> pchildren = null;
 		List<Tree> children = null;
 		List<Tree> roots = new ArrayList<>();
@@ -88,15 +87,15 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 				if(entPrefecture.getEntId().equals(ent.getId())) {
 					chi = new Tree();
 					chi.setName(entPrefecture.getPreName());
-					chi.setId(entPrefecture.getId().toString());
+					chi.setId(entPrefecture.getPreId().toString());
 					chi.setIsParent(false);
-					chi.setCode(entPrefecture.getId().toString());
+					chi.setCode(entPrefecture.getPreId().toString());
 					chi.setOpen(true);
-					chi.setmId(entPrefecture.getId().toString());
-					chi.setpId(entPrefecture.getEntId().toString());
+					chi.setmId(entPrefecture.getPreId().toString());
+					chi.setpId(ent.getId().toString());
 					children.add(chi);
 					pchildren = new ArrayList<>();
-					for (ResStallOps stall : stallList) {
+					for (ResStall stall : stallList) {
 						if(stall.getPreId() == entPrefecture.getPreId()) {
 							pchi = new Tree();
 							pchi.setName(stall.getStallName());
@@ -105,7 +104,7 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 							pchi.setCode(stall.getId().toString());
 							pchi.setOpen(true);
 							pchi.setmId(stall.getId().toString());
-							pchi.setpId(stall.getPreId().toString());
+							pchi.setpId(entPrefecture.getPreId().toString());
 							pchildren.add(pchi);
 						}
 					}

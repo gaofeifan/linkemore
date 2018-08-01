@@ -18,6 +18,7 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.OpsStallClientHystrix;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
@@ -86,4 +87,8 @@ public interface OpsStallClient {
 	@RequestMapping(value = "/v2.0/find-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStallOps> findList(@RequestBody Map<String, Object> param);
+
+	@RequestMapping(value = "/v2.0/find-stall-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStall> findStallList(@RequestBody Map<String, Object> param);
 }

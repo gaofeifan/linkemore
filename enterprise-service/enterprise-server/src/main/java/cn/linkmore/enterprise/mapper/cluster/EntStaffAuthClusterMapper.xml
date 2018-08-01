@@ -36,8 +36,9 @@ LEFT JOIN t_ent_staff_auth esa ON esa.staff_id = es.id
 LEFT JOIN t_ent_operate_auth eoa ON eoa.id = esa.auth_id
 LEFT JOIN t_ent_auth_stall eas ON eas.auth_id = eoa.id
 <where>
+    1 = 1
 	<if test="staffId != null">
-		esa.staff_id = #{staffId} 
+		AND esa.staff_id = #{staffId} 
 	</if>
 	<if test="preId != null">
 		and eas.pre_id = #{preId}

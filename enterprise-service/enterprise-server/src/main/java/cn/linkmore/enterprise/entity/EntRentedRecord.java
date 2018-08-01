@@ -22,6 +22,8 @@ public class EntRentedRecord {
     private Long preId;
 
     private String preName;
+    
+    private String entName;
 
     public Long getId() {
         return id;
@@ -102,4 +104,13 @@ public class EntRentedRecord {
     public void setPreName(String preName) {
         this.preName = preName == null ? null : preName.trim();
     }
+
+	public String getEntName() {
+		return entName;
+	}
+
+	public void setEntName(String entName) {
+		this.entName = entName;
+	}
+    
 }

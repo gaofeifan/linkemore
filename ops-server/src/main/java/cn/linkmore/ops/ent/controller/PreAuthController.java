@@ -7,8 +7,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.bean.exception.DataException;
@@ -19,6 +21,9 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.request.ReqOperateBind;
 import cn.linkmore.ops.ent.service.OperateService;
+import cn.linkmore.util.JsonUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @RequestMapping(value="/admin/ent/operate-auth")
 @Controller
@@ -35,21 +40,22 @@ public class PreAuthController {
 	
 	@RequestMapping(value = "/tree", method = RequestMethod.POST)
 	@ResponseBody
-	public List<Tree> list(HttpServletRequest request) {
+	public List<Tree> tree(HttpServletRequest request) {
 		return this.operateService.tree(request);
 	}
 	
 	@RequestMapping(value = "/bind", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg bind( ReqOperateBind staffAuth) {
+	public ViewMsg bind(@RequestParam("auth") String auth) {
 		ViewMsg msg = null;
 		try {
-			this.operateService.bind(staffAuth);
-			msg = new ViewMsg("保存成功", true);
+			ReqOperateBind bind = JsonUtil.toObject(auth, ReqOperateBind.class);
+			this.operateService.bind(bind);
+			msg = new ViewMsg("绑定成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
-			msg = new ViewMsg("保存失败", false);
+			msg = new ViewMsg("绑定失败", false);
 		}
 		return msg;
 	}
@@ -83,21 +89,49 @@ public class PreAuthController {
 		ViewMsg msg = null;
 		try {
 			this.operateService.update(auth);
-			msg = new ViewMsg("保存成功", true);
+			msg = new ViewMsg("更新成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
-			msg = new ViewMsg("保存失败", false);
+			msg = new ViewMsg("更新失败", false);
+		}
+		return msg;
+	}
+	@RequestMapping(value = "/start", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg start(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.operateService.start(ids.get(0));
+			msg = new ViewMsg("更新成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("更新失败", false);
+		}
+		return msg;
+	}
+	@RequestMapping(value = "/stop", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg stop(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.operateService.stop(ids.get(0));
+			msg = new ViewMsg("更新成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("更新失败", false);
 		}
 		return msg;
 	}
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg delete(Long id) {
+	public ViewMsg delete(@RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			this.operateService.delete(id);
+			this.operateService.delete(ids.get(0));
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);

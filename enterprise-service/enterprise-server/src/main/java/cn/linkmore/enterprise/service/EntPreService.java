@@ -13,7 +13,7 @@ public interface EntPreService {
 
 	int deleteEntPre(Long id);
 
-	int updateEntPre(Long id, Long preId, String preName);
+	int updateEntPre(Long id, Long entId, Long preId, String preName);
 
 	/**
 	 * @Description  查询企业车区

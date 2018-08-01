@@ -6,12 +6,14 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("近7-15-30收入详情列表")
 public class ResIncome {
-
+	@ApiModelProperty("天金额")
 	private BigDecimal dayAmount;
 	
+	@ApiModelProperty("天时间")
 	private Date dayTime;
 
 	
