@@ -178,6 +178,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}
 		return dayTFs;
 	}
+	
 	@Override
 	public List<ResDayIncome> findIncomeList(Short type, Long preId, HttpServletRequest request) {
 		CacheUser ru = getUser(request);

@@ -88,12 +88,12 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 				if(entPrefecture.getEntId().equals(ent.getId())) {
 					chi = new Tree();
 					chi.setName(entPrefecture.getPreName());
-					chi.setId(entPrefecture.getId().toString());
+					chi.setId(entPrefecture.getPreId().toString());
 					chi.setIsParent(false);
-					chi.setCode(entPrefecture.getId().toString());
+					chi.setCode(entPrefecture.getPreId().toString());
 					chi.setOpen(true);
-					chi.setmId(entPrefecture.getId().toString());
-					chi.setpId(entPrefecture.getEntId().toString());
+					chi.setmId(entPrefecture.getPreId().toString());
+					chi.setpId(ent.getId().toString());
 					children.add(chi);
 					pchildren = new ArrayList<>();
 					for (ResStall stall : stallList) {
@@ -105,7 +105,7 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 							pchi.setCode(stall.getId().toString());
 							pchi.setOpen(true);
 							pchi.setmId(stall.getId().toString());
-							pchi.setpId(stall.getPreId().toString());
+							pchi.setpId(entPrefecture.getPreId().toString());
 							pchildren.add(pchi);
 						}
 					}

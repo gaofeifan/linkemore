@@ -2,10 +2,11 @@ package cn.linkmore.ops.ent.controller;
 
 
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.ops.ent.service.PrefectrueService;
+import cn.linkmore.ops.security.response.ResPerson;
 
 @RequestMapping(value = "/admin/ent/prefectrue")
 @Controller
@@ -34,9 +36,14 @@ public class PrefectrueController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(ReqAddEntPreture auth) {
+	public ViewMsg save(ReqAddEntPreture auth,HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
+//			Subject subject = SecurityUtils.getSubject();
+//			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+//			auth.set(person.getId().intValue());
+//			auth.setCreatorName(person.getUsername());
+//			auth.setDeleteStatus(0);
 			this.prefectrueService.save(auth);
 			msg = new ViewMsg("保存成功", true);
 		} catch (BusinessException e) {
