@@ -21,6 +21,7 @@ public class VipUserController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
+		System.out.println("开始");
 		return vipUserService.findPage(pageable);
 	}
 

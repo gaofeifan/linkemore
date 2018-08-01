@@ -132,6 +132,7 @@ public class EntVipUserServiceImpl implements EntVipUserService {
 				param.put("direction", pageable.getOrderDirection());
 			}
 			Integer count = this.entVipUserClusterMapper.count(param);
+			System.out.println(count);
 			param.put("start", pageable.getStart());
 			param.put("pageSize", pageable.getPageSize());
 			List<EntVipUser> list = this.entVipUserClusterMapper.findPage(param);
