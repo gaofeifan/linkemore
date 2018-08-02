@@ -1,1 +1,10 @@
-/pom.xml
+/target
+.classpath
+.gitignore
+.factorypath
+.project
+*.class
+*.lst
+*.log
+target
+*.settings
