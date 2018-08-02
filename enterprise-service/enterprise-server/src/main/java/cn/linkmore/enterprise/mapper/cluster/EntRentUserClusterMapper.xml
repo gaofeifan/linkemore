@@ -9,11 +9,11 @@
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="plate" jdbcType="VARCHAR" property="plate" />
-    <result column="stalll_id" jdbcType="BIGINT" property="stalllId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stalll_id, user_id
+    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

@@ -17,7 +17,7 @@ import cn.linkmore.prefecture.client.hystrix.RentedRecordClientHystrix;
  * @Date     2018年8月1日
  * @Version  v2.0
  */
-@FeignClient(value = "enterprise-server", path = "/ops/rent", fallback=RentUserClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "enterprise-server", path = "/rented-record", fallback=RentedRecordClientHystrix.class,configuration = FeignConfiguration.class)
 public interface OpsRentedRecordClient {
 
 	@RequestMapping(value = "/list", method = RequestMethod.POST)

@@ -9,11 +9,11 @@
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="plate" jdbcType="VARCHAR" property="plate" />
-    <result column="stalll_id" jdbcType="BIGINT" property="stalllId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stalll_id, user_id
+    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id
   </sql>
   <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_ent_rent_user
@@ -29,11 +29,11 @@
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
     insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
       pre_id, mobile, realname, 
-      plate, stalll_id, user_id
+      plate, stall_id, user_id
       )
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
       #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
-      #{plate,jdbcType=VARCHAR}, #{stalllId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}
+      #{plate,jdbcType=VARCHAR}, #{stallId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}
       )
   </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
@@ -60,8 +60,8 @@
       <if test="plate != null">
         plate,
       </if>
-      <if test="stalllId != null">
-        stalll_id,
+      <if test="stallId != null">
+        stall_id,
       </if>
       <if test="userId != null">
         user_id,
@@ -89,8 +89,8 @@
       <if test="plate != null">
         #{plate,jdbcType=VARCHAR},
       </if>
-      <if test="stalllId != null">
-        #{stalllId,jdbcType=BIGINT},
+      <if test="stallId != null">
+        #{stallId,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
         #{userId,jdbcType=BIGINT},
@@ -118,8 +118,8 @@
       <if test="plate != null">
         plate = #{plate,jdbcType=VARCHAR},
       </if>
-      <if test="stalllId != null">
-        stalll_id = #{stalllId,jdbcType=BIGINT},
+      <if test="stallId != null">
+        stall_id = #{stallId,jdbcType=BIGINT},
       </if>
       <if test="userId != null">
         user_id = #{userId,jdbcType=BIGINT},
@@ -135,7 +135,7 @@
       mobile = #{mobile,jdbcType=VARCHAR},
       realname = #{realname,jdbcType=VARCHAR},
       plate = #{plate,jdbcType=VARCHAR},
-      stalll_id = #{stalllId,jdbcType=BIGINT},
+      stall_id = #{stallId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
