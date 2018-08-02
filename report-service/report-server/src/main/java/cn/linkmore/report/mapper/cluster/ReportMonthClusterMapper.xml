@@ -771,7 +771,7 @@
 		DATE_FORMAT(o.create_time, '%Y-%m') AS DAY,
 	  sum(o.total_amount) as total_amount,
 	  sum(o.actual_amount) as actual_amount,
-	  ROUND(sum(o.actual_amount)/sum(o.total_amount),2) as cash_deal_rate,
+	  case when sum(o.total_amount)=0 then 0.00 else ROUND(sum(o.actual_amount)/sum(o.total_amount),2) end as cash_deal_rate,
 	  ROUND(sum(o.total_amount)/pre.month_rent,2) as deal_cost_rate,
 	  ROUND(sum(o.actual_amount)/pre.month_rent,2) as cash_cost_rate,
 	  ROUND(pre.month_rent - sum(o.actual_amount),0) as fee

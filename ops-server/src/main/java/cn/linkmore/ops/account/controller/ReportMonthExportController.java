@@ -617,16 +617,16 @@ public class ReportMonthExportController {
 				log.info("bj_total_time ,{} hz_total_time ,{} bj_stall,{} hz_stall_count,{}", bjTotalTime, hzTotalTime,
 						bjStall, hzStall);
 				if (bjStall != 0 && bjShopRuntime != 0) {
-					bjRuntimeRate = new BigDecimal((float) bjTotalTime / bjShopRuntime / bjStall / dayNum)
+					bjRuntimeRate = new BigDecimal((float) bjTotalTime / bjShopRuntime /60/ bjStall / dayNum)
 							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 				}
 				if (hzStall != 0 && hzShopRuntime != 0) {
-					hzRuntimeRate = new BigDecimal((float) hzTotalTime / hzShopRuntime / hzStall / dayNum)
+					hzRuntimeRate = new BigDecimal((float) hzTotalTime / hzShopRuntime /60/ hzStall / dayNum)
 							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 				}
 
 				if ((bjStall + hzStall) != 0 && (bjShopRuntime + hzShopRuntime)!= 0) {
-					totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / (bjShopRuntime + hzShopRuntime) / (bjStall + hzStall) / dayNum)
+					totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / (bjShopRuntime + hzShopRuntime) /60/ (bjStall + hzStall) / dayNum)
 							.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 				}
 
@@ -948,18 +948,29 @@ public class ReportMonthExportController {
 	
 	public Map<String, Object> dealCostMap(ReqReportMonth reportMonth) throws ParseException {
 		List<ResIncome> incomeList = this.reportMonthService.incomeList(reportMonth);
+		List<ResCost> costList = this.reportMonthService.costList(reportMonth);
 		JSONArray ja = new JSONArray();
 		Map<String, Object> map = null;
 		if (StringUtils.isNotBlank(reportMonth.getStartTime()) && StringUtils.isNotBlank(reportMonth.getEndTime())
-				&& incomeList != null) {
+				&& costList != null	&& incomeList != null) {
 			List<String> monthList = StringUtil.getBetweenMonths(reportMonth.getStartTime(), reportMonth.getEndTime());
+			
+			//车区成本
+			double bjCost = 0;
+			double hzCost = 0;
+			for (ResCost resCost : costList) {
+				double dayRent =  resCost.getMonthRent();
+				if (resCost.getCityName().equals("北京")) {
+					bjCost = add(bjCost, dayRent);
+				} else if (resCost.getCityName().equals("杭州")) {
+					hzCost = add(hzCost, dayRent);
+				}
+			}
 			for (String date : monthList) {
 				map = new HashMap<String, Object>();
 				map.put("day", date);
 				double bjTotal = 0d;// 北京总金额
 				double hzTotal = 0d;// 杭州总金额
-				int bjCost = 0;
-				int hzCost = 0;
 				double bjTotalAverage = 0d;
 				double hzTotalAverage = 0d;
 				double totalAverage = 0d;
@@ -972,10 +983,10 @@ public class ReportMonthExportController {
 						map.put(resIncome.getPreName(), resIncome.getDealCostRate());
 						if (resIncome.getCityName().equals("北京")) {
 							bjTotal = add(bjTotal, resIncome.getTotalAmount());
-							bjCost += resIncome.getCost();
+							//bjCost += resIncome.getCost();
 						} else if (resIncome.getCityName().equals("杭州")) {
 							hzTotal = add(hzTotal, resIncome.getTotalAmount());
-							hzCost += resIncome.getCost();
+							//hzCost += resIncome.getCost();
 						}
 					}
 				}
@@ -1049,18 +1060,33 @@ public class ReportMonthExportController {
 	
 	public Map<String, Object> cashCostMap(ReqReportMonth reportMonth) throws ParseException {
 		List<ResIncome> incomeList = this.reportMonthService.incomeList(reportMonth);
+		List<ResCost> costList = this.reportMonthService.costList(reportMonth);
 		JSONArray ja = new JSONArray();
 		Map<String, Object> map = null;
 		if (StringUtils.isNotBlank(reportMonth.getStartTime()) && StringUtils.isNotBlank(reportMonth.getEndTime())
-				&& incomeList != null) {
+				&& costList != null	&& incomeList != null) {
 			List<String> monthList = StringUtil.getBetweenMonths(reportMonth.getStartTime(), reportMonth.getEndTime());
+			
+			//车区成本
+			double bjCost = 0;
+			double hzCost = 0;
+			for (ResCost resCost : costList) {
+				double dayRent =  resCost.getMonthRent();
+				if (resCost.getCityName().equals("北京")) {
+					bjCost = add(bjCost, dayRent);
+				} else if (resCost.getCityName().equals("杭州")) {
+					hzCost = add(hzCost, dayRent);
+				}
+			}
+			
+			
+			
 			for (String date : monthList) {
 				map = new HashMap<String, Object>();
 				map.put("day", date);
 				double bjTotal = 0d;// 北京总金额
 				double hzTotal = 0d;// 杭州总金额
-				int bjCost = 0;
-				int hzCost = 0;
+				
 				double bjTotalAverage = 0d;
 				double hzTotalAverage = 0d;
 				double totalAverage = 0d;
@@ -1073,10 +1099,10 @@ public class ReportMonthExportController {
 						map.put(resIncome.getPreName(), resIncome.getCashCostRate());
 						if (resIncome.getCityName().equals("北京")) {
 							bjTotal = add(bjTotal, resIncome.getActualAmount());
-							bjCost += resIncome.getCost();
+							//bjCost += resIncome.getCost();
 						} else if (resIncome.getCityName().equals("杭州")) {
 							hzTotal = add(hzTotal, resIncome.getActualAmount());
-							hzCost += resIncome.getCost();
+							//hzCost += resIncome.getCost();
 						}
 					}
 				}

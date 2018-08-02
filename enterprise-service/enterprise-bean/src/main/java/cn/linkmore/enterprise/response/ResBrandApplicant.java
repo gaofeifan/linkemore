@@ -20,10 +20,20 @@ public class ResBrandApplicant {
     private String username;
     //手机号
     private String mobile;
+    //车牌号
+    private String plateNo;
     //创建时间
     private Date createTime;
+    
+    public String getPlateNo() {
+		return plateNo;
+	}
 
-    public Long getId() {
+	public void setPlateNo(String plateNo) {
+		this.plateNo = plateNo;
+	}
+
+	public Long getId() {
         return id;
     }
 
