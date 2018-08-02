@@ -194,8 +194,8 @@ public class ReportDayIncomeController {
 			for (String column : dateList) {
 				map = new HashMap<String, Object>();
 				map.put("column", column);
-				int bjTotal = 0;
-				int hzTotal = 0;
+				double bjTotal = 0;
+				double hzTotal = 0;
 				for (ResCost resCost : costList) {
 
 					if (column.equals("车区月成本")) {
@@ -208,29 +208,39 @@ public class ReportDayIncomeController {
 					}
 
 					if (column.equals("车区天成本")) {
-						map.put(resCost.getPreName(), resCost.getMonthRent() / 30);
+						double dayRent =  new BigDecimal((float) resCost.getMonthRent() / 30).setScale(0, BigDecimal.ROUND_HALF_UP)
+								.doubleValue();
+						map.put(resCost.getPreName(), dayRent);
 						if (resCost.getCityName().equals("北京")) {
-							bjTotal += resCost.getMonthRent() / 30;
+							bjTotal = add(bjTotal, dayRent);
 						} else if (resCost.getCityName().equals("杭州")) {
-							hzTotal += resCost.getMonthRent() / 30;
+							hzTotal = add(hzTotal, dayRent);
 						}
 					}
 
 					if (column.equals("单车位月成本")) {
-						map.put(resCost.getPreName(), resCost.getMonthRent() / resCost.getStallTotal());
+						double monthStallRent = new BigDecimal((float) resCost.getMonthRent() / resCost.getStallTotal()).setScale(0, BigDecimal.ROUND_HALF_UP)
+								.doubleValue();
+						map.put(resCost.getPreName(), monthStallRent);
 						if (resCost.getCityName().equals("北京")) {
-							bjTotal += resCost.getMonthRent() / resCost.getStallTotal();
+							bjTotal = add(bjTotal, monthStallRent);
+							//bjTotal += resCost.getMonthRent() / resCost.getStallTotal();
 						} else if (resCost.getCityName().equals("杭州")) {
-							hzTotal += resCost.getMonthRent() / resCost.getStallTotal();
+							hzTotal = add(hzTotal, monthStallRent);
+							//hzTotal += resCost.getMonthRent() / resCost.getStallTotal();
 						}
 					}
 
 					if (column.equals("单车位天成本")) {
-						map.put(resCost.getPreName(), resCost.getMonthRent() / resCost.getStallTotal() / 30);
+						double dayStallRent = new BigDecimal((float) resCost.getMonthRent() / resCost.getStallTotal() / 30).setScale(0, BigDecimal.ROUND_HALF_UP)
+								.doubleValue();
+						map.put(resCost.getPreName(), dayStallRent);
 						if (resCost.getCityName().equals("北京")) {
-							bjTotal += resCost.getMonthRent() / resCost.getStallTotal() / 30;
+							bjTotal = add(bjTotal ,dayStallRent);
+							//bjTotal += resCost.getMonthRent() / resCost.getStallTotal() / 30;
 						} else if (resCost.getCityName().equals("杭州")) {
-							hzTotal += resCost.getMonthRent() / resCost.getStallTotal() / 30;
+							hzTotal = add(hzTotal ,dayStallRent);
+							//hzTotal += resCost.getMonthRent() / resCost.getStallTotal() / 30;
 						}
 					}
 				}
@@ -289,18 +299,30 @@ public class ReportDayIncomeController {
 	@ResponseBody
 	public ResultMap<List<Map<String, Object>>> dealCostList(HttpServletRequest request, ReqReportDay reportDay) {
 		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		List<ResCost> costList = this.reportDayService.costList(reportDay);
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = null;
 		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
-				&& incomeList != null) {
+				&& costList != null && incomeList != null) {
 			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			//车区成本
+			double bjCost = 0;
+			double hzCost = 0;
+			for (ResCost resCost : costList) {
+				double dayRent =  new BigDecimal((float) resCost.getMonthRent() / 30).setScale(0, BigDecimal.ROUND_HALF_UP)
+						.doubleValue();
+				if (resCost.getCityName().equals("北京")) {
+					bjCost = add(bjCost, dayRent);
+				} else if (resCost.getCityName().equals("杭州")) {
+					hzCost = add(hzCost, dayRent);
+				}
+			}
+			
 			for (String date : dateList) {
 				map = new HashMap<String, Object>();
 				map.put("day", date);
 				double bjTotal = 0d;// 北京总金额
 				double hzTotal = 0d;// 杭州总金额
-				int bjCost = 0;
-				int hzCost = 0;
 				double bjTotalAverage = 0d;
 				double hzTotalAverage = 0d;
 				double totalAverage = 0d;
@@ -313,10 +335,10 @@ public class ReportDayIncomeController {
 						map.put(resIncome.getPreName(), resIncome.getDealCostRate());
 						if (resIncome.getCityName().equals("北京")) {
 							bjTotal = add(bjTotal, resIncome.getTotalAmount());
-							bjCost += resIncome.getCost();
+							//bjCost += resIncome.getCost();
 						} else if (resIncome.getCityName().equals("杭州")) {
 							hzTotal = add(hzTotal, resIncome.getTotalAmount());
-							hzCost += resIncome.getCost();
+							//hzCost += resIncome.getCost();
 						}
 					}
 				}
@@ -384,18 +406,30 @@ public class ReportDayIncomeController {
 	@ResponseBody
 	public ResultMap<List<Map<String, Object>>> cashCostList(HttpServletRequest request, ReqReportDay reportDay) {
 		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		List<ResCost> costList = this.reportDayService.costList(reportDay);
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = null;
 		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
-				&& incomeList != null) {
+				&& costList != null	&& incomeList != null) {
 			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			
+			double bjCost = 0;
+			double hzCost = 0;
+			for (ResCost resCost : costList) {
+				double dayRent =  new BigDecimal((float) resCost.getMonthRent() / 30).setScale(0, BigDecimal.ROUND_HALF_UP)
+						.doubleValue();
+				if (resCost.getCityName().equals("北京")) {
+					bjCost = add(bjCost, dayRent);
+				} else if (resCost.getCityName().equals("杭州")) {
+					hzCost = add(hzCost, dayRent);
+				}
+			}
+			
 			for (String date : dateList) {
 				map = new HashMap<String, Object>();
 				map.put("day", date);
 				double bjTotal = 0d;// 北京总金额
 				double hzTotal = 0d;// 杭州总金额
-				int bjCost = 0;
-				int hzCost = 0;
 				double bjTotalAverage = 0d;
 				double hzTotalAverage = 0d;
 				double totalAverage = 0d;
@@ -408,10 +442,8 @@ public class ReportDayIncomeController {
 						map.put(resIncome.getPreName(), resIncome.getCashCostRate());
 						if (resIncome.getCityName().equals("北京")) {
 							bjTotal = add(bjTotal, resIncome.getActualAmount());
-							bjCost += resIncome.getCost();
 						} else if (resIncome.getCityName().equals("杭州")) {
 							hzTotal = add(hzTotal, resIncome.getActualAmount());
-							hzCost += resIncome.getCost();
 						}
 					}
 				}
@@ -502,11 +534,20 @@ public class ReportDayIncomeController {
 	@ResponseBody
 	public ResultMap<List<Map<String, Object>>> feeList(HttpServletRequest request, ReqReportDay reportDay) {
 		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		/*List<ResCost> costList = this.reportDayService.costList(reportDay);
+		Map<String, Object> costMap = new HashMap<String, Object>();*/
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = null;
 		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
-				&& incomeList != null) {
+			&& incomeList != null) {
 			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
+			
+			/*for (ResCost resCost : costList) {
+				double dayRent =  new BigDecimal((float) resCost.getMonthRent() / 30).setScale(0, BigDecimal.ROUND_HALF_UP)
+						.doubleValue();
+				costMap.put(resCost.getPreName(), dayRent);
+			}*/
+			
 			for (String date : dateList) {
 				map = new HashMap<String, Object>();
 				map.put("day", date);

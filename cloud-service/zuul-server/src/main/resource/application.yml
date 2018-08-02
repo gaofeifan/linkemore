@@ -70,12 +70,15 @@ zuul:
     coupon:
       path: /api/coupon/**  
       serviceId: coupon-server 
-      sensitiveHeaders: Authorization  
+      sensitiveHeaders: Authorization
+    brand:
+      path: /api/brand/**  
+      serviceId: enterprise-server 
+      sensitiveHeaders: Authorization    
     ops:
       path: /admin/**  
       serviceId: ops-server 
       sensitiveHeaders: Authorization 
-  
 security:
   basic:
     enabled: false 

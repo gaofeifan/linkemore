@@ -57,7 +57,7 @@ public class OrderController {
 	@RequestMapping(value = "/prefecture_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPrefectureDetail> prefectureList(HttpServletRequest request){
-		return this.prefectureService.findList(null);
+		return this.prefectureService.findList(new HashMap<String,Object>());
 	} 
 	 
 	@RequestMapping(value = "/stall_list", method = RequestMethod.POST)

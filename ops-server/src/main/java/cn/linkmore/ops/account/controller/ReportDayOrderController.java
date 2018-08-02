@@ -521,16 +521,16 @@ public class ReportDayOrderController {
 					log.info("bj_total_time ,{} hz_total_time ,{} bj_stall,{} hz_stall_count,{}", bjTotalTime, hzTotalTime,
 							bjStall, hzStall);
 					if (bjStall != 0 && bjShopRuntime != 0) {
-						bjRuntimeRate = new BigDecimal((float) bjTotalTime / bjShopRuntime / bjStall)
+						bjRuntimeRate = new BigDecimal((float) bjTotalTime / 60 / bjShopRuntime / bjStall)
 								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 					}
 					if (hzStall != 0 && hzShopRuntime != 0) {
-						hzRuntimeRate = new BigDecimal((float) hzTotalTime / hzShopRuntime / hzStall)
+						hzRuntimeRate = new BigDecimal((float) hzTotalTime / 60/ hzShopRuntime / hzStall)
 								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 					}
 
 					if ((bjStall + hzStall) != 0 && (bjShopRuntime + hzShopRuntime)!= 0) {
-						totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / (bjShopRuntime + hzShopRuntime) / (bjStall + hzStall))
+						totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / (bjShopRuntime + hzShopRuntime) / 60 / (bjStall + hzStall))
 								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 					}
 
