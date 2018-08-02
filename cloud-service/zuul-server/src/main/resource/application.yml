@@ -93,4 +93,5 @@ redis:
   test-on-borrow: true
   test-on-create: true 
   sentinel-master: mymaster
-  sentinel-nodes: 192.168.1.219:26379 
+  sentinel-nodes: 192.168.1.219:26379
+  channel: zuul
