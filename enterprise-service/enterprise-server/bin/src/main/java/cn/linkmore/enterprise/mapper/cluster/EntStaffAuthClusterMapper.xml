@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntStaffAuth">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="staff_id" jdbcType="BIGINT" property="staffId" />
+    <result column="auth_id" jdbcType="BIGINT" property="authId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, staff_id, auth_id
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff_auth
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findByEntStaffId"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff_auth
+    where staff_id = #{0}
+  </select>
+  
+  <select id="findList" parameterType="java.util.Map"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff_auth
+    where staff_id = #{staffId} 
+  </select>
+  <select id="findByStaffId" parameterType="java.util.HashMap"  resultType="java.lang.Long">
+SELECT eas.stall_id FROM
+t_ent_staff es 
+LEFT JOIN t_ent_staff_auth esa ON esa.staff_id = es.id
+LEFT JOIN t_ent_operate_auth eoa ON eoa.id = esa.auth_id
+LEFT JOIN t_ent_auth_stall eas ON eas.auth_id = eoa.id
+<where>
+    1 = 1
+	<if test="staffId != null">
+		AND esa.staff_id = #{staffId} 
+	</if>
+	<if test="preId != null">
+		and eas.pre_id = #{preId}
+	</if>
+</where>
+  </select>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntStaff">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ent_id, mobile, type, realname, status, create_time, open_id, login_time
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findByMobile" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_staff
+    where mobile = #{mobile}
+  </select>
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    staff.id, staff.ent_id, staff.mobile, staff.type, staff.realname, staff.status, staff.create_time, staff.open_id, staff.login_time,en.name ent_name
+    from t_ent_staff staff left join t_biz_enterprise en on en.id = staff.ent_id
+	where 
+     1 = 1
+    	<if test="mobile != null">
+    		and mobile = #{mobile}
+    	</if>
+    	<if test="type != null">
+    		and type = #{type}
+    	</if>
+    	<if test="status != null">
+    		and status = #{status}
+    	</if>
+    	<if test="realname != null">
+    		and realname = #{realname}
+    	</if>
+   	    <if test="property==null">  
+	    	order by create_time desc
+	    </if>
+	    <if test="property!=null">  
+	   		order by  ${property} ${direction}
+	    </if>
+	    	limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select 
+   	 count(1)
+    from t_ent_staff
+	where 
+     1 = 1
+    	<if test="mobile != null">
+    		and mobile = #{mobile}
+    	</if>
+    	<if test="type != null">
+    		and type = #{type}
+    	</if>
+    	<if test="status != null">
+    		and status = #{status}
+    	</if>
+  </select>
+</mapper>

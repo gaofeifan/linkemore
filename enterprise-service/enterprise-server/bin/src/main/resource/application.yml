@@ -1,5 +1,7 @@
 server:
   port: 8007 
+  session:
+    timeout: 60
 spring:
   application:
     name: enterprise-server
@@ -21,7 +23,7 @@ feign:
     enabled: true
  
 master-db:   
-  url: jdbc:mysql://192.168.1.218:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -41,7 +43,7 @@ master-db:
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   
 cluster-db:   
-  url: jdbc:mysql://192.168.1.219:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -71,7 +73,7 @@ swagger:
   version: 2.0
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
-  base-package: cn.linkmore.enterprise.controller.app
+  base-package: cn.linkmore.enterprise.controller.ent
     
 redis:
   host: 192.168.1.218
@@ -88,3 +90,8 @@ redis:
   test-on-create: true 
   sentinel-master: mymaster
   sentinel-nodes: 192.168.1.219:26379 
+  channel: enterprise
+  
+sdk:
+  linkmore_url: http://192.168.1.211:8081
+  

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.EntBrandAdClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResBrandAd">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="view_image" jdbcType="VARCHAR" property="viewImage" />
+    <result column="view_url" jdbcType="VARCHAR" property="viewUrl" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="apply_count" jdbcType="INTEGER" property="applyCount" />
+    <result column="screen" jdbcType="SMALLINT" property="screen" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="city_ids" jdbcType="VARCHAR" property="cityIds" />
+    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+    <result column="ad_status" jdbcType="SMALLINT" property="adStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ent_id, ent_name, pre_id, pre_name, view_image, view_url, create_time, 
+    end_time, apply_count, screen, status, city_ids, limit_status, ad_status
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_ad
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findScreenList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_ad
+    where screen = 1 and status = 1 
+  </select>
+  
+  <select id="findBrandPreAdList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_ad
+    where status = 1 
+    <if test="screen!=null">
+    	 and screen = 0
+    </if>
+    <if test="entId!=null">
+    	 and ent_id = #{entId,jdbcType=BIGINT}
+    </if>
+    <if test="preId!=null">
+    	 and pre_id = #{preId, jdbcType=BIGINT}
+    </if>
+  </select>
+  
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_ad
+    where 1 = 1
+    <if test="entName!=null">  
+    and ent_name like #{entName,jdbcType=VARCHAR}
+    </if>  
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_ent_brand_ad where 1 = 1
+    <if test="entName!=null">  
+    and ent_name like #{entName,jdbcType=VARCHAR}
+    </if>  
+  </select>
+  
+  <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_ent_brand_ad where 1 = 1
+    
+    <if test="entId!=null">  
+    	and ent_id = #{entId,jdbcType=BIGINT}
+    </if>  
+    <if test="preId!=null">  
+    	and pre_id = #{preId,jdbcType=BIGINT}
+    </if>  
+    <if test="id!=null">  
+    	and id != #{id,jdbcType=BIGINT}
+    </if> 
+  </select>
+  
+</mapper>
