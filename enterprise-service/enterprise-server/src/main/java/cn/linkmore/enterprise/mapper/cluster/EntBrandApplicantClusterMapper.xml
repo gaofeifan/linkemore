@@ -8,10 +8,11 @@
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="plateNo" jdbcType="VARCHAR" property="plateNo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_name, user_id, username, mobile, create_time
+    id, ent_id, ent_name, user_id, username, mobile, plate_no, create_time
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

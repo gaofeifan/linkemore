@@ -121,6 +121,7 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		
 		brandApplicant.setMobile(mobile);
 		brandApplicant.setCreateTime(new Date());
+		brandApplicant.setPlateNo(reqBrandApplicant.getPlateNo());
 		// 若用户不存在则创建用户
 		ResUser user = getUser(mobile);
 		if(user != null) {
