@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntRentUser;
+import cn.linkmore.enterprise.request.ReqRentUser;
 /**
  * 长租用户---写
  * @author   GFF
@@ -26,4 +27,18 @@ public interface EntRentUserMasterMapper {
     int updateById(EntRentUser record);
 
 	void delete(List<Long> ids);
+
+	/**
+	 * @Description  新增req
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void saveReq(ReqRentUser user);
+
+	/**
+	 * @Description  更新
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateReq(ReqRentUser user);
 }

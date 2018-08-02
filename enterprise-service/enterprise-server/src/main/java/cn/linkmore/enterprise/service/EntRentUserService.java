@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqRentUser;
 
 public interface EntRentUserService {
 	
@@ -46,5 +47,19 @@ public interface EntRentUserService {
 	 * @Version  v2.0
 	 */
 	ViewPage findList(ViewPageable pageable);
+	
+	/**
+	 * @Description  新增
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void save(ReqRentUser user);
+	
+	/**
+	 * @Description  更新
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void update(ReqRentUser user);
 
 }

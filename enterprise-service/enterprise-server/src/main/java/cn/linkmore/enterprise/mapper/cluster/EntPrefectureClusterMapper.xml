@@ -12,7 +12,7 @@
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 	</resultMap>
-	<resultMap id="ResBaseResultMap" type="cn.linkmore.enterprise.response.ResEntPrefectrue">
+	<resultMap id="ResBaseResultMap" type="cn.linkmore.enterprise.response.ResEntPrefecture">
 		<id column="id" jdbcType="BIGINT" property="id" />
 		<result column="pre_id" jdbcType="BIGINT" property="preId" />
 		<result column="pre_name" jdbcType="VARCHAR" property="preName" />

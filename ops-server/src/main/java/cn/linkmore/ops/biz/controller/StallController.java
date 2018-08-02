@@ -1,6 +1,12 @@
 package cn.linkmore.ops.biz.controller;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -15,8 +21,10 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.StallLockService;
 import cn.linkmore.ops.biz.service.StallService;
+import cn.linkmore.prefecture.client.OpsStallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 
@@ -26,7 +34,8 @@ public class StallController {
 
 	@Resource
 	private StallService stallService;
-	
+	@Resource
+	private OpsStallClient opsStallClient;
 	@Resource
 	private StallLockService stallLockService;
 
@@ -141,5 +150,13 @@ public class StallController {
 		}
 		return msg;
 	}
+	
+	@RequestMapping(value = "/all", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStall> all(HttpServletRequest request) {
+		List<ResStall> list = this.opsStallClient.findStallList(new HashMap<String,Object>());
+		return list;
+	}
+	
 
 }

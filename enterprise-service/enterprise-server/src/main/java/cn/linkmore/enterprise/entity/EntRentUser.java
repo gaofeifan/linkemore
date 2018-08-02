@@ -19,6 +19,12 @@ public class EntRentUser {
 
     private Long userId;
 
+    private String entName;
+    
+    private String preName;
+    
+    private String stallName;
+    
     public Long getId() {
         return id;
     }
@@ -91,4 +97,30 @@ public class EntRentUser {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+	public String getEntName() {
+		return entName;
+	}
+
+	public void setEntName(String entName) {
+		this.entName = entName;
+	}
+
+	public String getPreName() {
+		return preName;
+	}
+
+	public void setPreName(String preName) {
+		this.preName = preName;
+	}
+
+	public String getStallName() {
+		return stallName;
+	}
+
+	public void setStallName(String stallName) {
+		this.stallName = stallName;
+	}
+	
+	
 }

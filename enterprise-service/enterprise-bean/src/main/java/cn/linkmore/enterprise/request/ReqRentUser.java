@@ -28,6 +28,8 @@ public class ReqRentUser {
 	private String realname;
 	
 	private String plate;
+	
+	private Long userId;
 
 	public Long getEntId() {
 		return entId;
@@ -116,5 +118,14 @@ public class ReqRentUser {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	
 	
 }

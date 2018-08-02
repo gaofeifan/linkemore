@@ -21,7 +21,6 @@ import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.ops.ent.service.PrefectrueService;
 import cn.linkmore.ops.security.response.ResPerson;
-
 @RequestMapping(value = "/admin/ent/prefectrue")
 @Controller
 public class PrefectrueController {

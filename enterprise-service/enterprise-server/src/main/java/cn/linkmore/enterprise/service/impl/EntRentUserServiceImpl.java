@@ -24,6 +24,7 @@ import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.entity.EntStaff;
+import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.util.DomainUtil;
@@ -146,5 +147,27 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
+	@Override
+	public void save(ReqRentUser user) {
+		Long userId = userClient.getUserIdByMobile(user.getMobile());
+		if(userId != null) {
+			user.setUserId(userId);
+		}
+		this.entRentUserMasterMapper.saveReq(user);
+	}
+
+	@Override
+	public void update(ReqRentUser user) {
+		Long userId = userClient.getUserIdByMobile(user.getMobile());
+		if(userId != null) {
+			user.setUserId(userId);
+		}
+		this.entRentUserMasterMapper.updateReq(user);
+		
+	}
+	
+	
+
+	
 	
 }

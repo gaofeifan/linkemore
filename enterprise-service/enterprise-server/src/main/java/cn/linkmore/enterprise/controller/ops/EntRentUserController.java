@@ -88,13 +88,15 @@ public class EntRentUserController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public void save(@RequestBody ReqRentUser user) {
-		this.entRentUserService.saveEntRentUser(user.getEntId(), user.getEntPreId(), user.getStallId(), user.getMobile(), user.getRealname(), user.getPlate());
+		this.entRentUserService.save(user);
+//		this.entRentUserService.saveEntRentUser(user.getEntId(), user.getEntPreId(), user.getStallId(), user.getMobile(), user.getRealname(), user.getPlate());
 	}
 	
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
 	@ResponseBody
 	public void update(@RequestBody ReqRentUser user) {
-		this.entRentUserService.updateEntRentUser(user.getId(), user.getMobile(), user.getRealname(), user.getPlate());
+		this.entRentUserService.update(user);
+//		this.entRentUserService.updateEntRentUser(user.getId(), user.getMobile(), user.getRealname(), user.getPlate());
 	}
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
