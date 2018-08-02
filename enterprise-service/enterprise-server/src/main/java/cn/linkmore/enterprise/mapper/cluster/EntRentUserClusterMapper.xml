@@ -27,4 +27,49 @@
     from t_ent_rent_user
     where ent_pre_id = #{0}
   </select>
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from
+	t_ent_rent_user
+	where 
+     1 = 1
+    	<if test="mobile != null">
+    		and mobile = #{mobile}
+    	</if>
+    	<if test="type != null">
+    		and type = #{type}
+    	</if>
+    	<if test="status != null">
+    		and status = #{status}
+    	</if>
+    	<if test="realname != null">
+    		and realname = #{realname}
+    	</if>
+   	    <if test="property==null">  
+	    	order by id 
+	    </if>
+	    <if test="property!=null">  
+	   		order by  ${property} ${direction}
+	    </if>
+	    	limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+   select count(1)
+    from
+	t_ent_rent_user
+	where 
+     1 = 1
+    	<if test="mobile != null">
+    		and mobile = #{mobile}
+    	</if>
+    	<if test="type != null">
+    		and type = #{type}
+    	</if>
+    	<if test="status != null">
+    		and status = #{status}
+    	</if>
+    	<if test="realname != null">
+    		and realname = #{realname}
+    	</if>
+  </select>
 </mapper>

@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.controller.ent;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.enterprise.controller.ent.response.ResCharge;
+import cn.linkmore.enterprise.controller.ent.response.ResChargeDetail;
 import cn.linkmore.enterprise.controller.ent.response.ResDayIncome;
 import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlow;
 import cn.linkmore.enterprise.controller.ent.response.ResIncomeList;
@@ -21,6 +24,7 @@ import cn.linkmore.enterprise.service.PrefectureService;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResTrafficFlow;
+import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -67,8 +71,8 @@ public class PrefectureController {
 	@RequestMapping(value="/charge-detail" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场实时收费明细", notes = "查询车场实时收费明细", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<List<ResChargeList>> findChargeDetail(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
-		List<ResChargeList> list = this.prefectureService.findChargeDetail(type,preId,request);
+	public ResponseEntity<List<cn.linkmore.enterprise.controller.ent.response.ResChargeList>> findChargeDetail(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
+		List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> list = this.prefectureService.findChargeDetail(type,preId,request);
 		return ResponseEntity.success(list, request);
 	}
 	

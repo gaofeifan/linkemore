@@ -60,7 +60,7 @@ public interface PrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResChargeList> findChargeDetail(Short type, Long preId, HttpServletRequest request);
+	List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> findChargeDetail(Short type, Long preId, HttpServletRequest request);
 
 	/**
 	 * @Description  查询车流量列表

@@ -3,19 +3,30 @@
  */
 package cn.linkmore.enterprise.service.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.client.UserClient;
+import cn.linkmore.bean.view.ViewFilter;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.EntRentUserClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
+import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntRentUserService;
+import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.StringUtil;
 
 /**
@@ -31,6 +42,8 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	
 	@Autowired
 	private EntRentUserMasterMapper entRentUserMasterMapper;
+	@Autowired
+	private EntRentUserClusterMapper entRentUserClusterMapper;
 	
 	@Autowired
 	private EnterpriseClusterMapper enterpriseClusterMapper;
@@ -105,4 +118,33 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		return this.entRentUserMasterMapper.updateByIdSelective(record);
 	}
 
+	@Override
+	public void delete(List<Long> ids) {
+		this.entRentUserMasterMapper.delete(ids);
+	}
+
+	@Override
+	public ViewPage findList(ViewPageable pageable) {
+		Map<String,Object> param = new HashMap<String,Object>(); 
+		List<ViewFilter> filters = pageable.getFilters();
+		if(StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if(filters!=null&&filters.size()>0) {
+			for(ViewFilter filter:filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.entRentUserClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<EntRentUser> list = this.entRentUserClusterMapper.findPage(param);
+		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+
+	
 }

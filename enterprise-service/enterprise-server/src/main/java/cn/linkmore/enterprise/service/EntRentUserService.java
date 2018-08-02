@@ -1,5 +1,10 @@
 package cn.linkmore.enterprise.service;
 
+import java.util.List;
+
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
+
 public interface EntRentUserService {
 	
 	/**
@@ -27,5 +32,19 @@ public interface EntRentUserService {
 	 * @Version v1.0
 	 */
 	int updateEntRentUser(Long id, String mobile, String realname, String plate);
+	
+	/**
+	 * @Description  删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void delete(List<Long> ids);
+	
+	/**
+	 * @Description  分页查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ViewPage findList(ViewPageable pageable);
 
 }

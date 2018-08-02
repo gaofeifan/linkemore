@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntRentUser;
@@ -22,4 +24,6 @@ public interface EntRentUserMasterMapper {
     int updateByIdSelective(EntRentUser record);
 
     int updateById(EntRentUser record);
+
+	void delete(List<Long> ids);
 }

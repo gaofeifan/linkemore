@@ -21,9 +21,8 @@ import feign.form.spring.SpringFormEncoder;
  * 
  * @author liwenlong
  * @version 2.0
- *
  */
-@FeignClient(value = "third-party-server", path = "/feign/oss", fallback = OssClientHystrix.class, configuration = OssConfiguration.class)
+@FeignClient(value = "third-party-server", path = "/feign/oss", fallback = OssClientHystrix.class/*, configuration = OssConfiguration.class*/)
 public interface OssClient {
 	/**
 	 * 普通文件上传
@@ -51,7 +50,7 @@ public interface OssClient {
 
 }
 
-@Component
+/*@Component
 class OssConfiguration {
 
 	@Bean
@@ -60,4 +59,4 @@ class OssConfiguration {
 	public Encoder multipartFormEncoder() {
 		return new SpringFormEncoder();
 	}
-}
+}*/

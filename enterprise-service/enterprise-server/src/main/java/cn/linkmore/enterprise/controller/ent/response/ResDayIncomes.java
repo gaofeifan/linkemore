@@ -19,8 +19,6 @@ public class ResDayIncomes {
 	@ApiModelProperty("日总额")
 	private BigDecimal dayAmount;
 	
-	private List<ResIncomeList> list;
-
 	@JsonFormat(pattern="MM-dd")
 	public Date getDate() {
 		return date;
@@ -38,13 +36,4 @@ public class ResDayIncomes {
 		this.dayAmount = dayAmount;
 	}
 
-	public List<ResIncomeList> getList() {
-		return list;
-	}
-
-	public void setList(List<ResIncomeList> list) {
-		this.list = list;
-	}
-
-	
 }

@@ -106,4 +106,13 @@ redis:
   sentinel-master: mymaster
   sentinel-nodes: 192.168.1.219:26379
   channel: common
+  
+oss:
+  access-key-id: LTAIlCbJXIQWCNnl
+  access-key-secret: bxwgOMs072cnOiZjsetF9cd740CD1e
+  upload-endpoint: http://oss.pabeitech.com
+  download-endpoint:  http://oss.pabeitech.com
+  bucket-name: pabei
+  download-url-expiration: 1800000      # 下载地址的有效时长，单位为ms，默认为半小时
+  temp-dir: D:/oss-temp   #windows路径 D:/oss-temp    linux 路径/data/oss-temp
  

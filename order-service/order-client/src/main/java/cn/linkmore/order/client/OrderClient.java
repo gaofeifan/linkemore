@@ -57,11 +57,11 @@ public interface OrderClient {
 
 	@RequestMapping(value = "/export", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean); 
+	public List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean); 
 	
 	@RequestMapping(value = "/by-stall", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResPreOrderCount> findPreCountByIds(@RequestBody List<Long> ids);
+	public List<ResPreOrderCount> findPreCountByIds(@RequestBody List<Long> ids);
 	
 	/**
 	 * @Description  根据车区查询车牌号
@@ -70,27 +70,27 @@ public interface OrderClient {
 	 */
 	@RequestMapping(value = "/plate-by-preid", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResOrderPlate> findPlateByPreId(@RequestParam("preId")Long preId);
+	public List<ResOrderPlate> findPlateByPreId(@RequestParam("preId")Long preId);
 
 	@RequestMapping(value = "/day-income", method = RequestMethod.POST)
 	@ResponseBody
-	BigDecimal findPreDayIncome(@RequestBody List<Long> authStall);
+	public BigDecimal findPreDayIncome(@RequestBody List<Long> authStall);
 
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
 	@ResponseBody
-	Map<String,Object> findTrafficFlow(@RequestBody Map<String, Object> map);
+	public Map<String,Object> findTrafficFlow(@RequestBody Map<String, Object> map);
 
 	@RequestMapping(value = "/proceeds", method = RequestMethod.POST)
 	@ResponseBody
-	Map<String,Object> findProceeds(@RequestBody Map<String, Object> map);
+	public Map<String,Object> findProceeds(@RequestBody Map<String, Object> map);
 
 	@RequestMapping(value = "/charge-detail", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResChargeList> findChargeDetail(@RequestBody Map<String, Object> param);
+	public List<ResChargeList> findChargeDetail(@RequestBody Map<String, Object> param);
 
 	@RequestMapping(value = "/traffic-flow-list", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResTrafficFlow> findTrafficFlowList(@RequestBody Map<String, Object> param);
+	public List<ResTrafficFlow> findTrafficFlowList(@RequestBody Map<String, Object> param);
 
 	/**
 	 * @Description  查询收费列表
@@ -99,5 +99,5 @@ public interface OrderClient {
 	 */
 	@RequestMapping(value = "/income-list", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResIncome> findIncomeList(@RequestBody Map<String, Object> param);
+	public List<ResIncome> findIncomeList(@RequestBody Map<String, Object> param);
 }

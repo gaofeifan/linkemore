@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.controller.ops;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.ent.request.ReqAddEntRentUser;
 import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntRentUser;
+import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.enterprise.service.EntRentUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -72,6 +77,30 @@ public class EntRentUserController {
 			return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request);
 		}
 		return ResponseEntity.success("修改成功", request);
+	}
+    
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage findList(@RequestBody ViewPageable pageable) {
+		return this.entRentUserService.findList(pageable);
+	}
+
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@ResponseBody
+	public void save(@RequestBody ReqRentUser user) {
+		this.entRentUserService.saveEntRentUser(user.getEntId(), user.getEntPreId(), user.getStallId(), user.getMobile(), user.getRealname(), user.getPlate());
+	}
+	
+	@RequestMapping(value = "/update", method = RequestMethod.PUT)
+	@ResponseBody
+	public void update(@RequestBody ReqRentUser user) {
+		this.entRentUserService.updateEntRentUser(user.getId(), user.getMobile(), user.getRealname(), user.getPlate());
+	}
+	
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void delete(@RequestBody List<Long> ids) {
+		this.entRentUserService.delete(ids);
 	}
 
 }

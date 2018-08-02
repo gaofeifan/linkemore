@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.enterprise.controller.ent.response.ResCharge;
+import cn.linkmore.enterprise.controller.ent.response.ResChargeDetail;
 import cn.linkmore.enterprise.controller.ent.response.ResDayIncome;
 import cn.linkmore.enterprise.controller.ent.response.ResDayIncomes;
 import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlow;
@@ -139,7 +141,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return tf;
 	}
 	@Override
-	public List<ResChargeList> findChargeDetail(Short type, Long preId, HttpServletRequest request) {
+	public List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> findChargeDetail(Short type, Long preId, HttpServletRequest request) {
 		CacheUser ru = getUser(request);
 		Map<String, Long> map = new  HashMap<>();
 		map.put("staffId", ru.getId());
@@ -149,7 +151,29 @@ public class PrefectureServiceImpl implements PrefectureService {
 		param.put("startTime", type);
 		param.put("stallIds", authStall);
 		List<ResChargeList> list = this.orderClient.findChargeDetail(param);
-		return list;
+		List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> resList = new ArrayList<>();
+		cn.linkmore.enterprise.controller.ent.response.ResChargeList chargeList = null;
+		List<ResCharge> charges =null;
+		List<ResChargeDetail> chargeDetail = null;
+		ResCharge cha = null;
+		for (ResChargeList resChargeList : list) {
+			charges = new ArrayList<>();
+			chargeList = new cn.linkmore.enterprise.controller.ent.response.ResChargeList();
+			chargeList.setTodayIncome(resChargeList.getTodayIncome());
+			for (cn.linkmore.order.response.ResCharge resCharge : resChargeList.getDetails()) {
+				cha = new ResCharge();
+				cha.setDate(resCharge.getDate());
+				chargeDetail = new ArrayList<>();
+				for (cn.linkmore.order.response.ResChargeDetail resChargeDetail : resCharge.getCharge()) {
+					chargeDetail.add(ObjectUtils.copyObject(resChargeDetail, new ResChargeDetail() ));
+				}
+				cha.setCharge(chargeDetail);
+				charges.add(cha);
+			}
+			chargeList.setDetails(charges);
+			resList.add(chargeList);
+		}
+		return resList;
 	}
 	@Override
 	public List<ResDayTrafficFlow> findTrafficFlowList(Short type, Long preId, HttpServletRequest request) {

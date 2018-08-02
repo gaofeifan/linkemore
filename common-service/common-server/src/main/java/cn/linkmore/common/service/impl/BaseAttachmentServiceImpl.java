@@ -28,6 +28,7 @@ import cn.linkmore.common.dao.master.BaseAttachmentMasterMapper;
 import cn.linkmore.common.entity.BaseAttachment;
 import cn.linkmore.common.request.ReqAttachment;
 import cn.linkmore.common.service.BaseAttachmentService;
+import cn.linkmore.common.service.OssService;
 import cn.linkmore.third.client.OssClient;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -44,10 +45,8 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 	private BaseAttachmentClusterMapper attachmentClusterMapper;
 	@Resource
 	private BaseAttachmentMasterMapper attachmentmasterMapper;
-	
 	@Resource
-	private OssClient ossClient;
-	
+	private OssService ossService;
 	@Override
 	public BaseAttachment find(Long id){
 		return this.attachmentClusterMapper.findById(id);
@@ -88,7 +87,7 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		int index = file.getOriginalFilename().lastIndexOf("."); 
 		image.setSuffix(file.getOriginalFilename().substring(index)); 
 		this.attachmentmasterMapper.save(image);  
-		ossClient.uploadImage(file, image.getId());
+		ossService.uploadImage(file, image.getId());
 		return image;
 	} 
 	
@@ -128,7 +127,7 @@ public class BaseAttachmentServiceImpl implements BaseAttachmentService {
 		int index = file.getOriginalFilename().lastIndexOf("."); 
 		attach.setSuffix(file.getOriginalFilename().substring(index)); 
 		this.attachmentmasterMapper.save(attach);
-		ossClient.uploadFile(file, attach.getId());
+		ossService.uploadFile(file, attach.getId());
 		return attach;
 	}
 
