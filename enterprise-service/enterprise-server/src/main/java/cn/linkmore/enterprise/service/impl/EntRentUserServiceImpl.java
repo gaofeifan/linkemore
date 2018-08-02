@@ -73,7 +73,7 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		EntRentUser record = new EntRentUser();
 		record.setEntId(entId);
 		record.setEntPreId(entPreId);
-		record.setStalllId(stallId);
+		record.setStallId(stallId);
 		record.setMobile(mobile);
 		record.setRealname(realname);
 		record.setPlate(plate);

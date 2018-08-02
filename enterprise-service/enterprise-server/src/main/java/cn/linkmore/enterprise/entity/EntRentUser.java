@@ -15,7 +15,7 @@ public class EntRentUser {
 
     private String plate;
 
-    private Long stalllId;
+    private Long stallId;
 
     private Long userId;
 
@@ -75,15 +75,16 @@ public class EntRentUser {
         this.plate = plate == null ? null : plate.trim();
     }
 
-    public Long getStalllId() {
-        return stalllId;
-    }
 
-    public void setStalllId(Long stalllId) {
-        this.stalllId = stalllId;
-    }
+    public Long getStallId() {
+		return stallId;
+	}
 
-    public Long getUserId() {
+	public void setStallId(Long stallId) {
+		this.stallId = stallId;
+	}
+
+	public Long getUserId() {
         return userId;
     }
 

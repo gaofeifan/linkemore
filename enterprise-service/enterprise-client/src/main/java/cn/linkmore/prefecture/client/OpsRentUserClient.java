@@ -12,6 +12,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.feign.FeignConfiguration;
+import cn.linkmore.prefecture.client.hystrix.RentUserClientHystrix;
 import cn.linkmore.prefecture.client.hystrix.RentedRecordClientHystrix;
 /**
  *  远程调用 - 长租用户
@@ -19,7 +20,7 @@ import cn.linkmore.prefecture.client.hystrix.RentedRecordClientHystrix;
  * @Date     2018年8月1日
  * @Version  v2.0
  */
-@FeignClient(value = "enterprise-server", path = "/rented-record", fallback=RentedRecordClientHystrix.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "enterprise-server", path = "/ops/rent", fallback=RentUserClientHystrix.class,configuration = FeignConfiguration.class)
 public interface OpsRentUserClient {
 
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
