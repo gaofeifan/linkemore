@@ -18,6 +18,7 @@ import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
+import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.ops.ent.service.PrefectrueService;
 import cn.linkmore.ops.security.response.ResPerson;
 
@@ -32,6 +33,11 @@ public class PrefectrueController {
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
 		return this.prefectrueService.findPage(pageable);
+	}
+	@RequestMapping(value = "/all", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResEntPrefecture> findAll(HttpServletRequest request) {
+		return this.prefectrueService.findAll(request);
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)

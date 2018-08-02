@@ -29,6 +29,7 @@ import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.request.ReqOperateBind;
 import cn.linkmore.enterprise.request.ReqStallList;
+import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntPreService;
 import cn.linkmore.enterprise.service.EnterpriseService;
@@ -66,7 +67,7 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 	@Override
 	public List<Tree> tree() {
 		List<ResEnterprise> list = this.enterpriseService.findList(null);
-		List<EntPrefecture> preList = this.entPreService.findList(null);
+		List<ResEntPrefecture> preList = this.entPreService.findList(null);
 		List<ResStall> stallList = stallClient.findStallList(new HashMap<String, Object>());
 		List<Tree> pchildren = null;
 		List<Tree> children = null;
@@ -83,7 +84,7 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 			root.setmId(ent.getId().toString());
 			root.setpId("0");
 			children = new ArrayList<>();
-			for (EntPrefecture entPrefecture : preList) {
+			for (ResEntPrefecture entPrefecture : preList) {
 				if(entPrefecture.getEntId().equals(ent.getId())) {
 					chi = new Tree();
 					chi.setName(entPrefecture.getPreName());

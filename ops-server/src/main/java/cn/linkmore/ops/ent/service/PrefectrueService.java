@@ -2,10 +2,13 @@ package cn.linkmore.ops.ent.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.request.ReqOperateAuth;
+import cn.linkmore.enterprise.response.ResEntPrefecture;
 
 /**
  * 企业车区
@@ -42,5 +45,12 @@ public interface PrefectrueService {
 	 * @Version  v2.0
 	 */
 	void delete(List<Long> ids);
+
+	/**
+	 * @Description  查询所有
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResEntPrefecture> findAll(HttpServletRequest request);
 
 }

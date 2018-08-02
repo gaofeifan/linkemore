@@ -16,6 +16,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntPreture;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
+import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.enterprise.service.EntPreService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -100,5 +101,11 @@ public class EntPreController {
 		for (Long long1 : ids) {
 			this.entPreService.deleteEntPre(long1);
 		}
+	}
+	
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResEntPrefecture> findAll(){
+		return this.entPreService.findList(null);
 	}
 }
