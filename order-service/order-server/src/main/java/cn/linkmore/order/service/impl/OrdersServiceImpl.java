@@ -1004,8 +1004,8 @@ public class OrdersServiceImpl implements OrdersService {
 		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
 		List<ResCharge> charges = new ArrayList<>();
-		List<ResChargeDetail> list = this.ordersClusterMapper.findChargeDetail(param);
 		List<ResMonthCount> count = this.ordersClusterMapper.findMonthCount(param);
+		List<ResChargeDetail> list = this.ordersClusterMapper.findChargeDetail(param);
 		ResCharge charge = null;
 		List<ResChargeDetail> chargeDetails = null;
 		for (ResMonthCount resMonthCount : count) {

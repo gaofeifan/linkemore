@@ -60,10 +60,10 @@ public class EntStaffServiceImpl implements EntStaffService {
 	 */
 	@Override
 	public int deleteEntStaff(Long id) {
-		List<EntAuthStall> authStalls =entAuthStallClusterMapper.findByEntStaffId(id);
-		if(authStalls.size() > 0){
-			return 0;
-		}
+//		List<EntAuthStall> authStalls =entAuthStallClusterMapper.findByEntStaffId(id);
+//		if(authStalls.size() > 0){
+//			return 0;
+//		}
 		return this.entStaffMasterMapper.deleteById(id);
 	}
 
@@ -106,5 +106,23 @@ public class EntStaffServiceImpl implements EntStaffService {
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
+	@Override
+	public void start(Long id) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("sql","status = 1");
+		map.put("id",id);
+		this.entStaffMasterMapper.updateByColumn(map );
+	}
+
+	@Override
+	public void stop(Long id) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("sql","status = 0");
+		map.put("id",id);
+		this.entStaffMasterMapper.updateByColumn(map );
+	}
+
+	
+	
 	
 }

@@ -11,6 +11,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, ent_id, mobile, type, realname, status, create_time, open_id, login_time
@@ -29,8 +30,8 @@
   </select>
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     select 
-    <include refid="Base_Column_List" />
-    from t_ent_staff
+    staff.id, staff.ent_id, staff.mobile, staff.type, staff.realname, staff.status, staff.create_time, staff.open_id, staff.login_time,en.name ent_name
+    from t_ent_staff staff left join t_biz_enterprise en on en.id = staff.ent_id
 	where 
      1 = 1
     	<if test="mobile != null">

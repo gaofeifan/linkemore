@@ -20,6 +20,8 @@ public class EntStaff {
     private String openId;
 
     private Date loginTime;
+    
+    private String entName;
 
     public Long getId() {
         return id;
@@ -92,4 +94,14 @@ public class EntStaff {
     public void setLoginTime(Date loginTime) {
         this.loginTime = loginTime;
     }
+
+	public String getEntName() {
+		return entName;
+	}
+
+	public void setEntName(String entName) {
+		this.entName = entName;
+	}
+    
+    
 }

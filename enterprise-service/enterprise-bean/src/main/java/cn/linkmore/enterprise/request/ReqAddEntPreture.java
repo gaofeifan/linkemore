@@ -1,17 +1,11 @@
-package cn.linkmore.enterprise.controller.ent.request;
+package cn.linkmore.enterprise.request;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
-@ApiModel("新增企业车区")
 public class ReqAddEntPreture {
 	
-	@ApiModelProperty(value = "车区Id", required = true)
+	private Long id;
     private Long preId;
 	
-	@ApiModelProperty(value = "车区名称", required = true)
     private String preName;
-	@ApiModelProperty(value = "企业id", required = true)
     private Long entId;
 
 
@@ -38,4 +32,14 @@ public class ReqAddEntPreture {
 	public void setPreId(Long preId) {
 		this.preId = preId;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 }

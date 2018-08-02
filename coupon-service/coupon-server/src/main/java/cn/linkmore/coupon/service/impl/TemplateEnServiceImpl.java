@@ -86,7 +86,6 @@ public class TemplateEnServiceImpl implements TemplateEnService {
 	private EnterpriseDealClient enterpriseDealClient;
 	@Resource
 	private OssClient client;
-	private ResOssConfig ossConfig;
 	// 二维码  
 	private final static String QR_LIMIT_SCENE = "QR_LIMIT_SCENE";
 	// 通过ticket换取二维码  
@@ -307,8 +306,8 @@ public class TemplateEnServiceImpl implements TemplateEnService {
 		image.setSuffix(fileName.substring(index));
 		this.attachmentClient.save(image);
 		try { 
-			OSSClient ossClient = client.uploadOSSClient();
-			ossClient.putObject(getOssConfig().getBucketName(), image.getOriginalUrl(), is); 
+
+			String string = attachmentClient.createImage(fileName, is);
 		} catch (Exception e) { 
 			throw new RuntimeException();
 		}finally{
@@ -410,13 +409,4 @@ public class TemplateEnServiceImpl implements TemplateEnService {
 		}
 		return oct;
 	}
-	
-	private ResOssConfig getOssConfig() {
-		if(ossConfig == null) {
-			ossConfig = client.initOssConfig();
-		}
-		return ossConfig;
-	}
-	
-	
 }

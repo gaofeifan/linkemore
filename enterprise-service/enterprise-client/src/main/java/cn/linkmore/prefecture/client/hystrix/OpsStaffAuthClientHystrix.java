@@ -57,6 +57,16 @@ public class OpsStaffAuthClientHystrix implements OpsStaffAuthClient {
 		log.info("ops staffauth service  void update(List ...) hystrix");
 		
 	}
+	@Override
+	public void start(Long id) {
+		log.info("ops staffauth service  void start(Long id) hystrix");
+		
+	}
+	@Override
+	public void stop(Long id) {
+		log.info("ops staffauth service  void stop(Long id) hystrix");
+		
+	}
 	
 	
 	

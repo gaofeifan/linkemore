@@ -80,9 +80,18 @@ public class EntPreServiceImpl implements EntPreService {
 	}
 
 	@Override
-	public int updateEntPre(Long id, Long preId, String preName) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updateEntPre(Long id, Long entId,Long preId, String preName) {
+		ResEnterprise resEnterprise = enterpriseClusterMapper.findById(entId);
+		if(resEnterprise == null ){
+			return 0;
+		}
+		EntPrefecture record = new EntPrefecture();
+		record.setEntId(entId);
+		record.setPreId(preId);
+		record.setEntName(resEnterprise.getName());
+		record.setPreName(preName);
+		record.setId(id);
+		return entPrefectureMasterMapper.updateByIdSelective(record);
 	}
 
 	@Override
