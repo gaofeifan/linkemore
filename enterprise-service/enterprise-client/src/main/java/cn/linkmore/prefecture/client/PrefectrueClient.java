@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
+import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.PrefectrueClientHystrix;
 
@@ -42,5 +43,9 @@ public interface PrefectrueClient {
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	@ResponseBody
 	void delete(@RequestBody List<Long> ids);
+
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	@ResponseBody
+	List<ResEntPrefecture> findAll();
 
 }

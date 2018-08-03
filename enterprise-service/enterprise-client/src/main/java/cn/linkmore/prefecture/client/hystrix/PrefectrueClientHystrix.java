@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
+import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.prefecture.client.PrefectrueClient;
 /**
  * 熔断企业车区
@@ -37,6 +38,13 @@ public class PrefectrueClientHystrix implements PrefectrueClient {
 		log.info("ops staffauth servicevoid delete(List<Long> ids) hystrix");
 		
 	}
+	@Override
+	public List<ResEntPrefecture> findAll() {
+		log.info("ops staffauth service List<ResEntPrefectrue> findAll() hystrix");
+		return null;
+	}
+	
+	
 
 	
 }

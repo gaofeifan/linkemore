@@ -11,9 +11,12 @@
     <result column="plate" jdbcType="VARCHAR" property="plate" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id
+    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -28,7 +31,8 @@
     where ent_pre_id = #{0}
   </select>
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List" />
+    select 
+ <include refid="Base_Column_List" />
     from
 	t_ent_rent_user
 	where 

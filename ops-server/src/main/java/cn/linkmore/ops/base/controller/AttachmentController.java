@@ -13,28 +13,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.OSSObject;
 
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.common.request.ReqAttachment;
-import cn.linkmore.common.response.ResBaseAttachment;
 import cn.linkmore.ops.base.service.AttachmentService;
-import cn.linkmore.third.client.OssClient;
 
 @Controller
 @RequestMapping("/admin/base/attachment")
 public class AttachmentController {
 	
-	@Resource
-	private OssClient ossClient;
 	
 	@Resource
 	private AttachmentService attachmentService;

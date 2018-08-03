@@ -11,9 +11,12 @@
     <result column="plate" jdbcType="VARCHAR" property="plate" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id
+    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name
   </sql>
   <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_ent_rent_user
@@ -29,11 +32,23 @@
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
     insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
       pre_id, mobile, realname, 
-      plate, stall_id, user_id
+      plate, stall_id, user_id.ent_name,pre_name,stall_name
       )
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
       #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
       #{plate,jdbcType=VARCHAR}, #{stallId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}
+      , #{entName,jdbcType=VARCHAR}, #{preName,jdbcType=VARCHAR}, #{stallName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="saveReq" parameterType="cn.linkmore.enterprise.request.ReqRentUser">
+    insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
+      pre_id, mobile, realname, 
+      plate, stall_id, user_id.ent_name,pre_name,stall_name
+      )
+    values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
+      #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
+      #{plate,jdbcType=VARCHAR}, #{stallId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}
+      , #{entName,jdbcType=VARCHAR}, #{preName,jdbcType=VARCHAR}, #{stallName,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
@@ -66,6 +81,15 @@
       <if test="userId != null">
         user_id,
       </if>
+       <if test="entName != null">
+        ent_name,
+      </if>
+       <if test="preName != null">
+        pre_name,
+      </if>
+       <if test="stallName != null">
+        stall_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -94,6 +118,15 @@
       </if>
       <if test="userId != null">
         #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="entName != null">
+        #{entName,jdbcType=VARCHAR},
+      </if>
+      <if test="preName != null">
+        #{preName,jdbcType=VARCHAR},
+      </if>
+      <if test="stallName != null">
+        #{stallName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -124,6 +157,54 @@
       <if test="userId != null">
         user_id = #{userId,jdbcType=BIGINT},
       </if>
+       <if test="entName != null">
+        ent_name = #{entName,jdbcType=VARCHAR},
+      </if>
+       <if test="stallName != null">
+        stall_name = #{stallName,jdbcType=VARCHAR},
+      </if>
+       <if test="preName != null">
+        pre_name = #{preName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateReq" parameterType="cn.linkmore.enterprise.request.ReqRentUser">
+    update t_ent_rent_user
+    <set>
+      <if test="entId != null">
+        ent_id = #{entId,jdbcType=BIGINT},
+      </if>
+      <if test="entPreId != null">
+        ent_pre_id = #{entPreId,jdbcType=BIGINT},
+      </if>
+      <if test="preId != null">
+        pre_id = #{preId,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null">
+        realname = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="plate != null">
+        plate = #{plate,jdbcType=VARCHAR},
+      </if>
+      <if test="stallId != null">
+        stall_id = #{stallId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+        <if test="entName != null">
+        ent_name = #{entName,jdbcType=VARCHAR},
+      </if>
+        <if test="preName != null">
+        pre_name = #{preName,jdbcType=VARCHAR},
+      </if>
+        <if test="stallName != null">
+        stall_name = #{stallName,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -136,7 +217,10 @@
       realname = #{realname,jdbcType=VARCHAR},
       plate = #{plate,jdbcType=VARCHAR},
       stall_id = #{stallId,jdbcType=BIGINT},
-      user_id = #{userId,jdbcType=BIGINT}
+      user_id = #{userId,jdbcType=BIGINT},
+       stall_name = #{stallName,jdbcType=VARCHAR},
+        pre_name = #{preName,jdbcType=VARCHAR},
+         ent_name = #{entName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

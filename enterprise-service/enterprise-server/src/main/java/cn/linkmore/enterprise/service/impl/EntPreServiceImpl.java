@@ -20,8 +20,10 @@ import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.entity.EntVipUser;
+import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntPreService;
+import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.util.DomainUtil;
 
 /**
@@ -95,9 +97,8 @@ public class EntPreServiceImpl implements EntPreService {
 	}
 
 	@Override
-	public List<EntPrefecture> findList(Map<String, Object> map) {
-		List<EntPrefecture> list = this.entPrefectureClusterMapper.findList(map);
-		return list;
+	public List<ResEntPrefecture> findList(Map<String, Object> map) {
+		return this.entPrefectureClusterMapper.findList(map);
 	}
 
 	@Override
@@ -122,7 +123,7 @@ public class EntPreServiceImpl implements EntPreService {
 		List<EntOperateAuth> list = this.entPrefectureClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
-	
+
 	
 
 }

@@ -2,10 +2,13 @@ package cn.linkmore.ops.ent.service.impl;
 
 import java.util.List;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
+import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.ops.ent.service.PrefectrueService;
 import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.client.PrefectrueClient;
@@ -39,6 +42,11 @@ public class PrefectrueServiceImpl implements PrefectrueService {
 	@Override
 	public void delete(List<Long> ids) {
 		this.prefectrueClient.delete(ids);
+	}
+
+	@Override
+	public List<ResEntPrefecture> findAll(HttpServletRequest request) {
+		return this.prefectrueClient.findAll();
 	}
 
 

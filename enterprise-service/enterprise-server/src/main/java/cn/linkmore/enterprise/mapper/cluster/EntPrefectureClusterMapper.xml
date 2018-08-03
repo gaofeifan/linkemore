@@ -12,6 +12,17 @@
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 	</resultMap>
+	<resultMap id="ResBaseResultMap" type="cn.linkmore.enterprise.response.ResEntPrefecture">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="pre_id" jdbcType="BIGINT" property="preId" />
+		<result column="pre_name" jdbcType="VARCHAR" property="preName" />
+		<result column="ent_id" jdbcType="BIGINT" property="entId" />
+		<result column="ent_name" jdbcType="VARCHAR" property="entName" />
+		<result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+		<result column="operator_name" jdbcType="VARCHAR" property="operatorName" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+	</resultMap>
 	<sql id="Base_Column_List">
 		id, pre_id, pre_name, ent_id, ent_name, operator_id, operator_name,
 		create_time,
@@ -32,7 +43,7 @@
 		where pre_id = #{0}
 	</select>
 	<select id="findList" parameterType="java.util.HashMap"
-		resultMap="BaseResultMap">
+		resultMap="ResBaseResultMap">
 		select
 		<include refid="Base_Column_List" />
 		from t_ent_prefecture
