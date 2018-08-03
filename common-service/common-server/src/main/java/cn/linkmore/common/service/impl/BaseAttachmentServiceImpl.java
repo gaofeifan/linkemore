@@ -1,10 +1,5 @@
 package cn.linkmore.common.service.impl;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -13,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -29,7 +23,6 @@ import cn.linkmore.common.entity.BaseAttachment;
 import cn.linkmore.common.request.ReqAttachment;
 import cn.linkmore.common.service.BaseAttachmentService;
 import cn.linkmore.common.service.OssService;
-import cn.linkmore.third.client.OssClient;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 /**

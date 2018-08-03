@@ -16,6 +16,7 @@ import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncome;
@@ -172,5 +173,12 @@ public interface OrdersService {
 	 * @Version  v2.0
 	 */
 	List<ResIncome> findIncomeList(Map<String, Object> param);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResCharge> findChargeDetailNew(Map<String, Object> param);
 	
 }

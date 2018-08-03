@@ -3,12 +3,17 @@ package cn.linkmore.enterprise.request;
 public class ReqAddEntPreture {
 	
 	private Long id;
-    private Long preId;
+    
+	private Long preId;
 	
     private String preName;
+    
     private Long entId;
 
-
+    private String operatorName;
+    
+    private Long operatorId;
+    
 	public String getPreName() {
 		return preName;
 	}
@@ -40,6 +45,20 @@ public class ReqAddEntPreture {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	
+
+	public String getOperatorName() {
+		return operatorName;
+	}
+
+	public void setOperatorName(String operatorName) {
+		this.operatorName = operatorName;
+	}
+
+	public Long getOperatorId() {
+		return operatorId;
+	}
+
+	public void setOperatorId(Long operatorId) {
+		this.operatorId = operatorId;
+	}
 }

@@ -339,7 +339,7 @@
 	FROM
 		o_orders
 	WHERE
-		 <!-- status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and --> stall_id IN 
+		 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and stall_id IN 
 	   <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
 			#{id}
 	 	</foreach>
@@ -351,7 +351,7 @@
 	FROM
 		o_orders
 	WHERE
-		<!--  status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and --> stall_id IN 
+		 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and stall_id IN 
 	   <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
 			#{id}
 	 	</foreach>
@@ -362,10 +362,10 @@
 	FROM
 		o_orders
 	<where>
-		<!-- status = 3 
+		status = 3 
 		<if test="startTime != null">
 		 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
-		</if> -->
+		</if>
 		and stall_id IN 
 	    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
 			#{id}
@@ -378,10 +378,10 @@
 	FROM
 		o_orders
 	<where>
-		<!-- status = 3 
+		status = 3 
 		<if test="startTime != null">
 		 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
-		</if> -->
+		</if>
 		and stall_id IN 
 	    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
 			#{id}
@@ -395,11 +395,11 @@
 		o_orders
 	<where>
 	    1 = 1
-		<!-- status = 3 
+		and status = 3 
 		and stall_id IN 
 	    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
 			#{id}
-	 	</foreach> -->
+	 	</foreach>
 	</where>
 	order by end_time desc
   </select>
@@ -409,8 +409,8 @@
 		FROM
 			o_orders
 		WHERE
-		<!-- status = 3 
-		and -->
+		status = 3 
+		and
 		stall_id IN 
     <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
 		#{id}
@@ -441,18 +441,17 @@
 	FROM
 		o_orders
 	WHERE
-	<!-- status = 3 
+	status = 3 
 		<if test="startTime != null">
 		 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
-		</if> -->
+		</if>
 	stall_id IN 
     <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
 		#{id}
  	</foreach>
 	GROUP BY
 		DATE_FORMAT(end_time, '%Y-%m-%d')
-	ORDER BY
-		DATE_FORMAT(end_time, '%Y-%m-%d')
+	ORDER BY end_time desc
   </select>
   <select id="findPlateByPreId" parameterType="java.lang.Long" resultType="cn.linkmore.order.controller.app.response.ResMonthCount">
  	SELECT plate_no plateNo,stall_id stallId,stall_name stallName FROM o_orders WHERE pre_id = #{preId} AND status = 1

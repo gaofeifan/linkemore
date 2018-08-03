@@ -45,11 +45,10 @@ public class PrefectrueController {
 		ViewMsg msg = null;
 		try {
 			
-//			Subject subject = SecurityUtils.getSubject();
-//			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
-//			auth.set(person.getId().intValue());
-//			auth.setCreatorName(person.getUsername());
-//			auth.setDeleteStatus(0);
+			Subject subject = SecurityUtils.getSubject();
+			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+			auth.setOperatorId(person.getId());
+			auth.setOperatorName(person.getUsername());
 			this.prefectrueService.save(auth);
 			msg = new ViewMsg("保存成功", true);
 		} catch (BusinessException e) {

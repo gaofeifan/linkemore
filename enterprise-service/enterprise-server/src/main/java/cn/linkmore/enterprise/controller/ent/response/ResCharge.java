@@ -3,6 +3,8 @@ package cn.linkmore.enterprise.controller.ent.response;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 @ApiModel("实时收费数据列表")
@@ -14,8 +16,9 @@ public class ResCharge {
 	@ApiModelProperty(value="实时收费详情列表")
 	private List<ResChargeDetail> charge;
 
+	@JsonFormat(pattern="MM月dd日")
 	public Date getDate() {
-		return date;
+		return date;	
 	}
 
 	public void setDate(Date date) {

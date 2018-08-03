@@ -1,7 +1,6 @@
 package cn.linkmore.coupon.service.impl;
 
 import java.io.IOException;
-
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.aliyun.oss.OSSClient;
 
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -52,7 +50,6 @@ import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.coupon.service.TemplateEnService;
 import cn.linkmore.coupon.utils.CouponUtils;
 import cn.linkmore.prefecture.client.EnterpriseDealClient;
-import cn.linkmore.third.client.OssClient;
 import cn.linkmore.third.client.WechatClient;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
@@ -84,8 +81,6 @@ public class TemplateEnServiceImpl implements TemplateEnService {
 	private BaseAttachmentClient attachmentClient;
 	@Resource
 	private EnterpriseDealClient enterpriseDealClient;
-	@Resource
-	private OssClient client;
 	// 二维码  
 	private final static String QR_LIMIT_SCENE = "QR_LIMIT_SCENE";
 	// 通过ticket换取二维码  

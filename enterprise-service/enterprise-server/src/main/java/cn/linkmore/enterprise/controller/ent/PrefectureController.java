@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("/ent/prefecture")
-@Api(tags = "prefecture",description="车区运营", produces = "application/json")
+@Api(tags = "prefecture",description="车区运营【物业版】", produces = "application/json")
 public class PrefectureController {
 
 	@Resource
@@ -73,6 +73,13 @@ public class PrefectureController {
 	@ResponseBody
 	public ResponseEntity<List<cn.linkmore.enterprise.controller.ent.response.ResChargeList>> findChargeDetail(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
 		List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> list = this.prefectureService.findChargeDetail(type,preId,request);
+		return ResponseEntity.success(list, request);
+	}
+	@RequestMapping(value="/charge-detail-new" ,method=RequestMethod.GET)
+	@ApiOperation(value = "查询车场实时收费明细-新", notes = "查询车场实时收费明细-新", consumes = "application/json")
+	@ResponseBody
+	public ResponseEntity<List<cn.linkmore.enterprise.controller.ent.response.ResCharge>> findChargeDetailNew(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
+		List<ResCharge> list = this.prefectureService.findChargeDetailNew(type,preId,request);
 		return ResponseEntity.success(list, request);
 	}
 	

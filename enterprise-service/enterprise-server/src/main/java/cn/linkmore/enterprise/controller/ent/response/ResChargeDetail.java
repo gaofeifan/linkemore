@@ -3,6 +3,8 @@ package cn.linkmore.enterprise.controller.ent.response;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 @ApiModel("实时收费详情列表")
@@ -31,6 +33,7 @@ public class ResChargeDetail {
 		this.plateNo = plateNo;
 	}
 
+	@JsonFormat(pattern="MM:dd")
 	public Date getStartTime() {
 		return startTime;
 	}

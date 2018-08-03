@@ -1,6 +1,7 @@
 package cn.linkmore.ops.ent.service.impl;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqStaffAuthBind;
 import cn.linkmore.enterprise.request.ReqAddEntStaff;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.ops.ent.request.ReqBindStaffAuth;
 import cn.linkmore.ops.ent.service.StaffService;
 import cn.linkmore.prefecture.client.OpsStaffAuthClient;
@@ -83,6 +85,12 @@ public class StaffServiceImpl implements StaffService {
 	public void stop(Long id) {
 		this.staffClient.stop(id);
 	}
+
+	@Override
+	public Boolean check(ReqCheck reqCheck) {
+		return this.staffClient.check(reqCheck);
+	}
+	
 
 	
 

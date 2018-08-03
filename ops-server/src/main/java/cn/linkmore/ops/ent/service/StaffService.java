@@ -2,12 +2,14 @@ package cn.linkmore.ops.ent.service;
 
 import java.util.Map;
 
+
 import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntStaff;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.ops.ent.request.ReqBindStaffAuth;
 
 /**
@@ -80,5 +82,12 @@ public interface StaffService {
 	 * @Version  v2.0
 	 */
 	void stop(Long id);
+
+	/**
+	 * @Description  校验
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean check(ReqCheck reqCheck);
 
 }

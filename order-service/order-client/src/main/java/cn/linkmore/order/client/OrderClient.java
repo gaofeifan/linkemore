@@ -17,6 +17,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.OrderClientHystrix;
 import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderExcel;
@@ -59,45 +60,4 @@ public interface OrderClient {
 	@ResponseBody
 	public List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean); 
 	
-	@RequestMapping(value = "/by-stall", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResPreOrderCount> findPreCountByIds(@RequestBody List<Long> ids);
-	
-	/**
-	 * @Description  根据车区查询车牌号
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	@RequestMapping(value = "/plate-by-preid", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResOrderPlate> findPlateByPreId(@RequestParam("preId")Long preId);
-
-	@RequestMapping(value = "/day-income", method = RequestMethod.POST)
-	@ResponseBody
-	public BigDecimal findPreDayIncome(@RequestBody List<Long> authStall);
-
-	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String,Object> findTrafficFlow(@RequestBody Map<String, Object> map);
-
-	@RequestMapping(value = "/proceeds", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String,Object> findProceeds(@RequestBody Map<String, Object> map);
-
-	@RequestMapping(value = "/charge-detail", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResChargeList> findChargeDetail(@RequestBody Map<String, Object> param);
-
-	@RequestMapping(value = "/traffic-flow-list", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResTrafficFlow> findTrafficFlowList(@RequestBody Map<String, Object> param);
-
-	/**
-	 * @Description  查询收费列表
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	@RequestMapping(value = "/income-list", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResIncome> findIncomeList(@RequestBody Map<String, Object> param);
 }
