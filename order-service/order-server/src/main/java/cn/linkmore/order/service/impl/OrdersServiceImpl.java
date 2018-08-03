@@ -902,7 +902,7 @@ public class OrdersServiceImpl implements OrdersService {
 				ro.setPrefectureAddress(pre.getAddress());
 				ro.setGuideImage(pre.getRouteGuidance());
 				ro.setGuideRemark(pre.getRouteDescription());
-				ro.setPrefectureName(pre.getName());
+				//ro.setPrefectureName(pre.getName());
 			}
 			ResStallEntity stall = this.stallClient.findById(ro.getStallId());
 			if (stall != null) {
