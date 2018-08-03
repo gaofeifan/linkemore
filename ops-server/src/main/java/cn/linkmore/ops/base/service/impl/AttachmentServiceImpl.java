@@ -1,6 +1,5 @@
 package cn.linkmore.ops.base.service.impl;
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.view.ViewPage;
@@ -8,7 +7,6 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseAttachmentClient;
 import cn.linkmore.common.response.ResBaseAttachment;
 import cn.linkmore.ops.base.service.AttachmentService;
-import cn.linkmore.third.client.OssClient;
 
 /**
  * 文件上传---接口实习那么
@@ -22,8 +20,6 @@ public class AttachmentServiceImpl implements AttachmentService {
 	@Resource
 	private BaseAttachmentClient attachmentClient;
 	
-	@Resource
-	private OssClient ossClient;
 	@Override
 	public void delete(Long id) {
 		this.attachmentClient.delete(id);
