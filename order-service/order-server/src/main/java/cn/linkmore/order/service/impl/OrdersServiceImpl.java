@@ -353,6 +353,7 @@ public class OrdersServiceImpl implements OrdersService {
 				o.setBrandId(brandId);
 				o.setEntId(brand.getEntId());
 				o.setStrategyId(brand.getStrategyId());
+				o.setPreName(brand.getName());
 			}
 			this.orderMasterMapper.save(o);
 
