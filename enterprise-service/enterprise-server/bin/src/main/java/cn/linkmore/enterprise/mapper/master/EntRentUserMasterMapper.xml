@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntRentUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="plate" jdbcType="VARCHAR" property="plate" />
+    <result column="stalll_id" jdbcType="BIGINT" property="stalllId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stalll_id, user_id
+  </sql>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_ent_rent_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="delete" parameterType="java.util.List">
+	  delete from t_ent_rent_user
+	  where id in
+	  <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+	     #{id}
+	  </foreach> 
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
+    insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
+      pre_id, mobile, realname, 
+      plate, stalll_id, user_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
+      #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
+      #{plate,jdbcType=VARCHAR}, #{stalllId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
+    insert into t_ent_rent_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="entId != null">
+        ent_id,
+      </if>
+      <if test="entPreId != null">
+        ent_pre_id,
+      </if>
+      <if test="preId != null">
+        pre_id,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="realname != null">
+        realname,
+      </if>
+      <if test="plate != null">
+        plate,
+      </if>
+      <if test="stalllId != null">
+        stalll_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="entId != null">
+        #{entId,jdbcType=BIGINT},
+      </if>
+      <if test="entPreId != null">
+        #{entPreId,jdbcType=BIGINT},
+      </if>
+      <if test="preId != null">
+        #{preId,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null">
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="plate != null">
+        #{plate,jdbcType=VARCHAR},
+      </if>
+      <if test="stalllId != null">
+        #{stalllId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
+    update t_ent_rent_user
+    <set>
+      <if test="entId != null">
+        ent_id = #{entId,jdbcType=BIGINT},
+      </if>
+      <if test="entPreId != null">
+        ent_pre_id = #{entPreId,jdbcType=BIGINT},
+      </if>
+      <if test="preId != null">
+        pre_id = #{preId,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null">
+        realname = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="plate != null">
+        plate = #{plate,jdbcType=VARCHAR},
+      </if>
+      <if test="stalllId != null">
+        stalll_id = #{stalllId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
+    update t_ent_rent_user
+    set ent_id = #{entId,jdbcType=BIGINT},
+      ent_pre_id = #{entPreId,jdbcType=BIGINT},
+      pre_id = #{preId,jdbcType=BIGINT},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      realname = #{realname,jdbcType=VARCHAR},
+      plate = #{plate,jdbcType=VARCHAR},
+      stalll_id = #{stalllId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

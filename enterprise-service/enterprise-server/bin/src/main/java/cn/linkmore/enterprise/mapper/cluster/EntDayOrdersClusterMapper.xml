@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.EntDayOrdersClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntDayOrders">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
+    <result column="day" jdbcType="VARCHAR" property="day" />
+    <result column="order_amount" jdbcType="VARCHAR" property="orderAmount" />
+    <result column="order_count" jdbcType="VARCHAR" property="orderCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ent_id, pre_id, ent_pre_id, day, order_amount, order_count, create_time, update_time
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_day_orders
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>

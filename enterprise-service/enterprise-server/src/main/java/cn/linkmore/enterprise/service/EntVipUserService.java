@@ -1,5 +1,8 @@
 package cn.linkmore.enterprise.service;
 
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
+
 public interface EntVipUserService {
 
 	/**
@@ -28,5 +31,13 @@ public interface EntVipUserService {
 	 * @Version v1.0
 	 */
 	int updateEntVipUser(Long id, String mobile, String realname, String plate);
+	
+	
+	/**
+	 * @Description  分页查询
+	 * @Author   cl
+	 * @Version  v2.0
+	 */
+	ViewPage findPage(ViewPageable pageable);
 
 }

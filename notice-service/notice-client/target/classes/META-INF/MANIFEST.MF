@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: notice-client
+Implementation-Version: 2.0.0.1-RELEASE
+Built-By: TESTER
+Implementation-Vendor-Id: cn.linkmore
+Build-Jdk: 1.8.0_31
+Implementation-URL: http://maven.apache.org
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+

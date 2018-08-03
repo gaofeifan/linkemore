@@ -1,7 +1,11 @@
 package cn.linkmore.enterprise.dao.master;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.entity.EntVipUser;
 
 /**
@@ -23,4 +27,5 @@ public interface EntVipUserMasterMapper {
     int updateByIdSelective(EntVipUser record);
 
     int updateById(EntVipUser record);
+    
 }

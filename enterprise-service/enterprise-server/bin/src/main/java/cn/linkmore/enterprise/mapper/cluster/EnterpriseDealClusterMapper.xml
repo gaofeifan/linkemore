@@ -45,7 +45,7 @@
     </if>
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
-    <select id="listByEnterpriseId" resultMap="BaseResultMap" parameterType="Integer">
+    <select id="listByEnterpriseId" resultMap="BaseResultMap">
     select id, enterprise_id, enterprise_name, serial_number, deal_pay_amount, deal_gift_amount, 
     remark, creator_id, creator_name, create_time,is_create,used_deal_pay_amount,user_deal_gift_amount
     from t_biz_enterprise_deal where 1 = 1

@@ -74,6 +74,8 @@ public class TokenFilter extends ZuulFilter {
 			add("/ent/auth/v2.0/login");
 			add("/ent/auth/v2.0/send");  
 			
+			add("/attach/image_upload");  
+			
 		}
 	};  
 	

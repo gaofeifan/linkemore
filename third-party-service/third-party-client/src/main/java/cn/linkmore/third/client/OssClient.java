@@ -53,7 +53,7 @@ public interface OssClient {
 /*@Component
 class OssConfiguration {
 
-	@Bean
+	/*@Bean
 	@Primary
 	@Scope("prototype")
 	public Encoder multipartFormEncoder() {
