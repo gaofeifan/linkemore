@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.apache.commons.lang.StringUtils;
+
 import cn.linkmore.annotation.VehicleMarkCheck;
 
 public class VehicleMarkCheckValidator implements ConstraintValidator<VehicleMarkCheck, String> {
@@ -26,6 +28,9 @@ public class VehicleMarkCheckValidator implements ConstraintValidator<VehicleMar
 
 	@Override
 	public boolean isValid(String str, ConstraintValidatorContext context) {
+		if(StringUtils.isBlank(str)) {
+			return true;
+		}
 		for (int i = 0; i < lengths.length; i++) {
 			if (str.length() == lengths[i]) {
 				Pattern pattern = Pattern.compile(values[i]);
