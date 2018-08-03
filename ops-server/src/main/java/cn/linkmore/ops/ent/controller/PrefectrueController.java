@@ -44,6 +44,7 @@ public class PrefectrueController {
 	public ViewMsg save(ReqAddEntPreture auth,HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
+			
 //			Subject subject = SecurityUtils.getSubject();
 //			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
 //			auth.set(person.getId().intValue());
