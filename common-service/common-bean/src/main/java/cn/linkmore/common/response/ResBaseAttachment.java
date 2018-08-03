@@ -22,7 +22,7 @@ public class ResBaseAttachment {
 
 	private Short type;
 
-	private Long size;
+	private Integer size;
 
 	private Short source;
 
@@ -60,11 +60,11 @@ public class ResBaseAttachment {
 		this.type = type;
 	}
 
-	public Long getSize() {
+	public Integer getSize() {
 		return size;
 	}
 
-	public void setSize(Long size) {
+	public void setSize(Integer size) {
 		this.size = size;
 	}
 

@@ -117,6 +117,7 @@ public class OssServiceImpl implements OssService {
 			beanFactory.uploadOSSClient().putObject(ossConfig.getBucketName(), url.toString(),new FileInputStream(mini));  
 			is.close();
 		}  catch (Exception e) { 
+			log.info("========{}",e.getMessage());
 			throw new BusinessException(StatusEnum.THIRD_IMAGE_UPLOAD_ERROR);
 		} finally {
 
