@@ -31,6 +31,7 @@ import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.service.EntStallService;
+import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.prefecture.client.StallClient;
@@ -67,7 +68,7 @@ public class EntStallServiceImpl implements EntStallService {
 	private StallClient stallClient;
 	
 	@Autowired
-	private OrderClient orderClient;
+	private EntOrderClient orderClient;
 	
 	@Autowired
 	private LockFactory lockFactory;

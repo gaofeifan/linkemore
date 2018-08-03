@@ -11,6 +11,7 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntStaff;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqStaffAuthBind;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.OpsStaffAuthClientHystrix;
@@ -54,7 +55,12 @@ public interface OpsStaffAuthClient {
 	@RequestMapping(value = "start",method = RequestMethod.PUT)
 	@ResponseBody
 	public void start(@RequestParam("id") Long id);
+	
 	@RequestMapping(value = "stop",method = RequestMethod.PUT)
 	@ResponseBody
 	public void stop(@RequestParam("id") Long id);
+
+	@RequestMapping(value = "check",method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean check(@RequestBody ReqCheck reqCheck);
 }

@@ -34,4 +34,11 @@ public interface EntStaffClusterMapper {
 	 */
 	List<EntStaff> findPage(Map<String, Object> param);
 
+	/**
+	 * @Description  校验
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer check(Map<String, Object> param);
+
 }

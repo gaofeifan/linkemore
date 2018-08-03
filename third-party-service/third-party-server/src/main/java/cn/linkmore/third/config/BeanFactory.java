@@ -24,9 +24,6 @@ public class BeanFactory {
 	@Autowired
 	private PushConfig PushConfig;
 
-	@Autowired
-	private OssConfig ossConfig;
-
 	@Bean(name = "iAcsClient")
 	public IAcsClient iAcsClient() throws ClientException {
 		System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
@@ -42,25 +39,4 @@ public class BeanFactory {
 	public JPushClient jPushClient() {
 		return new JPushClient(PushConfig.getSecret(), PushConfig.getKey(), 3);
 	}
-	
-	/**
-	 * 存储-下载
-	 * 
-	 * @return
-	 */
-	@Bean(name = "downloadOSSClient")
-	public OSSClient downloadOSSClient() {
-		return new OSSClient(ossConfig.getDownloadEndpoint(), ossConfig.getAccessKeyId(),
-				ossConfig.getAccessKeySecret());
-	}
-
-	/**
-	 * 存储-上传
-	 * 
-	 * @return
-	 */
-	@Bean(name = "uploadOSSClient")
-	public OSSClient uploadOSSClient() {
-		return new OSSClient(ossConfig.getUploadEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
-	} 
 }

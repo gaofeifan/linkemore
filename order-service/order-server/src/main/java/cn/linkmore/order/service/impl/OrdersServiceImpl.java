@@ -1030,9 +1030,36 @@ public class OrdersServiceImpl implements OrdersService {
 		return chargeList;
 	}
 
+	
+	@Override
+	public List<ResCharge> findChargeDetailNew(Map<String, Object> param) {
+		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
+		param.put("startTime", date);
+		List<ResCharge> charges = new ArrayList<>();
+		List<ResMonthCount> count = this.ordersClusterMapper.findMonthCount(param);
+		List<ResChargeDetail> list = this.ordersClusterMapper.findChargeDetail(param);
+		ResCharge charge = null;
+		List<ResChargeDetail> chargeDetails = null;
+		for (ResMonthCount resMonthCount : count) {
+			charge = new ResCharge();
+			chargeDetails = new ArrayList<>();
+			for (ResChargeDetail detail : list) {
+				if (detail.getMonth() == resMonthCount.getMonth()) {
+					String str = DateUtils.getDuration(new Date(), detail.getEndTime());
+					detail.setStopTime(str);
+					chargeDetails.add(detail);
+				}
+			}
+			charge.setCharge(chargeDetails);
+			charge.setDate(chargeDetails.get(0).getStartTime());
+			charges.add(charge);
+		}
+		return charges;
+	}
+
 	@Override
 	public List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param) {
-		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
+		Date date = getDateByType(Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
 		List<ResTrafficFlow> flowLists = new ArrayList<>();
 		List<ResTrafficFlowList> list = this.ordersClusterMapper.findTrafficFlowList(param);
@@ -1054,7 +1081,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public List<ResIncome> findIncomeList(Map<String, Object> param) {
-		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
+		Date date = getDateByType(Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
 		List<ResIncome> incomes = new ArrayList<>();
 		List<ResMonthCount> months = this.ordersClusterMapper.findMonthCount(param);

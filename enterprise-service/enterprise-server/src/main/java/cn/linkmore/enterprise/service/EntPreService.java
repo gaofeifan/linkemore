@@ -10,7 +10,7 @@ import cn.linkmore.enterprise.response.ResEntPrefecture;
 
 public interface EntPreService {
 
-	int saveEntPre(Long preId,Long entId, String preName);
+	int saveEntPre(Long preId,Long entId, String preName,Long personId , String personname);
 
 	int deleteEntPre(Long id);
 

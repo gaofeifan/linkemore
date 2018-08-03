@@ -1,5 +1,6 @@
 package cn.linkmore.enterprise.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class EntPreServiceImpl implements EntPreService {
 	private EntVipUserClusterMapper entVipUserClusterMapper;
 
 	@Override
-	public int saveEntPre(Long preId,Long entId, String preName) {
+	public int saveEntPre(Long preId,Long entId, String preName,Long personId,String personName) {
 		
 		if(entId == null || entId == 0){
 			return 0;
@@ -61,7 +62,10 @@ public class EntPreServiceImpl implements EntPreService {
 		record.setPreId(preId);
 		record.setEntName(resEnterprise.getName());
 		record.setPreName(preName);
-		
+		record.setCreateTime(new Date());
+		record.setUpdateTime(new Date());
+		record.setOperatorId(personId);
+		record.setOperatorName(personName);
 		return entPrefectureMasterMapper.save(record);
 	}
 
@@ -93,6 +97,7 @@ public class EntPreServiceImpl implements EntPreService {
 		record.setEntName(resEnterprise.getName());
 		record.setPreName(preName);
 		record.setId(id);
+		record.setUpdateTime(new Date());
 		return entPrefectureMasterMapper.updateByIdSelective(record);
 	}
 

@@ -23,6 +23,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.ent.request.ReqAddEntStaff;
 import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntStaff;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqStaffAuthBind;
 import cn.linkmore.enterprise.service.EntStaffService;
 import cn.linkmore.enterprise.service.StaffAuthService;
@@ -138,5 +139,15 @@ public class EntStaffController {
 	@ResponseBody
 	public void stop(@RequestParam("id") Long id) {
 		this.entStaffService.stop(id);
+	}
+	
+	@RequestMapping(value = "check",method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean check(@RequestBody ReqCheck reqCheck) {
+		Integer count = this.entStaffService.check(reqCheck.getProperty(),reqCheck.getValue(),reqCheck.getId());
+		if(count > 0) {
+			return false;
+		}
+		return true;
 	}
 }
