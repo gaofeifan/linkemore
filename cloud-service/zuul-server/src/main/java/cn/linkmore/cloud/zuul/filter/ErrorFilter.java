@@ -1,4 +1,4 @@
-package cn.linkmore.cloud.zuul;
+package cn.linkmore.cloud.zuul.filter;
 
 import static com.netflix.zuul.context.RequestContext.getCurrentContext;
 import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
@@ -11,6 +11,8 @@ import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+
+import cn.linkmore.cloud.zuul.handler.ResponseHandler;
 
 /**
  * 错误处理，可以通过设置ErrorHandler自定义返回错误信息和错误码

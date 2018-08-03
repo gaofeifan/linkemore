@@ -1,4 +1,4 @@
-package cn.linkmore.cloud.zuul;
+package cn.linkmore.cloud.zuul.handler;
 
 
 /**

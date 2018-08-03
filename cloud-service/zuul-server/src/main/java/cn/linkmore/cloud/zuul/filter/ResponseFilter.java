@@ -1,4 +1,4 @@
-package cn.linkmore.cloud.zuul;
+package cn.linkmore.cloud.zuul.filter;
 
 import static com.netflix.zuul.context.RequestContext.getCurrentContext;
 import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
