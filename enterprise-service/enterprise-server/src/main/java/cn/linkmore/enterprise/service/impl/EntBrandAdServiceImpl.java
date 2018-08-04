@@ -162,7 +162,9 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(map);
 		if (CollectionUtils.isNotEmpty(list)) {
 			resBrandAd = list.get(0);
-			if (resBrandAd.getLimitStatus() == 0 && resBrandAd.getAdStatus() == 0) {
+			//无论是否受限，只要设置不发送广告，均不显示广告
+			//if (resBrandAd.getLimitStatus() == 0 && resBrandAd.getAdStatus() == 0) {
+			if (resBrandAd.getAdStatus() == 0) {
 				// 非受限用户且不发送广告
 				return null;
 			}

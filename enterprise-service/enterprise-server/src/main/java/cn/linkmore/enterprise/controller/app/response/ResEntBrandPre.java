@@ -64,6 +64,17 @@ public class ResEntBrandPre {
 	
 	@ApiModelProperty(value = "是否品牌授权用户")
 	private Boolean brandUserFlag = false;
+	
+	@ApiModelProperty(value = "是否受限品牌专区")
+	private Boolean limitStatus = false;
+	
+	public Boolean getLimitStatus() {
+		return limitStatus;
+	}
+
+	public void setLimitStatus(Boolean limitStatus) {
+		this.limitStatus = limitStatus;
+	}
 
 	public Long getId() {
 		return id;
