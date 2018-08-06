@@ -71,17 +71,13 @@ zuul:
       path: /api/coupon/**  
       serviceId: coupon-server 
       sensitiveHeaders: Authorization
-    brand:
-      path: /api/brand/**  
+    enterprise:
+      path: /api/enterprise/**  
       serviceId: enterprise-server 
       sensitiveHeaders: Authorization    
     ops:
       path: /admin/**  
       serviceId: ops-server 
-      sensitiveHeaders: Authorization 
-    ent:
-      path: /ent/file/**  
-      serviceId: common-server 
       sensitiveHeaders: Authorization 
 security:
   basic:
