@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.controller.ops;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.ent.request.ReqAddEntVipUser;
 import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntVipUser;
+import cn.linkmore.enterprise.entity.EntVipUser;
+import cn.linkmore.enterprise.request.ReqVipUser;
 import cn.linkmore.enterprise.service.EntVipUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -81,6 +87,52 @@ public class EntVipUserController {
 	public ViewPage findPage(@RequestBody ViewPageable pageable) {
     	System.out.println("调用");
 		return this.entVipUserService.findPage(pageable);
+	}
+    
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg save(@RequestBody ReqAddEntVipUser reqAddEntVipUser,HttpServletRequest request) {
+    	System.out.println(" 保存 "+ reqAddEntVipUser.getMobile());
+		ViewMsg msg = null;
+		try {
+			this.entVipUserService.save(reqAddEntVipUser);
+			msg = new ViewMsg("保存成功", true);
+		} catch (BusinessException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("保存失败", false);
+		}
+		return msg;
+	}
+    
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg update(ReqVipUser auth,HttpServletRequest request) {
+		ViewMsg msg = null;
+		try {
+			this.entVipUserService.update(auth);
+			msg = new ViewMsg("更新成功", true);
+		} catch (BusinessException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("更新失败", false);
+		}
+		return msg;
+	}
+    
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg update(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.entVipUserService.delete(ids);
+			msg = new ViewMsg("删除成功", true);
+		} catch (BusinessException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("删除失败", false);
+		}
+		return msg;
 	}
 
 }

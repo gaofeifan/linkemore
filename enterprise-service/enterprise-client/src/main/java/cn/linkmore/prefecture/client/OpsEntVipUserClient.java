@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.client;
 
+import java.util.List;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,8 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterprise;
+import cn.linkmore.enterprise.request.ReqRentUser;
+import cn.linkmore.enterprise.request.ReqVipUser;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.EnterpriseClientHystrix;
 import cn.linkmore.prefecture.client.hystrix.OpsEntVipUserClientHystrix;
@@ -26,13 +30,21 @@ import cn.linkmore.prefecture.client.hystrix.PrefectrueClientHystrix;
 @FeignClient(value = "enterprise-server", path = "/ops/vip", fallback = OpsEntVipUserClientHystrix.class, configuration = FeignConfiguration.class)
 public interface OpsEntVipUserClient {
 
-	/**
-	 * @Description 分页查询
-	 * @Author cl
-	 * @Version v2.0
-	 */
+
 	@RequestMapping(value = "/page", method = RequestMethod.POST)
 	@ResponseBody
 	ViewPage findPage(@RequestBody ViewPageable pageable);
+	
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@ResponseBody
+	public void save(@RequestBody ReqVipUser user);
+	
+	@RequestMapping(value = "/update", method = RequestMethod.PUT)
+	@ResponseBody
+	public void update(@RequestBody ReqVipUser user);
+	
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void delete(@RequestBody List<Long> ids);
 
 }
