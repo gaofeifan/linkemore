@@ -30,6 +30,13 @@ public class ResOrder {
 	private BigDecimal preLongitude;
 	@ApiModelProperty(value = "车区纬度")
 	private BigDecimal preLatitude; 
+	
+	@ApiModelProperty(value = "车区经度[高德、腾讯]")
+	private double tencentLongitude;
+	
+	@ApiModelProperty(value = "车区纬度[高德、腾讯]")
+	private double tencentLatitude; 
+	
 	@ApiModelProperty(value = "车区名称")
 	private String prefectureName;
 	@ApiModelProperty(value = "车区地址")
@@ -184,6 +191,33 @@ public class ResOrder {
 	}
 	public void setPreLatitude(BigDecimal preLatitude) {
 		this.preLatitude = preLatitude;
+	}
+	private final static double PI = 3.14159265358979324;
+	
+	public double getTencentLongitude() { 
+		double tx_lon; 
+		double x = this.getPreLongitude().doubleValue() - 0.0065, y = this.getPreLatitude().doubleValue() - 0.006;
+		double z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * PI);
+		double theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * PI);
+		tx_lon = z * Math.cos(theta); 
+		return tx_lon; 
+	}
+	
+	public double  getTencentLatitude() {
+		double tx_lat;  
+		double x = this.getPreLongitude().doubleValue() - 0.0065, y = this.getPreLatitude().doubleValue() - 0.006;
+		double z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * PI);
+		double theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * PI); 
+		tx_lat = z * Math.sin(theta); 
+		return tx_lat;
+	}
+	 
+	public void setTencentLongitude(double tencentLongitude) {
+		this.tencentLongitude = tencentLongitude;
+	}
+	 
+	public void setTencentLatitude(double tencentLatitude) {
+		this.tencentLatitude = tencentLatitude;
 	}
 	@JsonIgnore
 	public void copy(ResUserOrder ruo) {

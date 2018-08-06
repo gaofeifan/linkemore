@@ -53,14 +53,16 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/prefectures/v2.0/map/list"); 
 			add("/app/prefectures/v2.0/free/list"); 
 			add("/app/prefectures/v2.0/strategy");
+			add("/feign/stall/v2.0/update-brand");
 			
-			add("/app/brand_pre/v2.0/map/list"); 
-			add("/app/brand_pre/v2.0/free/list"); 
-			add("/app/brand_pre/v2.0/strategy");
+			add("/app/brand-pre/v2.0/map/list"); 
+			add("/app/brand-pre/v2.0/free/list"); 
+			add("/app/brand-pre/v2.0/strategy");
 			
-			add("/app/brands/v2.0/brand_ad"); 
-			add("/app/brands/v2.0/brand_apply"); 
-			add("/app/brands/v2.0/brand_pre_ad");
+			
+			add("/app/brands/v2.0/brand-ad"); 
+			add("/app/brands/v2.0/brand-apply"); 
+			add("/app/brands/v2.0/brand-pre-ad");
 			
 			add("/app/citys/v2.0/list"); 
 			add("/app/callback/v2.0/wechat-mini/order");
