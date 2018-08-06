@@ -3,6 +3,10 @@
  */
 package cn.linkmore.enterprise.controller.ent.request;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Range;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -15,8 +19,10 @@ import io.swagger.annotations.ApiModelProperty;
 public class ReqPreStall {
 	
 	@ApiModelProperty("车区ID")
+	@NotNull(message="车区不能为空")
 	private Long preId;
 	@ApiModelProperty("车位类型")
+	@NotNull(message="类型不能为空")
 	private Short type;
 
 	public Long getPreId() {

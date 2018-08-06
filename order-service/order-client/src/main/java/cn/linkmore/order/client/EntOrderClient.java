@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.EntOrderClientHystrix;
 import cn.linkmore.order.response.ResCharge;
-import cn.linkmore.order.response.ResChargeList;
+import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
@@ -32,9 +32,9 @@ public interface EntOrderClient {
 	@ResponseBody
 	public List<ResOrderPlate> findPlateByPreId(@RequestParam("preId")Long preId);
 
-	@RequestMapping(value = "/day-income", method = RequestMethod.POST)
+	@RequestMapping(value = "/day-income", method = RequestMethod.GET)
 	@ResponseBody
-	public BigDecimal findPreDayIncome(@RequestBody List<Long> authStall);
+	public BigDecimal findPreDayIncome(@RequestParam("preId") Long preId);
 
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
 	@ResponseBody
@@ -46,16 +46,16 @@ public interface EntOrderClient {
 
 	@RequestMapping(value = "/charge-detail", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResChargeList> findChargeDetail(@RequestBody Map<String, Object> param);
+	public List<ResChargeDetail> findChargeDetail(@RequestBody Map<String, Object> param);
 	
-	@RequestMapping(value = "/charge-detail-new", method = RequestMethod.POST)
+/*	@RequestMapping(value = "/charge-detail-new", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResCharge> findChargeDetailNew(@RequestBody Map<String, Object> param);
-
+*/
 
 	@RequestMapping(value = "/traffic-flow-list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResTrafficFlow> findTrafficFlowList(@RequestBody Map<String, Object> param);
+	public ResTrafficFlow findTrafficFlowList(@RequestBody Map<String, Object> param);
 
 	/**
 	 * @Description  查询收费列表
@@ -64,10 +64,18 @@ public interface EntOrderClient {
 	 */
 	@RequestMapping(value = "/income-list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResIncome> findIncomeList(@RequestBody Map<String, Object> param);
+	public ResIncome findIncomeList(@RequestBody Map<String, Object> param);
 	
 
 	@RequestMapping(value = "/by-stall", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPreOrderCount> findPreCountByIds(@RequestBody List<Long> ids);
+
+	@RequestMapping(value = "/proceeds-amount", method = RequestMethod.POST)
+	@ResponseBody
+	public BigDecimal findProceedsAmount(@RequestBody Map<String, Object> param);
+
+	@RequestMapping(value = "/traffic-flow-count", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer findTrafficFlowCount(@RequestBody Map<String, Object> param);
 }

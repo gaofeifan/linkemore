@@ -17,7 +17,6 @@ import cn.linkmore.order.response.ResOrderOps;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreDataList;
 import cn.linkmore.order.response.ResPreOrderCount;
-import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
 @Mapper
@@ -110,7 +109,7 @@ public interface OrdersClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResPreOrderCount> findPreCountByIds(List<Long> ids);
+	List<ResPreOrderCount> findPreCountByIds(List<Long> id);
 
 	/**
 	 * @Description  根据车区查询车牌号
@@ -124,7 +123,7 @@ public interface OrdersClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	BigDecimal findPreDayIncome(List<Long> authStall);
+	BigDecimal findPreDayIncome(Long authStall);
 
 	/**
 	 * @Description  查询车流量
@@ -174,5 +173,26 @@ public interface OrdersClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<ResPreDataList> findPreDataList(Map<String, Object> map);
+
+	/**
+	 * @Description  通过类型查询车区收入总金额
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	BigDecimal findProceedsAmount(Map<String, Object> param);
+
+	/**
+	 * @Description  根据类型查询车流量
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer findTrafficFlowCount(Map<String, Object> param);
+
+	/**
+	 * @Description  通过时间查询统计
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResMonthCount findMonthCountByDate(Map<String, Object> param);
 
 }

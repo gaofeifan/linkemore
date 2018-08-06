@@ -20,12 +20,10 @@ import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncome;
-import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
-import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
 
 /**
@@ -117,7 +115,7 @@ public interface OrdersService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResPreOrderCount> findPreCountByIds(List<Long> ids);
+	List<ResPreOrderCount> findPreCountByIds(List<Long> preId);
 
 	/**
 	 * @Description  根据车区id查询车牌号
@@ -137,7 +135,7 @@ public interface OrdersService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	BigDecimal findPreDayIncome(List<Long> authStall);
+	BigDecimal findPreDayIncome(Long authStall);
 
 	/**
 	 * @Description  
@@ -158,27 +156,43 @@ public interface OrdersService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResChargeList findChargeDetail(Map<String, Object> param);
+	List<ResChargeDetail> findChargeDetail(Map<String, Object> param);
 
 	/**
 	 * @Description  查询车流量list
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param);
+	ResTrafficFlow findTrafficFlowList(Map<String, Object> param);
 
 	/**
 	 * @Description  查询收入列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResIncome> findIncomeList(Map<String, Object> param);
+	ResIncome findIncomeList(Map<String, Object> param);
 
 	/**
 	 * @Description  
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResCharge> findChargeDetailNew(Map<String, Object> param);
+/*	List<ResCharge> findChargeDetailNew(Map<String, Object> param);*/
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	BigDecimal findProceedsAmount(Map<String, Object> param);
+
+	/**
+	 * @Description  根据条件查询总流量
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer findTrafficFlowCount(Map<String, Object> param);
+
+
 	
 }

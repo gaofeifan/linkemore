@@ -61,29 +61,45 @@ public interface PrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> findChargeDetail(Short type, Long preId, HttpServletRequest request);
+	List<cn.linkmore.enterprise.controller.ent.response.ResChargeDetail> findChargeDetail( Long preId, HttpServletRequest request);
 
 	/**
+	 * @param date 
 	 * @Description  查询车流量列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResDayTrafficFlow> findTrafficFlowList(Short type, Long preId, HttpServletRequest request);
+	ResDayTrafficFlow findTrafficFlowList(Short type, Long preId, String date, HttpServletRequest request);
 
 	/**
+	 * @param date 
 	 * @Description  查询收入列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResDayIncome> findIncomeList(Short type, Long preId, HttpServletRequest request);
+	ResDayIncome findIncomeList(Short type, Long preId, String date, HttpServletRequest request);
 
 	/**
 	 * @Description  
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResCharge> findChargeDetailNew(Short type, Long preId,
-			HttpServletRequest request);
+	/*List<ResCharge> findChargeDetailNew(Short type, Long preId,
+			HttpServletRequest request);*/
+
+	/**
+	 * @Description  根据类型查询总金额
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	BigDecimal findProceedsAmount(Short type, Long preId, HttpServletRequest request);
+
+	/**
+	 * @Description  根据条件查询总流量
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer findTrafficFlowCount(Short type, Long preId, HttpServletRequest request);
 
 
 	

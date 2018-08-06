@@ -330,7 +330,7 @@
 	where v.status = 2 group by v.id) po on oo.id = po.oid
 	and oo.status_history=0 and oo.status=3
   </select>
-  <select id="findPreCountByIds" parameterType="java.util.List" resultType="cn.linkmore.order.response.ResPreOrderCount">
+  <select id="findPreCountByIds" parameterType="java.lang.Long" resultType="cn.linkmore.order.response.ResPreOrderCount">
    SELECT
 		pre_id preId,
 		pre_name preName,
@@ -339,22 +339,27 @@
 	FROM
 		o_orders
 	WHERE
-		 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and stall_id IN 
-	   <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
-			#{id}
-	 	</foreach>
+		 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and pre_id in
+		  <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
+    		 #{id}
+    	</foreach>
 	GROUP BY pre_id
   </select>
-  <select id="findPreDayIncome" parameterType="java.util.List" resultType="java.math.BigDecimal">
+  <select id="findPreDayIncome" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
    SELECT
 		sum(actual_amount) dayAmount
 	FROM
 		o_orders
 	WHERE
-		 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and stall_id IN 
-	   <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
-			#{id}
-	 	</foreach>
+		 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and pre_id = #{id}
+  </select>
+  <select id="findProceedsAmount" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+   SELECT
+		sum(actual_amount) dayAmount
+	FROM
+		o_orders
+	WHERE
+		 status = 3  AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d') and pre_id = #{id}
   </select>
   <select id="findTrafficFlow" parameterType="java.util.HashMap" resultType="java.lang.Integer">
    SELECT
@@ -366,10 +371,7 @@
 		<if test="startTime != null">
 		 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
 		</if>
-		and stall_id IN 
-	    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
-			#{id}
-	 	</foreach>
+		and pre_id = #{preId}
 	</where>
   </select>
   <select id="findProceeds" parameterType="java.util.HashMap" resultType="java.math.BigDecimal">
@@ -382,10 +384,7 @@
 		<if test="startTime != null">
 		 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
 		</if>
-		and stall_id IN 
-	    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
-			#{id}
-	 	</foreach>
+		and pre_id = #{preId}
 	</where>
   </select>
   <select id="findChargeDetail" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResChargeDetail">
@@ -396,10 +395,8 @@
 	<where>
 	    1 = 1
 		and status = 3 
-		and stall_id IN 
-	    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
-			#{id}
-	 	</foreach>
+		and pre_id = #{preId}
+		and DATE_FORMAT(end_time,'%Y-%m-%d') = #{startTime}
 	</where>
 	order by end_time desc
   </select>
@@ -410,20 +407,23 @@
 			o_orders
 		WHERE
 		status = 3 
-		and
-		stall_id IN 
-    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
-		#{id}
- 	</foreach>
+		and pre_id = #{preId}
+		and #{monthStart} >= DATE_FORMAT(end_time,'%Y-%m') 
+		AND DATE_FORMAT(end_time,'%Y-%m') >= #{monthEnd}
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
   </select>
+  <select id="findTrafficFlowCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    SELECT
+		count(1)
+	FROM
+		o_orders
+	WHERE
+		 status = 3  AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d') and pre_id = #{id}
+  </select>
   <select id="findIncomeList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResIncomeList">
 	SELECT end_time date,actual_amount dayAmount,DATE_FORMAT(end_time,'%m') month FROM o_orders 	where	status = 3 
-	and stall_id IN 
-    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
-		#{id}
- 	</foreach>
+	and pre_id = #{preId}
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
   </select>
@@ -431,6 +431,13 @@
  	select DATE_FORMAT(end_time,'%m') month,SUM(actual_amount) monthAmount,COUNT(1) monthCarCount
 	 FROM o_orders 	where	status = 3 
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m')
+	ORDER BY end_time DESC	
+  </select>
+  <select id="findMonthCountByDate" parameterType="java.util.Map" resultType="cn.linkmore.order.controller.app.response.ResMonthCount">
+ 	select DATE_FORMAT(end_time,'%m') month,SUM(actual_amount) monthAmount,COUNT(1) monthCarCount
+	 FROM o_orders 	where	status = 3 
+	 and #{monthStart} >= DATE_FORMAT(end_time,'%Y-%m') 
+	AND DATE_FORMAT(end_time,'%Y-%m') >= #{monthEnd}
 	ORDER BY end_time DESC	
   </select>
   <select id="findPreDataList" parameterType="java.util.Map" resultType="cn.linkmore.order.response.ResPreDataList">
@@ -445,10 +452,7 @@
 		<if test="startTime != null">
 		 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
 		</if>
-	stall_id IN 
-    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
-		#{id}
- 	</foreach>
+		AND pre_id = #{preId}
 	GROUP BY
 		DATE_FORMAT(end_time, '%Y-%m-%d')
 	ORDER BY end_time desc

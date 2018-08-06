@@ -1,6 +1,7 @@
 package cn.linkmore.order.service.impl;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -70,9 +70,7 @@ import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.OrdersDetail;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderExcel;
-import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
-import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
@@ -954,8 +952,8 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public List<ResPreOrderCount> findPreCountByIds(List<Long> ids) {
-		return this.ordersClusterMapper.findPreCountByIds(ids);
+	public List<ResPreOrderCount> findPreCountByIds(List<Long> id) {
+		return this.ordersClusterMapper.findPreCountByIds(id);
 	}
 
 	@Override
@@ -972,7 +970,7 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public BigDecimal findPreDayIncome(List<Long> authStall) {
+	public BigDecimal findPreDayIncome(Long authStall) {
 		return this.ordersClusterMapper.findPreDayIncome(authStall);
 	}
 
@@ -987,6 +985,13 @@ public class OrdersServiceImpl implements OrdersService {
 		map.put("list", list);
 		return map;
 	}
+	
+	@Override
+	public Integer findTrafficFlowCount(Map<String, Object> param) {
+		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
+		param.put("startTime", date);
+		return this.ordersClusterMapper.findTrafficFlowCount(param);
+	}
 
 	@Override
 	public Map<String, Object> findProceeds(Map<String, Object> map) {
@@ -1000,43 +1005,34 @@ public class OrdersServiceImpl implements OrdersService {
 		return map;
 	}
 
+	
 	@Override
-	public ResChargeList findChargeDetail(Map<String, Object> param) {
+	public BigDecimal findProceedsAmount(Map<String, Object> param) {
 		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
-		List<ResCharge> charges = new ArrayList<>();
-		List<ResMonthCount> count = this.ordersClusterMapper.findMonthCount(param);
+		BigDecimal decimal = this.ordersClusterMapper.findProceedsAmount(param);
+		return decimal;
+	}
+
+	@Override
+	public List<ResChargeDetail> findChargeDetail(Map<String, Object> param) {
 		List<ResChargeDetail> list = this.ordersClusterMapper.findChargeDetail(param);
-		ResCharge charge = null;
-		List<ResChargeDetail> chargeDetails = null;
-		for (ResMonthCount resMonthCount : count) {
-			charge = new ResCharge();
-			chargeDetails = new ArrayList<>();
-			for (ResChargeDetail detail : list) {
-				if (detail.getMonth() == resMonthCount.getMonth()) {
-					String str = DateUtils.getDuration(new Date(), detail.getEndTime());
-					detail.setStopTime(str);
-					chargeDetails.add(detail);
-				}
+		for (ResChargeDetail detail : list) {
+			if (detail.getMonth() == detail.getMonth()) {
+				String str = DateUtils.getDuration(new Date(), detail.getEndTime());
+				detail.setStopTime(str);
 			}
-			charge.setCharge(chargeDetails);
-			charge.setDate(chargeDetails.get(0).getStartTime());
-			charges.add(charge);
 		}
-		BigDecimal decimal = this.ordersClusterMapper.findPreDayIncome((List<Long>) param.get("stallIds"));
-		ResChargeList chargeList = new ResChargeList();
-		chargeList.setDetails(charges);
-		chargeList.setTodayIncome(decimal);
-		return chargeList;
+		return list;
 	}
 
 	
-	@Override
+	/*@Override
 	public List<ResCharge> findChargeDetailNew(Map<String, Object> param) {
 		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
 		List<ResCharge> charges = new ArrayList<>();
-		List<ResMonthCount> count = this.ordersClusterMapper.findMonthCount(param);
+		ResMonthCount count = this.ordersClusterMapper.findMonthCountByDate(param);
 		List<ResChargeDetail> list = this.ordersClusterMapper.findChargeDetail(param);
 		ResCharge charge = null;
 		List<ResChargeDetail> chargeDetails = null;
@@ -1056,16 +1052,22 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 		return charges;
 	}
-
+*/
 	@Override
-	public List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param) {
+	public ResTrafficFlow findTrafficFlowList(Map<String, Object> param) {
 		Date date = getDateByType(Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
+		Map<String, Date> map = getStartEndDate(param.get("date") != null ? param.get("date").toString():null);
+		param.put("monthStart", map.get("monthStart"));
+		param.put("monthEnd", map.get("monthEnd"));
 		List<ResTrafficFlow> flowLists = new ArrayList<>();
 		List<ResTrafficFlowList> list = this.ordersClusterMapper.findTrafficFlowList(param);
-		List<ResMonthCount> monthCount = this.ordersClusterMapper.findMonthCount(param);
-		ResTrafficFlow flow = null;
-		for (ResMonthCount resMothCount : monthCount) {
+//		List<ResMonthCount> monthCount = this.ordersClusterMapper.findMonthCount(param);
+		ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
+		ResTrafficFlow flow = new ResTrafficFlow();
+		flow.setCarMonthTotal(monthCount.getMonthCarCount());
+		flow.setTime(map.get("monthStart"));
+		/*for (ResMonthCount resMothCount : monthCount) {
 			List<ResTrafficFlowList> collect = list.stream()
 					.filter(month -> month.getMonth() == resMothCount.getMonth()).collect(Collectors.toList());
 			if (collect.size() != 0) {
@@ -1075,19 +1077,27 @@ public class OrdersServiceImpl implements OrdersService {
 				flow.setTrafficFlows(collect);
 			}
 			flowLists.add(flow);
-		}
-		return flowLists;
+		}*/
+		return flow;
 	}
 
 	@Override
-	public List<ResIncome> findIncomeList(Map<String, Object> param) {
+	public ResIncome findIncomeList(Map<String, Object> param) {
 		Date date = getDateByType(Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
-		List<ResIncome> incomes = new ArrayList<>();
-		List<ResMonthCount> months = this.ordersClusterMapper.findMonthCount(param);
+		Map<String, Date> map = getStartEndDate(param.get("date") != null ? param.get("date").toString():null);
+		param.put("monthStart", map.get("monthStart"));
+		param.put("monthEnd", map.get("monthEnd"));
+		System.out.println(DateUtils.converter(map.get("monthStart"), null));
+		System.out.println(DateUtils.converter(map.get("monthEnd"), null));
+//		List<ResIncome> incomes = new ArrayList<>();
+		ResMonthCount months = this.ordersClusterMapper.findMonthCountByDate(param);
 		List<ResIncomeList> list = this.ordersClusterMapper.findIncomeList(param);
-		ResIncome income = null;
-		for (ResMonthCount resMonthCount : months) {
+		ResIncome income = new ResIncome();
+		income.setList(list);
+		income.setMonthAmount(months.getMonthAmount());
+		income.setDate(map.get("monthStart"));
+		/*for (ResMonthCount resMonthCount : months) {
 			List<ResIncomeList> collect = list.stream().filter(month -> month.getMonth() == resMonthCount.getMonth())
 					.collect(Collectors.toList());
 			if (collect.size() != 0) {
@@ -1097,8 +1107,8 @@ public class OrdersServiceImpl implements OrdersService {
 				income.setMonthAmount(resMonthCount.getMonthAmount());
 				incomes.add(income);
 			}
-		}
-		return incomes;
+		}*/
+		return income;
 	}
 
 	private Date getDateByType(Short type) {
@@ -1111,5 +1121,28 @@ public class OrdersServiceImpl implements OrdersService {
 			date = DateUtils.getPast2Date(-30);
 		}
 		return date;
+	}
+	
+	private Map<String,Date> getStartEndDate(String date){
+		Map<String,Date> map = new HashMap<>();
+		Date monthStart = null;
+		Date monthEnd = null;
+		if(StringUtils.isNotBlank(date)) {
+			monthStart = new Date();
+			monthEnd = monthStart;
+			monthStart = DateUtils.getLastMonth(monthStart);
+		}else {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月");
+			try {
+				Date parse = sdf.parse(date);
+				monthEnd = DateUtils.getLastMonth(parse);
+				monthStart = DateUtils.getLastMonth(parse);
+			} catch (ParseException e) {
+				throw new BusinessException(StatusEnum.VALID_EXCEPTION);
+			}
+		}
+		map.put("monthStart", monthStart);
+		map.put("monthEnd", monthEnd);
+		return map;
 	}
 }

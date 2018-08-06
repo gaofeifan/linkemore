@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.order.response.ResCharge;
+import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderPlate;
@@ -42,14 +43,20 @@ public class EntOrdersController {
 	
 	@RequestMapping(value = "/day-income", method = RequestMethod.POST)
 	@ResponseBody
-	public BigDecimal findPreDayIncome(@RequestBody List<Long> authStall) {
-		return this.ordersService.findPreDayIncome(authStall);
+	public BigDecimal findPreDayIncome(@RequestParam("preId") Long preId) {
+		return this.ordersService.findPreDayIncome(preId);
 	}
 	
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> findTrafficFlow(@RequestBody Map<String,Object> map){
 		return this.ordersService.findTrafficFlow(map);
+	}
+	
+	@RequestMapping(value = "/traffic-flow-count", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer findTrafficFlowCount(@RequestBody Map<String, Object> param) {
+		return this.ordersService.findTrafficFlowCount(param);
 	}
 
 	/**
@@ -64,25 +71,36 @@ public class EntOrdersController {
 	}
 	
 	/**
+	 * @Description  根据类型查询总金额
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/proceeds-amount", method = RequestMethod.POST)
+	@ResponseBody
+	public BigDecimal findProceedsAmount(@RequestBody Map<String, Object> param) {
+		return this.ordersService.findProceedsAmount(param);
+	}
+	
+	/**
 	 * @Description  查询收费明细
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
 	@RequestMapping(value = "/charge-detail", method = RequestMethod.POST)
 	@ResponseBody
-	public ResChargeList findChargeDetail(@RequestBody Map<String, Object> param){
+	public List<ResChargeDetail> findChargeDetail(@RequestBody Map<String, Object> param){
 		return this.ordersService.findChargeDetail(param);
 	}
 	/**
 	 * @Description  查询收费明细
 	 * @Author   GFF 
 	 * @Version  v2.0
-	 */
+	 
 	@RequestMapping(value = "/charge-detail-new", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResCharge> findChargeDetailNew(@RequestBody Map<String, Object> param){
 		return this.ordersService.findChargeDetailNew(param);
-	}
+	}*/
 
 	/**
 	 * @Description  查询车流量列表
@@ -91,7 +109,7 @@ public class EntOrdersController {
 	 */
 	@RequestMapping(value = "/traffic-flow-list", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResTrafficFlow> findTrafficFlowList(@RequestBody Map<String, Object> param){
+	ResTrafficFlow findTrafficFlowList(@RequestBody Map<String, Object> param){
 		return this.ordersService.findTrafficFlowList(param);
 	}
 
@@ -102,15 +120,15 @@ public class EntOrdersController {
 	 */
 	@RequestMapping(value = "/income-list", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResIncome> findIncomeList(@RequestBody Map<String, Object> param){
+	ResIncome findIncomeList(@RequestBody Map<String, Object> param){
 		return this.ordersService.findIncomeList(param);
 	}
 	
 	
 	@RequestMapping(value = "/by-stall", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResPreOrderCount> findPreCountByIds(@RequestBody List<Long> ids){
-		return this.ordersService.findPreCountByIds(ids);
+	public List<ResPreOrderCount> findPreCountByIds(@RequestBody List<Long> preId){
+		return this.ordersService.findPreCountByIds(preId);
 	}
 	
 }

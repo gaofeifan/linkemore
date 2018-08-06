@@ -73,7 +73,7 @@ swagger:
   version: 2.0
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
-  base-package: cn.linkmore.enterprise.controller.ent
+  base-package: cn.linkmore.enterprise.controller
     
 redis:
   host: 192.168.1.218

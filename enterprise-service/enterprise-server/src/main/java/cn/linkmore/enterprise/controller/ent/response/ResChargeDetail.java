@@ -58,6 +58,7 @@ public class ResChargeDetail {
 		this.orderAmount = orderAmount;
 	}
 
+	@JsonFormat(pattern="MM:dd")
 	public Date getEndTime() {
 		return endTime;
 	}

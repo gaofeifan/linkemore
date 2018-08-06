@@ -236,4 +236,13 @@ public class DateUtils {
 			}
 			return null;
 		}
+		
+		/**
+		 *  获取上个月时间
+		 */ 
+		public static Date getLastMonth(Date date) {
+			Calendar calendar = Calendar.getInstance();   
+			calendar.add(Calendar.MONTH, -1);
+			return calendar.getTime();
+		}
 }

@@ -7,21 +7,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import cn.linkmore.bean.view.ViewPage;
-import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.client.EntOrderClient;
-import cn.linkmore.order.client.OrderClient;
-import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResCharge;
-import cn.linkmore.order.response.ResChargeList;
+import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResIncome;
-import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
-import cn.linkmore.order.response.ResUserOrder;
 
 /**
  * @author   GFF
@@ -41,7 +34,7 @@ public class EntOrderClientHystrix implements EntOrderClient {
 	}
 
 	@Override
-	public BigDecimal findPreDayIncome(List<Long> authStall) {
+	public BigDecimal findPreDayIncome(Long authStall) {
 		log.info("feign BigDecimal findPreDayIncome(List<Long> authStall)");
 		return null;
 	}
@@ -62,33 +55,46 @@ public class EntOrderClientHystrix implements EntOrderClient {
 	
 
 	@Override
-	public List<ResChargeList> findChargeDetail(Map<String, Object> param) {
+	public List<ResChargeDetail> findChargeDetail(Map<String, Object> param) {
 		log.info("feign List<ResChargeDetail> findChargeDetail(Map<String, Object> param)");
 		return null;
 	}
 
 	@Override
-	public List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param) {
+	public ResTrafficFlow findTrafficFlowList(Map<String, Object> param) {
 		log.info("feign List<ResTrafficFlowList> findTrafficFlowList(Map<String, Object> param)");
 		return null;
 	}
 
 	@Override
-	public List<ResIncome> findIncomeList(Map<String, Object> param) {
+	public ResIncome findIncomeList(Map<String, Object> param) {
 		log.info("feign List<ResIncomeList> findIncomeList(Map<String, Object> param)");
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public List<ResCharge> findChargeDetailNew(Map<String, Object> param) {
 		log.info("feign List<ResIncomeList> findChargeDetailNew(Map<String, Object> param)");
 		return null;
-	}
+	}*/
 	
 	@Override
 	public List<ResPreOrderCount> findPreCountByIds(List<Long> ids) {
 		log.info("feign order List<ResPreOrderCount> findPreCountByIds(List<Long> ids) ");
 		return null;
 	}
-	 
+
+	@Override
+	public BigDecimal findProceedsAmount(Map<String, Object> param) {
+		log.info("feign order List<ResPreOrderCount> findProceedsAmount(Map<String, Object> param");
+		return null;
+	}
+
+	@Override
+	public Integer findTrafficFlowCount(Map<String, Object> param) {
+		log.info("feign order Integer findTrafficFlowCount(Map<String, Object> param)");
+		return null;
+	}
+
+	
 }

@@ -36,4 +36,11 @@ public interface EntAuthPreClusterMapper {
 	 * @Version  v2.0
 	 */
 	EntOperateAuth findByStaffId(Long id);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<Long> findPreId(Map<String, Long> map);
 }

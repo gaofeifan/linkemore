@@ -3,6 +3,7 @@ package cn.linkmore.enterprise.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,17 +15,16 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
-import cn.linkmore.enterprise.controller.ent.response.ResCharge;
 import cn.linkmore.enterprise.controller.ent.response.ResChargeDetail;
 import cn.linkmore.enterprise.controller.ent.response.ResDayIncome;
 import cn.linkmore.enterprise.controller.ent.response.ResDayIncomes;
 import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlow;
 import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlows;
 import cn.linkmore.enterprise.controller.ent.response.ResIncome;
+import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.enterprise.service.PrefectureService;
 import cn.linkmore.order.client.EntOrderClient;
-import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
@@ -50,14 +50,17 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private PrefectureClient prefectureClient;
 	@Resource
 	private EntOrderClient orderClient;
+	@Resource
+	private EntAuthPreClusterMapper authPreClusterMapper;
 	@Override
 	public List<cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount> findPreList(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
 		Map<String, Long> map = new  HashMap<>();
 		map.put("staffId", ru.getId());
-		List<Long> authStall = this.entStallService.findStaffId(map);
-		List<ResPreOrderCount> list = this.orderClient.findPreCountByIds(authStall);
+//		List<Long> authStall = this.entStallService.findStaffId(map);
+		List<Long> preIds = this.authPreClusterMapper.findPreId(map);
+		List<ResPreOrderCount> list = this.orderClient.findPreCountByIds(preIds);
 		List<cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount> res = new ArrayList<>();
 		if(list == null) {
 			return res;
@@ -74,20 +77,17 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Map<String, Long> map = new  HashMap<>();
 		map.put("staffId", ru.getId());
 		map.put("preId", preId);
-		List<Long> authStall = this.entStallService.findStaffId(map);
-		return this.orderClient.findPreDayIncome(authStall);
+		List<Long> id = this.authPreClusterMapper.findPreId(map);
+//		List<Long> authStall = this.entStallService.findStaffId(map);
+		return this.orderClient.findPreDayIncome(id.get(0));
 	}
 	
 	@Override
 	public cn.linkmore.enterprise.controller.ent.response.ResIncomeList findProceeds(Short type,Long preId, HttpServletRequest request) {
 		CacheUser ru = getUser(request);
-		Map<String, Long> map = new  HashMap<>();
-		map.put("staffId", ru.getId());
-		map.put("preId", preId);
-		List<Long> authStall = this.entStallService.findStaffId(map);
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
-		param.put("stallIds", authStall);
+		param.put("preId", preId);
 		Map<String, Object> proceeds = this.orderClient.findProceeds(param);
 		cn.linkmore.enterprise.controller.ent.response.ResIncomeList income = new cn.linkmore.enterprise.controller.ent.response.ResIncomeList();
 		if(proceeds == null) {
@@ -120,13 +120,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Override
 	public cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow findTrafficFlow(Short type,Long preId, HttpServletRequest request) {
 		CacheUser ru = getUser(request);		
-		Map<String, Long> map = new  HashMap<>();
-		map.put("staffId", ru.getId());
-		map.put("preId", preId);
-		List<Long> authStall = this.entStallService.findStaffId(map);
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
-		param.put("stallIds", authStall);
+		param.put("preId",preId);
 		Map<String, Object> flow = this.orderClient.findTrafficFlow(param);
 		cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow tf = new cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow();
 		if(flow == null || flow.size() == 0) {
@@ -152,117 +148,95 @@ public class PrefectureServiceImpl implements PrefectureService {
 		
 		return tf;
 	}
+	
 	@Override
-	public List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> findChargeDetail(Short type, Long preId, HttpServletRequest request) {
-		CacheUser ru = getUser(request);
-		Map<String, Long> map = new  HashMap<>();
-		map.put("staffId", ru.getId());
-		map.put("preId", preId);
-		List<Long> authStall = this.entStallService.findStaffId(map);
+	public Integer findTrafficFlowCount(Short type, Long preId, HttpServletRequest request) {
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
-		param.put("stallIds", authStall);
-		List<ResChargeList> list = this.orderClient.findChargeDetail(param);
-		List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> resList = new ArrayList<>();
-		cn.linkmore.enterprise.controller.ent.response.ResChargeList chargeList = null;
-		List<ResCharge> charges =null;
-		List<ResChargeDetail> chargeDetail = null;
-		ResCharge cha = null;
-		if(list == null) {
-			return resList;
-		}
-		for (ResChargeList resChargeList : list) {
-			charges = new ArrayList<>();
-			chargeList = new cn.linkmore.enterprise.controller.ent.response.ResChargeList();
-			chargeList.setTodayIncome(resChargeList.getTodayIncome());
-			for (cn.linkmore.order.response.ResCharge resCharge : resChargeList.getDetails()) {
-				cha = new ResCharge();
-				cha.setDate(resCharge.getDate());
-				chargeDetail = new ArrayList<>();
-				for (cn.linkmore.order.response.ResChargeDetail resChargeDetail : resCharge.getCharge()) {
-					chargeDetail.add(ObjectUtils.copyObject(resChargeDetail, new ResChargeDetail() ));
-				}
-				cha.setCharge(chargeDetail);
-				charges.add(cha);
-			}
-			chargeList.setDetails(charges);
-			resList.add(chargeList);
-		}
-		return resList;
-	}
-	@Override
-	public List<ResDayTrafficFlow> findTrafficFlowList(Short type, Long preId, HttpServletRequest request) {
-		CacheUser ru = getUser(request);
-		Map<String, Long> map = new  HashMap<>();
-		map.put("staffId", ru.getId());
-		map.put("preId", preId);
-		List<Long> authStall = this.entStallService.findStaffId(map);
-		Map<String,Object> param = new HashMap<>();
-		param.put("startTime", type);
-		param.put("stallIds", authStall);
-		List<ResTrafficFlow> flowList = this.orderClient.findTrafficFlowList(param);
-		List<ResDayTrafficFlow> dayTFs = new ArrayList<>();
-		ResDayTrafficFlow dayTF = null;
-		List<ResDayTrafficFlows> flows = null;
-		for (ResTrafficFlow resTrafficFlow : flowList) {
-			dayTF = new ResDayTrafficFlow();
-			dayTF.setCarMonthTotal(resTrafficFlow.getCarMonthTotal());
-			dayTF.setTime(resTrafficFlow.getTime());
-			flows = new ArrayList<>();
-			for (ResTrafficFlowList tf : resTrafficFlow.getTrafficFlows()) {
-				flows.add(ObjectUtils.copyObject(tf, new ResDayTrafficFlows()));
-			}
-			dayTF.setTrafficFlows(flows);
-			dayTFs.add(dayTF);
-		}
-		return dayTFs;
+		param.put("preId", preId);
+		Integer count = this.orderClient.findTrafficFlowCount(param);
+		return count;
 	}
 	
 	@Override
-	public List<ResDayIncome> findIncomeList(Short type, Long preId, HttpServletRequest request) {
+	public List<ResChargeDetail> findChargeDetail(Long preId, HttpServletRequest request) {
 		CacheUser ru = getUser(request);
-		Map<String, Long> map = new  HashMap<>();
-		map.put("staffId", ru.getId());
-		map.put("preId", preId);
-		List<Long> authStall = this.entStallService.findStaffId(map);
+		Map<String,Object> param = new HashMap<>();
+		param.put("startTime", new Date());
+		param.put("preId", preId);
+		List<cn.linkmore.order.response.ResChargeDetail> list = this.orderClient.findChargeDetail(param);
+//		List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> resList = new ArrayList<>();
+//		cn.linkmore.enterprise.controller.ent.response.ResChargeList chargeList = null;
+//		List<ResCharge> charges =null;
+		List<ResChargeDetail> chargeDetail = new ArrayList<>();
+		for (cn.linkmore.order.response.ResChargeDetail resChargeDetail : list) {
+			chargeDetail.add(ObjectUtils.copyObject(resChargeDetail, new ResChargeDetail() ));
+		}
+		return chargeDetail;
+	}
+	@Override
+	public ResDayTrafficFlow findTrafficFlowList(Short type, Long preId,String date, HttpServletRequest request) {
+		CacheUser ru = getUser(request);
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
-		param.put("stallIds", authStall);
-		List<ResDayIncome> incomes = new ArrayList<>();
-		ResDayIncome income = null;
+		param.put("preId", preId); 
+		param.put("date", date);
+		ResTrafficFlow flowList = this.orderClient.findTrafficFlowList(param);
+//		List<ResDayTrafficFlow> dayTFs = new ArrayList<>();
+		ResDayTrafficFlow dayTF = new ResDayTrafficFlow();
+		List<ResDayTrafficFlows> flows = null;
+//		for (ResTrafficFlow resTrafficFlow : flowList) {
+		dayTF.setCarMonthTotal(flowList.getCarMonthTotal());
+		dayTF.setTime(flowList.getTime());
+		flows = new ArrayList<>();
+		for (ResTrafficFlowList tf : flowList.getTrafficFlows()) {
+			flows.add(ObjectUtils.copyObject(tf, new ResDayTrafficFlows()));
+		}
+			dayTF.setTrafficFlows(flows);
+//			dayTFs.add(dayTF);
+//		}
+		return dayTF;
+	}
+	
+	@Override
+	public ResDayIncome findIncomeList(Short type, Long preId,String date, HttpServletRequest request) {
+		CacheUser ru = getUser(request);
+		Map<String,Object> param = new HashMap<>();
+		param.put("startTime", type);
+		param.put("preId", preId);
+		param.put("date", date);
+//		List<ResDayIncome> incomes = new ArrayList<>();
+		ResDayIncome income = new ResDayIncome();
 		List<ResDayIncomes> incomeLists = new ArrayList<>();
-		List<cn.linkmore.order.response.ResIncome> oIncomes = this.orderClient.findIncomeList(param);
+		cn.linkmore.order.response.ResIncome oIncomes = this.orderClient.findIncomeList(param);
 		if(oIncomes == null) {
-			return incomes;
+			return income;
 		}
-		for (cn.linkmore.order.response.ResIncome resIncome : oIncomes) {
-			income = new ResDayIncome();
-			income.setDate(resIncome.getDate());
-			income.setMonthAmount(resIncome.getMonthAmount());
-			for (ResIncomeList incomeList : resIncome.getList()) {
-				incomeLists.add(ObjectUtils.copyObject(incomeList, new ResDayIncomes()));
-			}
-			income.setList(incomeLists);
-			incomes.add(income);
+//		for (cn.linkmore.order.response.ResIncome resIncome : oIncomes) {
+		income.setDate(oIncomes.getDate());
+		income.setMonthAmount(oIncomes.getMonthAmount());
+		for (ResIncomeList incomeList : oIncomes.getList()) {
+			incomeLists.add(ObjectUtils.copyObject(incomeList, new ResDayIncomes()));
 		}
-		return incomes;
+		income.setList(incomeLists);
+//		incomes.add(income);
+//		}
+		return income;
 	}
 	
 	private CacheUser getUser(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		return (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 	}
-	@Override
+	
+	
+/*	@Override
 	public List<cn.linkmore.enterprise.controller.ent.response.ResCharge> findChargeDetailNew(Short type,
 			Long preId, HttpServletRequest request) {
 		CacheUser ru = getUser(request);
-		Map<String, Long> map = new  HashMap<>();
-		map.put("staffId", ru.getId());
-		map.put("preId", preId);
-		List<Long> authStall = this.entStallService.findStaffId(map);
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
-		param.put("stallIds", authStall);
+		param.put("preId", preId);
 		List<cn.linkmore.order.response.ResCharge> list = this.orderClient.findChargeDetailNew(param);
 		List<ResCharge> charges = new ArrayList<>();
 		if(list == null) {
@@ -281,7 +255,17 @@ public class PrefectureServiceImpl implements PrefectureService {
 			charges.add(cha);
 		}
 		return charges;
+	}*/
+	
+	@Override
+	public BigDecimal findProceedsAmount(Short type, Long preId, HttpServletRequest request) {
+		Map<String,Object> param = new HashMap<>();
+		param.put("startTime", type);
+		param.put("preId", preId);
+		return this.orderClient.findProceedsAmount(param);
 	}
+	
+	
 
 	
 }
