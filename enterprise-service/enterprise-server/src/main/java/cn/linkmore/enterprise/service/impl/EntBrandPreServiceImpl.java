@@ -169,13 +169,13 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			map.put("entId", ebp.getEntId());
 			map.put("preId", ebp.getPreId());
 			map.put("screen", 0);
-			/*List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(map);
+			List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(map);
 			log.info("ad list = {}",JSON.toJSON(list));
 			if (CollectionUtils.isNotEmpty(list)) {
 				if(list.get(0).getLimitStatus() == (short)1) {
 					ebp.setLimitStatus(true);
 				}
-			}*/
+			}
 			ebp.setLeisureStall(count.intValue());
 			ebp.setLinkmoreLeisureStall(linkmoreCount.intValue());
 			ebp.setDistance(MapUtil.getDistance(ebp.getLatitude(), ebp.getLongitude(), new Double(rp.getLatitude()),
