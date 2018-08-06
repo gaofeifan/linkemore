@@ -52,6 +52,7 @@ public class EntStaffServiceImpl implements EntStaffService {
 		record.setRealname(realname);
 		record.setType(type);
 		record.setStatus((short) 0);
+		record.setCreateTime(new Date());
 		return entStaffMasterMapper.save(record);
 	}
 
@@ -79,7 +80,6 @@ public class EntStaffServiceImpl implements EntStaffService {
 		record.setRealname(realname);
 		record.setType(type);
 		record.setStatus(status);
-		record.setCreateTime(new Date());
 		return this.entStaffMasterMapper.updateByIdSelective(record);
 	}
 
@@ -120,6 +120,15 @@ public class EntStaffServiceImpl implements EntStaffService {
 		map.put("sql","status = 0");
 		map.put("id",id);
 		this.entStaffMasterMapper.updateByColumn(map );
+	}
+
+	@Override
+	public Integer check(String property, String value, Long id) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", property);
+		param.put("value", value);
+		param.put("id", id);
+		return this.entStaffClusterMapper.check(param); 
 	}
 
 	

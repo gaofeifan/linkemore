@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
  * @Date     2018年7月19日
  * @Version  v2.0
  */
-@Api(tags="Auth",description="授权")
+@Api(tags="Auth",description="授权【物业版】")
 @RestController
 @RequestMapping("/ent/auth") 
 @Validated

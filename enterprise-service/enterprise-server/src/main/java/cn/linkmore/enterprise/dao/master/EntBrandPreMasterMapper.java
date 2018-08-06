@@ -2,9 +2,7 @@ package cn.linkmore.enterprise.dao.master;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
-
 import cn.linkmore.enterprise.entity.EntBrandPre;
 @Mapper
 public interface EntBrandPreMasterMapper {

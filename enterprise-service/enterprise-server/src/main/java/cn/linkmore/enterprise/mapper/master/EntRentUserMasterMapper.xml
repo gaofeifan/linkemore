@@ -43,7 +43,7 @@
   <insert id="saveReq" parameterType="cn.linkmore.enterprise.request.ReqRentUser">
     insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
       pre_id, mobile, realname, 
-      plate, stall_id, user_id.ent_name,pre_name,stall_name
+      plate, stall_id, user_id,ent_name,pre_name,stall_name
       )
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
       #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.linkmore.enterprise.controller.ent.response.ResCharge;
 import cn.linkmore.enterprise.controller.ent.response.ResDayIncome;
 import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlow;
 import cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount;
@@ -75,6 +76,14 @@ public interface PrefectureService {
 	 * @Version  v2.0
 	 */
 	List<ResDayIncome> findIncomeList(Short type, Long preId, HttpServletRequest request);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResCharge> findChargeDetailNew(Short type, Long preId,
+			HttpServletRequest request);
 
 
 	

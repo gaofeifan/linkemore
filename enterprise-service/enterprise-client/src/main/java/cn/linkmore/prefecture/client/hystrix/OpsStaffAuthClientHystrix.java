@@ -10,6 +10,7 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntStaff;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterpriseDeal;
 import cn.linkmore.enterprise.request.ReqStaffAuthBind;
 import cn.linkmore.prefecture.client.OpsStaffAuthClient;
@@ -65,8 +66,13 @@ public class OpsStaffAuthClientHystrix implements OpsStaffAuthClient {
 	@Override
 	public void stop(Long id) {
 		log.info("ops staffauth service  void stop(Long id) hystrix");
-		
 	}
+	@Override
+	public Boolean check(ReqCheck reqCheck) {
+		log.info("ops staffauth service  Boolean check(ReqCheck reqCheck) hystrix");
+		return null;
+	}
+	
 	
 	
 	

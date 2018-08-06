@@ -18,6 +18,7 @@ import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntStaff;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.ops.ent.request.ReqBindStaffAuth;
 import cn.linkmore.ops.ent.service.StaffService;
 
@@ -138,5 +139,14 @@ public class StaffController {
 			msg = new ViewMsg("修改失败", false);
 		}
 		return msg;
+	}
+	
+	/*
+	 * 检查
+	 */
+	@RequestMapping(value = "/check", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean check(ReqCheck reqCheck){
+		return this.staffService.check(reqCheck); 
 	}
 }

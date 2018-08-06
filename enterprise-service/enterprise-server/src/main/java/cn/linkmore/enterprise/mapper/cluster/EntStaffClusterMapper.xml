@@ -22,6 +22,15 @@
     from t_ent_staff
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+   <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    select count(1)
+    from t_ent_staff where   
+    ${property} = #{value}    
+   	<if test="id != null">
+    and id != #{id} 
+    </if>
+  </select>
   <select id="findByMobile" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

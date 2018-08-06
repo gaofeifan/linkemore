@@ -1,11 +1,11 @@
 package cn.linkmore.enterprise.controller.ent;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,23 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.enterprise.controller.ent.response.ResCharge;
-import cn.linkmore.enterprise.controller.ent.response.ResChargeDetail;
 import cn.linkmore.enterprise.controller.ent.response.ResDayIncome;
 import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlow;
 import cn.linkmore.enterprise.controller.ent.response.ResIncomeList;
 import cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount;
 import cn.linkmore.enterprise.service.PrefectureService;
-import cn.linkmore.order.response.ResChargeList;
-import cn.linkmore.order.response.ResIncome;
-import cn.linkmore.order.response.ResTrafficFlow;
-import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("/ent/prefecture")
-@Api(tags = "prefecture",description="车区运营", produces = "application/json")
+@Api(tags = "prefecture",description="车区运营【物业版】", produces = "application/json")
 public class PrefectureController {
 
 	@Resource
@@ -47,7 +42,7 @@ public class PrefectureController {
 	@RequestMapping(value="/pre-income" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场近七日实收入", notes = "查询车场近七日实收入", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<BigDecimal> findPreDayIncome(@RequestParam("preId") Long preId,HttpServletRequest request){
+	public ResponseEntity<BigDecimal> findPreDayIncome(@RequestParam("preId") @ApiParam("车区id") @NotNull(message="车区") Long preId,HttpServletRequest request){
 		BigDecimal income = this.prefectureService.findPreDayIncome(preId,request);
 		return ResponseEntity.success(income,request);
 	}
@@ -55,7 +50,7 @@ public class PrefectureController {
 	@RequestMapping(value="/proceeds" ,method=RequestMethod.GET)
 	@ApiOperation(value = "根据条件查询车场实收入[7-15-30]天", notes = "根据条件查询车场实收入[7-15-30]天", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<ResIncomeList> findProceeds(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
+	public ResponseEntity<ResIncomeList> findProceeds(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @NotNull(message="类型") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
 		ResIncomeList list = this.prefectureService.findProceeds(type,preId,request);
 		return ResponseEntity.success(list,request);
 	}
@@ -73,6 +68,13 @@ public class PrefectureController {
 	@ResponseBody
 	public ResponseEntity<List<cn.linkmore.enterprise.controller.ent.response.ResChargeList>> findChargeDetail(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
 		List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> list = this.prefectureService.findChargeDetail(type,preId,request);
+		return ResponseEntity.success(list, request);
+	}
+	@RequestMapping(value="/charge-detail-new" ,method=RequestMethod.GET)
+	@ApiOperation(value = "查询车场实时收费明细-新", notes = "查询车场实时收费明细-新", consumes = "application/json")
+	@ResponseBody
+	public ResponseEntity<List<cn.linkmore.enterprise.controller.ent.response.ResCharge>> findChargeDetailNew(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , @RequestParam("preId") Long preId,HttpServletRequest request){
+		List<ResCharge> list = this.prefectureService.findChargeDetailNew(type,preId,request);
 		return ResponseEntity.success(list, request);
 	}
 	

@@ -2,7 +2,7 @@ package cn.linkmore.enterprise.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlows;
 import cn.linkmore.enterprise.controller.ent.response.ResIncome;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.enterprise.service.PrefectureService;
-import cn.linkmore.order.client.OrderClient;
+import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResPreOrderCount;
@@ -49,7 +49,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Resource
 	private PrefectureClient prefectureClient;
 	@Resource
-	private OrderClient orderClient;
+	private EntOrderClient orderClient;
 	@Override
 	public List<cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount> findPreList(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
@@ -59,6 +59,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		List<Long> authStall = this.entStallService.findStaffId(map);
 		List<ResPreOrderCount> list = this.orderClient.findPreCountByIds(authStall);
 		List<cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount> res = new ArrayList<>();
+		if(list == null) {
+			return res;
+		}
 		for (ResPreOrderCount resPreOrderCount : list) {
 			res.add(ObjectUtils.copyObject(resPreOrderCount, new cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount()));
 		}
@@ -87,6 +90,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		param.put("stallIds", authStall);
 		Map<String, Object> proceeds = this.orderClient.findProceeds(param);
 		cn.linkmore.enterprise.controller.ent.response.ResIncomeList income = new cn.linkmore.enterprise.controller.ent.response.ResIncomeList();
+		if(proceeds == null) {
+			return income;
+		}
 		Object object = proceeds.get("amount");
 		if(income != null) {
 			income.setTotalAmount(new BigDecimal(object.toString()));
@@ -99,8 +105,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 				ResIncome i = new ResIncome();
 				Map<String,Object> result = (Map<String, Object>)object2 ;
 				i.setDayAmount(new BigDecimal(result.get("dayAmount").toString()));
-//				Date date = DateUtils.format(result.get("dayTime").toString());
-				i.setDayTime(new Date());
+				Calendar date = Calendar.getInstance();
+				date.setTimeInMillis(Long.decode(result.get("dayTime").toString()));
+				i.setDayTime(date.getTime());
 				incomeLst.add(i);
 			}
 			income.setIncomes(incomeLst);
@@ -122,6 +129,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		param.put("stallIds", authStall);
 		Map<String, Object> flow = this.orderClient.findTrafficFlow(param);
 		cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow tf = new cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow();
+		if(flow == null || flow.size() == 0) {
+			return tf;
+		}
 		if(flow.get("number") != null) {
 			tf.setTotalNumber(Integer.decode(flow.get("number").toString()));
 		}
@@ -132,7 +142,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 				Map<String,Object> result = (Map<String, Object>)resPreDataList ;
 				cn.linkmore.enterprise.controller.ent.response.ResTrafficFlowList rtf = new cn.linkmore.enterprise.controller.ent.response.ResTrafficFlowList();
 				rtf.setDayNumber(Integer.decode(result.get("dayNumber").toString()));
-				rtf.setDayTime(new Date());
+				Calendar date = Calendar.getInstance();
+				date.setTimeInMillis(Long.decode(result.get("dayTime").toString()));
+				rtf.setDayTime(date.getTime());
 				tfs.add(rtf);
 			}
 			tf.setTfs(tfs);
@@ -156,6 +168,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		List<ResCharge> charges =null;
 		List<ResChargeDetail> chargeDetail = null;
 		ResCharge cha = null;
+		if(list == null) {
+			return resList;
+		}
 		for (ResChargeList resChargeList : list) {
 			charges = new ArrayList<>();
 			chargeList = new cn.linkmore.enterprise.controller.ent.response.ResChargeList();
@@ -217,6 +232,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		ResDayIncome income = null;
 		List<ResDayIncomes> incomeLists = new ArrayList<>();
 		List<cn.linkmore.order.response.ResIncome> oIncomes = this.orderClient.findIncomeList(param);
+		if(oIncomes == null) {
+			return incomes;
+		}
 		for (cn.linkmore.order.response.ResIncome resIncome : oIncomes) {
 			income = new ResDayIncome();
 			income.setDate(resIncome.getDate());
@@ -234,5 +252,36 @@ public class PrefectureServiceImpl implements PrefectureService {
 		String key = TokenUtil.getKey(request);
 		return (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 	}
+	@Override
+	public List<cn.linkmore.enterprise.controller.ent.response.ResCharge> findChargeDetailNew(Short type,
+			Long preId, HttpServletRequest request) {
+		CacheUser ru = getUser(request);
+		Map<String, Long> map = new  HashMap<>();
+		map.put("staffId", ru.getId());
+		map.put("preId", preId);
+		List<Long> authStall = this.entStallService.findStaffId(map);
+		Map<String,Object> param = new HashMap<>();
+		param.put("startTime", type);
+		param.put("stallIds", authStall);
+		List<cn.linkmore.order.response.ResCharge> list = this.orderClient.findChargeDetailNew(param);
+		List<ResCharge> charges = new ArrayList<>();
+		if(list == null) {
+			return charges;
+		}
+		List<ResChargeDetail> chargeDetail = null;
+		ResCharge cha = null;
+		for (cn.linkmore.order.response.ResCharge resCharge : list) {
+			cha = new ResCharge();
+			cha.setDate(resCharge.getDate());
+			chargeDetail = new ArrayList<>();
+			for (cn.linkmore.order.response.ResChargeDetail resChargeDetail : resCharge.getCharge()) {
+				chargeDetail.add(ObjectUtils.copyObject(resChargeDetail, new ResChargeDetail() ));
+			}
+			cha.setCharge(chargeDetail);
+			charges.add(cha);
+		}
+		return charges;
+	}
 
+	
 }

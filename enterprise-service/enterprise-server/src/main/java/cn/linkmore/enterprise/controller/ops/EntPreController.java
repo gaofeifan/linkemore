@@ -42,7 +42,7 @@ public class EntPreController {
 		if(reqAddEntPreture ==  null){
 			return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request);
 		}
-		int result = entPreService.saveEntPre(reqAddEntPreture.getPreId(),reqAddEntPreture.getEntId(),reqAddEntPreture.getPreName());
+		int result = entPreService.saveEntPre(reqAddEntPreture.getPreId(),reqAddEntPreture.getEntId(),reqAddEntPreture.getPreName(),null,null);
 		if(result == 0){
 			return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request);
 		}
@@ -86,7 +86,7 @@ public class EntPreController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public void save(@RequestBody ReqAddEntPreture auth) {
-    	this.entPreService.saveEntPre(auth.getPreId(), auth.getEntId(), auth.getPreName());
+    	this.entPreService.saveEntPre(auth.getPreId(), auth.getEntId(), auth.getPreName(),auth.getOperatorId(),auth.getOperatorName());
     }
 
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)

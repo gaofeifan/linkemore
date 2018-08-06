@@ -16,7 +16,7 @@
     delete from t_coupon_send_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.coupon.entity.SendUser">
+  <insert id="save" parameterType="cn.linkmore.coupon.entity.SendUser" useGeneratedKeys="true" keyProperty="id">
     insert into t_coupon_send_user (id, template_id, record_id, 
       user_id, create_time, rollback_flag
       )

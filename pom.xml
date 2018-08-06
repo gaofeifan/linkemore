@@ -38,7 +38,34 @@
 		<shiro.version>1.2.3</shiro.version>
 		<poi.version>3.15</poi.version>
 		<feign-form.version>2.1.0</feign-form.version>
-	</properties>   
+	</properties> 
+	
+	<repositories> 
+        <repository> 
+            <id>nexus</id> 
+            <name>rongxin private nexus</name> 
+            <url>http://192.168.1.217:8081/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases> 
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots> 
+        </repository> 
+    </repositories> 
+    <pluginRepositories> 
+        <pluginRepository> 
+            <id>nexus</id> 
+            <name>rongxin private nexus</name> 
+            <url>http://192.168.1.217:8081/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases> 
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots> 
+        </pluginRepository> 
+    </pluginRepositories>  
   	<modules>
   		<module>cloud-service</module>
   		<module>base-service</module>
