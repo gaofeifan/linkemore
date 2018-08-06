@@ -42,7 +42,7 @@ public class AppEntBrandAdController {
 	private EntBrandApplicantService entBrandApplicantService;
 	
 	@ApiOperation(value = "开屏广告详情", notes = "开机是否展示开屏广告", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/brand_ad", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/brand-ad", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<ResEntBrandAd> findBrandAdScreen(@Validated @RequestParam(value="cityId", required=true) Long cityId, HttpServletRequest request) {
 		ResponseEntity<ResEntBrandAd> response = null;
@@ -58,7 +58,7 @@ public class AppEntBrandAdController {
 	} 
 	
 	@ApiOperation(value = "品牌申请人", notes = "非品牌授权用户申请品牌权限", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/brand_apply", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/brand-apply", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> brandApply(@Validated @RequestBody ReqBrandApplicant reqBrandApplicant, HttpServletRequest request) {
 		ResponseEntity<Boolean> response = null;
@@ -90,7 +90,7 @@ public class AppEntBrandAdController {
 	} 
 	
 	@ApiOperation(value = "品牌车区广告详情", notes = "品牌车区广告详情", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/brand_pre_ad", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/brand-pre-ad", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<ResEntBrandAd> findBrandPreAd(@Validated @RequestParam(value="id", required=true) Long id, HttpServletRequest request) {
 		ResponseEntity<ResEntBrandAd> response = null;

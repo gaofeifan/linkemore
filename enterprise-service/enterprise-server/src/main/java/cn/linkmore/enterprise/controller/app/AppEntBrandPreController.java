@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(tags="BrandPre",description="品牌车区信息")
 @RestController
-@RequestMapping("/app/brand_pre")
+@RequestMapping("/app/brand-pre")
 public class AppEntBrandPreController {
 	@Autowired
 	private EntBrandPreService entBrandPreService;
