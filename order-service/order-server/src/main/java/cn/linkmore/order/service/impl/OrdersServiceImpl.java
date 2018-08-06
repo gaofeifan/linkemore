@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -970,8 +971,12 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public BigDecimal findPreDayIncome(Long authStall) {
-		return this.ordersClusterMapper.findPreDayIncome(authStall);
+	public BigDecimal findPreDayIncome(Short type, Long preId) {
+		Date date = getDateByType(type);
+		Map<String , Object> map = new HashMap<>();
+		map.put("startTime", date);
+		map.put("preId", preId);
+		return this.ordersClusterMapper.findPreDayIncome(map);
 	}
 
 	@Override
@@ -1060,7 +1065,6 @@ public class OrdersServiceImpl implements OrdersService {
 		Map<String, Date> map = getStartEndDate(param.get("date") != null ? param.get("date").toString():null);
 		param.put("monthStart", map.get("monthStart"));
 		param.put("monthEnd", map.get("monthEnd"));
-		List<ResTrafficFlow> flowLists = new ArrayList<>();
 		List<ResTrafficFlowList> list = this.ordersClusterMapper.findTrafficFlowList(param);
 //		List<ResMonthCount> monthCount = this.ordersClusterMapper.findMonthCount(param);
 		ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
@@ -1078,6 +1082,7 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			flowLists.add(flow);
 		}*/
+		flow.setTrafficFlows(list);
 		return flow;
 	}
 
@@ -1114,11 +1119,11 @@ public class OrdersServiceImpl implements OrdersService {
 	private Date getDateByType(Short type) {
 		Date date = null;
 		if (type == 0) {
-			date = DateUtils.getPast2Date(-7);
+			date = DateUtils.getPast2Date(+7);
 		} else if (type == 1) {
-			date = DateUtils.getPast2Date(-15);
+			date = DateUtils.getPast2Date(+15);
 		} else if (type == 2) {
-			date = DateUtils.getPast2Date(-30);
+			date = DateUtils.getPast2Date(+30);
 		}
 		return date;
 	}
@@ -1127,16 +1132,25 @@ public class OrdersServiceImpl implements OrdersService {
 		Map<String,Date> map = new HashMap<>();
 		Date monthStart = null;
 		Date monthEnd = null;
-		if(StringUtils.isNotBlank(date)) {
-			monthStart = new Date();
-			monthEnd = monthStart;
-			monthStart = DateUtils.getLastMonth(monthStart);
+		if(StringUtils.isBlank(date)) {
+			Calendar instance = Calendar.getInstance();
+			instance.setTime(new Date());
+			instance.set(Calendar.DAY_OF_MONTH, 1);
+			monthStart = instance.getTime();
+			instance.set(Calendar.DAY_OF_MONTH, 1);
+			instance.set(Calendar.MONTH, instance.get(Calendar.MONDAY)+1);
+			monthEnd = instance.getTime();
 		}else {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月");
 			try {
 				Date parse = sdf.parse(date);
-				monthEnd = DateUtils.getLastMonth(parse);
-				monthStart = DateUtils.getLastMonth(parse);
+				Calendar instance = Calendar.getInstance();
+				instance.setTime(parse);
+				instance.set(Calendar.DAY_OF_MONTH, 1);
+				monthStart = instance.getTime();
+				instance.set(Calendar.DAY_OF_MONTH, 1);
+				instance.set(Calendar.MONTH, instance.get(Calendar.MONDAY)+1);
+				monthEnd = instance.getTime();
 			} catch (ParseException e) {
 				throw new BusinessException(StatusEnum.VALID_EXCEPTION);
 			}

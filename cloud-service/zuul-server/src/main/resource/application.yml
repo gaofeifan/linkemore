@@ -82,7 +82,7 @@ zuul:
     ent:
       path: /ent/file/**  
       serviceId: common-server 
-      sensitiveHeaders: Authorization 
+      sensitiveHeaders: Authorization
 security:
   basic:
     enabled: false 

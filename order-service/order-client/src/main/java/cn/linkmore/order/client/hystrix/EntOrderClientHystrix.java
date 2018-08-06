@@ -34,7 +34,7 @@ public class EntOrderClientHystrix implements EntOrderClient {
 	}
 
 	@Override
-	public BigDecimal findPreDayIncome(Long authStall) {
+	public BigDecimal findPreDayIncome(Short type,Long authStall) {
 		log.info("feign BigDecimal findPreDayIncome(List<Long> authStall)");
 		return null;
 	}

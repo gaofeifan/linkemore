@@ -45,8 +45,10 @@ public class PrefectureController {
 	@RequestMapping(value="/pre-income" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场近七日实收入", notes = "查询车场近七日实收入", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<BigDecimal> findPreDayIncome(@RequestParam("preId") @ApiParam("车区id") @NotNull(message="车区") Long preId,HttpServletRequest request){
-		BigDecimal income = this.prefectureService.findPreDayIncome(preId,request);
+	public ResponseEntity<BigDecimal> findPreDayIncome(
+			@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @NotNull(message="类型不能为空") @RequestParam("type") Short type ,
+			@RequestParam("preId") @ApiParam("车区id") @NotNull(message="车区") Long preId,HttpServletRequest request){
+		BigDecimal income = this.prefectureService.findPreDayIncome(type,preId,request);
 		return ResponseEntity.success(income,request);
 	}
 	

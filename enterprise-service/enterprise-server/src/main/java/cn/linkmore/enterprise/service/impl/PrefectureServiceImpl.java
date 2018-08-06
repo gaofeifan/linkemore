@@ -72,14 +72,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 		
 	}
 	@Override
-	public BigDecimal findPreDayIncome(Long preId, HttpServletRequest request) {
+	public BigDecimal findPreDayIncome(Short type,Long preId, HttpServletRequest request) {
 		CacheUser ru = getUser(request);
 		Map<String, Long> map = new  HashMap<>();
 		map.put("staffId", ru.getId());
 		map.put("preId", preId);
-		List<Long> id = this.authPreClusterMapper.findPreId(map);
+//		List<Long> id = this.authPreClusterMapper.findPreId(map);
 //		List<Long> authStall = this.entStallService.findStaffId(map);
-		return this.orderClient.findPreDayIncome(id.get(0));
+		return this.orderClient.findPreDayIncome(type,preId);
 	}
 	
 	@Override

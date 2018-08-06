@@ -131,11 +131,12 @@ public interface OrdersService {
 	void brandCreate(ReqBrandBooking rbb, HttpServletRequest request);
 
 	/**
+	 * @param type 
 	 * @Description  查询车区今日收入
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	BigDecimal findPreDayIncome(Long authStall);
+	BigDecimal findPreDayIncome(Short type, Long authStall);
 
 	/**
 	 * @Description  

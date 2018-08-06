@@ -41,10 +41,10 @@ public class EntOrdersController {
 		return this.ordersService.findPlateByPreId(preId);
 	}
 	
-	@RequestMapping(value = "/day-income", method = RequestMethod.POST)
+	@RequestMapping(value = "/day-income", method = RequestMethod.GET)
 	@ResponseBody
-	public BigDecimal findPreDayIncome(@RequestParam("preId") Long preId) {
-		return this.ordersService.findPreDayIncome(preId);
+	public BigDecimal findPreDayIncome(@RequestParam("type") Short type,@RequestParam("preId") Long preId) {
+		return this.ordersService.findPreDayIncome(type,preId);
 	}
 	
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)

@@ -34,13 +34,14 @@ public interface PrefectureService {
 	List<ResPreOrderCount> findPreList(HttpServletRequest request);
 
 	/**
+	 * @param type 
 	 * @param request 
 	 * @return 
 	 * @Description  查询今日收入
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	BigDecimal findPreDayIncome(Long preId, HttpServletRequest request);
+	BigDecimal findPreDayIncome(Short type, Long preId, HttpServletRequest request);
 
 	/**
 	 * @Description  根据条件查询实收入

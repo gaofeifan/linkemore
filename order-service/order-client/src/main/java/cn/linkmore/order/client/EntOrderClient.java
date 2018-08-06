@@ -34,7 +34,7 @@ public interface EntOrderClient {
 
 	@RequestMapping(value = "/day-income", method = RequestMethod.GET)
 	@ResponseBody
-	public BigDecimal findPreDayIncome(@RequestParam("preId") Long preId);
+	public BigDecimal findPreDayIncome(@RequestParam("type") Short type, @RequestParam("preId") Long preId);
 
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
 	@ResponseBody

@@ -345,17 +345,19 @@
     	</foreach>
 	GROUP BY pre_id
   </select>
-  <select id="findPreDayIncome" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
+  <select id="findPreDayIncome" parameterType="java.util.Map" resultType="java.math.BigDecimal">
    SELECT
-		sum(actual_amount) dayAmount
+		IFNULL(sum(actual_amount),0.0) dayAmount
 	FROM
 		o_orders
 	WHERE
-		 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and pre_id = #{id}
+		 status = 3 
+		 	AND date_format(end_time,'%Y-%m-%d') >= date_format(#{startTime},'%Y-%m-%d')
+		 and pre_id = #{id}
   </select>
   <select id="findProceedsAmount" parameterType="java.util.Map" resultType="java.math.BigDecimal">
    SELECT
-		sum(actual_amount) dayAmount
+		IFNULL(sum(actual_amount),0.0) dayAmount
 	FROM
 		o_orders
 	WHERE
@@ -396,7 +398,7 @@
 	    1 = 1
 		and status = 3 
 		and pre_id = #{preId}
-		and DATE_FORMAT(end_time,'%Y-%m-%d') = #{startTime}
+		AND date_format(end_time,'%Y-%m-%d') = date_format(#{startTime},'%Y-%m-%d')
 	</where>
 	order by end_time desc
   </select>
@@ -408,8 +410,8 @@
 		WHERE
 		status = 3 
 		and pre_id = #{preId}
-		and #{monthStart} >= DATE_FORMAT(end_time,'%Y-%m') 
-		AND DATE_FORMAT(end_time,'%Y-%m') >= #{monthEnd}
+		 <![CDATA[ and #{monthStart} <= end_time]]>
+		 <![CDATA[ AND #{monthEnd} > end_time]]>
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
   </select>
@@ -424,6 +426,8 @@
   <select id="findIncomeList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResIncomeList">
 	SELECT end_time date,actual_amount dayAmount,DATE_FORMAT(end_time,'%m') month FROM o_orders 	where	status = 3 
 	and pre_id = #{preId}
+	 <![CDATA[ and #{monthStart} <= end_time]]>
+	 <![CDATA[ AND #{monthEnd} > end_time]]>
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
   </select>
@@ -434,10 +438,10 @@
 	ORDER BY end_time DESC	
   </select>
   <select id="findMonthCountByDate" parameterType="java.util.Map" resultType="cn.linkmore.order.controller.app.response.ResMonthCount">
- 	select DATE_FORMAT(end_time,'%m') month,SUM(actual_amount) monthAmount,COUNT(1) monthCarCount
+ 	select DATE_FORMAT(end_time,'%m') month,ifnull(SUM(actual_amount),0.0) monthAmount,COUNT(1) monthCarCount
 	 FROM o_orders 	where	status = 3 
-	 and #{monthStart} >= DATE_FORMAT(end_time,'%Y-%m') 
-	AND DATE_FORMAT(end_time,'%Y-%m') >= #{monthEnd}
+	 and pre_id = #{preId}
+	 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
 	ORDER BY end_time DESC	
   </select>
   <select id="findPreDataList" parameterType="java.util.Map" resultType="cn.linkmore.order.response.ResPreDataList">
