@@ -60,6 +60,14 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
+  <select id="findBrandPreList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_pre
+    where status = 1 and end_time is not null and 
+    <![CDATA[ end_time < now() ]]> 
+  </select>
+  
   <select id="findList" resultMap="PreResultMap">
     select id,pre_id,pre_name,ent_id,ent_name,status from t_ent_brand_pre where status = 1
   </select>

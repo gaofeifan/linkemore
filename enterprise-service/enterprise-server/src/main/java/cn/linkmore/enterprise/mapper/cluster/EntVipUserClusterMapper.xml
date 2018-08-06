@@ -34,6 +34,18 @@
     from t_ent_vip_user
 	where 
      1 = 1
+     	<if test="mobile != null">
+    		and mobile = #{mobile}
+    	</if>
+    	<if test="realname != null">
+    		and realname = #{realname}
+    	</if>
+    	<if test="property==null">
+			order by id desc
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
 	 limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   
@@ -43,5 +55,11 @@
     from t_ent_vip_user
 	where 
      1 = 1
+     	<if test="mobile != null">
+    		and mobile = #{mobile}
+    	</if>
+    	<if test="realname != null">
+    		and realname = #{realname}
+    	</if>
   </select>
 </mapper>

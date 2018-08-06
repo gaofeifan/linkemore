@@ -42,7 +42,17 @@ public interface EntBrandPreClusterMapper {
 	Integer count(Map<String, Object> param);
 	
 	List<ResBrandPre> findPage(Map<String, Object> param);
-	
+	/**
+	 * 查询品牌车区树
+	 * @param param
+	 * @return
+	 */
 	List<ResPre> findTreeList(Map<String, Object> param);
+	
+	/**
+	 * 查询使用中的品牌车区列表
+	 * @return
+	 */
+	List<ResBrandPre> findBrandPreList();
 
 }

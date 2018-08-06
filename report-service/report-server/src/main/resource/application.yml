@@ -43,13 +43,12 @@ master-db:
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   
 cluster-db:   
-  url: jdbc:mysql://192.168.1.219:3306/linkmore_report?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
-  username: root
-  password: Linkmore@2018
-  
-  #url: jdbc:mysql://172.16.221.0:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
-  #username: ppyx
-  #password: 123456
+  #url: jdbc:mysql://192.168.1.219:3306/linkmore_report?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+  #username: root
+  #password: Linkmore@2018
+  url: jdbc:mysql://47.97.164.247:53306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+  username: ppyx
+  password: 123456
   driver-class-name: com.mysql.jdbc.Driver  
   initial-size: 2
   min-idle: 2
@@ -85,13 +84,5 @@ redis:
   test-on-create: true 
   sentinel-master: mymaster
   sentinel-nodes: 192.168.1.219:26379  
-  
-swagger:
-  enable: true
-  title: 凌猫停车报表服务接口文档
-  description: 本文档为内部文档，仅供内部前端及测试人员参考。 完全基于RESTful接口说明
-  version: 2.0
-  service-url: http://www.linkmoreparking.com
-  contact: 凌猫停车 
-  base-package: cn.linkmore.report.controller.app
+  channel: report
     

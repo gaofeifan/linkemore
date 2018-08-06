@@ -218,8 +218,9 @@ public class PayServiceImpl implements PayService {
 			roc.setPayType((short)TradePayType.WECHAT.type);
 		} 
 		roc.setPlateNumber(order.getPlateNo());
+		roc.setPrefectureName(order.getPreName());
 		ResPrefectureDetail pre = this.prefectureClient.findById(order.getPreId());
-		if(pre!=null) {
+		if(pre != null && order.getPreName() == null) {
 			roc.setPrefectureName(pre.getName());
 		}
 		ResStallEntity stall = this.stallClient.findById(order.getStallId());

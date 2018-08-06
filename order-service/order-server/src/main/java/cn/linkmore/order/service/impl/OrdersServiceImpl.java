@@ -344,7 +344,6 @@ public class OrdersServiceImpl implements OrdersService {
 					o.setDockId(dict.getCode());
 				}
 			}
-			o.setStallLocal(pre.getName() + stall.getStallName());
 			o.setStallGuidance(pre.getAddress() + stall.getStallName());
 			o.setStallType(stall.getType());
 			if (brand != null) {
@@ -353,6 +352,7 @@ public class OrdersServiceImpl implements OrdersService {
 				o.setStrategyId(brand.getStrategyId());
 				o.setPreName(brand.getName());
 			}
+			o.setStallLocal(o.getPreName() + stall.getStallName());
 			this.orderMasterMapper.save(o);
 
 			OrdersDetail od = new OrdersDetail();
@@ -900,7 +900,7 @@ public class OrdersServiceImpl implements OrdersService {
 				ro.setPrefectureAddress(pre.getAddress());
 				ro.setGuideImage(pre.getRouteGuidance());
 				ro.setGuideRemark(pre.getRouteDescription());
-				ro.setPrefectureName(pre.getName());
+				//ro.setPrefectureName(pre.getName());
 			}
 			ResStallEntity stall = this.stallClient.findById(ro.getStallId());
 			if (stall != null) {

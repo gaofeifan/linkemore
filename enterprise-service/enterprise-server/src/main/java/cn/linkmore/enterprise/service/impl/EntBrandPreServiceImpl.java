@@ -14,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -30,12 +33,14 @@ import cn.linkmore.enterprise.controller.app.response.ResEntBrandPre;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreCity;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreLeisure;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandPreStrategy;
+import cn.linkmore.enterprise.dao.cluster.EntBrandAdClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntBrandPreClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntBrandStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandPreMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandPre;
 import cn.linkmore.enterprise.request.ReqEntBrandPre;
+import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
 import cn.linkmore.enterprise.response.ResBrandStall;
@@ -89,6 +94,9 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 
 	@Resource
 	private RedisService redisService;
+	
+	@Resource
+	private EntBrandAdClusterMapper entBrandAdClusterMapper;
 
 	@Override
 	public List<ResEntBrandPreCity> list(ReqBrandPre rp, HttpServletRequest request) {
@@ -156,7 +164,18 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 			}else {
 				ebp.setBrandUserFlag(false);
 			}
-
+			
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("entId", ebp.getEntId());
+			map.put("preId", ebp.getPreId());
+			map.put("screen", 0);
+			List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(map);
+			log.info("ad list = {}",JSON.toJSON(list));
+			if (CollectionUtils.isNotEmpty(list)) {
+				if(list.get(0).getLimitStatus() == (short)1) {
+					ebp.setLimitStatus(true);
+				}
+			}
 			ebp.setLeisureStall(count.intValue());
 			ebp.setLinkmoreLeisureStall(linkmoreCount.intValue());
 			ebp.setDistance(MapUtil.getDistance(ebp.getLatitude(), ebp.getLongitude(), new Double(rp.getLatitude()),
@@ -290,7 +309,6 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		EntBrandPre entBrandPre = null;
 		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
 		entBrandPre.setUpdateTime(new Date());
-		entBrandPre.setLogoUrl("http://www.baidu.com");
 		return entBrandPreMasterMapper.update(entBrandPre);
 	}
 

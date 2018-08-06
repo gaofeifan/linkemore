@@ -92,6 +92,11 @@ redis:
   sentinel-nodes: 192.168.1.219:26379 
   channel: enterprise
   
+  
+logging:
+  level:
+     cn.linkmore.enterprise.dao : debug
+  
 sdk:
   linkmore_url: http://192.168.1.211:8081
   
