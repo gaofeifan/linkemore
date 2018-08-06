@@ -625,6 +625,7 @@ public class CouponServiceImpl implements CouponService {
         List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
 		ResUser resUser = userClient.findById(userId);
 		log.info("current userId {} , user {} ", userId, JSON.toJSON(resUser));
+		ResEnterprise enterprise = enterpriseClient.findById(entId);
 		if (CollectionUtils.isNotEmpty(list) && resUser != null) {
 			ResSubject subject = list.get(0);
 			ResTemplate temp = this.templateClusterMapper.findById(subject.getTemplateId());
@@ -642,6 +643,9 @@ public class CouponServiceImpl implements CouponService {
 			couponSendUser.setTemplateId(sendRecord.getTemplateId());
 			couponSendUser.setRollbackFlag(0);
 			couponSendUser.setCreateTime(new Date());
+			if(enterprise != null) {
+				couponSendUser.setUsername(enterprise.getName());
+			}
 			sendUserMasterMapper.save(couponSendUser);
 			List<ResTemplateItem> items = templateItemClusterMapper.findList(sendRecord.getTemplateId());
 			List<Coupon> couponList = new ArrayList<Coupon>();
@@ -675,7 +679,7 @@ public class CouponServiceImpl implements CouponService {
 			this.templateMasterMapper.update(template);
 			// 发送短信通知
 			ReqSms sms = new ReqSms();
-			ResEnterprise enterprise = enterpriseClient.findById(entId);
+			
 			log.info("enterprise name = {}",enterprise.getName());
 			Map<String, String> param = new HashMap<String, String>();
 			if(enterprise != null) {
