@@ -615,7 +615,7 @@ public class CouponServiceImpl implements CouponService {
 			count = (Integer) this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay);
 			log.info("entId{} count {} " ,entId, count);
 		}else {
-			log.info("current day create the key with expireTime ");
+			log.info("entId {} current day create the key ",entId);
 			this.redisService.set(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay, 0);
 		}
       
@@ -623,6 +623,7 @@ public class CouponServiceImpl implements CouponService {
 		ResUser resUser = userClient.findById(userId);
 		log.info("current userId {} , user {} ", userId, JSON.toJSON(resUser));
 		ResEnterprise enterprise = enterpriseClient.findById(entId);
+		log.info("entId {} , ent {} ", entId, JSON.toJSON(enterprise));
 		if (CollectionUtils.isNotEmpty(list) && resUser != null) {
 			ResSubject subject = list.get(0);
 			ResTemplate temp = this.templateClusterMapper.findById(subject.getTemplateId());
@@ -640,9 +641,6 @@ public class CouponServiceImpl implements CouponService {
 			couponSendUser.setTemplateId(sendRecord.getTemplateId());
 			couponSendUser.setRollbackFlag(0);
 			couponSendUser.setCreateTime(new Date());
-			if(enterprise != null) {
-				couponSendUser.setUsername(enterprise.getName());
-			}
 			sendUserMasterMapper.save(couponSendUser);
 			List<ResTemplateItem> items = templateItemClusterMapper.findList(sendRecord.getTemplateId());
 			List<Coupon> couponList = new ArrayList<Coupon>();

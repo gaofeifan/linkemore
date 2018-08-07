@@ -3,24 +3,22 @@ package cn.linkmore.enterprise.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants.RedisKey;
-import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewPage;
@@ -37,7 +35,6 @@ import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntBrandApplicantService;
 import cn.linkmore.redis.RedisService;
-import cn.linkmore.util.TokenUtil;
 
 /**
  * 品牌申请人
@@ -71,9 +68,10 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 
 	@Autowired
 	private RedisService redisService;
-
+	
+	private static Set<String> BRAND_USER_SET = new HashSet<String>();
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = RuntimeException.class)
 	public Boolean brandApplicant(ReqBrandApplicant reqBrandApplicant, HttpServletRequest request) {
 		Boolean flag = false;
 		EntBrandApplicant brandApplicant = new EntBrandApplicant();
@@ -97,7 +95,7 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		} else {
 			brandApplicant.setEntName(resEnt.getName());
 		}
-
+		
 		List<ResBrandAd> brandAdList = entBrandAdClusterMapper.findBrandPreAdList(map);
 		log.info("resBrandAd{}", JSON.toJSON(brandAdList));
 		if (CollectionUtils.isNotEmpty(brandAdList)) {
@@ -105,7 +103,14 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		} else {
 			throw new BusinessException(StatusEnum.BRAND_APPLICANT_ENT_BRAND_FAIL);
 		}
-
+		synchronized (this) {
+			if (BRAND_USER_SET.contains(entId.toString()+mobile)) {
+				throw new BusinessException(StatusEnum.BRAND_APPLICANT_FAIL);
+			}
+			BRAND_USER_SET.add(entId.toString()+mobile);
+			log.info("brand_user_set= {}",JSON.toJSON(BRAND_USER_SET));
+		}
+		
 		Integer num = this.entBrandApplicantClusterMapper.findBrandApplicant(map);
 		if (num > 0) {
 			throw new BusinessException(StatusEnum.BRAND_APPLICANT_FAIL);

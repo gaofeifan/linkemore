@@ -16,7 +16,7 @@ public class SendUser {
 
     private Integer rollbackFlag;
     
-  //列表显示字段
+    //列表显示字段
     private String username;//显示用户名称
     
     private String tempName;//显示套餐名称
