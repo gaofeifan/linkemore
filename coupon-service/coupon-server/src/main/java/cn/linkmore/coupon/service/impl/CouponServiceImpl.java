@@ -610,16 +610,13 @@ public class CouponServiceImpl implements CouponService {
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		String currentDay = sdf.format(date);
-		Calendar curDate = Calendar.getInstance();
-        Calendar nextDayDate = new GregorianCalendar(curDate.get(Calendar.YEAR), curDate.get(Calendar.MONTH), curDate.get(Calendar.DATE)+1, 0, 0, 0);
-        int expireTime = (int) ((nextDayDate.getTimeInMillis() - curDate.getTimeInMillis())/1000);
         Integer count = 0;
 		if (this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay) != null) {
 			count = (Integer) this.redisService.get(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay);
 			log.info("entId{} count {} " ,entId, count);
 		}else {
 			log.info("current day create the key with expireTime ");
-			this.redisService.set(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay, 0 , expireTime);
+			this.redisService.set(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay, 0);
 		}
       
         List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
