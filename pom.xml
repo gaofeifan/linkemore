@@ -83,3 +83,10 @@
   		<module>notice-service</module>
   	</modules>
 </project>
+<build>
+	<resources>
+		<resource>
+			<directory>src/main/resources</directory>
+		</resource>
+	</resources>
+</build>
