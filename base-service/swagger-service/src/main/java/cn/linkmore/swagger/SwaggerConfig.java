@@ -1,9 +1,15 @@
 package cn.linkmore.swagger;
  
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -24,16 +30,59 @@ public class SwaggerConfig {
 	private String serviceUrl = "http://www.linkmoreparking.com";
 	private String contact = "凌猫停车"; 
 	private String basePackage = "";
+	private static final Logger log = LoggerFactory.getLogger(SwaggerConfig.class);
 	@Bean
 	public Docket api() {
+		log.info(" enable ======================= " + this.enable);
 		if(this.enable) {
 			return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-					.apis(RequestHandlerSelectors.basePackage(this.basePackage)).paths(PathSelectors.any())
+					.apis(SwaggerConfig.basePackage(this.basePackage)).paths(PathSelectors.any())
 					.build();  
 		}else {
 			return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.none()).build();
+			//return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select().apis(SwaggerConfig.basePackage("cn.linkmore.enterprise.controller.app,cn.linkmore.enterprise.controller.ent")).paths(PathSelectors.any()).build();
 		} 
 	}
+	
+	public static Predicate<RequestHandler> basePackage(final String basePackage) {
+		log.info(" basePackage ======================= {} " + basePackage);
+        return new Predicate<RequestHandler>() {
+            @Override
+            public boolean apply(RequestHandler input) {
+                return declaringClass(input).transform(handlerPackage(basePackage)).or(true);
+            }
+        };
+    }
+    
+    /**
+     * 处理包路径配置规则,支持多路径扫描匹配以逗号隔开
+     * 
+     * @param basePackage 扫描包路径
+     * @return Function
+     */
+    private static Function<Class<?>, Boolean> handlerPackage(final String basePackage) {
+        return new Function<Class<?>, Boolean>() {
+            
+            @Override
+            public Boolean apply(Class<?> input) {
+                for (String strPackage : basePackage.split(",")) {
+                    boolean isMatch = input.getPackage().getName().startsWith(strPackage);
+                    if (isMatch) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    }
+    
+    /**
+     * @param input RequestHandler
+     * @return Optional
+     */
+    private static Optional<? extends Class<?>> declaringClass(RequestHandler input) {
+        return Optional.fromNullable(input.declaringClass());
+    }
 
 	private ApiInfo apiInfo() { 
 		return new ApiInfoBuilder()
@@ -44,6 +93,8 @@ public class SwaggerConfig {
 				.contact(new Contact(this.contact,null,null))
 				.build();
 	}
+	
+	
 
 	public Boolean getEnable() {
 		return enable;
