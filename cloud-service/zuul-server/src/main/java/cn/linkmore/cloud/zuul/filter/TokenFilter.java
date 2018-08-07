@@ -43,7 +43,6 @@ public class TokenFilter extends ZuulFilter {
 			add("/swagger-resources/configuration/security");
 			add("/api-docs");
 			add("/v2/api-docs");
-			
 			 
 			add("/app/versions/v2.0/current");
 			add("/app/mini/v2.0/login");
@@ -59,7 +58,6 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/brand-pre/v2.0/free/list"); 
 			add("/app/brand-pre/v2.0/strategy");
 			
-			
 			add("/app/brands/v2.0/brand-ad"); 
 			add("/app/brands/v2.0/brand-apply"); 
 			add("/app/brands/v2.0/brand-pre-ad");
@@ -69,7 +67,6 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/callback/v2.0/wechat/order");
 			add("/app/callback/v2.0/alipay/order");
 			add("/app/callback/v2.0/apple/order");
-			
 			 
 			add("/ent/mini/v2.0/login");
 			add("/ent/auth/v2.0/login");
