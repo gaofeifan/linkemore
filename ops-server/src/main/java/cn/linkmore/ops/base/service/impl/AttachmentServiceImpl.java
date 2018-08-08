@@ -1,5 +1,6 @@
 package cn.linkmore.ops.base.service.impl;
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.view.ViewPage;

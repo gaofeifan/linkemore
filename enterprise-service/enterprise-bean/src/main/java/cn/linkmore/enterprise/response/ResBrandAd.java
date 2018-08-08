@@ -14,10 +14,6 @@ public class ResBrandAd {
     private Long entId;
     //企业名称
     private String entName;
-    //车区id
-    private Long preId;
-    //车区名称
-    private String preName;
     //视图image
     private String viewImage;
     //视图url
@@ -40,8 +36,18 @@ public class ResBrandAd {
     private Short adStatus;
     //是否品牌用户
     private Boolean brandUserFlag = false;
+    //适用城市
+    private String cityName;
     
-    public Short getLimitStatus() {
+    public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public Short getLimitStatus() {
 		return limitStatus;
 	}
 
@@ -79,22 +85,6 @@ public class ResBrandAd {
 
     public void setEntName(String entName) {
         this.entName = entName == null ? null : entName.trim();
-    }
-
-    public Long getPreId() {
-        return preId;
-    }
-
-    public void setPreId(Long preId) {
-        this.preId = preId;
-    }
-
-    public String getPreName() {
-        return preName;
-    }
-
-    public void setPreName(String preName) {
-        this.preName = preName == null ? null : preName.trim();
     }
 
     public String getViewImage() {

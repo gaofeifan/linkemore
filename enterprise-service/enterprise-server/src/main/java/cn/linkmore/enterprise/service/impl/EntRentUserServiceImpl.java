@@ -165,6 +165,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		this.entRentUserMasterMapper.updateReq(user);
 		
 	}
+
+	@Override
+	public List<EntRentUser> findAll() {
+		return this.entRentUserClusterMapper.findAll();
+	}
 	
 	
 

@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.client.CouponClient;
@@ -30,11 +32,14 @@ import cn.linkmore.enterprise.dao.cluster.EntBrandApplicantClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandApplicantMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandApplicant;
-import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.response.ResBrandAd;
+import cn.linkmore.enterprise.response.ResBrandApplicant;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntBrandApplicantService;
+import cn.linkmore.prefecture.client.PrefectureClient;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DomainUtil;
 
 /**
  * 品牌申请人
@@ -65,6 +70,9 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 
 	@Autowired
 	private UserClient userClient;
+	
+	@Autowired
+	private PrefectureClient prefectureClient;
 
 	@Autowired
 	private RedisService redisService;
@@ -90,6 +98,7 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		// 增加当前企业是否存在品牌广告验证
 		brandApplicant.setEntId(entId);
 		ResEnterprise resEnt = enterpriseClusterMapper.findById(entId);
+		ResPrefectureDetail prefecture= prefectureClient.findById(reqBrandApplicant.getPreId());
 		if (resEnt == null) {
 			throw new BusinessException(StatusEnum.BRAND_APPLICANT_ENT_FAIL);
 		} else {
@@ -127,6 +136,10 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		brandApplicant.setMobile(mobile);
 		brandApplicant.setCreateTime(new Date());
 		brandApplicant.setPlateNo(reqBrandApplicant.getPlateNo());
+		brandApplicant.setPreId(reqBrandApplicant.getPreId());
+		if(prefecture != null) {
+			brandApplicant.setPreName(prefecture.getName());
+		}
 		// 若用户不存在则创建用户
 		ResUser user = getUser(mobile);
 		if(user != null) {
@@ -156,39 +169,31 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		}
 	}
 	
-
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
-		return null;
-	}
-
-	@Override
-	public List<EntBrandApplicant> findList(Map<String, Object> param) {
-		return null;
-	}
-
-	@Override
-	public int save(EntBrandApplicant record) {
-		return entBrandApplicantMasterMapper.save(record);
-	}
-
-	@Override
-	public int update(EntBrandApplicant record) {
-		return entBrandApplicantMasterMapper.update(record);
+		Map<String, Object> param = new HashMap<String, Object>();
+		List<ViewFilter> filters = pageable.getFilters();
+		if (StringUtils.isNotBlank(pageable.getSearchProperty())) {
+			param.put(pageable.getSearchProperty(), pageable.getSearchValue());
+		}
+		if (filters != null && filters.size() > 0) {
+			for (ViewFilter filter : filters) {
+				param.put(filter.getProperty(), filter.getValue());
+			}
+		}
+		if (StringUtils.isNotBlank(pageable.getOrderProperty())) {
+			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
+			param.put("direction", pageable.getOrderDirection());
+		}
+		Integer count = this.entBrandApplicantClusterMapper.count(param);
+		param.put("start", pageable.getStart());
+		param.put("pageSize", pageable.getPageSize());
+		List<ResBrandApplicant> list = this.entBrandApplicantClusterMapper.findPage(param);
+		return new ViewPage(count, pageable.getPageSize(), list);
 	}
 
 	@Override
 	public int delete(Long id) {
 		return entBrandApplicantMasterMapper.delete(id);
 	}
-
-	@Override
-	public Integer check(ReqCheck reqCheck) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("property", reqCheck.getProperty());
-		param.put("value", reqCheck.getValue());
-		param.put("id", reqCheck.getId());
-		return this.entBrandApplicantClusterMapper.check(param);
-	}
-
 }

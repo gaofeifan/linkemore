@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResChargeList;
+import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
@@ -43,8 +44,8 @@ public class EntOrdersController {
 	
 	@RequestMapping(value = "/day-income", method = RequestMethod.GET)
 	@ResponseBody
-	public BigDecimal findPreDayIncome(@RequestParam("type") Short type,@RequestParam("preId") Long preId) {
-		return this.ordersService.findPreDayIncome(type,preId);
+	public BigDecimal findPreDayIncome(@RequestParam("preId") Long preId) {
+		return this.ordersService.findPreDayIncome(preId);
 	}
 	
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
@@ -130,5 +131,13 @@ public class EntOrdersController {
 	public List<ResPreOrderCount> findPreCountByIds(@RequestBody List<Long> preId){
 		return this.ordersService.findPreCountByIds(preId);
 	}
+
+	@RequestMapping(value = "/by-stall-id", method = RequestMethod.GET)
+	@ResponseBody
+	public ResEntOrder findOrderByStallId(@RequestParam("stallId") Long stallId){
+		return this.ordersService.findOrderByStallId(stallId);
+	}
+	
+	
 	
 }

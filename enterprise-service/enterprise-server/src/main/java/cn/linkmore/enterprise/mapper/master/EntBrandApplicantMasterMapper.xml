@@ -10,10 +10,9 @@
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="plateNo" jdbcType="VARCHAR" property="plateNo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
   </resultMap>
-  <sql id="Base_Column_List">
-    id, ent_id, ent_name, user_id, username, mobile, plate_no, create_time
-  </sql>
   
   <delete id="delete" parameterType="java.lang.Long">
     delete from t_ent_brand_applicant
@@ -22,10 +21,11 @@
   
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntBrandApplicant">
     insert into t_ent_brand_applicant (id, ent_id, ent_name, 
-      user_id, username, mobile, plate_no, create_time)
+      user_id, username, mobile, plate_no, create_time, pre_id, pre_name)
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
       #{userId,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
-      #{plateNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+      #{plateNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR})
   </insert>
   
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandApplicant">
@@ -36,7 +36,9 @@
       username = #{username,jdbcType=VARCHAR},
       mobile = #{mobile,jdbcType=VARCHAR},
       plate_no = #{plateNo,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      pre_id = #{preId,jdbcType=BIGINT},
+      pre_name = #{preName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

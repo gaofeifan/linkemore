@@ -11,6 +11,7 @@ import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResChargeDetail;
+import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderOps;
@@ -194,6 +195,13 @@ public interface OrdersClusterMapper {
 	 * @Version  v2.0
 	 */
 	ResMonthCount findMonthCountByDate(Map<String, Object> param);
+
+	/**
+	 * @Description  查询车位
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResEntOrder findOrderByStallId(Long stallId);
 
 
 

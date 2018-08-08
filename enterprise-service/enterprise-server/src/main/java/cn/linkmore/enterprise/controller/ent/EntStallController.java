@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.controller.ent.request.ReqOperatStall;
 import cn.linkmore.enterprise.controller.ent.request.ReqPreStall;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
@@ -100,12 +102,24 @@ public class EntStallController {
 	@RequestMapping(value = "/change-down",method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String,Object> changeDown(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id,HttpServletRequest request){
-		if(stall_id == null){
-			return null;
-		}
 		Map<String,Object> message  = this.entStallService.change(request,stall_id,2);
 		return message;
 	}
 	
+	@ApiOperation(value = "复位", notes = "复位", consumes = "application/json")
+	@RequestMapping(value = "/reset",method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<String> reset(@RequestParam("stallId") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stallId,HttpServletRequest request){
+		this.entStallService.reset(stallId);
+		return ResponseEntity.success("复位成功", request);
+	}
+	
+	@ApiOperation(value = "下线原因", notes = "下线原因", consumes = "application/json")
+	@RequestMapping(value = "/down-cause",method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResBaseDict>> downCause(HttpServletRequest request){
+		List<ResBaseDict> cause = this.entStallService.downCause();
+		return ResponseEntity.success(cause, request);
+	}
 	
 }

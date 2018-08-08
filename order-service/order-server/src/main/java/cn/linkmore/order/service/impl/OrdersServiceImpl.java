@@ -72,6 +72,7 @@ import cn.linkmore.order.entity.OrdersDetail;
 import cn.linkmore.order.entity.StallAssign;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResChargeDetail;
+import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
@@ -971,10 +972,10 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public BigDecimal findPreDayIncome(Short type, Long preId) {
-		Date date = getDateByType(type);
+	public BigDecimal findPreDayIncome(Long preId) {
+//		Date date = getDateByType(type);
 		Map<String , Object> map = new HashMap<>();
-		map.put("startTime", date);
+		map.put("startTime", new Date());
 		map.put("preId", preId);
 		return this.ordersClusterMapper.findPreDayIncome(map);
 	}
@@ -1003,6 +1004,8 @@ public class OrdersServiceImpl implements OrdersService {
 		Date date = getDateByType((short) Short.parseShort(map.get("startTime").toString()));
 		map.put("startTime", date);
 		BigDecimal decimal = this.ordersClusterMapper.findProceeds(map);
+//		map.put("pageSize", 10);
+//		map.put("start", getPageNo(map.get("pageNo")));
 		List<ResPreDataList> list = this.ordersClusterMapper.findPreDataList(map);
 		map = new HashMap<>();
 		map.put("amount", decimal);
@@ -1021,6 +1024,8 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public List<ResChargeDetail> findChargeDetail(Map<String, Object> param) {
+		param.put("start", getPageNo(param.get("pageNo")));
+		param.put("pageSize", 10);
 		List<ResChargeDetail> list = this.ordersClusterMapper.findChargeDetail(param);
 		for (ResChargeDetail detail : list) {
 			if (detail.getMonth() == detail.getMonth()) {
@@ -1065,6 +1070,8 @@ public class OrdersServiceImpl implements OrdersService {
 		Map<String, Date> map = getStartEndDate(param.get("date") != null ? param.get("date").toString():null);
 		param.put("monthStart", map.get("monthStart"));
 		param.put("monthEnd", map.get("monthEnd"));
+		param.put("pageSize", 10);
+		param.put("start", getPageNo(param.get("pageNo")));
 		List<ResTrafficFlowList> list = this.ordersClusterMapper.findTrafficFlowList(param);
 //		List<ResMonthCount> monthCount = this.ordersClusterMapper.findMonthCount(param);
 		ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
@@ -1093,9 +1100,9 @@ public class OrdersServiceImpl implements OrdersService {
 		Map<String, Date> map = getStartEndDate(param.get("date") != null ? param.get("date").toString():null);
 		param.put("monthStart", map.get("monthStart"));
 		param.put("monthEnd", map.get("monthEnd"));
-		System.out.println(DateUtils.converter(map.get("monthStart"), null));
-		System.out.println(DateUtils.converter(map.get("monthEnd"), null));
-//		List<ResIncome> incomes = new ArrayList<>();
+		param.put("pageSize", 10);
+		param.put("start", getPageNo(param.get("pageNo")));
+		
 		ResMonthCount months = this.ordersClusterMapper.findMonthCountByDate(param);
 		List<ResIncomeList> list = this.ordersClusterMapper.findIncomeList(param);
 		ResIncome income = new ResIncome();
@@ -1159,4 +1166,24 @@ public class OrdersServiceImpl implements OrdersService {
 		map.put("monthEnd", monthEnd);
 		return map;
 	}
+
+	@Override
+	public ResEntOrder findOrderByStallId(Long stallId) {
+		return this.ordersClusterMapper.findOrderByStallId(stallId);
+	}
+	
+	private int getPageNo(Object pageNo) {
+		Integer start = null;
+		if(pageNo == null) {
+			start = 1;
+		}else{
+			String str = pageNo.toString();
+			start = Integer.parseInt(str);
+			if(start == 0) {
+				start = 1;
+			}
+		}
+		return (start-1)*10;
+	}
+	
 }

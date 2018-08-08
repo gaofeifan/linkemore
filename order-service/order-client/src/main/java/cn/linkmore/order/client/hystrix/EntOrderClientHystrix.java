@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
+import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
@@ -34,7 +35,7 @@ public class EntOrderClientHystrix implements EntOrderClient {
 	}
 
 	@Override
-	public BigDecimal findPreDayIncome(Short type,Long authStall) {
+	public BigDecimal findPreDayIncome(Long authStall) {
 		log.info("feign BigDecimal findPreDayIncome(List<Long> authStall)");
 		return null;
 	}
@@ -96,5 +97,13 @@ public class EntOrderClientHystrix implements EntOrderClient {
 		return null;
 	}
 
+	@Override
+	public ResEntOrder findOrderByStallId(Long stallId) {
+		log.info("feign order Integer findOrderByStallId(Map<String, Object> param)");
+		return null;
+	}
+
+	
+	
 	
 }

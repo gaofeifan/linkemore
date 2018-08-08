@@ -4,9 +4,11 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +22,8 @@ import com.linkmore.lock.response.ResponseMessage;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.common.client.BaseDictClient;
+import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResEntTypeStalls;
@@ -29,15 +33,21 @@ import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntPrefecture;
+import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
+import cn.linkmore.enterprise.entity.StallExcStatus;
+import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.enterprise.service.EntStallService;
+import cn.linkmore.enterprise.service.StallExcStatusService;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.OrderClient;
+import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.StringUtil;
 import cn.linkmore.util.TokenUtil;
 
@@ -49,6 +59,12 @@ import cn.linkmore.util.TokenUtil;
 @Service
 public class EntStallServiceImpl implements EntStallService {
 
+	private static final String DOWN_CAUSE = "cause_down";
+	
+	@Autowired
+	private BaseDictClient dictClient;
+	@Autowired
+	private StallExcStatusService stallExcStatusService;
 	@Autowired
 	private EntStaffAuthClusterMapper  entStaffAuthClusterMapper;
 	
@@ -60,7 +76,7 @@ public class EntStallServiceImpl implements EntStallService {
 	
 	@Autowired
 	private EntAuthStallClusterMapper entAuthStallClusterMapper;
-	
+
 	@Autowired
 	private RedisService redisService;
 	
@@ -72,6 +88,9 @@ public class EntStallServiceImpl implements EntStallService {
 	
 	@Autowired
 	private LockFactory lockFactory;
+
+	@Autowired
+	private EntRentUserService entRentUserService;	
 	
 	@Override
 	public List<ResEntStalls> selectEntStalls(HttpServletRequest request) {
@@ -92,6 +111,7 @@ public class EntStallServiceImpl implements EntStallService {
 		List<EntAuthPre> entAuthPres= entAuthPreClusterMapper.findList(param);
 		int preSize = entAuthPres.size();
 		EntAuthPre entAuthPre = null;
+//		List<EntRentUser> rentUsers = entRentUserService.findAll();
 		
 		List<ResEntStalls> entStallList = new ArrayList<>();
 		ResEntStalls resEntStalls = null;
@@ -137,29 +157,29 @@ public class EntStallServiceImpl implements EntStallService {
 			
 			for(int j = 0 ; j < preStalls; j++){
 				ResStall resStall=stalls.get(j);
-				//临停
-				if(resStall.getType() == 1 ){
-					preTempTypeStalls ++;
-				}
-				//临停使用
+				//临停使用 || 临停
 				if(resStall.getType() == 1 && resStall.getStatus() == StallStatus.USED.status){
 					preTempUseTypeStalls ++;
+				}else if(resStall.getType() == 1 ){
+					preTempTypeStalls ++;
 				}
-				//长租
-				if(resStall.getType() == 2 ){
-					preRentTypeStalls ++;
-				}
-				//长租使用
+				//长租使用||长租
 				if(resStall.getType() == 2 && resStall.getStatus() == StallStatus.USED.status){
 					preRentUseTypeStalls ++;
+				}else if(resStall.getType() == 2 ){
+					preRentTypeStalls ++;
 				}
-				//vip
-				if(resStall.getType() == 3 ){
-					preVipTypeStalls ++;
-				}
-				//vip使用
+					/*StringBuilder sb = new StringBuilder();
+					for (EntRentUser rentUser : rentUsers) {
+						if(rentUser.getStallId().equals(resStall.getId())) {
+							sb.append(rentUser.getPlate()).append("/");
+						}
+					}*/
+				//vip使用  ||vip
 				if(resStall.getType() == 3 && resStall.getStatus() == StallStatus.USED.status){
 					preVipUseTypeStalls ++;
+				}else if(resStall.getType() == 3 ){
+					preVipTypeStalls ++;
 				}
 				
 			}
@@ -212,16 +232,24 @@ public class EntStallServiceImpl implements EntStallService {
 		params.put("type", type);
 		params.put("list", stallIds);
 		List<ResStall> stalls = this.stallClient.findPreStallList(params);
-		
-		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
+		List<ResOrderPlate> orders= null;//orderClient.findPlateByPreId(preId);
+		List<Long> collect = stalls.stream().map(stall -> stall.getId()).collect(Collectors.toList());
+		List<StallExcStatus> stallExcList = this.stallExcStatusService.findExcStatusList(collect);
 		//设置车位对应的车牌号
 		for(ResStall resStall:stalls){
-			if(orders == null ){
+			if(orders == null ){ 
 				break;
 			}
 			for(ResOrderPlate orderPlate : orders){
 				if(resStall.getId() == orderPlate.getStallId()){
 					resStall.setPlateNo(orderPlate.getPlateNo());
+					break;
+				}
+			}
+			//	设置车位锁异常状态
+			for (StallExcStatus stallExcStatus : stallExcList) {
+				if(stallExcStatus.getStallId() == resStall.getId()) {
+					resStall.setExcStatus(false);
 					break;
 				}
 			}
@@ -242,9 +270,37 @@ public class EntStallServiceImpl implements EntStallService {
 		if(lockBean == null){
 			return resDetailStall;
 		}
+		ResEntOrder resEntOrder = this.orderClient.findOrderByStallId(resStallEntity.getId());
+		List<EntRentUser> rentUsers = this.entRentUserService.findAll();
+		if(resStallEntity.getType() != null && resStallEntity.getType() == 2) {
+			StringBuilder sb = new StringBuilder();
+			StringBuilder mobiles = new StringBuilder();
+			for (EntRentUser entRentUser : rentUsers) {
+				if(entRentUser.getStallId().equals(resStallEntity.getId())) {
+					sb.append(entRentUser.getPlate()).append("/");
+					mobiles.append(entRentUser.getMobile()).append("/");
+				}
+			}
+			resDetailStall.setPlate(sb.length() != 0 ? sb.substring(0, sb.length()-1):null);
+			resDetailStall.setMobile(mobiles.length() != 0 ? mobiles.substring(0, mobiles.length()-1): null);
+			if(resStallEntity.getStatus() == 2) {
+				resDetailStall.setDownTime(resEntOrder.getLockDownTime());
+			}
+				
+			
+		}else if(resStallEntity.getType() != null && resStallEntity.getType() == 1) {
+			if(resStallEntity.getStatus() == 2) {
+				resDetailStall.setDownTime(resEntOrder.getLockDownTime());
+				resDetailStall.setOrderNo(resEntOrder.getOrderNo());
+				resDetailStall.setStartTime(resEntOrder.getBeginTime());
+				String duration = DateUtils.getDuration(new Date(), resEntOrder.getBeginTime());
+				resDetailStall.setStartDate(duration);
+			}
+		}
 		
 		resDetailStall.setBetty(lockBean.getElectricity());
 		resDetailStall.setStatus(lockBean.getLockState());
+		resDetailStall.setStallId(resStallEntity.getId());
 		return resDetailStall;
 	}
 
@@ -254,7 +310,6 @@ public class EntStallServiceImpl implements EntStallService {
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 		
 		//需要异步记录操作锁
-		
 		Map<String,Object> result = new HashMap<>();
 		ResStallEntity resStallEntity= this.stallClient.findById(stallId);
 		if(StringUtil.isBlank(resStallEntity.getLockSn())){
@@ -264,10 +319,15 @@ public class EntStallServiceImpl implements EntStallService {
 		}
 		ResponseMessage<LockBean> res = null;
 		//1 降下 2 升起
-		if(state == 1){
-			res=lockFactory.lockDown(resStallEntity.getLockSn());
-		}else if(state == 2){
-			res=lockFactory.lockUp(resStallEntity.getLockSn());
+		try {
+			if(state == 1){
+				res=lockFactory.lockDown(resStallEntity.getLockSn());
+			}else if(state == 2){
+				res=lockFactory.lockUp(resStallEntity.getLockSn());
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		if(res == null){
 			result.put("result", false);
@@ -284,6 +344,10 @@ public class EntStallServiceImpl implements EntStallService {
 		
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		Map<String, Object> param = new HashMap<>();
+		param.put("stallId", stall_id);
+		param.put("status", 1);
+		this.stallExcStatusService.updateExcStatus(param);
 		
 		Map<String, Object> map = new HashMap<>();
 		int  result = 0;
@@ -308,6 +372,20 @@ public class EntStallServiceImpl implements EntStallService {
 	public List<Long> findStaffId(Map<String, Long> map) {
 		return this.entStaffAuthClusterMapper.findByStaffId(map);
 	}
+
+	@Override
+	public void reset(Long stallId) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("stallId", stallId);
+		map.put("status", 1);
+		this.stallExcStatusService.updateExcStatus(map);
+	}
+
+	@Override
+	public List<ResBaseDict> downCause() {
+		return this.dictClient.findList(DOWN_CAUSE);
+	}
+	
 	
 	
 
