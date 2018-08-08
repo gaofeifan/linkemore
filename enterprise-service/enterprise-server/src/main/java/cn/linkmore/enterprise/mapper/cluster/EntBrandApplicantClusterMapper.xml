@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.EntBrandApplicantClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntBrandApplicant">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.response.ResBrandApplicant">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
@@ -10,9 +10,11 @@
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="plateNo" jdbcType="VARCHAR" property="plateNo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_name, user_id, username, mobile, plate_no, create_time
+    id, ent_id, ent_name, user_id, username, mobile, plate_no, create_time, pre_id, pre_name
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -26,5 +28,42 @@
     from t_ent_brand_applicant
     where ent_id = #{entId,jdbcType=BIGINT}
     and mobile = #{mobile,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_brand_applicant
+    where 1 = 1
+    <if test="entId!=null">  
+    and ent_id = #{entId,jdbcType=BIGINT}
+    </if>  
+    <if test="preId!=null">  
+    and pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+    <if test="mobile!=null">  
+    and mobile like #{mobile,jdbcType=VARCHAR}
+    </if>  
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from t_ent_brand_ad where 1 = 1
+    <if test="entId!=null">  
+    and ent_id = #{entId,jdbcType=BIGINT}
+    </if>  
+    <if test="preId!=null">  
+    and pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+    <if test="mobile!=null">  
+    and mobile like #{mobile,jdbcType=VARCHAR}
+    </if>  
   </select>
 </mapper>

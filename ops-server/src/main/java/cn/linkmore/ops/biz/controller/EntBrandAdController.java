@@ -54,11 +54,10 @@ public class EntBrandAdController {
 		try {
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("entId", record.getEntId());
-			map.put("preId", record.getPreId());
 			map.put("id", new Date().getTime());
 			int count = this.entBrandAdService.count(map);
 			if(count > 0 ) {
-				msg = new ViewMsg("当前品牌车区广告已存在", false);
+				msg = new ViewMsg("当前企业品牌广告已存在", false);
 			}else {
 				this.entBrandAdService.save(record);
 				msg = new ViewMsg("保存成功", true);
@@ -81,11 +80,10 @@ public class EntBrandAdController {
 		try {
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("entId", record.getEntId());
-			map.put("preId", record.getPreId());
 			map.put("id", record.getId());
 			int count = this.entBrandAdService.count(map);
 			if(count > 0 ) {
-				msg = new ViewMsg("当前品牌车区广告已存在", false);
+				msg = new ViewMsg("当前企业品牌广告已存在", false);
 			}else {
 				this.entBrandAdService.update(record);
 				msg = new ViewMsg("保存成功", true);

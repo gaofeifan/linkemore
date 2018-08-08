@@ -1,10 +1,9 @@
 package cn.linkmore.enterprise.dao.cluster;
 
+import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
-
-import cn.linkmore.enterprise.entity.EntBrandApplicant;
+import cn.linkmore.enterprise.response.ResBrandApplicant;
 /**
  * 品牌申请人
  * @author jiaohanbin
@@ -21,10 +20,18 @@ public interface EntBrandApplicantClusterMapper {
 	 * @return
 	 */
 	Integer findBrandApplicant(Map<String, Object> map);
-
-    EntBrandApplicant findById(Long id);
-
-	Integer check(Map<String, Object> param);
+    /**
+     * 计数
+     * @param param
+     * @return
+     */
+	Integer count(Map<String, Object> param);
+	/**
+	 * 列表
+	 * @param param
+	 * @return
+	 */
+	List<ResBrandApplicant> findPage(Map<String, Object> param);
 	
 
 }
