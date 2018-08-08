@@ -36,8 +36,18 @@ public class ResBrandAd {
     private Short adStatus;
     //是否品牌用户
     private Boolean brandUserFlag = false;
+    //适用城市
+    private String cityName;
     
-    public Short getLimitStatus() {
+    public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public Short getLimitStatus() {
 		return limitStatus;
 	}
 

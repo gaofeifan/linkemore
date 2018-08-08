@@ -20,6 +20,8 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.common.client.CityClient;
+import cn.linkmore.common.response.ResCity;
 import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.coupon.response.ResCoupon;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
@@ -69,6 +71,9 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 	@Autowired
 	private CouponClient couponClient;
+	
+	@Resource
+	private CityClient cityClient;
 
 	@Override
 	public ResEntBrandAd findBrandAdScreen(Long cityId, HttpServletRequest request) {
@@ -222,6 +227,25 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
 		List<ResBrandAd> list = this.entBrandAdClusterMapper.findPage(param);
+		Map<Long,Object> cityMap = new HashMap<Long,Object>();
+		List<ResCity> cityList = this.cityClient.findSelectList();
+		for(ResCity city: cityList){
+			cityMap.put(city.getId(), city.getCityName());
+		}
+		
+		if(CollectionUtils.isNotEmpty(list)) {
+			for (ResBrandAd brandAd : list) {
+				String cityName = "";
+				String [] cityIdArr = brandAd.getCityIds().split(",");
+				for(int i=0;i<cityIdArr.length;i++){
+					cityName += cityMap.get(Long.valueOf(cityIdArr[i])) +",";
+				}
+				if(StringUtils.isNotBlank(cityName)) {
+					brandAd.setCityName(cityName.substring(0, cityName.length()-1));
+				}
+			}
+		}
+		
 		return new ViewPage(count, pageable.getPageSize(), list);
 	}
 

@@ -34,7 +34,6 @@ import cn.linkmore.enterprise.dao.master.EntBrandApplicantMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandApplicant;
 import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResBrandApplicant;
-import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntBrandApplicantService;
 import cn.linkmore.prefecture.client.PrefectureClient;
