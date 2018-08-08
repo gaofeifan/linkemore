@@ -63,7 +63,6 @@ public interface EntRentUserService {
 	 */
 	void update(ReqRentUser user);
 	
-	
 	/**
 	 * @Description  查询所有长租用户
 	 * @Author   GFF 

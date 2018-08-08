@@ -16,7 +16,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="name" jdbcType="VARCHAR" property="tempName" />
-    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="creator_name" jdbcType="VARCHAR" property="creatorName" />
     <result column="unit_amount" jdbcType="DECIMAL" property="unitAmount" />
     <result column="rollback_flag" jdbcType="INTEGER" property="rollbackFlag" />
     <result column="usage" jdbcType="VARCHAR" property="usage" />

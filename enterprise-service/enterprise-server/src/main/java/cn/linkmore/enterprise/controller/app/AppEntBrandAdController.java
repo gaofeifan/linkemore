@@ -1,7 +1,6 @@
 package cn.linkmore.enterprise.controller.app;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,10 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqBrandApplicant;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
+import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntBrandAdService;
 import cn.linkmore.enterprise.service.EntBrandApplicantService;
+import cn.linkmore.prefecture.client.FeignEnterpriseClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -37,6 +38,9 @@ public class AppEntBrandAdController {
 	
 	@Autowired
 	private EntBrandAdService entBrandAdService;
+	
+	@Autowired
+	private FeignEnterpriseClient enterpriseClient;
 	
 	@Autowired
 	private EntBrandApplicantService entBrandApplicantService;
@@ -60,11 +64,14 @@ public class AppEntBrandAdController {
 	@ApiOperation(value = "品牌申请人", notes = "非品牌授权用户申请品牌权限", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/brand-apply", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Boolean> brandApply(@Validated @RequestBody ReqBrandApplicant reqBrandApplicant, HttpServletRequest request) {
-		ResponseEntity<Boolean> response = null;
+	public ResponseEntity<?> brandApply(@Validated @RequestBody ReqBrandApplicant reqBrandApplicant, HttpServletRequest request) {
+		ResponseEntity<?> response = null;
 		try {
 			Boolean flag = this.entBrandApplicantService.brandApplicant(reqBrandApplicant, request);
-			response = ResponseEntity.success(flag, request);
+			if(flag) {
+				ResEnterprise enterprise = enterpriseClient.findById(reqBrandApplicant.getEntId());
+				response = ResponseEntity.success(enterprise.getName(), request);
+			}
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
