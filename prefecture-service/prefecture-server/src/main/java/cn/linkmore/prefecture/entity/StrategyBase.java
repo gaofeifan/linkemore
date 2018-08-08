@@ -20,6 +20,9 @@ public class StrategyBase {
 	public static final int TYPE_XICHENG = 8;
 	public static final int TYPE_OLD_DAY_FEE = 9;//杭州桉天无封顶
 	public static final int TYPE_TY_D32_FEE = 10;//杭州天洋D32时尚购物街区计费
+
+	public static final int TYPE_GZHYZZ_FEE = 11;//广州海印和中州
+	public static final int TYPE_GZWDL_FEE =12;//广州维多利
 	/**
 	 * 主键
 	 */

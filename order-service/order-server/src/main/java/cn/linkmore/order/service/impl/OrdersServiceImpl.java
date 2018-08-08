@@ -203,28 +203,28 @@ public class OrdersServiceImpl implements OrdersService {
 		log.info("cu:{} booking preId:{},plateId:{},brandId:{}", cu.getMobile(), prefectureId, plateId, brandId);
 		try {
 			synchronized (this) {
-				if (ORDER_USER_SET.contains(cu.getId())) {
+				if (ORDER_USER_SET.contains(cu.getId())) {                 //？？？
 					bookingStatus = (short) OperateStatus.FAILURE.status;
 					failureReason = (short) OrderFailureReason.UNPAID.value;
-					throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
+					throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);   //预约失败
 				}
 				ORDER_USER_SET.add(cu.getId());
 			}
-			ResUserOrder ruo = this.ordersClusterMapper.findUserLatest(cu.getId());
+			ResUserOrder ruo = this.ordersClusterMapper.findUserLatest(cu.getId());    //找到最新一单 
 			if (ruo != null && (ruo.getStatus().intValue() == OrderStatus.UNPAID.value
 					|| ruo.getStatus().intValue() == OrderStatus.SUSPENDED.value)) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.UNPAID.value;
-				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
+				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);    //有订单
 			}
-			if (null == cu.getId() || null == prefectureId || null == plateId) {
+			if (null == cu.getId() || null == prefectureId || null == plateId) {              
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.EXCEPTION.value;
-				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);
+				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);   //预约失败请重新预约
 			}
-			ResVechicleMark vehicleMark = vehicleMarkClient.findById(plateId);
+			ResVechicleMark vehicleMark = vehicleMarkClient.findById(plateId);    //车牌号管理表
 			// //为了测试进行注释
-			if (vehicleMark.getUserId().longValue() != cu.getId().longValue()) {
+			if (vehicleMark.getUserId().longValue() != cu.getId().longValue()) {           //无空闲车位？？
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.CARNO_NONE.value;
 				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
@@ -232,7 +232,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if (!this.checkCarFree(vehicleMark.getVehMark())) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.CARNO_BUSY.value;
-				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY);
+				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY);  //当前车牌号已在预约中，请更换车牌号重新预约
 			}
 			String lockSn = "";
 			ResBrandPre brand = null;
@@ -248,14 +248,14 @@ public class OrdersServiceImpl implements OrdersService {
 				}
 			} else {
 				// 指定车位锁
-				String key = RedisKey.ORDER_ASSIGN_STALL.key;
-				Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);
-				String vehMark = vehicleMark.getVehMark();
+				String key = RedisKey.ORDER_ASSIGN_STALL.key;   //assign_lock
+				Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
+				String vehMark = vehicleMark.getVehMark();    //车牌号
 				for (Object obj : set) {
 					JSONObject json = JSON.parseObject(obj.toString());
-					String vm = json.get("plate").toString();
-					Long pid = Long.parseLong(json.get("preId").toString());
-					if (pid.longValue() == prefectureId.longValue() && vehMark.equals(vm)) {
+					String vm = json.get("plate").toString();    //车牌
+					Long pid = Long.parseLong(json.get("preId").toString());  //车区id
+					if (pid.longValue() == prefectureId.longValue() && vehMark.equals(vm)) {   //找到车区
 						lockSn = json.get("lockSn").toString();
 						Map<String, Object> map = new HashMap<>();
 						map.put("lockSn", lockSn);
@@ -285,7 +285,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if (StringUtils.isEmpty(lockSn)) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.STALL_NONE.value;
-				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  //无空闲车位，请重新预约
 			}
 			// 根据lockSn获取车位
 			log.info("lock,{}", lockSn);
@@ -312,7 +312,7 @@ public class OrdersServiceImpl implements OrdersService {
 				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
 			}
 			log.info("{} create order with{}", cu.getMobile(), JsonUtil.toJson(stall));
-			o = new Orders();
+			o = new Orders();                                        //插入订单
 			o.setOrderNo(this.getOrderNumber());
 			o.setUserType((short) 0);
 			Date current = new Date();
@@ -870,7 +870,7 @@ public class OrdersServiceImpl implements OrdersService {
 		log.info("key:{}", TokenUtil.getKey(request));
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		log.info("cu:{}", JsonUtil.toJson(cu));
-		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());
+		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());    //查找最新
 		if (orders == null) {
 			return null;
 		}

@@ -32,12 +32,12 @@ public class VipUserServiceImpl implements VipUserService {
 
 	@Override
 	public void update(ReqVipUser auth) {
-	
+		opsEntVipUserClient.update(auth);
 	}
 
 	@Override
 	public void delete(List<Long> ids) {
-		
+		opsEntVipUserClient.delete(ids);
 	}
 
 }

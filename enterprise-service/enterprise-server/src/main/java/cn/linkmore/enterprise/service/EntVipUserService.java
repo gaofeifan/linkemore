@@ -58,7 +58,7 @@ public interface EntVipUserService {
 	 * @Author   cl 
 	 * @Version  v2.0
 	 */
-	void update(ReqVipUser auth);
+	void update(ReqAddEntVipUser reqAddEntVipUser);
 
 	/**
 	 * @Description  删除

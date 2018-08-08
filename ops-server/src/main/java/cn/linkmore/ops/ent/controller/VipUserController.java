@@ -1,8 +1,11 @@
 package cn.linkmore.ops.ent.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,7 +28,6 @@ public class VipUserController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
-		System.out.println("开始");
 		return vipUserService.findPage(pageable);
 	}
 	
@@ -40,6 +42,35 @@ public class VipUserController {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
 			msg = new ViewMsg("保存失败", false);
+		}
+		return msg;
+	}
+	
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg update(ReqVipUser auth,HttpServletRequest request) {
+		ViewMsg msg = null;
+		try {
+			this.vipUserService.update(auth);
+			msg = new ViewMsg("更新成功", true);
+		} catch (BusinessException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("更新失败", false);
+		}
+		return msg;
+	}
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg update(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.vipUserService.delete(ids);
+			msg = new ViewMsg("删除成功", true);
+		} catch (BusinessException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("删除失败", false);
 		}
 		return msg;
 	}

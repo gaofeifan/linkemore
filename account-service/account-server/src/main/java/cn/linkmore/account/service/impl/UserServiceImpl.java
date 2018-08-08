@@ -383,6 +383,7 @@ public class UserServiceImpl implements UserService {
 			user.setIsWechatBind((short) 0);
 			user.setFansStatus((short)0);
 			this.userMasterMapper.save(user);
+			
 			Account account = new Account();
 			account.setId(user.getId());
 			account.setAmount(0.00d);
@@ -415,6 +416,7 @@ public class UserServiceImpl implements UserService {
 		ru.setSex(user.getSex());
 		ru.setRealname(user.getRealname());
 		ru.setAlias("u"+user.getId());
+		ru.setType(user.getType()==null?0:user.getType());
 		List<String> tags = new ArrayList<String>();
 		tags.add("appuser");
 		ru.setTags(tags);

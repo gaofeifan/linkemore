@@ -107,10 +107,10 @@ public class EntVipUserController {
     
     @RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update(ReqVipUser auth,HttpServletRequest request) {
+	public ViewMsg update(ReqAddEntVipUser reqAddEntVipUser,HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
-			this.entVipUserService.update(auth);
+			this.entVipUserService.update(reqAddEntVipUser);
 			msg = new ViewMsg("更新成功", true);
 		} catch (BusinessException e) {
 			msg = new ViewMsg(e.getMessage(), false);
