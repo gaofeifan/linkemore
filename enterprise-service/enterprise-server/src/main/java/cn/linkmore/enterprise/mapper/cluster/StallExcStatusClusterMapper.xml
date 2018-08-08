@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.StallExcStatusClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.StallExcStatus">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="exc_status" jdbcType="SMALLINT" property="excStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stall_id, status,exc_status,create_time
+  </sql>
+  
+  <select id="findExcStatus" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/> from v_stall_exc_status
+  	where stall_id = #{stallId} and status = 0
+  	order by create_time desc 
+  	limit 0,1
+  </select>
+  <select id="findExcStatusList" parameterType="java.util.List" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/> from v_stall_exc_status
+  	where stall_id in
+  	 <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
+    		 #{id}
+   	  </foreach>
+ 	  and status = 0
+ 	  order by create_time desc
+ </select>
+</mapper>

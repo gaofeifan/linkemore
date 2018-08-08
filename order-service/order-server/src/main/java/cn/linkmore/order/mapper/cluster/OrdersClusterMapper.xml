@@ -371,7 +371,7 @@
 		o_orders
 	WHERE
 		 status = 3 
-		 	AND date_format(end_time,'%Y-%m-%d') >= date_format(#{startTime},'%Y-%m-%d')
+		 	AND date_format(end_time,'%Y-%m-%d') = date_format(#{startTime},'%Y-%m-%d')
 		 and pre_id = #{id}
   </select>
   <select id="findProceedsAmount" parameterType="java.util.Map" resultType="java.math.BigDecimal">
@@ -420,6 +420,7 @@
 		AND date_format(end_time,'%Y-%m-%d') = date_format(#{startTime},'%Y-%m-%d')
 	</where>
 	order by end_time desc
+	limit #{start},#{pageSize}
   </select>
   <select id="findTrafficFlowList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResTrafficFlowList">
     SELECT
@@ -429,10 +430,12 @@
 		WHERE
 		status = 3 
 		and pre_id = #{preId}
-		 <![CDATA[ and #{monthStart} <= end_time]]>
-		 <![CDATA[ AND #{monthEnd} > end_time]]>
+		<!--  <![CDATA[ and #{monthStart} <= end_time]]>
+		 <![CDATA[ AND #{monthEnd} > end_time]]> -->
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
+	limit #{start},#{pageSize}
+	
   </select>
   <select id="findTrafficFlowCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
     SELECT
@@ -445,10 +448,11 @@
   <select id="findIncomeList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResIncomeList">
 	SELECT end_time date,actual_amount dayAmount,DATE_FORMAT(end_time,'%m') month FROM o_orders 	where	status = 3 
 	and pre_id = #{preId}
-	 <![CDATA[ and #{monthStart} <= end_time]]>
-	 <![CDATA[ AND #{monthEnd} > end_time]]>
+	<!--  <![CDATA[ and #{monthStart} <= end_time]]>
+	 <![CDATA[ AND #{monthEnd} > end_time]]> -->
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
+	limit #{start},#{pageSize}
   </select>
   <select id="findMonthCount" parameterType="java.util.Map" resultType="cn.linkmore.order.controller.app.response.ResMonthCount">
  	select DATE_FORMAT(end_time,'%m') month,SUM(actual_amount) monthAmount,COUNT(1) monthCarCount
@@ -479,9 +483,21 @@
 	GROUP BY
 		DATE_FORMAT(end_time, '%Y-%m-%d')
 	ORDER BY end_time desc
+	<!-- limit #{start},#{pageSize} -->
   </select>
   <select id="findPlateByPreId" parameterType="java.lang.Long" resultType="cn.linkmore.order.controller.app.response.ResMonthCount">
- 	SELECT plate_no plateNo,stall_id stallId,stall_name stallName FROM o_orders WHERE pre_id = #{preId} AND status = 1
+ 	SELECT plate_no plateNo,stall_id stallId,stall_name stallName FROM o_orders WHERE pre_id = #{preId} AND status != 3
+  </select>
+  
+  <select id="findOrderByStallId" parameterType="java.lang.Long" resultType="cn.linkmore.order.response.ResEntOrder">
+ 	SELECT 
+ 		id orderId ,order_no orderNo,begin_time beginTime , end_time endTime,lock_down_time lockDownTime
+ 	FROM 
+ 		o_orders 
+ 	WHERE 
+ 		stall_id = #{stallId}
+ 	order by begin_time desc 
+ 	limit 0,1
   </select>
   
 </mapper>

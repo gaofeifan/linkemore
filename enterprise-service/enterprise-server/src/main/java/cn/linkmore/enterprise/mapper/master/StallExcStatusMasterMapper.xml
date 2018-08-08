@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.master.StallExcStatusMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.StallExcStatus">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="exc_status" jdbcType="SMALLINT" property="excStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stall_id, status,exc_status,create_time
+  </sql>
+  
+  <update id="updateExcStatus" parameterType="java.util.Map">
+  	update v_stall_exc_status set exc_status = #{status}  where stall_id = #{stallId}
+  </update>
+</mapper>

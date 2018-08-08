@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.request.ReqRentUser;
 
 public interface EntRentUserService {
@@ -61,5 +62,13 @@ public interface EntRentUserService {
 	 * @Version  v2.0
 	 */
 	void update(ReqRentUser user);
+	
+	
+	/**
+	 * @Description  查询所有长租用户
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<EntRentUser> findAll();
 
 }

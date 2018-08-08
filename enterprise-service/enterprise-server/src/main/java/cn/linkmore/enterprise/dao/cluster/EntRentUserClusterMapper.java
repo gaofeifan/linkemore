@@ -15,8 +15,18 @@ import cn.linkmore.enterprise.entity.EntRentUser;
 @Mapper
 public interface EntRentUserClusterMapper {
 
+    /**
+     * @Description  
+     * @Author   GFF 
+     * @Version  v2.0
+     */
     EntRentUser findById(Long id);
 
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	List<EntRentUser> findByIdEntPreId(Long entPreId);
 
 	/**
@@ -32,5 +42,12 @@ public interface EntRentUserClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<EntRentUser> findPage(Map<String, Object> param);
+
+	/**
+	 * @Description  查询所有长租用户
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<EntRentUser> findAll();
 
 }

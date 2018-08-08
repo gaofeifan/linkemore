@@ -19,6 +19,7 @@ import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResChargeList;
+import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderPlate;
@@ -136,7 +137,7 @@ public interface OrdersService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	BigDecimal findPreDayIncome(Short type, Long authStall);
+	BigDecimal findPreDayIncome( Long authStall);
 
 	/**
 	 * @Description  
@@ -193,6 +194,13 @@ public interface OrdersService {
 	 * @Version  v2.0
 	 */
 	Integer findTrafficFlowCount(Map<String, Object> param);
+
+	/**
+	 * @Description  查询长租固定车位
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResEntOrder findOrderByStallId(Long stallId);
 
 
 	

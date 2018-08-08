@@ -43,12 +43,11 @@ public class PrefectureController {
 	}
 	
 	@RequestMapping(value="/pre-income" ,method=RequestMethod.GET)
-	@ApiOperation(value = "查询车场近七日实收入", notes = "查询车场近七日实收入", consumes = "application/json")
+	@ApiOperation(value = "查询车场当日收入", notes = "查询车场近七日实收入", consumes = "application/json")
 	@ResponseBody
 	public ResponseEntity<BigDecimal> findPreDayIncome(
-			@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @NotNull(message="类型不能为空") @RequestParam("type") Short type ,
 			@RequestParam("preId") @ApiParam("车区id") @NotNull(message="车区") Long preId,HttpServletRequest request){
-		BigDecimal income = this.prefectureService.findPreDayIncome(type,preId,request);
+		BigDecimal income = this.prefectureService.findPreDayIncome(preId,request);
 		return ResponseEntity.success(income,request);
 	}
 	
@@ -63,7 +62,9 @@ public class PrefectureController {
 	@RequestMapping(value="/proceeds" ,method=RequestMethod.GET)
 	@ApiOperation(value = "根据条件查询车场实收入明细列表[7-15-30]天", notes = "根据条件查询车场实收入[7-15-30]天", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<ResIncomeList> findProceeds(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @NotNull(message="类型不能为空") @RequestParam("type") Short type ,@ApiParam(value="车区id",required=true,name="preId") @NotNull(message="车区不能为null") @RequestParam("preId") Long preId,HttpServletRequest request){
+	public ResponseEntity<ResIncomeList> findProceeds(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @NotNull(message="类型不能为空") @RequestParam("type") Short type ,
+										@ApiParam(value="车区id",required=true,name="preId") @NotNull(message="车区不能为null") @RequestParam("preId") Long preId,
+										HttpServletRequest request){
 		ResIncomeList list = this.prefectureService.findProceeds(type,preId,request);
 		return ResponseEntity.success(list,request);
 	}
@@ -71,7 +72,8 @@ public class PrefectureController {
 	@RequestMapping(value="/traffic-flow" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场车流量统计[7-15-30]天明细列表", notes = "查询车场车流量统计[7-15-30]天", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow> findTrafficFlow(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @NotNull(message="类型不能为空")  @RequestParam("type") Short type ,@ApiParam(value="车区id",required=true,name="preId") @NotNull(message="车区不能为null")  @RequestParam("preId") Long preId,HttpServletRequest request){
+	public ResponseEntity<cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow> findTrafficFlow(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @NotNull(message="类型不能为空")  @RequestParam("type") Short type ,
+										@ApiParam(value="车区id",required=true,name="preId") @NotNull(message="车区不能为null")  @RequestParam("preId") Long preId,HttpServletRequest request){
 		cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow flow = this.prefectureService.findTrafficFlow(type,preId,request);
 		return ResponseEntity.success(flow,request);
 	}
@@ -86,8 +88,10 @@ public class PrefectureController {
 	@RequestMapping(value="/charge-detail" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场实时收费明细", notes = "查询车场实时收费明细", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<List<ResChargeDetail>> findChargeDetail( @RequestParam("preId") @NotNull(message="车区id") @ApiParam(value="车区id",required=true,name="preId") Long preId,HttpServletRequest request){
-		List<ResChargeDetail> list = this.prefectureService.findChargeDetail(preId,request);
+	public ResponseEntity<List<ResChargeDetail>> findChargeDetail( @RequestParam("preId") @NotNull(message="车区id") @ApiParam(value="车区id",required=true,name="preId") Long preId,
+									@RequestParam("pageNo") Integer pageNo,
+							HttpServletRequest request){
+		List<ResChargeDetail> list = this.prefectureService.findChargeDetail(pageNo,preId,request);
 		return ResponseEntity.success(list, request);
 	}
 	
@@ -104,9 +108,10 @@ public class PrefectureController {
 	@ResponseBody
 	public ResponseEntity<ResDayTrafficFlow> findTrafficFlowList(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , 
 																	   @ApiParam(value="车区id",required=true,name="preId") @RequestParam("preId") Long preId,
-																	   @ApiParam(value="当前月时间 如：2018年7月",required=true,name="date") @RequestParam("date") String date,
+																		@ApiParam(value="当前页",required=true,name="pageNo") @RequestParam("pageNo") Integer pageNo,
+//																	   @ApiParam(value="当前月时间 如：2018年7月",required=true,name="date") @RequestParam("date") String date,
 																	   HttpServletRequest request){
-		ResDayTrafficFlow list = this.prefectureService.findTrafficFlowList(type,preId,date,request);
+		ResDayTrafficFlow list = this.prefectureService.findTrafficFlowList(pageNo,type,preId,null,request);
 		return ResponseEntity.success(list, request);
 	}
 	
@@ -115,9 +120,10 @@ public class PrefectureController {
 	@ResponseBody
 	public ResponseEntity<ResDayIncome> findIncomeList(@ApiParam(value="类型 0 7天 1 15天 2 30天",required=true,name="type") @RequestParam("type") Short type , 
 			 												 @ApiParam(value="车区id",required=true,name="preId")	@RequestParam("preId") Long preId,
-															 @ApiParam(value="当前月时间 如：2018年7月",required=true,name="date") @RequestParam("date") String date,
+			 												@ApiParam(value="当前页",required=true,name="pageNo") @RequestParam("pageNo") Integer pageNo,
+//															 @ApiParam(value="当前月时间 如：2018年7月",required=true,name="date") @RequestParam("date") String date,
 															HttpServletRequest request){
-		ResDayIncome list = this.prefectureService.findIncomeList(type,preId,date,request);
+		ResDayIncome list = this.prefectureService.findIncomeList(pageNo,type,preId,null,request);
 		return ResponseEntity.success(list, request);
 	}
 	

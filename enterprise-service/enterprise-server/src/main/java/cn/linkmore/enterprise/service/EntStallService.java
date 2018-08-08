@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.prefecture.response.ResStall;
@@ -68,6 +69,15 @@ public interface EntStallService {
 	 * @Version v1.0
 	 */
 	Map<String, Object> change(HttpServletRequest request, Long stall_id, int changeStatus);
+
+	/**
+	 * @Description  复位
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void reset(Long stallId);
+
+	List<ResBaseDict> downCause();
 
 
 }
