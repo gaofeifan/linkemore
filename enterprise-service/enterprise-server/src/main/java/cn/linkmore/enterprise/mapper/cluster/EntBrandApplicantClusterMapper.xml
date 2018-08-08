@@ -8,7 +8,7 @@
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
-    <result column="plateNo" jdbcType="VARCHAR" property="plateNo" />
+    <result column="plate_no" jdbcType="VARCHAR" property="plateNo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
