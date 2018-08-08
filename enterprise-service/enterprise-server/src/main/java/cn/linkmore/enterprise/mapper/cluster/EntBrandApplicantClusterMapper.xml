@@ -55,7 +55,7 @@
   
   <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
    	select  count(1)
-    from t_ent_brand_ad where 1 = 1
+    from t_ent_brand_applicant where 1 = 1
     <if test="entId!=null">  
     and ent_id = #{entId,jdbcType=BIGINT}
     </if>  
