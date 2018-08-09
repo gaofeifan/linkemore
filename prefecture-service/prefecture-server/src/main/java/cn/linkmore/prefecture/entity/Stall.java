@@ -88,11 +88,11 @@ public class Stall {
     /**
      * 分类0自营，1临停，2长租，3VIP
      */
-    private Short type;
+    private Short type = 0;
     /**
      * 0普通 ，1品牌[自营属性]
      */
-    private Short brand;
+    private Short brand = 0;
     
     public Short getType() {
 		return type;
