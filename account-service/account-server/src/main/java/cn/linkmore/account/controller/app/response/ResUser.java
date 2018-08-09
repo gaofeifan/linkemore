@@ -24,6 +24,8 @@ public class ResUser implements Serializable {
 	private Integer sex;
 	@ApiModelProperty(value = "极光别名")
 	private String alias;
+	@ApiModelProperty(value = "用户类型")
+	private Short type;
 	@ApiModelProperty(value = "极光标签")
 	private List<String> tags; 
 	public Long getId() {
@@ -67,5 +69,11 @@ public class ResUser implements Serializable {
 	}
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+	public Short getType() {
+		return type;
+	}
+	public void setType(Short type) {
+		this.type = type;
 	} 
 }

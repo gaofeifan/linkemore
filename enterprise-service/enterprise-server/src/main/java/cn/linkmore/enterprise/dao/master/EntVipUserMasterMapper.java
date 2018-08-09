@@ -28,4 +28,6 @@ public interface EntVipUserMasterMapper {
 
     int updateById(EntVipUser record);
     
+    void delete(List<Long> ids);
+    
 }

@@ -6,6 +6,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("新增企业vip用户")
 public class ReqAddEntVipUser {
 	
+	
+	@ApiModelProperty(value = "id", required = true)
+    private Long id;
 	@ApiModelProperty(value = "企业Id", required = true)
 	private Long entId;
 	@ApiModelProperty(value = "企业车区id", required = true)
@@ -67,6 +70,14 @@ public class ReqAddEntVipUser {
 
 	public void setPlate(String plate) {
 		this.plate = plate;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
     
     
