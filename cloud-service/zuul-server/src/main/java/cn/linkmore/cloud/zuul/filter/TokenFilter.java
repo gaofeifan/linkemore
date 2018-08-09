@@ -50,9 +50,8 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/auth/v2.0/wechat");
 			add("/app/auth/v2.0/send");  
 			
-			add("/ent/auth/login");
-			add("/ent/auth/send");
-			add("/ent/auth/logout");
+			add("/enterprise/ent/auth/login");
+			add("/enterprise/ent/auth/send");
 			
 			add("/app/prefectures/v2.0/map/list"); 
 			add("/app/prefectures/v2.0/free/list"); 

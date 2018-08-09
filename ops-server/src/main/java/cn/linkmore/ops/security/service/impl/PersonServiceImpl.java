@@ -39,7 +39,7 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public int save(ReqPerson reqPerson) {
+	public Long save(ReqPerson reqPerson) {
 		cn.linkmore.security.request.ReqPerson reqPersonSecurity = new cn.linkmore.security.request.ReqPerson();
 		reqPersonSecurity = ObjectUtils.copyObject(reqPerson, reqPersonSecurity);
 		return this.personClient.save(reqPersonSecurity);

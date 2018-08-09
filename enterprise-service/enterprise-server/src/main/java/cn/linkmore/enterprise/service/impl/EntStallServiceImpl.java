@@ -232,7 +232,7 @@ public class EntStallServiceImpl implements EntStallService {
 		params.put("type", type);
 		params.put("list", stallIds);
 		List<ResStall> stalls = this.stallClient.findPreStallList(params);
-		List<ResOrderPlate> orders= null;//orderClient.findPlateByPreId(preId);
+		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
 		List<Long> collect = stalls.stream().map(stall -> stall.getId()).collect(Collectors.toList());
 		List<StallExcStatus> stallExcList = this.stallExcStatusService.findExcStatusList(collect);
 		//设置车位对应的车牌号
@@ -319,15 +319,10 @@ public class EntStallServiceImpl implements EntStallService {
 		}
 		ResponseMessage<LockBean> res = null;
 		//1 降下 2 升起
-		try {
-			if(state == 1){
-				res=lockFactory.lockDown(resStallEntity.getLockSn());
-			}else if(state == 2){
-				res=lockFactory.lockUp(resStallEntity.getLockSn());
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(state == 1){
+			res=lockFactory.lockDown(resStallEntity.getLockSn());
+		}else if(state == 2){
+			res=lockFactory.lockUp(resStallEntity.getLockSn());
 		}
 		if(res == null){
 			result.put("result", false);

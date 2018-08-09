@@ -39,7 +39,7 @@ public class PersonController {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public int save(@RequestBody ReqPerson reqPerson){
+	public Long save(@RequestBody ReqPerson reqPerson){
 		return this.personService.save(reqPerson);
 	}
 	
