@@ -11,6 +11,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.prefecture.client.PrefectrueClient;
+import cn.linkmore.prefecture.response.ResPreList;
 /**
  * 熔断企业车区
  * @author   GFF
@@ -41,6 +42,11 @@ public class PrefectrueClientHystrix implements PrefectrueClient {
 	@Override
 	public List<ResEntPrefecture> findAll() {
 		log.info("ops staffauth service List<ResEntPrefectrue> findAll() hystrix");
+		return null;
+	}
+	@Override
+	public List<ResPreList> findNotCreateEntPre() {
+		log.info("ops staffauth service List<ResEntPrefecture> findNotCreateEntPre() hystrix");
 		return null;
 	}
 	

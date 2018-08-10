@@ -1,5 +1,6 @@
 package cn.linkmore.enterprise.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,8 @@ import cn.linkmore.enterprise.entity.EntVipUser;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntPreService;
-import cn.linkmore.prefecture.response.ResPrefecture;
+import cn.linkmore.prefecture.client.OpsPrefectureClient;
+import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.util.DomainUtil;
 
 /**
@@ -46,6 +48,8 @@ public class EntPreServiceImpl implements EntPreService {
 	private EntRentUserClusterMapper entRentUserClusterMapper;
 	@Autowired
 	private EntVipUserClusterMapper entVipUserClusterMapper;
+	@Autowired
+	private OpsPrefectureClient prefectureClient;
 
 	@Override
 	public int saveEntPre(Long preId,Long entId, String preName,Long personId,String personName) {
@@ -127,6 +131,23 @@ public class EntPreServiceImpl implements EntPreService {
 		param.put("pageSize", pageable.getPageSize());
 		List<EntOperateAuth> list = this.entPrefectureClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
+	}
+
+	@Override
+	public List<ResPreList> findNotCreateEntPre() {
+		List<ResPreList> list = this.prefectureClient.selectList();
+		List<ResPreList> deleteList = new ArrayList<>();
+		List<ResEntPrefecture> findList = this.entPrefectureClusterMapper.findList(new HashMap<>());
+		for (ResPreList resPreList : list) {
+			for (ResEntPrefecture resEntPrefecture : findList) {
+				if (resPreList.getId().equals(resEntPrefecture.getPreId())) {
+					deleteList.add(resPreList);
+					break;
+				}
+			}
+		}
+		list.removeAll(deleteList);
+		return list;
 	}
 
 	

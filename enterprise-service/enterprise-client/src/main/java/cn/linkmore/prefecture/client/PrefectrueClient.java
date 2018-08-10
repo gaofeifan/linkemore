@@ -12,6 +12,7 @@ import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.PrefectrueClientHystrix;
+import cn.linkmore.prefecture.response.ResPreList;
 
 /**
  * 企业车区远程调用
@@ -48,4 +49,7 @@ public interface PrefectrueClient {
 	@ResponseBody
 	List<ResEntPrefecture> findAll();
 
+	@RequestMapping(value = "/not-create-pre", method = RequestMethod.GET)
+	@ResponseBody
+	List<ResPreList> findNotCreateEntPre();
 }

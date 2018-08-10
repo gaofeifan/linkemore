@@ -1,17 +1,19 @@
 package cn.linkmore.ops.ent.service.impl;
 
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.ops.ent.service.PrefectrueService;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.client.PrefectrueClient;
+import cn.linkmore.prefecture.response.ResPreList;
 /**
  * 企业车区
  * @author   GFF
@@ -49,5 +51,8 @@ public class PrefectrueServiceImpl implements PrefectrueService {
 		return this.prefectrueClient.findAll();
 	}
 
-
+	@Override
+	public List<ResPreList> findNotCreateEntPre() {
+		return this.prefectrueClient.findNotCreateEntPre();
+	}
 }

@@ -46,4 +46,12 @@ public interface EntAuthStallClusterMapper {
 	 * @Version v1.0
 	 */
 	List<Long> findStallList(Map<String, Object> param);
+
+	/**
+	 * @param map 
+	 * @Description  校验权限
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer checkAuth(Map<String, Object> map);
 }

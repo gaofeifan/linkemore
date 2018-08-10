@@ -72,7 +72,7 @@ public class EntAuthController {
 	@ApiOperation(value="发短信验证码",notes="手机号不能为空,需要加密", consumes = "application/json")
 	@RequestMapping(value = "/send", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> send(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
+	public ResponseEntity<?> shuod(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
 		this.staffService.send(rs);
 		response = ResponseEntity.success(null, request);

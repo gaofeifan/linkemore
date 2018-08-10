@@ -40,4 +40,11 @@ public interface EntPrefectureClusterMapper {
 	 * @Version  v2.0
 	 */
 	Integer count(Map<String, Object> param);
+
+	/**
+	 * @Description  查询企业车区
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	EntPrefecture findEntPre(Map<String, Object> preMap);
 }

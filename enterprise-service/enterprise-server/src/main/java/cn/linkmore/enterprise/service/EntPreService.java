@@ -7,6 +7,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
+import cn.linkmore.prefecture.response.ResPreList;
 
 public interface EntPreService {
 
@@ -29,6 +30,13 @@ public interface EntPreService {
 	 * @Version  v2.0
 	 */
 	ViewPage findPage(ViewPageable pageable);
+
+	/**
+	 * @Description  查询未创建车区
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPreList> findNotCreateEntPre();
 
 
 }

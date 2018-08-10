@@ -21,6 +21,7 @@ import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.ops.ent.service.PrefectrueService;
 import cn.linkmore.ops.security.response.ResPerson;
+import cn.linkmore.prefecture.response.ResPreList;
 @RequestMapping(value = "/admin/ent/prefectrue")
 @Controller
 public class PrefectrueController {
@@ -87,5 +88,16 @@ public class PrefectrueController {
 			msg = new ViewMsg("删除失败", false);
 		}
 		return msg;
+	}
+	
+	/**
+	 * @Description  查询未被创建的车区
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/find-ent-pre", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPreList> findNotCreateEntPre(){
+		return this.prefectrueService.findNotCreateEntPre();
 	}
 }

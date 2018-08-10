@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.entity;
 
+import java.util.Date;
+
 public class EntRentUser {
     private Long id;
 
@@ -24,6 +26,10 @@ public class EntRentUser {
     private String preName;
     
     private String stallName;
+    
+    private Date startTime;
+    
+    private Date endTime;
     
     public Long getId() {
         return id;
@@ -120,6 +126,22 @@ public class EntRentUser {
 
 	public void setStallName(String stallName) {
 		this.stallName = stallName;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 	
 	
