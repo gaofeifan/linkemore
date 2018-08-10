@@ -72,10 +72,10 @@ public class OrderFee {
 			result = SixHourTopFee.getBilling(base, startDate, stopDate);
 			break;
 		case StrategyBase.TYPE_GZHYZZ_FEE:
-			result = GzHyZz.getBilling(base, startDate, stopDate);
+			result = GzHyZz.getBilling(base, new Date(startDate.getTime() - freeTime), stopDate);
 			break;
 		case StrategyBase.TYPE_GZWDL_FEE:
-			result = GzWdl.getBilling(base, startDate, stopDate);
+			result = GzWdl.getBilling(base, new Date(startDate.getTime() - freeTime), stopDate);
 			break;
 		}
 		return result;
