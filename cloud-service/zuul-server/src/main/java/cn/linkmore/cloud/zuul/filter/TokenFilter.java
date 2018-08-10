@@ -49,6 +49,10 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/auth/v2.0/login"); 
 			add("/app/auth/v2.0/wechat");
 			add("/app/auth/v2.0/send");  
+			
+			add("/enterprise/ent/auth/login");
+			add("/enterprise/ent/auth/send");
+			
 			add("/app/prefectures/v2.0/map/list"); 
 			add("/app/prefectures/v2.0/free/list"); 
 			add("/app/prefectures/v2.0/strategy");
@@ -137,6 +141,11 @@ public class TokenFilter extends ZuulFilter {
             ctx.getResponse().setContentType(CONTENTTYPE);
             ctx.set("isSuccess", false);
             return null;
+        }else if(uri.contains(API_ENT_PATH)) {
+            ctx.setSendZuulResponse(true);
+            ctx.setResponseStatusCode(200);
+            ctx.set("isSuccess", true);
+        	return null;
         }else{  
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(200);

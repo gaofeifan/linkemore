@@ -30,6 +30,17 @@
     from t_ent_rent_user
     where ent_pre_id = #{0}
   </select>
+  <select id="findAll"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_user
+  </select>
+ <!--  <select id="findByIdEntPreId"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_user
+    where ent_pre_id = #{0}
+  </select> -->
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     select 
  <include refid="Base_Column_List" />

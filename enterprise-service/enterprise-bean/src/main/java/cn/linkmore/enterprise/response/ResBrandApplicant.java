@@ -24,8 +24,28 @@ public class ResBrandApplicant {
     private String plateNo;
     //创建时间
     private Date createTime;
+    //车区id
+    private Long preId;
+    //车区名称
+    private String preName;
     
-    public String getPlateNo() {
+    public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
+
+	public String getPreName() {
+		return preName;
+	}
+
+	public void setPreName(String preName) {
+		this.preName = preName;
+	}
+
+	public String getPlateNo() {
 		return plateNo;
 	}
 

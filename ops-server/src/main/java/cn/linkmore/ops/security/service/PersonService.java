@@ -35,7 +35,7 @@ public interface PersonService {
 	 * 保存
 	 * @param person
 	 */
-	int save(ReqPerson reqPerson);
+	Long save(ReqPerson reqPerson);
 
 	/**
 	 * 更新

@@ -12,7 +12,7 @@ spring:
     name: zuul-server
   boot: 
     admin:
-      url: http://192.168.1.220:6002
+      url: http://192.168.1.223:6002
 
 eureka:
   instance:
@@ -23,7 +23,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.220:6003/eureka/  
+      defaultZone: http://192.168.1.223:6003/eureka/  
  
 
 ribbon:

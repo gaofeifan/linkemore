@@ -15,6 +15,7 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.EntOrderClientHystrix;
 import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
+import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
@@ -34,7 +35,7 @@ public interface EntOrderClient {
 
 	@RequestMapping(value = "/day-income", method = RequestMethod.GET)
 	@ResponseBody
-	public BigDecimal findPreDayIncome(@RequestParam("type") Short type, @RequestParam("preId") Long preId);
+	public BigDecimal findPreDayIncome( @RequestParam("preId") Long preId);
 
 	@RequestMapping(value = "/traffic-flow", method = RequestMethod.POST)
 	@ResponseBody
@@ -78,4 +79,8 @@ public interface EntOrderClient {
 	@RequestMapping(value = "/traffic-flow-count", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer findTrafficFlowCount(@RequestBody Map<String, Object> param);
+	
+	@RequestMapping(value = "/by-stall-id", method = RequestMethod.GET)
+	@ResponseBody
+	public ResEntOrder findOrderByStallId(@RequestParam("stallId") Long stallId);
 }

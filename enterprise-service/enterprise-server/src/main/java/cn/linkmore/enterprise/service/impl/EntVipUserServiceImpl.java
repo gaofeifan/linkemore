@@ -183,15 +183,33 @@ public class EntVipUserServiceImpl implements EntVipUserService {
 	}
 
 	@Override
-	public void update(ReqVipUser auth) {
-		// TODO Auto-generated method stub
+	public void update(ReqAddEntVipUser user) {
+		EntVipUser record = new EntVipUser();
+		try {
+			Long userId = userClient.getUserIdByMobile(user.getMobile());
+			if (userId != null) {
+				record.setUserId(userId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}try {
+			record.setId(user.getId()); 
+			record.setPreId(user.getPreId());
+			record.setEntId(user.getEntId());
+			record.setEntPreId(user.getEntPreId());
+			record.setMobile(user.getMobile());
+			record.setRealname(user.getRealname());
+			record.setPlate(user.getPlate());
+			this.entVipUserMasterMapper.updateById(record);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	@Override
 	public void delete(List<Long> ids) {
-		// TODO Auto-generated method stub
-
+		this.entVipUserMasterMapper.delete(ids);
 	}
 
 }

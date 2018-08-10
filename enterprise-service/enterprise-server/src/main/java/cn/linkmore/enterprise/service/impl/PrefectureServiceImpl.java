@@ -72,14 +72,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 		
 	}
 	@Override
-	public BigDecimal findPreDayIncome(Short type,Long preId, HttpServletRequest request) {
+	public BigDecimal findPreDayIncome(Long preId, HttpServletRequest request) {
 		CacheUser ru = getUser(request);
 		Map<String, Long> map = new  HashMap<>();
 		map.put("staffId", ru.getId());
 		map.put("preId", preId);
 //		List<Long> id = this.authPreClusterMapper.findPreId(map);
 //		List<Long> authStall = this.entStallService.findStaffId(map);
-		return this.orderClient.findPreDayIncome(type,preId);
+		return this.orderClient.findPreDayIncome(preId);
 	}
 	
 	@Override
@@ -94,7 +94,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			return income;
 		}
 		Object object = proceeds.get("amount");
-		if(income != null) {
+		if(object != null) {
 			income.setTotalAmount(new BigDecimal(object.toString()));
 		}
 		List<ResIncome> incomeLst = null;
@@ -159,11 +159,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	@Override
-	public List<ResChargeDetail> findChargeDetail(Long preId, HttpServletRequest request) {
+	public List<ResChargeDetail> findChargeDetail(Integer pageNo,Long preId, HttpServletRequest request) {
 		CacheUser ru = getUser(request);
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", new Date());
 		param.put("preId", preId);
+		param.put("pageNo", pageNo);
 		List<cn.linkmore.order.response.ResChargeDetail> list = this.orderClient.findChargeDetail(param);
 //		List<cn.linkmore.enterprise.controller.ent.response.ResChargeList> resList = new ArrayList<>();
 //		cn.linkmore.enterprise.controller.ent.response.ResChargeList chargeList = null;
@@ -175,12 +176,13 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return chargeDetail;
 	}
 	@Override
-	public ResDayTrafficFlow findTrafficFlowList(Short type, Long preId,String date, HttpServletRequest request) {
+	public ResDayTrafficFlow findTrafficFlowList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
 		CacheUser ru = getUser(request);
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId", preId); 
 		param.put("date", date);
+		param.put("pageNo", pageNo);
 		ResTrafficFlow flowList = this.orderClient.findTrafficFlowList(param);
 //		List<ResDayTrafficFlow> dayTFs = new ArrayList<>();
 		ResDayTrafficFlow dayTF = new ResDayTrafficFlow();
@@ -199,12 +201,13 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	@Override
-	public ResDayIncome findIncomeList(Short type, Long preId,String date, HttpServletRequest request) {
+	public ResDayIncome findIncomeList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
 		CacheUser ru = getUser(request);
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId", preId);
 		param.put("date", date);
+		param.put("pageNo", pageNo);
 //		List<ResDayIncome> incomes = new ArrayList<>();
 		ResDayIncome income = new ResDayIncome();
 		List<ResDayIncomes> incomeLists = new ArrayList<>();

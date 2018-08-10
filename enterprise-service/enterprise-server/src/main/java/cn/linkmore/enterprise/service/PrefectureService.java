@@ -41,44 +41,49 @@ public interface PrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	BigDecimal findPreDayIncome(Short type, Long preId, HttpServletRequest request);
+	BigDecimal findPreDayIncome( Long preId, HttpServletRequest request);
 
 	/**
+	 * @param pageNo 
 	 * @Description  根据条件查询实收入
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	cn.linkmore.enterprise.controller.ent.response.ResIncomeList findProceeds(Short type,Long preId, HttpServletRequest request);
+	cn.linkmore.enterprise.controller.ent.response.ResIncomeList findProceeds( Short type,Long preId, HttpServletRequest request);
 
 	/**
+	 * @param pageNo 
 	 * @Description  查询车流量
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow findTrafficFlow(Short type,Long preId, HttpServletRequest request);
+	cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow findTrafficFlow( Short type,Long preId, HttpServletRequest request);
 
 	/**
+	 * @param pageNo 
 	 * @Description  查询费明细
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<cn.linkmore.enterprise.controller.ent.response.ResChargeDetail> findChargeDetail( Long preId, HttpServletRequest request);
+	List<cn.linkmore.enterprise.controller.ent.response.ResChargeDetail> findChargeDetail( Integer pageNo, Long preId, HttpServletRequest request);
 
 	/**
+	 * @param pageNo 
 	 * @param date 
 	 * @Description  查询车流量列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResDayTrafficFlow findTrafficFlowList(Short type, Long preId, String date, HttpServletRequest request);
+	ResDayTrafficFlow findTrafficFlowList(Integer pageNo, Short type, Long preId, String date, HttpServletRequest request);
 
 	/**
+	 * @param pageNo 
 	 * @param date 
 	 * @Description  查询收入列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResDayIncome findIncomeList(Short type, Long preId, String date, HttpServletRequest request);
+	ResDayIncome findIncomeList(Integer pageNo, Short type, Long preId, String date, HttpServletRequest request);
 
 	/**
 	 * @Description  

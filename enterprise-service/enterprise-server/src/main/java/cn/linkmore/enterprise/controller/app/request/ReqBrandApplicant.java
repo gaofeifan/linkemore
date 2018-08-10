@@ -26,6 +26,17 @@ public class ReqBrandApplicant {
             ,"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$"}
 			,lengths= {8,7})
 	private String plateNo;
+	
+	@ApiModelProperty(value = "车区ID", required = false)
+	private Long preId;
+
+	public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
 
 	public Long getEntId() {
 		return entId;

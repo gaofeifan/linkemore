@@ -7,8 +7,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.linkmore.prefecture.entity.StrategyBase;
+
 /**
  * 计费策略
+ * 
  * @author jiaohanbin
  * @version 2.0
  *
@@ -34,20 +36,48 @@ public class OrderFee {
 		long freeTime = base.getFreeMins() * 60 * 1000;
 		// 注意：重置了开始日期startDate
 		startDate = new Date(startDate.getTime() + freeTime);
-		Map<String,Object> result = null;
-		switch(base.getType().intValue()){
-			case StrategyBase.TYPE_DAY_FEE:result=DayFee.getBilling(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_TOP_NONE:result=getParkingCost(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_TOP_DAILY:result=getTOPDailyMap(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_TOP_SECTION:result= getTOPSectionMap(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_TOP_DAILY_24H:result=TimeTopFee.getBilling(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_TOP_DAILY_24H_FRIST_XHORS:result = WonderFee.getTOPDaily24HFRISTXHORSMap(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_PERIOD:result=PeriodFee.getPeriodBilling(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_HUBIN:result=HubinFee.getBilling(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_XICHENG:result=XichengFee.getBilling(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_OLD_DAY_FEE:result=OldDayFee.getBilling(base, startDate, stopDate);break;
-			case StrategyBase.TYPE_TY_D32_FEE:result=SixHourTopFee.getBilling(base, startDate, stopDate);break;
-		} 
+		Map<String, Object> result = null;
+		switch (base.getType().intValue()) {
+		case StrategyBase.TYPE_DAY_FEE:
+			result = DayFee.getBilling(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_TOP_NONE:
+			result = getParkingCost(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_TOP_DAILY:
+			result = getTOPDailyMap(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_TOP_SECTION:
+			result = getTOPSectionMap(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_TOP_DAILY_24H:
+			result = TimeTopFee.getBilling(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_TOP_DAILY_24H_FRIST_XHORS:
+			result = WonderFee.getTOPDaily24HFRISTXHORSMap(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_PERIOD:
+			result = PeriodFee.getPeriodBilling(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_HUBIN:
+			result = HubinFee.getBilling(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_XICHENG:
+			result = XichengFee.getBilling(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_OLD_DAY_FEE:
+			result = OldDayFee.getBilling(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_TY_D32_FEE:
+			result = SixHourTopFee.getBilling(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_GZHYZZ_FEE:
+			result = GzHyZz.getBilling(base, startDate, stopDate);
+			break;
+		case StrategyBase.TYPE_GZWDL_FEE:
+			result = GzWdl.getBilling(base, startDate, stopDate);
+			break;
+		}
 		return result;
 	}
 
@@ -206,8 +236,7 @@ public class OrderFee {
 	 * 
 	 * 停车时间段s、 封顶时长t、 白天时段d、夜间时段n 白天开始封顶费用dTopfee Calendar c1 c2 时间
 	 * c1=getCalendarEnd(s1) c2=getCalendarStart(s2) if(c1=c2) { tfee =Aa(s1
-	 * -c1)+Aa(c2-s2) } else { tfee=Aa(s1 -c1)+Aa(c2-s2) + (c1~c2)/24 * dTopfee
-	 * }
+	 * -c1)+Aa(c2-s2) } else { tfee=Aa(s1 -c1)+Aa(c2-s2) + (c1~c2)/24 * dTopfee }
 	 * 
 	 * Aa 不足一天计费计算 d2==n1 1) s1!=s2 d1<=s1,s2 <=d2 ; n1<=s1,s2<=n2; d1<=s1<d2 &&
 	 * n1<s2<n2; n1<=s1<n2 && d1<s2<d2;
@@ -221,8 +250,8 @@ public class OrderFee {
 	 * 2.)开始和结束属于同一天但不属于同一个时间端 7:00 19:00 24:00 7:00 ___|__b1
 	 * ,b2____|____e1__=___e2____|__
 	 * 
-	 * 3.) 开始时间当天 和结束时间当天均为不满天的时间段，中见跨度为0~n天 7:00 19:00 24:00 7:00 19:00 24:00
-	 * 7:00 19：00 7:00
+	 * 3.) 开始时间当天 和结束时间当天均为不满天的时间段，中见跨度为0~n天 7:00 19:00 24:00 7:00 19:00 24:00 7:00
+	 * 19：00 7:00
 	 * ___|__b1____|____b2__=___b3____|_______|_______=_______|__e1___|_e2=_e3_|___
 	 * |<--- n天 --->|
 	 * 
@@ -562,9 +591,9 @@ public class OrderFee {
 
 	/*
 	 * 计算订单价格 <p>1.获取订单 开始时间和结束时间， <b> 停车时长 eb= 结束时间（end） - 开始时间（begin）</p>
-	 * <p>1.1停车时间在一天内</p> <p>1.1.1开始结束在白天时间段，或者在夜晚时间段内</p> eb
-	 * <p>1.1.2开始结束在白天开始时间， 夜晚结束时间段内</p> <p>1.1.3开始结束在白天结束时间， 夜晚开始时间段内</p>
-	 * <p>1.2 停车时长大于一天时间</p> 24<eb=end - begin (eb/24)*(day+night)+
+	 * <p>1.1停车时间在一天内</p> <p>1.1.1开始结束在白天时间段，或者在夜晚时间段内</p> eb <p>1.1.2开始结束在白天开始时间，
+	 * 夜晚结束时间段内</p> <p>1.1.3开始结束在白天结束时间， 夜晚开始时间段内</p> <p>1.2 停车时长大于一天时间</p>
+	 * 24<eb=end - begin (eb/24)*(day+night)+
 	 * 
 	 * 回到1过程计算 begin+(eb%24)
 	 * 
@@ -579,9 +608,9 @@ public class OrderFee {
 	 * @param stopDate
 	 * @return Map<String, Object>
 	 * 
-	 *         key value remark day Long 白天计费时长 night Long 夜间计费时长 dayAmount
-	 *         double 白天消费金额 nightAmount double 夜间消费金额 totalAmount double 总消费金额
-	 *         resideTime Long 时间停留时长 freeTime Integer 免费停留时长
+	 *         key value remark day Long 白天计费时长 night Long 夜间计费时长 dayAmount double
+	 *         白天消费金额 nightAmount double 夜间消费金额 totalAmount double 总消费金额 resideTime
+	 *         Long 时间停留时长 freeTime Integer 免费停留时长
 	 * 
 	 */
 	public static Map<String, Object> getParkingCost(StrategyBase base, Date startDate, Date stopDate) {
