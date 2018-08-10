@@ -51,8 +51,17 @@ public class FreeStallInit {
 
 	@Autowired
 	private EntBrandPreClient entBrandPreClient;
+	
+	private static List<Long> PRE_IDS = new ArrayList<Long>(){
+		private static final long serialVersionUID = 1L;
+		{   
+			add(1L);
+			add(14L); 
+			add(16L); 
+		}
+	}; 
 
-	@Scheduled(cron = "0 0/3 * * * ?")
+	@Scheduled(cron = "0 0/5 * * * ?")
 	public void run() {
 		log.info("sync stall lock thread...");
 		init();
@@ -133,6 +142,7 @@ public class FreeStallInit {
 			redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + key);
 			redisService.addAll(RedisKey.PREFECTURE_FREE_STALL.key + key, map.get(key));
 		}
+		preIds.removeAll(PRE_IDS);
 		for (Long id : preIds) {
 			log.info("redis remove key " + id);
 			redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + id);
@@ -154,13 +164,15 @@ public class FreeStallInit {
 		List<LockBean> lbs = null;
 		Map<String, LockBean> lbm = new HashMap<String, LockBean>();
 		for (ResPreGateway rpg : rpgs) {
-			rm = this.lockFactory.findAvailableLock(rpg.getNumber());
-			lbs = rm.getDataList();
-			log.info("rm = {}",JsonUtil.toJson(rm));
-			if (rm.getMsgCode() != null && rm.getMsgCode() == 200 && rm.getDataList() != null) {
-				for (LockBean lb : lbs) {
-					if (lb.getLockState().intValue() == LockStatus.UP.status) {
-						lbm.put(lb.getLockCode(), lb);
+			if(rpg.getNumber()!=null) { 
+				rm = this.lockFactory.findAvailableLock(rpg.getNumber());
+				lbs = rm.getDataList();
+				log.info("rm = {}",JsonUtil.toJson(rm));
+				if (rm.getMsgCode() != null && rm.getMsgCode() == 200 && rm.getDataList() != null) {
+					for (LockBean lb : lbs) {
+						if (lb.getLockState().intValue() == LockStatus.UP.status) {
+							lbm.put(lb.getLockCode(), lb);
+						}
 					}
 				}
 			}
