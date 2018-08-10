@@ -36,6 +36,7 @@
     <include refid="Base_Column_List" />
     from t_ent_staff
     where mobile = #{mobile}
+    limit 0,1
   </select>
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     select 

@@ -14,9 +14,11 @@
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name
+    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

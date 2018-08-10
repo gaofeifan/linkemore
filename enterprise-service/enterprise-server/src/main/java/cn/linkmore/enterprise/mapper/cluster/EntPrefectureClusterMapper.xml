@@ -42,6 +42,14 @@
 		from t_ent_prefecture
 		where pre_id = #{0}
 	</select>
+	<select id="findEntPre" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_ent_prefecture
+		where pre_id = #{preId} and ent_id = #{entId}
+		limit 0,1
+	</select>
 	<select id="findList" parameterType="java.util.HashMap"
 		resultMap="ResBaseResultMap">
 		select

@@ -9,6 +9,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
+import cn.linkmore.prefecture.response.ResPreList;
 
 /**
  * 企业车区
@@ -52,5 +53,12 @@ public interface PrefectrueService {
 	 * @Version  v2.0
 	 */
 	List<ResEntPrefecture> findAll(HttpServletRequest request);
+
+	/**
+	 * @Description  查询未被创建的企业车区
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPreList> findNotCreateEntPre();
 
 }

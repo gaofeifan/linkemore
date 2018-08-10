@@ -50,7 +50,7 @@ public interface EntStallService {
 	 * @Date 2018年7月21日
 	 * @Version v1.0
 	 */
-	ResDetailStall selectEntDetailStalls(Long stallId);
+	ResDetailStall selectEntDetailStalls(Long stallId,HttpServletRequest request);
 
 	/**
 	 * 
@@ -71,11 +71,12 @@ public interface EntStallService {
 	Map<String, Object> change(HttpServletRequest request, Long stall_id, int changeStatus);
 
 	/**
+	 * @param request 
 	 * @Description  复位
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void reset(Long stallId);
+	void reset(Long stallId, HttpServletRequest request);
 
 	List<ResBaseDict> downCause();
 

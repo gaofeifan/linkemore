@@ -136,7 +136,9 @@ public class EntBrandApplicantServiceImpl implements EntBrandApplicantService {
 		brandApplicant.setMobile(mobile);
 		brandApplicant.setCreateTime(new Date());
 		brandApplicant.setPlateNo(reqBrandApplicant.getPlateNo());
-		brandApplicant.setPreId(reqBrandApplicant.getPreId());
+		if(reqBrandApplicant.getPreId() !=null && reqBrandApplicant.getPreId() != 0) {
+			brandApplicant.setPreId(reqBrandApplicant.getPreId());
+		}
 		if(prefecture != null) {
 			brandApplicant.setPreName(prefecture.getName());
 		}

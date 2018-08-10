@@ -18,6 +18,7 @@ import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntPreture;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.enterprise.service.EntPreService;
+import cn.linkmore.prefecture.response.ResPreList;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -107,5 +108,11 @@ public class EntPreController {
 	@ResponseBody
 	public List<ResEntPrefecture> findAll(){
 		return this.entPreService.findList(null);
+	}
+	
+	@RequestMapping(value = "/not-create-pre", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResPreList> findNotCreateEntPre(){
+		return this.entPreService.findNotCreateEntPre();
 	}
 }

@@ -29,7 +29,7 @@ public interface PersonClient {
 	
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
-	public int save(@RequestBody ReqPerson reqPerson);
+	public Long save(@RequestBody ReqPerson reqPerson);
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody

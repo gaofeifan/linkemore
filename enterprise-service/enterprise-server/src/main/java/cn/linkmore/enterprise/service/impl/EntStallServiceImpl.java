@@ -22,6 +22,8 @@ import com.linkmore.lock.response.ResponseMessage;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
@@ -31,6 +33,7 @@ import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntAuthStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
@@ -91,6 +94,9 @@ public class EntStallServiceImpl implements EntStallService {
 
 	@Autowired
 	private EntRentUserService entRentUserService;	
+
+	@Autowired
+	private EntStaffClusterMapper entStaffClusterMapper;
 	
 	@Override
 	public List<ResEntStalls> selectEntStalls(HttpServletRequest request) {
@@ -136,13 +142,10 @@ public class EntStallServiceImpl implements EntStallService {
 			stalls = stallClient.findStallList(params);
 			int preStalls = stalls.size();
 			int preUseStalls = 0;
-			
 			int preVipTypeStalls = 0;
 			int preVipUseTypeStalls = 0;
-			
 			int preRentTypeStalls = 0;
 			int preRentUseTypeStalls = 0;
-			
 			int preTempTypeStalls = 0;
 			int preTempUseTypeStalls = 0;
 			
@@ -232,7 +235,7 @@ public class EntStallServiceImpl implements EntStallService {
 		params.put("type", type);
 		params.put("list", stallIds);
 		List<ResStall> stalls = this.stallClient.findPreStallList(params);
-		List<ResOrderPlate> orders= null;//orderClient.findPlateByPreId(preId);
+		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
 		List<Long> collect = stalls.stream().map(stall -> stall.getId()).collect(Collectors.toList());
 		List<StallExcStatus> stallExcList = this.stallExcStatusService.findExcStatusList(collect);
 		//设置车位对应的车牌号
@@ -258,7 +261,10 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public ResDetailStall selectEntDetailStalls(Long stallId) {
+	public ResDetailStall selectEntDetailStalls(Long stallId,HttpServletRequest request) {
+		if(!checkAuth(stallId, request)) {
+			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+		}
 		ResStallEntity resStallEntity= this.stallClient.findById(stallId);
 		if(StringUtil.isBlank(resStallEntity.getLockSn())){
 			return null;
@@ -308,7 +314,9 @@ public class EntStallServiceImpl implements EntStallService {
 	public Map<String,Object> operatStalls(HttpServletRequest request, Long stallId, Integer state) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
-		
+		if(!checkAuth(stallId, request)) {
+			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+		}
 		//需要异步记录操作锁
 		Map<String,Object> result = new HashMap<>();
 		ResStallEntity resStallEntity= this.stallClient.findById(stallId);
@@ -319,21 +327,16 @@ public class EntStallServiceImpl implements EntStallService {
 		}
 		ResponseMessage<LockBean> res = null;
 		//1 降下 2 升起
-		try {
-			if(state == 1){
-				res=lockFactory.lockDown(resStallEntity.getLockSn());
-			}else if(state == 2){
-				res=lockFactory.lockUp(resStallEntity.getLockSn());
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(state == 1){
+			res=lockFactory.lockDown(resStallEntity.getLockSn());
+		}else if(state == 2){
+			res=lockFactory.lockUp(resStallEntity.getLockSn());
 		}
-		if(res == null){
+		/*if(res == null){
 			result.put("result", false);
 			result.put("result", "操作失败");
 			return result ;
-		}
+		}*/
 		result.put("result", res.isResult());
 		result.put("result", res.getMsg());
 		return result ;
@@ -344,6 +347,9 @@ public class EntStallServiceImpl implements EntStallService {
 		
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		if(!checkAuth(stall_id, request)) {
+			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+		}
 		Map<String, Object> param = new HashMap<>();
 		param.put("stallId", stall_id);
 		param.put("status", 1);
@@ -358,11 +364,11 @@ public class EntStallServiceImpl implements EntStallService {
 		}else if(changeStatus == 2){
 			result = this.stallClient.changedDown(stall_id);
 		}
-		if(result == 0){
+		/*if(result == 0){
 			map.put("result",false);
 			map.put("message","操作失败");
 			return map;
-		}
+		}*/
 		map.put("result",false);
 		map.put("message","操作成功");
 		return map;
@@ -374,11 +380,16 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public void reset(Long stallId) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("stallId", stallId);
-		map.put("status", 1);
-		this.stallExcStatusService.updateExcStatus(map);
+	public void reset(Long stallId,HttpServletRequest request) {
+		if(checkAuth(stallId, request)) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("stallId", stallId);
+			map.put("status", 1);
+			this.stallExcStatusService.updateExcStatus(map);
+		}else {
+			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+		}
+		
 	}
 
 	@Override
@@ -386,6 +397,19 @@ public class EntStallServiceImpl implements EntStallService {
 		return this.dictClient.findList(DOWN_CAUSE);
 	}
 	
+	public boolean checkAuth(Long stallId,HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		Map<String, Object> map = new HashMap<>();
+		map.put("stallId", stallId);
+		map.put("staffId", ru.getId());
+		Integer flag = this.entAuthStallClusterMapper.checkAuth(map);
+		if(flag > 0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 	
 	
 

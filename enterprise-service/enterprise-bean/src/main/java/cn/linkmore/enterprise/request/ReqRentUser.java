@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.request;
 
+import java.util.Date;
+
 /**
  * @author   GFF
  * @Date     2018年8月1日
@@ -30,6 +32,10 @@ public class ReqRentUser {
 	private String plate;
 	
 	private Long userId;
+	
+	private Date startTime;
+	
+	private Date endTime;
 
 	public Long getEntId() {
 		return entId;
@@ -126,6 +132,20 @@ public class ReqRentUser {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-	
-	
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
 }

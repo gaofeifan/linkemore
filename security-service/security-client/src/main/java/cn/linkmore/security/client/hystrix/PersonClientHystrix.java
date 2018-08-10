@@ -24,9 +24,9 @@ public class PersonClientHystrix implements PersonClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public int save(ReqPerson person) {
+	public Long save(ReqPerson person) {
 		log.info("person save");
-		return 0;
+		return null;
 	}
 
 	@Override

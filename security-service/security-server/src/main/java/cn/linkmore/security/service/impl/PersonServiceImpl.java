@@ -85,7 +85,7 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public int save(ReqPerson reqPerson) {
+	public Long save(ReqPerson reqPerson) {
 		Person person = new Person();
 		person = ObjectUtils.copyObject(reqPerson, person);
 		person.setCreateTime(new Date());
@@ -96,7 +96,8 @@ public class PersonServiceImpl implements PersonService {
 		person.setLoginIp("");
 		person.setType(1); 
 		person.setLoginTime(new Date());
-		return this.personMasterMapper.save(person);
+		this.personMasterMapper.save(person);
+		return person.getId();
 	}
 	
 	@Override

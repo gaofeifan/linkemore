@@ -49,68 +49,77 @@ public class EntStallController {
 	@ApiOperation(value = "查询企业下停车场信息", notes = "查询企业下停车场信息", consumes = "application/json")
 	@RequestMapping(value = "/select-pre-stalls",method = RequestMethod.GET)
 	@ResponseBody
-	public List<ResEntStalls> selectEntStalls(HttpServletRequest request){
+	public ResponseEntity<List<ResEntStalls>> selectEntStalls(HttpServletRequest request){
 		List<ResEntStalls> list = null;
 		list = entStallService.selectEntStalls(request);
-		return list;
+		return ResponseEntity.success(list, request);
 	}
 	
 	@ApiOperation(value = "查询停车场车位列表", notes = "查询停车场车位列表", consumes = "application/json")
 	@RequestMapping(value = "/select-stalls",method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStall> selectEntStalls(@RequestBody @Validated ReqPreStall reqPreStall ,HttpServletRequest request){
+	public ResponseEntity<List<ResStall>> selectEntStalls(@RequestBody @Validated ReqPreStall reqPreStall ,HttpServletRequest request){
 		List<ResStall> list = null;
 		if(reqPreStall == null){
 			list = new ArrayList<>();
-			return list;
+			return ResponseEntity.success(list, request);
 		}
 		list = entStallService.selectStalls(request,reqPreStall.getPreId(),reqPreStall.getType());
-		return list;
+		return ResponseEntity.success(list, request);
 	}
 	 
 	@ApiOperation(value = "查询车位详细信息", notes = "查询车位详细信息", consumes = "application/json")
 	@RequestMapping(value = "/select-detail-stalls",method = RequestMethod.GET)
 	@ResponseBody
-	public ResDetailStall selectEntDetailStalls(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id ,HttpServletRequest request){
+	public ResponseEntity<ResDetailStall> selectEntDetailStalls(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id ,HttpServletRequest request){
 		if(stall_id == null){
 			return null;
 		}
-		ResDetailStall detailStall = this.entStallService.selectEntDetailStalls(stall_id);
-		return detailStall;
+		ResDetailStall detailStall = this.entStallService.selectEntDetailStalls(stall_id,request);
+		return ResponseEntity.success(detailStall, request);
 	}
 	
 	@ApiOperation(value = "操作车位", notes = "操作车位", consumes = "application/json")
 	@RequestMapping(value = "/operate-stall",method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String,Object> operatStalls(@RequestBody ReqOperatStall reqOperatStall,HttpServletRequest request){
-		if(reqOperatStall == null){
-			return null;
+	public ResponseEntity<String> operatStalls(@RequestBody ReqOperatStall reqOperatStall,HttpServletRequest request){
+		try {
+			this.entStallService.operatStalls(request,reqOperatStall.getStallId(),reqOperatStall.getState());
+		} catch (Exception e) {
+			return ResponseEntity.success("操作失败", request);
 		}
-		Map<String,Object> message  = this.entStallService.operatStalls(request,reqOperatStall.getStallId(),reqOperatStall.getState());
-		return message;
+		return ResponseEntity.success("操作成功", request);
 	}
 	
 	@ApiOperation(value = "车位上线", notes = "车位上线", consumes = "application/json")
 	@RequestMapping(value = "/change-up",method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String,Object> changeUp(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id,HttpServletRequest request){
-		Map<String,Object> message  = this.entStallService.change(request,stall_id,1);
-		return message;
+	public ResponseEntity<String> changeUp(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id,HttpServletRequest request){
+		try {
+			this.entStallService.change(request,stall_id,1);
+		} catch (Exception e) {
+			return ResponseEntity.success("车位上线失败", request);
+		}
+		return ResponseEntity.success("车位上线成功", request);
 	}
 	
 	@ApiOperation(value = "车位下线", notes = "车位下线", consumes = "application/json")
 	@RequestMapping(value = "/change-down",method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String,Object> changeDown(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id,HttpServletRequest request){
-		Map<String,Object> message  = this.entStallService.change(request,stall_id,2);
-		return message;
+	public ResponseEntity<String> changeDown(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id,HttpServletRequest request){
+		try {
+			this.entStallService.change(request,stall_id,2);
+		} catch (Exception e) {
+			return ResponseEntity.success("车位下线失败", request);
+		}
+		return ResponseEntity.success("车位下线成功", request);
 	}
 	
 	@ApiOperation(value = "复位", notes = "复位", consumes = "application/json")
 	@RequestMapping(value = "/reset",method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<String> reset(@RequestParam("stallId") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stallId,HttpServletRequest request){
-		this.entStallService.reset(stallId);
+		this.entStallService.reset(stallId,request);
 		return ResponseEntity.success("复位成功", request);
 	}
 	

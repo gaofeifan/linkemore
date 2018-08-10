@@ -25,4 +25,9 @@
     <select id="findStallList" resultType="java.lang.Long" parameterType="java.util.Map">
     	select stall_id from t_ent_auth_stall  where auth_id = #{authId}
     </select>
+    <select id="checkAuth" resultType="java.lang.Integer" parameterType="java.util.Map">
+    	select count(1) FROM 
+		t_ent_staff_auth esa INNER JOIN t_ent_operate_auth eoa ON esa.auth_id = eoa.id
+		INNER JOIN t_ent_auth_stall eas ON eas.auth_id = eoa.id AND esa.staff_id = ${staffId} AND eas.stall_id = #{stallId}
+    </select>
 </mapper>
