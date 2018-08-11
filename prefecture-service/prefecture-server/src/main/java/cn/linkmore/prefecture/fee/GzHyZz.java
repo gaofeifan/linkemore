@@ -114,10 +114,9 @@ public class GzHyZz {
 
 		int where = 0; // 首小时所在区间
 
-		if (startDate1 == stopDate1) {
-			return map;
-		}
+	
 
+   if( !stopDate.equals( startDate)  ) {
 		// 计算停车时间
 		if (isIn(startDate1, beginTime, endTime) && isIn(stopDate1, beginTime, endTime)) {
 			System.out.println("开始时间在白天，结束时间在白天");
@@ -174,6 +173,7 @@ public class GzHyZz {
 			BBB = tampValue(startDate1, beginTime);
 
 		}
+	}
 		// 计费
 		Map<String, Object> result = deail(daytime, nighttime, day2, bday, bnight, AAA, BBB);
 
