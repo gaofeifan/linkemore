@@ -73,7 +73,11 @@
   <update id="update" parameterType="cn.linkmore.prefecture.entity.Prefecture">
     update v_prefecture
     set strategy_id = #{strategyId,jdbcType=BIGINT},
-      status = #{status,jdbcType=INTEGER},
+    
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      
       name = #{name,jdbcType=VARCHAR},
       district_id = #{districtId,jdbcType=BIGINT},
       address = #{address,jdbcType=VARCHAR},
@@ -81,8 +85,6 @@
       longitude = #{longitude,jdbcType=DECIMAL},
       route_guidance = #{routeGuidance,jdbcType=VARCHAR},
       image_url = #{imageUrl,jdbcType=VARCHAR},
-      stall_total = #{stallTotal,jdbcType=INTEGER},
-      sold_times = #{soldTimes,jdbcType=INTEGER},
       date_contract = #{dateContract,jdbcType=TIMESTAMP},
       valid_time = #{validTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -96,7 +98,11 @@
       type = #{type,jdbcType=SMALLINT},
       enterprise_id = #{enterpriseId,jdbcType=BIGINT},
       category = #{category,jdbcType=SMALLINT},
-      limit_status = #{limitStatus,jdbcType=SMALLINT},
+      
+      <if test="limitStatus != null">
+        limit_status = #{limitStatus,jdbcType=SMALLINT},
+      </if>
+      
       gateway = #{gateway,jdbcType=VARCHAR},
       
       strategy_description = #{strategyDescription,jdbcType=VARCHAR},
