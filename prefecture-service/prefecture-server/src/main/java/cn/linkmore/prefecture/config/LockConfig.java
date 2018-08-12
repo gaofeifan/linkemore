@@ -1,10 +1,9 @@
 package cn.linkmore.prefecture.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+
 import com.linkmore.lock.bean.AbuttingBean;
 import com.linkmore.lock.factory.LockFactory;
 /**
@@ -16,7 +15,7 @@ import com.linkmore.lock.factory.LockFactory;
 @Component
 public class LockConfig { 
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+//	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private LockProperties lockProperties;
@@ -24,8 +23,7 @@ public class LockConfig {
 	@Bean
 	public LockFactory factoryConfig() {
 		LockFactory lockFactory = LockFactory.getInstance();
-		AbuttingBean abuttingBean = new AbuttingBean();
-		log.info("huaqingurl------------------ {}", lockProperties.getHuaqingUrl());
+		AbuttingBean abuttingBean = new AbuttingBean(); 
 		abuttingBean.setHuaQingUrl(lockProperties.getHuaqingUrl());
 		abuttingBean.setLinkmoreUrl(lockProperties.getLinkmoreUrl());
 		lockFactory.setAbuttingBean(abuttingBean);
