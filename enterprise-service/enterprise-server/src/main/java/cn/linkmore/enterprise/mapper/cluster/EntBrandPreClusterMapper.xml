@@ -22,6 +22,7 @@
     <result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
     <result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
     <result column="stall_total" jdbcType="INTEGER" property="stallTotal" />
+    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
   </resultMap>
   
   <resultMap id="PreResultMap" type="cn.linkmore.enterprise.response.ResBrandPreStall">
@@ -42,6 +43,7 @@
     <result column="logo_url" jdbcType="VARCHAR" property="imageUrl" />
     <result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
     <result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
+    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
     <result column="city_id" jdbcType="BIGINT" property="cityId" />
   	<result column="latitude" jdbcType="DECIMAL" property="latitude" />
   	<result column="longitude" jdbcType="DECIMAL" property="longitude" />
@@ -51,7 +53,8 @@
   
   <sql id="Base_Column_List">
     id, name, contract, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
-    create_time, update_time, strategy_id, strategy_name, charge_price, charge_time, strategy_description
+    create_time, update_time, strategy_id, strategy_name, charge_price, charge_time, 
+    strategy_description, limit_status
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -84,6 +87,7 @@
 		p.charge_price,
 		p.charge_time,
 		p.logo_url,
+		p.limit_status,
 		v.city_id,
 		v.latitude,
 		v.longitude,
@@ -113,6 +117,7 @@
 		p.charge_price,
 		p.charge_time,
 		p.logo_url,
+		p.limit_status,
 		v.city_id,
 		v.latitude,
 		v.longitude,

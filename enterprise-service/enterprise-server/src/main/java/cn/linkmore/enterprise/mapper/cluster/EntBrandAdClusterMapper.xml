@@ -13,12 +13,11 @@
     <result column="screen" jdbcType="SMALLINT" property="screen" />
     <result column="status" jdbcType="SMALLINT" property="status" />
     <result column="city_ids" jdbcType="VARCHAR" property="cityIds" />
-    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
     <result column="ad_status" jdbcType="SMALLINT" property="adStatus" />
   </resultMap>
   <sql id="Base_Column_List">
     id, ent_id, ent_name, view_image, view_url, create_time, 
-    end_time, apply_count, screen, status, city_ids, limit_status, ad_status
+    end_time, apply_count, screen, status, city_ids, ad_status
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

@@ -14,9 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -40,7 +37,6 @@ import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandPreMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandPre;
 import cn.linkmore.enterprise.request.ReqEntBrandPre;
-import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
 import cn.linkmore.enterprise.response.ResBrandStall;
@@ -165,17 +161,6 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 				ebp.setBrandUserFlag(false);
 			}
 			
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("entId", ebp.getEntId());
-			map.put("preId", ebp.getPreId());
-			map.put("screen", 0);
-			List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(map);
-			log.info("ad list = {}",JSON.toJSON(list));
-			if (CollectionUtils.isNotEmpty(list)) {
-				if(list.get(0).getLimitStatus() == (short)1) {
-					ebp.setLimitStatus(true);
-				}
-			}
 			ebp.setLeisureStall(count.intValue());
 			ebp.setLinkmoreLeisureStall(linkmoreCount.intValue());
 			ebp.setDistance(MapUtil.getDistance(ebp.getLatitude(), ebp.getLongitude(), new Double(rp.getLatitude()),
@@ -306,8 +291,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 
 	@Override
 	public int update(ReqEntBrandPre record) {
+		log.info("record = {}", record.getLimitStatus());
 		EntBrandPre entBrandPre = null;
 		entBrandPre = ObjectUtils.copyObject(record, new EntBrandPre());
+		log.info("ent_brand_pre = {}", entBrandPre.getLimitStatus());
 		entBrandPre.setUpdateTime(new Date());
 		return entBrandPreMasterMapper.update(entBrandPre);
 	}

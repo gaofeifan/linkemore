@@ -21,10 +21,13 @@
     <result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
     <result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
     <result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
+  	<result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+  	
   </resultMap>
   <sql id="Base_Column_List">
     id, ent_id, ent_name, logo_url, pre_id, pre_name, period, start_time, end_time, status, 
-    create_time, update_time, strategy_id, strategy_name, charge_price, charge_time, strategy_description
+    create_time, update_time, strategy_id, strategy_name, charge_price, charge_time, 
+    strategy_description, limit_status
   </sql>
   
   <delete id="delete" parameterType="java.lang.Long">
@@ -46,14 +49,16 @@
       logo_url, pre_id, pre_name, 
       period, start_time, end_time, 
       status, create_time, update_time, 
-      strategy_id, strategy_name, charge_price, charge_time, strategy_description)
+      strategy_id, strategy_name, charge_price, 
+      charge_time, strategy_description, limit_status)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{contract,jdbcType=VARCHAR}, 
     #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
       #{logoUrl,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, 
       #{period,jdbcType=SMALLINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{strategyId,jdbcType=BIGINT}, #{strategyName,jdbcType=VARCHAR},
-      #{chargePrice,jdbcType=VARCHAR}, #{chargeTime,jdbcType=INTEGER},#{strategyDescription,jdbcType=VARCHAR}
+      #{chargePrice,jdbcType=VARCHAR}, #{chargeTime,jdbcType=INTEGER},
+      #{strategyDescription,jdbcType=VARCHAR},#{limitStatus,jdbcType=SMALLINT}
       )
   </insert>
   
@@ -73,7 +78,8 @@
       strategy_name = #{strategyName,jdbcType=VARCHAR},
       charge_price = #{chargePrice,jdbcType=VARCHAR},
       charge_time = #{chargeTime,jdbcType=INTEGER},
-      strategy_description = #{strategyDescription,jdbcType=VARCHAR}
+      strategy_description = #{strategyDescription,jdbcType=VARCHAR},
+      limit_status = #{limitStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

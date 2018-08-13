@@ -48,8 +48,18 @@ public class ResBrandPre {
     private String strategyDescription;
     //车位总数
     private int stallTotal;
+    //0不受限，1受限[仅品牌用户可约]
+    private Short limitStatus;
+    
+    public Short getLimitStatus() {
+		return limitStatus;
+	}
 
-    public Long getId() {
+	public void setLimitStatus(Short limitStatus) {
+		this.limitStatus = limitStatus;
+	}
+
+	public Long getId() {
         return id;
     }
 
