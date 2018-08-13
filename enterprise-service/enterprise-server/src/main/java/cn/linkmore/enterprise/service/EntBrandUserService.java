@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntBrandUser;
 import cn.linkmore.enterprise.response.ResBrandUser;
 
@@ -57,5 +56,7 @@ public interface EntBrandUserService {
 	Integer check(ReqEntBrandUser record);
 
 	int insertBatch(List<ReqEntBrandUser> reqUserList);
+
+	Integer checkExist(Long userId, String plateNo);
 
 }
