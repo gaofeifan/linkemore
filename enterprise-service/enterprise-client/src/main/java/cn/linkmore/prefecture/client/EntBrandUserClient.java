@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.EntBrandUserClientHystrix;
 /**
- * 远程调用 - 企业品牌车区
+ * 远程调用 - 企业品牌用户
  * @author jiaohanbin
  * @version 2.0
  *
