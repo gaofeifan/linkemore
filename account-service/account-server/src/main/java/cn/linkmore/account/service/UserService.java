@@ -267,5 +267,12 @@ public interface UserService {
 	 */
 	ResUser save(ResUser user);
 
+	/**
+	 * @Description  查询所有
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResUser> findAll();
+
 
 }

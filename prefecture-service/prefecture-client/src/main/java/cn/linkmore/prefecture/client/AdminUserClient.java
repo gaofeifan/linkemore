@@ -15,6 +15,7 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.AdminUserClientHystrix;
 import cn.linkmore.prefecture.request.ReqAdminUser;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResAdminUser;
 /**
  * 远程调用 - 管理员
  * @author jiaohanbin
@@ -74,5 +75,14 @@ public interface AdminUserClient {
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids);
+
+	/**
+	 * @Description  查询所有
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/all", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResAdminUser> findAll();
 	
 }

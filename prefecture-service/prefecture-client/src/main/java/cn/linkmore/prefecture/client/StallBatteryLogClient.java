@@ -2,6 +2,7 @@ package cn.linkmore.prefecture.client;
 
 import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,4 +20,7 @@ public interface StallBatteryLogClient {
 	
 	@RequestMapping(value = "/v2.0/battery-log", method = RequestMethod.GET)
 	public List<ResStallBatteryLog> findBatteryLogList(@RequestParam("stallId")Long stallId);
+
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
+	public void save(@RequestBody ResStallBatteryLog sbl);
 }

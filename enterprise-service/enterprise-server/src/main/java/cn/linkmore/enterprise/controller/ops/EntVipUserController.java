@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
@@ -134,5 +136,20 @@ public class EntVipUserController {
 		}
 		return msg;
 	}
+    
+   /* @RequestMapping(value = "/import", method = RequestMethod.POST)
+   	@ResponseBody
+   	public ViewMsg importExcel(@RequestParam("file")MultipartFile file,HttpServletRequest request) {
+   		ViewMsg msg = null;
+   		try {
+   			this.entVipUserService.importExcel(file);
+   			msg = new ViewMsg("更新成功", true);
+   		} catch (BusinessException e) {
+   			msg = new ViewMsg(e.getMessage(), false);
+   		} catch (Exception e) {
+   			msg = new ViewMsg("更新失败", false);
+   		}
+   		return msg;
+   	}*/
 
 }

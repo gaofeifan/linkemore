@@ -20,13 +20,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.controller.ent.request.ReqOperatStall;
 import cn.linkmore.enterprise.controller.ent.request.ReqPreStall;
+import cn.linkmore.enterprise.controller.ent.request.ReqStallUpDown;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
+import cn.linkmore.enterprise.controller.ent.response.ResStall;
 import cn.linkmore.enterprise.service.EntStallService;
-import cn.linkmore.prefecture.response.ResStall;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -67,7 +69,7 @@ public class EntStallController {
 		list = entStallService.selectStalls(request,reqPreStall.getPreId(),reqPreStall.getType());
 		return ResponseEntity.success(list, request);
 	}
-	 
+	
 	@ApiOperation(value = "查询车位详细信息", notes = "查询车位详细信息", consumes = "application/json")
 	@RequestMapping(value = "/select-detail-stalls",method = RequestMethod.GET)
 	@ResponseBody
@@ -86,7 +88,7 @@ public class EntStallController {
 		try {
 			this.entStallService.operatStalls(request,reqOperatStall.getStallId(),reqOperatStall.getState());
 		} catch (Exception e) {
-			return ResponseEntity.success("操作失败", request);
+			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code,e.getMessage(), request);
 		}
 		return ResponseEntity.success("操作成功", request);
 	}
@@ -98,7 +100,7 @@ public class EntStallController {
 		try {
 			this.entStallService.change(request,stall_id,1);
 		} catch (Exception e) {
-			return ResponseEntity.success("车位上线失败", request);
+			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code,e.getMessage(), request);
 		}
 		return ResponseEntity.success("车位上线成功", request);
 	}
@@ -106,11 +108,11 @@ public class EntStallController {
 	@ApiOperation(value = "车位下线", notes = "车位下线", consumes = "application/json")
 	@RequestMapping(value = "/change-down",method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> changeDown(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id,HttpServletRequest request){
+	public ResponseEntity<String> changeDown(@RequestBody ReqStallUpDown stall,HttpServletRequest request){
 		try {
-			this.entStallService.change(request,stall_id,2);
+			this.entStallService.change(request,stall.getStallId(),2,stall.getRemarkId(),stall.getRemark());
 		} catch (Exception e) {
-			return ResponseEntity.success("车位下线失败", request);
+			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code,e.getMessage(), request);
 		}
 		return ResponseEntity.success("车位下线成功", request);
 	}
@@ -130,5 +132,4 @@ public class EntStallController {
 		List<ResBaseDict> cause = this.entStallService.downCause();
 		return ResponseEntity.success(cause, request);
 	}
-	
 }

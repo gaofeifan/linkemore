@@ -93,7 +93,9 @@ public enum StatusEnum {
 	BRAND_APPLICANT_ENT_BRAND_FAIL(8005063,"当前企业未投放品牌广告"),
 	BRAND_APPLICANT_ENT_BRAND_AD_FAIL(8005064,"今日品牌活动推广已结束"),
 	
-	STAFF_STALL_EXISTS(8005065,"没有该车位权限");
+	STAFF_STALL_EXISTS(8005065,"没有该车位权限"),
+	STAFF_PREFECTURE_EXISTS(8005066,"没有该车区权限");
+	
 	
 	public int code;
 	public String label;

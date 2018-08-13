@@ -43,4 +43,11 @@ public interface EntAuthPreClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<Long> findPreId(Map<String, Long> map);
+
+	/**
+	 * @Description  校验车区id
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer checkAuthPre(Map<String, Object> map);
 }

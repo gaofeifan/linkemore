@@ -79,6 +79,11 @@ public class UserStaffServiceImpl implements UserStaffService {
 		List<UserStaff> list = this.userStaffClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
+
+	@Override
+	public ResUserStaff findByMobile(String mobile) {
+		return this.userStaffClusterMapper.findByMobile(mobile);
+	}
 	
 	
 	

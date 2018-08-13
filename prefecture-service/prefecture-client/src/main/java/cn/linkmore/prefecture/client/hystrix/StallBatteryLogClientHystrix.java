@@ -20,4 +20,12 @@ public class StallBatteryLogClientHystrix implements StallBatteryLogClient {
 		log.info("prefecture service List<ResStallBatteryLog> findBatteryLogList(stallId) hystrix");
 		return null;
 	}
+
+	@Override
+	public void save(ResStallBatteryLog sbl) {
+		log.info("prefecture service void save(ResStallBatteryLog sbl) hystrix");
+		
+	}
+	
+	
 }

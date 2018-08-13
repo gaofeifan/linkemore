@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.client.StallOperateLogClient;
+import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.request.ReqStallOperateLogExcel;
 import cn.linkmore.prefecture.response.ResStallOperateLog;
 /**
@@ -39,4 +40,12 @@ public class StallOperateLogClientHystrix implements StallOperateLogClient {
 		log.info("prefecture service stall_operate_log export() hystrix");
 		return new ArrayList<ResStallOperateLog>();
 	}
+
+	@Override
+	public void save(ReqStallOperateLog sol) {
+		log.info("prefecture service stall_operate_log save(ReqStallOperateLog sol) hystrix");
+		
+	}
+	
+	
 }

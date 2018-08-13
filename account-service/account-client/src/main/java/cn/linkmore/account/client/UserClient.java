@@ -182,4 +182,9 @@ public interface UserClient {
 	@RequestMapping(value = "/by-mobile", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Long> getUserMapByMobile(@RequestBody List<String> mobile);
+
+	@RequestMapping(value = "/by-all", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResUser> findAll();
+
 }

@@ -12,6 +12,7 @@ import cn.linkmore.prefecture.client.AdminAuthClient;
 import cn.linkmore.prefecture.client.AdminUserClient;
 import cn.linkmore.prefecture.request.ReqAdminUser;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResAdminUser;
 /**
  * 
  * Service实现类 - 线下管理员
@@ -78,9 +79,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 		return this.adminUserClient.resource(id);
 	}
 
-	/*@Override
+	@Override
 	public List<ResAdminUser> findAll() {
 		return this.adminUserClient.findAll();
-	}*/
+	}
 
 }

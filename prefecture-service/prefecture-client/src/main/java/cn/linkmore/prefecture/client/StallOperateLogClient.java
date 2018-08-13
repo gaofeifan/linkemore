@@ -10,6 +10,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.StallOperateLogClientHystrix;
+import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.request.ReqStallOperateLogExcel;
 import cn.linkmore.prefecture.response.ResStallOperateLog;
 /**
@@ -41,5 +42,15 @@ public interface StallOperateLogClient {
 	@RequestMapping(value = "/v2.0/export", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStallOperateLog> export(@RequestBody ReqStallOperateLogExcel bean);
+	
+	
+	/**
+	 * @Description  新增
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
+	@ResponseBody
+	public void save(@RequestBody ReqStallOperateLog sol);
 	
 }
