@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
@@ -241,6 +242,7 @@ public class StallServiceImpl implements StallService {
 		reqStall.setUpdateTime(now);
 		Stall stall = new Stall();
 		stall = ObjectUtils.copyObject(reqStall, stall);
+		log.info("--------save--------interface------stall = {}", JSON.toJSON(stall));
 		return this.stallMasterMapper.save(stall);
 	}
 
