@@ -34,6 +34,16 @@ public class ReqEntBrandAd {
     private Short adStatus;
     //是否品牌用户
     private Boolean brandUserFlag = false;
+    //优惠券套餐ID
+    private Long  templateId;
+
+	public Long getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(Long templateId) {
+		this.templateId = templateId;
+	}
 
 	public Boolean getBrandUserFlag() {
 		return brandUserFlag;

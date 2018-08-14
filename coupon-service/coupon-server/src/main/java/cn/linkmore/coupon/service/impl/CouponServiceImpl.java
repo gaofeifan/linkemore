@@ -3,9 +3,7 @@ package cn.linkmore.coupon.service.impl;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants;
@@ -35,6 +31,7 @@ import cn.linkmore.coupon.dao.cluster.CouponClusterMapper;
 import cn.linkmore.coupon.dao.cluster.SubjectClusterMapper;
 import cn.linkmore.coupon.dao.cluster.TemplateClusterMapper;
 import cn.linkmore.coupon.dao.cluster.TemplateConditionClusterMapper;
+import cn.linkmore.coupon.dao.cluster.TemplateEnClusterMapper;
 import cn.linkmore.coupon.dao.cluster.TemplateItemClusterMapper;
 import cn.linkmore.coupon.dao.master.CouponMasterMapper;
 import cn.linkmore.coupon.dao.master.SendRecordMasterMapper;
@@ -124,6 +121,9 @@ public class CouponServiceImpl implements CouponService {
 	private TemplateMasterMapper templateMasterMapper;
 	@Resource
 	private UserClient userClient;
+	
+	@Autowired
+	private TemplateEnClusterMapper templateEnClusterMapper;
 	
 	@Autowired
 	private FeignEnterpriseClient enterpriseClient;
@@ -706,5 +706,11 @@ public class CouponServiceImpl implements CouponService {
 			couponList = couponClusterMapper.findBrandCouponList(map);
 		}
 		return couponList;
+	}
+
+	@Override
+	public List<ResTemplate> findEntTemplateList(Long entId) {
+		List<ResTemplate> tempList = templateEnClusterMapper.findEntTemplateList(entId);
+		return tempList;
 	}
 }

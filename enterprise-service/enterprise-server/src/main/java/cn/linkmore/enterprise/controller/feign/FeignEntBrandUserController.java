@@ -24,8 +24,8 @@ public class FeignEntBrandUserController {
 
 	@RequestMapping(value = "/v2.0/check-exist", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean checkExist(@RequestParam("userId") Long userId, @RequestParam("plateNo") String plateNo) {
-		int num = this.entBrandUserService.checkExist(userId, plateNo);
+	public Boolean checkExist(@RequestParam("entId") Long entId, @RequestParam("plateNo") String plateNo) {
+		int num = this.entBrandUserService.checkExist(entId, plateNo);
 		if (num > 0) {
 			return true;
 		}

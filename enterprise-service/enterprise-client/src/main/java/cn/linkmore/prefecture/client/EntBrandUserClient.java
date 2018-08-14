@@ -18,6 +18,6 @@ public interface EntBrandUserClient {
 	
 	@RequestMapping(value = "/v2.0/check-exist", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean checkExist(@RequestParam("userId") Long userId,@RequestParam("plateNo") String plateNo);
+	public Boolean checkExist(@RequestParam("entId") Long entId,@RequestParam("plateNo") String plateNo);
 	
 }

@@ -169,4 +169,15 @@
     from t_coupon_template
     where enterprise_deal_number = #{number}
   </select>
+  
+  <select id="findEntTemplateList" resultMap="BaseResultMap">
+    SELECT
+		t.id, t.name
+	FROM
+		t_coupon_template t
+	WHERE
+		t.type = 1
+	AND t.STATUS = 1
+	AND t.delete_status = 0 AND enterprise_id = #{entId}
+  </select>
 </mapper>

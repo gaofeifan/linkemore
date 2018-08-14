@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
+import cn.linkmore.coupon.response.ResTemplate;
 
 @Component
 public class CouponClientHystrix implements CouponClient { 
@@ -50,6 +51,12 @@ public class CouponClientHystrix implements CouponClient {
 	@Override
 	public List<ResCoupon> findBrandCouponList(Long entId, Long userId) {
 		log.info("coupon client hystrix findBrandCouponList userId {}",userId);
+		return null;
+	}
+
+	@Override
+	public List<ResTemplate> findEntTemplateList(Long entId) {
+		log.info("coupon client hystrix findEntTemplateList entId {}",entId);
 		return null;
 	}
 
