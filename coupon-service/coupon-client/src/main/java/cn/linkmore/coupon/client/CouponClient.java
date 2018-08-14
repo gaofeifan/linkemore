@@ -80,7 +80,7 @@ public interface CouponClient {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/find_brand_coupon", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/find_brand_coupon", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResCoupon> findBrandCouponList(@RequestParam(value="entId") Long entId, @RequestParam(value="userId") Long userId);
 	

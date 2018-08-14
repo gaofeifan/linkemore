@@ -704,13 +704,13 @@ public class CouponServiceImpl implements CouponService {
 
 	@Override
 	public List<ResCoupon> findBrandCouponList(Long entId, Long userId) {
-		List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
+		ResBrandAd brandAd = entBrandAdClient.findByEntId(entId);
+		log.info("-------------entId = {} ,brandAd = {}", entId, JSON.toJSON(brandAd));
 		List<ResCoupon> couponList = new ArrayList<ResCoupon>();
-		if (CollectionUtils.isNotEmpty(list)) {
-			ResSubject subject = list.get(0);
+		if (brandAd != null && brandAd.getTemplateId() != null) {
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("userId", userId);
-			map.put("templateId", subject.getTemplateId());
+			map.put("templateId", brandAd.getTemplateId());
 			map.put("enterpriseId", entId);
 			couponList = couponClusterMapper.findBrandCouponList(map);
 		}
