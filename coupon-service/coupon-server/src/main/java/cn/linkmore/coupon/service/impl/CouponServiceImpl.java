@@ -612,6 +612,7 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	@Transactional
 	public boolean sendBrandCoupon(Boolean isBrandUser, Long entId, Long userId) {
+		boolean flag = false;
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		String currentDay = sdf.format(date);
@@ -696,8 +697,9 @@ public class CouponServiceImpl implements CouponService {
 			}
 			smsClient.send(sms);
 			this.redisService.set(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay, count + 1);
+			flag = true;
 		}
-		return true;
+		return flag;
 	}
 
 	@Override
