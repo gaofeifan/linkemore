@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -971,27 +973,28 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		ResVechicleMark vehicleMark = vehicleMarkClient.findById(rb.getPlateId());
 		ResBrandPre brand = entBrandPreClient.findById(rb.getBrandId());
-
-		if(vehicleMark != null && cu != null && brand != null) {
+		if(brand == null) {
+			throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);   //预约失败请重新预约
+		}else {
 			if(brand.getLimitStatus() == 1) {
-				String vehMark = vehicleMark.getVehMark();    //车牌号
-				boolean flag = entBrandUserClient.checkExist(cu.getId(), vehMark);
-				if(!flag) {
-					log.info("brand user {} create order error with {}", cu.getMobile(), vehMark);
-					throw new BusinessException(StatusEnum.ORDER_REASON_BRAND_USER_NONE);
-				}
-				
-				Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
-				for (Object obj : set) {
-					JSONObject json = JSON.parseObject(obj.toString());
-					String vm = json.get("plate").toString();    //车牌
-					Long pid = Long.parseLong(json.get("preId").toString());  //车区id
-					if (pid.longValue() == rb.getPrefectureId() && vehMark.equals(vm)) {   //找到车区
-						boolean assignFlag = entBrandUserClient.checkExist(cu.getId(), vehMark);
+				ResVechicleMark vehicleMark = vehicleMarkClient.findById(rb.getPlateId());
+				if(vehicleMark != null) {
+					String vehMark = vehicleMark.getVehMark();    //车牌号
+					boolean flag = entBrandUserClient.checkExist(brand.getEntId(), vehMark);
+					if(!flag) {
+						boolean assignFlag = false;
+						Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
+						for (Object obj : set) {
+							JSONObject json = JSON.parseObject(obj.toString());
+							String vm = json.get("plate").toString();    //车牌
+							Long pid = Long.parseLong(json.get("preId").toString());  //车区id
+							if (pid.longValue() == rb.getPrefectureId() && vehMark.equals(vm)) {   //找到车区
+								assignFlag = entBrandUserClient.checkExist(brand.getEntId(), vehMark);
+							}
+						}
 						if(!assignFlag) {
-							log.info("brand user assing {} create order error with {}", cu.getMobile(), vehMark);
+							log.info("brand user {} create order error with {}", cu.getMobile(), vehMark);
 							throw new BusinessException(StatusEnum.ORDER_REASON_BRAND_USER_NONE);
 						}
 					}
