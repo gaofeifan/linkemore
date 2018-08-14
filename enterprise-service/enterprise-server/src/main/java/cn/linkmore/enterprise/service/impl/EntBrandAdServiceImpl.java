@@ -250,8 +250,8 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	}
 
 	@Override
-	public List<EntBrandAd> findList(Map<String, Object> param) {
-		return null;
+	public List<ResBrandAd> findList(Map<String, Object> param) {
+		return entBrandAdClusterMapper.findBrandPreAdList(param);
 	}
 
 	@Override

@@ -52,9 +52,11 @@ import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.coupon.response.ResWeekTime;
 import cn.linkmore.coupon.service.CouponService;
+import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.EntBrandAdClient;
 import cn.linkmore.prefecture.client.FeignEnterpriseClient;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
@@ -127,6 +129,9 @@ public class CouponServiceImpl implements CouponService {
 	
 	@Autowired
 	private FeignEnterpriseClient enterpriseClient;
+	
+	@Autowired
+	private EntBrandAdClient entBrandAdClient;
 
 	private static final short WEEK_TIME = 1;
 	private static final short DAY_TIME = 2;
@@ -619,14 +624,16 @@ public class CouponServiceImpl implements CouponService {
 			this.redisService.set(RedisKey.USER_APP_BRAND_COUPON.key + entId + currentDay, 0);
 		}
       
-        List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
+		ResBrandAd brandAd = entBrandAdClient.findByEntId(entId);
+		
+        //List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
 		ResUser resUser = userClient.findById(userId);
-		log.info("current userId {} , user {} ", userId, JSON.toJSON(resUser));
+		log.info("brandAd {}, user {} ", JSON.toJSON(brandAd), JSON.toJSON(resUser));
 		ResEnterprise enterprise = enterpriseClient.findById(entId);
 		log.info("entId {} , ent {} ", entId, JSON.toJSON(enterprise));
-		if (CollectionUtils.isNotEmpty(list) && resUser != null) {
-			ResSubject subject = list.get(0);
-			ResTemplate temp = this.templateClusterMapper.findById(subject.getTemplateId());
+		if (brandAd != null && resUser != null && brandAd.getTemplateId() != null) {
+			//ResSubject subject = list.get(0);
+			ResTemplate temp = this.templateClusterMapper.findById(brandAd.getTemplateId());
 			SendRecord sendRecord = new SendRecord();
 			sendRecord.setTemplateId(temp.getId());
 			sendRecord.setCreateTime(new Date());
