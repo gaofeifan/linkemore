@@ -384,4 +384,10 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		return this.entBrandPreClusterMapper.check(map);
 	}
 
+	@Override
+	public List<ResBrandStall> brandStallList(Long id) {
+		List<ResBrandStall> brandStalls = this.entBrandStallClusterMapper.findByBrandPreId(id);
+		return brandStalls;
+	}
+
 }

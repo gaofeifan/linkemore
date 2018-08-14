@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.enterprise.response.ResBrandPre;
+import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.notice.client.UserSocketClient;
 import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqBooking;
@@ -998,8 +1000,17 @@ public class OrdersServiceImpl implements OrdersService {
 							Long pid = Long.parseLong(json.get("preId").toString());  //车区id
 							log.info("assing:{}",JsonUtil.toJson(json));
 							if (pid.longValue() == rb.getPrefectureId() && vehMark.equals(vm)) {   //找到车区
-								assignFlag = true;
-								break;
+								String lockSn = json.get("lockSn").toString();
+								List<ResBrandStall> brandStallList = entBrandPreClient.brandStallList(rb.getBrandId());
+								log.info("lockSn={}, brandStallList = {}", lockSn,JSON.toJSON(brandStallList));
+								if(CollectionUtils.isNotEmpty(brandStallList)) {
+									for(ResBrandStall stall: brandStallList) {
+										if(lockSn.equals(stall.getLockSn())) {
+											assignFlag = true;
+											break;
+										}
+									}
+								}
 							}
 						}
 						log.info("assing :{}",assignFlag);

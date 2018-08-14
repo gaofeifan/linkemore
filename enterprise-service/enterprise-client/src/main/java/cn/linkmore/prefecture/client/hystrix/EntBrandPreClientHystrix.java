@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
+import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.prefecture.client.EntBrandPreClient;
 /**
  * 远程调用实现 - 企业品牌车区信息
@@ -27,6 +28,12 @@ public class EntBrandPreClientHystrix implements EntBrandPreClient {
 	@Override
 	public ResBrandPre findById(Long id) {
 		log.info("enterprise service ResBrandPre findById() hystrix");
+		return null;
+	}
+
+	@Override
+	public List<ResBrandStall> brandStallList(Long id) {
+		log.info("enterprise service List<ResBrandStall> brandStallList() hystrix");
 		return null;
 	}
 	
