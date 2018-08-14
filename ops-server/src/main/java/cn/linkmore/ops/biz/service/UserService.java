@@ -3,6 +3,7 @@ package cn.linkmore.ops.biz.service;
 import java.util.List;
 
 import cn.linkmore.account.response.ResPageUser;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 
@@ -23,5 +24,12 @@ public interface UserService {
 	ViewPage findPage(ViewPageable pageable);
 
 	List<ResPageUser> export(ViewPageable pageable);
+
+	/**
+	 * @Description  查询所有用户
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResUser> findAll();
 
 }

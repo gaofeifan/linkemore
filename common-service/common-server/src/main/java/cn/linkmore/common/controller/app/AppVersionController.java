@@ -46,7 +46,8 @@ public class AppVersionController {
 	@ResponseBody
 	@ApiOperation(value = "查询当前版本", notes = "来源必填 1 android 2 ios", consumes = "application/json")
 	public ResponseEntity<cn.linkmore.common.controller.app.response.ResVersionBean> current(@ApiParam(value="来源" ,required=true) @NotNull(message="来源不能为空") @RequestParam("source")Integer source,HttpServletRequest request){
-		ResVersionBean res = this.beanVersionService.currentAppVersion(source);
+		
+		ResVersionBean res = this.beanVersionService.currentAppVersion(source,request);
 		cn.linkmore.common.controller.app.response.ResVersionBean bean = ObjectUtils.copyObject(res, new cn.linkmore.common.controller.app.response.ResVersionBean());
 		ResponseEntity<cn.linkmore.common.controller.app.response.ResVersionBean> responseEntity = ResponseEntity.success(bean, request);
 		return responseEntity;

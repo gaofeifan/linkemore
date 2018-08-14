@@ -216,4 +216,10 @@ public class FeignUserControlle {
 	public Map<String, Long> getUserMapByMobile(@RequestBody List<String> mobile) {
 		return this.userService.getUserMapByMobile(mobile);
 	}
+	
+	@RequestMapping(value = "/by-all", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResUser> findAll(){
+		return this.userService.findAll();
+	}
 }

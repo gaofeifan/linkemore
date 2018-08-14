@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.ent.response.ResChargeDetail;
 import cn.linkmore.enterprise.controller.ent.response.ResDayIncome;
 import cn.linkmore.enterprise.controller.ent.response.ResDayIncomes;
@@ -22,6 +24,9 @@ import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlow;
 import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlows;
 import cn.linkmore.enterprise.controller.ent.response.ResIncome;
 import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
+import cn.linkmore.enterprise.entity.EntAuthPre;
+import cn.linkmore.enterprise.entity.EntAuthStall;
+import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.enterprise.service.PrefectureService;
 import cn.linkmore.order.client.EntOrderClient;
@@ -52,6 +57,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private EntOrderClient orderClient;
 	@Resource
 	private EntAuthPreClusterMapper authPreClusterMapper;
+	
 	@Override
 	public List<cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount> findPreList(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
@@ -60,8 +66,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 		map.put("staffId", ru.getId());
 //		List<Long> authStall = this.entStallService.findStaffId(map);
 		List<Long> preIds = this.authPreClusterMapper.findPreId(map);
-		List<ResPreOrderCount> list = this.orderClient.findPreCountByIds(preIds);
 		List<cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount> res = new ArrayList<>();
+		if(preIds == null || preIds.size() == 0) {
+			return res;
+		}
+		List<ResPreOrderCount> list = this.orderClient.findPreCountByIds(preIds);
 		if(list == null) {
 			return res;
 		}
@@ -73,6 +82,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public BigDecimal findPreDayIncome(Long preId, HttpServletRequest request) {
+		if(!checkAuthPre(request, preId)) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
 		CacheUser ru = getUser(request);
 		Map<String, Long> map = new  HashMap<>();
 		map.put("staffId", ru.getId());
@@ -84,7 +96,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public cn.linkmore.enterprise.controller.ent.response.ResIncomeList findProceeds(Short type,Long preId, HttpServletRequest request) {
-		CacheUser ru = getUser(request);
+		if(!checkAuthPre(request, preId)) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId", preId);
@@ -119,7 +133,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow findTrafficFlow(Short type,Long preId, HttpServletRequest request) {
-		CacheUser ru = getUser(request);		
+		if(!checkAuthPre(request, preId)) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId",preId);
@@ -151,6 +167,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public Integer findTrafficFlowCount(Short type, Long preId, HttpServletRequest request) {
+		if(!checkAuthPre(request, preId)) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId", preId);
@@ -160,7 +179,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public List<ResChargeDetail> findChargeDetail(Integer pageNo,Long preId, HttpServletRequest request) {
-		CacheUser ru = getUser(request);
+		if(!checkAuthPre(request, preId)) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", new Date());
 		param.put("preId", preId);
@@ -177,7 +198,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public ResDayTrafficFlow findTrafficFlowList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
-		CacheUser ru = getUser(request);
+		if(!checkAuthPre(request, preId)) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId", preId); 
@@ -202,7 +225,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public ResDayIncome findIncomeList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
-		CacheUser ru = getUser(request);
+		if(!checkAuthPre(request, preId)) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId", preId);
@@ -266,6 +291,19 @@ public class PrefectureServiceImpl implements PrefectureService {
 		param.put("startTime", type);
 		param.put("preId", preId);
 		return this.orderClient.findProceedsAmount(param);
+	}
+	
+	public boolean checkAuthPre(HttpServletRequest request,Long preId) {
+		CacheUser user = getUser(request);
+		Map<String, Object> map = new HashMap<>();
+		map.put("staffId", user.getId());
+		map.put("preId", preId);
+		Integer size = this.authPreClusterMapper.checkAuthPre(map);
+		if(size > 0) {
+			return true;
+		}
+		return false;
+		
 	}
 	
 	

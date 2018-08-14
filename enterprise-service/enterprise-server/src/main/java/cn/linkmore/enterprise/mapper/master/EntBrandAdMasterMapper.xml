@@ -13,7 +13,6 @@
     <result column="screen" jdbcType="SMALLINT" property="screen" />
     <result column="status" jdbcType="SMALLINT" property="status" />
     <result column="city_ids" jdbcType="VARCHAR" property="cityIds" />
-    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
     <result column="ad_status" jdbcType="SMALLINT" property="adStatus" />
   </resultMap>
 
@@ -27,8 +26,7 @@
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
       #{viewImage,jdbcType=VARCHAR}, #{viewUrl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{endTime,jdbcType=TIMESTAMP}, #{applyCount,jdbcType=INTEGER}, #{screen,jdbcType=SMALLINT}, 
-      #{status,jdbcType=SMALLINT},  #{cityIds,jdbcType=VARCHAR},#{limitStatus,jdbcType=SMALLINT},
-      #{adStatus,jdbcType=SMALLINT})
+      #{status,jdbcType=SMALLINT},  #{cityIds,jdbcType=VARCHAR}, #{adStatus,jdbcType=SMALLINT})
   </insert>
   
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandAd">
@@ -40,7 +38,6 @@
       apply_count = #{applyCount,jdbcType=INTEGER},
       screen = #{screen,jdbcType=SMALLINT},
       city_ids = #{cityIds,jdbcType=VARCHAR},
-      limit_status = #{limitStatus,jdbcType=SMALLINT},
       ad_status = #{adStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>

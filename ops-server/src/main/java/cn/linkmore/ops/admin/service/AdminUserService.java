@@ -34,5 +34,5 @@ public interface AdminUserService {
 
 	Map<String, Object> resource(Long id);
 
-	//List<ResAdminUser> findAll();
+	List<ResAdminUser> findAll();
 }

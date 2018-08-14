@@ -44,5 +44,9 @@ public interface UserStaffClient {
 	
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewPage list(@RequestBody ViewPageable pageable);  
+	public ViewPage list(@RequestBody ViewPageable pageable);
+
+	@RequestMapping(value = "/v2.0/mobile/{mobile}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserStaff findByMobile(@PathVariable("mobile") String mobile);
 }

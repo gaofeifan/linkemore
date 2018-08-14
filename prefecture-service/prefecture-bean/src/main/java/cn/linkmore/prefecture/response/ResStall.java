@@ -35,11 +35,6 @@ public class ResStall {
 	 */
 	private Long preId;
 	
-	/**
-	 *  车位锁异常状态  true 正常车位  false 异常车位
-	 */ 
-	private boolean excStatus = true;
-	
 	public Long getPreId() {
 		return preId;
 	}
@@ -81,11 +76,5 @@ public class ResStall {
 	}
 	public void setLockSn(String lockSn) {
 		this.lockSn = lockSn;
-	}
-	public boolean isExcStatus() {
-		return excStatus;
-	}
-	public void setExcStatus(boolean excStatus) {
-		this.excStatus = excStatus;
 	}
 }

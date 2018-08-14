@@ -39,6 +39,14 @@
     where type = #{appType} and status= #{status}
     order by code desc
   </select>
+  <select id="findLast" parameterType="java.util.Map" resultMap="ResBaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_app_version
+    where type = #{appType}
+    order by code desc
+    limit 0,1
+  </select>
   <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
   	select id, version, code, name, status, url, type, update_status, 
     create_time, description, update_time

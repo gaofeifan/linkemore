@@ -117,6 +117,7 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 			pr.setRoleId(role.getId());
 			this.personRoleMapper.save(pr);
 		}*/
+		person.setId(personId);
 		return this.personClient.update(person);
 	}
 

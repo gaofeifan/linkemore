@@ -17,6 +17,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.admin.service.AdminUserService;
 import cn.linkmore.prefecture.request.ReqAdminUser;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResAdminUser;
 
 /**
  * Controller - 线下管理员
@@ -136,5 +137,16 @@ public class AdminUserController {
 			msg = new ViewMsg("删除失败",false);
 		}
 		return msg;
+	}
+	
+	/**
+	 * @Description  查询所有
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/all", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResAdminUser> findAll(){
+		return this.adminUserService.findAll();
 	}
 }

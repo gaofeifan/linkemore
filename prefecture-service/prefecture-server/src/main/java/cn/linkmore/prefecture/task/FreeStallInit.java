@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,18 +51,9 @@ public class FreeStallInit {
 	private LockFactory lockFactory;
 
 	@Autowired
-	private EntBrandPreClient entBrandPreClient;
-	
-	private static List<Long> PRE_IDS = new ArrayList<Long>(){
-		private static final long serialVersionUID = 1L;
-		{   
-			add(1L);
-			add(14L); 
-			add(16L); 
-		}
-	}; 
+	private EntBrandPreClient entBrandPreClient; 
 
-	@Scheduled(cron = "0 0/5 * * * ?")
+	@Scheduled(cron = "0 0/3 * * * ?")
 	public void run() {
 		log.info("sync stall lock thread...");
 		init();
@@ -82,24 +74,27 @@ public class FreeStallInit {
 		List<ResBrandPreStall> bps = entBrandPreClient.preStallList();
 		log.info("brand pre stall list {}", JSON.toJSON(bps));
 		Map<Long, Set<Object>> bmap = new HashMap<Long, Set<Object>>();
-		Set<Object> ls = null;
-		Stall st = null;
+		Set<Object> ls = null; 
 		List<Long> bpids = new ArrayList<Long>();
-		for (ResBrandPreStall bp : bps) {
-			bpids.add(bp.getId());
-			ls = new HashSet<Object>();
-			for (ResBrandStall bs : bp.getStallList()) {
-				st = snmap.get(bs.getStallId());
-				if (lbm.containsKey(st.getLockSn())) {
-					if (!this.redisService.exists(RedisKey.PREFECTURE_BUSY_STALL.key + st.getLockSn())) {
-						ls.add(st.getLockSn());
+		if(CollectionUtils.isNotEmpty(bps)) {
+			Stall st = null;
+			for (ResBrandPreStall bp : bps) {
+				bpids.add(bp.getId());
+				ls = new HashSet<Object>();
+				for (ResBrandStall bs : bp.getStallList()) {
+					st = snmap.get(bs.getStallId());
+					if (st!=null&&lbm.containsKey(st.getLockSn())) {
+						if (!this.redisService.exists(RedisKey.PREFECTURE_BUSY_STALL.key + st.getLockSn())) {
+							ls.add(st.getLockSn());
+						}
+						lbm.remove(st.getLockSn());
 					}
-					lbm.remove(st.getLockSn());
+					list.remove(st);
 				}
-				list.remove(st);
+				bmap.put(bp.getId(), ls);
 			}
-			bmap.put(bp.getId(), ls);
 		}
+		
 		log.info("brand free stall map " + bmap);
 		Set<Long> keys = bmap.keySet();
 		for (Long key : keys) {
@@ -141,8 +136,7 @@ public class FreeStallInit {
 			preIds.remove(key);
 			redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + key);
 			redisService.addAll(RedisKey.PREFECTURE_FREE_STALL.key + key, map.get(key));
-		}
-		preIds.removeAll(PRE_IDS);
+		} 
 		for (Long id : preIds) {
 			log.info("redis remove key " + id);
 			redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + id);
@@ -181,10 +175,27 @@ public class FreeStallInit {
 		try {
 			this.brand(lbm, list);
 		} catch (Exception e) {
+			e.printStackTrace();
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement[] stackArray = e.getStackTrace();  
+			for (int i = 0; i < stackArray.length; i++) {  
+			    StackTraceElement element = stackArray[i];  
+			    sb.append(element.toString() + "\n");   
+			}   
+			log.info("------------------------");
+			log.info("micro service throw biz exception {}", sb.toString());
 		}
 		try {
 			this.common(lbm, list);
 		} catch (Exception e) {
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement[] stackArray = e.getStackTrace();  
+			for (int i = 0; i < stackArray.length; i++) {  
+			    StackTraceElement element = stackArray[i];  
+			    sb.append(element.toString() + "\n");   
+			}   
+			log.info("------------------------");
+			log.info("micro service throw biz exception {}", sb.toString());
 		}
 	}
 

@@ -73,4 +73,9 @@ public class UserStaffController {
 		return this.userStaffService.findPage(pageable); 
 	}  
 	
+	@RequestMapping(value = "/v2.0/mobile/{mobile}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserStaff findByMobile(@PathVariable("mobile")String mobile) {
+		return this.userStaffService.findByMobile(mobile);
+	}
 }

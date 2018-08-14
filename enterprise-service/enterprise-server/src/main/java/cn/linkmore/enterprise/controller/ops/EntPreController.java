@@ -109,7 +109,7 @@ public class EntPreController {
 	public List<ResEntPrefecture> findAll(){
 		return this.entPreService.findList(null);
 	}
-	
+	 
 	@RequestMapping(value = "/not-create-pre", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ResPreList> findNotCreateEntPre(){

@@ -22,7 +22,7 @@ import cn.linkmore.account.response.ResCustomerInfoExport;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.CustomerInfoService;
-import cn.linkmore.ops.controller.FileBaseController;
+import cn.linkmore.ops.excel.controller.FileBaseController;
 import cn.linkmore.ops.service.DataExportService;
 import io.swagger.annotations.Api;
 

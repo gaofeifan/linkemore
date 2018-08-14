@@ -260,9 +260,6 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		entBrandAd = ObjectUtils.copyObject(record, new EntBrandAd());
 		entBrandAd.setCreateTime(new Date());
 		entBrandAd.setStatus((short)0);
-		if(entBrandAd.getLimitStatus() == null) {
-			entBrandAd.setLimitStatus((short)0);
-		}
 		if(entBrandAd.getAdStatus() == null) {
 			entBrandAd.setAdStatus((short)0);
 		}

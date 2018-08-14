@@ -158,6 +158,13 @@ public class UserClientHystrix implements UserClient{
 		log.info("account service ResUser getUserByUserName(Map<String, Object> param) hystrix");
 		return null;
 	}
+
+	@RequestMapping(value = "/by-all", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResUser> findAll() {
+		log.info("account service List<ResUser> findAll() hystrix");
+		return null;
+	}
 	
 	
 	

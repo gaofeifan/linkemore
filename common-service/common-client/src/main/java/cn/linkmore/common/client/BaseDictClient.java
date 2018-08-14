@@ -1,6 +1,7 @@
 package cn.linkmore.common.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,4 +57,6 @@ public interface BaseDictClient {
 	 */
 	@RequestMapping(value="/old/bill_system_list/",method=RequestMethod.GET)
 	public List<ResOldDict> findBillSystemList();
+
+
 }

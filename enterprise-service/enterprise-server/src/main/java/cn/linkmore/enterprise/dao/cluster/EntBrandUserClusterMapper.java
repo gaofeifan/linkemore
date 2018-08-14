@@ -38,5 +38,6 @@ public interface EntBrandUserClusterMapper {
 	 */
 	List<Long> findUserEntList(Long userId);
 
+	Integer checkExist(Map<String, Object> param);
 
 }

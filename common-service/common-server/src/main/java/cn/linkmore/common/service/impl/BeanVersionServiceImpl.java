@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.account.client.UserStaffClient;
+import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.view.ViewFilter;
@@ -54,14 +56,23 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 	private BaseAppVersionClusterMapper baseAppVersionClusterMapper;
 	@Resource
 	private BaseAppVersionMasterMapper baseAppVersionMasterMapper;
-	
+	@Resource
+	private UserStaffClient userStaffClient;
 	@Override
-	public ResVersionBean currentAppVersion(Integer appType) {
+	public ResVersionBean currentAppVersion(Integer appType,HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
-		map.put("appType", appType);
-		map.put("status", 1);
-		List<ResVersionBean> res = this.baseAppVersionClusterMapper.findByTypeAnStatus(map);
-		return res.get(0);
+		String key = TokenUtil.getKey(request);
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		ResUserStaff staff = userStaffClient.findByMobile(user.getMobile());
+		if(staff != null) {
+			ResVersionBean version = this.baseAppVersionClusterMapper.findLast(appType);
+			return version;
+		}else {
+			map.put("appType", appType);
+			map.put("status", 1);
+			List<ResVersionBean> res = this.baseAppVersionClusterMapper.findByTypeAnStatus(map);
+			return res.get(0);
+		}
 	}
 	
 	public List<BaseAppVersion> findList(Common common){

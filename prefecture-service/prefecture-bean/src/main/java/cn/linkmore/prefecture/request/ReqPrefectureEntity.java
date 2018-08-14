@@ -29,7 +29,7 @@ public class ReqPrefectureEntity {
     /**
      * 状态：0，启用；1，禁用
      */
-    private Integer status;
+    private Integer status = 1;
     /**
      * 专区名称
      */

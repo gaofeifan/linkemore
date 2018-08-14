@@ -86,4 +86,16 @@
     	and ent_id = #{entId,jdbcType=BIGINT}
     </if> 
   </select>
+  
+  <select id="checkExist" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_ent_brand_user
+    where 1 = 1 
+    <if test="userId != null">  
+    	and user_id = #{userId,jdbcType=VARCHAR}
+    </if> 
+    <if test="plate_no != null">  
+    	and plate_no = #{plateNo,jdbcType=BIGINT}
+    </if> 
+  </select>
 </mapper>

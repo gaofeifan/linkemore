@@ -74,4 +74,11 @@ public interface UserClusterMapper {
 	 */
 	List<ResUser> findListByMobile(List<String> mobile);
 
+	/**
+	 * @Description  查询所有
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResUser> findAll();
+
 }

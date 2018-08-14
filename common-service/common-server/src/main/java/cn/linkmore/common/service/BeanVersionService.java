@@ -17,11 +17,12 @@ import cn.linkmore.common.response.ResVersionBean;
 public interface BeanVersionService {
 
 	/**
+	 * @param request 
 	 * @Description  当前版本
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResVersionBean currentAppVersion(Integer appType);
+	ResVersionBean currentAppVersion(Integer appType, HttpServletRequest request);
 
 	/**
 	 * @Description  上报用户版本

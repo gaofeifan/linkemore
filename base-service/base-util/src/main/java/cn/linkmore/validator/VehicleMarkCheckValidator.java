@@ -10,6 +10,12 @@ import org.apache.commons.lang.StringUtils;
 
 import cn.linkmore.annotation.VehicleMarkCheck;
 
+/**
+ * 车牌号校验
+ * @author   GFF
+ * @Date     2018年8月11日
+ * @Version  v2.0
+ */
 public class VehicleMarkCheckValidator implements ConstraintValidator<VehicleMarkCheck, String> {
 
 	private String[] values;

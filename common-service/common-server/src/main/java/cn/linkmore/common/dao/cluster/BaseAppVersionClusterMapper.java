@@ -53,4 +53,11 @@ public interface BaseAppVersionClusterMapper {
 	 */
 	Integer check(Map<String, Object> param);
 
+	/**
+	 * @Description  查询最后的版本
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResVersionBean findLast(Integer appType);
+
 }

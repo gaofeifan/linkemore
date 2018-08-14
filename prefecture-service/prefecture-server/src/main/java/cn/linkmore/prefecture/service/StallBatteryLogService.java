@@ -12,4 +12,11 @@ import cn.linkmore.prefecture.response.ResStallBatteryLog;
 public interface StallBatteryLogService {
 	
 	List<ResStallBatteryLog> findBatteryLogList(Long stallId);
+
+	/**
+	 * @Description  新增
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void save(ResStallBatteryLog sbl);
 }

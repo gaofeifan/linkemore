@@ -1032,5 +1032,12 @@ public class UserServiceImpl implements UserService {
 		log.info("userId {}",user.getId());
 		return user;
 	}
+
+	@Override
+	public List<ResUser> findAll() {
+		return this.userClusterMapper.findAll();
+	}
+	
+	
 	
 }

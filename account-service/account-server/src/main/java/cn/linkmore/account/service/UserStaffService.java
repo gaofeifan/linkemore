@@ -49,4 +49,11 @@ public interface UserStaffService {
 	 */
 	ViewPage findPage(ViewPageable pageable);
 
+	/**
+	 * @Description  根据手机号查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResUserStaff findByMobile(String mobile);
+
 }

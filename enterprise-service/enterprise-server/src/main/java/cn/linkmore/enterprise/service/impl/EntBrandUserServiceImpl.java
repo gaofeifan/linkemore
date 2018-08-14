@@ -17,6 +17,7 @@ import cn.linkmore.enterprise.dao.cluster.EntBrandUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntBrandUserMasterMapper;
 import cn.linkmore.enterprise.entity.EntBrandUser;
 import cn.linkmore.enterprise.request.ReqEntBrandUser;
+import cn.linkmore.enterprise.response.ResBrandPreStall;
 import cn.linkmore.enterprise.response.ResBrandUser;
 import cn.linkmore.enterprise.service.EntBrandUserService;
 import cn.linkmore.util.DomainUtil;
@@ -116,6 +117,14 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	@Override
 	public int insertBatch(List<ReqEntBrandUser> reqUserList) {
 		return this.entBrandUserMasterMapper.insertBatch(reqUserList);
+	}
+
+	@Override
+	public Integer checkExist(Long userId, String plateNo) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("userId", userId);
+		param.put("plateNo", plateNo);
+		return this.entBrandUserClusterMapper.checkExist(param);
 	}
 	
 }

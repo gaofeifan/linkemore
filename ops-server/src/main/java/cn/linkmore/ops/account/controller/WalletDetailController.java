@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.account.service.WalletDetailService;
-import cn.linkmore.ops.controller.FileBaseController;
+import cn.linkmore.ops.excel.controller.FileBaseController;
 import cn.linkmore.ops.service.DataExportService;
 import cn.linkmore.order.request.ReqWalletDetailExport;
 import cn.linkmore.order.response.ResWalletDetailExport;

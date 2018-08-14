@@ -21,6 +21,20 @@
     from t_ent_auth_pre
     where auth_id = #{authId}
   </select>
+  <select id="checkAuthPre" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT
+	count(1)
+	FROM
+	t_ent_staff es
+	INNER JOIN t_ent_staff_auth esa ON esa.staff_id = es.id
+	INNER JOIN t_ent_operate_auth eoa ON eoa.id = esa.auth_id
+	INNER JOIN t_ent_auth_pre eap ON eap.auth_id = eoa.id
+	WHERE
+		1 = 1
+	AND esa.staff_id = #{staffId}
+	AND eap.pre_id = #{preId}
+	
+  </select>
   <select id="findPreId" parameterType="java.util.Map" resultType="java.lang.Integer">
     SELECT
 	eap.pre_id

@@ -51,6 +51,12 @@ public class UserStaffClientHystrix  implements UserStaffClient{
 		return null;
 	}
 
+	@Override
+	public ResUserStaff findByMobile(String mobile) {
+		log.info("account service ResUserStaff findByMobile(String mobile) hystrix");
+		return null;
+	}
+
 
 	
 	

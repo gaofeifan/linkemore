@@ -30,20 +30,10 @@ public class ReqEntBrandAd {
     private Short status;
     //城市id数组
     private String cityIds;
-    //0不受限，1受限[仅品牌用户可约]
-    private Short limitStatus;
-    //0不发广告 1发广告 近当limitStatus=0起作用
+    //0不发广告 1发广告 adStatus=0起作用
     private Short adStatus;
     //是否品牌用户
     private Boolean brandUserFlag = false;
-    
-    public Short getLimitStatus() {
-		return limitStatus;
-	}
-
-	public void setLimitStatus(Short limitStatus) {
-		this.limitStatus = limitStatus;
-	}
 
 	public Boolean getBrandUserFlag() {
 		return brandUserFlag;

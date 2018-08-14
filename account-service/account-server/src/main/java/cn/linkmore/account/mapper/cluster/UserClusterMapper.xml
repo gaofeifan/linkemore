@@ -269,11 +269,14 @@
   </select>
   
   <select id="getUserByUserName" resultMap="ResBaseResultMap" parameterType="java.lang.String">
-  	select * from t_user u where u.user_type =1
+  	select <include refid="Base_Column_List"/> from t_user u where u.user_type =1
   	and  u.username = #{userName}
   </select>
+  <select id="findAll" resultMap="ResBaseResultMap">
+  	select <include refid="Base_Column_List"/> from t_user 
+  </select>
   <select id="findListByMobile" resultMap="ResBaseResultMap" parameterType="java.util.List">
-  	select * from t_user u where
+  	select <include refid="Base_Column_List"/> from t_user u where
    <foreach collection="list"  index="index" item="mobile" open="(" separator="," close=")"  >
 	  	and  u.username = #{mobile}
    </foreach>

@@ -45,7 +45,7 @@ public class FeignBaseVersionController {
 		}else if(2 == source){
 			appType = 2;
 		}
-		ResVersionBean app = this.beanVersionService.currentAppVersion(appType);
+		ResVersionBean app = this.beanVersionService.currentAppVersion(appType,null);
 		return app;
 	}
 	

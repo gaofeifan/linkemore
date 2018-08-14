@@ -11,6 +11,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.client.AdminUserClient;
 import cn.linkmore.prefecture.request.ReqAdminUser;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResAdminUser;
 /**
  * 远程调用实现 - 管理员
  * @author jiaohanbin
@@ -67,4 +68,13 @@ public class AdminUserClientHystrix implements AdminUserClient {
 		log.info("prefecture service admin_user delete() hystrix");
 		return 0;
 	}
+
+	@Override
+	public List<ResAdminUser> findAll() {
+		log.info("prefecture service List<ResAdminUser> findAll() hystrix");
+		return null;
+	}
+	
+	
+	
 }

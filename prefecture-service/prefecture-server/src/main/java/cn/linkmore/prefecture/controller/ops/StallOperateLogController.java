@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.request.ReqStallOperateLogExcel;
 import cn.linkmore.prefecture.response.ResStallOperateLog;
 import cn.linkmore.prefecture.service.StallOperateLogService;
@@ -54,5 +55,15 @@ public class StallOperateLogController {
 		List<ResStallOperateLog> list = this.stallOperateService.exportList(bean);
 		log.info("stall operate log export list-------------"+ list.size());
 		return list;
+	}
+	/**
+	 * @Description  新增
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
+	@ResponseBody
+	public void save(@RequestBody ReqStallOperateLog sol) {
+		this.stallOperateService.save(sol);
 	}
 }

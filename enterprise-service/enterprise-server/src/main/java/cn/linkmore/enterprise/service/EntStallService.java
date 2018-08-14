@@ -41,7 +41,7 @@ public interface EntStallService {
 	 * @Date 2018年7月21日
 	 * @Version v1.0
 	 */
-	List<ResStall> selectStalls(HttpServletRequest request,Long preId, Short type);
+	List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectStalls(HttpServletRequest request,Long preId, Short type);
 
 	/**
 	 * 查询车位详细信息
@@ -78,7 +78,20 @@ public interface EntStallService {
 	 */
 	void reset(Long stallId, HttpServletRequest request);
 
+	/**
+	 * 查询下线原因
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	List<ResBaseDict> downCause();
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void change(HttpServletRequest request, Long stallId, int i, Long remarkId, String remark);
 
 
 }

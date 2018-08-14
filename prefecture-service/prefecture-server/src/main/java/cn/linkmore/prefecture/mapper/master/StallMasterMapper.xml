@@ -36,14 +36,15 @@
       lock_id, lock_sn, lock_status, 
       status, stall_local, route_guidance, 
       create_time, update_time, image_url, 
-      lock_battery, lock_voltage, bind_order_status
+      lock_battery, lock_voltage, bind_order_status, type, brand 
       )
     values (#{id,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}, #{sellCount,jdbcType=INTEGER}, 
       #{preId,jdbcType=BIGINT}, #{gatewayId,jdbcType=BIGINT}, #{radar,jdbcType=VARCHAR}, 
       #{lockId,jdbcType=BIGINT}, #{lockSn,jdbcType=VARCHAR}, #{lockStatus,jdbcType=INTEGER}, 
       #{status,jdbcType=INTEGER}, #{stallLocal,jdbcType=VARCHAR}, #{routeGuidance,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{imageUrl,jdbcType=VARCHAR}, 
-      #{lockBattery,jdbcType=INTEGER}, #{lockVoltage,jdbcType=REAL}, #{bindOrderStatus,jdbcType=SMALLINT}
+      #{lockBattery,jdbcType=INTEGER}, #{lockVoltage,jdbcType=REAL}, #{bindOrderStatus,jdbcType=SMALLINT},
+      #{type,jdbcType=SMALLINT}, #{brand,jdbcType=SMALLINT}
       )
   </insert>
   
