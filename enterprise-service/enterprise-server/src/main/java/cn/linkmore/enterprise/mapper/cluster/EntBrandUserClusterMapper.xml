@@ -94,7 +94,7 @@
     <if test="entId != null">  
     	and ent_id = #{entId,jdbcType=BIGINT}
     </if> 
-    <if test="plate_no != null">  
+    <if test="plateNo != null">  
     	and plate_no = #{plateNo,jdbcType=VARCHAR}
     </if> 
   </select>
