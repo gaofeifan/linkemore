@@ -47,5 +47,11 @@ public interface TemplateEnClusterMapper {
 	 * @Version  v2.0
 	 */
 	ResTemplate find(Long id);
+	/**
+	 * 根据企业id查询优惠券列表
+	 * @param entId
+	 * @return
+	 */
+	List<ResTemplate> findEntTemplateList(Long entId);
 
 }

@@ -120,9 +120,9 @@ public class EntBrandUserServiceImpl implements EntBrandUserService {
 	}
 
 	@Override
-	public Integer checkExist(Long userId, String plateNo) {
+	public Integer checkExist(Long entId, String plateNo) {
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("userId", userId);
+		param.put("entId", entId);
 		param.put("plateNo", plateNo);
 		return this.entBrandUserClusterMapper.checkExist(param);
 	}

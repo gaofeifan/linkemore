@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
@@ -71,7 +74,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 	@Autowired
 	private CouponClient couponClient;
-	
+
 	@Resource
 	private CityClient cityClient;
 
@@ -108,13 +111,20 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 			if (cu != null && cu.getId() != null) {
 				// 当前用户是否已接受优惠券信息，接受之后则以后不在提示
-				List<ResCoupon> couponList = couponClient.findBrandCouponList(resBrandAd.getEntId(), cu.getId());
-				if (CollectionUtils.isNotEmpty(couponList)) {
-					return null;
-				}
+				/*
+				 * List<ResCoupon> couponList =
+				 * couponClient.findBrandCouponList(resBrandAd.getEntId(), cu.getId()); if
+				 * (CollectionUtils.isNotEmpty(couponList)) { return null; }
+				 */
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("entId", resBrandAd.getEntId());
 				map.put("userId", cu.getId());
+				log.info("entId={},userId={}", resBrandAd.getEntId(), cu.getId());
+				int applyCount = entBrandApplicantClusterMapper.count(map);
+				log.info("----------------applyCount = {}", applyCount);
+				if (applyCount > 0) {
+					return null;
+				}
 				Integer num = entBrandUserClusterMapper.findBrandUser(map);
 				// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
 				if (num > 0) {
@@ -128,7 +138,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 		if (resBrandAd != null) {
 			resEntBrandAd = ObjectUtils.copyObject(resBrandAd, new ResEntBrandAd());
-			resEntBrandAd.setViewUrl(resBrandAd.getViewUrl()+"?companyId="+resBrandAd.getEntId());
+			resEntBrandAd.setViewUrl(resBrandAd.getViewUrl() + "?companyId=" + resBrandAd.getEntId());
 		}
 		return resEntBrandAd;
 	}
@@ -139,8 +149,12 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		if (cu != null && cu.getId() != null) {
 			// 判断是否已经发送了品牌优惠
-			List<ResCoupon> couponList = couponClient.findBrandCouponList(entId, cu.getId());
-			if (CollectionUtils.isEmpty(couponList)) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("entId", entId);
+			map.put("userId", cu.getId());
+			log.info("-----send-----entId={},userId={}", entId, cu.getId());
+			int applyCount = entBrandApplicantClusterMapper.count(map);
+			if (applyCount == 0) {
 				flag = this.couponClient.sendBrandCoupon(true, entId, cu.getId());
 			}
 		}
@@ -157,17 +171,19 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		ResEntBrandAd resEntBrandAd = null;
 		ResBrandAd resBrandAd = null;
 		ResBrandPre brandPre = this.entBrandPreClusterMapper.findById(id);
+		log.info("---------brandPre = {}", JSON.toJSON(brandPre));
 		if (brandPre == null) {
 			throw new BusinessException(StatusEnum.VALID_EXCEPTION);
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("entId", brandPre.getEntId());
-		map.put("screen", 0);
-		List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(map);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("entId", brandPre.getEntId());
+		param.put("screen", 0);
+		List<ResBrandAd> list = this.entBrandAdClusterMapper.findBrandPreAdList(param);
 		if (CollectionUtils.isNotEmpty(list)) {
 			resBrandAd = list.get(0);
-			//无论是否受限，只要设置不发送广告，均不显示广告
-			//if (resBrandAd.getLimitStatus() == 0 && resBrandAd.getAdStatus() == 0) {
+			log.info("---------brandPreAd = {}", JSON.toJSON(resBrandAd));
+			// 无论是否受限，只要设置不发送广告，均不显示广告
+			// if (resBrandAd.getLimitStatus() == 0 && resBrandAd.getAdStatus() == 0) {
 			if (resBrandAd.getAdStatus() == 0) {
 				// 非受限用户且不发送广告
 				return null;
@@ -187,12 +203,20 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 					.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 			if (cu != null && cu.getId() != null) {
 				// 当前用户是否已接受优惠券信息，接受之后则以后不在提示
-				List<ResCoupon> couponList = couponClient.findBrandCouponList(resBrandAd.getEntId(), cu.getId());
-				if (CollectionUtils.isNotEmpty(couponList)) {
+				param.put("userId", cu.getId());
+				int applyCount = entBrandApplicantClusterMapper.count(param);
+				log.info("---------applyCount = {}", applyCount);
+				if (applyCount > 0) {
 					return null;
 				}
-				map.put("userId", cu.getId());
-				Integer num = entBrandUserClusterMapper.findBrandUser(map);
+				// 悲哀者是悲哀者的墓志铭
+				/*
+				 * List<ResCoupon> couponList =
+				 * couponClient.findBrandCouponList(resBrandAd.getEntId(), cu.getId()); if
+				 * (CollectionUtils.isNotEmpty(couponList)) { return null; }
+				 */
+				Integer num = entBrandUserClusterMapper.findBrandUser(param);
+				log.info("---------num = {}", num);
 				// 判断当前用户是否为授权用户若是直接发送优惠券 若不是收集用户信息申请品牌授权
 				if (num > 0) {
 					resBrandAd.setBrandUserFlag(true);
@@ -202,7 +226,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 		if (resBrandAd != null) {
 			resEntBrandAd = ObjectUtils.copyObject(resBrandAd, new ResEntBrandAd());
-			resEntBrandAd.setViewUrl(resBrandAd.getViewUrl()+"?companyId="+resBrandAd.getEntId());
+			resEntBrandAd.setViewUrl(resBrandAd.getViewUrl() + "?companyId=" + resBrandAd.getEntId());
 		}
 		return resEntBrandAd;
 	}
@@ -227,31 +251,31 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
 		List<ResBrandAd> list = this.entBrandAdClusterMapper.findPage(param);
-		Map<Long,Object> cityMap = new HashMap<Long,Object>();
+		Map<Long, Object> cityMap = new HashMap<Long, Object>();
 		List<ResCity> cityList = this.cityClient.findSelectList();
-		for(ResCity city: cityList){
+		for (ResCity city : cityList) {
 			cityMap.put(city.getId(), city.getCityName());
 		}
-		
-		if(CollectionUtils.isNotEmpty(list)) {
+
+		if (CollectionUtils.isNotEmpty(list)) {
 			for (ResBrandAd brandAd : list) {
 				String cityName = "";
-				String [] cityIdArr = brandAd.getCityIds().split(",");
-				for(int i=0;i<cityIdArr.length;i++){
-					cityName += cityMap.get(Long.valueOf(cityIdArr[i])) +",";
+				String[] cityIdArr = brandAd.getCityIds().split(",");
+				for (int i = 0; i < cityIdArr.length; i++) {
+					cityName += cityMap.get(Long.valueOf(cityIdArr[i])) + ",";
 				}
-				if(StringUtils.isNotBlank(cityName)) {
-					brandAd.setCityName(cityName.substring(0, cityName.length()-1));
+				if (StringUtils.isNotBlank(cityName)) {
+					brandAd.setCityName(cityName.substring(0, cityName.length() - 1));
 				}
 			}
 		}
-		
+
 		return new ViewPage(count, pageable.getPageSize(), list);
 	}
 
 	@Override
-	public List<EntBrandAd> findList(Map<String, Object> param) {
-		return null;
+	public List<ResBrandAd> findList(Map<String, Object> param) {
+		return entBrandAdClusterMapper.findBrandPreAdList(param);
 	}
 
 	@Override
@@ -259,12 +283,12 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 		EntBrandAd entBrandAd = null;
 		entBrandAd = ObjectUtils.copyObject(record, new EntBrandAd());
 		entBrandAd.setCreateTime(new Date());
-		entBrandAd.setStatus((short)0);
-		if(entBrandAd.getAdStatus() == null) {
-			entBrandAd.setAdStatus((short)0);
+		entBrandAd.setStatus((short) 0);
+		if (entBrandAd.getAdStatus() == null) {
+			entBrandAd.setAdStatus((short) 0);
 		}
-		if(entBrandAd.getScreen() == null) {
-			entBrandAd.setScreen((short)0);
+		if (entBrandAd.getScreen() == null) {
+			entBrandAd.setScreen((short) 0);
 		}
 		return entBrandAdMasterMapper.save(entBrandAd);
 	}
@@ -298,16 +322,16 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 	@Override
 	public int start(Long id) {
-		Map<String,Object> param = new HashMap<String,Object>();
+		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("id", id);
 		param.put("status", 1);
 		param.put("endTime", new Date());
 		return this.entBrandAdMasterMapper.startOrStop(param);
 	}
-	
+
 	@Override
 	public int stop(Long id) {
-		Map<String,Object> param = new HashMap<String,Object>();
+		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("id", id);
 		param.put("status", 2);
 		param.put("endTime", new Date());

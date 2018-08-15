@@ -37,8 +37,18 @@ public class ResBrandAd {
     private Boolean brandUserFlag = false;
     //适用城市
     private String cityName;
-    
-    public String getCityName() {
+    //优惠券套餐id
+    private Long templateId;
+
+	public Long getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(Long templateId) {
+		this.templateId = templateId;
+	}
+
+	public String getCityName() {
 		return cityName;
 	}
 

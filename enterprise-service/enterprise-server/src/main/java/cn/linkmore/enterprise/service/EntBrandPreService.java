@@ -16,6 +16,7 @@ import cn.linkmore.enterprise.entity.EntBrandPre;
 import cn.linkmore.enterprise.request.ReqEntBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
+import cn.linkmore.enterprise.response.ResBrandStall;
 
 public interface EntBrandPreService {
 	
@@ -86,4 +87,10 @@ public interface EntBrandPreService {
 	int stop(Long id);
 
 	Tree findTree();
+	/**
+	 * 根据品牌车区id查询车位锁信息
+	 * @param id
+	 * @return
+	 */
+	List<ResBrandStall> brandStallList(Long id);
 }

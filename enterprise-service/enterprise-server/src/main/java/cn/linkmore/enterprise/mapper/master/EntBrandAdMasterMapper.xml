@@ -14,6 +14,7 @@
     <result column="status" jdbcType="SMALLINT" property="status" />
     <result column="city_ids" jdbcType="VARCHAR" property="cityIds" />
     <result column="ad_status" jdbcType="SMALLINT" property="adStatus" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
   </resultMap>
 
   <delete id="delete" parameterType="java.lang.Long">
@@ -22,11 +23,12 @@
   </delete>
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntBrandAd">
     insert into t_ent_brand_ad (id, ent_id, ent_name, view_image, view_url, 
-    create_time, end_time, apply_count, screen, status, city_ids, limit_status, ad_status)
+    create_time, end_time, apply_count, screen, status, city_ids, ad_status, template_id)
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entName,jdbcType=VARCHAR}, 
       #{viewImage,jdbcType=VARCHAR}, #{viewUrl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{endTime,jdbcType=TIMESTAMP}, #{applyCount,jdbcType=INTEGER}, #{screen,jdbcType=SMALLINT}, 
-      #{status,jdbcType=SMALLINT},  #{cityIds,jdbcType=VARCHAR}, #{adStatus,jdbcType=SMALLINT})
+      #{status,jdbcType=SMALLINT},  #{cityIds,jdbcType=VARCHAR}, #{adStatus,jdbcType=SMALLINT},
+      #{templateId,jdbcType=BIGINT})
   </insert>
   
   <update id="update" parameterType="cn.linkmore.enterprise.entity.EntBrandAd">
@@ -38,7 +40,8 @@
       apply_count = #{applyCount,jdbcType=INTEGER},
       screen = #{screen,jdbcType=SMALLINT},
       city_ids = #{cityIds,jdbcType=VARCHAR},
-      ad_status = #{adStatus,jdbcType=SMALLINT}
+      ad_status = #{adStatus,jdbcType=SMALLINT},
+      template_id = #{templateId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

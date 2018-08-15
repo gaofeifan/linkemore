@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
+import cn.linkmore.coupon.response.ResTemplate;
 
 /**
  * Service - 停车券
@@ -78,5 +79,11 @@ public interface CouponService {
 	 * @return
 	 */
 	List<ResCoupon> findBrandCouponList(Long entId,Long userId);
+	/**
+	 * 企业优惠券
+	 * @param entId
+	 * @return
+	 */
+	List<ResTemplate> findEntTemplateList(Long entId);
 
 }

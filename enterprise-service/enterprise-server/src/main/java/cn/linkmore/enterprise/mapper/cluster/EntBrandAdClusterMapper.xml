@@ -14,10 +14,11 @@
     <result column="status" jdbcType="SMALLINT" property="status" />
     <result column="city_ids" jdbcType="VARCHAR" property="cityIds" />
     <result column="ad_status" jdbcType="SMALLINT" property="adStatus" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, ent_id, ent_name, view_image, view_url, create_time, 
-    end_time, apply_count, screen, status, city_ids, ad_status
+    end_time, apply_count, screen, status, city_ids, ad_status, template_id
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

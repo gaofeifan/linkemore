@@ -19,6 +19,8 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.response.ResCity;
+import cn.linkmore.coupon.client.CouponClient;
+import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.enterprise.request.ReqEntBrandAd;
 import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResEnterprise;
@@ -46,6 +48,9 @@ public class EntBrandAdController {
 	
 	@Resource
 	private BaseDictClient baseDictClient;
+	
+	@Resource
+	private CouponClient couponClient;
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
@@ -116,6 +121,16 @@ public class EntBrandAdController {
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
 		return this.entBrandAdService.findPage(pageable);
+	}
+	
+	/**
+	 * 企业优惠券列表
+	 * @return
+	 */
+	@RequestMapping(value = "/temp-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResTemplate> tempList(HttpServletRequest request, Long entId) {
+		return this.couponClient.findEntTemplateList(entId);
 	}
 	
 	/**

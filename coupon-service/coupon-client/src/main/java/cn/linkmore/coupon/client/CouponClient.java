@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.coupon.client.hystrix.CouponClientHystrix;
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
+import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.feign.FeignConfiguration;
 /**
  * Client  - 停车券
@@ -79,8 +80,16 @@ public interface CouponClient {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = "/v2.0/find_brand_coupon", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/find_brand_coupon", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResCoupon> findBrandCouponList(@RequestParam(value="entId") Long entId, @RequestParam(value="userId") Long userId);
 	
+	/**
+	 * 根据当前企业id查询配置优惠券套餐信息
+	 * @param entId
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/ent-template-list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResTemplate> findEntTemplateList(@RequestParam(value="entId") Long entId);
 }

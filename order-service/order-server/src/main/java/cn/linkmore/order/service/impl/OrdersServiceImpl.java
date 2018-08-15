@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.enterprise.response.ResBrandPre;
+import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.notice.client.UserSocketClient;
 import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqBooking;
@@ -242,39 +244,42 @@ public class OrdersServiceImpl implements OrdersService {
 			String lockSn = "";
 			ResBrandPre brand = null;
 			boolean assign = false;
+			String key = RedisKey.ORDER_ASSIGN_STALL.key;   //assign_lock
+			Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
+			String vehMark = vehicleMark.getVehMark();    //车牌号
+			for (Object obj : set) {
+				JSONObject json = JSON.parseObject(obj.toString());
+				String vm = json.get("plate").toString();    //车牌
+				Long pid = Long.parseLong(json.get("preId").toString());  //车区id
+				if (pid.longValue() == prefectureId.longValue() && vehMark.equals(vm)) {   //找到车区
+					lockSn = json.get("lockSn").toString();
+					Map<String, Object> map = new HashMap<>();
+					map.put("lockSn", lockSn);
+					map.put("plate", vm);
+					map.put("preId", prefectureId.toString());
+					String val = JSON.toJSON(map).toString();
+					this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + val, val,
+							ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+					this.redisService.remove(key, val);
+					assign = true;
+					log.info("use the admin assign stall:{},plate:{}", lockSn, vehicleMark.getVehMark());
+					break;
+				}
+			}
 			if (brandId != null) {
+				
 				brand = entBrandPreClient.findById(brandId);
 				log.info("brandId {},brand {}", JSON.toJSON(brand));
-				Object sn = redisService.pop(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + brandId);
-				if (sn != null) {
-					this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + sn.toString(), sn.toString(),
-							ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
-					lockSn = sn.toString();
-				}
-			} else {
-				// 指定车位锁
-				String key = RedisKey.ORDER_ASSIGN_STALL.key;   //assign_lock
-				Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
-				String vehMark = vehicleMark.getVehMark();    //车牌号
-				for (Object obj : set) {
-					JSONObject json = JSON.parseObject(obj.toString());
-					String vm = json.get("plate").toString();    //车牌
-					Long pid = Long.parseLong(json.get("preId").toString());  //车区id
-					if (pid.longValue() == prefectureId.longValue() && vehMark.equals(vm)) {   //找到车区
-						lockSn = json.get("lockSn").toString();
-						Map<String, Object> map = new HashMap<>();
-						map.put("lockSn", lockSn);
-						map.put("plate", vm);
-						map.put("preId", prefectureId.toString());
-						String val = JSON.toJSON(map).toString();
-						this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + val, val,
+				if ("".equals(lockSn)) {
+					Object sn = redisService.pop(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + brandId);
+					if (sn != null) {
+						this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + sn.toString(), sn.toString(),
 								ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
-						this.redisService.remove(key, val);
-						assign = true;
-						log.info("use the admin assign stall:{},plate:{}", lockSn, vehicleMark.getVehMark());
-						break;
+						lockSn = sn.toString();
 					}
 				}
+				
+			} else { 
 				log.info("lockSn:{}", lockSn);
 				// 以下为预约流程
 				if ("".equals(lockSn)) {
@@ -969,32 +974,53 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) {
+	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) { 
+		log.info("brand order :{}",JsonUtil.toJson(rb));
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		ResVechicleMark vehicleMark = vehicleMarkClient.findById(rb.getPlateId());
+		log.info(" order user is {}",JsonUtil.toJson(cu));
 		ResBrandPre brand = entBrandPreClient.findById(rb.getBrandId());
-
-		if(vehicleMark != null && cu != null && brand != null) {
-			if(brand.getLimitStatus() == 1) {
-				String vehMark = vehicleMark.getVehMark();    //车牌号
-				boolean flag = entBrandUserClient.checkExist(cu.getId(), vehMark);
-				if(!flag) {
-					log.info("brand user {} create order error with {}", cu.getMobile(), vehMark);
-					throw new BusinessException(StatusEnum.ORDER_REASON_BRAND_USER_NONE);
-				}
-				
-				Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
-				for (Object obj : set) {
-					JSONObject json = JSON.parseObject(obj.toString());
-					String vm = json.get("plate").toString();    //车牌
-					Long pid = Long.parseLong(json.get("preId").toString());  //车区id
-					if (pid.longValue() == rb.getPrefectureId() && vehMark.equals(vm)) {   //找到车区
-						boolean assignFlag = entBrandUserClient.checkExist(cu.getId(), vehMark);
+		if(brand == null) {
+			throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);   //预约失败请重新预约
+		}else {
+			if(brand.getLimitStatus().intValue() == 1) {
+				log.info("check assign plate no");
+				ResVechicleMark vehicleMark = vehicleMarkClient.findById(rb.getPlateId());
+				log.info("user plate:{}",JsonUtil.toJson(vehicleMark));
+				if(vehicleMark != null) {
+					String vehMark = vehicleMark.getVehMark();    //车牌号
+					boolean flag = entBrandUserClient.checkExist(brand.getEntId(), vehMark);
+					
+					log.info("exist plate :{}",flag);
+					if(!flag) {
+						boolean assignFlag = false;
+						Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
+						for (Object obj : set) {
+							JSONObject json = JSON.parseObject(obj.toString());
+							String vm = json.get("plate").toString();    //车牌
+							Long pid = Long.parseLong(json.get("preId").toString());  //车区id
+							log.info("assing:{}",JsonUtil.toJson(json));
+							if (pid.longValue() == rb.getPrefectureId() && vehMark.equals(vm)) {   //找到车区
+								String lockSn = json.get("lockSn").toString();
+								List<ResBrandStall> brandStallList = entBrandPreClient.brandStallList(rb.getBrandId());
+								log.info("lockSn={}, brandStallList = {}", lockSn,JSON.toJSON(brandStallList));
+								if(CollectionUtils.isNotEmpty(brandStallList)) {
+									for(ResBrandStall stall: brandStallList) {
+										if(lockSn.equals(stall.getLockSn())) {
+											assignFlag = true;
+											break;
+										}
+									}
+								}
+							}
+						}
+						log.info("assing :{}",assignFlag);
 						if(!assignFlag) {
-							log.info("brand user assing {} create order error with {}", cu.getMobile(), vehMark);
+							log.info("brand user {} create order error with {}", cu.getMobile(), vehMark);
 							throw new BusinessException(StatusEnum.ORDER_REASON_BRAND_USER_NONE);
 						}
 					}
+				}else {
+					throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
 				}
 			}
 		}
