@@ -245,7 +245,7 @@ public class EntStallServiceImpl implements EntStallService {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("type", type);
 		params.put("list", stallIds);
-		List<ResStall> stalls = this.stallClient.findPreStallList(params);
+		List<ResStall> stalls = this.stallClient.findPreStallList(params);  //根据stallid 集合查询车位
 		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
 		List<Long> collect = stalls.stream().map(stall -> stall.getId()).collect(Collectors.toList());
 		List<StallExcStatus> stallExcList = this.stallExcStatusService.findExcStatusList(collect);
@@ -342,19 +342,21 @@ public class EntStallServiceImpl implements EntStallService {
 			return result;
 		}
 		ResponseMessage<LockBean> res = null;
-		//1 降下 2 升起
-		if(state == 1){
-			res=lockFactory.lockDown(resStallEntity.getLockSn());
-		}else if(state == 2){
-			res=lockFactory.lockUp(resStallEntity.getLockSn());
-		}
-		/*if(res == null){
-			result.put("result", false);
-			result.put("result", "操作失败");
-			return result ;
-		}*/
 		result.put("result", res.isResult());
 		result.put("result", res.getMsg());
+		
+		new Thread(new Runnable() {
+	        @Override
+	        public void run() {
+	        	//1 降下 2 升起
+				if(state == 1){
+					lockFactory.lockDown(resStallEntity.getLockSn());
+				}else if(state == 2){
+					lockFactory.lockUp(resStallEntity.getLockSn());
+				}
+	        }
+	    }).start();
+		
 		return result ;
 	}
 

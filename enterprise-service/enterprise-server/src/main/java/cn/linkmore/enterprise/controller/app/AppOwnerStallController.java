@@ -36,8 +36,7 @@ public class AppOwnerStallController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<List<OwnerPre>> list(@Validated HttpServletRequest request) {
-			System.out.println("11" );
-			List<OwnerPre>   res =    	ownerStallServicel.findStall(request);
+			List<OwnerPre>   res = ownerStallServicel.findStall(request);
 		return ResponseEntity.success(res, request);
 	}
 

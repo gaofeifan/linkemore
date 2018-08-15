@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
+import com.linkmore.lock.bean.LockBean;
+import com.linkmore.lock.factory.LockFactory;
+import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -28,6 +30,10 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Autowired
 	private RedisService redisService;
+	
+	
+	@Autowired
+	private LockFactory lockFactory;
 
 	@Autowired
 	private OwnerStallClusterMapper ownerStallClusterMapper;
@@ -48,9 +54,21 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
 			log.info("车位>>>" + stalllist.size());
 			
+			//查询锁状态
+			List<String> locks = new ArrayList<>();
+			for (EntOwnerPre pre : prelist) {
+				locks.add(String.valueOf(pre.getPreId()));
+			}
+			ResponseMessage<LockBean> res =	 lockFactory.findAvaiLocks(locks);
+			List<LockBean> locklist =res.getDataList();
+				for (LockBean lockBean : locklist) {
+					lockBean.getLockState();     //升降
+					lockBean.getOnlineState();  //在线 离线
+					lockBean.getParkingState(); //有车无车
+				}
+			
 			List<OwnerPre> list = new ArrayList<>();
 			
-
 			for (EntOwnerPre pre : prelist) {
 				OwnerPre ownerpre = new OwnerPre();
 				ownerpre.setPreName(pre.getPreName());
