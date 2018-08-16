@@ -50,9 +50,8 @@ public class GzHyZz {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}*/
-		 System.out.println("" + Math.round(12.12));
-		
-		
+		 //System.out.println("" + Math.round(12.12));
+		System.out.println(  tampValue("17:48:00", "08:48:00")  );
 	}
 
 	public static Map<String, Object> getBilling(StrategyBase base, Date start, Date stop) {
@@ -74,7 +73,7 @@ public class GzHyZz {
 		Long stopDate = stop.getTime();
 		Long startDate = start.getTime();
 
-		System.out.println("实际停车时间为" + ((stopDate - startDate) / 60000));
+		System.out.println( "结束"+stopDate+"开始"+startDate+"实际停车时间为" + (stopDate / 60000 - startDate / 60000));
 
 		// 转换为时分秒后的停车时间(11:00:00);
 		String startDate1 = formatter.format(startDate);
@@ -83,21 +82,21 @@ public class GzHyZz {
 		BigDecimal b1 = new BigDecimal(startDate);
 		BigDecimal b2 = new BigDecimal(stopDate);
 
-		float day = b2.subtract(b1).floatValue() / (1000 * 60 * 60 * 24);
+		Long day2 = (stopDate - startDate) / (1000 * 60 * 60 * 24); // 向下取整的天数
+		System.out.println( "----跨天=》" + day2);
+		
+	/*	float day = b2.subtract(b1).floatValue() / (1000 * 60 * 60 * 24);
 
 		// 跨越天数
 		float day1 = ((float) Math.round(day * 100) / 100);
-		Long day2 = (stopDate - startDate) / (1000 * 60 * 60 * 24); // 向下取整的天数
-
 		float xx = day1; // 正好为整数天 所加天数减1
 		int yy = (int) xx;
 		if (xx - (float) yy == 0) {
 			if (day2 >= 1) {
 			 // 24小时算跨天
 			}
-		}
+		}*/
 
-		System.out.println(day + "---" + day1 + "----跨天=》" + day2);
 
 		Long daytime = 0L; // 停车总白天
 		Long nighttime = 0L; // 停车总夜晚
@@ -116,7 +115,7 @@ public class GzHyZz {
 
 	
 
-   if( !stopDate.equals( startDate)  ) {
+   if( (stopDate / 60000 - startDate / 60000)>0 ) {
 		// 计算停车时间
 		if (isIn(startDate1, beginTime, endTime) && isIn(stopDate1, beginTime, endTime)) {
 			System.out.println("开始时间在白天，结束时间在白天");
@@ -157,10 +156,10 @@ public class GzHyZz {
 
 			} else {// 经历2个黑天
 				daytime = bday + day2 * bday;
-				nighttime = tampValue(startDate1, beginTime) + tampValue(stopDate1, endTime) + day2 * bnight;
+				nighttime = tampValue(startDate1, beginTime) +tampValue(endTime, stopDate1)+ day2 * bnight;
 
 				AAA = bday;
-				BBB = tampValue(startDate1, beginTime) + tampValue(stopDate1, endTime);
+				BBB = tampValue(startDate1, beginTime) +tampValue(endTime, stopDate1);
 
 			}
 		} else if (!isIn(startDate1, beginTime, endTime) && isIn(stopDate1, beginTime, endTime)) {
@@ -299,48 +298,6 @@ public class GzHyZz {
 					}
 				}
 			}
-
-			/*
-			 * 
-			 * 
-			 * // 零散夜时间大于封顶 夜间费肯定为封顶值 if (nightAmount.compareTo(new BigDecimal(topNight)) ==
-			 * 1) { AnightAmount = new BigDecimal(topNight).setScale(2).multiply(new
-			 * BigDecimal(cross + 1)); // 零散的全部时间内为封顶 白天最大值只能为 全天封顶值减去夜间封顶值 if
-			 * (dayAmount.add(nightAmount).compareTo(new BigDecimal(topDaily)) == 1) {
-			 * AlldayAmount = new BigDecimal(topDaily).subtract(new
-			 * BigDecimal(topNight)).setScale(2) .multiply(new BigDecimal(cross + 1)); }
-			 * else { // 整个24计时为封顶值 if (A.add(B).compareTo(new BigDecimal(topDaily)) == 1) {
-			 * AlldayAmount = dayAmount.add(new BigDecimal(topDaily).subtract(new
-			 * BigDecimal(topNight)) .setScale(2).multiply(new BigDecimal(cross))); //
-			 * 整个24计时不到封顶值 } else { AlldayAmount = dayAmount.add(A.setScale(2).multiply(new
-			 * BigDecimal(cross))); } } // 零散夜时间小于封顶 } else if (nightAmount.compareTo(new
-			 * BigDecimal(topNight)) == -1 || nightAmount.compareTo(new
-			 * BigDecimal(topNight)) == 0) { // 零散夜间时间没大于封顶值 if (B.compareTo(new
-			 * BigDecimal(topNight)) == -1 || B.compareTo(new BigDecimal(topNight)) == 0) {
-			 * // 整个夜间没大于封顶值 if (dayAmount.add(nightAmount).compareTo(new
-			 * BigDecimal(topDaily)) == 1) { // 零散总时间大于封顶值 AnightAmount =
-			 * nightAmount.multiply(new BigDecimal(cross + 1)); AlldayAmount = new
-			 * BigDecimal(topDaily).subtract(nightAmount).setScale(2) .multiply(new
-			 * BigDecimal(cross + 1)); } else {// 零散总时间小于封顶值 if (A.add(B).compareTo(new
-			 * BigDecimal(topDaily)) == 1) { // 全天大于封顶值 AnightAmount =
-			 * nightAmount.add(B.multiply(new BigDecimal(cross))); AlldayAmount = dayAmount
-			 * .add((new BigDecimal(topDaily)).subtract(B).multiply(new BigDecimal(cross)));
-			 * } else { // 全天小于封顶值 AnightAmount = nightAmount.add(B.multiply(new
-			 * BigDecimal(cross))); AlldayAmount = dayAmount.add(A.multiply(new
-			 * BigDecimal(cross))); } } } else if (B.compareTo(new BigDecimal(topNight)) ==
-			 * 1) { // 整个夜间大于封顶值 if (dayAmount.add(nightAmount).compareTo(new
-			 * BigDecimal(topDaily)) == 1) { // 零散总时间大于封顶值 AnightAmount =
-			 * nightAmount.multiply(new BigDecimal(cross + 1)); AlldayAmount = new
-			 * BigDecimal(topDaily).subtract(nightAmount).setScale(2) .multiply(new
-			 * BigDecimal(cross + 1)); } else {// 零散总时间小于封顶值 if (A.add(B).compareTo(new
-			 * BigDecimal(topDaily)) == 1) { // 全天大于封顶值 AnightAmount = nightAmount.add(new
-			 * BigDecimal(topDaily).multiply(new BigDecimal(cross))); AlldayAmount =
-			 * dayAmount.add((new BigDecimal(topDaily)).subtract(new BigDecimal(topDaily))
-			 * .multiply(new BigDecimal(cross))); } else { // 全天小于封顶值 AnightAmount =
-			 * nightAmount.add(B.multiply(new BigDecimal(cross))); AlldayAmount =
-			 * dayAmount.add(A.multiply(new BigDecimal(cross))); } } } }
-			 */
-			//countAmount = AlldayAmount.add(AnightAmount); // 零散的总时间
 		}
 		System.out.println( "总金额" + countAmount);
 		map.put("dayAmount", AlldayAmount);
@@ -389,6 +346,7 @@ public class GzHyZz {
 		}
 		return ts;
 	}
+	
 
 	public static boolean isIn(String nowTime1, String startTime1, String endTime1) {
 
