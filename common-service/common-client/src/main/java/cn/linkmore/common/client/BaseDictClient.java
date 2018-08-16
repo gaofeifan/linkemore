@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.common.client.hystrix.BaseDictClientHystrix;
 import cn.linkmore.common.request.ReqBaseDict;
@@ -41,7 +42,8 @@ public interface BaseDictClient {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value="/{id}/",method=RequestMethod.GET)
+	@RequestMapping(value="/detail/{id}",method=RequestMethod.GET)
+	@ResponseBody
 	public ResBaseDict find(@PathVariable("id") Long id);
 	/**
 	 * 根据id查询老字典

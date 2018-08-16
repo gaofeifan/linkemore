@@ -248,7 +248,10 @@ public class EntStallServiceImpl implements EntStallService {
 		List<ResStall> stalls = this.stallClient.findPreStallList(params);  //根据stallid 集合查询车位
 		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
 		List<Long> collect = stalls.stream().map(stall -> stall.getId()).collect(Collectors.toList());
-		List<StallExcStatus> stallExcList = this.stallExcStatusService.findExcStatusList(collect);
+		List<StallExcStatus> stallExcList = null;
+		if(collect != null && collect.size() > 0) {
+			stallExcList = this.stallExcStatusService.findExcStatusList(collect);
+		}
 		
 		//设置车位对应的车牌号
 		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
@@ -257,21 +260,23 @@ public class EntStallServiceImpl implements EntStallService {
 			if(orders == null ){ 
 				break;
 			}
-			stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
-			for(ResOrderPlate orderPlate : orders){
-				if(resStall.getId() == orderPlate.getStallId()){
-					stall.setPlateNo(orderPlate.getPlateNo());
-					break;
+			if(resStall.getPreId().equals(preId)) {
+				stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
+				for(ResOrderPlate orderPlate : orders){
+					if(resStall.getId() == orderPlate.getStallId()){
+						stall.setPlateNo(orderPlate.getPlateNo());
+						break;
+					}
 				}
-			}
-			//	设置车位锁异常状态
-			for (StallExcStatus stallExcStatus : stallExcList) {
-				if(stallExcStatus.getStallId() == resStall.getId()) {
-					stall.setExcStatus(false);
-					break;
+				//	设置车位锁异常状态
+				for (StallExcStatus stallExcStatus : stallExcList) {
+					if(stallExcStatus.getStallId() == resStall.getId()) {
+						stall.setExcStatus(false);
+						break;
+					}
 				}
+				stallList.add(stall);
 			}
-			stallList.add(stall);
 		}
 		return stallList;
 	}
@@ -378,6 +383,9 @@ public class EntStallServiceImpl implements EntStallService {
 		this.change(request, stallId, i);
 		if ((remarkId != null) && (remarkId.longValue() > 0L)) {
 			ResBaseDict dict = this.dictClient.find(remarkId);
+			if(dict == null) {
+				throw new BusinessException(StatusEnum.DOWN_CAUSE_EXISTS);
+			}
 			if ("battery-change".equals(dict.getCode())) {
 				try {
 				/*	LockServerClient lockServerClient = ThriftClientFactory.getThriftClient(this.rpcConfig.getHost(),
