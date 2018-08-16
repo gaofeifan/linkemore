@@ -34,4 +34,11 @@ public interface StallExcStatusService {
 	 */
 	void updateExcStatus(Map<String, Object> map);
 
+	/**
+	 * @Description  批量新增
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void saveBatch(List<StallExcStatus> excs);
+
 }

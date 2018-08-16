@@ -5,11 +5,12 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="status" jdbcType="SMALLINT" property="status" />
-    <result column="exc_status" jdbcType="SMALLINT" property="excStatus" />
+    <result column="exc_status" jdbcType="BIGINT" property="excStatus" />
+    <result column="exc_remark" jdbcType="VARCHAR" property="excRemark" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, stall_id, status,exc_status,create_time
+    id, stall_id, status,exc_status,create_time,exc_remark
   </sql>
   
   <select id="findExcStatus" parameterType="java.lang.Long" resultMap="BaseResultMap">

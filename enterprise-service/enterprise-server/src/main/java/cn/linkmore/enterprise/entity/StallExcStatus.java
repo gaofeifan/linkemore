@@ -27,12 +27,17 @@ public class StallExcStatus {
 	/**
 	 *  异常状态
 	 */ 
-	private Short excStatus;
+	private Long excStatus;
 	
 	/**
 	 *  创建时间
 	 */ 
 	private Date createTime;
+	
+	/**
+	 *  异常描述
+	 */ 
+	private String excRemark;
 
 	public Long getId() {
 		return id;
@@ -58,20 +63,28 @@ public class StallExcStatus {
 		this.status = status;
 	}
 
-	public Short getExcStatus() {
-		return excStatus;
-	}
-
-	public void setExcStatus(Short excStatus) {
-		this.excStatus = excStatus;
-	}
-
 	public Date getCreateTime() {
 		return createTime;
 	}
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getExcRemark() {
+		return excRemark;
+	}
+
+	public void setExcRemark(String excRemark) {
+		this.excRemark = excRemark;
+	}
+
+	public void setExcStatus(Long excStatus) {
+		this.excStatus = excStatus;
+	}
+
+	public Long getExcStatus() {
+		return excStatus;
 	}
 	
 	
