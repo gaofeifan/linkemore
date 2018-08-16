@@ -24,7 +24,6 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.controller.ent.request.ReqOperatStall;
 import cn.linkmore.enterprise.controller.ent.request.ReqPreStall;
-import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.request.ReqStallUpDown;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;

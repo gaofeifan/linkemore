@@ -13,6 +13,7 @@ import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 
+import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -113,7 +114,11 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		if(user == null) {
 			throw new RuntimeException(StatusEnum.USER_APP_NO_LOGIN.label);
 		}
+		
 		//操作锁
+		this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + "订单号 ", 1,
+				ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+		
 		new Thread(new Runnable() {
 	        @Override
 	        public void run() {
