@@ -10,6 +10,7 @@ public class BaseConfig {
 	private Integer orderNumber = 5;
 	private Integer rechargeNumber = 5;
 	private Integer tradeNumber = 5;
+	private String freePlate;
 	public Boolean getOnline() {
 		return online;
 	}
@@ -33,6 +34,12 @@ public class BaseConfig {
 	}
 	public void setTradeNumber(Integer tradeNumber) {
 		this.tradeNumber = tradeNumber;
+	}
+	public String getFreePlate() {
+		return freePlate;
+	}
+	public void setFreePlate(String freePlate) {
+		this.freePlate = freePlate;
 	}
 	
 }
