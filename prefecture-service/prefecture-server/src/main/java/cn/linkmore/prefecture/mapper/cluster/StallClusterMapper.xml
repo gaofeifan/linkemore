@@ -193,7 +193,6 @@
     <if test="property!=null">  
     order by  l.${property} ${direction}
     </if>
-    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   
   
