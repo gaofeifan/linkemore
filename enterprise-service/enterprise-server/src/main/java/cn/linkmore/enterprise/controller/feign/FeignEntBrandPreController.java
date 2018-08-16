@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
+import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.enterprise.service.EntBrandPreService;
 
 /**
@@ -30,6 +31,12 @@ public class FeignEntBrandPreController {
 	@ResponseBody
 	public List<ResBrandPreStall> preStallList() {
 		return	this.entBrandPreService.preStallList();
+	}
+	
+	@RequestMapping(value = "/v2.0/brand-stall-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResBrandStall> brandStallList(@RequestParam("id") Long id) {
+		return	this.entBrandPreService.brandStallList(id);
 	}
 	
 	@RequestMapping(value = "/v2.0/find", method = RequestMethod.POST)

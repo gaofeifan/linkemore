@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.coupon.response.ResCoupon;
+import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.coupon.service.CouponService;
 /**
  * Controller - 停车券
@@ -60,9 +61,15 @@ public class FeignCouponController {
 		return this.couponService.sendBrandCoupon(isBrandUser,entId,userId);
 	}
 	
-	@RequestMapping(value = "/v2.0/find_brand_coupon", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/find_brand_coupon", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResCoupon> findBrandCouponList(@RequestParam(value="entId") Long entId, @RequestParam(value="userId") Long userId){
 		return this.couponService.findBrandCouponList(entId,userId);
+	}
+	
+	@RequestMapping(value = "/v2.0/ent-template-list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResTemplate> findEntTemplateList(@RequestParam(value="entId") Long entId){
+		return this.couponService.findEntTemplateList(entId);
 	}
 }

@@ -59,6 +59,9 @@
     <if test="entId!=null">  
     and ent_id = #{entId,jdbcType=BIGINT}
     </if>  
+    <if test="userId!=null">  
+    and user_id = #{userId,jdbcType=BIGINT}
+    </if> 
     <if test="preId!=null">  
     and pre_id = #{preId,jdbcType=BIGINT}
     </if>

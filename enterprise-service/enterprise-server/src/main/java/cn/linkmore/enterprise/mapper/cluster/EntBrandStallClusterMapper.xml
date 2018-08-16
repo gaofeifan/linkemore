@@ -28,9 +28,8 @@
   </select>
   
   <select id="findByBrandPreId" parameterType="java.lang.Long" resultMap="ResResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_ent_brand_stall
+    select t.*, v.lock_sn
+    from t_ent_brand_stall t left join v_stall v on t.stall_id = v.id
     where brand_pre_id = #{id,jdbcType=BIGINT}
   </select>
   

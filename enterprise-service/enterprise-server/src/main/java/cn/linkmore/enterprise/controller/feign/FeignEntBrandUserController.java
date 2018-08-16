@@ -1,6 +1,9 @@
 package cn.linkmore.enterprise.controller.feign;
 
 import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,10 +25,13 @@ public class FeignEntBrandUserController {
 	@Resource
 	private EntBrandUserService entBrandUserService;
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
 	@RequestMapping(value = "/v2.0/check-exist", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean checkExist(@RequestParam("userId") Long userId, @RequestParam("plateNo") String plateNo) {
-		int num = this.entBrandUserService.checkExist(userId, plateNo);
+	public Boolean checkExist(@RequestParam("entId") Long entId, @RequestParam("plateNo") String plateNo) {
+		int num = this.entBrandUserService.checkExist(entId, plateNo);
+		log.info("entId= {}, plateNo ={} ,num= {}", entId, plateNo, num);
 		if (num > 0) {
 			return true;
 		}

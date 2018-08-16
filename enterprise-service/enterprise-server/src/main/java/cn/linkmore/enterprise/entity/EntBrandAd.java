@@ -32,8 +32,18 @@ public class EntBrandAd {
     private String cityIds;
     //0不发广告 1发广告 近当limitStatus=0起作用
     private Short adStatus = 0;
+    //优惠券套餐ID
+    private Long templateId;
 
-    public Long getId() {
+	public Long getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(Long templateId) {
+		this.templateId = templateId;
+	}
+
+	public Long getId() {
         return id;
     }
 

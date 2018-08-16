@@ -46,7 +46,7 @@ public interface EntBrandAdService {
 	 * @param param
 	 * @return
 	 */
-	List<EntBrandAd> findList(Map<String, Object> param);
+	List<ResBrandAd> findList(Map<String, Object> param);
 
 	/**
 	 * 删除
