@@ -37,6 +37,10 @@ public class StallExcStatusServiceImpl implements StallExcStatusService {
 	public void updateExcStatus(Map<String,Object> map) {
 		this.masterMapper.updateExcStatus(map);
 	}
+	@Override
+	public void saveBatch(List<StallExcStatus> excs) {
+		this.masterMapper.saveBatch(excs);
+	}
 	
 	
 }

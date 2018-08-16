@@ -4,10 +4,12 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +30,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResBaseDict;
+import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResEntTypeStalls;
@@ -55,6 +58,7 @@ import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
 import cn.linkmore.prefecture.response.ResStallEntity;
+import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.ObjectUtils;
@@ -248,7 +252,10 @@ public class EntStallServiceImpl implements EntStallService {
 		List<ResStall> stalls = this.stallClient.findPreStallList(params);  //根据stallid 集合查询车位
 		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
 		List<Long> collect = stalls.stream().map(stall -> stall.getId()).collect(Collectors.toList());
-		List<StallExcStatus> stallExcList = this.stallExcStatusService.findExcStatusList(collect);
+		List<StallExcStatus> stallExcList = null;
+		if(collect != null && collect.size() > 0) {
+			stallExcList = this.stallExcStatusService.findExcStatusList(collect);
+		}
 		
 		//设置车位对应的车牌号
 		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
@@ -257,21 +264,24 @@ public class EntStallServiceImpl implements EntStallService {
 			if(orders == null ){ 
 				break;
 			}
-			stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
-			for(ResOrderPlate orderPlate : orders){
-				if(resStall.getId() == orderPlate.getStallId()){
-					stall.setPlateNo(orderPlate.getPlateNo());
-					break;
+			if(resStall.getPreId().equals(preId)) {
+				stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
+				stall.setStallId(resStall.getId());
+				for(ResOrderPlate orderPlate : orders){
+					if(resStall.getId() == orderPlate.getStallId()){
+						stall.setPlateNo(orderPlate.getPlateNo());
+						break;
+					}
+				}	
+				//	设置车位锁异常状态
+				for (StallExcStatus stallExcStatus : stallExcList) {
+					if(stallExcStatus.getStallId() == resStall.getId()) {
+						stall.setExcStatus(false);
+						break;
+					}
 				}
+				stallList.add(stall);
 			}
-			//	设置车位锁异常状态
-			for (StallExcStatus stallExcStatus : stallExcList) {
-				if(stallExcStatus.getStallId() == resStall.getId()) {
-					stall.setExcStatus(false);
-					break;
-				}
-			}
-			stallList.add(stall);
 		}
 		return stallList;
 	}
@@ -378,6 +388,9 @@ public class EntStallServiceImpl implements EntStallService {
 		this.change(request, stallId, i);
 		if ((remarkId != null) && (remarkId.longValue() > 0L)) {
 			ResBaseDict dict = this.dictClient.find(remarkId);
+			if(dict == null) {
+				throw new BusinessException(StatusEnum.DOWN_CAUSE_EXISTS);
+			}
 			if ("battery-change".equals(dict.getCode())) {
 				try {
 				/*	LockServerClient lockServerClient = ThriftClientFactory.getThriftClient(this.rpcConfig.getHost(),
@@ -467,4 +480,33 @@ public class EntStallServiceImpl implements EntStallService {
 			return false;
 		}
 	}
+
+	@Override
+	public void saveStallExcCause(List<ReqStallExcCause> causes) {
+		Set<String> collect = causes.stream().map(ca -> ca.getReportSource()).collect(Collectors.toSet());
+		List<ResBaseDict> dicts = this.dictClient.findListByCodes(new ArrayList<>(collect));
+		List<StallExcStatus> excs = new ArrayList<>();
+		List<ResStallOps> stalls = this.stallClient.findListByParam(new HashMap<String, Object>());
+		StallExcStatus excStall = new StallExcStatus();
+		for (ReqStallExcCause reqStallExcCause : causes) {
+			excStall.setCreateTime(new Date());
+			excStall.setStatus((short)0);
+			if(dicts != null && dicts.size() != 0) {
+				for (ResBaseDict resBaseDict : dicts) {
+					excStall.setExcRemark(resBaseDict.getName());
+					excStall.setExcStatus(resBaseDict.getId());
+				}
+				for (ResStallOps resStallOps : stalls) {
+					if(reqStallExcCause.getStallLock().equals(resStallOps.getLockSn())) {
+						excStall.setStallId(resStallOps.getId());
+					}
+				}
+			}
+			excs.add(excStall);
+		}
+		
+		this.stallExcStatusService.saveBatch(excs);
+	}
+	
+	
 }

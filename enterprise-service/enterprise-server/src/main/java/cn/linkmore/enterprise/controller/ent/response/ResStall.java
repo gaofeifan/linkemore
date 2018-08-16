@@ -15,7 +15,7 @@ public class ResStall {
 	 *  车位名称
 	 */ 
 	@ApiModelProperty(value="车位名称")
-	private Long stallName;
+	private String stallName;
 	/**
 	 * 车位锁编号
 	 */
@@ -56,11 +56,11 @@ public class ResStall {
 		this.stallId = stallId;
 	}
 
-	public Long getStallName() {
+	public String getStallName() {
 		return stallName;
 	}
 
-	public void setStallName(Long stallName) {
+	public void setStallName(String stallName) {
 		this.stallName = stallName;
 	}
 

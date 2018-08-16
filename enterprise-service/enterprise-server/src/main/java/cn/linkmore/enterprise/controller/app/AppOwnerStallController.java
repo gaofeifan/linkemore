@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
+import cn.linkmore.enterprise.controller.ent.request.ReqOperatStall;
 import cn.linkmore.enterprise.service.OwnerStallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,5 +40,16 @@ public class AppOwnerStallController {
 			List<OwnerPre>   res = ownerStallServicel.findStall(request);
 		return ResponseEntity.success(res, request);
 	}
+	
+	@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
+	@RequestMapping(value = "/control", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> controlLock(@Validated ReqOperatStall reqOperatStall, HttpServletRequest request) {
+		ownerStallServicel.control(reqOperatStall, request);
+		return ResponseEntity.success("操作成功", request);
+	}
+	
+	
+	
 
 }

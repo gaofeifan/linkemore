@@ -5,14 +5,24 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="status" jdbcType="SMALLINT" property="status" />
-    <result column="exc_status" jdbcType="SMALLINT" property="excStatus" />
+    <result column="exc_status" jdbcType="BIGINT" property="excStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="exc_remark" jdbcType="VARCHAR" property="excRemark" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, stall_id, status,exc_status,create_time
+    id, stall_id, status,exc_status,create_time,exc_remark
   </sql>
   
   <update id="updateExcStatus" parameterType="java.util.Map">
   	update v_stall_exc_status set exc_status = #{status}  where stall_id = #{stallId}
   </update>
+	<insert id="saveBatch" parameterType="java.util.List">
+	 insert into v_stall_exc_status (id, stall_id, status, 
+      exc_status, create_time, exc_remark)
+    values 
+    <foreach collection="list" item="item" index="index" separator=",">
+    (#{item.id,jdbcType=BIGINT}, #{item.stallId,jdbcType=BIGINT}, #{item.status,jdbcType=SMALLINT}, 
+      #{item.excStatus,jdbcType=BIGINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.excRemark,jdbcType=VARCHAR})
+     </foreach>
+	</insert>
 </mapper>

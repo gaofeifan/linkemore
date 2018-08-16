@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.common.response.ResBaseDict;
+import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.prefecture.response.ResStall;
@@ -92,6 +93,13 @@ public interface EntStallService {
 	 * @Version  v2.0
 	 */
 	void change(HttpServletRequest request, Long stallId, int i, Long remarkId, String remark);
+
+	/**
+	 * @Description  保存车位异常原因
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void saveStallExcCause(List<ReqStallExcCause> causes);
 
 
 }

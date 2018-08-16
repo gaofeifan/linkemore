@@ -446,7 +446,7 @@
 		 status = 3  AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d') and pre_id = #{id}
   </select>
   <select id="findIncomeList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResIncomeList">
-	SELECT end_time date,actual_amount dayAmount,DATE_FORMAT(end_time,'%m') month FROM o_orders 	where	status = 3 
+	SELECT end_time date,sum(actual_amount) dayAmount,DATE_FORMAT(end_time,'%m') month FROM o_orders 	where	status = 3 
 	and pre_id = #{preId}
 	<!--  <![CDATA[ and #{monthStart} <= end_time]]>
 	 <![CDATA[ AND #{monthEnd} > end_time]]> -->
