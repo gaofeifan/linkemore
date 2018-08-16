@@ -42,12 +42,10 @@ public class AppOwnerStallController {
 	}
 	
 	@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/control", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> controlLock(@Validated ReqOperatStall reqOperatStall, HttpServletRequest request) {
-			
-			
-			
+		ownerStallServicel.control(reqOperatStall, request);
 		return ResponseEntity.success("操作成功", request);
 	}
 	
