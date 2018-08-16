@@ -70,7 +70,7 @@ public class GzWdl {
 		Long stopDate = stop.getTime();
 		Long startDate = start.getTime();
 
-		System.out.println("实际停车时间为" + (stopDate / 60000 - startDate / 60000));
+		System.out.println( "结束"+stopDate+"开始"+startDate+"实际停车时间为" + (stopDate / 60000 - startDate / 60000));
 
 		// 转换为时分秒后的停车时间(11:00:00);
 		String startDate1 = formatter.format(startDate);
@@ -79,22 +79,21 @@ public class GzWdl {
 		BigDecimal b1 = new BigDecimal(startDate);
 		BigDecimal b2 = new BigDecimal(stopDate);
 
-		float day = b2.subtract(b1).floatValue() / (1000 * 60 * 60 * 24);
+		Long day2 = (stopDate - startDate) / (1000 * 60 * 60 * 24); // 向下取整的天数
+		System.out.println( "----跨天=》" + day2);
+		/*float day = b2.subtract(b1).floatValue() / (1000 * 60 * 60 * 24);
 
 		// 跨越天数
-		float day1 = ((float) Math.round(day * 100) / 100);
-		Long day2 = (stopDate - startDate) / (1000 * 60 * 60 * 24); // 向下取整的天数
-
-		float xx = day1; // 正好为整数天 所加天数减1
+		float day1 = ((float) Math.round(day * 100) / 100);*/
+		
+		/*float xx = day1; // 正好为整数天 所加天数减1
 		int yy = (int) xx;
 		if (xx - (float) yy == 0) {
 			if (day2 >= 1) {
 				 // 24小时不算跨天
 			}
-		}
-
-		System.out.println(day + "---" + day1 + "----跨天=》" + day2);
-
+		}*/
+		
 		Long daytime = 0L; // 停车总白天
 		Long nighttime = 0L; // 停车总夜晚
 
@@ -111,7 +110,7 @@ public class GzWdl {
 		int where = 0; // 首小时所在区间
 
 	
-		 if( !stopDate.equals( startDate)  ) {
+		 if( (stopDate / 60000 - startDate / 60000)>0 ) {
 		// 计算停车时间
 		if (isIn(startDate1, beginTime, endTime) && isIn(stopDate1, beginTime, endTime)) {
 			System.out.println("开始时间在白天，结束时间在白天");
@@ -153,10 +152,10 @@ public class GzWdl {
 
 			} else {// 经历2个黑天
 				daytime = bday + day2 * bday;
-				nighttime = tampValue(startDate1, beginTime) + tampValue(stopDate1, endTime) + day2 * bnight;
+				nighttime = tampValue(startDate1, beginTime) + tampValue(endTime, stopDate1)+ day2 * bnight;
 
 				AAA = bday;
-				BBB = tampValue(startDate1, beginTime) + tampValue(stopDate1, endTime);
+				BBB = tampValue(startDate1, beginTime) + tampValue(endTime, stopDate1) ;
 
 			}
 		} else if (!isIn(startDate1, beginTime, endTime) && isIn(stopDate1, beginTime, endTime)) {
@@ -403,7 +402,6 @@ public class GzWdl {
 			d1 = df.parse(s1);
 			d2 = df.parse(s2);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		long ts = d1.getTime() - d2.getTime();
