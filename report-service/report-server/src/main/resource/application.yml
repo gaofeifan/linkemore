@@ -1,7 +1,7 @@
 server:
   port: 8008
   session:
-    timeout: 60
+    timeout: 3600
 spring:
   application:
     name: report-server
@@ -23,9 +23,9 @@ feign:
     enabled: true
  
 master-db:   
-  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
-  username: root
-  password: Linkmore@2018
+  url: jdbc:mysql://47.97.164.247:53306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+  username: ppyx
+  password: 123456
   driver-class-name: com.mysql.jdbc.Driver  
   initial-size: 2
   min-idle: 2

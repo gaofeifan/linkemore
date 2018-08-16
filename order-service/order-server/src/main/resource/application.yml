@@ -104,6 +104,7 @@ base:
   order-number: 4
   recharge-number: 4
   trade-number: 4
+  free-plate: 浙AD900Z浙AG19A6浙A500XM浙A819XM浙AG86Q5浙AS85Q9浙AP56N3浙A7HZ97浙AF548A浙AV89M0浙AW58M3
 
 swagger:
   enable: true

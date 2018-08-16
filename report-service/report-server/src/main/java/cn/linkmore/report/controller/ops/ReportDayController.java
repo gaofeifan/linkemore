@@ -7,11 +7,16 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.report.request.ReqReportDay;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
@@ -39,6 +44,9 @@ import cn.linkmore.report.service.ReportDayService;
 public class ReportDayController {
 	@Resource
 	private ReportDayService reportDayService;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
 
 	public Map<String, Object> convert(ReqReportDay reportDay) {
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -164,14 +172,18 @@ public class ReportDayController {
 	@ResponseBody
 	public List<ResOrder> newUserOrderList(@RequestBody ReqReportDay reportDay) {
 		Map<String, Object> param = convert(reportDay);
-		return this.reportDayService.newUserOrderList(param);
+		List<ResOrder> orders = this.reportDayService.newUserOrderList(param);
+		log.info("new user orders = {}" ,JSON.toJSON(orders));
+		return orders;
 	}
 
 	@RequestMapping(value = "/v2.0/olduser_order", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResOrder> oldUserOrderList(@RequestBody ReqReportDay reportDay) {
 		Map<String, Object> param = convert(reportDay);
-		return this.reportDayService.oldUserOrderList(param);
+		List<ResOrder> orders = this.reportDayService.oldUserOrderList(param);
+		log.info("old user orders = {}" ,JSON.toJSON(orders));
+		return orders;
 	}
 
 	@RequestMapping(value = "/v2.0/runtime", method = RequestMethod.POST)
