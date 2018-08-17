@@ -331,20 +331,22 @@
 	and oo.status_history=0 and oo.status=3
   </select>
   <select id="findPreCountByIds" parameterType="java.lang.Long" resultType="cn.linkmore.order.response.ResPreOrderCount">
-  select o.pre_id preId,o.pre_name preName,	IFNULL(sum(de.dayAmount),0.0) dayAmount,IFNULL(de.dayOrder,0) dayOrder from o_orders o
+ 
+select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(de.dayOrder,0) dayOrder from o_orders o
 	LEFT JOIN (
 	SELECT
 			pre_id pre_id,
-			actual_amount dayAmount,
+			sum(actual_amount) dayAmount,
 			count(1) dayOrder
 		FROM
 			o_orders
 		WHERE
-			 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = end_time and pre_id in
+			 status = 3 AND DATE_FORMAT(NOW(),'%Y-%m-%d') = DATE_FORMAT(end_time,'%Y-%m-%d') and pre_id in
 			  <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
 	    		 #{id}
 	    	</foreach>
 	) de on de.pre_id = o.pre_id 
+	LEFT JOIN v_prefecture p ON p.id = o.pre_id
 	where
 	o.pre_id in 
 		 <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
@@ -371,8 +373,8 @@
 		o_orders
 	WHERE
 		 status = 3 
-		 	AND date_format(end_time,'%Y-%m-%d') = date_format(#{startTime},'%Y-%m-%d')
-		 and pre_id = #{id}
+		 	AND date_format(end_time,'%Y-%m-%d') = DATE_FORMAT(now(),'%Y-%m-%d')
+		 and pre_id = #{preId}
   </select>
   <select id="findProceedsAmount" parameterType="java.util.Map" resultType="java.math.BigDecimal">
    SELECT
@@ -380,7 +382,7 @@
 	FROM
 		o_orders
 	WHERE
-		 status = 3  AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d') and pre_id = #{id}
+		 status = 3  AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d') and pre_id = #{preId}
   </select>
   <select id="findTrafficFlow" parameterType="java.util.HashMap" resultType="java.lang.Integer">
    SELECT
@@ -390,7 +392,7 @@
 	<where>
 		status = 3 
 		<if test="startTime != null">
-		 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
+		 AND date_format(end_time,'%Y-%m-%d') >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
 		</if>
 		and pre_id = #{preId}
 	</where>
@@ -403,7 +405,7 @@
 	<where>
 		status = 3 
 		<if test="startTime != null">
-		 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
+		 AND date_format(end_time,'%Y-%m-%d') >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
 		</if>
 		and pre_id = #{preId}
 	</where>
@@ -443,7 +445,7 @@
 	FROM
 		o_orders
 	WHERE
-		 status = 3  AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d') and pre_id = #{id}
+		 status = 3  AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d') and pre_id = #{preId}
   </select>
   <select id="findIncomeList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResIncomeList">
 	SELECT end_time date,sum(actual_amount) dayAmount,DATE_FORMAT(end_time,'%m') month FROM o_orders 	where	status = 3 
@@ -464,7 +466,8 @@
  	select DATE_FORMAT(end_time,'%m') month,ifnull(SUM(actual_amount),0.0) monthAmount,COUNT(1) monthCarCount
 	 FROM o_orders 	where	status = 3 
 	 and pre_id = #{preId}
-	 AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d')
+	 AND  DATE_FORMAT(end_time,'%Y-%m-%d') >= date_format(#{monthStart},'%Y-%m-%d')
+	 AND  date_format(#{monthEnd},'%Y-%m-%d') >  DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC	
   </select>
   <select id="findPreDataList" parameterType="java.util.Map" resultType="cn.linkmore.order.response.ResPreDataList">

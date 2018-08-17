@@ -79,5 +79,15 @@ public class FeignBaseDictController {
 		return this.dictService.findBillSystemList();
 	}
 	
+	/**
+	 * @Description  批量查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/list",method=RequestMethod.POST)
+	@ResponseBody
+	public List<ResBaseDict> findListByCodes(@RequestBody List<String> codes){
+		return this.baseDictService.findListByCodes(codes);
+	}
 
 }

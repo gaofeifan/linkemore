@@ -1035,7 +1035,7 @@ public class OrdersServiceImpl implements OrdersService {
 		Map<String , Object> map = new HashMap<>();
 		map.put("startTime", new Date());
 		map.put("preId", preId);
-		return this.ordersClusterMapper.findPreDayIncome(map);
+		return ordersClusterMapper.findPreDayIncome(map);
 	}
 
 	@Override
@@ -1084,10 +1084,11 @@ public class OrdersServiceImpl implements OrdersService {
 	public List<ResChargeDetail> findChargeDetail(Map<String, Object> param) {
 		param.put("start", getPageNo(param.get("pageNo")));
 		param.put("pageSize", 10);
+		param.put("startTime", new Date());
 		List<ResChargeDetail> list = this.ordersClusterMapper.findChargeDetail(param);
 		for (ResChargeDetail detail : list) {
 			if (detail.getMonth() == detail.getMonth()) {
-				String str = DateUtils.getDuration(new Date(), detail.getEndTime());
+				String str = DateUtils.getDurationDetail(detail.getEndTime(), detail.getStartTime());
 				detail.setStopTime(str);
 			}
 		}

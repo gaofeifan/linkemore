@@ -131,6 +131,11 @@ public class EntStaffServiceImpl implements EntStaffService {
 		return this.entStaffClusterMapper.check(param); 
 	}
 
+	@Override
+	public EntStaff findById(Long id) {
+		return this.entStaffClusterMapper.findById(id);
+	}
+
 	
 	
 	

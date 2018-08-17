@@ -2,6 +2,7 @@ package cn.linkmore.enterprise.service;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.entity.EntStaff;
 
 public interface EntStaffService {
 
@@ -59,5 +60,12 @@ public interface EntStaffService {
 	 * @Version  v2.0
 	 */
 	Integer check(String property, String value, Long id);
+
+	/**
+	 * @Description  通过id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	EntStaff findById(Long id);
 
 }

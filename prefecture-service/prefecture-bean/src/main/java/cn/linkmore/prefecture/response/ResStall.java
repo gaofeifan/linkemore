@@ -35,6 +35,11 @@ public class ResStall {
 	 */
 	private Long preId;
 	
+	/**
+	 *  锁状态
+	 */ 
+	private Integer lockStatus;
+	
 	public Long getPreId() {
 		return preId;
 	}
@@ -76,5 +81,11 @@ public class ResStall {
 	}
 	public void setLockSn(String lockSn) {
 		this.lockSn = lockSn;
+	}
+	public Integer getLockStatus() {
+		return lockStatus;
+	}
+	public void setLockStatus(Integer lockStatus) {
+		this.lockStatus = lockStatus;
 	}
 }

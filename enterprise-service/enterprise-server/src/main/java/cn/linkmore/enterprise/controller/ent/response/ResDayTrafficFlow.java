@@ -21,7 +21,7 @@ public class ResDayTrafficFlow {
 	@ApiModelProperty(value="月车流量列表")
 	private List<ResDayTrafficFlows> trafficFlows;
 
-	@JsonFormat(pattern="yyyy年MM月")
+	@JsonFormat(pattern="yyyy年MM月",timezone="GMT+8")
 	public Date getTime() {
 		return time;
 	}

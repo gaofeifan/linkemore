@@ -37,6 +37,15 @@
     where dg.code = #{code,jdbcType=VARCHAR}
     order by d.order_index 
   </select>
+  <select id="findListByCodes" parameterType="java.util.List" resultMap="ResBaseResultMap">
+    select d.id, d.group_id, d.name, d.code, d.order_index,d.extra,d.create_time
+    from t_base_dict d left join t_base_dict_group dg on d.group_id = dg.id
+    where dg.code in 
+     <foreach collection="list"  index="index" item="code" open="(" separator="," close=")" >
+    	  #{code,jdbcType=VARCHAR}
+    </foreach>
+    order by d.order_index 
+  </select>
   <select id="find" parameterType="java.lang.Long" resultMap="ResBaseResultMap">
     select 
     <include refid="Res_Column_List" />
