@@ -34,6 +34,7 @@ import cn.linkmore.prefecture.dao.master.StallMasterMapper;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StallLock;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
@@ -139,7 +140,7 @@ public class StallServiceImpl implements StallService {
 				stall.setLockStatus(LockStatus.DOWN.status);
 				stallMasterMapper.lockdown(stall);
 				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqos.getOrderId());
-			} 
+			}
 			orderClient.downMsgPush(reqos.getOrderId(),reqos.getStallId()); 
 		}
 	}
@@ -412,6 +413,33 @@ public class StallServiceImpl implements StallService {
 			return this.stallMasterMapper.updateBrandStall(ids);
 		}
 	}
+
 	
-	
+	@Override
+	public void controling(ReqControlLock  reqc) {  //控制锁
+		new Thread(new Runnable() {
+	        @Override
+	        public void run() {
+	        	Stall stall = stallClusterMapper.findById(reqc.getStallId());
+				log.info("stall:{}", JsonUtil.toJson(stall));
+				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+					log.info("downing... name:{},sn:{}",stall.getStallName(),stall.getLockSn()); 
+					ResponseMessage<LockBean> res = null;
+		        	//1 降下 2 升起
+					if(reqc.getStatus()==1){
+					 res = lockFactory.lockDown(stall.getLockSn());
+					}else if( reqc.getStatus()==2){
+				     res = lockFactory.lockUp(stall.getLockSn());
+					}
+					log.info("res:{}", JsonUtil.toJson(res));
+					int code = res.getMsgCode();
+					if (code == 200) {
+						stall.setLockStatus(reqc.getStatus());
+						stallMasterMapper.lockdown(stall);
+						redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqc.getKey());
+					}
+				}
+	        }
+	    }).start();	
+	}
 }

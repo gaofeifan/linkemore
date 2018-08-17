@@ -19,6 +19,7 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
@@ -103,6 +104,18 @@ public class FeignStallController {
 	public Boolean uplock(@RequestParam("stallId") Long stallId) {
 		boolean flag = this.stallService.uplock(stallId);
 		return flag;
+	}
+	
+	/**
+	 * 操作锁
+	 * 
+	 * @param stallId
+	 *            Long
+	 */
+	@RequestMapping(value = "/v2.0/controllock", method = RequestMethod.PUT)
+	public void controllock(@RequestBody   ReqControlLock  reqc) {
+		log.info("controllock:{} .......................................",reqc.getStallId());
+		this.stallService.controling(reqc);
 	}
 
 	/**

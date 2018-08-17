@@ -6,6 +6,7 @@ import java.util.Map;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
@@ -147,4 +148,12 @@ public interface StallService {
 	List<ResStall> findPreStallList(Map<String, Object> param);
 	
 	int updateBrand(Map<String, Object> param);
+	
+	
+	/**
+	 * 控制车位锁
+	 * @param 
+	 * @return
+	 */
+	void controling (ReqControlLock  reqc);
 }

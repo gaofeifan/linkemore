@@ -11,6 +11,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
@@ -158,6 +159,12 @@ public class StallClientHystrix implements StallClient {
 	public int updateBrand(Map<String, Object> map) {
 		log.info("prefecture service int updateBrand(Map<String, Object> map) hystrix");
 		return 0;
+	}
+
+	@Override
+	public Boolean controllock(ReqControlLock reqc) {
+		log.info("prefecture service int controllock(ReqControlLock reqc) hystrix");
+		return null;
 	}
 
 }

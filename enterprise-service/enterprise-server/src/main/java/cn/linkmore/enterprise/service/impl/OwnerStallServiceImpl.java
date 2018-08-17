@@ -24,6 +24,7 @@ import cn.linkmore.enterprise.dao.cluster.OwnerStallClusterMapper;
 import cn.linkmore.enterprise.entity.EntOwnerPre;
 import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.service.OwnerStallService;
+import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
@@ -38,15 +39,12 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Autowired
 	private LockFactory lockFactory;
-
+	
 	@Autowired
 	private OwnerStallClusterMapper ownerStallClusterMapper;
-
-	public static void main(String[] args) {
-		LockFactory lockFactory = LockFactory.getInstance();
-		ResponseMessage<LockBean> res = lockFactory.getLockInfo("FFAEE5D0E27E");
-		System.out.println(JSON.toJSONString(res));
-	}
+	
+	@Autowired
+	private StallClient stallClient;
 
 	@Override
 	public List<OwnerPre> findStall(HttpServletRequest request) {
@@ -114,29 +112,10 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		if(user == null) {
 			throw new RuntimeException(StatusEnum.USER_APP_NO_LOGIN.label);
 		}
-		
-		//操作锁
+		//放入缓存
 		this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + "订单号 ", 1,
 				ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
-		
-		new Thread(new Runnable() {
-	        @Override
-	        public void run() {
-	        	ResponseMessage<LockBean> res = null;
-	        	//1 降下 2 升起
-	        	log.info("downing... name:{},sn:{}","  锁名"," 编码 "); 
-				if(reqOperatStall.getState().equals("1")){
-				 res = 	lockFactory.lockDown(reqOperatStall.getStallId().toString());
-				}else if(reqOperatStall.getState().equals("2")){
-			     res = lockFactory.lockUp(reqOperatStall.getStallId().toString());
-				}
-				int code = res.getMsgCode();
-				log.info("lock msg:{}", JsonUtil.toJson(res));
-				if (code == 200) {  
-					redisService.add(RedisKey.PREFECTURE_FREE_STALL.key, " 锁编码 "); 
-				}
-	        }
-	    }).start();
+		stallClient.controllock(null);  //调用
 	}
 
 }
