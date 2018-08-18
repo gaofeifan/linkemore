@@ -16,6 +16,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.StallClientHystrix;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
@@ -70,6 +71,26 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/uplock", method=RequestMethod.PUT)
 	@ResponseBody
 	public Boolean uplock(@RequestParam("stallId") Long stallId);
+	
+	
+	/**
+	 * 操作锁
+	 * @param stall
+	 * @return 
+	 */
+	@RequestMapping(value = "/v2.0/controllock", method=RequestMethod.POST)
+	@ResponseBody
+	public void controllock(@RequestBody   ReqControlLock  reqc);
+	
+	/**
+	 * 查询锁状态
+	 * @param stallis
+	 * @return 
+	 */
+	@RequestMapping(value = "/v2.0/lockstatus", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String,Object> lockstatus(@RequestBody  List<String> list);
+	
 	
 	/**
 	 * 结账立场释放车位

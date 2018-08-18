@@ -42,15 +42,7 @@ public class ReportMonthController {
 	public Map<String, Object> convert(ReqReportMonth reportMonth) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<Long> preIds = new ArrayList<Long>();
-		if (StringUtils.isBlank(reportMonth.getPreIds())) {
-			if (reportMonth.getCityId() != null && reportMonth.getCityId() != 0 ) {
-				param.put("cityId", reportMonth.getCityId());
-			}
-			List<ResPre> preList = reportMonthService.preList(param);
-			for (ResPre pre : preList) {
-				preIds.add(pre.getId());
-			}
-		} else {
+		if (StringUtils.isNotBlank(reportMonth.getPreIds())) {
 			String[] preIdStr = reportMonth.getPreIds().split(",");
 			for(String preId : preIdStr) {
 				preIds.add(Long.valueOf(preId));
@@ -66,15 +58,7 @@ public class ReportMonthController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<Long> preIds = new ArrayList<Long>();
 		List<Long> statuIds = new ArrayList<Long>();
-		if (StringUtils.isBlank(reportMonth.getPreIds())) {
-			if (reportMonth.getCityId() != null && reportMonth.getCityId() != 0 ) {
-				param.put("cityId", reportMonth.getCityId());
-			}
-			List<ResPre> preList = reportMonthService.preList(param);
-			for (ResPre pre : preList) {
-				preIds.add(pre.getId());
-			}
-		} else {
+		if (StringUtils.isNotBlank(reportMonth.getPreIds())) {
 			String[] preIdStr = reportMonth.getPreIds().split(",");
 			for(String preId : preIdStr) {
 				preIds.add(Long.valueOf(preId));

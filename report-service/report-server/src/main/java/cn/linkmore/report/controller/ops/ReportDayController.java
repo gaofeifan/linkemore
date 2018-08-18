@@ -5,13 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.report.request.ReqReportDay;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
@@ -39,19 +43,14 @@ import cn.linkmore.report.service.ReportDayService;
 public class ReportDayController {
 	@Resource
 	private ReportDayService reportDayService;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
 
 	public Map<String, Object> convert(ReqReportDay reportDay) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<Long> preIds = new ArrayList<Long>();
-		if (StringUtils.isBlank(reportDay.getPreIds())) {
-			if (reportDay.getCityId() != null && reportDay.getCityId() != 0 ) {
-				param.put("cityId", reportDay.getCityId());
-			}
-			List<ResPre> preList = reportDayService.preList(param);
-			for (ResPre pre : preList) {
-				preIds.add(pre.getId());
-			}
-		} else {
+		if (StringUtils.isNotBlank(reportDay.getPreIds())) {
 			String[] preIdStr = reportDay.getPreIds().split(",");
 			for(String preId : preIdStr) {
 				preIds.add(Long.valueOf(preId));
@@ -67,15 +66,7 @@ public class ReportDayController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<Long> preIds = new ArrayList<Long>();
 		List<Long> statuIds = new ArrayList<Long>();
-		if (StringUtils.isBlank(reportDay.getPreIds())) {
-			if (reportDay.getCityId() != null && reportDay.getCityId() != 0 ) {
-				param.put("cityId", reportDay.getCityId());
-			}
-			List<ResPre> preList = reportDayService.preList(param);
-			for (ResPre pre : preList) {
-				preIds.add(pre.getId());
-			}
-		} else {
+		if (StringUtils.isNotBlank(reportDay.getPreIds())) {
 			String[] preIdStr = reportDay.getPreIds().split(",");
 			for(String preId : preIdStr) {
 				preIds.add(Long.valueOf(preId));
@@ -136,7 +127,9 @@ public class ReportDayController {
 	@ResponseBody
 	public List<ResPull> pullList(@RequestBody ReqReportDay reportDay) {
 		Map<String, Object> param = convert(reportDay);
-		return this.reportDayService.pullList(param);
+		List<ResPull> pullList = this.reportDayService.pullList(param);
+		log.info("pull list = {}",JSON.toJSON(pullList));
+		return pullList;
 	}
 
 	@RequestMapping(value = "/v2.0/stall_average", method = RequestMethod.POST)
@@ -164,14 +157,32 @@ public class ReportDayController {
 	@ResponseBody
 	public List<ResOrder> newUserOrderList(@RequestBody ReqReportDay reportDay) {
 		Map<String, Object> param = convert(reportDay);
-		return this.reportDayService.newUserOrderList(param);
+		
+		long startTime = System.currentTimeMillis();    //获取开始时间
+
+		List<ResOrder> orders = this.reportDayService.newUserOrderList(param);
+		log.info("new user orders = {}" ,JSON.toJSON(orders));
+		long endTime = System.currentTimeMillis();    //获取结束时间
+
+		log.info("new user orders runtime ={}", (endTime - startTime) + "ms");    //输出程序运行时间
+		
+		return orders;
 	}
 
 	@RequestMapping(value = "/v2.0/olduser_order", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResOrder> oldUserOrderList(@RequestBody ReqReportDay reportDay) {
 		Map<String, Object> param = convert(reportDay);
-		return this.reportDayService.oldUserOrderList(param);
+		long startTime = System.currentTimeMillis();    //获取开始时间
+
+		List<ResOrder> orders = this.reportDayService.oldUserOrderList(param);
+		log.info("old user orders = {}" ,JSON.toJSON(orders));
+
+		long endTime = System.currentTimeMillis();    //获取结束时间
+
+		log.info("old user orders runtime ={}", (endTime - startTime) + "ms");    //输出程序运行时间
+		
+		return orders;
 	}
 
 	@RequestMapping(value = "/v2.0/runtime", method = RequestMethod.POST)
