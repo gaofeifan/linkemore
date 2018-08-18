@@ -18,9 +18,12 @@ import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.ent.request.ReqOperatStall;
 import cn.linkmore.enterprise.service.OwnerStallService;
+import cn.linkmore.prefecture.client.StallClient;
+import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,6 +44,9 @@ public class AppOwnerStallController {
 	private LockFactory lockFactory;
 	
 	@Autowired
+	private StallClient stallClient;
+	
+	@Autowired
 	private OwnerStallService ownerStallServicel;
 
 	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
@@ -54,9 +60,29 @@ public class AppOwnerStallController {
 	@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
 	@RequestMapping(value = "/control", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> controlLock(@Validated ReqOperatStall reqOperatStall, HttpServletRequest request) {
-		
-		new Thread(new Runnable() {
+	public ResponseEntity<String> controlLock(@Validated  @RequestBody  ReqOperatStall reqOperatStall, HttpServletRequest request) {	
+		try {
+			Boolean  bl = ownerStallServicel.control(reqOperatStall, request);
+			if(bl) {
+				return ResponseEntity.success("操作成功", request);
+			}else {
+				return ResponseEntity.success("操作失败", request);
+			}
+		} catch (RuntimeException e) {
+		   return	 ResponseEntity.fail( StatusEnum.USER_APP_NO_LOGIN, request);
+		} catch (Exception e ) {
+		   return ResponseEntity.success("操作失败", request);
+		}
+	}
+	
+	@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
+	@RequestMapping(value = "/testcontrol", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> testcontrolLock(@Validated  ReqOperatStall reqOperatStall, HttpServletRequest request) {
+		ReqControlLock reqc = new ReqControlLock();
+		stallClient.close(111L);
+		stallClient.controllock(reqc);
+		/*new Thread(new Runnable() {
 	        @Override
 	        public void run() {
 	        	ResponseMessage<LockBean> res = null;
@@ -68,13 +94,10 @@ public class AppOwnerStallController {
 				}
 				System.out.println(res.getMsgCode()+"--"+ res.getMsg() );
 	        }
-	    }).start();
+	    }).start();*/
 		
-		//ownerStallServicel.control(reqOperatStall, request);
 		return ResponseEntity.success("操作成功", request);
 	}
-	
-	
 	
 
 }

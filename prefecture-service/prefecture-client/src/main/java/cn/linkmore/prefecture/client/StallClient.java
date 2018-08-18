@@ -78,9 +78,19 @@ public interface StallClient {
 	 * @param stall
 	 * @return 
 	 */
-	@RequestMapping(value = "/v2.0/controllock", method=RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/controllock", method=RequestMethod.POST)
 	@ResponseBody
-	public Boolean controllock(@RequestBody   ReqControlLock  reqc);
+	public void controllock(@RequestBody   ReqControlLock  reqc);
+	
+	/**
+	 * 查询锁状态
+	 * @param stallis
+	 * @return 
+	 */
+	@RequestMapping(value = "/v2.0/lockstatus", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String,Object> lockstatus(@RequestBody  List<String> list);
+	
 	
 	/**
 	 * 结账立场释放车位

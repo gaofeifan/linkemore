@@ -296,6 +296,8 @@ public class Constants {
 		ORDER_TRADE_SERIAL_NUMBER("order:trade:serial_number:"),
 		ORDER_RECHARGE_SERIAL_NUMBER("order:recharge:serial_number:"),
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
+		ACTION_STALL_DOWN_FAILED("action:lock-down:failure:"),
+		ACTION_STALL_UP_FAILED("action:lock-up:failure:"),
 		STALL_ORDER_CLOSED("stall:order-closed:"),
 		ORDER_SWITCH_STALL_FAILED_COUNT("order:switch-stall-failure:count:"),
 		ORDER_SWITCH_RESULT("order:switch-result:"),

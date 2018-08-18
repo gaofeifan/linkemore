@@ -162,8 +162,13 @@ public class StallClientHystrix implements StallClient {
 	}
 
 	@Override
-	public Boolean controllock(ReqControlLock reqc) {
+	public void controllock(ReqControlLock reqc) {
 		log.info("prefecture service int controllock(ReqControlLock reqc) hystrix");
+	}
+
+	@Override
+	public Map<String, Object> lockstatus(List<String> list) {
+		log.info("prefecture service int lockstatus(List<String> list) hystrix");
 		return null;
 	}
 

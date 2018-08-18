@@ -3,6 +3,9 @@ package cn.linkmore.prefecture.service;
 import java.util.List;
 import java.util.Map;
 
+import com.linkmore.lock.bean.LockBean;
+import com.linkmore.lock.response.ResponseMessage;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -156,4 +159,11 @@ public interface StallService {
 	 * @return
 	 */
 	void controling (ReqControlLock  reqc);
+	
+	/**
+	 * 查询车位锁信息
+	 * @param 
+	 * @return
+	 */
+	Map<String,Object>   lockStatus(List<String> parkcodes);
 }

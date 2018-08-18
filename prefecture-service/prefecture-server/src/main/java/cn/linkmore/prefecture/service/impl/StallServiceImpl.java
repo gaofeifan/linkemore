@@ -413,7 +413,6 @@ public class StallServiceImpl implements StallService {
 			return this.stallMasterMapper.updateBrandStall(ids);
 		}
 	}
-
 	
 	@Override
 	public void controling(ReqControlLock  reqc) {  //控制锁
@@ -436,10 +435,20 @@ public class StallServiceImpl implements StallService {
 					if (code == 200) {
 						stall.setLockStatus(reqc.getStatus());
 						stallMasterMapper.lockdown(stall);
-						redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqc.getKey());
+						redisService.remove(reqc.getKey());
 					}
 				}
 	        }
 	    }).start();	
+	}
+	
+	@Override
+	public Map<String,Object> lockStatus(List<String> parkcodes) {
+		Map<String,Object> map = new HashMap<>();
+		ResponseMessage<LockBean>  lb = lockFactory.findAvaiLocks(parkcodes);
+		if(lb!=null) {
+			map.put("data", lb);
+		}
+		return map;
 	}
 }
