@@ -28,6 +28,7 @@ import cn.linkmore.enterprise.controller.ent.request.ReqStallUpDown;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResStall;
+import cn.linkmore.enterprise.controller.ent.response.ResStallName;
 import cn.linkmore.enterprise.service.EntStallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -60,8 +61,8 @@ public class EntStallController {
 	@ApiOperation(value = "查询停车场车位列表", notes = "查询停车场车位列表", consumes = "application/json")
 	@RequestMapping(value = "/select-stalls",method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<List<ResStall>> selectEntStalls(@RequestBody @Validated ReqPreStall reqPreStall ,HttpServletRequest request){
-		List<ResStall> list = null;
+	public ResponseEntity<List<ResStallName>> selectEntStalls(@RequestBody @Validated ReqPreStall reqPreStall ,HttpServletRequest request){
+		List<ResStallName> list = null;
 		if(reqPreStall == null){
 			list = new ArrayList<>();
 			return ResponseEntity.success(list, request);
@@ -80,7 +81,7 @@ public class EntStallController {
 		ResDetailStall detailStall = this.entStallService.selectEntDetailStalls(stall_id,request);
 		return ResponseEntity.success(detailStall, request);
 	}
-	
+		
 	@ApiOperation(value = "操作车位", notes = "操作车位", consumes = "application/json")
 	@RequestMapping(value = "/operate-stall",method = RequestMethod.POST)
 	@ResponseBody

@@ -1,5 +1,6 @@
 package cn.linkmore.ops.ent.service;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -32,7 +33,7 @@ public interface StaffService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	Tree tree(HttpServletRequest request);
+	List<Tree> tree(HttpServletRequest request);
 
 	/**
 	 * @Description  

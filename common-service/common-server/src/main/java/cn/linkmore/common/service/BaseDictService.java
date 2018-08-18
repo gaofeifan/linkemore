@@ -57,4 +57,11 @@ public interface BaseDictService {
 	 */
 	List<ResDonwLockError> selectLockDownErrorCause();
 
+	/**
+	 * @Description  批量查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResBaseDict> findListByCodes(List<String> codes);
+
 }

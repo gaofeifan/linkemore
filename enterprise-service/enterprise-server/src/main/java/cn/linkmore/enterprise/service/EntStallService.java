@@ -12,6 +12,7 @@ import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
+import cn.linkmore.enterprise.controller.ent.response.ResStallName;
 import cn.linkmore.prefecture.response.ResStall;
 
 /**
@@ -42,7 +43,7 @@ public interface EntStallService {
 	 * @Date 2018年7月21日
 	 * @Version v1.0
 	 */
-	List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectStalls(HttpServletRequest request,Long preId, Short type);
+	List<ResStallName> selectStalls(HttpServletRequest request,Long preId, Short type);
 
 	/**
 	 * 查询车位详细信息

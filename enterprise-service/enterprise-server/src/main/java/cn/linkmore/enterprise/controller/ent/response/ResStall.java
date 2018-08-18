@@ -42,11 +42,17 @@ public class ResStall {
 	@ApiModelProperty(value="车区id")
 	private Long preId;
 	
+	@ApiModelProperty(value="车区id")
+	private String pId;
+	
 	/**
 	 *  车位锁异常状态  true 正常车位  false 异常车位
 	 */ 
 	@ApiModelProperty(value="车位锁异常状态  true 正常车位  false 异常车位")
 	private boolean excStatus = true;
+	
+	@ApiModelProperty(value="锁状态 1，升起；2，降下")
+	private Integer lockStatus;
 
 	public Long getStallId() {
 		return stallId;
@@ -110,5 +116,21 @@ public class ResStall {
 
 	public void setExcStatus(boolean excStatus) {
 		this.excStatus = excStatus;
+	}
+
+	public String getpId() {
+		return pId;
+	}
+
+	public void setpId(String pId) {
+		this.pId = pId;
+	}
+
+	public Integer getLockStatus() {
+		return lockStatus;
+	}
+
+	public void setLockStatus(Integer lockStatus) {
+		this.lockStatus = lockStatus;
 	}
 }

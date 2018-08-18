@@ -27,6 +27,8 @@ import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntAuthStall;
 import cn.linkmore.enterprise.entity.EntPrefecture;
+import cn.linkmore.enterprise.entity.EntStaff;
+import cn.linkmore.enterprise.service.EntStaffService;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.enterprise.service.PrefectureService;
 import cn.linkmore.order.client.EntOrderClient;
@@ -57,9 +59,13 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private EntOrderClient orderClient;
 	@Resource
 	private EntAuthPreClusterMapper authPreClusterMapper;
-	
+	@Resource
+	private EntStaffService entStaffService;
 	@Override
 	public List<cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount> findPreList(HttpServletRequest request) {
+		if(!checkAuthStaff(request)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
 		Map<String, Long> map = new  HashMap<>();
@@ -82,6 +88,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public BigDecimal findPreDayIncome(Long preId, HttpServletRequest request) {
+		if(!checkAuthStaff(request)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
 		if(!checkAuthPre(request, preId)) {
 			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
 		}
@@ -96,6 +105,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public cn.linkmore.enterprise.controller.ent.response.ResIncomeList findProceeds(Short type,Long preId, HttpServletRequest request) {
+		if(!checkAuthStaff(request)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
 		if(!checkAuthPre(request, preId)) {
 			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
 		}
@@ -133,6 +145,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow findTrafficFlow(Short type,Long preId, HttpServletRequest request) {
+		if(!checkAuthStaff(request)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
 		if(!checkAuthPre(request, preId)) {
 			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
 		}
@@ -167,6 +182,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public Integer findTrafficFlowCount(Short type, Long preId, HttpServletRequest request) {
+		if(!checkAuthStaff(request)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
 		if(!checkAuthPre(request, preId)) {
 			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
 		}
@@ -179,6 +197,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public List<ResChargeDetail> findChargeDetail(Integer pageNo,Long preId, HttpServletRequest request) {
+		if(!checkAuthStaff(request)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
 		if(!checkAuthPre(request, preId)) {
 			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
 		}
@@ -198,6 +219,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public ResDayTrafficFlow findTrafficFlowList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
+		if(!checkAuthStaff(request)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
 		if(!checkAuthPre(request, preId)) {
 			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
 		}
@@ -225,6 +249,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public ResDayIncome findIncomeList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
+		if(!checkAuthStaff(request)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
 		if(!checkAuthPre(request, preId)) {
 			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
 		}
@@ -287,6 +314,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public BigDecimal findProceedsAmount(Short type, Long preId, HttpServletRequest request) {
+		if(!checkAuthStaff(request)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId", preId);
@@ -303,10 +333,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 			return true;
 		}
 		return false;
-		
 	}
-	
-	
-
-	
+	public boolean checkAuthStaff(HttpServletRequest request) {
+		CacheUser user = getUser(request);
+		EntStaff staff = this.entStaffService.findById(user.getId());
+		if(staff.getType() == 1) {
+			return true;
+		}else if(staff.getType() == 0){
+			return false;
+		}
+		return false;
+	}
 }

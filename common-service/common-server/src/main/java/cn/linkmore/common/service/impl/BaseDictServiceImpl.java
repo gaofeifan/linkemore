@@ -69,6 +69,11 @@ public class BaseDictServiceImpl implements BaseDictService {
 		}
 		return resultList;
 	}
+
+	@Override
+	public List<ResBaseDict> findListByCodes(List<String> codes) {
+		return this.baseDictClusterMapper.findListByCodes(codes);
+	}
 	
 	
 }

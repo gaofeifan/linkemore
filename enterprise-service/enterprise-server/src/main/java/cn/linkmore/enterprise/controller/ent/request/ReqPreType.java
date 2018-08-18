@@ -14,9 +14,9 @@ public class ReqPreType {
 	private Long preId;
 	
 	@ApiModelProperty(required=true,value = "类型 0 7天 1 15天 2 30天")
-//	@Digits(message="类型数据应为1-3",regex="[1,2,3]")
+	@Digits(message="类型数据应为0-2",regex="[0,1,2]")
 	@NotNull(message="类型不能为空")
-	private Short type;
+	private Integer type;
 
 	public Long getPreId() {
 		return preId;
@@ -26,15 +26,13 @@ public class ReqPreType {
 		this.preId = preId;
 	}
 
-	public Short getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(Short type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
-	
-	
-	
+
 	
 }

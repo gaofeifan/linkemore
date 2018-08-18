@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -15,7 +17,10 @@ import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntStaffAuthMasterMapper;
 import cn.linkmore.enterprise.entity.EntOperateAuth;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
+import cn.linkmore.enterprise.entity.Enterprise;
 import cn.linkmore.enterprise.request.ReqStaffAuthBind;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.StaffAuthService;
 /**
  * 员工接口实现
@@ -26,6 +31,8 @@ import cn.linkmore.enterprise.service.StaffAuthService;
 @Service
 public class StaffAuthServiceImpl implements StaffAuthService {
 
+	@Resource
+	private EnterpriseService enterpriseService;
 	@Resource
 	private EntStaffAuthClusterMapper entStaffAuthClusterMapper;
 	@Resource
@@ -49,31 +56,43 @@ public class StaffAuthServiceImpl implements StaffAuthService {
 	}
 
 	@Override
-	public Tree tree() {
+	public List<Tree> tree() {
+		List<Tree> roots = new ArrayList<>();
+		Tree root = null;
+		List<Tree> chiList = null;
+		Tree chi = null;
 		Map<String,Object> map = new HashMap<>();
 		map.put("status", 1);
 		List<EntOperateAuth> auths = this.entOperateAuthClusterMapper.findList(map);
-		Tree root = new Tree();
-		root.setName("权限树");
-		root.setId("0");
-		root.setIsParent(false);
-		root.setCode("0");
-		root.setOpen(true);
-		root.setmId("0");
-		List<Tree> chiList = new ArrayList<>();
-		Tree chi = null;
-		for (EntOperateAuth auth : auths) {
-			chi = new Tree();
-			chi.setName(auth.getName());
-			chi.setId(auth.getId().toString());
-			chi.setIsParent(false);
-			chi.setCode(auth.getId().toString());
-			chi.setOpen(true);
-			chi.setmId(auth.getId().toString());
-			chiList.add(chi);
+		Set<Long> entIds = auths.stream().map(a -> a.getEntId()).collect(Collectors.toSet());
+		List<Long> list = new ArrayList<>(entIds);
+		List<ResEnterprise> ents = this.enterpriseService.findListByIds(list);
+		for (ResEnterprise resEnterprise : ents) {
+			root = new Tree();
+			root.setName(resEnterprise.getName());
+			root.setId(resEnterprise.getId().toString());
+			root.setIsParent(false);
+			root.setCode(resEnterprise.getId().toString());
+			root.setOpen(true);
+			root.setmId(resEnterprise.getId().toString());
+			chiList = new ArrayList<>();
+			for (EntOperateAuth auth : auths) {
+				if(auth.getEntId().equals(resEnterprise.getId())) {
+					chi = new Tree();
+					chi.setName(auth.getName());
+					chi.setId(auth.getId().toString());
+					chi.setIsParent(false);
+					chi.setCode(auth.getId().toString());
+					chi.setOpen(true);
+					chi.setmId(auth.getId().toString());
+					chiList.add(chi);
+				}
+			}
+			root.setChildren(chiList);
+			roots.add(root);
+			
 		}
-		root.setChildren(chiList);
-		return root;
+		return roots;
 	}
 
 	@Override

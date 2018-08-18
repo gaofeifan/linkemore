@@ -21,7 +21,7 @@ public class ResDayIncome {
 	
 	private List<ResDayIncomes> list;
 
-	@JsonFormat(pattern="yyyy年MM月")
+	@JsonFormat(pattern="yyyy年MM月",timezone="GMT+8")
 	public Date getDate() {
 		return date;
 	}

@@ -34,6 +34,7 @@ import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResEntTypeStalls;
+import cn.linkmore.enterprise.controller.ent.response.ResStallName;
 import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntAuthStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
@@ -231,7 +232,7 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectStalls(HttpServletRequest request,Long preId, Short type) {
+	public List<ResStallName> selectStalls(HttpServletRequest request,Long preId, Short type) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 		Map<String, Object> map = new HashMap<String,Object>();
@@ -239,13 +240,17 @@ public class EntStallServiceImpl implements EntStallService {
 		map.put("status", 1);
 		List<EntStaffAuth> entStaffAuths= entStaffAuthClusterMapper.findList(map);
 		int size = entStaffAuths.size();
+		List<ResStallName> stallNames = new ArrayList<>();
 		if(size == 0){
-			return new ArrayList<cn.linkmore.enterprise.controller.ent.response.ResStall>();
+			return new ArrayList<ResStallName>();
 		}
-		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
+//		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
 		Map<String, Object> param = new HashMap<String,Object>();
-		param.put("authId", entStaffAuth.getAuthId());
-		List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
+		List<Long> list = entStaffAuths.stream().map(ent -> ent.getAuthId()).collect(Collectors.toList());
+		param.put("authIds", list);
+//		param.put("authId", entStaffAuth.getAuthId());
+//		List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
+		List<Long> stallIds= entAuthStallClusterMapper.findStallListByIds(param);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("type", type);
 		params.put("list", stallIds);
@@ -283,7 +288,34 @@ public class EntStallServiceImpl implements EntStallService {
 				stallList.add(stall);
 			}
 		}
-		return stallList;
+		ResStallName stallName = null;
+		StringBuilder sb = new StringBuilder();
+		int end = 0;
+		stallName = new ResStallName();
+		stallName.setId("0");
+		cn.linkmore.enterprise.controller.ent.response.ResStall resStall = null;
+		for (int i = 0; i < stallList.size(); i++) {
+			resStall = stallList.get(i);
+			resStall.setpId(stallName.getId());
+			stallName.getStalls().add(resStall);
+			if(i == end) {
+				sb.append(stallList.get(i).getStallName()).append("-");
+				end += 5;
+			}else if(i == (end-1)) {
+				sb.append(stallList.get(i).getStallName());
+				stallName.setStallName(sb.toString());
+				Integer id = Integer.parseInt(stallName.getId());
+				sb = new StringBuilder();
+				stallNames.add(stallName);
+				stallName = new ResStallName();
+				stallName.setId(id+1+"");
+			}else if(i == stallList.size()-1) {
+				sb.append(stallList.get(i).getStallName());
+				stallName.setStallName(sb.toString());
+				stallNames.add(stallName);
+			}
+		}
+		return stallNames;
 	}
 
 	@Override
@@ -484,9 +516,10 @@ public class EntStallServiceImpl implements EntStallService {
 	@Override
 	public void saveStallExcCause(List<ReqStallExcCause> causes) {
 		Set<String> collect = causes.stream().map(ca -> ca.getReportSource()).collect(Collectors.toSet());
-		List<ResBaseDict> dicts = this.dictClient.findListByCodes(new ArrayList<>(collect));
+		List<String> list = new ArrayList<>(collect);
+		List<ResBaseDict> dicts = this.dictClient.findListByCodes(list);
 		List<StallExcStatus> excs = new ArrayList<>();
-		List<ResStallOps> stalls = this.stallClient.findListByParam(new HashMap<String, Object>());
+		List<ResStall> stalls = this.stallClient.findStallList(new HashMap<String, Object>());
 		StallExcStatus excStall = new StallExcStatus();
 		for (ReqStallExcCause reqStallExcCause : causes) {
 			excStall.setCreateTime(new Date());
@@ -496,16 +529,19 @@ public class EntStallServiceImpl implements EntStallService {
 					excStall.setExcRemark(resBaseDict.getName());
 					excStall.setExcStatus(resBaseDict.getId());
 				}
-				for (ResStallOps resStallOps : stalls) {
+				for (ResStall resStallOps : stalls) {
 					if(reqStallExcCause.getStallLock().equals(resStallOps.getLockSn())) {
 						excStall.setStallId(resStallOps.getId());
 					}
 				}
+				if(excStall.getExcStatus() != null && excStall.getStallId() != null) {
+					excs.add(excStall);
+				}
 			}
-			excs.add(excStall);
 		}
-		
-		this.stallExcStatusService.saveBatch(excs);
+		if(excs.size() != 0) {
+			this.stallExcStatusService.saveBatch(excs);
+		}
 	}
 	
 	

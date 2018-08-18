@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.client.hystrix;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class OpsStaffAuthClientHystrix implements OpsStaffAuthClient {
 		
 	}
 	@Override
-	public Tree tree() {
+	public List<Tree> tree() {
 		log.info("ops staffauth service Tree tree() hystrix");
 		return null;
 	}

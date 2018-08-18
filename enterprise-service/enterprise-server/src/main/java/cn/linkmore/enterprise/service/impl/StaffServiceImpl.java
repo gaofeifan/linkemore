@@ -182,7 +182,7 @@ public class StaffServiceImpl implements StaffService {
 //		if(!DigestUtils.md5Hex(rs.getMobile()+rs.getTimestamp()+"v2.0").equals(rs.getToken())) {
 //			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 //		} 
-		long space = new Date().getTime()-new Long(rs.getTimestamp()).longValue(); 
+		long space = new Date().getTime()	-new Long(rs.getTimestamp()).longValue(); 
 		log.info("space:{},SPACE:{} verify:{}",space,SPACE,space>SPACE||space<-SPACE);
 		if(space>SPACE||space<-SPACE) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);

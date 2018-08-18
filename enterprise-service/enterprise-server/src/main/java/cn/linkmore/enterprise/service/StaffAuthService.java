@@ -1,5 +1,6 @@
 package cn.linkmore.enterprise.service;
 
+import java.util.List;
 import java.util.Map;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.enterprise.request.ReqStaffAuthBind;
@@ -25,7 +26,7 @@ public interface StaffAuthService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	Tree tree();
+	List<Tree> tree();
 
 	/**
 	 * @Description  
