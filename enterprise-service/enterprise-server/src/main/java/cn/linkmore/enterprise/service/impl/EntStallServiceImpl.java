@@ -115,6 +115,7 @@ public class EntStallServiceImpl implements EntStallService {
 	@Autowired
 	private EntStaffClusterMapper entStaffClusterMapper;
 	
+	public static final String DOWN = "down-";
 	@Override
 	public List<ResEntStalls> selectEntStalls(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
@@ -265,6 +266,7 @@ public class EntStallServiceImpl implements EntStallService {
 		//设置车位对应的车牌号
 		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
 		cn.linkmore.enterprise.controller.ent.response.ResStall stall = null;
+//		lockFactory.
 		for(ResStall resStall:stalls){
 			if(orders == null ){ 
 				break;
@@ -384,8 +386,8 @@ public class EntStallServiceImpl implements EntStallService {
 			return result;
 		}
 		ResponseMessage<LockBean> res = null;
-		result.put("result", res.isResult());
-		result.put("result", res.getMsg());
+//		result.put("result", res.isResult());
+//		result.put("result", res.getMsg());
 		
 		new Thread(new Runnable() {
 	        @Override
@@ -425,10 +427,10 @@ public class EntStallServiceImpl implements EntStallService {
 			}
 			if ("battery-change".equals(dict.getCode())) {
 				try {
-				/*	LockServerClient lockServerClient = ThriftClientFactory.getThriftClient(this.rpcConfig.getHost(),
-							this.rpcConfig.getPort(), this.rpcConfig.getTimeout());
-					String count = ParkingLockClient.getUpOrDownCounts(lockServerClient, stall.getLockSn());*/
-		/*			this.log.info("offline change battery {}", count);*/
+//					LockServerClient lockServerClient = ThriftClientFactory.getThriftClient(this.rpcConfig.getHost(),
+//							this.rpcConfig.getPort(), this.rpcConfig.getTimeout());
+//					String count = ParkingLockClient.getUpOrDownCounts(lockServerClient, stall.getLockSn());
+//					this.log.info("offline change battery {}", lockInfo.get);
 					ResStallBatteryLog sbl = new ResStallBatteryLog();
 					sbl.setAdminId(ru.getId());
 					sbl.setAdminName(ru.getMobile());
@@ -515,8 +517,10 @@ public class EntStallServiceImpl implements EntStallService {
 
 	@Override
 	public void saveStallExcCause(List<ReqStallExcCause> causes) {
-		Set<String> collect = causes.stream().map(ca -> ca.getReportSource()).collect(Collectors.toSet());
-		List<String> list = new ArrayList<>(collect);
+		List<String> list = new ArrayList<>();
+		for (ReqStallExcCause reqStallExcCause : causes) {
+			list.add(DOWN+reqStallExcCause.getReportSource());
+		}
 		List<ResBaseDict> dicts = this.dictClient.findListByCodes(list);
 		List<StallExcStatus> excs = new ArrayList<>();
 		List<ResStall> stalls = this.stallClient.findStallList(new HashMap<String, Object>());
@@ -526,8 +530,10 @@ public class EntStallServiceImpl implements EntStallService {
 			excStall.setStatus((short)0);
 			if(dicts != null && dicts.size() != 0) {
 				for (ResBaseDict resBaseDict : dicts) {
-					excStall.setExcRemark(resBaseDict.getName());
-					excStall.setExcStatus(resBaseDict.getId());
+					if((DOWN+reqStallExcCause.getReportSource()).equals(resBaseDict.getCode())) {
+						excStall.setExcRemark(resBaseDict.getName());
+						excStall.setExcStatus(resBaseDict.getId());
+					}
 				}
 				for (ResStall resStallOps : stalls) {
 					if(reqStallExcCause.getStallLock().equals(resStallOps.getLockSn())) {
