@@ -82,24 +82,24 @@ public class SixHourTopFee {
 				} else {
 					int startFlag = startTime.compareTo(DAY_NIGHT);
 					int stopFlag = stopTime.compareTo(DAY_MORNING);
-					if (startFlag < 0 && stopFlag > 0) {
+					if (startFlag <= 0 && stopFlag >= 0) {
 						// 停车当日超过6h，封顶计费，次日停车超过6h 封顶计费
 						totalFee = (day + 2) * topFee;
-						log.info("----------停车当日超过6h，封顶计费，次日停车超过6h 封顶计费");
-					} else if (startFlag < 0 && stopFlag < 0) {
+						log.info("----------停车当日>=6h，封顶计费，次日停车>=6h 封顶计费");
+					} else if (startFlag <= 0 && stopFlag < 0) {
 						totalFee = (day + 1) * topFee;
 						Long timeLong = stopDate.getTime() - compareEndDate.getTime();
 						int stop = getMinTime(timeLong);
 						fee = getFee(stop, base);
 						totalFee += fee;
-						log.info("----------停车当日超过6h，封顶计费，次日停车不超过6h,次日时间累计计费");
-					} else if (startFlag > 0 && stopFlag > 0) {
+						log.info("----------停车当日>=6h，封顶计费，次日停车不超过6h,次日时间累计计费");
+					} else if (startFlag > 0 && stopFlag >= 0) {
 						totalFee = (day + 1) * topFee;
 						Long timeLong = compareStartDate.getTime() - startDate.getTime();
 						int start = getMinTime(timeLong);
 						fee = getFee(start, base);
 						totalFee += fee;
-						log.info("----------停车当日不超过6h，当日累计计费，次日停车超过6h 封顶计费");
+						log.info("----------停车当日不超过6h，当日累计计费，次日停车>=6h 封顶计费");
 					} else {
 						totalFee = day * topFee;
 						Long timeLong = stopDate.getTime() - startDate.getTime() - day * 24 * 60 * 60 * 1000;
@@ -195,15 +195,22 @@ public class SixHourTopFee {
 		String startString8 = "2018-05-26 22:00:01";
 		String endString8 = "2018-05-28 05:00:02";
 		Start start8 = new Start(startString8, endString8);
-		list.add(start1);
+		
+		// 当日次日累计超过6j计费,间隔完整1天
+		String startString9 = "2018-08-16 18:00:00";
+		String endString9 = "2018-08-17 18:48:35";
+		Start start9 = new Start(startString9, endString9);
+		
+		
+		/*list.add(start1);
 		list.add(start2);
 		list.add(start3);
 		list.add(start4);
 		list.add(start5);
 		list.add(start6);
 		list.add(start7);
-		list.add(start8);
-
+		list.add(start8);*/
+		list.add(start9);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for (Start start : list) {
 			Date startDate = sdf.parse(start.getStartDay());
