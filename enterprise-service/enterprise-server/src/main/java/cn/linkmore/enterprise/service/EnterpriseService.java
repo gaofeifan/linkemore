@@ -2,9 +2,11 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.entity.Enterprise;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterprise;
 import cn.linkmore.enterprise.response.ResEnterprise;
@@ -87,4 +89,11 @@ public interface EnterpriseService {
 	ResEnterprise findById(Long id);
 
 	ResEnterprise findName(Map<String, Object> map);
+
+	/**
+	 * @Description  根据id批量查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResEnterprise> findListByIds(List<Long> list);
 }

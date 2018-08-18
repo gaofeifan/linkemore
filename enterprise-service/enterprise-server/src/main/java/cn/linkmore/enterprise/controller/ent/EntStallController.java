@@ -81,7 +81,7 @@ public class EntStallController {
 		ResDetailStall detailStall = this.entStallService.selectEntDetailStalls(stall_id,request);
 		return ResponseEntity.success(detailStall, request);
 	}
-	
+		
 	@ApiOperation(value = "操作车位", notes = "操作车位", consumes = "application/json")
 	@RequestMapping(value = "/operate-stall",method = RequestMethod.POST)
 	@ResponseBody

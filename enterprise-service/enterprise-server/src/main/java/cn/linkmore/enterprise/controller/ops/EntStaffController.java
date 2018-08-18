@@ -3,6 +3,7 @@
  */
 package cn.linkmore.enterprise.controller.ops;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -96,7 +97,7 @@ public class EntStaffController {
 
 	@RequestMapping(value="/tree",method=RequestMethod.GET)
 	@ResponseBody
-	public Tree tree(){
+	public List<Tree> tree(){
 		return this.staffAuthService.tree();
 	}
 	

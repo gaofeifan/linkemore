@@ -63,7 +63,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private EntStaffService entStaffService;
 	@Override
 	public List<cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount> findPreList(HttpServletRequest request) {
-		if(checkAuthStaff(request)) {
+		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		String key = TokenUtil.getKey(request);
@@ -88,7 +88,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public BigDecimal findPreDayIncome(Long preId, HttpServletRequest request) {
-		if(checkAuthStaff(request)) {
+		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		if(!checkAuthPre(request, preId)) {
@@ -105,7 +105,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public cn.linkmore.enterprise.controller.ent.response.ResIncomeList findProceeds(Short type,Long preId, HttpServletRequest request) {
-		if(checkAuthStaff(request)) {
+		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		if(!checkAuthPre(request, preId)) {
@@ -145,7 +145,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow findTrafficFlow(Short type,Long preId, HttpServletRequest request) {
-		if(checkAuthStaff(request)) {
+		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		if(!checkAuthPre(request, preId)) {
@@ -182,7 +182,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public Integer findTrafficFlowCount(Short type, Long preId, HttpServletRequest request) {
-		if(checkAuthStaff(request)) {
+		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		if(!checkAuthPre(request, preId)) {
@@ -197,7 +197,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public List<ResChargeDetail> findChargeDetail(Integer pageNo,Long preId, HttpServletRequest request) {
-		if(checkAuthStaff(request)) {
+		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		if(!checkAuthPre(request, preId)) {
@@ -219,7 +219,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public ResDayTrafficFlow findTrafficFlowList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
-		if(checkAuthStaff(request)) {
+		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		if(!checkAuthPre(request, preId)) {
@@ -249,7 +249,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public ResDayIncome findIncomeList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
-		if(checkAuthStaff(request)) {
+		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		if(!checkAuthPre(request, preId)) {
@@ -314,7 +314,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Override
 	public BigDecimal findProceedsAmount(Short type, Long preId, HttpServletRequest request) {
-		if(checkAuthStaff(request)) {
+		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		Map<String,Object> param = new HashMap<>();

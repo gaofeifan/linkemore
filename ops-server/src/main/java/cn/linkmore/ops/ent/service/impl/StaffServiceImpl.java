@@ -57,7 +57,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	@Override
-	public Tree tree(HttpServletRequest request) {
+	public List<Tree> tree(HttpServletRequest request) {
 		return this.staffClient.tree();
 	}
 

@@ -43,7 +43,7 @@ public class StaffController {
 	
 	@RequestMapping(value = "/tree", method = RequestMethod.POST)
 	@ResponseBody
-	public Tree list(HttpServletRequest request) {
+	public List<Tree> list(HttpServletRequest request) {
 		return this.staffService.tree(request);
 	}
 	

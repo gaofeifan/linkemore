@@ -244,10 +244,13 @@ public class EntStallServiceImpl implements EntStallService {
 		if(size == 0){
 			return new ArrayList<ResStallName>();
 		}
-		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
+//		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
 		Map<String, Object> param = new HashMap<String,Object>();
-		param.put("authId", entStaffAuth.getAuthId());
-		List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
+		List<Long> list = entStaffAuths.stream().map(ent -> ent.getAuthId()).collect(Collectors.toList());
+		param.put("authIds", list);
+//		param.put("authId", entStaffAuth.getAuthId());
+//		List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
+		List<Long> stallIds= entAuthStallClusterMapper.findStallListByIds(param);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("type", type);
 		params.put("list", stallIds);
@@ -536,8 +539,9 @@ public class EntStallServiceImpl implements EntStallService {
 				}
 			}
 		}
-		
-		this.stallExcStatusService.saveBatch(excs);
+		if(excs.size() != 0) {
+			this.stallExcStatusService.saveBatch(excs);
+		}
 	}
 	
 	

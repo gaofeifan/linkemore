@@ -88,7 +88,7 @@ public class PrefectureController {
 	@RequestMapping(value="/charge-detail" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场实时收费明细", notes = "查询车场实时收费明细", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<List<ResChargeDetail>> findChargeDetail( @RequestParam("preId") @NotNull(message="车区id") @ApiParam(value="车区id",required=true,name="preId") Long preId,
+	public ResponseEntity<List<ResChargeDetail>> findChargeDetail( @RequestParam("preId") @NotNull(message="车区id不能为空") @ApiParam(value="车区id",required=true,name="preId") Long preId,
 									@RequestParam("pageNo") Integer pageNo,
 							HttpServletRequest request){
 		List<ResChargeDetail> list = this.prefectureService.findChargeDetail(pageNo,preId,request);

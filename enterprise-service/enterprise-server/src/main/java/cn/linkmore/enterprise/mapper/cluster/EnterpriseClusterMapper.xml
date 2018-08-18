@@ -105,15 +105,22 @@
   </select>
   
    <select id="findName" parameterType="java.util.HashMap" resultMap="BaseResultMap" >
-    select * 
+    select <include refid="Base_Column_List"/>
     from t_biz_enterprise
     where 
     ${property} = #{value}  
   </select>
   
    <select id="findAll"  resultMap="BaseResultMap" >
-    select *
+    select <include refid="Base_Column_List"/>
     from t_biz_enterprise
+  </select>
+   <select id="findListByIds" parameterType="java.util.List"  resultMap="BaseResultMap" >
+    select <include refid="Base_Column_List"/>
+    from t_biz_enterprise where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
+ 		#{id}
+    </foreach>
   </select>
   
    <select id="findByType"  resultMap="BaseResultMap" parameterType="java.util.HashMap" >

@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.client;
 
+import java.util.List;
 import java.util.Map;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +31,7 @@ public interface OpsStaffAuthClient {
 
 	@RequestMapping(value="/tree",method=RequestMethod.GET)
 	@ResponseBody
-	public Tree tree();
+	public List<Tree> tree();
 	
 	@RequestMapping(value="/resouce",method=RequestMethod.GET)
 	@ResponseBody

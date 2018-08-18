@@ -50,7 +50,10 @@
    <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 
      eoa.id, eoa.name, eoa.ent_id, eoa.status
-     FROM t_ent_operate_auth eoa LEFT JOIN t_ent_staff_auth esa ON  esa.auth_id = eoa.id
+     FROM t_ent_operate_auth eoa
+	 <if test="staffId != null">
+	     LEFT JOIN t_ent_staff_auth esa ON  esa.auth_id = eoa.id
+	 </if>
 	 WHERE 1=1
 	 <if test="staffId != null">
 		AND esa.staff_id  = #{staffId}
