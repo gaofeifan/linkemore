@@ -98,6 +98,7 @@ public class StaffServiceImpl implements StaffService {
 		u.setId(staff.getId());
 		u.setMobile(staff.getMobile());
 		u.setToken(key); 
+		u.setOpenId(staff.getOpenId());
 		u.setClient((short)ClientSource.APPLET.source);
 		Token token = this.cacheUser(request, u);  
 		if(token!=null) {
