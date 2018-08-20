@@ -41,5 +41,12 @@ public interface StaffService {
 	 */
 	void send(ReqAuthSend rs);
 
+	/**
+	 * @Description  校验用户是否存在
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	boolean checkMobile(String mobile);
+
 
 }

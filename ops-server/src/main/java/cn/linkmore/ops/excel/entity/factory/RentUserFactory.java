@@ -132,9 +132,12 @@ public class RentUserFactory extends ExcelReader<ReqRentUserImport>{
 		    		rentUser.setMobile(reqRentUserImport.getMobile());
 		    		rentUser.setRealname(reqRentUserImport.getRealname());
 		    		rentUser.setPlate(reqRentUserImport.getPlateNo());
+		    		rentUser.setUserId(resUser.getId());
 				}
 			}
 		}
+		
+//		this.re
 	}
 
 	/**

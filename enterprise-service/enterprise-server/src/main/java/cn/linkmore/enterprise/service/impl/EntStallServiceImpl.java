@@ -4,12 +4,10 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
@@ -49,7 +48,6 @@ import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.enterprise.service.StallExcStatusService;
 import cn.linkmore.order.client.EntOrderClient;
-import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.prefecture.client.StallBatteryLogClient;
@@ -59,7 +57,6 @@ import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
 import cn.linkmore.prefecture.response.ResStallEntity;
-import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.ObjectUtils;
@@ -262,7 +259,10 @@ public class EntStallServiceImpl implements EntStallService {
 		if(collect != null && collect.size() > 0) {
 			stallExcList = this.stallExcStatusService.findExcStatusList(collect);
 		}
-		
+		List<String> parkCode = stalls.stream().map(sta -> sta.getLockSn()).collect(Collectors.toList());
+		ResponseMessage<LockBean> locks = new ResponseMessage<>();//lockFactory.findAvaiLocks(parkCode);
+//		lockFactory.fin
+		List<LockBean> lockBeans = locks.getDataList();
 		//设置车位对应的车牌号
 		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
 		cn.linkmore.enterprise.controller.ent.response.ResStall stall = null;
@@ -274,6 +274,15 @@ public class EntStallServiceImpl implements EntStallService {
 			if(resStall.getPreId().equals(preId)) {
 				stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
 				stall.setStallId(resStall.getId());
+				if(lockBeans != null) {
+					for (LockBean lock : lockBeans) {
+						if(lock.getLockCode().equals(stall.getLockSn())) {
+							if(lock.getElectricity() <= 30) {
+								stall.setExcStatus(false);
+							}
+						}
+					}
+				}
 				for(ResOrderPlate orderPlate : orders){
 					if(resStall.getId() == orderPlate.getStallId()){
 						stall.setPlateNo(orderPlate.getPlateNo());
@@ -371,6 +380,7 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
+	@Transactional
 	public Map<String,Object> operatStalls(HttpServletRequest request, Long stallId, Integer state) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
@@ -406,6 +416,7 @@ public class EntStallServiceImpl implements EntStallService {
 
 	
 	@Override
+	@Transactional
 	public void change(HttpServletRequest request, Long stallId, int i, Long remarkId, String remark) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
@@ -448,6 +459,7 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
+	@Transactional
 	public Map<String, Object> change(HttpServletRequest request, Long stall_id, int changeStatus) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);

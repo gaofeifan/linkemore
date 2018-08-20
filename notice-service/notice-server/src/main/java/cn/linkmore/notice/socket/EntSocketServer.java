@@ -19,16 +19,16 @@ import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.SpringUtil;
 
+
 /**
- * Websocket
- * 
- * @author liwenlong
- * @version 2.0
- *
+ * EntSocketServer
+ * @author   GFF
+ * @Date     2018年8月20日
+ * @Version  v2.0
  */
-@ServerEndpoint(value = "/ws/user/{openid}")
+@ServerEndpoint(value = "/ws/ent/{openid}")
 @Component
-public class UserSocketServer {
+public class EntSocketServer {
 
 	private String openid;
 
@@ -36,7 +36,7 @@ public class UserSocketServer {
 
 	private static int onlineCount = 0;
 
-	private static ConcurrentHashMap<String, UserSocketServer> webSocketMap = new ConcurrentHashMap<String, UserSocketServer>();
+	private static ConcurrentHashMap<String, EntSocketServer> webSocketMap = new ConcurrentHashMap<String, EntSocketServer>();
 
 	private Session session;
 
@@ -45,7 +45,7 @@ public class UserSocketServer {
 		RedisService redisService = SpringUtil.getBean(RedisService.class);
 		Boolean success = false;
 		log.info("A websokcet connceted:{}", openid);
-		if (redisService.exists(RedisKey.USER_WXAPP_AUTH_TOKEN.key + openid)) {  
+		if (redisService.exists(RedisKey.STAFF_ENT_AUTH_TOKEN.key + openid)) {  
 			this.openid = openid;
 			this.session = session;
 			webSocketMap.put(openid, this); 
@@ -86,7 +86,7 @@ public class UserSocketServer {
 	}
 
 	public static void send(String key, String message) throws IOException {
-		UserSocketServer wss = webSocketMap.get(key);
+		EntSocketServer wss = webSocketMap.get(key);
 		if (wss != null) {
 			wss.sendMessage(message);
 		}
@@ -97,11 +97,11 @@ public class UserSocketServer {
 	}
 
 	public static synchronized void addOnlineCount() {
-		UserSocketServer.onlineCount++;
+		EntSocketServer.onlineCount++;
 	}
 
 	public static synchronized void subOnlineCount() {
-		UserSocketServer.onlineCount--;
+		EntSocketServer.onlineCount--;
 	}
 
 }

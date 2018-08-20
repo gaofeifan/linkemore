@@ -49,6 +49,7 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 			add("/api-docs");
 			add("/v2/api-docs");
 			add("/ent/auth/login");
+			add("/ent/auth/check-mobile");
 			add("/ent/auth/send");
 			add("/error");
 		}

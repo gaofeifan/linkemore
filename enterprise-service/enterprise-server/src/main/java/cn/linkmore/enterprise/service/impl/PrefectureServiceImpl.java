@@ -79,7 +79,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		List<ResPreOrderCount> list = this.orderClient.findPreCountByIds(preIds);
 		if(list == null) {
 			return res;
-		}
+		}	
 		for (ResPreOrderCount resPreOrderCount : list) {
 			res.add(ObjectUtils.copyObject(resPreOrderCount, new cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount()));
 		}
