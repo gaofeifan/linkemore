@@ -14,6 +14,8 @@ public interface OwnerStallService {
 
 	List<OwnerPre>  findStall(HttpServletRequest request);
 	
-	Boolean  control(ReqOperatStall reqOperatStall,HttpServletRequest request);
+	Integer  control(ReqOperatStall reqOperatStall,HttpServletRequest request);
+	
+	Integer   watch(Long stallId,HttpServletRequest request);
 	
 }

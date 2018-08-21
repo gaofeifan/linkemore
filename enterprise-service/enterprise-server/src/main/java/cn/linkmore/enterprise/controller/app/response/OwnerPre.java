@@ -7,6 +7,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("车区信息")
 public class OwnerPre {
 	
+	@ApiModelProperty(value = "车区id")
+	private Long preId;
+	
 	@ApiModelProperty(value = "车区名称")
 	private String preName;
 	
@@ -18,10 +21,17 @@ public class OwnerPre {
 	
 	@ApiModelProperty(value = "纬度")
 	private Double latitude;
-		
+			
 	@ApiModelProperty(value = "车位列表")
 	private List<OwnerStall> stalls;
 
+	public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
 
 	public String getPreName() {
 		return preName;
