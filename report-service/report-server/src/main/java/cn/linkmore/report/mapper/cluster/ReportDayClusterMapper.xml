@@ -138,7 +138,7 @@
 			u. DAY,
 			u.day_total,
 			u.sum_total,
-			(SELECT count(*) FROM v_stall) AS stall_total
+			(SELECT count(*) FROM v_stall v left join v_prefecture p on v.pre_id=p.id where p.category=0) AS stall_total
 		FROM
 			(
 				SELECT
