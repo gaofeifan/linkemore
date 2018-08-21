@@ -54,4 +54,6 @@ public interface EntAuthStallClusterMapper {
 	 * @Version  v2.0
 	 */
 	Integer checkAuth(Map<String, Object> map);
+
+	List<Long> findStallListByIds(Map<String, Object> param);
 }

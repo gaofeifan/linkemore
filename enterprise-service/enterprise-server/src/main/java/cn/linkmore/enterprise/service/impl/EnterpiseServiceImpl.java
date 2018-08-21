@@ -1,9 +1,12 @@
 package cn.linkmore.enterprise.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -159,5 +162,15 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 	public ResEnterprise findName(Map<String, Object> map) {
 		return this.enterpriseClusterMapper.findName(map);
 	}
+
+	@Override
+	public List<ResEnterprise> findListByIds(List<Long> entIds) {
+		if(entIds == null || entIds.size() == 0) {
+			return new ArrayList<>();
+		}
+		return this.enterpriseClusterMapper.findListByIds(entIds);
+	}
+	
+	
 
 }

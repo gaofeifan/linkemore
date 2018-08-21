@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.controller.ent.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -7,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class ReqStallExcCause {
 
 	@ApiModelProperty(value="车位锁")
+	@JsonProperty("lockSerialNumber")
 	private String stallLock;
 	
 	/**

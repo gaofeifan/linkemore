@@ -4,12 +4,10 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
@@ -34,6 +33,7 @@ import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResEntTypeStalls;
+import cn.linkmore.enterprise.controller.ent.response.ResStallName;
 import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntAuthStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
@@ -48,7 +48,6 @@ import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.enterprise.service.StallExcStatusService;
 import cn.linkmore.order.client.EntOrderClient;
-import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.prefecture.client.StallBatteryLogClient;
@@ -58,7 +57,6 @@ import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
 import cn.linkmore.prefecture.response.ResStallEntity;
-import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.ObjectUtils;
@@ -114,6 +112,7 @@ public class EntStallServiceImpl implements EntStallService {
 	@Autowired
 	private EntStaffClusterMapper entStaffClusterMapper;
 	
+	public static final String DOWN = "down-";
 	@Override
 	public List<ResEntStalls> selectEntStalls(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
@@ -231,7 +230,7 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectStalls(HttpServletRequest request,Long preId, Short type) {
+	public List<ResStallName> selectStalls(HttpServletRequest request,Long preId, Short type) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 		Map<String, Object> map = new HashMap<String,Object>();
@@ -239,13 +238,17 @@ public class EntStallServiceImpl implements EntStallService {
 		map.put("status", 1);
 		List<EntStaffAuth> entStaffAuths= entStaffAuthClusterMapper.findList(map);
 		int size = entStaffAuths.size();
+		List<ResStallName> stallNames = new ArrayList<>();
 		if(size == 0){
-			return new ArrayList<cn.linkmore.enterprise.controller.ent.response.ResStall>();
+			return new ArrayList<ResStallName>();
 		}
-		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
+//		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
 		Map<String, Object> param = new HashMap<String,Object>();
-		param.put("authId", entStaffAuth.getAuthId());
-		List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
+		List<Long> list = entStaffAuths.stream().map(ent -> ent.getAuthId()).collect(Collectors.toList());
+		param.put("authIds", list);
+//		param.put("authId", entStaffAuth.getAuthId());
+//		List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
+		List<Long> stallIds= entAuthStallClusterMapper.findStallListByIds(param);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("type", type);
 		params.put("list", stallIds);
@@ -256,10 +259,14 @@ public class EntStallServiceImpl implements EntStallService {
 		if(collect != null && collect.size() > 0) {
 			stallExcList = this.stallExcStatusService.findExcStatusList(collect);
 		}
-		
+		List<String> parkCode = stalls.stream().map(sta -> sta.getLockSn()).collect(Collectors.toList());
+		ResponseMessage<LockBean> locks = new ResponseMessage<>();//lockFactory.findAvaiLocks(parkCode);
+//		lockFactory.fin
+		List<LockBean> lockBeans = locks.getDataList();
 		//设置车位对应的车牌号
 		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
 		cn.linkmore.enterprise.controller.ent.response.ResStall stall = null;
+//		lockFactory.
 		for(ResStall resStall:stalls){
 			if(orders == null ){ 
 				break;
@@ -267,6 +274,15 @@ public class EntStallServiceImpl implements EntStallService {
 			if(resStall.getPreId().equals(preId)) {
 				stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
 				stall.setStallId(resStall.getId());
+				if(lockBeans != null) {
+					for (LockBean lock : lockBeans) {
+						if(lock.getLockCode().equals(stall.getLockSn())) {
+							if(lock.getElectricity() <= 30) {
+								stall.setExcStatus(false);
+							}
+						}
+					}
+				}
 				for(ResOrderPlate orderPlate : orders){
 					if(resStall.getId() == orderPlate.getStallId()){
 						stall.setPlateNo(orderPlate.getPlateNo());
@@ -283,7 +299,34 @@ public class EntStallServiceImpl implements EntStallService {
 				stallList.add(stall);
 			}
 		}
-		return stallList;
+		ResStallName stallName = null;
+		StringBuilder sb = new StringBuilder();
+		int end = 0;
+		stallName = new ResStallName();
+		stallName.setId("0");
+		cn.linkmore.enterprise.controller.ent.response.ResStall resStall = null;
+		for (int i = 0; i < stallList.size(); i++) {
+			resStall = stallList.get(i);
+			resStall.setpId(stallName.getId());
+			stallName.getStalls().add(resStall);
+			if(i == end) {
+				sb.append(stallList.get(i).getStallName()).append("-");
+				end += 5;
+			}else if(i == (end-1)) {
+				sb.append(stallList.get(i).getStallName());
+				stallName.setStallName(sb.toString());
+				Integer id = Integer.parseInt(stallName.getId());
+				sb = new StringBuilder();
+				stallNames.add(stallName);
+				stallName = new ResStallName();
+				stallName.setId(id+1+"");
+			}else if(i == stallList.size()-1) {
+				sb.append(stallList.get(i).getStallName());
+				stallName.setStallName(sb.toString());
+				stallNames.add(stallName);
+			}
+		}
+		return stallNames;
 	}
 
 	@Override
@@ -337,6 +380,7 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
+	@Transactional
 	public Map<String,Object> operatStalls(HttpServletRequest request, Long stallId, Integer state) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
@@ -352,8 +396,8 @@ public class EntStallServiceImpl implements EntStallService {
 			return result;
 		}
 		ResponseMessage<LockBean> res = null;
-		result.put("result", res.isResult());
-		result.put("result", res.getMsg());
+//		result.put("result", res.isResult());
+//		result.put("result", res.getMsg());
 		
 		new Thread(new Runnable() {
 	        @Override
@@ -372,6 +416,7 @@ public class EntStallServiceImpl implements EntStallService {
 
 	
 	@Override
+	@Transactional
 	public void change(HttpServletRequest request, Long stallId, int i, Long remarkId, String remark) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
@@ -393,10 +438,10 @@ public class EntStallServiceImpl implements EntStallService {
 			}
 			if ("battery-change".equals(dict.getCode())) {
 				try {
-				/*	LockServerClient lockServerClient = ThriftClientFactory.getThriftClient(this.rpcConfig.getHost(),
-							this.rpcConfig.getPort(), this.rpcConfig.getTimeout());
-					String count = ParkingLockClient.getUpOrDownCounts(lockServerClient, stall.getLockSn());*/
-		/*			this.log.info("offline change battery {}", count);*/
+//					LockServerClient lockServerClient = ThriftClientFactory.getThriftClient(this.rpcConfig.getHost(),
+//							this.rpcConfig.getPort(), this.rpcConfig.getTimeout());
+//					String count = ParkingLockClient.getUpOrDownCounts(lockServerClient, stall.getLockSn());
+//					this.log.info("offline change battery {}", lockInfo.get);
 					ResStallBatteryLog sbl = new ResStallBatteryLog();
 					sbl.setAdminId(ru.getId());
 					sbl.setAdminName(ru.getMobile());
@@ -414,6 +459,7 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
+	@Transactional
 	public Map<String, Object> change(HttpServletRequest request, Long stall_id, int changeStatus) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
@@ -483,29 +529,37 @@ public class EntStallServiceImpl implements EntStallService {
 
 	@Override
 	public void saveStallExcCause(List<ReqStallExcCause> causes) {
-		Set<String> collect = causes.stream().map(ca -> ca.getReportSource()).collect(Collectors.toSet());
-		List<ResBaseDict> dicts = this.dictClient.findListByCodes(new ArrayList<>(collect));
+		List<String> list = new ArrayList<>();
+		for (ReqStallExcCause reqStallExcCause : causes) {
+			list.add(DOWN+reqStallExcCause.getReportSource());
+		}
+		List<ResBaseDict> dicts = this.dictClient.findListByCodes(list);
 		List<StallExcStatus> excs = new ArrayList<>();
-		List<ResStallOps> stalls = this.stallClient.findListByParam(new HashMap<String, Object>());
+		List<ResStall> stalls = this.stallClient.findStallList(new HashMap<String, Object>());
 		StallExcStatus excStall = new StallExcStatus();
 		for (ReqStallExcCause reqStallExcCause : causes) {
 			excStall.setCreateTime(new Date());
 			excStall.setStatus((short)0);
 			if(dicts != null && dicts.size() != 0) {
 				for (ResBaseDict resBaseDict : dicts) {
-					excStall.setExcRemark(resBaseDict.getName());
-					excStall.setExcStatus(resBaseDict.getId());
+					if((DOWN+reqStallExcCause.getReportSource()).equals(resBaseDict.getCode())) {
+						excStall.setExcRemark(resBaseDict.getName());
+						excStall.setExcStatus(resBaseDict.getId());
+					}
 				}
-				for (ResStallOps resStallOps : stalls) {
+				for (ResStall resStallOps : stalls) {
 					if(reqStallExcCause.getStallLock().equals(resStallOps.getLockSn())) {
 						excStall.setStallId(resStallOps.getId());
 					}
 				}
+				if(excStall.getExcStatus() != null && excStall.getStallId() != null) {
+					excs.add(excStall);
+				}
 			}
-			excs.add(excStall);
 		}
-		
-		this.stallExcStatusService.saveBatch(excs);
+		if(excs.size() != 0) {
+			this.stallExcStatusService.saveBatch(excs);
+		}
 	}
 	
 	

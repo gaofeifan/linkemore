@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.report.request.ReqReportDay;
 import cn.linkmore.report.response.ResAveragePrice;
 import cn.linkmore.report.response.ResCity;
@@ -124,7 +127,9 @@ public class ReportDayController {
 	@ResponseBody
 	public List<ResPull> pullList(@RequestBody ReqReportDay reportDay) {
 		Map<String, Object> param = convert(reportDay);
-		return this.reportDayService.pullList(param);
+		List<ResPull> pullList = this.reportDayService.pullList(param);
+		log.info("pull list = {}",JSON.toJSON(pullList));
+		return pullList;
 	}
 
 	@RequestMapping(value = "/v2.0/stall_average", method = RequestMethod.POST)
@@ -152,8 +157,15 @@ public class ReportDayController {
 	@ResponseBody
 	public List<ResOrder> newUserOrderList(@RequestBody ReqReportDay reportDay) {
 		Map<String, Object> param = convert(reportDay);
+		
+		long startTime = System.currentTimeMillis();    //获取开始时间
+
 		List<ResOrder> orders = this.reportDayService.newUserOrderList(param);
-		//log.info("new user orders = {}" ,JSON.toJSON(orders));
+		log.info("new user orders = {}" ,JSON.toJSON(orders));
+		long endTime = System.currentTimeMillis();    //获取结束时间
+
+		log.info("new user orders runtime ={}", (endTime - startTime) + "ms");    //输出程序运行时间
+		
 		return orders;
 	}
 
@@ -161,8 +173,15 @@ public class ReportDayController {
 	@ResponseBody
 	public List<ResOrder> oldUserOrderList(@RequestBody ReqReportDay reportDay) {
 		Map<String, Object> param = convert(reportDay);
+		long startTime = System.currentTimeMillis();    //获取开始时间
+
 		List<ResOrder> orders = this.reportDayService.oldUserOrderList(param);
-		//log.info("old user orders = {}" ,JSON.toJSON(orders));
+		log.info("old user orders = {}" ,JSON.toJSON(orders));
+
+		long endTime = System.currentTimeMillis();    //获取结束时间
+
+		log.info("old user orders runtime ={}", (endTime - startTime) + "ms");    //输出程序运行时间
+		
 		return orders;
 	}
 

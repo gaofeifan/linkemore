@@ -213,8 +213,43 @@ public class DateUtils {
 		    }
 		    long minutes = (time % (1000 * 60 * 60)) / (1000 * 60);  
 			return minutes + "分钟";
-			
 		}
+		
+		 /**
+		 * @Description  获取两个时间段的时分秒
+		 * @Author   GFF 
+		 * @Version  v2.0
+		 */
+		public static String getDurationDetail(Date currentTime,Date firstTime){
+	          long diff = currentTime.getTime() - firstTime.getTime();
+	          Calendar  currentTimes =dataToCalendar(currentTime);
+	          Calendar  firstTimes =dataToCalendar(firstTime);
+	          int year = currentTimes.get(Calendar.YEAR) - firstTimes.get(Calendar.YEAR);//获取年
+	          int month = currentTimes.get(Calendar.MONTH) - firstTimes.get(Calendar.MONTH);
+	          int day = currentTimes.get(Calendar.DAY_OF_MONTH) - firstTimes.get(Calendar.DAY_OF_MONTH); 
+	          if (day < 0) {
+	             month -= 1;
+	             currentTimes.add(Calendar.MONTH, -1);
+	             day = day + currentTimes.getActualMaximum(Calendar.DAY_OF_MONTH);//获取日
+	          }
+	          if (month < 0) {
+	             month = (month + 12) % 12;//获取月
+	             year--;
+	          }      
+	          long days = diff / (1000 * 60 * 60 * 24);           
+	          long hours = (diff-days*(1000 * 60 * 60 * 24))/(1000* 60 * 60); //获取时 
+	          long minutes = (diff-days*(1000 * 60 * 60 * 24)-hours*(1000* 60 * 60))/(1000* 60);  //获取分钟
+	          long s=(diff/1000-days*24*60*60-hours*60*60-minutes*60);//获取秒
+	          String CountTime=""+day+"天"+hours+"小时"+minutes+"分"+s+"秒";
+	          return CountTime;
+	    }  
+		 
+		 //Date类型转Calendar类型
+	    public static Calendar dataToCalendar(Date date) {
+	          Calendar calendar = Calendar.getInstance();
+	          calendar.setTime(date);
+	          return calendar;
+	    }
 		
 		/**
 		 * @Description  获取月

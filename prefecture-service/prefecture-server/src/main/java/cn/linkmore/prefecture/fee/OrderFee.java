@@ -69,7 +69,7 @@ public class OrderFee {
 			result = OldDayFee.getBilling(base, startDate, stopDate);
 			break;
 		case StrategyBase.TYPE_TY_D32_FEE:
-			result = SixHourTopFee.getBilling(base, startDate, stopDate);
+			result = TianyangTopFee.getBilling(base, startDate, stopDate);
 			break;
 		case StrategyBase.TYPE_GZHYZZ_FEE:
 			result = GzHyZz.getBilling(base, new Date(startDate.getTime() - freeTime), stopDate);

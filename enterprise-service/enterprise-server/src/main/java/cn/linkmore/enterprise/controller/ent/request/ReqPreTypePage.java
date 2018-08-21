@@ -15,9 +15,9 @@ public class ReqPreTypePage {
 	private Long preId;
 	
 	@ApiModelProperty(required=true,value = "类型 0 7天 1 15天 2 30天")
-//	@Digits(message="类型数据应为0-2",regex="[0,1,2]")
+	@Digits(message="类型数据应为0-2",regex="[0,1,2]")
 	@NotNull(message="类型不能为空")
-	private Short type;
+	private Integer type;
 
 	
 	@ApiModelProperty(required=false,value = "当前页 不填默认第一页")
@@ -32,11 +32,11 @@ public class ReqPreTypePage {
 		this.preId = preId;
 	}
 
-	public Short getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(Short type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 

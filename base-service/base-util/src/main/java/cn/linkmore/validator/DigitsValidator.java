@@ -17,7 +17,7 @@ import cn.linkmore.annotation.Digits;
  * @Date     2018年8月11日
  * @Version  v2.0
  */
-public class DigitsValidator implements ConstraintValidator<Digits, String> {
+public class DigitsValidator implements ConstraintValidator<Digits, Object> {
 
 	String regex = "^[1-9]|[1-9][0-9]*$";
 
@@ -29,9 +29,9 @@ public class DigitsValidator implements ConstraintValidator<Digits, String> {
 	}
 
 	@Override
-	public boolean isValid(String value, ConstraintValidatorContext context) {
+	public boolean isValid(Object value, ConstraintValidatorContext context) {
 		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(value);
+		Matcher matcher = pattern.matcher(value.toString());
 		return matcher.matches();
 	}
 

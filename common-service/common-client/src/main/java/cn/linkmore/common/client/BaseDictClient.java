@@ -27,6 +27,7 @@ public interface BaseDictClient {
 	public List<ResBaseDict> findList(@PathVariable("code") String code);
 	
 	@RequestMapping(value="/list",method=RequestMethod.POST)
+	@ResponseBody
 	public List<ResBaseDict> findListByCodes(@RequestBody List<String> codes);
 	
 	@RequestMapping(method=RequestMethod.POST)

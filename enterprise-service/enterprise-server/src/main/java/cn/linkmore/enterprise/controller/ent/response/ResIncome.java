@@ -36,7 +36,7 @@ public class ResIncome {
 		this.dayAmount = dayAmount;
 	}
 
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
 	public Date getDayTime() {
 		return dayTime;
 	}

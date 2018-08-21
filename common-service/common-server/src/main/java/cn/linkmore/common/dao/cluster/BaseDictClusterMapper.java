@@ -37,4 +37,11 @@ public interface BaseDictClusterMapper {
 	 */
 	ResBaseDict find(Long id);
 
+	/**
+	 * @Description  批量查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResBaseDict> findListByCodes(List<String> codes);
+
 }

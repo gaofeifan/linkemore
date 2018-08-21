@@ -19,7 +19,7 @@ public class ResDayIncomes {
 	@ApiModelProperty("日总额")
 	private BigDecimal dayAmount;
 	
-	@JsonFormat(pattern="MM-dd")
+	@JsonFormat(pattern="MM-dd",timezone="GMT+8")
 	public Date getDate() {
 		return date;
 	}

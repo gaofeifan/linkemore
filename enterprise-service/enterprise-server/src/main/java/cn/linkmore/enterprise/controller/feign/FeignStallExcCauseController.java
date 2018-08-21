@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import io.swagger.annotations.ApiOperation;
 
 @RequestMapping("/feign/stall/exc")
+@RestController
 public class FeignStallExcCauseController {
 
 	@Resource

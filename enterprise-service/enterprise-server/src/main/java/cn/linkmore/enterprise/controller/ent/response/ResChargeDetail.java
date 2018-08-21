@@ -32,8 +32,7 @@ public class ResChargeDetail {
 	public void setPlateNo(String plateNo) {
 		this.plateNo = plateNo;
 	}
-
-	@JsonFormat(pattern="MM:dd")
+	@JsonFormat(pattern="HH:mm",timezone="GMT+8")
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -58,7 +57,7 @@ public class ResChargeDetail {
 		this.orderAmount = orderAmount;
 	}
 
-	@JsonFormat(pattern="MM:dd")
+	@JsonFormat(pattern="HH:mm",timezone="GMT+8")
 	public Date getEndTime() {
 		return endTime;
 	}

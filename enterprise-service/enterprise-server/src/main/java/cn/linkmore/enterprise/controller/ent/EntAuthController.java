@@ -2,6 +2,7 @@ package cn.linkmore.enterprise.controller.ent;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -20,6 +21,8 @@ import cn.linkmore.enterprise.controller.ent.response.ResStaff;
 import cn.linkmore.enterprise.service.StaffService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.val;
 
 /**
  * 用户认证
@@ -69,10 +72,24 @@ public class EntAuthController {
 		return response;
 	}  
 	
+	@ApiOperation(value="校验手机号是否存在",notes="校验手机号是否存在", consumes = "application/json")
+	@RequestMapping(value = "/check-mobile", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> checkMobile(
+			@NotBlank(message="手机号不能为空") 
+			@Pattern(regexp="^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(16[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(19[0-9]{1}))+\\d{8})$", message="无效手机号") 
+			@ApiParam("手机号") @RequestParam("mobile") String mobile
+			, HttpServletRequest request){
+		ResponseEntity<?> response = null; 
+		boolean flag = this.staffService.checkMobile(mobile);
+		response = ResponseEntity.success(flag, request);
+		return response;
+	}
+	
 	@ApiOperation(value="发短信验证码",notes="手机号不能为空,需要加密", consumes = "application/json")
 	@RequestMapping(value = "/send", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> shuod(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
+	public ResponseEntity<?> send(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
 		this.staffService.send(rs);
 		response = ResponseEntity.success(null, request);

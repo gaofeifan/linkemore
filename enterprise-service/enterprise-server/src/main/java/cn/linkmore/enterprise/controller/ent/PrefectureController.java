@@ -58,7 +58,7 @@ public class PrefectureController {
 	@ApiOperation(value = "根据条件查询车场实收入金额[7-15-30]天", notes = "根据条件查询车场实收入[7-15-30]天", consumes = "application/json")
 	@ResponseBody
 	public ResponseEntity<BigDecimal> findProceedsAmount(@Validated @RequestBody ReqPreType preType ,HttpServletRequest request){
-		BigDecimal income = this.prefectureService.findProceedsAmount(preType.getType(),preType.getPreId(),request);
+		BigDecimal income = this.prefectureService.findProceedsAmount(preType.getType().shortValue(),preType.getPreId(),request);
 		return ResponseEntity.success(income,request);
 	}
 	
@@ -66,7 +66,7 @@ public class PrefectureController {
 	@ApiOperation(value = "根据条件查询车场实收入明细列表[7-15-30]天", notes = "根据条件查询车场实收入[7-15-30]天", consumes = "application/json")
 	@ResponseBody
 	public ResponseEntity<ResIncomeList> findProceeds(@Validated @RequestBody ReqPreType preType ,HttpServletRequest request){
-		ResIncomeList list = this.prefectureService.findProceeds(preType.getType(),preType.getPreId(),request);
+		ResIncomeList list = this.prefectureService.findProceeds(preType.getType().shortValue(),preType.getPreId(),request);
 		return ResponseEntity.success(list,request);
 	}
 	
@@ -74,21 +74,21 @@ public class PrefectureController {
 	@ApiOperation(value = "查询车场车流量统计[7-15-30]天明细列表", notes = "查询车场车流量统计[7-15-30]天", consumes = "application/json")
 	@ResponseBody
 	public ResponseEntity<cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow> findTrafficFlow(@Validated @RequestBody ReqPreType preType ,HttpServletRequest request){
-		cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow flow = this.prefectureService.findTrafficFlow(preType.getType(),preType.getPreId(),request);
+		cn.linkmore.enterprise.controller.ent.response.ResTrafficFlow flow = this.prefectureService.findTrafficFlow(preType.getType().shortValue(),preType.getPreId(),request);
 		return ResponseEntity.success(flow,request);
 	}
 	@RequestMapping(value="/traffic-flow-count" ,method=RequestMethod.POST)
 	@ApiOperation(value = "查询车场车流量统计[7-15-30]天总流量", notes = "查询车场车流量统计[7-15-30]天", consumes = "application/json")
 	@ResponseBody
 	public ResponseEntity<Integer> findTrafficFlowCount(@Validated @RequestBody ReqPreType preType ,HttpServletRequest request){
-		Integer count = this.prefectureService.findTrafficFlowCount(preType.getType(),preType.getPreId(),request);
+		Integer count = this.prefectureService.findTrafficFlowCount(preType.getType().shortValue(),preType.getPreId(),request);
 		return ResponseEntity.success(count,request);
 	}
 	
 	@RequestMapping(value="/charge-detail" ,method=RequestMethod.GET)
 	@ApiOperation(value = "查询车场实时收费明细", notes = "查询车场实时收费明细", consumes = "application/json")
 	@ResponseBody
-	public ResponseEntity<List<ResChargeDetail>> findChargeDetail( @RequestParam("preId") @NotNull(message="车区id") @ApiParam(value="车区id",required=true,name="preId") Long preId,
+	public ResponseEntity<List<ResChargeDetail>> findChargeDetail( @RequestParam("preId") @NotNull(message="车区id不能为空") @ApiParam(value="车区id",required=true,name="preId") Long preId,
 									@RequestParam("pageNo") Integer pageNo,
 							HttpServletRequest request){
 		List<ResChargeDetail> list = this.prefectureService.findChargeDetail(pageNo,preId,request);
@@ -108,7 +108,7 @@ public class PrefectureController {
 	@ResponseBody
 	public ResponseEntity<ResDayTrafficFlow> findTrafficFlowList(@Validated @RequestBody ReqPreTypePage page,
 																	   HttpServletRequest request){
-		ResDayTrafficFlow list = this.prefectureService.findTrafficFlowList(page.getPageNo(),page.getType(),page.getPreId(),null,request);
+		ResDayTrafficFlow list = this.prefectureService.findTrafficFlowList(page.getPageNo(),page.getType().shortValue(),page.getPreId(),null,request);
 		return ResponseEntity.success(list, request);
 	}
 	
@@ -117,7 +117,7 @@ public class PrefectureController {
 	@ResponseBody
 	public ResponseEntity<ResDayIncome> findIncomeList(@RequestBody @Validated ReqPreTypePage page,
 															HttpServletRequest request){
-		ResDayIncome list = this.prefectureService.findIncomeList(page.getPageNo(),page.getType(),page.getPreId(),null,request);
+		ResDayIncome list = this.prefectureService.findIncomeList(page.getPageNo(),page.getType().shortValue(),page.getPreId(),null,request);
 		return ResponseEntity.success(list, request);
 	}
 	

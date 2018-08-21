@@ -124,7 +124,7 @@ public interface OrdersClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	BigDecimal findPreDayIncome(Map<String, Object> map);
+	java.math.BigDecimal findPreDayIncome(Map<String, Object> map);
 
 	/**
 	 * @Description  查询车流量
