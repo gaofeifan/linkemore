@@ -500,6 +500,8 @@ public class ReportDayOrderController {
 					int hzTotalTime = 0;
 					int bjShopRuntime = 0;
 					int hzShopRuntime = 0;
+					int bjCount = 0;
+					int hzCount = 0;
 					double bjRuntimeRate = 0d;
 					double hzRuntimeRate = 0d;
 					double totalRuntimeRate = 0d;
@@ -512,26 +514,28 @@ public class ReportDayOrderController {
 							if (resRunTime.getCityName().equals("北京")) {
 								bjTotalTime += resRunTime.getTotalTime();
 								bjShopRuntime += resRunTime.getShopRuntime();
+								bjCount ++;
 							} else if (resRunTime.getCityName().equals("杭州")) {
 								hzTotalTime += resRunTime.getTotalTime();
 								hzShopRuntime += resRunTime.getShopRuntime();
+								hzCount ++;
 							}
 						}
 					}
 					log.info("bj_total_time ,{} hz_total_time ,{} bj_stall,{} hz_stall_count,{}", bjTotalTime, hzTotalTime,
 							bjStall, hzStall);
 					if (bjStall != 0 && bjShopRuntime != 0) {
-						bjRuntimeRate = new BigDecimal((float) bjTotalTime / 60 / bjShopRuntime / bjStall)
-								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+						bjRuntimeRate = new BigDecimal((float) bjTotalTime / 60 / (bjShopRuntime/bjCount) / bjStall)
+								.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 					}
 					if (hzStall != 0 && hzShopRuntime != 0) {
-						hzRuntimeRate = new BigDecimal((float) hzTotalTime / 60/ hzShopRuntime / hzStall)
-								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+						hzRuntimeRate = new BigDecimal((float) hzTotalTime / 60 / (hzShopRuntime/hzCount) / hzStall)
+								.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 					}
 
 					if ((bjStall + hzStall) != 0 && (bjShopRuntime + hzShopRuntime)!= 0) {
-						totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / (bjShopRuntime + hzShopRuntime) / 60 / (bjStall + hzStall))
-								.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+						totalRuntimeRate = new BigDecimal((float) (bjTotalTime + hzTotalTime) / 60 / ((bjShopRuntime+hzShopRuntime)/(bjCount+hzCount)) / (bjStall + hzStall))
+								.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 					}
 
 					map.put("bjTotal", bjRuntimeRate);
