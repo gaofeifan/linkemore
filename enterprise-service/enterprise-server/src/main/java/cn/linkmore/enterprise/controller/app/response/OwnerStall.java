@@ -33,7 +33,38 @@ public class OwnerStall {
 	@ApiModelProperty(value = "车位结束时间")
 	private String endTime;
 
+	@ApiModelProperty(value = "车位位置描述")
+	private String stallLocal;
 	
+	@ApiModelProperty(value = "路线指引")
+	private String routeGuidance;
+	
+	@ApiModelProperty(value = "车位导航图")
+	private String imageUrl;
+	
+	public String getStallLocal() {
+		return stallLocal;
+	}
+
+	public void setStallLocal(String stallLocal) {
+		this.stallLocal = stallLocal;
+	}
+
+	public String getRouteGuidance() {
+		return routeGuidance;
+	}
+
+	public void setRouteGuidance(String routeGuidance) {
+		this.routeGuidance = routeGuidance;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
 
 	public int getLockSn() {
 		return lockSn;

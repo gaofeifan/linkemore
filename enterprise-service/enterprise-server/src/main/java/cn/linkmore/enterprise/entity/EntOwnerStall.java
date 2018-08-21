@@ -17,7 +17,11 @@ public class EntOwnerStall {
 
 	private String endTime;
 
+	private String stallLocal;
 	
+	private String routeGuidance;
+	
+	private String imageUrl;
 
 	public Long getStallId() {
 		return stallId;
@@ -73,6 +77,30 @@ public class EntOwnerStall {
 
 	public void setPreId(Long preId) {
 		this.preId = preId;
+	}
+
+	public String getStallLocal() {
+		return stallLocal;
+	}
+
+	public void setStallLocal(String stallLocal) {
+		this.stallLocal = stallLocal;
+	}
+
+	public String getRouteGuidance() {
+		return routeGuidance;
+	}
+
+	public void setRouteGuidance(String routeGuidance) {
+		this.routeGuidance = routeGuidance;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 	
 	
