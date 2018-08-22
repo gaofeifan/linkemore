@@ -1213,32 +1213,43 @@ public class ReportDayExportController {
 
 	public Map<String, Object> feeMap(ReqReportDay reportDay) {
 		List<ResIncome> incomeList = this.reportDayService.incomeList(reportDay);
+		List<ResCost> costList = this.reportDayService.costList(reportDay);
 		JSONArray ja = new JSONArray();
 		Map<String, Object> map = null;
 		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
-				&& incomeList != null) {
+				&& incomeList != null && costList != null) {
 			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
 			for (String date : dateList) {
 				map = new HashMap<String, Object>();
 				map.put("day", date);
-				double bjTotal = 0d;// 北京总金额
-				double hzTotal = 0d;// 杭州总金额
-				for (ResIncome resIncome : incomeList) {
-					if (map.get(resIncome.getPreName()) == null) {
-						map.put(resIncome.getPreName(), 0);
+				double bjTotalCost = 0d;
+				double hzTotalCost = 0d;
+				
+				double bjTotalActualAmount = 0d;// 北京总金额
+				double hzTotalActualAmount = 0d;// 杭州总金额
+				for (ResCost resCost : costList) {
+					double dayRent =  new BigDecimal((float) resCost.getMonthRent() / 30).setScale(0, BigDecimal.ROUND_HALF_UP)
+							.doubleValue();
+					map.put(resCost.getPreName(), dayRent);
+					if (resCost.getCityName().equals("北京")) {
+						bjTotalCost = add(bjTotalCost, dayRent);
+					} else if (resCost.getCityName().equals("杭州")) {
+						hzTotalCost = add(hzTotalCost, dayRent);
 					}
+				}
+				for (ResIncome resIncome : incomeList) {
 					if (date.equals(resIncome.getDay())) {
 						map.put(resIncome.getPreName(), resIncome.getFee());
 						if (resIncome.getCityName().equals("北京")) {
-							bjTotal += resIncome.getFee();
+							bjTotalActualAmount = add(bjTotalActualAmount, resIncome.getActualAmount());
 						} else if (resIncome.getCityName().equals("杭州")) {
-							hzTotal += resIncome.getFee();
+							hzTotalActualAmount = add(hzTotalActualAmount, resIncome.getActualAmount());
 						}
 					}
 				}
-				map.put("bjTotal", bjTotal);
-				map.put("hzTotal", hzTotal);
-				map.put("total", add(bjTotal, hzTotal));
+				map.put("bjTotal", bjTotalCost - bjTotalActualAmount);
+				map.put("hzTotal", hzTotalCost - hzTotalActualAmount);
+				map.put("total", add((bjTotalCost - bjTotalActualAmount), (hzTotalCost - hzTotalActualAmount)));
 				ja.add(map);
 			}
 		}
@@ -1252,16 +1263,34 @@ public class ReportDayExportController {
 
 	public Map<String, Object> pullCostMap(ReqReportDay reportDay) {
 		List<ResPullCost> pullCostList = this.reportDayService.pullCostList(reportDay);
+		List<ResCost> costList = this.reportDayService.costList(reportDay);
 		JSONArray ja = new JSONArray();
 		Map<String, Object> map = null;
 		if (StringUtils.isNotBlank(reportDay.getStartTime()) && StringUtils.isNotBlank(reportDay.getEndTime())
-				&& pullCostList != null) {
+				&& pullCostList != null && costList != null) {
 			List<String> dateList = StringUtil.getBetweenDates(reportDay.getStartTime(), reportDay.getEndTime());
 			for (String date : dateList) {
 				map = new HashMap<String, Object>();
 				map.put("day", date);
-				int bjFeeTotal = 0;// 北京费用总金额
-				int hzFeeTotal = 0;// 杭州费用总金额
+				map.put("bjTotal", null);
+				map.put("hzTotal", null);
+				map.put("total", null);
+				double bjTotalCost = 0d;
+				double hzTotalCost = 0d;
+				
+				double bjTotalActualAmount = 0d;// 北京总金额
+				double hzTotalActualAmount = 0d;// 杭州总金额
+				for (ResCost resCost : costList) {
+					double dayRent =  new BigDecimal((float) resCost.getMonthRent() / 30).setScale(0, BigDecimal.ROUND_HALF_UP)
+							.doubleValue();
+					if (resCost.getCityName().equals("北京")) {
+						bjTotalCost = add(bjTotalCost, dayRent);
+					} else if (resCost.getCityName().equals("杭州")) {
+						hzTotalCost = add(hzTotalCost, dayRent);
+					}
+				}
+				double bjFeeTotal = 0;// 北京费用总金额
+				double hzFeeTotal = 0;// 杭州费用总金额
 				int bjPullCount = 0;
 				int hzPullCount = 0;
 				double bjTotalAverage = 0d;
@@ -1269,24 +1298,25 @@ public class ReportDayExportController {
 				double totalAverage = 0d;
 
 				for (ResPullCost resPullCost : pullCostList) {
-					if (map.get(resPullCost.getPreName()) == null) {
-						map.put(resPullCost.getPreName(), 0);
-					}
 					if (date.equals(resPullCost.getDay())) {
 						map.put(resPullCost.getPreName(), resPullCost.getPullCost());
+						if(resPullCost.getPullCost() == 0d) {
+							map.put(resPullCost.getPreName(), null);
+						}
 						if (resPullCost.getCityName().equals("北京")) {
-							bjFeeTotal += resPullCost.getFee();
+							bjTotalActualAmount = add(bjTotalActualAmount, resPullCost.getActualAmount());
 							bjPullCount += resPullCost.getDayTotal();
 						} else if (resPullCost.getCityName().equals("杭州")) {
-							hzFeeTotal += resPullCost.getFee();
+							hzTotalActualAmount = add(hzTotalActualAmount, resPullCost.getActualAmount());
 							hzPullCount += resPullCost.getDayTotal();
 						}
 					}
 				}
-
+				bjFeeTotal = bjTotalCost - bjTotalActualAmount;
+				hzFeeTotal = hzTotalCost - hzTotalActualAmount;
 				if (bjPullCount != 0) {
 					bjTotalAverage = new BigDecimal((float) bjFeeTotal / bjPullCount)
-							.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
+							.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 				}
 				if (hzPullCount != 0) {
 					hzTotalAverage = new BigDecimal((float) hzFeeTotal / hzPullCount)
@@ -1298,10 +1328,15 @@ public class ReportDayExportController {
 				}
 				log.info("bj_fee_total ,{} hz_fee_total ,{} bj_pull_count ,{} hz_pull_count,{}", bjFeeTotal, hzFeeTotal,
 						bjPullCount, hzPullCount);
-
-				map.put("bjTotal", bjTotalAverage);
-				map.put("hzTotal", hzTotalAverage);
-				map.put("total", totalAverage);
+				if(bjTotalAverage != 0d) {
+					map.put("bjTotal", bjTotalAverage);
+				}
+				if(hzTotalAverage != 0d) {
+					map.put("hzTotal", hzTotalAverage);
+				}
+				if(totalAverage != 0d) {
+					map.put("total", totalAverage);
+				}
 				ja.add(map);
 			}
 		}

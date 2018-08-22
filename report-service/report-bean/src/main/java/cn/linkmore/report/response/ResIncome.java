@@ -16,7 +16,7 @@ public class ResIncome {
 	private double cashDealRate;//现金占交易额比例
 	private double dealCostRate;//交易额占成本比例
 	private double cashCostRate;//现金占成本比例cash_cost_rate
-	private int fee;//费用= 成本-现金收入
+	private double fee;//费用= 成本-现金收入
 	private int cost;//车区每天成本
 	
 	public int getCost() {
@@ -85,10 +85,10 @@ public class ResIncome {
 	public void setCashCostRate(double cashCostRate) {
 		this.cashCostRate = cashCostRate;
 	}
-	public int getFee() {
+	public double getFee() {
 		return fee;
 	}
-	public void setFee(int fee) {
+	public void setFee(double fee) {
 		this.fee = fee;
 	}
 }
