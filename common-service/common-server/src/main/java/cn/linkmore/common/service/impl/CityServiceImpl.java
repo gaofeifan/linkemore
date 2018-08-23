@@ -7,8 +7,12 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -28,7 +32,7 @@ import cn.linkmore.util.EntityUtil;
  */
 @Service
 public class CityServiceImpl implements CityService {
-	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CityClusterMapper cityClusterMapper;
 	
@@ -139,12 +143,15 @@ public class CityServiceImpl implements CityService {
 			rc = null;
 			cn.linkmore.third.request.ReqLocate req = new cn.linkmore.third.request.ReqLocate();
 			req.setLongitude(longitude);
-			req.setLatitude( latitude); 
+			req.setLatitude(latitude); 
 			cn.linkmore.third.response.ResLocate info = this.locateClient.get(longitude,latitude);
+			log.info("locate info = {}",JSON.toJSON(info));
 			if(info!=null&&info.getAdcode()!=null) { 
 				rc = rcMap.get(info.getAdcode().substring(0, 4));
 				if(rc!=null) {
 					rc.setStatus(cn.linkmore.common.controller.app.response.ResCity.STATUS_CHECKED);
+					rc.setLongitude(longitude);
+					rc.setLatitude(latitude);
 				}
 			}
 			if(rc==null) {
