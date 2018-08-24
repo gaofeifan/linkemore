@@ -11,10 +11,23 @@ public class ResPullCost {
 	private Long preId;//车区id
 	private String preName;//车区名称
 	private String day;//日期
-	private int fee;//费用
+	private double fee;//费用
 	private int dayTotal;//当天拉新用户数量
-	private int pullCost;//拉新成本
+	private double pullCost;//拉新成本
+	private double actualAmount;//实际收入
 	
+	public double getPullCost() {
+		return pullCost;
+	}
+	public double getActualAmount() {
+		return actualAmount;
+	}
+	public void setActualAmount(double actualAmount) {
+		this.actualAmount = actualAmount;
+	}
+	public void setPullCost(double pullCost) {
+		this.pullCost = pullCost;
+	}
 	public String getDay() {
 		return day;
 	}
@@ -45,10 +58,10 @@ public class ResPullCost {
 	public void setPreName(String preName) {
 		this.preName = preName;
 	}
-	public int getFee() {
+	public double getFee() {
 		return fee;
 	}
-	public void setFee(int fee) {
+	public void setFee(double fee) {
 		this.fee = fee;
 	}
 	public int getDayTotal() {
@@ -56,11 +69,5 @@ public class ResPullCost {
 	}
 	public void setDayTotal(int dayTotal) {
 		this.dayTotal = dayTotal;
-	}
-	public int getPullCost() {
-		return pullCost;
-	}
-	public void setPullCost(int pullCost) {
-		this.pullCost = pullCost;
 	}
 }
