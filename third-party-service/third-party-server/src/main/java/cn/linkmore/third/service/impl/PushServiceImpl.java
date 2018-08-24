@@ -85,7 +85,7 @@ public class PushServiceImpl implements PushService {
 	
 	private boolean ios(ReqPush rp) {
 		boolean flag = false;
-		JPushClient jpushClient = this.beanFactory.jPushClient(); 
+		JPushClient jpushClient = this.beanFactory.jPushClient();
 		Builder ios = PushPayload.newBuilder();  
 		ios.setAudience(Audience.alias("u"+rp.getAlias()));
 		ios.setMessage(Message.newBuilder()
@@ -132,5 +132,41 @@ public class PushServiceImpl implements PushService {
 				
 			}
 		} 
+	}
+	
+	@Override
+	public void send(ReqPush rp) {
+		log.info("send message:{}",JsonUtil.toJson(rp));
+		new IOSSendThread(rp).start();
 	} 
+	
+	class IOSSendThread extends Thread{
+		private ReqPush rp;
+		public IOSSendThread(ReqPush rp) {
+			this.rp =rp;
+		}
+		public void run() {
+			iossend(rp);
+		}
+	}
+	
+	void iossend(ReqPush rp) {
+		JPushClient jSendClient = this.beanFactory.jSendClient();
+		Builder ios = PushPayload.newBuilder();  
+		ios.setAudience(Audience.alias("u"+rp.getAlias()));
+		ios.setMessage(Message.newBuilder()
+				.addExtra("title", rp.getTitle())
+				.addExtra("content", rp.getContent())
+				.addExtra("type",rp.getType().id) 
+				.addExtra("timestamp", new Date().getTime())
+				.addExtra("data", rp.getData())
+				.setMsgContent(rp.getContent()).build());
+		ios.setPlatform(Platform.ios());
+		ios.setOptions(Options.newBuilder().setApnsProduction(baseConfig.getOnline()).build());
+		PushPayload iosppl = ios.build();
+		try {
+			jSendClient.sendPush(iosppl);
+		} catch (Exception e) { }
+	}
+	
 }

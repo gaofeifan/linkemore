@@ -12,8 +12,13 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "push")
 @Component
 public class PushConfig {
+	
 	private String key;
 	private String secret;
+	
+	private String keyAdd;
+	private String secretAdd;
+	
 	public String getKey() {
 		return key;
 	}
@@ -26,5 +31,23 @@ public class PushConfig {
 	public void setSecret(String secret) {
 		this.secret = secret;
 	}
+	public String getKeyAdd() {
+		return keyAdd;
+	}
+	public void setKeyAdd(String keyAdd) {
+		this.keyAdd = keyAdd;
+	}
+	public String getSecretAdd() {
+		return secretAdd;
+	}
+	public void setSecretAdd(String secretAdd) {
+		this.secretAdd = secretAdd;
+	}
+
+	
+
+
+	
+	
 	
 }

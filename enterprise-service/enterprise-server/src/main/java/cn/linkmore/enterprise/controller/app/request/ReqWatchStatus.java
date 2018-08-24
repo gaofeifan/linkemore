@@ -1,15 +1,15 @@
 package cn.linkmore.enterprise.controller.app.request;
 
-import org.hibernate.validator.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel("长租用户查看车锁状态")
-public class ReqLook {
-    
-	@ApiModelProperty(value = "车位id", required = true)
-	@NotBlank(message="车位id不能为空") 
+@ApiModel("长租用户查看操作结果")
+public class ReqWatchStatus {
+
+	@ApiModelProperty("车位id")
+	@NotNull(message="车位不能为空")
 	private Long stallId;
 
 	public Long getStallId() {
@@ -19,6 +19,7 @@ public class ReqLook {
 	public void setStallId(Long stallId) {
 		this.stallId = stallId;
 	}
-
+	
+	
 	
 }

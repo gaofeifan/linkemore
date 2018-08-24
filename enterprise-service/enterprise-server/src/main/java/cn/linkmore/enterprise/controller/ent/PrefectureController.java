@@ -24,6 +24,7 @@ import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlow;
 import cn.linkmore.enterprise.controller.ent.response.ResIncomeList;
 import cn.linkmore.enterprise.controller.ent.response.ResPreOrderCount;
 import cn.linkmore.enterprise.service.PrefectureService;
+import cn.linkmore.prefecture.response.ResStallBatteryLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -119,6 +120,14 @@ public class PrefectureController {
 															HttpServletRequest request){
 		ResDayIncome list = this.prefectureService.findIncomeList(page.getPageNo(),page.getType().shortValue(),page.getPreId(),null,request);
 		return ResponseEntity.success(list, request);
+	}
+	
+	@RequestMapping(value="/battery-log" ,method=RequestMethod.POST)
+	@ApiOperation(value = "查询电池记录", notes = "查询电池记录", consumes = "application/json")
+	@ResponseBody
+	public ResponseEntity< List<ResStallBatteryLog>> battery(@RequestParam("stallId") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stallId,HttpServletRequest request){
+		List<ResStallBatteryLog> res = this.prefectureService.StallBatteryLog(stallId);
+		return ResponseEntity.success(res, request);
 	}
 	
 }
