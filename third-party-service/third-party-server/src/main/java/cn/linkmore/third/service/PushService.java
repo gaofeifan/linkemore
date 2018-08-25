@@ -25,5 +25,12 @@ public interface PushService {
 	 * @return
 	 */
 	void push(List<ReqPush> rps);
+	
+	/**
+	 * 长租及物业推送
+	 * @param rp 消息体
+	 * @return
+	 */
+	void send(ReqPush rp);
 
 }

@@ -32,4 +32,9 @@ public class PushController {
 	public void push(@RequestBody List<ReqPush> rps) {
 		this.pushService.push(rps);
 	}
+	
+	@RequestMapping(value = "/v2.0/send", method = RequestMethod.POST) 
+	public void send(@RequestBody ReqPush rp) {
+		this.pushService.send(rp);
+	}
 }

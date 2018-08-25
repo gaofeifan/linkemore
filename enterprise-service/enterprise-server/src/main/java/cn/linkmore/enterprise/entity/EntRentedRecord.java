@@ -24,8 +24,30 @@ public class EntRentedRecord {
     private String preName;
     
     private String entName;
+    
+    private Long status;
+    
+    private Long userId;
 
-    public Long getId() {
+    
+    
+    public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Long getStatus() {
+		return status;
+	}
+
+	public void setStatus(Long status) {
+		this.status = status;
+	}
+
+	public Long getId() {
         return id;
     }
 

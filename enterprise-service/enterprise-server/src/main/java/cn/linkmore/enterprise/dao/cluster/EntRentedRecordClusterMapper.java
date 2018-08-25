@@ -17,6 +17,8 @@ import cn.linkmore.enterprise.response.ResEnterprise;
 public interface EntRentedRecordClusterMapper {
 
     EntRentedRecord findById(Long id);
+    
+    EntRentedRecord findByUser(Long userId);
 
 	/**
 	 * @Description  查询总数

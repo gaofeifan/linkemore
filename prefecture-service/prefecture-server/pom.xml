@@ -78,7 +78,12 @@
 			<version>${project.version}</version>
 		</dependency> 
 		
-		
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>third-party-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.linkmore</groupId>
 			<artifactId>linkmore-lock-sdk</artifactId>
