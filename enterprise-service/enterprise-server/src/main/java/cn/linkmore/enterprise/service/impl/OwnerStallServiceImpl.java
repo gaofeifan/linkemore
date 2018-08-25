@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSON;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
@@ -147,7 +148,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 					list.add(ownerpre);
 				}
 			}
-			
 			res.setRes(list);
 			res.setIsHave(isHave);
 			res.setNum(num);
@@ -159,31 +159,24 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	}
 
 	@Override
-	public Integer control(ReqConStall reqOperatStall, HttpServletRequest request) {
-		// 鉴权
+	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key +  TokenUtil.getKey(request));
-		
-		/*user = new CacheUser();
-		user.setId(2820L);*/
-		
 		if (user == null) {
-			log.info("--------未登录--------" );
-			return -1;
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
 		log.info("用户>>>" + JSON.toJSONString(user));
 		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
-		//他人使用中
 		String val = String.valueOf(this.redisService.get(rediskey));
 		if(StringUtil.isNotBlank(val)) {
 			if(!val.equals(String.valueOf(user.getId()))) {
-				log.info("--------他人使用中-----"+user.getId());
-				return -2;
+				log.info("用户>>>"+user.getId()+"他人使用中>>>"+val);
+				throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 			}
 		}
 		//未完成记录
 		EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
-		if(reqOperatStall.getState()==2) {//升起
-			log.info(user.getId() +"---------升起--------"+reqOperatStall.getStallId());
+		if(reqOperatStall.getState()==2) {
+			log.info("用户>>>"+user.getId() +"升锁>>>"+reqOperatStall.getStallId());
 			if(Objects.nonNull(record)) {
 				EntRentedRecord up = new EntRentedRecord();
 				up.setLeaveTime(new Date());
@@ -191,8 +184,8 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				up.setId(record.getId());
 				entRentedRecordMasterMapper.updateByIdSelective(up);
 			}
-		}else if(reqOperatStall.getState()==1) {//降下
-			log.info(user.getId() +"---------降下--------"+reqOperatStall.getStallId());
+		}else if(reqOperatStall.getState()==1) {
+			log.info("用户>>>"+user.getId() +"降锁>>>"+reqOperatStall.getStallId());
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
 			if(record==null) {
 				EntRentedRecord	 newrecord = new EntRentedRecord();
@@ -212,43 +205,39 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				log.info(user.getId() +"---------插入record--------"+reqOperatStall.getStallId());
+				log.info("用户>>>"+user.getId()+"record>>>"+reqOperatStall.getStallId());
 			}
 		}
 		// 放入缓存
 		this.redisService.set(rediskey,user.getId(),ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
-		log.info(user.getId() +"---------放入缓存--------"+rediskey);
+		log.info("用户>>>"+user.getId() +"缓存>>>"+rediskey);
 		// 调用
 		ReqControlLock reqc = new ReqControlLock();
 		reqc.setKey(rediskey);
 		reqc.setStallId(reqOperatStall.getStallId());
 		reqc.setStatus(reqOperatStall.getState());
 		stallClient.controllock(reqc);
-		log.info(user.getId() +"---------异步调用--------"+reqOperatStall.getStallId());
-		return 0;
+		log.info( "用户>>>"+user.getId() +"调用>>>"+reqOperatStall.getStallId());
 	}
 	
 	@Override
-	public Integer watch(Long stallId, HttpServletRequest request) {
+	public void watch(Long stallId, HttpServletRequest request) {
 		try {
 			CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-			/*user = new CacheUser();
-			user.setId(2820L);*/
 			String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
 			if (user == null) {
-				return -1;
+				throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 			}
 			String  val=  String.valueOf(this.redisService.get(rediskey));
-			log.info(user.getId() +"---------查看缓存--------"+rediskey);
+			log.info("用户>>>"+user.getId() +">>>"+rediskey);
 			if(StringUtil.isNotBlank(val)) {
 				if(val.equals( String.valueOf(user.getId()))) {
-					return 2;
+					throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BusinessException(StatusEnum.SERVER_EXCEPTION);
 		}
-		return 1;
 	}
 
 	public static String handleTime(String time) {

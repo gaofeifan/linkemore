@@ -475,12 +475,13 @@ public class StallServiceImpl implements StallService {
 	
 	private void send(String uid) {
 		log.info("个人降锁通知-----------------------------"+uid);
-		String title = "个人降锁通知";
-		String content = "车位锁降下成功";
-		PushType type =PushType.LOCK_DOWN_NOTICE ;
+		String title = "降锁通知";
+		String content = "车位锁操作成功";
+		PushType type =PushType.LOCK_CONTROL_NOTICE ;
 		Boolean status = true;
 		Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
 		log.info("send:{}", JsonUtil.toJson(token));
+		
 		ReqPush rp = new ReqPush();
 		rp.setAlias(uid);
 		rp.setTitle(title);
