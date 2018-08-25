@@ -152,7 +152,7 @@ public class PushServiceImpl implements PushService {
 	
 	void iossend(ReqPush rp) {
 		JPushClient jSendClient = this.beanFactory.jSendClient();
-		Builder ios = PushPayload.newBuilder();  
+		Builder ios = PushPayload.newBuilder();
 		ios.setAudience(Audience.alias("u"+rp.getAlias()));
 		ios.setMessage(Message.newBuilder()
 				.addExtra("title", rp.getTitle())

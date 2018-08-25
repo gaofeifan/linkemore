@@ -35,12 +35,6 @@ public interface PushClient {
 	@RequestMapping(value = "/v2.0", method = RequestMethod.PUT) 
 	void push(@RequestBody List<ReqPush> rps) ;
 	
-	/**
-	 * Client - 推送
-	 * 物业版
-	 * @param rps
-	 */ 
-	@RequestMapping(value = "/v2.0/send", method = RequestMethod.POST) 
-	void send(@RequestBody ReqPush rp) ;
+
 	
 }
