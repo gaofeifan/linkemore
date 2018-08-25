@@ -29,9 +29,4 @@ public class PushClientHystrix implements PushClient {
 		log.warn("push failure");
 	}
 
-
-	@Override
-	public void send(ReqPush rp) {
-		log.warn("push failure");
-	}
 }
