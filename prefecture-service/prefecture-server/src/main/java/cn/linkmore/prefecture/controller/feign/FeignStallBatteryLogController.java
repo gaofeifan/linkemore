@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import cn.linkmore.prefecture.response.ResStallBatteryLog;
 import cn.linkmore.prefecture.service.StallBatteryLogService;
 
 /**
@@ -29,6 +29,7 @@ public class FeignStallBatteryLogController {
 	private StallBatteryLogService stallBatteryLogService;
 	
 	@RequestMapping(value = "/v2.0/battery-log", method = RequestMethod.GET)
+	@ResponseBody
 	public List<ResStallBatteryLog> findBatteryLogList(@RequestParam("stallId")Long stallId) {
 		log.info("find battery log list by stallId:{}",stallId);
 		return this.stallBatteryLogService.findBatteryLogList(stallId);

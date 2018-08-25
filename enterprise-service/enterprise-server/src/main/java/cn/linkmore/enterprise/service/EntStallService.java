@@ -14,6 +14,7 @@ import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResStallName;
 import cn.linkmore.prefecture.response.ResStall;
+import cn.linkmore.prefecture.response.ResStallBatteryLog;
 
 /**
  * @author luzhishen
@@ -101,6 +102,13 @@ public interface EntStallService {
 	 * @Version  v2.0
 	 */
 	void saveStallExcCause(List<ReqStallExcCause> causes);
+
+	/**
+	 * @Description  查询电池更换记录
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStallBatteryLog> findLockChangeRecord(Long stallId);
 
 
 }
