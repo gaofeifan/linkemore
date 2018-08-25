@@ -561,6 +561,12 @@ public class EntStallServiceImpl implements EntStallService {
 			this.stallExcStatusService.saveBatch(excs);
 		}
 	}
+
+	@Override
+	public List<ResStallBatteryLog> findLockChangeRecord(Long stallId) {
+		List<ResStallBatteryLog> list = this.stallBatteryLogClient.findBatteryLogList(stallId);
+		return list;
+	}
 	
 	
 }
