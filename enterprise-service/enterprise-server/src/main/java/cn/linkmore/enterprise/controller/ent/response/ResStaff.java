@@ -14,6 +14,8 @@ public class ResStaff {
 	private String realname;
 	@ApiModelProperty(value = "状态,0禁用，1启用")
 	private Short status;
+	@ApiModelProperty(value = "类型0普通员工、1运营人员")
+	private Short type;
 	
 	public Long getId() {
 		return id;
@@ -45,4 +47,12 @@ public class ResStaff {
 	public void setStatus(Short status) {
 		this.status = status;
 	}
+	public Short getType() {
+		return type;
+	}
+	public void setType(Short type) {
+		this.type = type;
+	}
+	
+	
 }
