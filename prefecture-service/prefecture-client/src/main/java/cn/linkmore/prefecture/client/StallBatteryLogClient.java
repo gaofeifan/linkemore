@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.StallBatteryLogClientHystrix;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
@@ -19,6 +21,7 @@ import cn.linkmore.prefecture.response.ResStallBatteryLog;
 public interface StallBatteryLogClient {
 	
 	@RequestMapping(value = "/v2.0/battery-log", method = RequestMethod.GET)
+	@ResponseBody
 	public List<ResStallBatteryLog> findBatteryLogList(@RequestParam("stallId")Long stallId);
 
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)

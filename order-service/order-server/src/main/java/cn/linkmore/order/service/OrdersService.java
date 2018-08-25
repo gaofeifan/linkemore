@@ -11,6 +11,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqBrandBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
+import cn.linkmore.order.controller.app.request.ReqStallBooking;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
@@ -201,6 +202,12 @@ public interface OrdersService {
 	 * @Version  v2.0
 	 */
 	ResEntOrder findOrderByStallId(Long stallId);
+	/**
+	 * 选择车位预约车位功能
+	 * @param rsb
+	 * @param request
+	 */
+	void appoint(ReqStallBooking rsb, HttpServletRequest request);
 
 
 	

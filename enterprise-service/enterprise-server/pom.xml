@@ -115,6 +115,11 @@
 			<artifactId>third-party-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>notice-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.linkmore</groupId>

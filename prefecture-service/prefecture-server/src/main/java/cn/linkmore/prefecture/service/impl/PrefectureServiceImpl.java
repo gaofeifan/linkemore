@@ -1,10 +1,13 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,29 +20,40 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.response.ResVechicleMark;
+import cn.linkmore.bean.common.Constants.OperateStatus;
+import cn.linkmore.bean.common.Constants.OrderFailureReason;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
+import cn.linkmore.prefecture.controller.app.response.ResStall;
+import cn.linkmore.prefecture.controller.app.response.ResStallInfo;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
+import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
@@ -76,10 +90,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private UserStaffClient userStaffClient;
 	
 	@Autowired
-	private OrderClient orderClient;
+	private VehicleMarkClient vehicleMarkClient;
 	
 	@Autowired
-	private VehicleMarkClient vehicleMarkClient;
+	private OrderClient orderClient;
 	
 	@Autowired
 	private RedisService redisService;
@@ -89,34 +103,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 		ResPrefectureDetail detail = prefectureClusterMapper.findById(preId);
 		return detail;
 	}
-	/*@Override
-	public List<ResPrefecture> findPreListByLoc(ReqPrefecture reqPrefecture) {
-		Map<String,Object> paramMap = new HashMap<String,Object>();
-		paramMap.put("status", 0);
-		//此处cityId暂时为空，返回所有的车区信息
-		paramMap.put("cityId", null);
-		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
-		log.info("pre loc:{}",JsonUtil.toJson(preList));
-		if(reqPrefecture.getUserId()!=null){
-			ResUserStaff us = this.userStaff.findById(reqPrefecture.getUserId());
-			if(us!=null&&us.getStatus().intValue() == ResUserStaff.STATUS_ON.intValue()){
-				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
-				if(preList1!=null){
-					if(preList==null){
-						preList = preList1;
-					}else{
-						preList.addAll(preList1);
-					}
-				}
-			} 
-		}
-		for(ResPrefecture prb: preList){ 
-			prb.setChargeTime(prb.getChargeTime() + "分钟");
-			prb.setChargePrice(prb.getChargePrice() + "元");
-			prb.setLeisureStall(getFreeStall(prb.getId())); 
-		}
-		return preList;
-	}*/
 	
 	@Override
 	public ResPrefectureStrategy findPreStrategy(Long preId) {
@@ -387,6 +373,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()), new Double(rp.getLongitude())));
 		}
 		
+		
 		Map<Long, List<ResPrefecture>> map = preList.stream().collect(Collectors.groupingBy(ResPrefecture::getCityId));
 		
 		List<ResPreCity> resPreCityList = new ArrayList<ResPreCity>();
@@ -395,9 +382,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 			resPreCity = new ResPreCity();
 			resPreCity.setCityId(cityId);
 			List<ResPrefecture> prefecturelist = map.get(cityId);
+			Collections.sort(prefecturelist,new Comparator<ResPrefecture>(){  
+	            public int compare(ResPrefecture pre1, ResPrefecture pre2) {
+	                return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));  
+	            }  
+	        });
+			
 			resPreCity.setPrefectures(prefecturelist);
 			resPreCityList.add(resPreCity);
-			log.info("cityId:{},city pre list size:{}",cityId,prefecturelist.size());
 		}
 		return resPreCityList;
 	}
@@ -411,6 +403,43 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<ResPrefectureDetail> findList(Map<String, Object> param) {
 		return this.prefectureClusterMapper.findList(param);
 	}
-	
+
+	@Override
+	public ResStallInfo findStallList(ReqBooking reqBooking) {
+		ResStallInfo stallInfo = new ResStallInfo();
+		List<ResStall> stallList = new ArrayList<ResStall>();
+		ResVechicleMark vehicleMark = vehicleMarkClient.findById(reqBooking.getPlateId());
+		log.info("vehicleMark = {}",JSON.toJSON(vehicleMark));
+		boolean assign = false;
+		Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
+		String vehMark = vehicleMark.getVehMark();    //车牌号
+		for (Object obj : set) {
+			JSONObject json = JSON.parseObject(obj.toString());
+			String vm = json.get("plate").toString();    //车牌
+			Long pid = Long.parseLong(json.get("preId").toString());  //车区id
+			if (pid.longValue() == reqBooking.getPrefectureId().longValue() && vehMark.equals(vm)) {   //找到车区
+				String lockSn = json.get("lockSn").toString();
+				assign = true;
+				log.info("use the admin assign stall:{},plate:{}", lockSn, vehicleMark.getVehMark());
+				break;
+			}
+		}
+		Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + reqBooking.getPrefectureId());  //集合中所有成员元素
+		ResStall resStall = null;
+		for(Object obj: lockSnList) {
+			String lockSn = obj.toString();
+			Stall stall = this.stallClusterMapper.findByLockSn(lockSn);
+			if(stall != null) {
+				resStall = new ResStall();
+				resStall.setStallId(stall.getId());
+				resStall.setLockSn(stall.getLockSn());
+				resStall.setStallName(stall.getStallName());
+				stallList.add(resStall);
+			}
+		}
+		stallInfo.setAssignFlag(assign);
+		stallInfo.setStalls(stallList);
+		return stallInfo;
+	}
 	
 }
