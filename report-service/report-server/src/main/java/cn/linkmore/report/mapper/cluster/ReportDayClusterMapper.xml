@@ -101,7 +101,7 @@
     <result column="cash_deal_rate" jdbcType="DOUBLE" property="cashDealRate" />
     <result column="deal_cost_rate" jdbcType="DOUBLE" property="dealCostRate" />
     <result column="cash_cost_rate" jdbcType="DOUBLE" property="cashCostRate" />
-    <result column="fee" jdbcType="INTEGER" property="fee" />
+    <result column="fee" jdbcType="DOUBLE" property="fee" />
     <result column="cost" jdbcType="INTEGER" property="cost" />
   </resultMap>
   
@@ -112,9 +112,10 @@
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="day" jdbcType="VARCHAR" property="day" />
-    <result column="fee" jdbcType="INTEGER" property="fee" />
+    <result column="fee" jdbcType="DOUBLE" property="fee" />
     <result column="day_total" jdbcType="INTEGER" property="dayTotal" />
-    <result column="pull_cost" jdbcType="INTEGER" property="pullCost" />
+    <result column="pull_cost" jdbcType="DOUBLE" property="pullCost" />
+    <result column="actual_amount" jdbcType="DOUBLE" property="actualAmount" />
   </resultMap>
   <!-- 城市列表 -->
   <select id="cityList" resultMap="CityResultMap" >
@@ -138,7 +139,7 @@
 			u. DAY,
 			u.day_total,
 			u.sum_total,
-			(SELECT count(*) FROM v_stall) AS stall_total
+			(SELECT count(*) FROM v_stall v left join v_prefecture p on v.pre_id=p.id where p.category=0) AS stall_total
 		FROM
 			(
 				SELECT
@@ -762,12 +763,12 @@
 		pre. NAME pre_name,
 	    ROUND((pre.month_rent/30),0) as cost,
 		DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
-	  sum(o.total_amount) as total_amount,
-	  sum(o.actual_amount) as actual_amount,
-	  case when sum(o.total_amount)=0 then 0.00 else ROUND(sum(o.actual_amount)/sum(o.total_amount),2) end as cash_deal_rate,
-	  ROUND(sum(o.total_amount)/(pre.month_rent/30),2) as deal_cost_rate,
-	  ROUND(sum(o.actual_amount)/(pre.month_rent/30),2) as cash_cost_rate,
-	  ROUND((pre.month_rent/30) - sum(o.actual_amount),0) as fee
+	    sum(o.total_amount) as total_amount,
+	    sum(o.actual_amount) as actual_amount,
+	    case when sum(o.total_amount)=0 then 0.00 else ROUND(sum(o.actual_amount)/sum(o.total_amount),2) end as cash_deal_rate,
+	    ROUND(sum(o.total_amount)/ROUND((pre.month_rent/30),0),2) as deal_cost_rate,
+	    ROUND(sum(o.actual_amount)/ROUND((pre.month_rent/30),0),2) as cash_cost_rate,
+	    ROUND((pre.month_rent/30),0) - sum(o.actual_amount) as fee
 	FROM
 		o_orders o
 	LEFT JOIN v_prefecture pre ON o.pre_id = pre.id
@@ -830,8 +831,9 @@
 		t1.pre_name,
 		t1.fee,
 		t1.day,
+		t1.actual_amount,
 		IFNULL(t2.day_total, 0) AS day_total,
-	    ROUND(IFNULL(t1.fee/t2.day_total,0),0) as pull_cost
+	    ROUND(IFNULL(t1.fee/t2.day_total,null),1) as pull_cost
 	FROM
 		(
 			SELECT
@@ -839,8 +841,9 @@
 				c.city_name,
 				pre.id pre_id,
 				pre.NAME pre_name,
+				sum(o.actual_amount) as actual_amount, 
 				DATE_FORMAT(o.create_time, '%Y-%m-%d') AS DAY,
-				ROUND((pre.month_rent / 30) - sum(o.actual_amount),0) AS fee
+				ROUND((pre.month_rent / 30),0) - sum(o.actual_amount) AS fee
 			FROM
 				o_orders o
 			LEFT JOIN v_prefecture pre ON o.pre_id = pre.id

@@ -17,10 +17,14 @@ import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
+import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.LockStatus;
+import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
+import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
@@ -43,6 +47,8 @@ import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.third.client.PushClient;
+import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -70,6 +76,9 @@ public class StallServiceImpl implements StallService {
 	private StallLockMasterMapper stallLockMasterMapper;
 	@Autowired
 	private StallLockClusterMapper stallLockClusterMapper;
+	@Autowired
+	private PushClient pushClient;
+	
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -382,7 +391,7 @@ public class StallServiceImpl implements StallService {
 				//this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			}else {
 				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
-				stall.setStatus(StallStatus.OUTLINE.status); 
+				stall.setStatus(StallStatus.OUTLINE.status);
 				stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
 				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
 				this.stallMasterMapper.offline(stall);
@@ -418,7 +427,8 @@ public class StallServiceImpl implements StallService {
 	public void controling(ReqControlLock  reqc) {  //控制锁
 		new Thread(new Runnable() {
 	        @Override
-	        public void run() {
+	        public void run() { 
+	        	String uid =	String.valueOf(redisService.get(reqc.getKey()));
 	        	Stall stall = stallClusterMapper.findById(reqc.getStallId());
 				log.info("stall:{}", JsonUtil.toJson(stall));
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
@@ -436,6 +446,7 @@ public class StallServiceImpl implements StallService {
 						stall.setLockStatus(reqc.getStatus());
 						stallMasterMapper.lockdown(stall);
 						redisService.remove(reqc.getKey());
+						sendMsg(uid);
 					}
 				}
 	        }
@@ -451,4 +462,32 @@ public class StallServiceImpl implements StallService {
 		}
 		return map;
 	}
+	
+	public  void sendMsg(String uid) {
+		new Thread(new Runnable() {
+	        @Override
+	        public void run() {
+	        	send(uid);
+	        }
+	    }).start();	
+	}
+	
+	private void send(String uid) {
+		log.info("个人降锁通知-----------------------------"+uid);
+		String title = "个人降锁通知";
+		String content = "车位锁降下成功";
+		PushType type =PushType.LOCK_DOWN_NOTICE ;
+		Boolean status = true;
+		Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
+		log.info("send:{}", JsonUtil.toJson(token));
+		ReqPush rp = new ReqPush();
+		rp.setAlias(uid);
+		rp.setTitle(title);
+		rp.setContent(content);
+		rp.setClient(token.getClient());
+		rp.setType(type);
+		rp.setData(status.toString());
+		pushClient.send(rp);
+	}
+	
 }

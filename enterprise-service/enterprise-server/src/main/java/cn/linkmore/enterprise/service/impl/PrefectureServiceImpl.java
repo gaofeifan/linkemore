@@ -37,6 +37,8 @@ import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.prefecture.client.PrefectureClient;
+import cn.linkmore.prefecture.client.StallBatteryLogClient;
+import cn.linkmore.prefecture.response.ResStallBatteryLog;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
@@ -55,6 +57,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private EntStallService entStallService; 
 	@Resource
 	private PrefectureClient prefectureClient;
+	@Resource
+	private StallBatteryLogClient stallBatteryLogClient;
 	@Resource
 	private EntOrderClient orderClient;
 	@Resource
@@ -343,5 +347,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 			return false;
 		}
 		return false;
+	}
+	@Override
+	public List<ResStallBatteryLog> StallBatteryLog(Long stallId) {
+		return	stallBatteryLogClient.findBatteryLogList(stallId);
 	}
 }

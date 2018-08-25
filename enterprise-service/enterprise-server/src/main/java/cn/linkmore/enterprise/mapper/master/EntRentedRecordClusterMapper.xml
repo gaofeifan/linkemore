@@ -11,10 +11,12 @@
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="status" jdbcType="BIGINT" property="status" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, plate_no, down_time, leave_time, stall_id, stall_name, pre_id, 
+    id, ent_id, ent_pre_id, plate_no,status,user_id,down_time, leave_time, stall_id, stall_name, pre_id, 
     pre_name
   </sql>
   <delete id="deleteById" parameterType="java.lang.Long">
@@ -23,15 +25,15 @@
   </delete>
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
     insert into t_ent_rented_record (id, ent_id, ent_pre_id, 
-      plate_no, down_time, leave_time, 
+      plate_no, down_time, leave_time, user_id,status,
       stall_id, stall_name, pre_id, 
       pre_name)
-    values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
-      #{plateNo,jdbcType=BIGINT}, #{downTime,jdbcType=TIMESTAMP}, #{leaveTime,jdbcType=TIMESTAMP}, 
-      #{stallId,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT},#{userId,jdbcType=BIGINT},#{status,jdbcType=BIGINT},#{entPreId,jdbcType=BIGINT}, 
+      #{plateNo,jdbcType=BIGINT}, #{downTime,jdbcType=TIMESTAMP}, #{leaveTime,jdbcType=TIMESTAMP},
+      #{stallId,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT},
       #{preName,jdbcType=VARCHAR})
   </insert>
-  <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
+  <insert id="saveSelectiveTamp" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
     insert into t_ent_rented_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -39,6 +41,12 @@
       </if>
       <if test="entId != null">
         ent_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="status != null">
+        status,
       </if>
       <if test="entPreId != null">
         ent_pre_id,
@@ -72,6 +80,12 @@
       <if test="entId != null">
         #{entId,jdbcType=BIGINT},
       </if>
+       <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIGINT},
+      </if>
       <if test="entPreId != null">
         #{entPreId,jdbcType=BIGINT},
       </if>
@@ -98,6 +112,94 @@
       </if>
     </trim>
   </insert>
+  
+  
+  
+  
+  <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
+  	 insert into t_ent_rented_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+		
+      <if test="entId != null">
+        ent_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="stallId != null">
+        stall_id,
+      </if>
+       <if test="downTime != null">
+        down_time,
+      </if>
+      <if test="leaveTime != null">
+        leave_time,
+      </if>
+       <if test="preName != null">
+        pre_name,
+      </if>
+    	<if test="preId != null">
+        pre_id,
+      </if>
+       <if test="stallName != null">
+        stall_name,
+      </if>
+       <if test="plateNo != null">
+        plate_no,
+      </if>
+      <if test="entPreId != null">
+        ent_pre_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="entId != null">
+        #{entId},
+      </if>
+       <if test="userId != null">
+        #{userId},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="stallId != null">
+        #{stallId},
+      </if>
+       <if test="downTime != null">
+        #{downTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="leaveTime != null">
+        #{leaveTime,jdbcType=TIMESTAMP},
+      </if>
+       <if test="preName != null">
+        #{preName},
+      </if>
+    	<if test="preId != null">
+        #{preId},
+      </if>
+       <if test="stallName != null">
+        #{stallName},
+      </if>
+       <if test="plateNo != null">
+        #{plateNo},
+      </if>
+      <if test="entPreId != null">
+        #{entPreId},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
     update t_ent_rented_record
     <set>
@@ -107,6 +209,12 @@
       <if test="entPreId != null">
         ent_pre_id = #{entPreId,jdbcType=BIGINT},
       </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>  
+      <if test="status != null">
+        status = #{status,jdbcType=BIGINT},
+      </if>      
       <if test="plateNo != null">
         plate_no = #{plateNo,jdbcType=BIGINT},
       </if>
@@ -133,12 +241,14 @@
   </update>
   <update id="updateById" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
     update t_ent_rented_record
-    set ent_id = #{entId,jdbcType=BIGINT},
+     set ent_id = #{entId,jdbcType=BIGINT},
       ent_pre_id = #{entPreId,jdbcType=BIGINT},
       plate_no = #{plateNo,jdbcType=BIGINT},
       down_time = #{downTime,jdbcType=TIMESTAMP},
       leave_time = #{leaveTime,jdbcType=TIMESTAMP},
       stall_id = #{stallId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      status = #{status,jdbcType=BIGINT},
       stall_name = #{stallName,jdbcType=VARCHAR},
       pre_id = #{preId,jdbcType=BIGINT},
       pre_name = #{preName,jdbcType=VARCHAR}

@@ -39,4 +39,10 @@ public class BeanFactory {
 	public JPushClient jPushClient() {
 		return new JPushClient(PushConfig.getSecret(), PushConfig.getKey(), 3);
 	}
+	
+	@Bean(name = "jSendClient")
+	public JPushClient jSendClient() {
+		return new JPushClient(PushConfig.getKeyAdd(),PushConfig.getKeyAdd() , 3);
+	}
+	
 }

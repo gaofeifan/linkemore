@@ -11,11 +11,13 @@
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
+      <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="status" jdbcType="BIGINT" property="status" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, plate_no, down_time, leave_time, stall_id, stall_name, pre_id, 
+    id, ent_id,user_id,status,ent_pre_id, plate_no, down_time, leave_time, stall_id, stall_name, pre_id, 
     pre_name
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -23,6 +25,14 @@
     <include refid="Base_Column_List" />
     from t_ent_rented_record
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+   <select id="findByUser" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rented_record
+    where user_id = #{userId,jdbcType=BIGINT}
+    and status = 0
   </select>
   
   <select id="findPage" parameterType="java.util.HashMap"

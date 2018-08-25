@@ -15,6 +15,7 @@ import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResTrafficFlowList;
+import cn.linkmore.prefecture.response.ResStallBatteryLog;
 
 /**
  * 车场运营实现
@@ -107,6 +108,11 @@ public interface PrefectureService {
 	 */
 	Integer findTrafficFlowCount(Short type, Long preId, HttpServletRequest request);
 
-
+	/**
+	 * @Description  查询电池记录
+	 * @Author   cl 
+	 * @Version  v2.0
+	 */
+	List<ResStallBatteryLog>  StallBatteryLog(Long stallId);
 	
 }
