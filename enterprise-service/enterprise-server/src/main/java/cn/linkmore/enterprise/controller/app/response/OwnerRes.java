@@ -14,7 +14,7 @@ public class OwnerRes {
 	@ApiModelProperty(value = "可用车位数量")
 	private int num;
 	
-	@ApiModelProperty(value = "车区及车位结果")
+	@ApiModelProperty(value = "车区及车位结果集")
 	private List<OwnerPre> res;
 
 	public Boolean getIsHave() {

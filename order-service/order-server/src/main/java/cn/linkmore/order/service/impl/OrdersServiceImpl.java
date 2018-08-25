@@ -852,11 +852,9 @@ public class OrdersServiceImpl implements OrdersService {
 			this.type = type;
 			this.status = status;
 		}
-
 		public void run() {
 			send(uid, title, content, type, status);
 		}
-
 	}
 
 	/**
