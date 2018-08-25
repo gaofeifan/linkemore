@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,16 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.response.ResVechicleMark;
-import cn.linkmore.bean.common.Constants.OperateStatus;
-import cn.linkmore.bean.common.Constants.OrderFailureReason;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -409,10 +403,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 		ResStallInfo stallInfo = new ResStallInfo();
 		List<ResStall> stallList = new ArrayList<ResStall>();
 		ResVechicleMark vehicleMark = vehicleMarkClient.findById(reqBooking.getPlateId());
+		if(vehicleMark == null) {
+			throw new BusinessException(StatusEnum.VALID_EXCEPTION);
+		}
+		String vehMark = vehicleMark.getVehMark();    //车牌号
 		log.info("vehicleMark = {}",JSON.toJSON(vehicleMark));
 		boolean assign = false;
 		Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
-		String vehMark = vehicleMark.getVehMark();    //车牌号
+		
 		for (Object obj : set) {
 			JSONObject json = JSON.parseObject(obj.toString());
 			String vm = json.get("plate").toString();    //车牌
@@ -425,6 +423,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 		}
 		Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + reqBooking.getPrefectureId());  //集合中所有成员元素
+		log.info("---------lockSnList={}",JSON.toJSON(lockSnList));
 		ResStall resStall = null;
 		for(Object obj: lockSnList) {
 			String lockSn = obj.toString();
@@ -439,6 +438,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}
 		stallInfo.setAssignFlag(assign);
 		stallInfo.setStalls(stallList);
+		log.info("stallInfo = {}",JSON.toJSON(stallInfo));
 		return stallInfo;
 	}
 	

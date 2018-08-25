@@ -95,6 +95,7 @@ public class StaffServiceImpl implements StaffService {
 		rs.setRealname(staff.getRealname());
 		rs.setToken(key);
 		rs.setStatus(staff.getStatus());
+		rs.setType(staff.getType());
 		CacheUser u = new CacheUser();
 		u.setId(staff.getId());
 		u.setMobile(staff.getMobile());

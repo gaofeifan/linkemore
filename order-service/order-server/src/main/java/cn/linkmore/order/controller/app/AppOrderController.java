@@ -62,7 +62,7 @@ public class AppOrderController {
 	}
 	
 	@ApiOperation(value = "选择车位预约下单", notes = "车区ID不能为空", consumes = "application/json")
-	@RequestMapping(value = "/v2.1/appoint", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/appoint", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> appoint(@RequestBody ReqStallBooking rsb, HttpServletRequest request) {
 		this.ordersService.appoint(rsb, request);
