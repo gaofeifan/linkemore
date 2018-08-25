@@ -28,8 +28,8 @@ import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntStaffMasterMapper;
 import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.service.StaffService;
-import cn.linkmore.notice.client.EntSocketClient;
-import cn.linkmore.notice.client.UserSocketClient;
+/*import cn.linkmore.notice.client.EntSocketClient;
+import cn.linkmore.notice.client.UserSocketClient;*/
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.AppWechatClient;
@@ -40,10 +40,11 @@ import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.third.response.ResFans;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
+
 /**
  * 员工接口实现
  * @author   GFF
- * @Date     2018年7月19日
+ * @Date     2018年7月20日
  * @Version  v2.0
  */
 @Service
@@ -53,8 +54,8 @@ public class StaffServiceImpl implements StaffService {
 	private final static long SPACE = 1000L*60*30; 
 	@Resource
 	private PrefectureClient prefectureClient;
-	@Resource
-	private EntSocketClient entSocketClient;
+	/*@Resource
+	private EntSocketClient entSocketClient;*/
 	@Resource
 	private PushClient pushClient;
 	@Resource
@@ -153,7 +154,7 @@ public class StaffServiceImpl implements StaffService {
 				map.put("content", "强制退出,账号已在其它设备登录");
 //				map.put("status", status);
 				CacheUser cu = (CacheUser) redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + token.getAccessToken());
-				entSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
+				//entSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
 			} else {
 				ReqPush rp = new ReqPush();
 				rp.setAlias(uid);
@@ -246,5 +247,3 @@ public class StaffServiceImpl implements StaffService {
 
 	
 }
-
-
