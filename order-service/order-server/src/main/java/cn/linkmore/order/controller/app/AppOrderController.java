@@ -23,6 +23,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqBrandBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
+import cn.linkmore.order.controller.app.request.ReqStallBooking;
 import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
@@ -59,6 +60,15 @@ public class AppOrderController {
 		this.ordersService.create(rb, request);
 		return ResponseEntity.success(null, request);
 	}
+	
+	@ApiOperation(value = "选择车位预约下单", notes = "车区ID不能为空", consumes = "application/json")
+	@RequestMapping(value = "/v2.1/appoint", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> appoint(@RequestBody ReqStallBooking rsb, HttpServletRequest request) {
+		this.ordersService.appoint(rsb, request);
+		return ResponseEntity.success(null, request);
+	}
+	
 	
 	@ApiOperation(value = "品牌预约下单", notes = "品牌预约下单", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/brand-create", method = RequestMethod.POST)

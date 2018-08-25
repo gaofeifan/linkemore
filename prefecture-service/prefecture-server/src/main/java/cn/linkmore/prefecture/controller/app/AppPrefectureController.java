@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
+import cn.linkmore.prefecture.controller.app.response.ResStallInfo;
 import cn.linkmore.prefecture.service.PrefectureService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -88,5 +90,23 @@ public class AppPrefectureController {
 		}
 		return response;
 	}
+	
+	@ApiOperation(value = "空闲车位列表详情", notes = "根据车区ID查看空闲车位列表", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/stall-list", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResStallInfo> stallList(@Validated @RequestBody ReqBooking reqBooking, HttpServletRequest request) {
+		ResponseEntity<ResStallInfo> response = null;
+		try { 
+			ResStallInfo stallInfo = this.prefectureService.findStallList(reqBooking);
+			response = ResponseEntity.success(stallInfo, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
+	
+	
 	
 }

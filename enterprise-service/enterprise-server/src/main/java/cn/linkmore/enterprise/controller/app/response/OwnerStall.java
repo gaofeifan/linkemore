@@ -9,6 +9,9 @@ public class OwnerStall {
 	@ApiModelProperty(value = "车位Id")
 	private Long stallId;
 	
+	@ApiModelProperty(value = "蓝牙串码")
+	private String blueSn;
+	
 	@ApiModelProperty(value = "车位锁编码")
 	private int lockSn;
 	
@@ -42,6 +45,15 @@ public class OwnerStall {
 	@ApiModelProperty(value = "车位导航图")
 	private String imageUrl;
 	
+	
+	public String getBlueSn() {
+		return blueSn;
+	}
+
+	public void setBlueSn(String blueSn) {
+		this.blueSn = blueSn;
+	}
+
 	public String getStallLocal() {
 		return stallLocal;
 	}
