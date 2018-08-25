@@ -6,11 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
-
+import cn.linkmore.prefecture.controller.app.response.ResStallInfo;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
@@ -130,5 +131,11 @@ public interface PrefectureService {
 	 * @Version  v2.0
 	 */
 	List<ResPrefectureDetail> findList(Map<String, Object> param);
+	/**
+	 * 根据车区id查询空闲车位数
+	 * @param reqBooking
+	 * @return
+	 */
+	ResStallInfo findStallList(ReqBooking reqBooking);
 
 }
