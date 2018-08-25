@@ -1,9 +1,7 @@
 package cn.linkmore.prefecture.controller.app.request;
 
 import javax.validation.constraints.Min;
-
-import org.hibernate.validator.constraints.NotBlank;
-
+import javax.validation.constraints.NotNull;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -11,12 +9,12 @@ import io.swagger.annotations.ApiModelProperty;
 public class ReqBooking {
 	@ApiModelProperty(value = "车区ID", required = true)
 	@Min(value=0,message="车区ID为大于0的长整数")
-	@NotBlank(message="专区ID不能为空") 
+	@NotNull(message="专区ID不能为空") 
 	private Long prefectureId;
 	
 	@ApiModelProperty(value = "车牌ID", required = true)
 	@Min(value=0,message="车牌ID为大于0的长整数")
-	@NotBlank(message="车牌不能为空") 
+	@NotNull(message="车牌不能为空") 
 	private Long plateId;
 	
 	public Long getPrefectureId() {

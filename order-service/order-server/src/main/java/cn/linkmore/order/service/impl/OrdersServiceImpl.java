@@ -575,9 +575,9 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			String lockSn = rsb.getLockSn();
 			log.info("lockSn:{}", lockSn);
-			if(StringUtils.isNotBlank(lockSn)) {
-				if(!this.redisService.exists(RedisKey.PREFECTURE_BUSY_STALL.key + lockSn)) {
-					log.info("like pop the lockSn from redis");
+			if(!this.redisService.exists(RedisKey.PREFECTURE_BUSY_STALL.key + lockSn)) {
+				log.info("like pop the lockSn from redis");
+				if(this.redisService.exists(RedisKey.PREFECTURE_FREE_STALL.key + rsb.getPrefectureId().toString())) {
 					this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + rsb.getPrefectureId().toString(),
 							rsb.getLockSn());
 					this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + lockSn, lockSn,
