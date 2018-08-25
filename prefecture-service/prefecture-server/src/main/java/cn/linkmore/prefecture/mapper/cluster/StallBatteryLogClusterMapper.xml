@@ -30,7 +30,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
-  <select id="selectStallBatteryLog" resultMap="ResResultMap" parameterType="java.lang.Long">
+  <select id="findListByStallId" resultMap="ResResultMap" parameterType="java.lang.Long">
 		select
 		t.id, t.stall_id, t.voltage, t.total_num, t.admin_id,
 		t.create_time,au.realname
