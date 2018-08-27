@@ -16,6 +16,7 @@ import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
+import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
@@ -38,20 +39,22 @@ import io.swagger.annotations.ApiOperation;
 public class AppOwnerStallController {
 
 	@Autowired
-	private LockFactory lockFactory;
-
-	@Autowired
-	private RedisService redisService;
-
-	@Autowired
 	private OwnerStallService ownerStallServicel;
 
 	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<OwnerRes> list(@Validated HttpServletRequest request) {
-		OwnerRes res = ownerStallServicel.findStall(request);
-		return ResponseEntity.success(res, request);
+	public ResponseEntity<OwnerRes> list(@Validated  @RequestBody ReqLocation  location,HttpServletRequest request) {
+		ResponseEntity<OwnerRes> response = null;
+		 try {
+			 OwnerRes res = ownerStallServicel.findStall(request,location);
+			 response = ResponseEntity.success(res, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
 	}
 
 	@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
@@ -95,7 +98,7 @@ public class AppOwnerStallController {
 		return ResponseEntity.success(is, request);
 	}
 
-	@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
+	/*@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
 	@RequestMapping(value = "/testcontrol", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> testcontrolLock(@Validated ReqTestTest reqTestTest, HttpServletRequest request) {
@@ -115,6 +118,6 @@ public class AppOwnerStallController {
 			}
 		}).start();
 		return ResponseEntity.success("操作成功", request);
-	}
+	}*/
 
 }

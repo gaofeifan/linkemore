@@ -9,11 +9,8 @@ public class OwnerStall {
 	@ApiModelProperty(value = "车位Id")
 	private Long stallId;
 	
-	@ApiModelProperty(value = "蓝牙串码")
-	private String blueSn;
-	
 	@ApiModelProperty(value = "车位锁编码")
-	private int lockSn;
+	private String lockSn;
 	
 	@ApiModelProperty(value = "车位号")
 	private String stallName;
@@ -25,10 +22,10 @@ public class OwnerStall {
 	private String plate;
 	
 	@ApiModelProperty(value = "车位锁操作状态")
-	private int lockStatus;
+	private Long lockStatus;
 	
 	@ApiModelProperty(value = "使用状态")
-	private int status;
+	private Long status;
 	
 	@ApiModelProperty(value = "车位开始时间")
 	private String startTime;
@@ -45,13 +42,28 @@ public class OwnerStall {
 	@ApiModelProperty(value = "车位导航图")
 	private String imageUrl;
 	
-	
-	public String getBlueSn() {
-		return blueSn;
+	public String getLockSn() {
+		return lockSn;
 	}
 
-	public void setBlueSn(String blueSn) {
-		this.blueSn = blueSn;
+	public void setLockSn(String lockSn) {
+		this.lockSn = lockSn;
+	}
+
+	public Long getLockStatus() {
+		return lockStatus;
+	}
+
+	public void setLockStatus(Long lockStatus) {
+		this.lockStatus = lockStatus;
+	}
+
+	public Long getStatus() {
+		return status;
+	}
+
+	public void setStatus(Long status) {
+		this.status = status;
 	}
 
 	public String getStallLocal() {
@@ -76,30 +88,6 @@ public class OwnerStall {
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
-	}
-
-	public int getLockSn() {
-		return lockSn;
-	}
-
-	public void setLockSn(int lockSn) {
-		this.lockSn = lockSn;
-	}
-
-	public int getLockStatus() {
-		return lockStatus;
-	}
-
-	public void setLockStatus(int lockStatus) {
-		this.lockStatus = lockStatus;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
 	}
 
 	public Long getStallId() {

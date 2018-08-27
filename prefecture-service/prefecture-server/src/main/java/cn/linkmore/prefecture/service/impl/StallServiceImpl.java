@@ -62,7 +62,7 @@ import cn.linkmore.util.ObjectUtils;
  *
  */
 @Service
-public class StallServiceImpl implements StallService { 
+public class StallServiceImpl implements StallService {
 	@Autowired
 	private StallMasterMapper stallMasterMapper;
 	@Autowired
@@ -79,7 +79,6 @@ public class StallServiceImpl implements StallService {
 	private StallLockClusterMapper stallLockClusterMapper;
 	@Autowired
 	private SendClient sendClient;
-	
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -100,31 +99,33 @@ public class StallServiceImpl implements StallService {
 		if (stall != null) {
 			stall.setStatus(StallStatus.FREE.status);
 			stall.setLockStatus(LockStatus.UP.status);
-			stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
+			stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
 			stallMasterMapper.cancel(stall);
 			flag = true;
 		}
 		return flag;
 	}
-	class StallUpThread extends Thread{ 
+
+	class StallUpThread extends Thread {
 		private Stall stall;
+
 		public StallUpThread(Stall stall) {
-			this.stall = stall; 
+			this.stall = stall;
 		}
-		public void run() { 
+
+		public void run() {
 			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
 			int code = res.getMsgCode();
 			log.info("lock msg:{}", JsonUtil.toJson(res));
-			if (code == 200) {  
-				redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn()); 
+			if (code == 200) {
+				redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			}
 		}
 	}
-	
 
 	@Override
-	public boolean checkout(Long stallId) { 
-		log.info("checkout stall :{}",stallId);
+	public boolean checkout(Long stallId) {
+		log.info("checkout stall :{}", stallId);
 		boolean flag = false;
 		Stall stall = stallClusterMapper.findById(stallId);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
@@ -132,41 +133,44 @@ public class StallServiceImpl implements StallService {
 			stall.setUpdateTime(new Date());
 			stall.setStatus(StallStatus.FREE.status);
 			stall.setLockStatus(LockStatus.UP.status);
-			stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
+			stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
 			this.stallMasterMapper.checkout(stall);
 			new StallUpThread(stall).start();
-		} 
+		}
 		return flag;
-	} 
+	}
+
 	private void downing(ReqOrderStall reqos) {
 		Stall stall = stallClusterMapper.findById(reqos.getStallId());
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			log.info("downing... name:{},sn:{}",stall.getStallName(),stall.getLockSn()); 
+			log.info("downing... name:{},sn:{}", stall.getStallName(), stall.getLockSn());
 			ResponseMessage<LockBean> res = lockFactory.lockDown(stall.getLockSn());
 			log.info("res:{}", JsonUtil.toJson(res));
 			int code = res.getMsgCode();
 			if (code == 200) {
 				stall.setLockStatus(LockStatus.DOWN.status);
 				stallMasterMapper.lockdown(stall);
-				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqos.getOrderId());
+				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqos.getOrderId());
 			}
-			orderClient.downMsgPush(reqos.getOrderId(),reqos.getStallId()); 
+			orderClient.downMsgPush(reqos.getOrderId(), reqos.getStallId());
 		}
 	}
-	
-	class DownThread extends Thread{
+
+	class DownThread extends Thread {
 		private ReqOrderStall reqos;
+
 		public DownThread(ReqOrderStall reqos) {
 			this.reqos = reqos;
 		}
+
 		public void run() {
 			downing(reqos);
 		}
 	}
-	
-	@Override 
-	public void downlock(ReqOrderStall reqos) { 
+
+	@Override
+	public void downlock(ReqOrderStall reqos) {
 		Thread thread = new DownThread(reqos);
 		thread.start();
 	}
@@ -176,7 +180,7 @@ public class StallServiceImpl implements StallService {
 		boolean flag = true;
 		Stall stall = stallClusterMapper.findById(stallId);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			log.info("uping... name:{},sn:{}",stall.getStallName(),stall.getLockSn()); 
+			log.info("uping... name:{},sn:{}", stall.getStallName(), stall.getLockSn());
 			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
 			log.info("res:{}", JsonUtil.toJson(res));
 			int code = res.getMsgCode();
@@ -293,7 +297,7 @@ public class StallServiceImpl implements StallService {
 		StallLock stallLock = new StallLock();
 		stallLock = ObjectUtils.copyObject(lock, stallLock);
 		stallLockMasterMapper.updateBind(stallLock);
-		
+
 		Stall sta = new Stall();
 		sta = ObjectUtils.copyObject(stall, sta);
 		log.info("{}:{}>>{},返回结果{}", "绑定车位锁", "车位(" + stall.getStallName() + "),车位锁(" + sn + ")", "绑定成功", 200);
@@ -305,7 +309,7 @@ public class StallServiceImpl implements StallService {
 		Date now = new Date();
 		Integer status = reqStall.getStatus();
 		String sn = reqStall.getLockSn();
-//		Long preId = reqStall.getPreId();
+		// Long preId = reqStall.getPreId();
 		reqStall.setUpdateTime(now);
 		if (status.intValue() == 4) {
 			Stall stall = new Stall();
@@ -314,22 +318,20 @@ public class StallServiceImpl implements StallService {
 			log.info("下线成功，车位：" + stall.getStallName() + " 序列号：{}", sn);
 		} else {
 			try {
-				ResponseMessage<LockBean> res= lockFactory.getLockInfo(sn);
+				ResponseMessage<LockBean> res = lockFactory.getLockInfo(sn);
 				LockBean lockBean = res.getData();
-				if(lockBean == null) {
+				if (lockBean == null) {
 					throw new RuntimeException("车位锁通讯失败");
 				}
-				/*if (lockBean.getOpenState() != 1) {
-					lockFactory.lockUp(sn);
-				}
-				int openState = lockBean.getOpenState();
-				reqStall.setLockStatus(openState);
-				reqStall.setLockBattery((int) lockBean.getVoltage());*/
-				
-				
+				/*
+				 * if (lockBean.getOpenState() != 1) { lockFactory.lockUp(sn); } int openState =
+				 * lockBean.getOpenState(); reqStall.setLockStatus(openState);
+				 * reqStall.setLockBattery((int) lockBean.getVoltage());
+				 */
+
 				Stall stall = new Stall();
 				stall = ObjectUtils.copyObject(reqStall, stall);
-				
+
 				stallMasterMapper.update(stall);
 				log.info("上线成功，车位：" + reqStall.getStallName() + " 序列号：{}", sn);
 			} catch (Exception e) {
@@ -365,7 +367,7 @@ public class StallServiceImpl implements StallService {
 		lock.setPrefectureId(stall.getPreId());
 		lock.setBindTime(now);
 		lock.setStallId(stall.getId());
-	    stallLockMasterMapper.updateBind(lock);
+		stallLockMasterMapper.updateBind(lock);
 	}
 
 	@Override
@@ -376,25 +378,27 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public void close(Long id) {
 		Stall stall = stallClusterMapper.findById(id);
-		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) { 
-			Integer count = (Integer)this.redisService.get(RedisKey.STALL_ORDER_CLOSED.key+id);
-			if(count==null) {
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			Integer count = (Integer) this.redisService.get(RedisKey.STALL_ORDER_CLOSED.key + id);
+			if (count == null) {
 				count = 0;
 			}
-			if(count<3) {
-				count = count+1; 
+			if (count < 3) {
+				count = count + 1;
 				stall.setStatus(StallStatus.FREE.status);
 				stall.setLockStatus(LockStatus.UP.status);
-				stall.setBindOrderStatus((short)BindOrderStatus.FREE.status); 
-				stall.setUpdateTime(new Date()); 
+				stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
+				stall.setUpdateTime(new Date());
 				this.stallMasterMapper.checkout(stall);
-				this.redisService.set(RedisKey.STALL_ORDER_CLOSED.key+id, count,ExpiredTime.STALL_ORDER_CLOSED_TIME.time );  
-				//this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
-			}else {
-				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
+				this.redisService.set(RedisKey.STALL_ORDER_CLOSED.key + id, count,
+						ExpiredTime.STALL_ORDER_CLOSED_TIME.time);
+				// this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(),
+				// stall.getLockSn());
+			} else {
+				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key + id);
 				stall.setStatus(StallStatus.OUTLINE.status);
-				stall.setBindOrderStatus((short)BindOrderStatus.FREE.status);
-				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key+id);
+				stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
+				this.redisService.remove(RedisKey.STALL_ORDER_CLOSED.key + id);
 				this.stallMasterMapper.offline(stall);
 			}
 		}
@@ -414,82 +418,82 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public int updateBrand(Map<String, Object> param) {
-		log.info("param = {}",param);
+		log.info("param = {}", param);
 		String brand = (String) param.get("brand");
 		List<Long> ids = (List<Long>) param.get("list");
-		if("0".equals(brand)) {
+		if ("0".equals(brand)) {
 			return this.stallMasterMapper.updateBrand(ids);
-		}else {
+		} else {
 			return this.stallMasterMapper.updateBrandStall(ids);
 		}
 	}
-	
+
 	@Override
-	public void controling(ReqControlLock  reqc) {  //控制锁
+	public Map<String, Object> lockStatus(List<String> parkcodes) {
+		Map<String, Object> map = new HashMap<>();
+		ResponseMessage<LockBean> lb = lockFactory.findAvaiLocks(parkcodes);
+		if (lb != null) {
+			map.put("data", lb);
+		}
+		return map;
+	}
+
+	@Override
+	public void controling(ReqControlLock reqc) { // 控制锁
 		new Thread(new Runnable() {
-	        @Override
-	        public void run() { 
-	        	String uid =	String.valueOf(redisService.get(reqc.getKey()));
-	        	Stall stall = stallClusterMapper.findById(reqc.getStallId());
+			@Override
+			public void run() {
+				String uid = String.valueOf(redisService.get(reqc.getKey()));
+				Stall stall = stallClusterMapper.findById(reqc.getStallId());
 				log.info("stall:{}", JsonUtil.toJson(stall));
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-					log.info("downing... name:{},sn:{}",stall.getStallName(),stall.getLockSn()); 
+					log.info("downing... name:{},sn:{}", stall.getStallName(), stall.getLockSn());
 					ResponseMessage<LockBean> res = null;
-		        	//1 降下 2 升起
-					if(reqc.getStatus()==1){
-					 res = lockFactory.lockDown(stall.getLockSn());
-					}else if( reqc.getStatus()==2){
-				     res = lockFactory.lockUp(stall.getLockSn());
+					// 1 降下 2 升起
+					if (reqc.getStatus() == 1) {
+						res = lockFactory.lockDown(stall.getLockSn());
+					} else if (reqc.getStatus() == 2) {
+						res = lockFactory.lockUp(stall.getLockSn());
 					}
 					log.info("res:{}", JsonUtil.toJson(res));
 					int code = res.getMsgCode();
 					if (code == 200) {
 						stall.setLockStatus(reqc.getStatus());
+						stall.setStatus(reqc.getStatus());
 						stallMasterMapper.lockdown(stall);
 						redisService.remove(reqc.getKey());
-						sendMsg(uid);
 					}
+					sendMsg(uid, reqc.getStatus(), code);
 				}
-	        }
-	    }).start();	
+			}
+		}).start();
 	}
-	
-	@Override
-	public Map<String,Object> lockStatus(List<String> parkcodes) {
-		Map<String,Object> map = new HashMap<>();
-		ResponseMessage<LockBean>  lb = lockFactory.findAvaiLocks(parkcodes);
-		if(lb!=null) {
-			map.put("data", lb);
-		}
-		return map;
-	}
-	
-	public  void sendMsg(String uid) {
+
+	public void sendMsg(String uid, Integer status, int code) {
 		new Thread(new Runnable() {
-	        @Override
-	        public void run() {
-	        	send(uid);
-	        }
-	    }).start();	
+			@Override
+			public void run() {
+				send(uid, status, code);
+			}
+		}).start();
 	}
-	
-	private void send(String uid) {
-		log.info("个人降锁通知-----------------------------"+uid);
-		String title = "降锁通知";
-		String content = "车位锁操作成功";
-		PushType type =PushType.LOCK_CONTROL_NOTICE ;
-		Boolean status = true;
+
+	private void send(String uid, Integer lockstatus, int code) {
+		String title = "车位锁操作通知";
+		String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");
+		PushType type = PushType.LOCK_CONTROL_NOTICE;
+		String bool = (code == 200 ? "true" : "false");
 		Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
 		log.info("send:{}", JsonUtil.toJson(token));
-		
+
 		ReqPush rp = new ReqPush();
 		rp.setAlias(uid);
 		rp.setTitle(title);
 		rp.setContent(content);
 		rp.setClient(token.getClient());
 		rp.setType(type);
-		rp.setData(status.toString());
+		rp.setData(bool);
 		sendClient.send(rp);
 	}
-	
+
 }

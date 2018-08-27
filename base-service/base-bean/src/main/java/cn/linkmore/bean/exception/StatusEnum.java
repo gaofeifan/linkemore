@@ -99,7 +99,7 @@ public enum StatusEnum {
 	STAFF_STALL_EXISTS(8005065,"没有该车位权限"),
 	STAFF_PREFECTURE_EXISTS(8005066,"没有该车区权限"),
 	
-	STALL_AlREADY_CONTROL(8005067,"该车位其他用户操作中");
+	STALL_AlREADY_CONTROL(8005067,"该车位其他用户操作中,请选择其他车位");
 	
 	
 	public int code;

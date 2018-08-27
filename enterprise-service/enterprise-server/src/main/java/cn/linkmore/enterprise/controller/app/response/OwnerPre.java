@@ -21,6 +21,9 @@ public class OwnerPre {
 	
 	@ApiModelProperty(value = "纬度")
 	private Double latitude;
+	
+	@ApiModelProperty(value = "距离")
+	private String distance;
 			
 	@ApiModelProperty(value = "车位列表")
 	private List<OwnerStall> stalls;
@@ -71,6 +74,14 @@ public class OwnerPre {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
 	}
 	
 	
