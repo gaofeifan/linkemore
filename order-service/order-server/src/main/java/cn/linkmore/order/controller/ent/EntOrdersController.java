@@ -18,9 +18,11 @@ import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
+import cn.linkmore.order.response.ResOrder;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
+import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 
 @RestController
@@ -137,6 +139,13 @@ public class EntOrdersController {
 	public ResEntOrder findOrderByStallId(@RequestParam("stallId") Long stallId){
 		return this.ordersService.findOrderByStallId(stallId);
 	}
+	
+	@RequestMapping(value = "/stall-latest", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId) {
+		return this.ordersService.findStallLatest(stallId);
+	}
+	
 	
 	
 	

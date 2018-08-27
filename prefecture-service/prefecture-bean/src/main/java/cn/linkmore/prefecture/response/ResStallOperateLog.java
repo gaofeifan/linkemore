@@ -28,6 +28,8 @@ public class ResStallOperateLog {
     private String stallName;
     
     private String operator;
+    
+    private Long remarkId;
 
     public Long getId() {
         return id;
@@ -108,5 +110,12 @@ public class ResStallOperateLog {
 	public void setOperator(String operator) {
 		this.operator = operator;
 	}
-    
+
+	public Long getRemarkId() {
+		return remarkId;
+	}
+
+	public void setRemarkId(Long remarkId) {
+		this.remarkId = remarkId;
+	}
 }

@@ -20,8 +20,10 @@ import com.linkmore.lock.factory.LockFactory;
 @Component
 public class LockSdkConfig {
 	
-	@Value("${sdk.linkmore_url}")
+	@Value("${sdk.linkmore-url}")
 	private String linkmoreUrl;
+	@Value("${sdk.linkmore-new-url}")
+	private String linkmoreNewUrl;
 	
 	@Bean
 	public LockFactory getLockFactory(){
@@ -29,6 +31,7 @@ public class LockSdkConfig {
 		//需要配置锁平台url
 		AbuttingBean abuttingBean = new AbuttingBean();
 		abuttingBean.setLinkmoreUrl(linkmoreUrl);
+		abuttingBean.setLinkmoreNewUrl(linkmoreNewUrl);
 		lockFactory.setAbuttingBean(abuttingBean);
 		return lockFactory;
 	}

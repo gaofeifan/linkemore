@@ -5,7 +5,6 @@ package cn.linkmore.enterprise.controller.ent.response;
 
 import java.util.Date;
 
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -16,64 +15,67 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel("锁信息")
 public class ResDetailStall {
+
+	public static Long DOWN_STATUS = 4L;
+	
 	
 	/**
 	 * 锁编号
 	 */
 	@ApiModelProperty("锁编号")
 	private String slaveCode;
-	
+
 	/**
 	 * 锁升降状态
 	 */
 	@ApiModelProperty("锁状态(1:竖起状态 0：躺下)")
 	private int status;
-	
+
 	/**
 	 * 电量
 	 */
 	@ApiModelProperty("锁电量")
 	private int betty;
-	
+
 	/**
-	 *  车牌号
-	 */ 
+	 * 车牌号
+	 */
 	@ApiModelProperty("车牌号 为固定车位时使用")
 	private String plate;
-	
+
 	/**
-	 *  手机号
-	 */ 
+	 * 手机号
+	 */
 	@ApiModelProperty("手机号")
 	private String mobile;
-	
+
 	@ApiModelProperty("车位id")
 	private Long stallId;
-	
+
 	@ApiModelProperty("降锁时间")
 	private Date downTime;
 
 	@ApiModelProperty("进场时间")
 	private Date approachTime;
-	
+
 	@ApiModelProperty("预约时间")
 	private Date startTime;
-	
+
 	@ApiModelProperty("订单编号")
 	private String orderNo;
-	
+
 	@ApiModelProperty("预约时长")
 	private String startDate;
-	
+
 	@ApiModelProperty("异常原因")
 	private String excName;
-	
-	@ApiModelProperty("异常原因code")
-	private String excCode;
-	
+
+	@ApiModelProperty("异常原因Id")
+	private Long excCode;
+
 	@ApiModelProperty("复位状态  true可以复位 false不可以")
 	private boolean resetStatus = true;
-	
+
 	public String getSlaveCode() {
 		return slaveCode;
 	}
@@ -178,11 +180,11 @@ public class ResDetailStall {
 		this.excName = excName;
 	}
 
-	public String getExcCode() {
+	public Long getExcCode() {
 		return excCode;
 	}
 
-	public void setExcCode(String excCode) {
+	public void setExcCode(Long excCode) {
 		this.excCode = excCode;
 	}
 	

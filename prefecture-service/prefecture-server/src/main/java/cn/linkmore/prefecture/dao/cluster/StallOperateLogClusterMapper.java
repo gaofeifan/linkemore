@@ -23,4 +23,11 @@ public interface StallOperateLogClusterMapper {
 	List<ResStallOperateLog> findPage(Map<String, Object> param);
 
 	List<ResStallOperateLog> findExportList(ReqStallOperateLogExcel excelBean);
+
+	/**
+	 * @Description  根据车位查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResStallOperateLog findByStallId(Long stallId);
 }

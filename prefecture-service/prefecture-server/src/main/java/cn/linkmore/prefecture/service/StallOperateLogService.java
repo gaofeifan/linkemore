@@ -26,4 +26,11 @@ public interface StallOperateLogService {
 	List<ResStallOperateLog> findListById(Long id);
 
 	List<ResStallOperateLog> exportList(ReqStallOperateLogExcel bean);
+
+	/**
+	 * @Description 根据车位id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResStallOperateLog findByStallId(Long stallId);
 }

@@ -14,6 +14,8 @@ public class ResEntOrder {
 	
 	private Date lockDownTime;
 
+	private String plate;
+	
 	public Long getOrderId() {
 		return orderId;
 	}
@@ -53,7 +55,12 @@ public class ResEntOrder {
 	public void setLockDownTime(Date lockDownTime) {
 		this.lockDownTime = lockDownTime;
 	}
-	
-	
-	
+
+	public String getPlate() {
+		return plate;
+	}
+
+	public void setPlate(String plate) {
+		this.plate = plate;
+	}
 }

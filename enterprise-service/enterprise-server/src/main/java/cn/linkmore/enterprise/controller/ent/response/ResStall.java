@@ -86,14 +86,6 @@ public class ResStall {
 		this.status = status;
 	}
 
-	public short getType() {
-		return type;
-	}
-
-	public void setType(short type) {
-		this.type = type;
-	}
-
 	public String getPlateNo() {
 		return plateNo;
 	}
@@ -132,5 +124,13 @@ public class ResStall {
 
 	public void setLockStatus(Integer lockStatus) {
 		this.lockStatus = lockStatus;
+	}
+
+	public short getType() {
+		return type;
+	}
+
+	public void setType(short type) {
+		this.type = type;
 	}
 }

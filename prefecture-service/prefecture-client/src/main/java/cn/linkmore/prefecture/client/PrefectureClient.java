@@ -74,8 +74,5 @@ public interface PrefectureClient {
 	public List<ResPrefectureList> refreshFreeStall();
 	
 	
-	
-
-	
 		
 }

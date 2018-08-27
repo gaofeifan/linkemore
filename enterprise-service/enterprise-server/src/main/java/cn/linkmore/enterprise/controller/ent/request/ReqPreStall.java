@@ -24,7 +24,8 @@ public class ReqPreStall {
 	@ApiModelProperty("车位类型")
 	@NotNull(message="类型不能为空")
 	private Short type;
-
+	@ApiModelProperty("车位名称 (非必填默认查询所有)")
+	private String stallName;
 	public Long getPreId() {
 		return preId;
 	}
@@ -40,4 +41,14 @@ public class ReqPreStall {
 	public void setType(Short type) {
 		this.type = type;
 	}
+
+	public String getStallName() {
+		return stallName;
+	}
+
+	public void setStallName(String stallName) {
+		this.stallName = stallName;
+	}
+	
+	
 }

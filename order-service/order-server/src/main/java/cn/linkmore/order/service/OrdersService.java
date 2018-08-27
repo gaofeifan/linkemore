@@ -209,6 +209,13 @@ public interface OrdersService {
 	 */
 	void appoint(ReqStallBooking rsb, HttpServletRequest request);
 
+	/**
+	 * @Description  根据车位id查询最后订单
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResUserOrder findStallLatest(Long stallId);
+
 
 	
 }

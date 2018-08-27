@@ -146,4 +146,12 @@ public class StallOperateLogServiceImpl implements StallOperateLogService {
 		return list;
 	}
 
+	@Override
+	public ResStallOperateLog findByStallId(Long stallId) {
+		return this.operateLogClusterMapper.findByStallId(stallId);
+	}
+	
+	
+	
+
 }

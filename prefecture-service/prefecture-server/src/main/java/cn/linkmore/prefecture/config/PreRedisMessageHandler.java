@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.redis.RedisMessageHandler;
 
 
+
 /**
  * Redis消息处理类
  * @author liwenlong

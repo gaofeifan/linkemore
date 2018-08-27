@@ -1479,5 +1479,12 @@ public class OrdersServiceImpl implements OrdersService {
 		Thread thread = new StallOrderThread(rsb, cu);
 		thread.start();
 	}
+
+	@Override
+	public ResUserOrder findStallLatest(Long stallId) {
+		return this.ordersClusterMapper.findStallLatest(stallId);
+	}
+	
+	
 	
 }

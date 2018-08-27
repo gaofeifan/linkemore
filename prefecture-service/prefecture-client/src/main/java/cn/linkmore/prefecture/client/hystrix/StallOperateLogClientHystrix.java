@@ -46,6 +46,13 @@ public class StallOperateLogClientHystrix implements StallOperateLogClient {
 		log.info("prefecture service stall_operate_log save(ReqStallOperateLog sol) hystrix");
 		
 	}
+
+	@Override
+	public ResStallOperateLog findByStallId(Long stallId) {
+		log.info("prefecture service stall_operate_log findByStallId(Long stallId) hystrix");
+		return null;
+	}
+	
 	
 	
 }

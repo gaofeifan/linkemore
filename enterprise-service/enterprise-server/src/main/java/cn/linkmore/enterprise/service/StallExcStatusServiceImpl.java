@@ -41,6 +41,12 @@ public class StallExcStatusServiceImpl implements StallExcStatusService {
 	public void saveBatch(List<StallExcStatus> excs) {
 		this.masterMapper.saveBatch(excs);
 	}
+	@Override
+	public List<StallExcStatus> findAll() {
+		return this.clusterMapper.findAll();
+	}
+	
+	
 	
 	
 }
