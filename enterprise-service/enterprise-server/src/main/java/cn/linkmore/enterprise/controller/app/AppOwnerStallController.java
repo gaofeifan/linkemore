@@ -13,10 +13,13 @@ import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
+import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
+import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
 import cn.linkmore.enterprise.controller.ent.request.ReqTestTest;
 import cn.linkmore.enterprise.service.OwnerStallService;
 import cn.linkmore.redis.RedisService;
@@ -36,38 +39,38 @@ import io.swagger.annotations.ApiOperation;
 public class AppOwnerStallController {
 
 	@Autowired
-	private LockFactory lockFactory;
-
-	@Autowired
-	private RedisService redisService;
-
-	@Autowired
 	private OwnerStallService ownerStallServicel;
 
 	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<OwnerRes> list(@Validated HttpServletRequest request) {
-		OwnerRes res = ownerStallServicel.findStall(request);
-		return ResponseEntity.success(res, request);
+	public ResponseEntity<OwnerRes> list(@Validated  @RequestBody ReqLocation  location,HttpServletRequest request) {
+		ResponseEntity<OwnerRes> response = null;
+		 try {
+			 OwnerRes res = ownerStallServicel.findStall(request,location);
+			 response = ResponseEntity.success(res, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
 	}
 
 	@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Boolean> controlLock(@Validated @RequestBody ReqConStall reqConStall,
-			HttpServletRequest request) {
-		try {
-			Integer res = ownerStallServicel.control(reqConStall, request);
-			if (res == -1) {
-				return ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request);
-			} else if (res == -2) {
-				return ResponseEntity.fail(StatusEnum.STALL_AlREADY_CONTROL, request);
-			}
-			return ResponseEntity.success(true, request);
-		} catch (Exception e) {
-			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+	public ResponseEntity<Boolean> controlLock(@Validated @RequestBody ReqConStall reqConStall,HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		 try {
+			 ownerStallServicel.control(reqConStall, request);
+			 response  =	 ResponseEntity.success(true, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
+		 return response;
 	}
 
 	@ApiOperation(value = "查看操作结果", notes = "查看操作结果", consumes = "application/json")
@@ -75,15 +78,16 @@ public class AppOwnerStallController {
 	@ResponseBody
 	public ResponseEntity<Boolean> watch(@Validated @RequestBody ReqWatchStatus reqWatchStatus,
 			HttpServletRequest request) {
-
-		Integer res = ownerStallServicel.watch(reqWatchStatus.getStallId(), request);
-		if (res == -1) {
-			return ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request);
-		} else if (res == 2) {
-			return ResponseEntity.success(false, request);
+		ResponseEntity<Boolean> response = null;
+		 try {
+			 ownerStallServicel.watch(reqWatchStatus.getStallId(), request);
+			 response  =	 ResponseEntity.success(true, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
-		return ResponseEntity.success(true, request);
-
+		 return response;
 	}
 
 	@ApiOperation(value = "是否位长租用户", notes = "查询用户是否有长租车位", consumes = "application/json")
@@ -94,7 +98,7 @@ public class AppOwnerStallController {
 		return ResponseEntity.success(is, request);
 	}
 
-	@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
+	/*@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
 	@RequestMapping(value = "/testcontrol", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> testcontrolLock(@Validated ReqTestTest reqTestTest, HttpServletRequest request) {
@@ -114,6 +118,6 @@ public class AppOwnerStallController {
 			}
 		}).start();
 		return ResponseEntity.success("操作成功", request);
-	}
+	}*/
 
 }

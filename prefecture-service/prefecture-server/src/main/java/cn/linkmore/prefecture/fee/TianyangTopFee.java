@@ -40,15 +40,12 @@ public class TianyangTopFee {
 		try {
 			double totalFee = 0d;
 			double topFee = (base.getTopDaily().intValue() / base.getTimelyLong()) * base.getBasePrice().doubleValue();
+			int topHour = base.getTopDaily().intValue()/base.getTimelyLong();
 			double fee = 0d;
 			// 当前日期
 			SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
 			String startDay = sdfDay.format(startDate);
 			String stopDay = sdfDay.format(stopDate);
-			// 当前时间
-			SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
-			String startTime = sdfTime.format(startDate);
-			String stopTime = sdfTime.format(stopDate);
 
 			// 比较开始结束日期
 			int dayFlag = stopDay.compareTo(startDay);
@@ -64,24 +61,24 @@ public class TianyangTopFee {
 			if (actualTime <= 30) {
 				log.info("间隔时间<30m,免费停车");
 				return map;
-			} else if (actualTime <= 360) {
+			} else if (actualTime <= base.getTopDaily()) {
 				totalFee = getFee(actualTime, base);
-				log.info("间隔时间<6h,累计计费");
+				log.info("间隔时间<"+topHour+"h,累计计费");
 			} else {
 				if (startDay.equals(stopDay)) {
 					totalFee = topFee;
-					log.info("间隔时间>6h 同一天封顶计费");
+					log.info("间隔时间>"+topHour+"h 同一天封顶计费");
 				} else {
 					totalFee = day * topFee;
 					Long timeLong = stopDate.getTime() - startDate.getTime() - day * 24 * 60 * 60 * 1000;
-					if(timeLong >= 6 * 60 * 60 * 1000) {
+					if(timeLong >= base.getTopDaily() * 60 * 1000) {
 						totalFee += topFee;
-						log.info("完整天数除外，超过6h封顶计费");
+						log.info("完整天数除外，超过"+topHour+"h封顶计费");
 					}else {
 						int startStop = getMinTime(timeLong);
 						fee = getFee(startStop, base);
 						totalFee += fee;
-						log.info("完整天数除外，不超过6h累计计费");
+						log.info("完整天数除外，不超过"+topHour+"h累计计费");
 					}
 				}
 			}
@@ -130,7 +127,7 @@ public class TianyangTopFee {
 
 		// 同一日不超过360min
 		String startString2 = "2018-05-26 10:00:01";
-		String endString2 = "2018-05-26 14:30:02";
+		String endString2 = "2018-05-26 20:00:02";
 		Start1 start2 = new Start1(startString2, endString2);
 
 		// 同一日超过360min

@@ -42,7 +42,7 @@ public class BeanFactory {
 	
 	@Bean(name = "jSendClient")
 	public JPushClient jSendClient() {
-		return new JPushClient(PushConfig.getKeyAdd(),PushConfig.getKeyAdd() , 3);
+		return new JPushClient(PushConfig.getSecretAdd(),PushConfig.getKeyAdd() , 3);
 	}
 	
 }

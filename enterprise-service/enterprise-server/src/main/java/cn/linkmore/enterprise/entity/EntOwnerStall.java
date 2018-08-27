@@ -22,6 +22,37 @@ public class EntOwnerStall {
 	private String routeGuidance;
 	
 	private String imageUrl;
+	
+	private Long status;
+	
+	private Long lockStatus;
+	
+	private String lockSn;
+	
+
+	public String getLockSn() {
+		return lockSn;
+	}
+
+	public void setLockSn(String lockSn) {
+		this.lockSn = lockSn;
+	}
+
+	public Long getStatus() {
+		return status;
+	}
+
+	public void setStatus(Long status) {
+		this.status = status;
+	}
+
+	public Long getLockStatus() {
+		return lockStatus;
+	}
+
+	public void setLockStatus(Long lockStatus) {
+		this.lockStatus = lockStatus;
+	}
 
 	public Long getStallId() {
 		return stallId;
