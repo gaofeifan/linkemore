@@ -17,13 +17,11 @@ import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
-import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.LockStatus;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
-import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -47,7 +45,6 @@ import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.redis.RedisService;
-import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.DomainUtil;
@@ -468,6 +465,25 @@ public class StallServiceImpl implements StallService {
 			}
 		}).start();
 	}
+	
+	@Override
+	public Map<String, Object> watch(Long stallId) {
+		log.info("stall:=====================");
+		Map<String, Object>  map = new HashMap<>();
+		Stall stall = stallClusterMapper.findById(stallId);
+		log.info("stall:{}", JsonUtil.toJson(stall));
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			ResponseMessage<LockBean> res =	lockFactory.getLockInfo(stall.getLockSn());
+				map.put("code",res.getMsgCode());
+				if(res.getMsgCode()==200) {
+					LockBean  Lockbean = res.getData();
+					map.put("status",Lockbean.getLockState());
+					map.put("onlineState",Lockbean.getOnlineState());
+					map.put("parkingState",Lockbean.getParkingState());
+				}
+		}
+		return map;
+	}
 
 	public void sendMsg(String uid, Integer status, int code) {
 		new Thread(new Runnable() {
@@ -484,16 +500,17 @@ public class StallServiceImpl implements StallService {
 		PushType type = PushType.LOCK_CONTROL_NOTICE;
 		String bool = (code == 200 ? "true" : "false");
 		Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
-		log.info("send:{}", JsonUtil.toJson(token));
-
-		ReqPush rp = new ReqPush();
-		rp.setAlias(uid);
-		rp.setTitle(title);
-		rp.setContent(content);
-		rp.setClient(token.getClient());
-		rp.setType(type);
-		rp.setData(bool);
-		sendClient.send(rp);
+		log.info("send>>>", JsonUtil.toJson(token));
+		if(token!=null) {
+			ReqPush rp = new ReqPush();
+			rp.setAlias(uid);
+			rp.setTitle(title);
+			rp.setContent(content);
+			rp.setClient(token.getClient());
+			rp.setType(type);
+			rp.setData(bool);
+			log.info("send>>>", JsonUtil.toJson(rp));
+			sendClient.send(rp);
+		}
 	}
-
 }

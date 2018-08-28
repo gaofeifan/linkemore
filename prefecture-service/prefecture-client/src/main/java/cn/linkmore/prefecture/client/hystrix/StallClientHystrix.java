@@ -172,4 +172,10 @@ public class StallClientHystrix implements StallClient {
 		return null;
 	}
 
+	@Override
+	public Map<String, Object> watch(Long stallId) {
+		log.info("prefecture service Map<String, Object> watch(Long stallId) hystrix");
+		return null;
+	}
+
 }

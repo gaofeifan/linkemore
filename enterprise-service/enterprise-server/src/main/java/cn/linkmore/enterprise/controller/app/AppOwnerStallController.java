@@ -80,7 +80,7 @@ public class AppOwnerStallController {
 			HttpServletRequest request) {
 		ResponseEntity<Boolean> response = null;
 		 try {
-			 ownerStallServicel.watch(reqWatchStatus.getStallId(), request);
+			 ownerStallServicel.watch(reqWatchStatus,request);
 			 response  =	 ResponseEntity.success(true, request);
 		}  catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
@@ -97,27 +97,5 @@ public class AppOwnerStallController {
 		Boolean is = ownerStallServicel.owner(request);
 		return ResponseEntity.success(is, request);
 	}
-
-	/*@ApiOperation(value = "长租用户操作车位锁", notes = "长租用户操作车位锁", consumes = "application/json")
-	@RequestMapping(value = "/testcontrol", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<String> testcontrolLock(@Validated ReqTestTest reqTestTest, HttpServletRequest request) {
-		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqTestTest.getKey();
-		redisService.remove(rediskey);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				ResponseMessage<LockBean> res = null;
-				// 1 降下 2 升起
-				if (reqTestTest.getState() == 1) {
-					res = lockFactory.lockDown(reqTestTest.getStallId());
-				} else if (reqTestTest.getState() == 2) {
-					res = lockFactory.lockUp(reqTestTest.getStallId());
-				}
-				System.out.println(res.getMsgCode() + "--" + res.getMsg());
-			}
-		}).start();
-		return ResponseEntity.success("操作成功", request);
-	}*/
 
 }
