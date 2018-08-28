@@ -29,5 +29,12 @@ public interface StallExcStatusClusterMapper {
 	 */
 	List<StallExcStatus> findExcStatusList(List<Long> stallIds);
 
+	/**
+	 * @Description  查询所有
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<StallExcStatus> findAll();
+
 
 }

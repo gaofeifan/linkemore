@@ -14,7 +14,7 @@
   </sql>
   
   <update id="updateExcStatus" parameterType="java.util.Map">
-  	update v_stall_exc_status set exc_status = #{status}  where stall_id = #{stallId}
+  update v_stall_exc_status set `status` = #{status}  where stall_id = #{stallId} and status = 0
   </update>
 	<insert id="saveBatch" parameterType="java.util.List">
 	 insert into v_stall_exc_status (id, stall_id, status, 

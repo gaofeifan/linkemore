@@ -17,9 +17,11 @@ import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
+import cn.linkmore.order.response.ResOrder;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
+import cn.linkmore.order.response.ResUserOrder;
 
 @FeignClient(value = "order-server", path = "/ent/orders", fallback=EntOrderClientHystrix.class,configuration = FeignConfiguration.class)
 public interface EntOrderClient { 
@@ -83,4 +85,8 @@ public interface EntOrderClient {
 	@RequestMapping(value = "/by-stall-id", method = RequestMethod.GET)
 	@ResponseBody
 	public ResEntOrder findOrderByStallId(@RequestParam("stallId") Long stallId);
+
+	@RequestMapping(value = "/stall-latest", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId);
 }

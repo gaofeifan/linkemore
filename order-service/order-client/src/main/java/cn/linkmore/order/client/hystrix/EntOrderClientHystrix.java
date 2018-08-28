@@ -9,13 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import cn.linkmore.order.client.EntOrderClient;
-import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
+import cn.linkmore.order.response.ResUserOrder;
+
 
 /**
  * @author   GFF
@@ -100,6 +101,12 @@ public class EntOrderClientHystrix implements EntOrderClient {
 	@Override
 	public ResEntOrder findOrderByStallId(Long stallId) {
 		log.info("feign order Integer findOrderByStallId(Map<String, Object> param)");
+		return null;
+	}
+
+	@Override
+	public ResUserOrder findStallLatest(Long stallId) {
+		log.info("feign order Integer findStallLatest(Long stallId)");
 		return null;
 	}
 

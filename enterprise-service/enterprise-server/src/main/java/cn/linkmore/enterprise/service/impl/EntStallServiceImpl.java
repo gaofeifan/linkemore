@@ -4,6 +4,7 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,15 +49,22 @@ import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.enterprise.service.StallExcStatusService;
 import cn.linkmore.order.client.EntOrderClient;
+import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResEntOrder;
+import cn.linkmore.order.response.ResOrder;
 import cn.linkmore.order.response.ResOrderPlate;
+import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallBatteryLogClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.client.StallOperateLogClient;
+import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqStallOperateLog;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
 import cn.linkmore.prefecture.response.ResStallEntity;
+import cn.linkmore.prefecture.response.ResStallOperateLog;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.ObjectUtils;
@@ -70,10 +78,11 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class EntStallServiceImpl implements EntStallService {
-
+	public static final String STALL_LOCK_STATUS = "STALL:LOCK:STATUS";
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private static final String DOWN_CAUSE = "cause_down";
-	
+	@Autowired
+	private PrefectureClient prefectrueClient;
 	@Autowired
 	private StallBatteryLogClient stallBatteryLogClient;
 	@Autowired
@@ -230,7 +239,7 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public List<ResStallName> selectStalls(HttpServletRequest request,Long preId, Short type) {
+	public List<ResStallName> selectStalls(HttpServletRequest request,Long preId, Short type,String name) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
 		Map<String, Object> map = new HashMap<String,Object>();
@@ -252,6 +261,7 @@ public class EntStallServiceImpl implements EntStallService {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("type", type);
 		params.put("list", stallIds);
+		param.put("stallName", name);
 		List<ResStall> stalls = this.stallClient.findPreStallList(params);  //根据stallid 集合查询车位
 		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
 		List<Long> collect = stalls.stream().map(stall -> stall.getId()).collect(Collectors.toList());
@@ -259,9 +269,9 @@ public class EntStallServiceImpl implements EntStallService {
 		if(collect != null && collect.size() > 0) {
 			stallExcList = this.stallExcStatusService.findExcStatusList(collect);
 		}
-		List<String> parkCode = stalls.stream().map(sta -> sta.getLockSn()).collect(Collectors.toList());
-		ResponseMessage<LockBean> locks = new ResponseMessage<>();//lockFactory.findAvaiLocks(parkCode);
-//		lockFactory.fin
+		ResPrefectureDetail pref = this.prefectrueClient.findById(preId);
+		ResponseMessage<LockBean> locks = lockFactory.findAvailableLock(pref.getGateway());
+		
 		List<LockBean> lockBeans = locks.getDataList();
 		//设置车位对应的车牌号
 		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
@@ -273,6 +283,7 @@ public class EntStallServiceImpl implements EntStallService {
 			}
 			if(resStall.getPreId().equals(preId)) {
 				stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
+				stall.setType(resStall.getType());
 				stall.setStallId(resStall.getId());
 				if(lockBeans != null) {
 					for (LockBean lock : lockBeans) {
@@ -284,14 +295,14 @@ public class EntStallServiceImpl implements EntStallService {
 					}
 				}
 				for(ResOrderPlate orderPlate : orders){
-					if(resStall.getId() == orderPlate.getStallId()){
+					if(resStall.getId().equals(orderPlate.getStallId())){
 						stall.setPlateNo(orderPlate.getPlateNo());
 						break;
 					}
 				}	
 				//	设置车位锁异常状态
 				for (StallExcStatus stallExcStatus : stallExcList) {
-					if(stallExcStatus.getStallId() == resStall.getId()) {
+					if(stallExcStatus.getStallId().equals(resStall.getId())) {
 						stall.setExcStatus(false);
 						break;
 					}
@@ -325,6 +336,10 @@ public class EntStallServiceImpl implements EntStallService {
 				stallName.setStallName(sb.toString());
 				stallNames.add(stallName);
 			}
+			
+			if(stallList.size() == 1) {
+				stallNames.add(stallName);
+			}
 		}
 		return stallNames;
 	}
@@ -346,6 +361,9 @@ public class EntStallServiceImpl implements EntStallService {
 			return resDetailStall;
 		}
 		ResEntOrder resEntOrder = this.orderClient.findOrderByStallId(resStallEntity.getId());
+		if(resDetailStall.getStatus() != 1 && resDetailStall.getStatus() != 4) {
+			resDetailStall.setPlate(resEntOrder.getPlate());
+		}
 		List<EntRentUser> rentUsers = this.entRentUserService.findAll();
 		if(resStallEntity.getType() != null && resStallEntity.getType() == 2) {
 			StringBuilder sb = new StringBuilder();
@@ -373,6 +391,19 @@ public class EntStallServiceImpl implements EntStallService {
 			}
 		}
 		
+		if(ResDetailStall.DOWN_STATUS.equals(resStallEntity.getStatus())) {
+			ResStallOperateLog operLog = this.stallOperateLogClient.findByStallId(resDetailStall.getStallId());
+			if(operLog.getOperation().equals(2)) {
+				resDetailStall.setExcCode(operLog.getRemarkId());
+				resDetailStall.setExcName(operLog.getRemark());
+			}
+		}else {
+			StallExcStatus excStatus = this.stallExcStatusService.findExcStatus(resStallEntity.getId());
+			if(excStatus != null) {
+				resDetailStall.setExcCode(excStatus.getExcStatus());
+				resDetailStall.setExcName(excStatus.getExcRemark());
+			}
+		}
 		resDetailStall.setBetty(lockBean.getElectricity());
 		resDetailStall.setStatus(lockBean.getLockState());
 		resDetailStall.setStallId(resStallEntity.getId());
@@ -400,94 +431,92 @@ public class EntStallServiceImpl implements EntStallService {
 //		result.put("result", res.getMsg());
 		
 		new Thread(new Runnable() {
+			
 	        @Override
 	        public void run() {
+	        	ReqControlLock reqc = new ReqControlLock(); 
+				reqc.setStallId(stallId);
+				reqc.setStatus(state);
+				reqc.setKey(key);
 	        	//1 降下 2 升起
-				if(state == 1){
-					lockFactory.lockDown(resStallEntity.getLockSn());
-				}else if(state == 2){
-					lockFactory.lockUp(resStallEntity.getLockSn());
-				}
+				stallClient.controllock(reqc);
 	        }
 	    }).start();
 		
 		return result ;
 	}
 
-	
 	@Override
 	@Transactional
-	public void change(HttpServletRequest request, Long stallId, int i, Long remarkId, String remark) {
+	public Map<String, Object> change(HttpServletRequest request, Long stallId, int i, Long remarkId, String remark) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		if(!checkAuth(stallId, request)) {
+			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+		}
+		ResStallEntity entity = stallClient.findById(stallId);
+		int result ;
 		ReqStallOperateLog sol = new ReqStallOperateLog();
 		sol.setCreateTime(new Date());
 		sol.setOperation((short)i);
 		sol.setOperatorId(ru.getId());
-		sol.setSource((short)2);
+		sol.setSource((short)1);
 		sol.setStallId(stallId);
 		sol.setRemarkId(remarkId);	
 		sol.setRemark(remark);
 		sol.setStatus(1);
-		this.stallOperateLogClient.save(sol);
-		this.change(request, stallId, i);
-		if ((remarkId != null) && (remarkId.longValue() > 0L)) {
-			ResBaseDict dict = this.dictClient.find(remarkId);
-			if(dict == null) {
-				throw new BusinessException(StatusEnum.DOWN_CAUSE_EXISTS);
+//		this.stallOperateLogClient.save(sol);
+//		this.change(request, stallId, i);
+		 Map<String, Object> param = new HashMap<>();
+		 param.put("stallId", stallId);
+		 param.put("status", 1);
+		 this.stallExcStatusService.updateExcStatus(param);
+		 ResUserOrder order = this.orderClient.findStallLatest(stallId);
+		if(i == 1) {
+			if (entity.getStatus().intValue() != ResStallEntity.STATUS_OUTLINE ) {
+				throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
 			}
-			if ("battery-change".equals(dict.getCode())) {
-				try {
-//					LockServerClient lockServerClient = ThriftClientFactory.getThriftClient(this.rpcConfig.getHost(),
-//							this.rpcConfig.getPort(), this.rpcConfig.getTimeout());
-//					String count = ParkingLockClient.getUpOrDownCounts(lockServerClient, stall.getLockSn());
-//					this.log.info("offline change battery {}", lockInfo.get);
+			if (order != null && order.getStatus().intValue() == ResUserOrder.ORDERS_STATUS_UNPAY) {
+				throw new BusinessException(StatusEnum.STALL_OPERATE_ORDERING);
+			}
+			List<Long> ids=new ArrayList<>();
+			ids.add(stallId);
+			try {
+				result = this.stallClient.changedUp(ids);
+			} catch (Exception e) {
+				throw new BusinessException(StatusEnum.STALL_LOCK_OFFLINE);
+			}
+		}else if(i == 2) {
+			if (entity.getStatus().intValue() > ResStallEntity.STATUS_USED) {
+				throw new BusinessException(StatusEnum.STALL_OPERATE_OFFLINED);
+			}
+			if (order != null && order.getStatus().intValue() == 2) {
+				throw new BusinessException(StatusEnum.STALL_OPERATE_ORDERING);
+			}
+			if ((remarkId != null) && (remarkId.longValue() > 0L)) {
+				ResBaseDict dict = this.dictClient.find(remarkId);
+				if(dict == null) {
+					throw new BusinessException(StatusEnum.DOWN_CAUSE_EXISTS);
+				}
+				if ("battery-change".equals(dict.getCode())) {
 					ResStallBatteryLog sbl = new ResStallBatteryLog();
 					sbl.setAdminId(ru.getId());
 					sbl.setAdminName(ru.getMobile());
 					sbl.setCreateTime(new Date());
-//					sbl.setTotalNum(Integer.valueOf(count));
 					sbl.setVoltage(0d);
 					sbl.setStallId(stallId);
+					sol.setSource((short)2);
 					this.stallBatteryLogClient.save(sbl);
-				} catch (Exception e) {
-					e.printStackTrace();
-//					throw new BusinessException(StatusEnum.STALL_LOCK_OFFLINE);
 				}
 			}
+			this.stallOperateLogClient.save(sol);
+			try {
+				result = this.stallClient.changedDown(stallId);
+			} catch (Exception e) {
+				throw new BusinessException(StatusEnum.STALL_LOCK_OFFLINE);
+			}
 		}
-	}
-
-	@Override
-	@Transactional
-	public Map<String, Object> change(HttpServletRequest request, Long stall_id, int changeStatus) {
-		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
-		if(!checkAuth(stall_id, request)) {
-			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
-		}
-		Map<String, Object> param = new HashMap<>();
-		param.put("stallId", stall_id);
-		param.put("status", 1);
-		this.stallExcStatusService.updateExcStatus(param);
-		
-		Map<String, Object> map = new HashMap<>();
-		int  result = 0;
-		if(changeStatus == 1){
-			List<Long> ids=new ArrayList<>();
-			ids.add(stall_id);
-			 result = this.stallClient.changedUp(ids);
-		}else if(changeStatus == 2){
-			result = this.stallClient.changedDown(stall_id);
-		}
-		/*if(result == 0){
-			map.put("result",false);
-			map.put("message","操作失败");
-			return map;
-		}*/
-		map.put("result",false);
-		map.put("message","操作成功");
-		return map;
+		return new HashMap<>();
 	}
 
 	@Override

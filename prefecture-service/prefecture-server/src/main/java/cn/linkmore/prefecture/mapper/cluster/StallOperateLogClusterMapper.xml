@@ -35,6 +35,12 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
+  <select id="findByStallId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+	FROM t_stall_operate_log where stall_id = #{id} ORDER BY create_time DESC LIMIT 0,1
+  </select>
+  
   <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
     select count(1) 
     from t_stall_operate_log

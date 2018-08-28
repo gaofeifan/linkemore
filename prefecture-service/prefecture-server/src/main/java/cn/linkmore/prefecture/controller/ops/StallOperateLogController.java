@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -65,5 +66,11 @@ public class StallOperateLogController {
 	@ResponseBody
 	public void save(@RequestBody ReqStallOperateLog sol) {
 		this.stallOperateService.save(sol);
+	}
+	
+	@RequestMapping(value = "/v2.0/stall", method = RequestMethod.GET)
+	@ResponseBody
+	public ResStallOperateLog findByStallId(@RequestParam("stallId") Long stallId) {
+		return this.stallOperateService.findByStallId(stallId);
 	}
 }

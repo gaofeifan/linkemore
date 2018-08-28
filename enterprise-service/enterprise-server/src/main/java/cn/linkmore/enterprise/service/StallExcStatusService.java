@@ -41,4 +41,11 @@ public interface StallExcStatusService {
 	 */
 	void saveBatch(List<StallExcStatus> excs);
 
+	/**
+	 * @Description  查询车位异常原因
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<StallExcStatus> findAll();
+
 }

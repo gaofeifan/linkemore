@@ -68,7 +68,7 @@ public class EntStallController {
 			list = new ArrayList<>();
 			return ResponseEntity.success(list, request);
 		}
-		list = entStallService.selectStalls(request,reqPreStall.getPreId(),reqPreStall.getType());
+		list = entStallService.selectStalls(request,reqPreStall.getPreId(),reqPreStall.getType(),reqPreStall.getStallName());
 		return ResponseEntity.success(list, request);
 	}
 	
@@ -100,7 +100,7 @@ public class EntStallController {
 	@ResponseBody
 	public ResponseEntity<String> changeUp(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id,HttpServletRequest request){
 		try {
-			this.entStallService.change(request,stall_id,1);
+			this.entStallService.change(request,stall_id,1,0L,"车位上线");
 		} catch (Exception e) {
 			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code,e.getMessage(), request);
 		}

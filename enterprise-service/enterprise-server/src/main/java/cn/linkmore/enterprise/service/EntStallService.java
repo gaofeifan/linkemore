@@ -41,10 +41,11 @@ public interface EntStallService {
 
 	/** 查询车位列表信息
 	 * @author luzhishen
+	 * @param string 
 	 * @Date 2018年7月21日
 	 * @Version v1.0
 	 */
-	List<ResStallName> selectStalls(HttpServletRequest request,Long preId, Short type);
+	List<ResStallName> selectStalls(HttpServletRequest request,Long preId, Short type, String string);
 
 	/**
 	 * 查询车位详细信息
@@ -71,7 +72,7 @@ public interface EntStallService {
 	 * @Date 2018年7月21日
 	 * @Version v1.0
 	 */
-	Map<String, Object> change(HttpServletRequest request, Long stall_id, int changeStatus);
+	Map<String, Object> change(HttpServletRequest request, Long stall_id, int changeStatus, Long remarkId, String remark);
 
 	/**
 	 * @param request 
@@ -88,13 +89,6 @@ public interface EntStallService {
 	 * @Version  v2.0
 	 */
 	List<ResBaseDict> downCause();
-
-	/**
-	 * @Description  
-	 * @Author   GFF 
-	 * @Version  v2.0
-	 */
-	void change(HttpServletRequest request, Long stallId, int i, Long remarkId, String remark);
 
 	/**
 	 * @Description  保存车位异常原因

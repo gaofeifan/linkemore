@@ -5,6 +5,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -52,5 +53,15 @@ public interface StallOperateLogClient {
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
 	public void save(@RequestBody ReqStallOperateLog sol);
+	
+
+	/**
+	 * @Description 根据车位id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/stall", method = RequestMethod.GET)
+	@ResponseBody
+	public ResStallOperateLog findByStallId(@RequestParam("stallId") Long stallId);
 	
 }

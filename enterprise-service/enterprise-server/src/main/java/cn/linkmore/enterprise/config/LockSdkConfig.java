@@ -22,14 +22,17 @@ import com.linkmore.lock.response.ResponseMessage;
 @Component
 public class LockSdkConfig {
 	
-	@Value("${sdk.linkmore_url}")
+	@Value("${sdk.linkmore-url}")
 	private String linkmoreUrl;
+	@Value("${sdk.linkmore-new-url}")
+	private String linkmoreNewUrl;
 	
 	@Bean
 	public LockFactory getLockFactory(){
 		LockFactory lockFactory = LockFactory.getInstance();
 		AbuttingBean abuttingBean = new AbuttingBean();
 		abuttingBean.setLinkmoreUrl(linkmoreUrl);
+		abuttingBean.setLinkmoreNewUrl(linkmoreNewUrl);
 		lockFactory.setAbuttingBean(abuttingBean);
 		return lockFactory;
 	}

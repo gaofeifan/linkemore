@@ -2,16 +2,8 @@ package cn.linkmore.order.response;
 
 import java.math.BigDecimal;
 import java.util.Date;
-/**
- * 用户订单
- * @author liwenlong
- * @version 2.0
- *
- */
-public class ResUserOrder {
-	
-	public static final int STATUS_BUSY = 2; 
-	public static final int ORDERS_STATUS_UNPAY = 1;
+
+public class ResOrder {
 	/**
 	 * 主键
 	 */
@@ -24,14 +16,10 @@ public class ResUserOrder {
      * 车区id
      */
     private Long preId;
-    
-    private String preName;
     /**
      * 车位id
      */
     private Long stallId;
-    
-    private String stallName;
     /**
      * 订单编号
      */
@@ -67,8 +55,19 @@ public class ResUserOrder {
     /**
      * 车牌号
      */
-    private String plateNo; 
-     
+    private String plateNo;
+    /**
+     * 车位导航图
+     */
+    private String stallImage;
+    /**
+     * 车位位置描述
+     */
+    private String stallLocal;
+    /**
+     * 车位路线指引
+     */
+    private String stallGuidance;
     /**
      * 创建时间
      */
@@ -77,11 +76,6 @@ public class ResUserOrder {
      * 更新时间
      */
     private Date updateTime;
-    
-    /**
-     * 支付时间
-     */
-    private Date payTime;
     /**
      * 对接计费系统id
      */
@@ -94,6 +88,11 @@ public class ResUserOrder {
      * 订单用户类型(0普通，1奥迪内部用户)
      */
     private Short userType;
+    
+    /**
+     * 客户端[0小程序,1Android,2IOS]
+     */
+    private Short clientType;
     /**
      * 订单操作时间[挂起关闭]
      */
@@ -107,33 +106,40 @@ public class ResUserOrder {
      */
     private Short lockDownStatus;
     
-    /**
-     * 计费ID
-     */
-    private Long strategyId;
+    private String preName;
     
-    private  Date switchTime; 
     
-    private Short switchStatus;
+    private String stallName;
     
     private Long couponId;
     
-    private BigDecimal couponAmount;
+    private BigDecimal couponAmount; 
     
     private Long tradeId;
+    
+    /**
+     * 计费策略ID
+     */
+    private Long strategyId;
+    
+    private  Date switchTime;
+    private Short switchStatus;
+    
+    private Date payTime;
+    /**
+     * 车位类型 分类0自营，1临停，2长租，3VIP
+     */
+    private Short stallType;
     /**
      * 企业id
      */
     private Long entId;
     
-    
+    /**
+     * 品牌ID
+     */
     private Long brandId;
     
-    /**
-     * 车位类型 分类0自营，1临停，2长租，3VIP
-     */
-    private Short stallType;
-
     public Short getStallType() {
 		return stallType;
 	}
@@ -252,7 +258,31 @@ public class ResUserOrder {
 
     public void setPlateNo(String plateNo) {
         this.plateNo = plateNo == null ? null : plateNo.trim();
-    } 
+    }
+
+    public String getStallImage() {
+        return stallImage;
+    }
+
+    public void setStallImage(String stallImage) {
+        this.stallImage = stallImage == null ? null : stallImage.trim();
+    }
+
+    public String getStallLocal() {
+        return stallLocal;
+    }
+
+    public void setStallLocal(String stallLocal) {
+        this.stallLocal = stallLocal == null ? null : stallLocal.trim();
+    }
+
+    public String getStallGuidance() {
+        return stallGuidance;
+    }
+
+    public void setStallGuidance(String stallGuidance) {
+        this.stallGuidance = stallGuidance == null ? null : stallGuidance.trim();
+    }
 
     public Date getCreateTime() {
         return createTime;
@@ -321,25 +351,9 @@ public class ResUserOrder {
 	public Long getStrategyId() {
 		return strategyId;
 	}
-	
+
 	public void setStrategyId(Long strategyId) {
 		this.strategyId = strategyId;
-	}
-
-	public String getPreName() {
-		return preName;
-	}
-
-	public void setPreName(String preName) {
-		this.preName = preName;
-	}
-
-	public String getStallName() {
-		return stallName;
-	}
-
-	public void setStallName(String stallName) {
-		this.stallName = stallName;
 	}
 
 	public Date getSwitchTime() {
@@ -358,12 +372,20 @@ public class ResUserOrder {
 		this.switchStatus = switchStatus;
 	}
 
-	public Date getPayTime() {
-		return payTime;
+	public String getPreName() {
+		return preName;
 	}
 
-	public void setPayTime(Date payTime) {
-		this.payTime = payTime;
+	public void setPreName(String preName) {
+		this.preName = preName;
+	}
+
+	public String getStallName() {
+		return stallName;
+	}
+
+	public void setStallName(String stallName) {
+		this.stallName = stallName;
 	}
 
 	public Long getCouponId() {
@@ -380,7 +402,7 @@ public class ResUserOrder {
 
 	public void setCouponAmount(BigDecimal couponAmount) {
 		this.couponAmount = couponAmount;
-	}
+	} 
 
 	public Long getTradeId() {
 		return tradeId;
@@ -388,6 +410,22 @@ public class ResUserOrder {
 
 	public void setTradeId(Long tradeId) {
 		this.tradeId = tradeId;
+	}
+
+	public Date getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(Date payTime) {
+		this.payTime = payTime;
+	}
+
+	public Short getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(Short clientType) {
+		this.clientType = clientType;
 	}
 
 	public Long getBrandId() {
