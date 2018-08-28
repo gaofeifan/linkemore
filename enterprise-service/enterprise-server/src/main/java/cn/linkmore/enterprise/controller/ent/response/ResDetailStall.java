@@ -75,6 +75,17 @@ public class ResDetailStall {
 
 	@ApiModelProperty("复位状态  true可以复位 false不可以")
 	private boolean resetStatus = true;
+	
+	@ApiModelProperty("上下线状态true上线 false下线")
+	private boolean onoffStatus = false;
+	
+	public boolean getOnoffStatus() {
+		return onoffStatus;
+	}
+
+	public void setOnoffStatus(boolean onoffStatus) {
+		this.onoffStatus = onoffStatus;
+	}
 
 	public String getSlaveCode() {
 		return slaveCode;
