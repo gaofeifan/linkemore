@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
+import cn.linkmore.enterprise.controller.app.request.ReqToothAuth;
 import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
@@ -176,6 +178,8 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	@Override
 	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		user = new CacheUser();
+		user.setId(482L);
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -198,17 +202,24 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			log.info(user.getId()+">>>STAFF_STALL_EXISTS");
 			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
 		}
-		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
+		Map<String,Object>  pam = new HashMap<>();
+		pam.put("stallId", reqOperatStall.getStallId());
+		pam.put("userId ",user.getId());
+		Integer  using = entRentedRecordClusterMapper.findUsingRecord(pam);
+		if(using>0  ) {
+			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+		}
+		/*String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
 		String val = String.valueOf(this.redisService.get(rediskey));
 		if(StringUtil.isNotBlank(val)) {
 			if(!val.equals(String.valueOf(user.getId()))) {
 				log.info("用户>>>"+user.getId()+"他人使用中>>>"+val);
 				throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 			}
-		}
+		}*/
 		//未完成记录同一用户只有一单
 		EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
-		
+	
 		if(reqOperatStall.getState()==2) {
 			log.info("用户>>>"+user.getId() +"升锁>>>"+reqOperatStall.getStallId());
 			if(Objects.nonNull(record)) {
@@ -220,7 +231,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			}
 		}else if(reqOperatStall.getState()==1) {
 			log.info("用户>>>"+user.getId() +"降锁>>>"+reqOperatStall.getStallId());
-			if(record==null) {
+			if(!Objects.nonNull(record)) {
 				try {
 					entRentedRecordMasterMapper.saveSelective(newrecord);
 				} catch (Exception e) {
@@ -230,7 +241,8 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			}
 		}
 		// 放入缓存
-		this.redisService.set(rediskey,user.getId(),ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
+		this.redisService.set(rediskey,user.getId(),ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
 		log.info("用户>>>"+user.getId() +"缓存>>>"+rediskey);
 		// 调用
 		ReqControlLock reqc = new ReqControlLock();
@@ -295,5 +307,17 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		log.info("用户>>>" + JSON.toJSONString(user));
 		return is;
 	}
+
+	@Override
+	public void tooth(ReqToothAuth reqToothAuth) {
+		
+			Map<String,Object>  pam = new HashMap<>();
+			pam.put("stallId", reqToothAuth.getStallId());
+			pam.put("userId", reqToothAuth.getUserId());
+			Integer  using = entRentedRecordClusterMapper.findUsingRecord(pam);
+			if(using>0  ) {
+				throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+			}
+		}
 
 }

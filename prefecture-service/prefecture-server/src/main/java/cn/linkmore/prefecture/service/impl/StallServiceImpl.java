@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.base.Stopwatch;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
@@ -444,23 +446,26 @@ public class StallServiceImpl implements StallService {
 				Stall stall = stallClusterMapper.findById(reqc.getStallId());
 				log.info("stall:{}", JsonUtil.toJson(stall));
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-					log.info("downing... name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+					log.info("downing>>>>>> name:{},sn:{}", stall.getStallName(), stall.getLockSn());
 					ResponseMessage<LockBean> res = null;
 					// 1 降下 2 升起
+					Stopwatch stopwatch = Stopwatch.createStarted();
 					if (reqc.getStatus() == 1) {
 						res = lockFactory.lockDown(stall.getLockSn());
 					} else if (reqc.getStatus() == 2) {
 						res = lockFactory.lockUp(stall.getLockSn());
 					}
-					log.info("res:{}", JsonUtil.toJson(res));
+					log.info("res>>>>>>>"+res.getMsg());
 					int code = res.getMsgCode();
+					stopwatch.stop();
+					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+					sendMsg(uid, reqc.getStatus(), code);
 					if (code == 200) {
 						stall.setLockStatus(reqc.getStatus());
 						stall.setStatus(reqc.getStatus());
 						stallMasterMapper.lockdown(stall);
 						redisService.remove(reqc.getKey());
 					}
-					sendMsg(uid, reqc.getStatus(), code);
 				}
 			}
 		}).start();
@@ -489,7 +494,11 @@ public class StallServiceImpl implements StallService {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				send(uid, status, code);
+				try {
+					send(uid, status, code);
+				} catch (Exception e) {
+					log.info("sendMsg>>>"+uid);
+				}
 			}
 		}).start();
 	}
@@ -497,7 +506,7 @@ public class StallServiceImpl implements StallService {
 	private void send(String uid, Integer lockstatus, int code) {
 		String title = "车位锁操作通知";
 		String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");
-		PushType type = PushType.LOCK_CONTROL_NOTICE;
+		PushType type =PushType.LOCK_CONTROL_NOTICE;
 		String bool = (code == 200 ? "true" : "false");
 		Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
 		log.info("send>>>", JsonUtil.toJson(token));
@@ -509,7 +518,6 @@ public class StallServiceImpl implements StallService {
 			rp.setClient(token.getClient());
 			rp.setType(type);
 			rp.setData(bool);
-			log.info("send>>>", JsonUtil.toJson(rp));
 			sendClient.send(rp);
 		}
 	}

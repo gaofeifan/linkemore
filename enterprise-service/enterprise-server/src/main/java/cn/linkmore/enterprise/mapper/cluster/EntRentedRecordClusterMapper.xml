@@ -35,6 +35,20 @@
     and status = 0
   </select>
   
+  <select id="findUsingRecord" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+    select 
+    count(1)
+    from t_ent_rented_record
+     where 1=1
+    	<if test="stallId != null">
+			AND stall_id = #{stallId}
+		</if>
+		<if test="userId != null">
+			AND user_id <![CDATA[ <> ]]> #{userId}
+		</if>
+    and status = 0
+  </select>
+  
   <select id="findPage" parameterType="java.util.HashMap"
 		resultMap="BaseResultMap">
 		select
