@@ -364,7 +364,7 @@ public class EntStallServiceImpl implements EntStallService {
 			return resDetailStall;
 		}
 		ResEntOrder resEntOrder = this.orderClient.findOrderByStallId(resStallEntity.getId());
-		if(resDetailStall.getStatus() != 1 && resDetailStall.getStatus() != 4) {
+		if(resStallEntity.getStatus() != 1 && resStallEntity.getStatus() != 4) {
 			resDetailStall.setPlate(resEntOrder.getPlate());
 		}
 		List<EntRentUser> rentUsers = this.entRentUserService.findAll();
@@ -439,7 +439,7 @@ public class EntStallServiceImpl implements EntStallService {
 		ResponseMessage<LockBean> res = null;
 //		result.put("result", res.isResult());
 //		result.put("result", res.getMsg());
-		
+		redisService.set(STALL_LOCK_OPER_STATUS+stallId, ru.getId());
 		new Thread(new Runnable() {
 			
 	        @Override
