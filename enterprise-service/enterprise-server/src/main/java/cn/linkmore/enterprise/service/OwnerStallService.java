@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
+import cn.linkmore.enterprise.controller.app.request.ReqToothAuth;
 import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 
@@ -18,6 +19,8 @@ public interface OwnerStallService {
 	void  control(ReqConStall reqOperatStall,HttpServletRequest request);
 	
 	void   watch(ReqWatchStatus reqWatchStatus,HttpServletRequest request);
+	
+	void 	tooth(ReqToothAuth reqToothAuth);
 	
 	Boolean owner(HttpServletRequest request);
 	

@@ -16,9 +16,25 @@ import cn.linkmore.enterprise.response.ResEnterprise;
 @Mapper
 public interface EntRentedRecordClusterMapper {
 
+	/**
+	 * @Description  查询
+	 * @Author   cl
+	 * @Version  v2.0
+	 */
     EntRentedRecord findById(Long id);
-    
+    /**
+	 * @Description  查询
+	 * @Author   cl 
+	 * @Version  v2.0
+	 */
     EntRentedRecord findByUser(Long userId);
+    
+    /**
+	 * @Description  查询
+	 * @Author   cl 
+	 * @Version  v2.0
+	 */
+    Integer findUsingRecord(Map<String, Object> param);
 
 	/**
 	 * @Description  查询总数

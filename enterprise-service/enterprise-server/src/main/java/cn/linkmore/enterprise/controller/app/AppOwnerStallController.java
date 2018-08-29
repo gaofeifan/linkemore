@@ -17,6 +17,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
+import cn.linkmore.enterprise.controller.app.request.ReqToothAuth;
 import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
@@ -96,6 +97,22 @@ public class AppOwnerStallController {
 	public ResponseEntity<Boolean> owner(@Validated HttpServletRequest request) {
 		Boolean is = ownerStallServicel.owner(request);
 		return ResponseEntity.success(is, request);
+	}
+	
+	@ApiOperation(value = "是否位长租用户", notes = "查询用户是否有长租车位", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/tooth", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> tooth(@Validated @RequestBody ReqToothAuth reqToothAuth,HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			 ownerStallServicel.tooth(reqToothAuth);
+			 response  =	 ResponseEntity.success(true, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(), request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
 	}
 
 }
