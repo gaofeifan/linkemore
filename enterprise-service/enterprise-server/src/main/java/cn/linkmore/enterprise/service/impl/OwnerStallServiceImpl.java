@@ -178,8 +178,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	@Override
 	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		user = new CacheUser();
-		user.setId(482L);
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
