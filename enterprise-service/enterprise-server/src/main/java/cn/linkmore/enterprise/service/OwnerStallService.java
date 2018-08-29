@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
+import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 
 @Service
@@ -16,7 +17,7 @@ public interface OwnerStallService {
 	
 	void  control(ReqConStall reqOperatStall,HttpServletRequest request);
 	
-	void   watch(Long stallId,HttpServletRequest request);
+	void   watch(ReqWatchStatus reqWatchStatus,HttpServletRequest request);
 	
 	Boolean owner(HttpServletRequest request);
 	

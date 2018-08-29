@@ -11,6 +11,20 @@ public class ReqWatchStatus {
 	@ApiModelProperty("车位id")
 	@NotNull(message="车位不能为空")
 	private Long stallId;
+	
+	@ApiModelProperty("状态")
+	@NotNull(message="状态不能为空")
+	private Long status;
+	
+	
+
+	public Long getStatus() {
+		return status;
+	}
+
+	public void setStatus(Long status) {
+		this.status = status;
+	}
 
 	public Long getStallId() {
 		return stallId;

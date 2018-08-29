@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
+import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.OwnerStall;
@@ -166,15 +168,15 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			res.setNum(num);
 			return res;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new BusinessException(StatusEnum.SERVER_EXCEPTION);
 		}
 	}
 
 	@Override
 	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key +  TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
-			log.info(user.getId()+">>>USER_APP_NO_LOGIN");
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
 		Boolean isAllow = false;
@@ -240,23 +242,32 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	}
 	
 	@Override
-	public void watch(Long stallId, HttpServletRequest request) {
-		try {
+	public void watch(ReqWatchStatus reqWatchStatus, HttpServletRequest request) {
 			CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-			String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
 			if (user == null) {
 				throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 			}
+			String rediskey = RedisKey.ACTION_STALL_DOING.key + reqWatchStatus.getStallId();
 			String  val=  String.valueOf(this.redisService.get(rediskey));
-			log.info("用户>>>"+user.getId() +">>>"+rediskey);
-			if(StringUtil.isNotBlank(val)) {
-				if(val.equals( String.valueOf(user.getId()))) {
-					throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
+			Map<String, Object>  map =stallClient.watch(reqWatchStatus.getStallId());
+			Boolean control =true;
+			Boolean blue =true;
+			if(!map.isEmpty()) {
+				if("200".equals(String.valueOf( map.get("code") ))&&String.valueOf(map.get("status")).equals(String.valueOf(reqWatchStatus.getStatus()-1))) {
+					blue = true;
+				}else {
+					blue = false;
 				}
 			}
-		} catch (Exception e) {
-			throw new BusinessException(StatusEnum.SERVER_EXCEPTION);
-		}
+			if(StringUtil.isNotBlank(val)) {
+				if(val.equals( String.valueOf(user.getId()))) {
+					control = false;
+				}
+			}
+			log.info("用户>>>"+user.getId() +">>>"+rediskey);
+			if(!control&&!blue ) {
+				throw new BusinessException(reqWatchStatus.getStatus()==2?StatusEnum.ORDER_LOCKUP_FAIL:StatusEnum.ORDER_LOCKDOWN_FAIL  );
+			}
 	}
 
 	public static String handleTime(String time) {

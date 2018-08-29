@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
@@ -261,8 +262,10 @@ public class EntStallServiceImpl implements EntStallService {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("type", type);
 		params.put("list", stallIds);
-		param.put("stallName", name);
+		params.put("stallName", name);
+		log.info("-----------params = {}",JSON.toJSON(params));
 		List<ResStall> stalls = this.stallClient.findPreStallList(params);  //根据stallid 集合查询车位
+		log.info("-----------stall-list = {}",JSON.toJSON(stalls));
 		List<ResOrderPlate> orders= orderClient.findPlateByPreId(preId);
 		List<Long> collect = stalls.stream().map(stall -> stall.getId()).collect(Collectors.toList());
 		List<StallExcStatus> stallExcList = null;
@@ -403,6 +406,13 @@ public class EntStallServiceImpl implements EntStallService {
 				resDetailStall.setExcCode(excStatus.getExcStatus());
 				resDetailStall.setExcName(excStatus.getExcRemark());
 			}
+		}
+		//TODO
+		//当车位状态为下线或者故障时，该车位下线，显示上线操作按钮 当车位状态为空闲或者使用中该车位上线 显示下线操作按钮
+		if(resStallEntity.getStatus()== 4 || resStallEntity.getStatus()==5 ) {
+			resDetailStall.setOnoffStatus(false);
+		}else {
+			resDetailStall.setOnoffStatus(true);
 		}
 		resDetailStall.setBetty(lockBean.getElectricity());
 		resDetailStall.setStatus(lockBean.getLockState());

@@ -161,6 +161,13 @@ public interface StallService {
 	void controling (ReqControlLock  reqc);
 	
 	/**
+	 * 查看车位锁状态
+	 * @param 
+	 * @return
+	 */
+	Map<String,Object>  watch(Long stallId);
+	
+	/**
 	 * 查询车位锁信息
 	 * @param 
 	 * @return

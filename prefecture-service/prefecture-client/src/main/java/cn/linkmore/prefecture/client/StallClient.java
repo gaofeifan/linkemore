@@ -1,7 +1,7 @@
 package cn.linkmore.prefecture.client;
+
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -81,6 +80,15 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/controllock", method=RequestMethod.POST)
 	@ResponseBody
 	public void controllock(@RequestBody   ReqControlLock  reqc);
+	
+	/**
+	 * 查看锁状态
+	 * @param stallid
+	 * @return 
+	 */
+	@RequestMapping(value = "/v2.0/watch", method=RequestMethod.POST)
+	@ResponseBody
+	public  Map<String,Object>  watch(@RequestBody  Long stallId);
 	
 	/**
 	 * 查询锁状态
