@@ -96,7 +96,7 @@ public class EntStallController {
 	}
 	
 	@ApiOperation(value = "车位上线", notes = "车位上线", consumes = "application/json")
-	@RequestMapping(value = "/change-up",method = RequestMethod.POST)
+	@RequestMapping(value = "/change-up",method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public ResponseEntity<String> changeUp(@RequestParam("stall_id") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stall_id,HttpServletRequest request){
 		try {

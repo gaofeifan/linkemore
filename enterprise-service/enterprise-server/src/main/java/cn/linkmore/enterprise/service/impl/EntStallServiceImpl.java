@@ -78,7 +78,7 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class EntStallServiceImpl implements EntStallService {
-	public static final String STALL_LOCK_STATUS = "STALL:LOCK:STATUS";
+	public static final String STALL_LOCK_OPER_STATUS = "STALL:LOCK:OPER:STATUS";
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private static final String DOWN_CAUSE = "cause_down";
 	@Autowired
@@ -437,7 +437,7 @@ public class EntStallServiceImpl implements EntStallService {
 	        	ReqControlLock reqc = new ReqControlLock(); 
 				reqc.setStallId(stallId);
 				reqc.setStatus(state);
-				reqc.setKey(key);
+				reqc.setKey(STALL_LOCK_OPER_STATUS+stallId);
 	        	//1 降下 2 升起
 				stallClient.controllock(reqc);
 	        }
