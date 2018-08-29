@@ -159,7 +159,7 @@
     select 
     <include refid="Res_Column_List" />
     from o_orders  
-    where stall_id = #{stallId,jdbcType=BIGINT} order by create_time desc  limit 0,1
+    where stall_id = #{stallId,jdbcType=BIGINT} order by id desc  limit 0,1
   </select>
   <select id="findDetail" parameterType="java.lang.Long" resultMap="ResResultMap">
     select 
