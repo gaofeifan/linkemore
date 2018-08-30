@@ -207,14 +207,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		if(using>0  ) {
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
-		/*String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
-		String val = String.valueOf(this.redisService.get(rediskey));
-		if(StringUtil.isNotBlank(val)) {
-			if(!val.equals(String.valueOf(user.getId()))) {
-				log.info("用户>>>"+user.getId()+"他人使用中>>>"+val);
-				throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
-			}
-		}*/
 		//未完成记录同一用户只有一单
 		EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
 	

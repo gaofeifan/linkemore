@@ -47,6 +47,7 @@ import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.DomainUtil;
@@ -78,6 +79,8 @@ public class StallServiceImpl implements StallService {
 	private StallLockClusterMapper stallLockClusterMapper;
 	@Autowired
 	private SendClient sendClient;
+	@Autowired
+	private PushClient pushClient;
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -518,7 +521,7 @@ public class StallServiceImpl implements StallService {
 			rp.setClient(token.getClient());
 			rp.setType(type);
 			rp.setData(bool);
-			sendClient.send(rp);
+			pushClient.push(rp);
 		}
 	}
 }
