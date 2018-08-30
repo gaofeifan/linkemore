@@ -65,6 +65,16 @@ public interface CouponClient {
 	@ResponseBody
 	public boolean send(@RequestParam(value="userId") Long userId);
 	
+	
+	/**
+	 * 实付结账发送专题优惠券
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/pay-send", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean paySend(@RequestParam(value="userId") Long userId);
+	
 	/**
 	 * 品牌车位发送优惠券功能
 	 * @param b 

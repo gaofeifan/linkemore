@@ -85,5 +85,11 @@ public interface CouponService {
 	 * @return
 	 */
 	List<ResTemplate> findEntTemplateList(Long entId);
+	/**
+	 * 实付结账发送优惠券
+	 * @param userId
+	 * @return
+	 */
+	boolean paySend(Long userId);
 
 }

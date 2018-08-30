@@ -177,9 +177,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		user = new CacheUser();
-		user.setId(482L);
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));		
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -204,19 +202,11 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		}
 		Map<String,Object>  pam = new HashMap<>();
 		pam.put("stallId", reqOperatStall.getStallId());
-		pam.put("userId ",user.getId());
+		pam.put("userId", user.getId());
 		Integer  using = entRentedRecordClusterMapper.findUsingRecord(pam);
 		if(using>0  ) {
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
-		/*String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
-		String val = String.valueOf(this.redisService.get(rediskey));
-		if(StringUtil.isNotBlank(val)) {
-			if(!val.equals(String.valueOf(user.getId()))) {
-				log.info("用户>>>"+user.getId()+"他人使用中>>>"+val);
-				throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
-			}
-		}*/
 		//未完成记录同一用户只有一单
 		EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
 	
@@ -261,10 +251,11 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			}
 			String rediskey = RedisKey.ACTION_STALL_DOING.key + reqWatchStatus.getStallId();
 			String  val=  String.valueOf(this.redisService.get(rediskey));
-			Map<String, Object>  map =stallClient.watch(reqWatchStatus.getStallId());
+			Map<String, Object>  map = new 	HashMap<>();
+			map =stallClient.watch(reqWatchStatus.getStallId());
 			Boolean control =true;
 			Boolean blue =true;
-			if(!map.isEmpty()) {
+			if(map!=null&&!map.isEmpty()) {
 				if("200".equals(String.valueOf( map.get("code") ))&&String.valueOf(map.get("status")).equals(String.valueOf(reqWatchStatus.getStatus()-1))) {
 					blue = true;
 				}else {
@@ -310,7 +301,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public void tooth(ReqToothAuth reqToothAuth) {
-		
 			Map<String,Object>  pam = new HashMap<>();
 			pam.put("stallId", reqToothAuth.getStallId());
 			pam.put("userId", reqToothAuth.getUserId());

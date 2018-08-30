@@ -368,9 +368,7 @@ public class PayServiceImpl implements PayService {
 		}
 		//TODO 9.14号过后需要删除
 		String plateNo = baseConfig.getFreePlate();
-		log.info("-----------free plate-----------{}",plateNo);
 		if (plateNo != null && plateNo.contains(order.getPlateNo())) {
-			log.info("-----------owner-------------owner{}", order.getPlateNo());
 			order.setActualAmount(new BigDecimal(0.00));
 		}
 
@@ -865,6 +863,11 @@ public class PayServiceImpl implements PayService {
 			ResPrefectureDetail pre = prefectureClient.findById(order.getPreId());
 			detail = new ResOrderDetail();
 			detail.copy(order);
+			//实际支付金额大于0发送停车券
+			if(detail.getActualAmount().doubleValue() > 0) {
+				log.info("pay send userId = {}, actualAmount = {}",order.getUserId(),detail.getActualAmount());
+				couponClient.paySend(order.getUserId());
+			}
 			if (pre != null) {
 				detail.setLeaveTime(pre.getLeaveTime());
 			} else {

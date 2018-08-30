@@ -134,24 +134,33 @@ public class PushServiceImpl implements PushService {
 		} 
 	}
 	
+	
+	
+	/**
+	 *  物业版推送
+	 */
 	@Override
 	public void send(ReqPush rp) {
 		log.info("send message:{}",JsonUtil.toJson(rp));
 		new IOSSendThread(rp).start();
 	} 
-	
+
 	class IOSSendThread extends Thread{
 		private ReqPush rp;
 		public IOSSendThread(ReqPush rp) {
 			this.rp =rp;
 		}
 		public void run() {
-			iossend(rp);
+			if(rp.getClient().intValue()  ==Constants.ClientSource.ANDROID.source) {
+				androidsend(rp);
+			}else {
+				iossend(rp);
+			}
 		}
 	}
 	
 	void iossend(ReqPush rp) {
-		JPushClient jSendClient = this.beanFactory.jPushClient();
+		JPushClient jSendClient = this.beanFactory.jSendClient();
 		Builder ios = PushPayload.newBuilder();
 		ios.setAudience(Audience.alias("u"+rp.getAlias()));
 		ios.setMessage(Message.newBuilder()
@@ -169,4 +178,22 @@ public class PushServiceImpl implements PushService {
 		} catch (Exception e) { }
 	}
 	
+	void androidsend(ReqPush rp) {
+		JPushClient jSendClient = this.beanFactory.jSendClient();
+		Builder android = PushPayload.newBuilder();
+		android.setAudience(Audience.alias("u"+rp.getAlias()));
+		android.setMessage(Message.newBuilder()
+				.addExtra("title", rp.getTitle())
+				.addExtra("content", rp.getContent())
+				.addExtra("type",rp.getType().id) 
+				.addExtra("timestamp", new Date().getTime())
+				.addExtra("data", rp.getData())
+				.setMsgContent(rp.getContent()).build());
+		android.setPlatform(Platform.android());
+		android.setOptions(Options.newBuilder().setApnsProduction(baseConfig.getOnline()).build());
+		PushPayload androidppl = android.build();
+		try {
+			jSendClient.sendPush(androidppl);
+		} catch (Exception e) { }
+	}
 }
