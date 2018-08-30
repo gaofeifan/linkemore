@@ -410,7 +410,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 		log.info("vehicleMark = {}",JSON.toJSON(vehicleMark));
 		boolean assign = false;
 		Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
-		
 		for (Object obj : set) {
 			JSONObject json = JSON.parseObject(obj.toString());
 			String vm = json.get("plate").toString();    //车牌
@@ -423,12 +422,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 		}
 		Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + reqBooking.getPrefectureId());  //集合中所有成员元素
-		log.info("---------lockSnList={}",JSON.toJSON(lockSnList));
-		ResStall resStall = null;
-		for(Object obj: lockSnList) {
-			String lockSn = obj.toString();
-			Stall stall = this.stallClusterMapper.findByLockSn(lockSn);
-			if(stall != null) {
+		if(CollectionUtils.isNotEmpty(lockSnList)) {
+			Map<String, Object> params = new HashMap<String, Object>();
+			ResStall resStall = null;
+			List<cn.linkmore.prefecture.response.ResStall> freeStallList = stallClusterMapper.findFreeStallList(params);
+			log.info("---------freeStallList = {}",JSON.toJSON(freeStallList));
+			for(cn.linkmore.prefecture.response.ResStall stall: freeStallList) {
 				resStall = new ResStall();
 				resStall.setStallId(stall.getId());
 				resStall.setLockSn(stall.getLockSn());
