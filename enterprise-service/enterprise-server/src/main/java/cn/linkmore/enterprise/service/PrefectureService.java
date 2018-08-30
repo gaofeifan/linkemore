@@ -75,7 +75,7 @@ public interface PrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResDayTrafficFlow findTrafficFlowList(Integer pageNo, Short type, Long preId, String date, HttpServletRequest request);
+	List<ResDayTrafficFlow> findTrafficFlowList(Integer pageNo, Short type, Long preId, String date, HttpServletRequest request);
 
 	/**
 	 * @param pageNo 
@@ -84,7 +84,7 @@ public interface PrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResDayIncome findIncomeList(Integer pageNo, Short type, Long preId, String date, HttpServletRequest request);
+	List<ResDayIncome> findIncomeList(Integer pageNo, Short type, Long preId, String date, HttpServletRequest request);
 
 	/**
 	 * @Description  

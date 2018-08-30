@@ -173,10 +173,10 @@ public class StaffServiceImpl implements StaffService {
 	public void logout(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
-		Map<String,Object> map = new HashMap<>();
+	/*	Map<String,Object> map = new HashMap<>();
 		map.put("sql", "status = 0,open_id = null");
 		map.put("id", ru.getId());
-		this.entStaffMasterMapper.updateByColumn(map);
+		this.entStaffMasterMapper.updateByColumn(map);*/
 		this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+ru.getId().toString());
 		this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_USER.key+key); 
 	}

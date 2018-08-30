@@ -93,7 +93,7 @@
     <if test="type!=null">
        and type = #{type,jdbcType=SMALLINT}
     </if>
-    <if test="stallName != null">
+    <if test="stallName != null and stallName != ''">
     	and stall_name = #{stallName}
     </if>
   </select>

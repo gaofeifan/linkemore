@@ -24,6 +24,7 @@ import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 
+import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -112,7 +113,9 @@ public class EntStallServiceImpl implements EntStallService {
 	
 	@Autowired
 	private EntOrderClient orderClient;
-	
+
+	@Autowired
+	private OrderClient feignOrderClient;
 	@Autowired
 	private LockFactory lockFactory;
 
@@ -188,13 +191,15 @@ public class EntStallServiceImpl implements EntStallService {
 				//临停使用 || 临停
 				if(resStall.getType() == 1 && resStall.getStatus() == StallStatus.USED.status){
 					preTempUseTypeStalls ++;
-				}else if(resStall.getType() == 1 ){
+				}
+				if(resStall.getType() == 1 ){
 					preTempTypeStalls ++;
 				}
 				//长租使用||长租
 				if(resStall.getType() == 2 && resStall.getStatus() == StallStatus.USED.status){
 					preRentUseTypeStalls ++;
-				}else if(resStall.getType() == 2 ){
+				}
+				if(resStall.getType() == 2 ){
 					preRentTypeStalls ++;
 				}
 					/*StringBuilder sb = new StringBuilder();
@@ -206,7 +211,8 @@ public class EntStallServiceImpl implements EntStallService {
 				//vip使用  ||vip
 				if(resStall.getType() == 3 && resStall.getStatus() == StallStatus.USED.status){
 					preVipUseTypeStalls ++;
-				}else if(resStall.getType() == 3 ){
+				}
+				if(resStall.getType() == 3 ){
 					preVipTypeStalls ++;
 				}
 				
@@ -288,6 +294,11 @@ public class EntStallServiceImpl implements EntStallService {
 				stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
 				stall.setType(resStall.getType());
 				stall.setStallId(resStall.getId());
+				for (LockBean lock : lockBeans) {
+					if(lock.getLockCode().equals(stall.getLockSn())) {
+						stall.setLockStatus(lock.getLockState());
+					}
+				}
 				if(lockBeans != null) {
 					for (LockBean lock : lockBeans) {
 						if(lock.getLockCode().equals(stall.getLockSn())) {
@@ -341,6 +352,7 @@ public class EntStallServiceImpl implements EntStallService {
 			}
 			
 			if(stallList.size() == 1) {
+				sb.append(stallList.get(i).getStallName());
 				stallNames.add(stallName);
 			}
 		}
@@ -382,8 +394,6 @@ public class EntStallServiceImpl implements EntStallService {
 			if(resStallEntity.getStatus() == 2) {
 				resDetailStall.setDownTime(resEntOrder.getLockDownTime());
 			}
-				
-			
 		}else if(resStallEntity.getType() != null && resStallEntity.getType() == 1) {
 			if(resStallEntity.getStatus() == 2) {
 				resDetailStall.setDownTime(resEntOrder.getLockDownTime());
@@ -448,6 +458,9 @@ public class EntStallServiceImpl implements EntStallService {
 				reqc.setStallId(stallId);
 				reqc.setStatus(state);
 				reqc.setKey(STALL_LOCK_OPER_STATUS+stallId);
+				if(state == 1) {
+					redisService.set(RedisKey.ENT_STALL_DOING.key+stallId,ru.getId(),ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+				}
 	        	//1 降下 2 升起
 				stallClient.controllock(reqc);
 	        }
@@ -606,6 +619,20 @@ public class EntStallServiceImpl implements EntStallService {
 		List<ResStallBatteryLog> list = this.stallBatteryLogClient.findBatteryLogList(stallId);
 		return list;
 	}
+
+	@Override
+	public Integer downResult(HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key);
+		ResUserOrder orders = this.feignOrderClient.last(ru.getId());
+		Integer count = 0;
+		Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + orders.getId());
+		if (o != null) {
+			count = new Integer(o.toString());
+		}
+		return count;
+	}
+
 	
 	
 }

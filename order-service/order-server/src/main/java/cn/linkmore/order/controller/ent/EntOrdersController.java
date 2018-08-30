@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.order.controller.app.request.ReqOrderStall;
 import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResChargeList;
@@ -24,6 +29,7 @@ import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/ent/orders")
@@ -112,7 +118,7 @@ public class EntOrdersController {
 	 */
 	@RequestMapping(value = "/traffic-flow-list", method = RequestMethod.POST)
 	@ResponseBody
-	ResTrafficFlow findTrafficFlowList(@RequestBody Map<String, Object> param){
+	public List<ResTrafficFlow> findTrafficFlowList(@RequestBody Map<String, Object> param){
 		return this.ordersService.findTrafficFlowList(param);
 	}
 
@@ -123,7 +129,7 @@ public class EntOrdersController {
 	 */
 	@RequestMapping(value = "/income-list", method = RequestMethod.POST)
 	@ResponseBody
-	ResIncome findIncomeList(@RequestBody Map<String, Object> param){
+	public List<ResIncome> findIncomeList(@RequestBody Map<String, Object> param){
 		return this.ordersService.findIncomeList(param);
 	}
 	
@@ -145,8 +151,28 @@ public class EntOrdersController {
 	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId) {
 		return this.ordersService.findStallLatest(stallId);
 	}
+
+	@RequestMapping(value = "/v2.0/down-wy-msg-push", method = RequestMethod.POST)
+	@ResponseBody
+	public void downWYMsgPush(@RequestParam("orderId")Long orderId, @RequestParam("stallId")Long stallId) {
+		this.ordersService.downWYMsgPush(orderId,stallId);
+	}
 	
-	
+	@ApiOperation(value = "降锁回调", notes = "降锁回调校验结果", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/down/result", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> downResult(@RequestParam("userId") Long userId) { 
+//		Integer count = this.ordersService.downResult(userId);
+		ResponseEntity<?> response = null;
+		/*if(count==0) {
+			response =  ResponseEntity.success(count, request);
+		}else if(count==1){
+			response =  ResponseEntity.fail(StatusEnum.ORDER_LOCKDOWN_FAIL, request);
+		}else if(count>1) {
+			response = ResponseEntity.fail(StatusEnum.ORDER_FAIL_SWITCHLOCK, request);
+		}*/
+		return response;
+	}
 	
 	
 }

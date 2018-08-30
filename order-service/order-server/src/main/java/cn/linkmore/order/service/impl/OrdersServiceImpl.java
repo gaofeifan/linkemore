@@ -1,7 +1,6 @@
 package cn.linkmore.order.service.impl;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -856,6 +856,25 @@ public class OrdersServiceImpl implements OrdersService {
 			send(uid, title, content, type, status);
 		}
 	}
+	
+	class PushWYThread extends Thread {
+		private String uid;
+		private String title;
+		private String content;
+		private PushType type;
+		private Boolean status;
+
+		public PushWYThread(String uid, String title, String content, PushType type, Boolean status) {
+			this.uid = uid;
+			this.title = title;
+			this.content = content;
+			this.type = type;
+			this.status = status;
+		}
+		public void run() {
+			sendWY(uid, title, content, type, status);
+		}
+	}
 
 	/**
 	 * 推送消息
@@ -876,6 +895,28 @@ public class OrdersServiceImpl implements OrdersService {
 			map.put("content", content);
 			map.put("status", status);
 			CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
+			userSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
+		} else {
+			ReqPush rp = new ReqPush();
+			rp.setAlias(uid);
+			rp.setTitle(title);
+			rp.setContent(content);
+			rp.setClient(token.getClient());
+			rp.setType(type);
+			rp.setData(status.toString());
+			pushClient.push(rp);
+		}
+	}
+	private void sendWY(String uid, String title, String content, PushType type, Boolean status) {
+		Token token = (Token) redisService.get(RedisKey.STAFF_ENT_AUTH_TOKEN.key + uid.toString());
+		log.info("send:{}", JsonUtil.toJson(token));
+		if (token.getClient().intValue() == ClientSource.WXAPP.source) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("title", title);
+			map.put("type", type.id);
+			map.put("content", content);
+			map.put("status", status);
+			CacheUser cu = (CacheUser) this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + token.getAccessToken());
 			userSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
 		} else {
 			ReqPush rp = new ReqPush();
@@ -1153,7 +1194,7 @@ public class OrdersServiceImpl implements OrdersService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());
 		Integer count = 0;
-		Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + orders.getId());
+		Object o = this.redisService.get(RedisKey.ENT_STALL_DOING.key + orders.getId());
 		if (o != null) {
 			count = new Integer(o.toString());
 		}
@@ -1267,12 +1308,48 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public Map<String, Object> findTrafficFlow(Map<String, Object> map) {
 		Date date = getDateByType((short) Short.parseShort(map.get("startTime").toString()));
+		short type = Short.parseShort(map.get("startTime").toString());
 		map.put("startTime", date);
 		Integer integer = this.ordersClusterMapper.findTrafficFlow(map);
 		List<ResPreDataList> list = this.ordersClusterMapper.findPreDataList(map);
+		int num = 0;
+		switch (type) {
+			case 0:
+				num = 6;
+				break;
+			case 1:
+				num = 14;
+				break;
+			case 2:
+				num = 29;
+				break;
+			default:
+				break;
+		}
+		List<ResPreDataList> lists = new ArrayList<>();
+		ResPreDataList pre = null;
+		for (;num >= 0 ; num--) {
+			Date month = DateUtils.getDateByDay(-num);
+			Date convert = DateUtils.convert(month, null);
+			boolean falg = true;
+			for (ResPreDataList resPreDataList : list) {
+				if(resPreDataList.getDayTime().getTime() == convert.getTime()) {
+					lists.add(resPreDataList);
+					falg = false;
+					break;
+				}
+			}
+			if(falg) {
+				pre = new ResPreDataList();
+				pre.setDayNumber(0);
+				pre.setDayAmount(new BigDecimal(0));
+				pre.setDayTime(month);
+				lists.add(pre);
+			}
+		}
 		map = new HashMap<>();
 		map.put("number", integer);
-		map.put("list", list);
+		map.put("list", lists);
 		return map;
 	}
 	
@@ -1286,14 +1363,52 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public Map<String, Object> findProceeds(Map<String, Object> map) {
 		Date date = getDateByType((short) Short.parseShort(map.get("startTime").toString()));
+		short type = Short.parseShort(map.get("startTime").toString());
 		map.put("startTime", date);
 		BigDecimal decimal = this.ordersClusterMapper.findProceeds(map);
+		List<ResPreDataList> list = this.ordersClusterMapper.findPreDataList(map);
+		int num = 0;
+		switch (type) {
+			case 0:
+				num = 6;
+				break;
+			case 1:
+				num = 14;
+				break;
+			case 2:
+				num = 29;
+				break;
+			default:
+				break;
+		}
+		List<ResPreDataList> lists = new ArrayList<>();
+		ResPreDataList pre = null;
+		for (;num >= 0 ; num--) {
+			Date month = DateUtils.getDateByDay(-num);
+			Date convert = DateUtils.convert(month, null);
+			boolean falg = true;
+			for (ResPreDataList resPreDataList : list) {
+				if(resPreDataList.getDayTime().getTime() == convert.getTime()) {
+					lists.add(resPreDataList);
+					falg = false;
+					break;
+				}
+			}
+			if(falg) {
+				pre = new ResPreDataList();
+				pre.setDayNumber(0);
+				pre.setDayAmount(new BigDecimal(0));
+				pre.setDayTime(month);
+				lists.add(pre);
+			}
+		}
+		
 //		map.put("pageSize", 10);
 //		map.put("start", getPageNo(map.get("pageNo")));
-		List<ResPreDataList> list = this.ordersClusterMapper.findPreDataList(map);
+		
 		map = new HashMap<>();
 		map.put("amount", decimal);
-		map.put("list", list);
+		map.put("list", lists);
 		return map;
 	}
 
@@ -1349,20 +1464,64 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 */
 	@Override
-	public ResTrafficFlow findTrafficFlowList(Map<String, Object> param) {
+	public List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param) {
 		Date date = getDateByType(Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
-		Map<String, Date> map = getStartEndDate(param.get("date") != null ? param.get("date").toString():null);
+		Map<String, Date> map = getStartEndDate(param.get("date") != null ? Integer.parseInt(param.get("date").toString()):0);
 		param.put("monthStart", map.get("monthStart"));
 		param.put("monthEnd", map.get("monthEnd"));
 		param.put("pageSize", 10);
 		param.put("start", getPageNo(param.get("pageNo")));
 		List<ResTrafficFlowList> list = this.ordersClusterMapper.findTrafficFlowList(param);
+		
 //		List<ResMonthCount> monthCount = this.ordersClusterMapper.findMonthCount(param);
 		ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
-		ResTrafficFlow flow = new ResTrafficFlow();
-		flow.setCarMonthTotal(monthCount.getMonthCarCount());
-		flow.setTime(map.get("monthStart"));
+		List<ResTrafficFlow> flows = new ArrayList<>();
+		ResTrafficFlow flow = null;
+		Set<Integer> collect = list.stream().map(traffic -> traffic.getMonth()).collect(Collectors.toSet());
+		if(collect.size() > 1) {
+			for (Integer integer : collect) {
+				if(integer.shortValue() == monthCount.getMonth()) {
+					flow = new ResTrafficFlow();
+					List<ResTrafficFlowList> lists = new ArrayList<>();
+					for (ResTrafficFlowList resTrafficFlowList : list) {
+						if(resTrafficFlowList.getMonth().equals(integer)) {
+							lists.add(resTrafficFlowList);
+						}
+					}
+					flow.setCarMonthTotal(monthCount.getMonthCarCount());
+					flow.setTime(lists.get(0).getDate());
+					flow.setTrafficFlows(lists);
+					if(flows.size() == 0) {
+						flows.add(flow);
+					}else {
+						flows.add(flows.set(0,flow));
+					}
+				}else {
+					map = getStartEndDate(integer);
+					param.put("monthStart", map.get("monthStart"));
+					param.put("monthEnd", map.get("monthEnd"));
+					ResMonthCount resMonthCount = this.ordersClusterMapper.findMonthCountByDate(param);
+					flow = new ResTrafficFlow();
+					List<ResTrafficFlowList> lists = new ArrayList<>();
+					for (ResTrafficFlowList resTrafficFlowList : list) {
+						if(resTrafficFlowList.getMonth().equals(integer)) {
+							lists.add(resTrafficFlowList);
+						}
+					}
+					flow.setCarMonthTotal(resMonthCount.getMonthCarCount());
+					flow.setTime(lists.get(0).getDate());
+					flow.setTrafficFlows(lists);
+					flows.add(flow);
+				}
+			}
+		}else {
+			flow = new ResTrafficFlow();
+			flow.setCarMonthTotal(monthCount.getMonthCarCount());
+			flow.setTime(map.get("monthStart"));
+			flow.setTrafficFlows(list);
+			flows.add(flow);
+		}
 		/*for (ResMonthCount resMothCount : monthCount) {
 			List<ResTrafficFlowList> collect = list.stream()
 					.filter(month -> month.getMonth() == resMothCount.getMonth()).collect(Collectors.toList());
@@ -1374,26 +1533,67 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			flowLists.add(flow);
 		}*/
-		flow.setTrafficFlows(list);
-		return flow;
+		return flows;
 	}
 
 	@Override
-	public ResIncome findIncomeList(Map<String, Object> param) {
+	public List<ResIncome> findIncomeList(Map<String, Object> param) {
 		Date date = getDateByType(Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
-		Map<String, Date> map = getStartEndDate(param.get("date") != null ? param.get("date").toString():null);
+		Map<String, Date> map = getStartEndDate(param.get("date") != null ? Integer.parseInt(param.get("date").toString()):0);
 		param.put("monthStart", map.get("monthStart"));
 		param.put("monthEnd", map.get("monthEnd"));
 		param.put("pageSize", 10);
 		param.put("start", getPageNo(param.get("pageNo")));
-		
 		ResMonthCount months = this.ordersClusterMapper.findMonthCountByDate(param);
 		List<ResIncomeList> list = this.ordersClusterMapper.findIncomeList(param);
-		ResIncome income = new ResIncome();
-		income.setList(list);
-		income.setMonthAmount(months.getMonthAmount());
-		income.setDate(map.get("monthStart"));
+		ResIncome income = null;
+		List<ResIncome> incomes = new ArrayList<>();
+		Set<Integer> collect = list.stream().map(in -> in.getMonth()).collect(Collectors.toSet());
+		List<ResIncomeList> lists = new ArrayList<>();
+		if(collect.size() > 1) {
+			for (Integer integer : collect) {
+				income = new ResIncome();
+				if(integer.intValue() == months.getMonth()) {
+					lists = new ArrayList<>();
+					for (ResIncomeList resIncomeList : list) {
+						if(resIncomeList.getMonth().equals(integer)  ) {
+							lists.add(resIncomeList);
+						}
+					}
+					income.setList(lists);
+					income.setMonthAmount(months.getMonthAmount());
+					income.setDate(lists.get(0).getDate());
+					if(incomes.size() == 0) {
+						incomes.add(income);
+					}else {
+						incomes.add(incomes.set(0,income));
+					}
+				
+				}else {
+					lists = new ArrayList<>();
+					map = getStartEndDate(list.get(list.size()-1).getMonth());
+					param.put("monthStart", map.get("monthStart"));
+					param.put("monthEnd", map.get("monthEnd"));
+					ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
+					for (ResIncomeList resIncomeList : list) {
+						if(integer.equals(resIncomeList.getMonth()) ) {
+							lists.add(resIncomeList);
+						}
+					}
+					income.setList(lists);
+					income.setMonthAmount(monthCount.getMonthAmount());
+					income.setDate(lists.get(0).getDate());
+					incomes.add(income);
+				}
+			}
+		}else {
+			income = new ResIncome();
+			income.setList(list);
+			income.setMonthAmount(months.getMonthAmount());
+			income.setDate(map.get("monthStart"));
+			incomes.add(income);
+		}
 		/*for (ResMonthCount resMonthCount : months) {
 			List<ResIncomeList> collect = list.stream().filter(month -> month.getMonth() == resMonthCount.getMonth())
 					.collect(Collectors.toList());
@@ -1405,7 +1605,7 @@ public class OrdersServiceImpl implements OrdersService {
 				incomes.add(income);
 			}
 		}*/
-		return income;
+		return incomes;
 	}
 
 	private Date getDateByType(Short type) {
@@ -1420,11 +1620,11 @@ public class OrdersServiceImpl implements OrdersService {
 		return date;
 	}
 	
-	private Map<String,Date> getStartEndDate(String date){
+	private Map<String,Date> getStartEndDate(int date){
 		Map<String,Date> map = new HashMap<>();
 		Date monthStart = null;
 		Date monthEnd = null;
-		if(StringUtils.isBlank(date)) {
+		if(date == 0) {
 			Calendar instance = Calendar.getInstance();
 			instance.setTime(new Date());
 			instance.set(Calendar.DAY_OF_MONTH, 1);
@@ -1433,19 +1633,14 @@ public class OrdersServiceImpl implements OrdersService {
 			instance.set(Calendar.MONTH, instance.get(Calendar.MONDAY)+1);
 			monthEnd = instance.getTime();
 		}else {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月");
-			try {
-				Date parse = sdf.parse(date);
-				Calendar instance = Calendar.getInstance();
-				instance.setTime(parse);
-				instance.set(Calendar.DAY_OF_MONTH, 1);
-				monthStart = instance.getTime();
-				instance.set(Calendar.DAY_OF_MONTH, 1);
-				instance.set(Calendar.MONTH, instance.get(Calendar.MONDAY)+1);
-				monthEnd = instance.getTime();
-			} catch (ParseException e) {
-				throw new BusinessException(StatusEnum.VALID_EXCEPTION);
-			}
+			Calendar instance = Calendar.getInstance();
+			instance.setTime(new Date());
+			instance.set(Calendar.MONTH, date - 1);
+			instance.set(Calendar.DAY_OF_MONTH, 1);
+			monthStart = instance.getTime();
+			instance.set(Calendar.DAY_OF_MONTH, 1);
+			instance.set(Calendar.MONTH, date);
+			monthEnd = instance.getTime();
 		}
 		map.put("monthStart", monthStart);
 		map.put("monthEnd", monthEnd);
@@ -1484,7 +1679,38 @@ public class OrdersServiceImpl implements OrdersService {
 	public ResUserOrder findStallLatest(Long stallId) {
 		return this.ordersClusterMapper.findStallLatest(stallId);
 	}
-	
+
+	@Override
+	public void downWYMsgPush(Long orderId, Long stallId) {
+		ResUserOrder order = this.ordersClusterMapper.findDetail(orderId);
+		Boolean switchStatus = false;
+		Boolean downStatus = true;
+		if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId())) {
+			Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId());
+			if (Integer.valueOf(count.toString()) > 1) {
+				switchStatus = true;
+			}
+			downStatus = false;
+		}
+
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("lockDownStatus", switchStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
+		param.put("lockDownTime", new Date());
+		param.put("orderId", order.getId());
+		this.orderMasterMapper.updateLockStatus(param);
+		log.info("stall downing :{}", switchStatus);
+		
+		if (switchStatus && !downStatus) {
+			Thread thread = new PushWYThread(order.getUserId().toString(), "预约切换通知", "车位锁降下失败建议切换车位",
+					PushType.ORDER_SWITCH_STATUS_NOTICE, true);
+			thread.start();
+		} else {
+			Thread thread = new PushWYThread(order.getUserId().toString(), "预约降锁通知", downStatus ? "车位锁降下成功" : "车位锁降下失败",
+					PushType.LOCK_DOWN_NOTICE, downStatus);
+			thread.start();
+		}
+	}
+
 	
 	
 }

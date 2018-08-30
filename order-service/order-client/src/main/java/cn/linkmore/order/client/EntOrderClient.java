@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.EntOrderClientHystrix;
-import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
-import cn.linkmore.order.response.ResOrder;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
@@ -58,7 +57,7 @@ public interface EntOrderClient {
 
 	@RequestMapping(value = "/traffic-flow-list", method = RequestMethod.POST)
 	@ResponseBody
-	public ResTrafficFlow findTrafficFlowList(@RequestBody Map<String, Object> param);
+	public List<ResTrafficFlow> findTrafficFlowList(@RequestBody Map<String, Object> param);
 
 	/**
 	 * @Description  查询收费列表
@@ -67,7 +66,7 @@ public interface EntOrderClient {
 	 */
 	@RequestMapping(value = "/income-list", method = RequestMethod.POST)
 	@ResponseBody
-	public ResIncome findIncomeList(@RequestBody Map<String, Object> param);
+	public List<ResIncome> findIncomeList(@RequestBody Map<String, Object> param);
 	
 
 	@RequestMapping(value = "/by-stall", method = RequestMethod.POST)
@@ -89,4 +88,12 @@ public interface EntOrderClient {
 	@RequestMapping(value = "/stall-latest", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId);
+	
+	@RequestMapping(value = "/v2.0/down-wy-msg-push", method = RequestMethod.POST)
+	@ResponseBody
+	public void downWYMsgPush(@RequestParam("orderId")Long orderId, @RequestParam("stallId")Long stallId);
+	
+	@RequestMapping(value = "/v2.0/down/result", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> downResult(@RequestParam("userId")Long userId);
 }

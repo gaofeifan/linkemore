@@ -485,14 +485,44 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 		AND pre_id = #{preId}
 	GROUP BY
 		DATE_FORMAT(end_time, '%Y-%m-%d')
-	ORDER BY end_time desc
+	ORDER BY end_time ASC
 	<!-- limit #{start},#{pageSize} -->
   </select>
   <select id="findPlateByPreId" parameterType="java.lang.Long" resultType="cn.linkmore.order.response.ResOrderPlate">
  	<!-- SELECT plate_no plateNo,stall_id stallId,stall_name stallName FROM o_orders WHERE pre_id = #{preId} AND status = 2
  --> 
- 	
-	SELECT ord.plate_no plateNo,ord.stall_id stallId,ord.stall_name stallName FROM v_stall sta INNER JOIN o_orders ord ON sta.id = ord.stall_id  WHERE sta.pre_id = #{preId} AND sta.status = 2 GROUP BY sta.id ORDER BY ord.id DESC
+ SELECT
+	ord.id stallId,
+			ord.plate_no plateNo,
+			ord.stall_name stallName
+FROM
+	(
+		SELECT
+			sta.id,
+			ord.plate_no,
+			ord.stall_name
+		FROM
+			(
+				SELECT
+					plate_no,
+					stall_id,
+					stall_name,
+					begin_time
+				FROM
+					o_orders
+				WHERE
+					pre_id = #{preId}
+				ORDER BY
+					begin_time DESC
+			) ord
+		INNER JOIN v_stall sta ON sta.id = ord.stall_id
+		AND sta.pre_id = #{preId}
+		AND sta. STATUS = 2
+		ORDER BY
+			ord.begin_time DESC
+	) ord
+GROUP BY
+	ord.id
   </select>
  
    	

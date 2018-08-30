@@ -166,14 +166,14 @@ public interface OrdersService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResTrafficFlow findTrafficFlowList(Map<String, Object> param);
+	List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param);
 
 	/**
 	 * @Description  查询收入列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResIncome findIncomeList(Map<String, Object> param);
+	List<ResIncome> findIncomeList(Map<String, Object> param);
 
 	/**
 	 * @Description  
@@ -215,6 +215,13 @@ public interface OrdersService {
 	 * @Version  v2.0
 	 */
 	ResUserOrder findStallLatest(Long stallId);
+
+	/**
+	 * @Description  物业办车位锁下降
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void downWYMsgPush(Long orderId, Long stallId);
 
 
 	
