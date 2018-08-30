@@ -30,7 +30,9 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.OrderClient;
+import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
 import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
@@ -73,6 +75,8 @@ public class StallServiceImpl implements StallService {
 	private LockFactory lockFactory;
 	@Autowired
 	private OrderClient orderClient;
+	@Autowired
+	private EntOrderClient entOrderClient;
 	@Autowired
 	private StallLockMasterMapper stallLockMasterMapper;
 	@Autowired
@@ -464,7 +468,12 @@ public class StallServiceImpl implements StallService {
 					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
 					if (code == 200) {
-						stall.setLockStatus(reqc.getStatus());
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								downLock(reqc.getStallId());
+							}
+						}).start();
 						stall.setStatus(reqc.getStatus());
 						stallMasterMapper.lockdown(stall);
 						redisService.remove(reqc.getKey());
@@ -506,6 +515,11 @@ public class StallServiceImpl implements StallService {
 		}).start();
 	}
 
+	public void downLock(Long stallId) {
+		ResUserOrder resUserOrder = this.entOrderClient.findStallLatest(stallId);
+		entOrderClient.downWYMsgPush(resUserOrder.getId(), stallId);
+	}
+	
 	private void send(String uid, Integer lockstatus, int code) {
 		String title = "车位锁操作通知";
 		String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");

@@ -4,10 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResEntOrder;
@@ -63,13 +66,13 @@ public class EntOrderClientHystrix implements EntOrderClient {
 	}
 
 	@Override
-	public ResTrafficFlow findTrafficFlowList(Map<String, Object> param) {
+	public List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param) {
 		log.info("feign List<ResTrafficFlowList> findTrafficFlowList(Map<String, Object> param)");
 		return null;
 	}
 
 	@Override
-	public ResIncome findIncomeList(Map<String, Object> param) {
+	public List<ResIncome> findIncomeList(Map<String, Object> param) {
 		log.info("feign List<ResIncomeList> findIncomeList(Map<String, Object> param)");
 		return null;
 	}
@@ -106,6 +109,20 @@ public class EntOrderClientHystrix implements EntOrderClient {
 
 	@Override
 	public ResUserOrder findStallLatest(Long stallId) {
+		log.info("feign order Integer findStallLatest(Long stallId)");
+		return null;
+	}
+
+
+	@Override
+	public void downWYMsgPush(Long orderId, Long stallId) {
+		log.info("feign order void downWYMsgPush(Long stallId,orderId)");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ResponseEntity<?> downResult(Long userId) {
 		log.info("feign order Integer findStallLatest(Long stallId)");
 		return null;
 	}

@@ -222,7 +222,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return chargeDetail;
 	}
 	@Override
-	public ResDayTrafficFlow findTrafficFlowList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
+	public List<ResDayTrafficFlow> findTrafficFlowList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
 		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
@@ -234,25 +234,29 @@ public class PrefectureServiceImpl implements PrefectureService {
 		param.put("preId", preId); 
 		param.put("date", date);
 		param.put("pageNo", pageNo);
-		ResTrafficFlow flowList = this.orderClient.findTrafficFlowList(param);
-//		List<ResDayTrafficFlow> dayTFs = new ArrayList<>();
-		ResDayTrafficFlow dayTF = new ResDayTrafficFlow();
-		List<ResDayTrafficFlows> flows = null;
-//		for (ResTrafficFlow resTrafficFlow : flowList) {
-		dayTF.setCarMonthTotal(flowList.getCarMonthTotal());
-		dayTF.setTime(flowList.getTime());
-		flows = new ArrayList<>();
-		for (ResTrafficFlowList tf : flowList.getTrafficFlows()) {
-			flows.add(ObjectUtils.copyObject(tf, new ResDayTrafficFlows()));
+		List<ResTrafficFlow> flowList = this.orderClient.findTrafficFlowList(param);
+		List<ResDayTrafficFlow> dayTFs = new ArrayList<>();
+		if(flowList == null) {
+			return dayTFs;
 		}
+		ResDayTrafficFlow dayTF = null;
+		List<ResDayTrafficFlows> flows = null;
+		for (ResTrafficFlow resTrafficFlow : flowList) {
+			dayTF = new ResDayTrafficFlow();
+			dayTF.setCarMonthTotal(resTrafficFlow.getCarMonthTotal());
+			dayTF.setTime(resTrafficFlow.getTime());
+			flows = new ArrayList<>();
+			for (ResTrafficFlowList tf : resTrafficFlow.getTrafficFlows()) {
+				flows.add(ObjectUtils.copyObject(tf, new ResDayTrafficFlows()));
+			}
 			dayTF.setTrafficFlows(flows);
-//			dayTFs.add(dayTF);
-//		}
-		return dayTF;
+			dayTFs.add(dayTF);
+		}
+		return dayTFs;
 	}
 	
 	@Override
-	public ResDayIncome findIncomeList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
+	public List<ResDayIncome> findIncomeList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
 		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
@@ -264,23 +268,26 @@ public class PrefectureServiceImpl implements PrefectureService {
 		param.put("preId", preId);
 		param.put("date", date);
 		param.put("pageNo", pageNo);
-//		List<ResDayIncome> incomes = new ArrayList<>();
-		ResDayIncome income = new ResDayIncome();
-		List<ResDayIncomes> incomeLists = new ArrayList<>();
-		cn.linkmore.order.response.ResIncome oIncomes = this.orderClient.findIncomeList(param);
+		List<ResDayIncome> incomes = new ArrayList<>();
+		ResDayIncome income = null;
+//		List<ResDayIncomes> incomeLists = new ArrayList<>();
+		List<cn.linkmore.order.response.ResIncome> oIncomes = this.orderClient.findIncomeList(param);
 		if(oIncomes == null) {
-			return income;
+			return incomes;
 		}
-//		for (cn.linkmore.order.response.ResIncome resIncome : oIncomes) {
-		income.setDate(oIncomes.getDate());
-		income.setMonthAmount(oIncomes.getMonthAmount());
-		for (ResIncomeList incomeList : oIncomes.getList()) {
-			incomeLists.add(ObjectUtils.copyObject(incomeList, new ResDayIncomes()));
+		List<ResDayIncomes> lists = null;
+		for (cn.linkmore.order.response.ResIncome resIncome : oIncomes) {
+			income = new ResDayIncome();
+			income.setDate(resIncome.getDate());
+			income.setMonthAmount(resIncome.getMonthAmount());
+			lists = new ArrayList<>();
+			for (ResIncomeList in : resIncome.getList()) {
+				lists.add(ObjectUtils.copyObject(in, new ResDayIncomes()));
+			}
+			income.setList(lists);
+			incomes.add(income);
 		}
-		income.setList(incomeLists);
-//		incomes.add(income);
-//		}
-		return income;
+		return incomes;
 	}
 	
 	private CacheUser getUser(HttpServletRequest request) {

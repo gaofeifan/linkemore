@@ -8,7 +8,7 @@ public class ResTrafficFlowList {
 
 	private Integer carDayTotal;
 
-	private int month;
+	private Integer month;
 
 	public Date getDate() {
 		return date;
@@ -26,12 +26,11 @@ public class ResTrafficFlowList {
 		this.carDayTotal = carDayTotal;
 	}
 
-	public int getMonth() {
+	public Integer getMonth() {
 		return month;
 	}
 
-	public void setMonth(int month) {
+	public void setMonth(Integer month) {
 		this.month = month;
 	}
-
 }
