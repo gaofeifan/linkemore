@@ -83,4 +83,6 @@ public interface StallClusterMapper {
 	 */
 	List<ResStall> findPreStallList(Map<String, Object> param);
 	
+	List<ResStall> findFreeStallList(Map<String, Object> params);
+	
 }
