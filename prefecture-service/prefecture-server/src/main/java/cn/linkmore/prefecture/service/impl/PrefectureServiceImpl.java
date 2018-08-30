@@ -424,6 +424,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + reqBooking.getPrefectureId());  //集合中所有成员元素
 		if(CollectionUtils.isNotEmpty(lockSnList)) {
 			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("list", lockSnList);
 			ResStall resStall = null;
 			List<cn.linkmore.prefecture.response.ResStall> freeStallList = stallClusterMapper.findFreeStallList(params);
 			log.info("---------freeStallList = {}",JSON.toJSON(freeStallList));
