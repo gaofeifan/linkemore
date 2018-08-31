@@ -5,11 +5,8 @@ package cn.linkmore.enterprise.controller.ent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.common.response.ResBaseDict;
@@ -27,7 +23,6 @@ import cn.linkmore.enterprise.controller.ent.request.ReqPreStall;
 import cn.linkmore.enterprise.controller.ent.request.ReqStallUpDown;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
-import cn.linkmore.enterprise.controller.ent.response.ResStall;
 import cn.linkmore.enterprise.controller.ent.response.ResStallName;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
@@ -143,5 +138,21 @@ public class EntStallController {
 		List<ResStallBatteryLog> list=this.entStallService.findLockChangeRecord(stallId);
 		response = ResponseEntity.success(list, request);
     	return response;
+	}
+	
+	@ApiOperation(value = "降锁回调", notes = "降锁回调校验结果", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/down/result", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> downResult(HttpServletRequest request) { 
+		Integer count = this.entStallService.downResult(request);
+		ResponseEntity<?> response = null;
+		if(count==0) {
+			response =  ResponseEntity.success(count, request);
+		}else if(count==1){
+			response =  ResponseEntity.fail(StatusEnum.ORDER_LOCKDOWN_FAIL, request);
+		}else if(count>1) {
+			response = ResponseEntity.fail(StatusEnum.ORDER_FAIL_SWITCHLOCK, request);
+		}
+		return response;
 	}
 }

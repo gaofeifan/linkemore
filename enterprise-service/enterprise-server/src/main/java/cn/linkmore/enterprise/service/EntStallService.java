@@ -5,17 +5,13 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResStallName;
-import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
-
 /**
  * @author luzhishen
  * @Date 2018年7月20日
@@ -103,6 +99,14 @@ public interface EntStallService {
 	 * @Version  v2.0
 	 */
 	List<ResStallBatteryLog> findLockChangeRecord(Long stallId);
+
+	/**
+	 * @Description  查询降锁回调
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer downResult(HttpServletRequest request);
+
 
 
 }

@@ -152,6 +152,20 @@ public class DateUtils {
 		  return s.format(date);
 	  }
 	  
+	  public static Date convert(Date date , String dateFormat){
+		  if(StringUtils.isBlank(dateFormat)){
+			  dateFormat = "yyyy-MM-dd";
+		  }
+		  SimpleDateFormat s = new SimpleDateFormat(dateFormat);
+		  try {
+			return s.parse( s.format(date));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  return null;
+	  }
+	  
 	  /**
 		 * @Description: 获取格式为yyyy-MM-dd HH:mm:ss的当前时间
 		 * @return Date 当前时间
@@ -260,6 +274,7 @@ public class DateUtils {
 			Calendar c = Calendar.getInstance();
 			return c.get(Calendar.MONTH)+1;
 		}
+		
 
 		public static Date format(String decode) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -278,6 +293,22 @@ public class DateUtils {
 		public static Date getLastMonth(Date date) {
 			Calendar calendar = Calendar.getInstance();   
 			calendar.add(Calendar.MONTH, -1);
+			return calendar.getTime();
+		}
+		/**
+		 *  获取指定天数
+		 */ 
+		public static Date getDateByDay(int date) {
+			Calendar calendar = Calendar.getInstance();   
+			calendar.add(Calendar.DAY_OF_MONTH, date);
+			return calendar.getTime();
+		}
+		/**
+		 *  获取指定天数
+		 */ 
+		public static Date getDateByMonth(int date) {
+			Calendar calendar = Calendar.getInstance();   
+			calendar.add(Calendar.MONTH, date);
 			return calendar.getTime();
 		}
 }

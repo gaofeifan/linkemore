@@ -53,7 +53,7 @@
     select 
     <include refid="Base_Column_List" />
     from v_stall
-    where status = #{status}
+    where type = 0 and status = #{status}
   </select>
   
   <select id="findByLockSn" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -103,7 +103,7 @@
     <if test="type!=null">
        and type = #{type,jdbcType=SMALLINT}
     </if>
-    <if test="stallName != null">
+    <if test="stallName != null and stallName != ''">
     	and stall_name = #{stallName}
     </if>
   </select>

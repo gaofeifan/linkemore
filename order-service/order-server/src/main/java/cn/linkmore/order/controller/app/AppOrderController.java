@@ -1,12 +1,8 @@
 package cn.linkmore.order.controller.app;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.SwitchResult;
 import cn.linkmore.bean.common.ResponseEntity;
@@ -45,8 +40,6 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/app/order")
 @Validated
 public class AppOrderController {
-
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private OrdersService ordersService;
@@ -62,7 +55,7 @@ public class AppOrderController {
 	}
 	
 	@ApiOperation(value = "选择车位预约下单", notes = "车区ID不能为空", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/appoint", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.1/create", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> appoint(@RequestBody ReqStallBooking rsb, HttpServletRequest request) {
 		this.ordersService.appoint(rsb, request);

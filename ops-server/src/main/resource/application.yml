@@ -20,6 +20,22 @@ eureka:
 feign:
   hystrix:
     enabled: true
+
+ribbon:
+  ConnectTimeout: 6000
+  ReadTimeout: 60000
+hystrix: 
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000
+            ribbon:
+              ReadTimeout: 30000
+              ConnectTimeout: 60000
     
 security:
   basic:
