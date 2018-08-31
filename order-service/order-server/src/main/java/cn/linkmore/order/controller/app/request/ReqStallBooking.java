@@ -24,16 +24,6 @@ public class ReqStallBooking {
 	@NotBlank(message="车位ID不能为空") 
 	private Long stallId;
 	
-	@ApiModelProperty(value = "车位锁编号", required = true)
-	@NotBlank(message="车位锁编号不能为空") 
-	private String lockSn;
-	
-	public String getLockSn() {
-		return lockSn;
-	}
-	public void setLockSn(String lockSn) {
-		this.lockSn = lockSn;
-	}
 	public Long getPrefectureId() {
 		return prefectureId;
 	}

@@ -4,6 +4,8 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,10 +14,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.stream.FileImageInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -25,9 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSONArray;
-
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
@@ -37,6 +37,7 @@ import cn.linkmore.common.response.ResDistrict;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.ops.biz.service.PrefectureService;
 import cn.linkmore.ops.utils.ExcelUtil;
+import cn.linkmore.ops.utils.QrCodeGenerateUtil;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
@@ -58,8 +59,9 @@ public class PrefectureController {
 	@Autowired
 	private PrefectureService preService;
 
-	/*@Resource
-	private EnterpriseService enterpriseService;*/
+	/*
+	 * @Resource private EnterpriseService enterpriseService;
+	 */
 
 	/*
 	 * 专区信息列表
@@ -264,21 +266,86 @@ public class PrefectureController {
 	/*
 	 * 区域列表
 	 */
-	/*@RequestMapping(value = "/select_ent", method = RequestMethod.POST)
-	@ResponseBody
-	public List<Enterprise> findEntprise() {
-		Map<String, Object> param = new HashMap<>();
-		List<Enterprise> find = enterpriseService.find(param);
-		return find;
-	}*/
+	/*
+	 * @RequestMapping(value = "/select_ent", method = RequestMethod.POST)
+	 * 
+	 * @ResponseBody public List<Enterprise> findEntprise() { Map<String, Object>
+	 * param = new HashMap<>(); List<Enterprise> find =
+	 * enterpriseService.find(param); return find; }
+	 */
 
 	/*
 	 * 专区列表
 	 */
 	@RequestMapping(value = "/find_city", method = RequestMethod.POST)
 	@ResponseBody
-	public List<Map<String,Object>>findByCity(@RequestBody Long cityId) {
+	public List<Map<String, Object>> findByCity(@RequestBody Long cityId) {
 		return preService.findByCity(cityId);
+	}
+
+	/**
+	 * 下载二维码
+	 */
+	@RequestMapping(value = "/download", method = RequestMethod.POST)
+	public void download(Long id, HttpServletResponse response) {
+		FileImageInputStream bis = null;
+		BufferedOutputStream bos = null;
+		ServletOutputStream out = null;
+		try {
+			ResPrefectureDetail pre = preService.findById(id);
+			String content = "cityId:" + pre.getCityId().toString() + "-prefectureId:" + id.toString();
+			String rootPathText = "/data/qrc"; //服务器路径
+			//String rootPathText = "C:\\test\\"; // 本机测试路径
+			String realPath = rootPathText + File.separatorChar;// 临时文件夹
+			// 创建文件路径保证互不影响
+			File file = new File(realPath);
+			if (!file.exists()) {
+				file.mkdir();
+			}
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+			String dateNowStr = sdf.format(new Date());
+			String filePath = realPath + dateNowStr + ".png";
+			try {
+				QrCodeGenerateUtil.createZxing(filePath, content, 900, "png");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			response.setContentType("multipart/form-data");// 指明response的返回对象是文件流
+			response.setHeader("Content-Disposition", "attachment;filename=" + filePath);// 设置在下载框默认显示的文件名
+			response.setCharacterEncoding("UTF-8");
+			out = response.getOutputStream();
+			bos = new BufferedOutputStream(out);
+			bis = new FileImageInputStream(new File(filePath));
+			byte[] buffer = new byte[1];
+			while (bis.read(buffer) != -1) {
+				bos.write(buffer);
+			}
+			bos.flush();
+			out.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bis != null) {
+				try {
+					bis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+				}
+			}
+			if (bos != null) {
+				try {
+					bos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }
