@@ -200,13 +200,24 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			log.info(user.getId()+">>>STAFF_STALL_EXISTS");
 			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
 		}
-		Map<String,Object>  pam = new HashMap<>();
-		pam.put("stallId", reqOperatStall.getStallId());
-		pam.put("userId", user.getId());
-		Integer  using = entRentedRecordClusterMapper.findUsingRecord(pam);
-		if(using>0  ) {
+		
+		//争抢
+		String robkey= RedisKey.ROB_STALL_ISHAVE.key+reqOperatStall.getStallId();
+		Integer  using = 0;
+		Boolean have  =true;
+		try {
+			 have =	this.redisService.getLock(robkey, user.getId());
+			 log.info("用户=======>"+user.getId()+(have==true?"已抢到":"未抢到")+"锁"+robkey);
+		} catch (Exception e) {
+			Map<String,Object>  pam = new HashMap<>();
+			pam.put("stallId", reqOperatStall.getStallId());
+			pam.put("userId", user.getId());
+			using = entRentedRecordClusterMapper.findUsingRecord(pam);
+		}
+		if( !have || using>0  ) {
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
+		
 		//未完成记录同一用户只有一单
 		EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
 	
@@ -218,6 +229,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				up.setStatus(1L);
 				up.setId(record.getId());
 				entRentedRecordMasterMapper.updateByIdSelective(up);
+				this.redisService.remove(robkey);
 			}
 		}else if(reqOperatStall.getState()==1) {
 			log.info("用户>>>"+user.getId() +"降锁>>>"+reqOperatStall.getStallId());

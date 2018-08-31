@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppWechatConfig {
 	private String  appId;
-	private String  appSecret;  
+	private String  appSecret;
 	private String mchid;
 	private String 	key;
 	private String serviceUrl;

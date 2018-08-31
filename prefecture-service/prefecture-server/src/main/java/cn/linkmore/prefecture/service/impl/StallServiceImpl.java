@@ -464,8 +464,8 @@ public class StallServiceImpl implements StallService {
 					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
 					if (code == 200) {
-						stall.setLockStatus(reqc.getStatus());
-						stall.setStatus(reqc.getStatus());
+						stall.setLockStatus(reqc.getStatus()==1?2:1);
+						stall.setStatus(reqc.getStatus()==1?2:1);
 						stallMasterMapper.lockdown(stall);
 						redisService.remove(reqc.getKey());
 					}

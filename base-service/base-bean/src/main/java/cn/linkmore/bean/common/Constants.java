@@ -299,6 +299,7 @@ public class Constants {
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
 		ACTION_STALL_DOWN_FAILED("action:lock-down:failure:"),
 		ACTION_STALL_DOING("action:lock-doing"),
+		ROB_STALL_ISHAVE("rob:stall-ishave"),
 		ACTION_STALL_UP_FAILED("action:lock-up:failure:"),
 		STALL_ORDER_CLOSED("stall:order-closed:"),
 		ORDER_SWITCH_STALL_FAILED_COUNT("order:switch-stall-failure:count:"),
