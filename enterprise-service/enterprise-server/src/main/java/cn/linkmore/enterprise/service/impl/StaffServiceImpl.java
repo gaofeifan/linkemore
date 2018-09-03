@@ -37,9 +37,11 @@ import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.client.SmsClient;
+import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.third.response.ResFans;
+import cn.linkmore.third.response.ResMiniSession;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 
@@ -66,6 +68,9 @@ public class StaffServiceImpl implements StaffService {
 	private SmsClient smsClient;
 	@Resource
 	private AppWechatClient appWechatClient;
+	@Resource
+	private WechatMiniClient wechatMiniClient;
+	
 	@Resource
 	private RedisService redisService;
 	@Resource
@@ -189,9 +194,11 @@ public class StaffServiceImpl implements StaffService {
 	public void bindLogin(String code, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
-		ResFans fans = this.appWechatClient.getFans(code);
+		//ResFans fans = this.appWechatClient.getFans(code);
+		ResMiniSession fans = this.wechatMiniClient.getSessionPlus(code,1002);
+		log.info("fans:{}",JsonUtil.toJson(fans));
 		Map<String, Object> map = new HashMap<>();
-		map.put("sql", "open_id = "+fans.getId());
+		map.put("sql", "open_id = "+fans.getOpenid());
 		map.put("id", ru.getId());
 		this.entStaffMasterMapper.updateByColumn(map );
 	}

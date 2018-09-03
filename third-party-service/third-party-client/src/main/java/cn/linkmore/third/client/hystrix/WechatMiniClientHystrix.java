@@ -21,6 +21,12 @@ public class WechatMiniClientHystrix implements WechatMiniClient {
 		log.info("wechat mini program get session hystrix");
 		return null;
 	}
+	
+	@Override
+	public ResMiniSession getSessionPlus(String code, Integer alias) {
+		log.info("wechat mini ResMiniSession getSessionPlus hystrix");
+		return null;
+	}
 	 
 	public ResWechatMiniOrder order(@RequestBody ReqWechatMiniOrder wechat) { 
 		log.info("wechat mini program  order hystrix");
@@ -31,4 +37,6 @@ public class WechatMiniClientHystrix implements WechatMiniClient {
 		log.info("wechat mini program  verify order hystrix");
 		return false;
 	}
+
+	
 }

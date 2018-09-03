@@ -26,7 +26,7 @@
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
     insert into t_ent_rented_record (id, ent_id, ent_pre_id, 
       plate_no, down_time, leave_time, user_id,status,
-      stall_id, stall_name, pre_id, 
+      stall_id, stall_name, pre_id,
       pre_name)
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT},#{userId,jdbcType=BIGINT},#{status,jdbcType=BIGINT},#{entPreId,jdbcType=BIGINT}, 
       #{plateNo,jdbcType=BIGINT}, #{downTime,jdbcType=TIMESTAMP}, #{leaveTime,jdbcType=TIMESTAMP},
@@ -190,15 +190,6 @@
       </if>
     </trim>
   </insert>
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
     update t_ent_rented_record

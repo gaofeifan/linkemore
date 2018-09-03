@@ -458,6 +458,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		stallInfo.setAssignFlag(assign);
 		stallInfo.setStalls(stallList);
 		log.info("stallInfo = {}",JSON.toJSON(stallInfo));
+		if(CollectionUtils.isEmpty(stallList)) {
+			throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  //无空闲车位可用
+		}
 		return stallInfo;
 	}
 	

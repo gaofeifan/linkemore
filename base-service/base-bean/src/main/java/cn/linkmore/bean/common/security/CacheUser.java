@@ -13,9 +13,9 @@ public class CacheUser implements Serializable {
 	 *  
 	 */ 
 	private static final long serialVersionUID = 1L;
-	private Long id; 
+	private Long id;
 	private String openId;
-	private String mobile; 
+	private String mobile;
 	private String token;
 	private Short client;
 	private String session;

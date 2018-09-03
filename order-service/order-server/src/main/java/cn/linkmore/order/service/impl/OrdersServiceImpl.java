@@ -489,6 +489,10 @@ public class OrdersServiceImpl implements OrdersService {
 			Thread thread = new BookingThread(prefectureId, cu.getId(), bookingStatus, failureReason);
 			thread.start();
 			String content = "订单预约失败";
+			if(stallId != null) {
+				log.info("stallId = {}当前车位已被占用，请选择其他车位",stallId);
+				content = "当前车位已被占用，请选择其他车位";
+			}
 			Boolean status = false;
 			if (bookingStatus == OperateStatus.SUCCESS.status) {
 				content = "订单预约成功";

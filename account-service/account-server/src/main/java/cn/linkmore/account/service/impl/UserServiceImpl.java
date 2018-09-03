@@ -354,8 +354,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser appLogin(ReqAuthLogin rl, HttpServletRequest request) {
 		ResUserStaff rus = UserStaffClusterMapper.findByMobile(rl.getMobile()); 
+		log.info(">>>>>>appLogin rus = {}",JSON.toJSON(rus));
 		if(!(rus!=null&&STAFF_CODE.equals(rl.getCode()))) {
 			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
+			log.info(">>>>>>appLogin mobile = {}, code = {}",rl.getMobile(), cache.toString());
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
 			}else {
@@ -409,6 +411,7 @@ public class UserServiceImpl implements UserService {
 			this.updateFansStatus((short)0, user.getId());
 		}
 		String key = TokenUtil.getKey(request); 
+		log.info(">>>>>>appLogin request= {}, key = {}",JSON.toJSON(request.getSession().getId()), JSON.toJSON(key));
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
 		ru.setId(user.getId());
 		ru.setMobile(rl.getMobile());
@@ -420,6 +423,7 @@ public class UserServiceImpl implements UserService {
 		List<String> tags = new ArrayList<String>();
 		tags.add("appuser");
 		ru.setTags(tags);
+		log.info(">>>>>>appLogin = {}",JSON.toJSON(ru));
 		CacheUser u = new CacheUser();
 		u.setId(user.getId());
 		u.setMobile(user.getMobile());
@@ -537,6 +541,7 @@ public class UserServiceImpl implements UserService {
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
 		Token   last  = null;
 		String key = TokenUtil.getKey(request);
+		log.info("cacheUser key = {},LOGIN_USER = {}", key, JSON.toJSON(LOGIN_USER));
 		Long userId = null;
 		if(user.getId()!=null) {
 			userId = LOGIN_USER.get(user.getId());
@@ -549,13 +554,16 @@ public class UserServiceImpl implements UserService {
 		}
 		synchronized(userId) {
 			last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+			log.info("cacheUser syn userId = {}, last = {}",userId, JSON.toJSON(last));
 			if(last!=null){ 
+				log.info("cacheUser syn openId = {}", user.getOpenId());
 				if(user.getOpenId()!=null) { 
 					this.redisService.remove(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId());  
 				}
 				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
 				last.setAccessToken(key); 
+				log.info("cacheUser syn key = {}, last = {}",key,JSON.toJSON(last));
 			}
 			user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
@@ -564,11 +572,13 @@ public class UserServiceImpl implements UserService {
 			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			token.setTimestamp(new Date().getTime());
 			token.setAccessToken(key);
+			log.info("token = {}",JSON.toJSON(token));
 			if(user.getClient().intValue()==ClientSource.WXAPP.source) {
 				this.redisService.set(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
 			}
 			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
 		} 
+		log.info("last = {}",JSON.toJSON(last));
 		return last;
 	}
 	
@@ -888,6 +898,38 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public cn.linkmore.account.controller.app.response.ResUser miniPlus(String code, Integer alias,HttpServletRequest request) {
+		
+		ResMiniSession rms = wechatMiniClient.getSessionPlus(code, alias);
+		
+		log.info("rms:{}",JsonUtil.toJson(rms));
+		UserInfo ui = this.userInfoClusterMapper.find(rms.getOpenid());
+		if (ui == null) {
+			ui = this.saveUserInfo(rms);
+		}
+		CacheUser cu = new CacheUser(); 
+		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
+		if (ui.getUserId() != null) {
+			ResUser user = this.userClusterMapper.findById(ui.getUserId());
+			if (user != null) {
+				ru.setId(user.getId());
+				ru.setMobile(user.getUsername());
+				cu.setMobile(user.getMobile());
+			}
+		}
+		ru.setAlias(rms.getOpenid());
+		String key = TokenUtil.getKey(request);  
+		ru.setToken(key);  
+		cu.setId(ui.getUserId());
+		cu.setOpenId(rms.getOpenid());
+		cu.setToken(key); 
+		cu.setSession(rms.getSession_key());
+		cu.setClient((short)ClientSource.WXAPP.source);
+		this.cacheUser(request, cu);
+		return ru;
+	}
+	
+	@Override
 	public cn.linkmore.account.controller.app.response.ResUser bindWechatMobile(String mobile,
 			HttpServletRequest request) {
 		ResUser user = this.findByMobile(mobile);
@@ -1037,7 +1079,5 @@ public class UserServiceImpl implements UserService {
 	public List<ResUser> findAll() {
 		return this.userClusterMapper.findAll();
 	}
-	
-	
-	
+
 }
