@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.notice.socket.EntSocketServer;
 import cn.linkmore.notice.socket.UserSocketServer;
 
 
@@ -31,7 +32,7 @@ public class FeignEntSocketController {
 		log.info("push openid:{} ws message:{}",openid,message);
 		Boolean success = false;
 		try {
-			UserSocketServer.send(openid, message);
+			EntSocketServer.send(openid, message);
 			success = true;
 		} catch (IOException e) { 
 			e.printStackTrace();

@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -75,7 +76,7 @@ public interface PrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResDayTrafficFlow> findTrafficFlowList(Integer pageNo, Short type, Long preId, String date, HttpServletRequest request);
+	List<ResDayTrafficFlow> findTrafficFlowList(Integer pageNo, Short type, Long preId, Date date, HttpServletRequest request);
 
 	/**
 	 * @param pageNo 
@@ -84,7 +85,7 @@ public interface PrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResDayIncome> findIncomeList(Integer pageNo, Short type, Long preId, String date, HttpServletRequest request);
+	List<ResDayIncome> findIncomeList(Integer pageNo, Short type, Long preId, Date date, HttpServletRequest request);
 
 	/**
 	 * @Description  

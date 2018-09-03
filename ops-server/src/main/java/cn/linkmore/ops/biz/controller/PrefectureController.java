@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -310,8 +311,9 @@ public class PrefectureController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			String fileName = URLEncoder.encode(pre.getName() + dateNowStr + ".png", "UTF-8");
 			response.setContentType("multipart/form-data");// 指明response的返回对象是文件流
-			response.setHeader("Content-Disposition", "attachment;filename=" + filePath);// 设置在下载框默认显示的文件名
+			response.setHeader("Content-Disposition", "attachment;filename=" + fileName);// 设置在下载框默认显示的文件名
 			response.setCharacterEncoding("UTF-8");
 			out = response.getOutputStream();
 			bos = new BufferedOutputStream(out);

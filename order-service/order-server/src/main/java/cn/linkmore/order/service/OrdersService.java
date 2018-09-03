@@ -49,6 +49,12 @@ public interface OrdersService {
 	 * @return
 	 */
 	ResUserOrder latest(Long userId);
+	/**
+	 * 当前车牌最新订单
+	 * @param carno
+	 * @return
+	 */
+	Integer getPlateLastOrderStatus(String carno);
 	
 	/**
 	 * 订单详情
@@ -222,6 +228,15 @@ public interface OrdersService {
 	 * @Version  v2.0
 	 */
 	void downWYMsgPush(Long orderId, Long stallId);
+
+	
+	/**
+	 * @Description  更新车位锁状态
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateLockStatus(Map<String, Object> param);
+
 
 
 	

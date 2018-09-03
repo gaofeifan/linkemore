@@ -109,7 +109,7 @@ public class PrefectureController {
 	@ResponseBody
 	public ResponseEntity<List<ResDayTrafficFlow>> findTrafficFlowList(@Validated @RequestBody ReqPreTypePage page,
 																	   HttpServletRequest request){
-		List<ResDayTrafficFlow> list = this.prefectureService.findTrafficFlowList(page.getPageNo(),page.getType().shortValue(),page.getPreId(),null,request);
+		List<ResDayTrafficFlow> list = this.prefectureService.findTrafficFlowList(page.getPageNo(),page.getType().shortValue(),page.getPreId(),page.getNow(),request);
 		return ResponseEntity.success(list, request);
 	}
 	
@@ -118,7 +118,7 @@ public class PrefectureController {
 	@ResponseBody
 	public ResponseEntity<List<ResDayIncome>> findIncomeList(@RequestBody @Validated ReqPreTypePage page,
 															HttpServletRequest request){
-		List<ResDayIncome> list = this.prefectureService.findIncomeList(page.getPageNo(),page.getType().shortValue(),page.getPreId(),null,request);
+		List<ResDayIncome> list = this.prefectureService.findIncomeList(page.getPageNo(),page.getType().shortValue(),page.getPreId(),page.getNow(),request);
 		return ResponseEntity.success(list, request);
 	}
 	

@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -17,8 +19,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -47,7 +51,6 @@ import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
-import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
@@ -397,6 +400,19 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<ResPrefectureDetail> findList(Map<String, Object> param) {
 		return this.prefectureClusterMapper.findList(param);
 	}
+	
+	public boolean checkCarFree(String carno) {
+		boolean flag = true;
+		try {
+			Integer status = this.orderClient.getPlateLastOrderStatus(carno);
+			if (status != null && status.intValue() == 1) {
+				flag = false;
+			}
+		} catch (Exception e) {
+
+		}
+		return flag;
+	}
 
 	@Override
 	public ResStallInfo findStallList(ReqBooking reqBooking) {
@@ -408,6 +424,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}
 		String vehMark = vehicleMark.getVehMark();    //车牌号
 		log.info("vehicleMark = {}",JSON.toJSON(vehicleMark));
+		if (!this.checkCarFree(vehicleMark.getVehMark())) {
+			throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY);  //当前车牌号已在预约中，请更换车牌号重新预约
+		}
 		boolean assign = false;
 		Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
 		for (Object obj : set) {
