@@ -23,7 +23,7 @@ public class PushController {
 	private PushService pushService;
 	
 	
-	@RequestMapping(value = "/v2.0", method = RequestMethod.POST) 
+	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
 	public void push(@RequestBody ReqPush rp) {
 		this.pushService.push(rp);
 	}

@@ -57,4 +57,15 @@ public class FeignOrderController {
 	public List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean){
 		return this.ordersService.exportList(bean);
 	}
+	
+	/**
+	 * 当前车牌号最近订单状态 是否存在未结账订单
+	 * @param carno
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/last-order", method = RequestMethod.GET)
+	@ResponseBody
+	Integer getPlateLastOrderStatus(@RequestParam("carno") String carno) {
+		return this.ordersService.getPlateLastOrderStatus(carno);
+	}
 }

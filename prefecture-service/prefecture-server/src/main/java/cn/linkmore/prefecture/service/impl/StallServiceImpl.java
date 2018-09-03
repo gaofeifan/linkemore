@@ -83,8 +83,6 @@ public class StallServiceImpl implements StallService {
 	@Autowired
 	private StallLockClusterMapper stallLockClusterMapper;
 	@Autowired
-	private SendClient sendClient;
-	@Autowired
 	private PushClient pushClient;
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -477,7 +475,9 @@ public class StallServiceImpl implements StallService {
 						}
 						
 					}else {
+						if(reqc.getStatus() == 1) {
 							downLock(reqc.getStallId(),0);
+						}
 					}
 				}
 			}

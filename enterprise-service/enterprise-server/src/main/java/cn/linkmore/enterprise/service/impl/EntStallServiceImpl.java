@@ -45,6 +45,7 @@ import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
+import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.entity.StallExcStatus;
 import cn.linkmore.enterprise.service.EntRentUserService;
@@ -191,11 +192,10 @@ public class EntStallServiceImpl implements EntStallService {
 				if(resStall.getStatus() == StallStatus.USED.status){
 					preUseStalls ++;
 				}
-				preStalls ++;
 			}
 			for(int j = 0 ; j < stalls.size(); j++){
 				ResStall resStall=stalls.get(j);
-				if(!stallListByIds.contains(resStall.getId())) {
+				if(!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
 					continue;
 				}
 				//临停使用 || 临停
@@ -212,6 +212,7 @@ public class EntStallServiceImpl implements EntStallService {
 				if(resStall.getType() == 2 ){
 					preRentTypeStalls ++;
 				}
+				preStalls ++;
 					/*StringBuilder sb = new StringBuilder();
 					for (EntRentUser rentUser : rentUsers) {
 						if(rentUser.getStallId().equals(resStall.getId())) {
@@ -651,6 +652,16 @@ public class EntStallServiceImpl implements EntStallService {
 	@Override
 	public List<ResStallBatteryLog> findLockChangeRecord(Long stallId) {
 		List<ResStallBatteryLog> list = this.stallBatteryLogClient.findBatteryLogList(stallId);
+		List<EntStaff> staffs = this.entStaffClusterMapper.findAll();
+		for (ResStallBatteryLog resStallBatteryLog : list) {
+			for (EntStaff entStaff : staffs) {
+				if(resStallBatteryLog.getAdminId().equals(entStaff.getId())) {
+					resStallBatteryLog.setAdminName(entStaff.getRealname());
+				}
+			}
+			
+		}
+		
 		return list;
 	}
 

@@ -300,6 +300,7 @@ public class Constants {
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
 		ACTION_STALL_DOWN_FAILED("action:lock-down:failure:"),
 		ACTION_STALL_DOING("action:lock-doing"),
+		ROB_STALL_ISHAVE("rob:stall-ishave"),
 		ENT_STALL_DOING("action:ent-lock-doing:failure:"),
 		ACTION_STALL_UP_FAILED("action:lock-up:failure:"),
 		STALL_ORDER_CLOSED("stall:order-closed:"),

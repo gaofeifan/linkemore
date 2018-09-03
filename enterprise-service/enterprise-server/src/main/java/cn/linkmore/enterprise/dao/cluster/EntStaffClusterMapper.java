@@ -41,4 +41,11 @@ public interface EntStaffClusterMapper {
 	 */
 	Integer check(Map<String, Object> param);
 
+	/**
+	 * @Description  查询所有用户
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<EntStaff> findAll();
+
 }

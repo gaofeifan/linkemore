@@ -303,4 +303,25 @@ public class RedisService {
 		return increment;
 	}
 	
+	/**
+	 * 队列放入唯一key 先进先出
+	 * @param key 键
+	 * @param 值
+	 * @return 拿到锁
+	 */
+	public boolean  getLock(String key,Object newValue) {
+		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+		Boolean isOk = operations.setIfAbsent(key, newValue);
+        if(isOk) {
+           // 获得分布锁
+           return true;
+        }else {
+        	String alreadyValue =String.valueOf(operations.get(key));
+        	if(alreadyValue.equals( String.valueOf(newValue ))) {
+        		return true;
+        	}else {
+        		return false;
+        	}
+        }
+	}
 }
