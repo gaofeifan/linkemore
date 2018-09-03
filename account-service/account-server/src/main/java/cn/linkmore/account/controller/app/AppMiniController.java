@@ -63,9 +63,9 @@ public class AppMiniController {
 	@ResponseBody
 	public ResponseEntity<ResUser> miniPlus(
 			@RequestParam(value = "code") @NotBlank(message = "授权码不能为空") @Size(min = 32, max = 36, message = "授权码为无效") String code,
-			@RequestParam(value = "alias") @NotBlank(message = "识别名不能为空(个人版:mini1001,物业版:mini1002,管理版mini1003)") String alias,
+			@RequestParam(value = "alias") @NotBlank(message = "识别名不能为空(个人版:1001,物业版:1002,管理版1003)") Integer alias,
 			HttpServletRequest request) {
-
+		ResUser urb = this.userService.miniPlus(code, alias, request);
 		return ResponseEntity.success(null, request);
 	}
 
