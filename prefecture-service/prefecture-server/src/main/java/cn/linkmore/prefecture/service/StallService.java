@@ -173,4 +173,11 @@ public interface StallService {
 	 * @return
 	 */
 	Map<String,Object>   lockStatus(List<String> parkcodes);
+	
+	/**
+	 * @Description  物业版操作锁
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void operLockWY(ReqControlLock reqc);
 }

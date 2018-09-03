@@ -82,6 +82,15 @@ public interface StallClient {
 	public void controllock(@RequestBody   ReqControlLock  reqc);
 	
 	/**
+	 *物业版操作锁 操作锁
+	 * 
+	 * @param stallId
+	 *            Long
+	 */
+	@RequestMapping(value = "/v2.0/oper-lock-wy", method = RequestMethod.POST)
+	public void operLockWY(@RequestBody   ReqControlLock  reqc);
+	
+	/**
 	 * 查看锁状态
 	 * @param stallid
 	 * @return 

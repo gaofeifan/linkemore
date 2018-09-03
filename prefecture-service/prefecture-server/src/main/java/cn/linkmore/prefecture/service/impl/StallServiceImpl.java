@@ -84,7 +84,8 @@ public class StallServiceImpl implements StallService {
 	private StallLockClusterMapper stallLockClusterMapper;
 	@Autowired
 	private PushClient pushClient;
-
+	@Autowired
+	private SendClient sendClient;
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -467,6 +468,41 @@ public class StallServiceImpl implements StallService {
 					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
 					if (code == 200) {
+						stall.setLockStatus(reqc.getStatus());
+						stallMasterMapper.lockdown(stall);
+						redisService.remove(reqc.getKey());
+					
+					}
+				}
+			}
+		}).start();
+	}
+	
+	
+	@Override
+	public void operLockWY(ReqControlLock reqc) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				String uid = String.valueOf(redisService.get(reqc.getKey()));
+				Stall stall = stallClusterMapper.findById(reqc.getStallId());
+				log.info("stall:{}", JsonUtil.toJson(stall));
+				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+					log.info("downing>>>>>> name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+					ResponseMessage<LockBean> res = null;
+					// 1 降下 2 升起
+					Stopwatch stopwatch = Stopwatch.createStarted();
+					if (reqc.getStatus() == 1) {
+						res = lockFactory.lockDown(stall.getLockSn());
+					} else if (reqc.getStatus() == 2) {
+						res = lockFactory.lockUp(stall.getLockSn());
+					}
+					log.info("res>>>>>>>"+res.getMsg());
+					int code = res.getMsgCode();
+					stopwatch.stop();
+					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+					sendWYMsg(uid,reqc.getStatus(),code);
+					if (code == 200) {
 						if(reqc.getStatus() == 1) {
 							downLock(reqc.getStallId(),1);
 							stall.setLockStatus(reqc.getStatus());
@@ -483,7 +519,7 @@ public class StallServiceImpl implements StallService {
 			}
 		}).start();
 	}
-	
+
 	@Override
 	public Map<String, Object> watch(Long stallId) {
 		log.info("stall:=====================");
@@ -515,6 +551,18 @@ public class StallServiceImpl implements StallService {
 			}
 		}).start();
 	}
+	public void sendWYMsg(String uid, Integer status, int code) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					sendWY(uid, status, code);
+				} catch (Exception e) {
+					log.info("sendWYMsg>>>"+uid);
+				}
+			}
+		}).start();
+	}
 
 	public void downLock(Long stallId,int status) {
 		ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
@@ -541,6 +589,24 @@ public class StallServiceImpl implements StallService {
 			rp.setType(type);
 			rp.setData(bool);
 			pushClient.push(rp);
+		}
+	}
+	private void sendWY(String uid, Integer lockstatus, int code) {
+		String title = "车位锁操作通知";
+		String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");
+		PushType pushType =PushType.LOCK_CONTROL_NOTICE;
+		String bool = (code == 200 ? "true" : "false");
+		Token token = (Token) redisService.get(RedisKey.STAFF_ENT_AUTH_TOKEN.key + uid.toString());
+		log.info("send>>>", JsonUtil.toJson(token));
+		if(token!=null) {
+			ReqPush rp = new ReqPush();
+			rp.setAlias(uid);
+			rp.setTitle(title);
+			rp.setContent(content);
+			rp.setClient(token.getClient());
+			rp.setType(pushType);
+			rp.setData(bool);
+			sendClient.send(rp);
 		}
 	}
 }
