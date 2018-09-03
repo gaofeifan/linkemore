@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.third.pay.wxmini.PaySign;
 import cn.linkmore.third.request.ReqWechatMiniOrder;
+import cn.linkmore.third.response.ResFans;
 import cn.linkmore.third.response.ResMiniSession;
 import cn.linkmore.third.response.ResWechatMiniOrder;
 import cn.linkmore.third.service.WechatMiniService;
@@ -37,6 +38,18 @@ public class WechatMiniController {
 	@ResponseBody
 	public ResMiniSession getSession(@PathVariable("code") String code) {
 		return this.wechatMiniService.getSession(code);
+	}
+	
+	/**
+	 * 根据code及别名获取粉丝
+	 * @param code 授权码
+	 * @param alias   别名 
+	 * @return
+	 */
+	@RequestMapping(value = "/v3.0/session/{code}/{alias}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResMiniSession Fans(@PathVariable("code") String code,@PathVariable("alias") Integer alias) {
+		return this.wechatMiniService.getSessionPlus(code, alias);
 	}
 	
 	/**

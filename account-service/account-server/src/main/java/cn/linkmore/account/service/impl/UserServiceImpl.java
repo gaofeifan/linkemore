@@ -888,6 +888,38 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public cn.linkmore.account.controller.app.response.ResUser miniPlus(String code, Integer alias,HttpServletRequest request) {
+		
+		ResMiniSession rms = wechatMiniClient.getSessionPlus(code, alias);
+		
+		log.info("rms:{}",JsonUtil.toJson(rms));
+		UserInfo ui = this.userInfoClusterMapper.find(rms.getOpenid());
+		if (ui == null) {
+			ui = this.saveUserInfo(rms);
+		}
+		CacheUser cu = new CacheUser(); 
+		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
+		if (ui.getUserId() != null) {
+			ResUser user = this.userClusterMapper.findById(ui.getUserId());
+			if (user != null) {
+				ru.setId(user.getId());
+				ru.setMobile(user.getUsername());
+				cu.setMobile(user.getMobile());
+			}
+		}
+		ru.setAlias(rms.getOpenid());
+		String key = TokenUtil.getKey(request);  
+		ru.setToken(key);  
+		cu.setId(ui.getUserId());
+		cu.setOpenId(rms.getOpenid());
+		cu.setToken(key); 
+		cu.setSession(rms.getSession_key());
+		cu.setClient((short)ClientSource.WXAPP.source);
+		this.cacheUser(request, cu);
+		return ru;
+	}
+	
+	@Override
 	public cn.linkmore.account.controller.app.response.ResUser bindWechatMobile(String mobile,
 			HttpServletRequest request) {
 		ResUser user = this.findByMobile(mobile);
@@ -1037,7 +1069,5 @@ public class UserServiceImpl implements UserService {
 	public List<ResUser> findAll() {
 		return this.userClusterMapper.findAll();
 	}
-	
-	
-	
+
 }

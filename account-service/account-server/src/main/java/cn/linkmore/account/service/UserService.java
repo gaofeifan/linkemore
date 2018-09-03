@@ -230,6 +230,15 @@ public interface UserService {
 	 * @return
 	 */
 	cn.linkmore.account.controller.app.response.ResUser mini(String code, HttpServletRequest request);
+	
+	
+	/**
+	 * 微信小程序登录3.0
+	 * @param code
+	 * @param request
+	 * @return
+	 */
+	cn.linkmore.account.controller.app.response.ResUser miniPlus(String code,Integer alias, HttpServletRequest request);
 
 	/**
 	 * 小程序绑定微信注册手机

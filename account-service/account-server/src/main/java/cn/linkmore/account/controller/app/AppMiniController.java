@@ -57,6 +57,17 @@ public class AppMiniController {
 		ResUser urb = this.userService.mini(code, request);
 		return ResponseEntity.success(urb, request);
 	}
+	
+	@ApiOperation(value = "登录", notes = "微信小程序登录Plus", consumes = "application/json")
+	@RequestMapping(value = "/v3.0/login", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<ResUser> miniPlus(
+			@RequestParam(value = "code") @NotBlank(message = "授权码不能为空") @Size(min = 32, max = 36, message = "授权码为无效") String code,
+			@RequestParam(value = "alias") @NotBlank(message = "识别名不能为空(个人版:mini1001,物业版:mini1002,管理版mini1003)") String alias,
+			HttpServletRequest request) {
+
+		return ResponseEntity.success(null, request);
+	}
 
 	@ApiOperation(value = "绑定授权手机号", notes = "手机号不能为空,短信验证码不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.POST)

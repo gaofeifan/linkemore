@@ -3,13 +3,14 @@ package cn.linkmore.enterprise.entity;
 import java.util.Date;
 
 public class EntRentedRecord {
+	
     private Long id;
 
     private Long entId;
 
     private Long entPreId;
 
-    private Long plateNo;
+    private String plateNo;
 
     private Date downTime;
 
@@ -70,16 +71,16 @@ public class EntRentedRecord {
     public void setEntPreId(Long entPreId) {
         this.entPreId = entPreId;
     }
+    
+    public String getPlateNo() {
+		return plateNo;
+	}
 
-    public Long getPlateNo() {
-        return plateNo;
-    }
+	public void setPlateNo(String plateNo) {
+		this.plateNo = plateNo;
+	}
 
-    public void setPlateNo(Long plateNo) {
-        this.plateNo = plateNo;
-    }
-
-    public Date getDownTime() {
+	public Date getDownTime() {
         return downTime;
     }
 
