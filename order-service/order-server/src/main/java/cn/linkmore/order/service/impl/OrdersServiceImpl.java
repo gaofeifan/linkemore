@@ -1280,24 +1280,46 @@ public class OrdersServiceImpl implements OrdersService {
 	public List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param) {
 		Date date = getDateByType(Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
-		Map<String, Date> map = getStartEndDate(param.get("date") != null ? Integer.parseInt(param.get("date").toString()):0);
+		Calendar instance = Calendar.getInstance();
+		instance.setTimeInMillis(Long.decode(param.get("now").toString()));
+		Date now = instance.getTime();
+		Map<String, Date> map = getStartEndDate(now);
 		param.put("monthStart", map.get("monthStart"));
 		param.put("monthEnd", map.get("monthEnd"));
 		param.put("pageSize", 10);
 		param.put("start", getPageNo(param.get("pageNo")));
 		List<ResTrafficFlowList> list = this.ordersClusterMapper.findTrafficFlowList(param);
-		
+		List<ResTrafficFlowList> newList = new ArrayList<ResTrafficFlowList>();
+		List<Date> dates = DateUtils.getDates(now, Calendar.DAY_OF_MONTH, 10);
+		ResTrafficFlowList in = null;
+		for (Date da : dates) {
+			boolean falg = true;
+			for (ResTrafficFlowList resTrafficFlowList : list) {
+				if(da.getTime() == resTrafficFlowList.getDate().getTime()) {
+					newList.add(resTrafficFlowList);
+					falg = false;
+					continue;
+				}
+			}
+			if(falg) {
+				in = new ResTrafficFlowList();
+				in.setDate(da);
+				in.setCarDayTotal(0);
+				in.setMonth(DateUtils.getFieldDataByDate(da, Calendar.MONTH));
+				newList.add(in);
+			}
+		}
 //		List<ResMonthCount> monthCount = this.ordersClusterMapper.findMonthCount(param);
 		ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
 		List<ResTrafficFlow> flows = new ArrayList<>();
 		ResTrafficFlow flow = null;
-		Set<Integer> collect = list.stream().map(traffic -> traffic.getMonth()).collect(Collectors.toSet());
+		Set<Integer> collect = newList.stream().map(traffic -> traffic.getMonth()).collect(Collectors.toSet());
 		if(collect.size() > 1) {
 			for (Integer integer : collect) {
 				if(integer.shortValue() == monthCount.getMonth()) {
 					flow = new ResTrafficFlow();
 					List<ResTrafficFlowList> lists = new ArrayList<>();
-					for (ResTrafficFlowList resTrafficFlowList : list) {
+					for (ResTrafficFlowList resTrafficFlowList : newList) {
 						if(resTrafficFlowList.getMonth().equals(integer)) {
 							lists.add(resTrafficFlowList);
 						}
@@ -1317,7 +1339,7 @@ public class OrdersServiceImpl implements OrdersService {
 					ResMonthCount resMonthCount = this.ordersClusterMapper.findMonthCountByDate(param);
 					flow = new ResTrafficFlow();
 					List<ResTrafficFlowList> lists = new ArrayList<>();
-					for (ResTrafficFlowList resTrafficFlowList : list) {
+					for (ResTrafficFlowList resTrafficFlowList : newList) {
 						if(resTrafficFlowList.getMonth().equals(integer)) {
 							lists.add(resTrafficFlowList);
 						}
@@ -1332,7 +1354,7 @@ public class OrdersServiceImpl implements OrdersService {
 			flow = new ResTrafficFlow();
 			flow.setCarMonthTotal(monthCount.getMonthCarCount());
 			flow.setTime(map.get("monthStart"));
-			flow.setTrafficFlows(list);
+			flow.setTrafficFlows(newList);
 			flows.add(flow);
 		}
 		/*for (ResMonthCount resMothCount : monthCount) {
@@ -1353,43 +1375,66 @@ public class OrdersServiceImpl implements OrdersService {
 	public List<ResIncome> findIncomeList(Map<String, Object> param) {
 		Date date = getDateByType(Short.parseShort(param.get("startTime").toString()));
 		param.put("startTime", date);
-		Map<String, Date> map = getStartEndDate(param.get("date") != null ? Integer.parseInt(param.get("date").toString()):0);
+		Calendar instance = Calendar.getInstance();
+		instance.setTimeInMillis(Long.decode(param.get("now").toString()));
+		Date now = instance.getTime();
+		Map<String, Date> map = getStartEndDate(now);
 		param.put("monthStart", map.get("monthStart"));
 		param.put("monthEnd", map.get("monthEnd"));
 		param.put("pageSize", 10);
 		param.put("start", getPageNo(param.get("pageNo")));
 		ResMonthCount months = this.ordersClusterMapper.findMonthCountByDate(param);
 		List<ResIncomeList> list = this.ordersClusterMapper.findIncomeList(param);
+		List<ResIncomeList> newList = new ArrayList<>();
+		List<Date> dates = DateUtils.getDates(now, Calendar.DAY_OF_MONTH, 10);
+		ResIncomeList in = null;
+		for (Date da : dates) {
+			boolean falg = true;
+			for (ResIncomeList resIncomeList : list) {
+				if(da.getTime() == resIncomeList.getDate().getTime()) {
+					newList.add(resIncomeList);
+					falg = false;
+					continue;
+				}
+			}
+			if(falg) {
+				in = new ResIncomeList();
+				in.setDate(da);
+				in.setDayAmount(new BigDecimal(0));
+				in.setMonth(DateUtils.getFieldDataByDate(da, Calendar.MONTH));
+				newList.add(in);
+			}
+		}
+		
 		ResIncome income = null;
 		List<ResIncome> incomes = new ArrayList<>();
-		Set<Integer> collect = list.stream().map(in -> in.getMonth()).collect(Collectors.toSet());
+		Set<Integer> collect = newList.stream().map(i -> i.getMonth()).collect(Collectors.toSet());
 		List<ResIncomeList> lists = new ArrayList<>();
 		if(collect.size() > 1) {
 			for (Integer integer : collect) {
 				income = new ResIncome();
 				if(integer.intValue() == months.getMonth()) {
 					lists = new ArrayList<>();
-					for (ResIncomeList resIncomeList : list) {
+					for (ResIncomeList resIncomeList : newList) {
 						if(resIncomeList.getMonth().equals(integer)  ) {
 							lists.add(resIncomeList);
 						}
 					}
 					income.setList(lists);
 					income.setMonthAmount(months.getMonthAmount());
-					income.setDate(lists.get(0).getDate());
+					income.setDate(newList.get(0).getDate());
 					if(incomes.size() == 0) {
 						incomes.add(income);
 					}else {
 						incomes.add(incomes.set(0,income));
 					}
-				
 				}else {
 					lists = new ArrayList<>();
-					map = getStartEndDate(list.get(list.size()-1).getMonth());
+					map = getStartEndDate(newList.get(newList.size()-1).getMonth());
 					param.put("monthStart", map.get("monthStart"));
 					param.put("monthEnd", map.get("monthEnd"));
 					ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
-					for (ResIncomeList resIncomeList : list) {
+					for (ResIncomeList resIncomeList : newList) {
 						if(integer.equals(resIncomeList.getMonth()) ) {
 							lists.add(resIncomeList);
 						}
@@ -1402,7 +1447,7 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 		}else {
 			income = new ResIncome();
-			income.setList(list);
+			income.setList(newList);
 			income.setMonthAmount(months.getMonthAmount());
 			income.setDate(map.get("monthStart"));
 			incomes.add(income);
@@ -1455,6 +1500,20 @@ public class OrdersServiceImpl implements OrdersService {
 			instance.set(Calendar.MONTH, date);
 			monthEnd = instance.getTime();
 		}
+		map.put("monthStart", monthStart);
+		map.put("monthEnd", monthEnd);
+		return map;
+	}
+	private Map<String,Date> getStartEndDate(Date date){
+		Map<String,Date> map = new HashMap<>();
+		Date monthStart = null;
+		Date monthEnd = null;
+		date = DateUtils.getDateByDay(date, -1);
+		Calendar instance = Calendar.getInstance();
+		instance.setTime(date);
+		instance.set(Calendar.DAY_OF_MONTH, 1);
+		monthStart = instance.getTime();
+		monthEnd = DateUtils.getDateByMonth(monthStart, +1);
 		map.put("monthStart", monthStart);
 		map.put("monthEnd", monthEnd);
 		return map;
@@ -1525,6 +1584,11 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
+	public void updateLockStatus(Map<String, Object> param) {
+		param.put("lockDownTime", new Date());
+		this.orderMasterMapper.updateLockStatus(param);
+	}
+	
 	public Integer getPlateLastOrderStatus(String carno) {
 		return this.ordersClusterMapper.getPlateLastOrderStatus(carno);
 	}
