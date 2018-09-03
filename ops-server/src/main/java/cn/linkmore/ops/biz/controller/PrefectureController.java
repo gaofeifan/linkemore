@@ -295,8 +295,8 @@ public class PrefectureController {
 		try {
 			ResPrefectureDetail pre = preService.findById(id);
 			String content = "cityId:" + pre.getCityId().toString() + "-prefectureId:" + id.toString();
-			//String rootPathText = "/data/qrc"; //服务器路径
-			String rootPathText = "C:\\test\\"; // 本机测试路径
+			String rootPathText = "/data/qrc"; //服务器路径
+			//String rootPathText = "C:\\test\\"; // 本机测试路径
 			String realPath = rootPathText + File.separatorChar;// 临时文件夹
 			// 创建文件路径保证互不影响
 			File file = new File(realPath);
