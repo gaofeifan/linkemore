@@ -47,6 +47,10 @@ public class OrderClientHystrix implements OrderClient {
 		return null;
 	}
 
-	
+	@Override
+	public Integer getPlateLastOrderStatus(String carno) {
+		log.info("getPlateLastOrderStatus carno :{}",carno);
+		return null;
+	}
 	 
 }

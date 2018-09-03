@@ -266,7 +266,8 @@ public class OrdersServiceImpl implements OrdersService {
 					if(!flag) {
 						bookingStatus = (short) OperateStatus.FAILURE.status;
 						failureReason = (short) OrderFailureReason.STALL_NONE.value;
-						throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  
+						//throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE); 
+						throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
 					}	
 				}
 			}else {
@@ -1523,6 +1524,8 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 	}
 
-	
-	
+	@Override
+	public Integer getPlateLastOrderStatus(String carno) {
+		return this.ordersClusterMapper.getPlateLastOrderStatus(carno);
+	}
 }

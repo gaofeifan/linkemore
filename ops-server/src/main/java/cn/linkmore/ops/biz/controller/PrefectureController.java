@@ -311,7 +311,7 @@ public class PrefectureController {
 				e.printStackTrace();
 			}
 			response.setContentType("multipart/form-data");// 指明response的返回对象是文件流
-			response.setHeader("Content-Disposition", "attachment;filename=" + filePath);// 设置在下载框默认显示的文件名
+			response.setHeader("Content-Disposition", "attachment;filename=" + pre.getName()+dateNowStr+".png");// 设置在下载框默认显示的文件名
 			response.setCharacterEncoding("UTF-8");
 			out = response.getOutputStream();
 			bos = new BufferedOutputStream(out);

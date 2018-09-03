@@ -58,6 +58,15 @@ public interface OrderClient {
 
 	@RequestMapping(value = "/export", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean); 
+	public List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean);
+	
+	/**
+	 * 当前车牌号最近订单状态 是否存在未结账订单
+	 * @param carno
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/last-order", method = RequestMethod.GET)
+	@ResponseBody
+	Integer getPlateLastOrderStatus(@RequestParam("carno") String carno); 
 	
 }
