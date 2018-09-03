@@ -16,7 +16,7 @@ public class ResDayTrafficFlows {
 	@ApiModelProperty(value="日车流量总数")
 	private Integer carDayTotal;
 
-	@JsonFormat(pattern="MM-dd",timezone="GMT+8")	
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")	
 	public Date getDate() {
 		return date;
 	}

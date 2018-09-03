@@ -96,4 +96,8 @@ public interface EntOrderClient {
 	@RequestMapping(value = "/v2.0/down/result", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> downResult(@RequestParam("userId")Long userId);
+
+	@RequestMapping(value = "/v2.0/update-lock-status", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateLockStatus(@RequestBody Map<String, Object> param);
 }

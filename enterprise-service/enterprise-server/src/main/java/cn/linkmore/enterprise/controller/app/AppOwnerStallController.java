@@ -20,12 +20,11 @@ import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.request.ReqToothAuth;
 import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
-import cn.linkmore.enterprise.controller.app.response.ResEntBrandAd;
-import cn.linkmore.enterprise.controller.ent.request.ReqTestTest;
 import cn.linkmore.enterprise.service.OwnerStallService;
 import cn.linkmore.redis.RedisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 
 /**
  * Controller - 长租车位

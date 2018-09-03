@@ -16,6 +16,8 @@ public class ResEntOrder {
 
 	private String plate;
 	
+	private String mobile;
+	
 	public Long getOrderId() {
 		return orderId;
 	}
@@ -62,5 +64,13 @@ public class ResEntOrder {
 
 	public void setPlate(String plate) {
 		this.plate = plate;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 }

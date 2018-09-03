@@ -127,6 +127,11 @@ public class EntOrderClientHystrix implements EntOrderClient {
 		return null;
 	}
 
+	@Override
+	public void updateLockStatus(Map<String, Object> param) {
+		log.info("feign order void updateLockStatus(Map<String, Object> param)");
+	}
+
 	
 	
 	

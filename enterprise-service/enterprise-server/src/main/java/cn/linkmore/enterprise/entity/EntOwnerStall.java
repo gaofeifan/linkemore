@@ -7,6 +7,12 @@ public class EntOwnerStall {
 	
 	private Long stallId;
 	
+	private Long entId;
+	
+	private Long entPreId;
+	
+	private String preName;
+	
 	private String stallName;
 	
 	private String mobile;
@@ -29,6 +35,30 @@ public class EntOwnerStall {
 	
 	private String lockSn;
 	
+
+	public Long getEntId() {
+		return entId;
+	}
+
+	public void setEntId(Long entId) {
+		this.entId = entId;
+	}
+
+	public Long getEntPreId() {
+		return entPreId;
+	}
+
+	public void setEntPreId(Long entPreId) {
+		this.entPreId = entPreId;
+	}
+
+	public String getPreName() {
+		return preName;
+	}
+
+	public void setPreName(String preName) {
+		this.preName = preName;
+	}
 
 	public String getLockSn() {
 		return lockSn;

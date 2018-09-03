@@ -1,3 +1,162 @@
+#server:
+#  port: 8000
+#  session:
+#    timeout: 600 
+#spring:
+#  application:
+#    name: third-party-server 
+#  http:
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true 
+#  boot: 
+#    admin:
+#      url: http://192.168.1.220:6002
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+#    prefer-ip-address: true
+#    lease-renewal-interval-in-seconds: 5
+#    lease-expiration-duration-in-seconds: 15
+#  client:
+#    fetch-registry: true 
+#    serviceUrl:
+#      defaultZone: http://192.168.1.220:6003/eureka/ 
+#feign:
+#  hystrix:
+#    enabled: true
+# 
+#master-db:   
+#  url: jdbc:mysql://192.168.1.218:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+#  username: root
+#  password: Linkmore@2018
+#  driver-class-name: com.mysql.jdbc.Driver  
+#  initial-size: 10
+#  min-idle: 10
+#  max-active: 20 
+#  max-wait: 60000 
+#  time-between-eviction-runs-millis: 60000 
+#  min-evictable-idle-time-millis: 30000
+#  validation-query: select 'x'
+#  test-while-idle: true
+#  test-on-borrow: false
+#  test-on-return: false 
+#  pool-prepared-statements: true
+#  max-pool-prepared-statement-per-connection-size: 20 
+#  filters: stat,wall,slf4j 
+#  connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+#  
+#cluster-db:   
+#  url: jdbc:mysql://192.168.1.219:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+#  username: root
+#  password: Linkmore@2018
+#  driver-class-name: com.mysql.jdbc.Driver  
+#  initial-size: 10
+#  min-idle: 10
+#  max-active: 20 
+#  max-wait: 60000 
+#  time-between-eviction-runs-millis: 60000 
+#  min-evictable-idle-time-millis: 30000
+#  validation-query: select 'x'
+#  test-while-idle: true
+#  test-on-borrow: false
+#  test-on-return: false 
+#  pool-prepared-statements: true
+#  max-pool-prepared-statement-per-connection-size: 20 
+#  filters: stat,wall,slf4j 
+#  connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 
+#
+#security:
+#  basic:
+#    enabled: false
+#    
+#redis:
+#  host: 192.168.1.218
+#  port: 6379
+#  database: 0
+#  timeout: 5000
+#  password: ppyx1234
+#  pool-max-active: 500
+#  pool-max-wait: -1
+#  pool-max-idle: 100
+#  pool-min-idle: 5
+#  test-while-idle: true
+#  test-on-borrow: true
+#  test-on-create: true 
+#  sentinel-master: mymaster
+#  sentinel-nodes: 192.168.1.219:26379 
+#  channel: third  
+#  
+#  
+#  
+#base:
+#  service-url: https://api.linkmoreparking.net/api
+#  online: false
+#docking:
+#  order-url: http://192.168.1.172:8086/order/orderDeal
+# 
+##支付宝配置
+#app-alipay:
+#  app-id: 2016121904425106 
+#  seller-id: 2088521384003031
+##微信支付配置
+#app-wechat: 
+#  app-id: wx1fa04d7b1642f8f3
+#  app-secret: 97bc9a5fb604bfd4a219e055f1f50dde
+#  mchid: 1492790062
+#  key: scqbOHIaWxcrVisrZHVQy6KjLd3WjkC2
+#    
+##阿里短信配置
+#sms:
+#  region-id: cn-hangzhou
+#  access-key: LTAIlCbJXIQWCNnl
+#  access-secret: bxwgOMs072cnOiZjsetF9cd740CD1e
+#  endpoint-name: cn-hangzhou
+#  sign-name: 凌猫停车
+#    
+##小程序配置
+#wechat-mini:  
+#  app-id: wx62db01dddd56972f
+#  app-secret: 78cd1e2349a7133b0b9ef8c5ad2a2eb0  
+#  mchid: 1463909002
+#  key: 74d958cf41994d67876eb9b12d459992 
+#
+##微信服务号
+#wechat:
+#  app-id: wxd167b1783e872df6
+#  app-secret: 637c41ce97f055b9afd52a4344322285
+#  token: 1513a483c4654b978d39b4c715fd2dba 
+#  noncestr: pabeitech
+#  
+#  
+##极光推送配置
+#push:
+#  key: 97bf3800e8729ca8f44c396e
+#  secret: 88144b53297be8ef37ab2591 
+# 
+##阿里OSS配置
+#oss:
+#  access-key-id: LTAIlCbJXIQWCNnl
+#  access-key-secret: bxwgOMs072cnOiZjsetF9cd740CD1e
+#  upload-endpoint: http://oss.linkmoreparking.com
+#  download-endpoint:  http://oss.linkmoreparking.com
+#  bucket-name: linkmore
+#  download-url-expiration: 1800000      # 下载地址的有效时长，单位为ms，默认为半小时
+#  temp-dir: D:/oss-temp   #windows路径 D:/oss-temp    linux 路径/data/oss-temp
+# 
+##银联支付配置
+#union-pay: 
+#  union-service-url: https://gateway.95516.com 
+#  mer-id: 852331048169971
+#  cert-path: cert/linkmore.pfx
+#  cert-pwd: P151229
+#  cert-type: PKCS12
+#  encrypt-cert-path: cert/linkmore.cer
+#  middle-cert-path: cert/acp_test_middle.cer
+#  root-cert-path: cert/acp_test_root.cer 
+#  online: true 
+
 server:
   port: 8000
   session:
@@ -121,7 +280,17 @@ wechat-mini:
   app-secret: 78cd1e2349a7133b0b9ef8c5ad2a2eb0  
   mchid: 1463909002
   key: 74d958cf41994d67876eb9b12d459992 
-
+  
+#小程序配置3.0
+wechat-mini-plus:  
+  miniProps:
+    appId1001: wx62db01dddd56972f
+    appId1002: wx788664e943eee6bd  
+    appId1003: wx788664e943eee6bd
+    appSecret1001: 78cd1e2349a7133b0b9ef8c5ad2a2eb0 
+    appSecret1002: 6c16738365d20f5c79894f944bcc957f
+    appSecret1003: 6c16738365d20f5c79894f944bcc957f
+    
 #微信服务号
 wechat:
   app-id: wxd167b1783e872df6
@@ -133,7 +302,10 @@ wechat:
 #极光推送配置
 push:
   key: 97bf3800e8729ca8f44c396e
-  secret: 88144b53297be8ef37ab2591 
+  secret: 88144b53297be8ef37ab2591
+#极光推送配置(物业版)
+  key-add: 97bf3800e8729ca8f44c396e
+  secret-add: 88144b53297be8ef37ab2591
  
 #阿里OSS配置
 oss:
@@ -144,7 +316,7 @@ oss:
   bucket-name: linkmore
   download-url-expiration: 1800000      # 下载地址的有效时长，单位为ms，默认为半小时
   temp-dir: D:/oss-temp   #windows路径 D:/oss-temp    linux 路径/data/oss-temp
- 
+  
 #银联支付配置
 union-pay: 
   union-service-url: https://gateway.95516.com 

@@ -28,6 +28,17 @@ public interface WechatMiniClient {
 	@RequestMapping(value = "/v2.0/session/{code}", method = RequestMethod.GET) 
 	@ResponseBody
 	public ResMiniSession getSession(@PathVariable("code") String code);
+	
+	/**
+	 * 根据code及别名获取
+	 * @param code 授权码
+	 *  @param alias 识别码
+	 * @return
+	 */
+	@RequestMapping(value = "/v3.0/session/{code}/{alias}", method = RequestMethod.GET)
+	@ResponseBody
+	public ResMiniSession getSessionPlus(@PathVariable("code") String code,@PathVariable("alias") Integer alias);
+	
 	/**
 	 * 下单
 	 * @param wechat

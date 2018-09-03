@@ -12,6 +12,9 @@
    
    <resultMap id="StallResultMap" type="cn.linkmore.enterprise.entity.EntOwnerStall">
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" /> 
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="plate" jdbcType="VARCHAR" property="plate" />
@@ -43,6 +46,7 @@
   
   <select id="findStall"   resultMap="StallResultMap" >
     select  a.pre_id as pre_id,a.stall_id as stall_id,a.stall_name as stall_name,a.plate as plate,a.mobile as mobile,
+    a.ent_id as ent_id,a.ent_pre_id as ent_pre_id,a.pre_name as pre_name,
     b.image_url,b.route_guidance,b.stall_local,b.status,b.lock_status,b.lock_sn,
     DATE_FORMAT(start_time,'%Y-%m-%d %H:%i:%s') as start_time,DATE_FORMAT(end_time,'%Y-%m-%d %H:%i:%s') as end_time
     from t_ent_rent_user a  left join v_stall  b on 

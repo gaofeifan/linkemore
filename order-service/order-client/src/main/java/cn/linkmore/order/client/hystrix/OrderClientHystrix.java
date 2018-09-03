@@ -52,5 +52,4 @@ public class OrderClientHystrix implements OrderClient {
 		log.info("getPlateLastOrderStatus carno :{}",carno);
 		return null;
 	}
-	 
 }

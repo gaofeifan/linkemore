@@ -177,7 +177,9 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));		
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		user  = new CacheUser();
+		user.setId(2799l   );
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -192,6 +194,11 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				newrecord.setDownTime(new Date());
 				newrecord.setPreId(entOwnerStall.getPreId());
 				newrecord.setStallName(entOwnerStall.getStallName());
+				newrecord.setEntId(entOwnerStall.getEntId());
+				newrecord.setPreName(entOwnerStall.getPreName());
+				newrecord.setEntPreId(entOwnerStall.getEntPreId() );
+				newrecord.setPlateNo(entOwnerStall.getPlate());
+				
 				isAllow = true;
 				break;
 			}

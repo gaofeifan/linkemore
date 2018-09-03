@@ -79,6 +79,12 @@ public class ResDetailStall {
 	@ApiModelProperty("上下线状态true上线 false下线")
 	private boolean onoffStatus = false;
 	
+	@ApiModelProperty("故障原因Id")
+	private Long faultId;
+	
+	@ApiModelProperty("故障原因名称")
+	private String faultName;
+	
 	public boolean getOnoffStatus() {
 		return onoffStatus;
 	}
@@ -198,6 +204,20 @@ public class ResDetailStall {
 	public void setExcCode(Long excCode) {
 		this.excCode = excCode;
 	}
-	
-	
+
+	public Long getFaultId() {
+		return faultId;
+	}
+
+	public void setFaultId(Long faultId) {
+		this.faultId = faultId;
+	}
+
+	public String getFaultName() {
+		return faultName;
+	}
+
+	public void setFaultName(String faultName) {
+		this.faultName = faultName;
+	}
 }

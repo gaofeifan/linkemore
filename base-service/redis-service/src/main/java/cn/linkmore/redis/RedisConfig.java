@@ -41,6 +41,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 	@Autowired
 	private RedisProperties redisProperties;
 	
+	
 	@Bean
 	public JedisPoolConfig redisPoolConfig(){
 		JedisPoolConfig poolConfig = new JedisPoolConfig();

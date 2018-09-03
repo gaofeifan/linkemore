@@ -9,7 +9,6 @@ package cn.linkmore.bean.common;
  */
 public class Constants {
 	public final static String ACCESS_TOKEN_HEADER_NAME = "X-Access-Auth-Token";
-
 	
 	public enum TradeType{
 		//-1消费[未付款],0消费[账户余额],1消费[订单充值],2账户充值[订单充值],3账户充值[用户充值]
@@ -92,6 +91,9 @@ public class Constants {
 			this.type = type;
 		} 
 	}
+	
+	
+	
 	public enum CouponStatus {
 		FREE(0), USED(1), EXPIRED(2);
 		public int status;
@@ -256,6 +258,7 @@ public class Constants {
 
 	public enum PushType {
 		USER_APP_LOGOUT_NOTICE(0, "USER_APP_LOGOUT_NOTICE"),
+		STAFF_ENT_LOGOUT_NOTICE(0, "STAFF_ENT_LOGOUT_NOTICE"),
 		ORDER_CREATE_NOTICE(1,"ORDER_CREATE_NOTICE"),
 		LOCK_DOWN_NOTICE(2, "LOCK_DOWN_NOTICE"),
 		ORDER_SWITCH_RESULT_NOTICE(3,"ORDER_SWITCH_RESULT_NOTICE"),

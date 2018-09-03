@@ -37,4 +37,8 @@
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 	</natures>
+<<<<<<< HEAD
 </projectDescription>
+=======
+</projectDescription>
+>>>>>>> branch 'master' of git@192.168.1.188:linkmore-cloud/linkmore.git

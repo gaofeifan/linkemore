@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.controller.ent.request;
 
+import java.util.Date;
+
 import javax.validation.constraints.NotNull;
 
 
@@ -14,6 +16,9 @@ public class ReqPreTypePage {
 //	@Digits(message="参数必须为整数")
 	private Long preId;
 	
+	@ApiModelProperty(required=false,value = "2018-09-01 当前页的最后一条数据 默认为当前时间")
+	private Date now;
+
 	@ApiModelProperty(required=true,value = "类型 0 7天 1 15天 2 30天")
 	@Digits(message="类型数据应为0-2",regex="[0,1,2]")
 	@NotNull(message="类型不能为空")
@@ -46,5 +51,13 @@ public class ReqPreTypePage {
 
 	public void setPageNo(Integer pageNo) {
 		this.pageNo = pageNo;
+	}
+
+	public Date getNow() {
+		return now;
+	}
+
+	public void setNow(Date now) {
+		this.now = now;
 	}
 }

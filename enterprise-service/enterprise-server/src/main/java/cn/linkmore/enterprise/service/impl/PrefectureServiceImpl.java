@@ -144,7 +144,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}
 		
 		return income;
-				
 	}
 	
 	@Override
@@ -222,7 +221,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return chargeDetail;
 	}
 	@Override
-	public List<ResDayTrafficFlow> findTrafficFlowList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
+	public List<ResDayTrafficFlow> findTrafficFlowList(Integer pageNo,Short type, Long preId,Date date, HttpServletRequest request) {
 		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
@@ -232,7 +231,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId", preId); 
-		param.put("date", date);
+		param.put("now", date);
 		param.put("pageNo", pageNo);
 		List<ResTrafficFlow> flowList = this.orderClient.findTrafficFlowList(param);
 		List<ResDayTrafficFlow> dayTFs = new ArrayList<>();
@@ -256,7 +255,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	@Override
-	public List<ResDayIncome> findIncomeList(Integer pageNo,Short type, Long preId,String date, HttpServletRequest request) {
+	public List<ResDayIncome> findIncomeList(Integer pageNo,Short type, Long preId,Date date, HttpServletRequest request) {
 		if(!checkAuthStaff(request)) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
@@ -266,7 +265,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Map<String,Object> param = new HashMap<>();
 		param.put("startTime", type);
 		param.put("preId", preId);
-		param.put("date", date);
+		param.put("now", date);
 		param.put("pageNo", pageNo);
 		List<ResDayIncome> incomes = new ArrayList<>();
 		ResDayIncome income = null;
