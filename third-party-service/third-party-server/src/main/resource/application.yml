@@ -304,8 +304,8 @@ push:
   key: 97bf3800e8729ca8f44c396e
   secret: 88144b53297be8ef37ab2591
 #极光推送配置(物业版)
-  key-add: 97bf3800e8729ca8f44c396e
-  secret-add: 88144b53297be8ef37ab2591
+  key-add: 81d6cbbcae88bf5563dfa8b1
+  secret-add: ad2d7a5906fdfc8dffb99e16
  
 #阿里OSS配置
 oss:

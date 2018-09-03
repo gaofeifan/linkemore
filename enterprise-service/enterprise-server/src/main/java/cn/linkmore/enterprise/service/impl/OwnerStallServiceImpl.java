@@ -196,7 +196,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				newrecord.setStallName(entOwnerStall.getStallName());
 				newrecord.setEntId(entOwnerStall.getEntId());
 				newrecord.setPreName(entOwnerStall.getPreName());
-				newrecord.setEntPreId(entOwnerStall.getEntPreId() );
+				newrecord.setEntPreId(entOwnerStall.getEntPreId());
 				newrecord.setPlateNo(entOwnerStall.getPlate());
 				
 				isAllow = true;

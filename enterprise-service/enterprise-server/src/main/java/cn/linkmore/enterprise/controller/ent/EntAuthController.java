@@ -52,7 +52,7 @@ public class EntAuthController {
 	@RequestMapping(value = "/logout", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> logout(HttpServletRequest request) {
-		ResponseEntity<?> response = null; 
+		ResponseEntity<?> response = null;
 		this.staffService.logout(request);
 		response = ResponseEntity.success("用户退出成功", request);
 		return response;
