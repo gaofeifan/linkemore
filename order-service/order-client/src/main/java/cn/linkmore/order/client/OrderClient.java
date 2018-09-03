@@ -1,9 +1,6 @@
 package cn.linkmore.order.client;
 
-import java.math.BigDecimal;
-
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,13 +14,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.OrderClientHystrix;
 import cn.linkmore.order.request.ReqOrderExcel;
-import cn.linkmore.order.response.ResCharge;
-import cn.linkmore.order.response.ResChargeList;
-import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderExcel;
-import cn.linkmore.order.response.ResOrderPlate;
-import cn.linkmore.order.response.ResPreOrderCount;
-import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResUserOrder;
 
 @FeignClient(value = "order-server", path = "/feign/orders", fallback=OrderClientHystrix.class,configuration = FeignConfiguration.class)
@@ -58,6 +49,6 @@ public interface OrderClient {
 
 	@RequestMapping(value = "/export", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean); 
-	
+	public List<ResOrderExcel> exportList(@RequestBody ReqOrderExcel bean);
+
 }

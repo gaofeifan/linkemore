@@ -174,5 +174,10 @@ public class EntOrdersController {
 		return response;
 	}
 	
+	@RequestMapping(value = "/v2.0/update-lock-status", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateLockStatus(@RequestBody Map<String, Object> param) {
+		this.ordersService.updateLockStatus(param);
+	}
 	
 }

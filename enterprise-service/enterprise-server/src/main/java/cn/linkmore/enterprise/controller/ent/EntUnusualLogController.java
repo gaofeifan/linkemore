@@ -1,4 +1,4 @@
-package cn.linkmore.common.controller.app;
+package cn.linkmore.enterprise.controller.ent;
 
 import javax.annotation.Resource;
 
@@ -13,21 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.annotation.AopIgnore;
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.common.controller.app.request.ReqUnusualLog;
-import cn.linkmore.common.service.UnusualLogService;
+import cn.linkmore.common.request.ReqUnusualLog;
+import cn.linkmore.enterprise.service.UnusualLogService;
+import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
- * app异常日志上报
+ * 物业版异常日志上报
  * @Version 2.0
  * @author  GFF
  * @Date     2018年5月11日
  */
 @RestController
-@RequestMapping("/app/exception-logs")
-@Api(tags="Exception logs",description="APP异常日志上报")
-public class AppUnusualLogController {
+@RequestMapping("/ent/exception-logs")
+@Api(tags="Exception logs",description="物业版异常日志上报")
+public class EntUnusualLogController {
 	
 	@Resource
 	private UnusualLogService unusualLogService;
@@ -38,12 +39,12 @@ public class AppUnusualLogController {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	@RequestMapping(value = "/v2.0/upload", method = RequestMethod.POST)
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	@ResponseBody
 	@ApiOperation(value="新增异常日志上报",notes="新增异常日志上报", consumes = "application/json")
 	@AopIgnore
-	public ResponseEntity<?> upload(@RequestBody @Validated ReqUnusualLog unusualLog,HttpServletRequest request) {
-		this.unusualLogService.insert(unusualLog);
+	public ResponseEntity<?> upload(@RequestBody @Validated cn.linkmore.enterprise.controller.ent.request.ReqUnusualLog unusualLog,HttpServletRequest request) {
+		this.unusualLogService.insert(ObjectUtils.copyObject(unusualLog, new ReqUnusualLog()));
 		return ResponseEntity.success("上报成功",request );
 	}
 

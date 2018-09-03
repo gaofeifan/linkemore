@@ -223,6 +223,14 @@ public interface OrdersService {
 	 */
 	void downWYMsgPush(Long orderId, Long stallId);
 
+	
+	/**
+	 * @Description  更新车位锁状态
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateLockStatus(Map<String, Object> param);
+
 
 	
 }

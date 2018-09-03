@@ -426,7 +426,7 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
   </select>
   <select id="findTrafficFlowList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResTrafficFlowList">
     SELECT
-		end_time date,count(1) carDayTotal,DATE_FORMAT(end_time,'%m') month
+		DATE_FORMAT(end_time,'%Y-%m-%d')  date,count(1) carDayTotal,DATE_FORMAT(end_time,'%m') month
 		FROM
 			o_orders
 		WHERE
@@ -448,7 +448,7 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 		 status = 3  AND end_time >=  DATE_FORMAT(#{startTime},'%Y-%m-%d') and pre_id = #{preId}
   </select>
   <select id="findIncomeList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResIncomeList">
-	SELECT end_time date,sum(actual_amount) dayAmount,DATE_FORMAT(end_time,'%m') month FROM o_orders 	where	status = 3 
+	SELECT DATE_FORMAT(end_time,'%Y-%m-%d') date,sum(actual_amount) dayAmount,DATE_FORMAT(end_time,'%m') month FROM o_orders 	where	status = 3 
 	and pre_id = #{preId}
 	<!--  <![CDATA[ and #{monthStart} <= end_time]]>
 	 <![CDATA[ AND #{monthEnd} > end_time]]> -->
@@ -486,7 +486,6 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 	GROUP BY
 		DATE_FORMAT(end_time, '%Y-%m-%d')
 	ORDER BY end_time ASC
-	<!-- limit #{start},#{pageSize} -->
   </select>
   <select id="findPlateByPreId" parameterType="java.lang.Long" resultType="cn.linkmore.order.response.ResOrderPlate">
  	<!-- SELECT plate_no plateNo,stall_id stallId,stall_name stallName FROM o_orders WHERE pre_id = #{preId} AND status = 2
@@ -520,6 +519,7 @@ FROM
 		AND sta. STATUS = 2
 		ORDER BY
 			ord.begin_time DESC
+			 limit 10000000000
 	) ord
 GROUP BY
 	ord.id
@@ -529,6 +529,7 @@ GROUP BY
   <select id="findOrderByStallId" parameterType="java.lang.Long" resultType="cn.linkmore.order.response.ResEntOrder">
  	SELECT 
  		id orderId ,order_no orderNo,begin_time beginTime , end_time endTime,lock_down_time lockDownTime,plate_no plate
+ 		,username mobile
  	FROM 
  		o_orders 
  	WHERE 

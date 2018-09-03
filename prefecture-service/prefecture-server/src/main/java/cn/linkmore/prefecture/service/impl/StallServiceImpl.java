@@ -21,6 +21,7 @@ import com.linkmore.lock.response.ResponseMessage;
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.LockStatus;
+import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
@@ -468,15 +469,15 @@ public class StallServiceImpl implements StallService {
 					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
 					if (code == 200) {
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								downLock(reqc.getStallId());
-							}
-						}).start();
-						stall.setStatus(reqc.getStatus());
-						stallMasterMapper.lockdown(stall);
-						redisService.remove(reqc.getKey());
+						if(reqc.getStatus() == 1) {
+							downLock(reqc.getStallId(),1);
+							stall.setLockStatus(reqc.getStatus());
+							stallMasterMapper.lockdown(stall);
+							redisService.remove(reqc.getKey());
+						}
+						
+					}else {
+							downLock(reqc.getStallId(),0);
 					}
 				}
 			}
@@ -515,9 +516,13 @@ public class StallServiceImpl implements StallService {
 		}).start();
 	}
 
-	public void downLock(Long stallId) {
-		ResUserOrder resUserOrder = this.entOrderClient.findStallLatest(stallId);
-		entOrderClient.downWYMsgPush(resUserOrder.getId(), stallId);
+	public void downLock(Long stallId,int status) {
+		ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
+		Map<String,Object> param = new HashMap<>();
+		param.put( "lockDownStatus",status);
+		param.put("lockDownTime", new Date());
+		param.put("orderId", latest.getId());
+		this.entOrderClient.updateLockStatus(param);
 	}
 	
 	private void send(String uid, Integer lockstatus, int code) {

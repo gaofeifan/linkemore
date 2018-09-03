@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+
 public class DateUtils {
 	
 	
@@ -254,8 +255,20 @@ public class DateUtils {
 	          long hours = (diff-days*(1000 * 60 * 60 * 24))/(1000* 60 * 60); //获取时 
 	          long minutes = (diff-days*(1000 * 60 * 60 * 24)-hours*(1000* 60 * 60))/(1000* 60);  //获取分钟
 	          long s=(diff/1000-days*24*60*60-hours*60*60-minutes*60);//获取秒
-	          String CountTime=""+day+"天"+hours+"小时"+minutes+"分"+s+"秒";
-	          return CountTime;
+	          StringBuilder sb = new StringBuilder();
+	          if(days != 0) {
+	        	  sb.append(day).append("天");
+	          }
+	          if(hours != 0) {
+	        	  sb.append(hours).append("时");
+	          }
+	          if(minutes != 0) {
+	        	  sb.append(minutes).append("分");
+	          }
+	          if(s != 0) {
+	        	  sb.append(s).append("秒");
+	          }
+	          return sb.toString();
 	    }  
 		 
 		 //Date类型转Calendar类型
@@ -303,6 +316,15 @@ public class DateUtils {
 			calendar.add(Calendar.DAY_OF_MONTH, date);
 			return calendar.getTime();
 		}
+		public static Date getDateByDay(Date date,int num) {
+			if(date == null) {
+				return getDateByDay(num);
+			}
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			calendar.add(Calendar.DAY_OF_MONTH, num);
+			return calendar.getTime();
+		}
 		/**
 		 *  获取指定天数
 		 */ 
@@ -310,5 +332,99 @@ public class DateUtils {
 			Calendar calendar = Calendar.getInstance();   
 			calendar.add(Calendar.MONTH, date);
 			return calendar.getTime();
+		}
+		/**
+		 *  获取指定天数
+		 */ 
+		public static Date getDateByMonth(Date date ,int num) {
+			if(date == null) {
+				return getDateByMonth(num);
+			}
+			Calendar calendar = Calendar.getInstance();  
+			calendar.setTime(date);
+			calendar.add(Calendar.MONTH, num);
+			return calendar.getTime();
+		}
+		/**
+		 *  获取指定天数
+		 */ 
+		public static Date getDateByYear(int date) {
+			Calendar calendar = Calendar.getInstance();   
+			calendar.add(Calendar.YEAR, date);
+			return calendar.getTime();
+		}
+		/**
+		 *  获取指定天数
+		 */ 
+		public static Date getDateByYear(Date date,int num) {
+			if(date == null) {
+				return getDateByYear(num);
+			}
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			calendar.add(Calendar.YEAR, num);
+			return calendar.getTime();
+		}
+		
+		/**
+		 * @Description  通过当前时间获取指定年，月，日前的数据集
+		 * @Author   GFF 
+		 * @Version  v2.0
+		 * date 时间  默认为当前时间   ,calendar calendar类中的 year month day ,amount 之前天数
+		 */
+		public static List<Date> getDates(Date date, int calendar,int amount){
+ 			Calendar instance = Calendar.getInstance();
+			Date endDate = new Date();
+			Date NowDate = null;
+			if(date == null) {
+				instance = Calendar.getInstance();
+				NowDate = instance.getTime();
+			}else {
+				NowDate = date;
+			}
+			int number = 0;
+			date = convert(date, null);
+			switch (calendar) {
+			case Calendar.YEAR:
+				endDate = getDateByYear(date, -amount);
+				break;
+			case Calendar.MONTH:
+				endDate = getDateByMonth(date, -amount);
+				break;
+			case Calendar.DAY_OF_MONTH:
+				endDate = getDateByDay(date, -amount);
+				break;
+			default:
+				break;
+			}
+			List<Date> dates = new ArrayList<>();
+			while (!(NowDate.getTime() == endDate.getTime())) {
+				instance.setTime(getDateByDay(NowDate,-1));
+				NowDate = convert(instance.getTime(), null);
+				dates.add(NowDate);
+				number++;
+				if(number > 366) {
+					break;
+				}
+			}
+			return dates;
+		}
+		
+		
+		/**
+		 * @Description 获取指定年月日的数值 
+		 * @Author   GFF 
+		 * @Version  v2.0
+		 *  date 默认当前时间  ,filed Calendar.year Calendar.month Calendar.day
+		 */
+		public static int getFieldDataByDate(Date date , int field) {
+			Calendar calendar = Calendar.getInstance();
+			if(date != null) {
+				calendar.setTime(date);
+			}
+			if(field == calendar.MONTH) {
+				return calendar.get(field)+1;
+			}
+			return calendar.get(field);
 		}
 }

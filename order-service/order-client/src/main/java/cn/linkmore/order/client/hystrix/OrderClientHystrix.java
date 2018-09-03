@@ -46,7 +46,5 @@ public class OrderClientHystrix implements OrderClient {
 		log.info("downMsgPush order :{}",bean);
 		return null;
 	}
-
-	
 	 
 }
