@@ -11,8 +11,19 @@ public class ResStallInfo {
 	@ApiModelProperty(value = "是否指定标识")
 	private Boolean assignFlag = false;
 	
+	@ApiModelProperty(value = "车区名称")
+	private String preName;
+	
 	@ApiModelProperty(value = "车位列表")
 	private List<ResStall> stalls;
+
+	public String getPreName() {
+		return preName;
+	}
+
+	public void setPreName(String preName) {
+		this.preName = preName;
+	}
 
 	public Boolean getAssignFlag() {
 		return assignFlag;
