@@ -467,18 +467,20 @@ public class StallServiceImpl implements StallService {
 					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
 					if (code == 200) {
-						if(reqc.getStatus() == 1) {
-							downLock(reqc.getStallId(),1);
-							stall.setLockStatus(reqc.getStatus());
-							stallMasterMapper.lockdown(stall);
-							redisService.remove(reqc.getKey());
+						String robkey= RedisKey.ROB_STALL_ISHAVE.key+reqc.getStallId();
+						
+						if(reqc.getStatus() == 2) {
+							
 						}
 						
-					}else {
-						if(reqc.getStatus() == 1) {
-							downLock(reqc.getStallId(),0);
-						}
-					}
+						
+						stall.setLockStatus(reqc.getStatus()==1?2:1);
+						stall.setStatus(reqc.getStatus()==1?2:1);
+						stallMasterMapper.lockdown(stall);
+						
+						redisService.remove(robkey);
+						redisService.remove(reqc.getKey());
+			    	}
 				}
 			}
 		}).start();

@@ -235,8 +235,8 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				up.setLeaveTime(new Date());
 				up.setStatus(1L);
 				up.setId(record.getId());
-				entRentedRecordMasterMapper.updateByIdSelective(up);
 				this.redisService.remove(robkey);
+				entRentedRecordMasterMapper.updateByIdSelective(up);
 			}
 		}else if(reqOperatStall.getState()==1) {
 			log.info("用户>>>"+user.getId() +"降锁>>>"+reqOperatStall.getStallId());
