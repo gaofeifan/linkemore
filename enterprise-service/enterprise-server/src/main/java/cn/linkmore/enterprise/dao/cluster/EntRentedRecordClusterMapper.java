@@ -49,5 +49,12 @@ public interface EntRentedRecordClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<ResEnterprise> findPage(Map<String, Object> param);
+	
+	/**
+	 * @Description  根据车位id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	EntRentedRecord findByStallId(Long id);
 
 }

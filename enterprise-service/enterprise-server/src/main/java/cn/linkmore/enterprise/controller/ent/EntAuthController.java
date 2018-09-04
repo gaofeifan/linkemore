@@ -71,6 +71,19 @@ public class EntAuthController {
 		response = ResponseEntity.success( "绑定成功", request);
 		return response;
 	}  
+	@ApiOperation(value = "小程序绑定微信号", notes = "小程序绑定微信号", consumes = "application/json")
+	@RequestMapping(value = "/mini-bind", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> miniBind( 
+			@RequestParam(value="code")  
+			@NotBlank(message="授权码不能为空") 
+			@Size(min =32,max=36,message="授权码为无效")
+			String code, HttpServletRequest request) {
+		ResponseEntity<?> response = null;
+		this.staffService.miniBind(code, request);
+		response = ResponseEntity.success( "绑定成功", request);
+		return response;
+	}  
 	
 	@ApiOperation(value="校验手机号是否存在",notes="校验手机号是否存在", consumes = "application/json")
 	@RequestMapping(value = "/check-mobile", method = RequestMethod.GET)

@@ -69,5 +69,12 @@ public interface EntRentUserService {
 	 * @Version  v2.0
 	 */
 	List<EntRentUser> findAll();
+	
+	/**
+	 * @Description  根据stallid查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	EntRentUser findByStallId(Long id);
 
 }
