@@ -108,7 +108,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 											OwnerStall.setStallLocal(enttall.getStallLocal());
 											OwnerStall.setLockSn(enttall.getLockSn());
 											OwnerStall.setLockStatus(enttall.getLockStatus());
-											OwnerStall.setStatus(enttall.getStatus());
+											OwnerStall.setStatus(enttall.getStatus()==1l?1:2l);
 											
 											ownerstalllist.add(OwnerStall);
 											num++;
@@ -149,8 +149,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 							OwnerStall.setStallLocal(enttall.getStallLocal());
 							OwnerStall.setLockSn(enttall.getLockSn());
 							OwnerStall.setLockStatus(enttall.getLockStatus());
-							OwnerStall.setStatus(enttall.getStatus());
-							
+							OwnerStall.setStatus(enttall.getStatus()==1l?1:2l);					
 							num++;
 							ownerstalllist.add(OwnerStall);
 						}
@@ -178,8 +177,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	@Override
 	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		user  = new CacheUser();
-		user.setId(2799l   );
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -230,14 +227,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	
 		if(reqOperatStall.getState()==2) {
 			log.info("用户>>>"+user.getId() +"升锁>>>"+reqOperatStall.getStallId());
-			/*if(Objects.nonNull(record)) {
-				EntRentedRecord up = new EntRentedRecord();
-				up.setLeaveTime(new Date());
-				up.setStatus(1L);
-				up.setId(record.getId());
-				this.redisService.remove(robkey);
-				entRentedRecordMasterMapper.updateByIdSelective(up);
-			}*/
 		}else if(reqOperatStall.getState()==1) {
 			log.info("用户>>>"+user.getId() +"降锁>>>"+reqOperatStall.getStallId());
 			if(!Objects.nonNull(record)) {
