@@ -455,11 +455,17 @@ public class PrefectureServiceImpl implements PrefectureService {
 				stallList.add(resStall);
 			}
 		}
+		ResPrefectureDetail pre = this.prefectureClusterMapper.findById(reqBooking.getPrefectureId());
+		if(pre != null) {
+			stallInfo.setPreName(pre.getName());
+		}
 		stallInfo.setAssignFlag(assign);
 		stallInfo.setStalls(stallList);
 		log.info("stallInfo = {}",JSON.toJSON(stallInfo));
-		if(CollectionUtils.isEmpty(stallList)) {
-			throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  //无空闲车位可用
+		if(!assign) {
+			if(CollectionUtils.isEmpty(stallList)) {
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  //无空闲车位可用
+			}
 		}
 		return stallInfo;
 	}
