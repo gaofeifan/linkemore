@@ -255,7 +255,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	@Override
-	public void miniBind(String code, HttpServletRequest request) {
+	public String miniBind(String code, HttpServletRequest request) {
 		ResMiniSession session = this.wechatMiniClient.getSessionPlus(code, 1002);
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
@@ -263,6 +263,7 @@ public class StaffServiceImpl implements StaffService {
 		map.put("sql", " open_id = '"+session.getOpenid()+"'");
 		map.put("id", ru.getId());
 		this.entStaffMasterMapper.updateByColumn(map );
+		return session.getOpenid();
 	}
 	
 	

@@ -80,8 +80,8 @@ public class EntAuthController {
 			@Size(min =32,max=36,message="授权码为无效")
 			String code, HttpServletRequest request) {
 		ResponseEntity<?> response = null;
-		this.staffService.miniBind(code, request);
-		response = ResponseEntity.success( "绑定成功", request);
+		String bind = this.staffService.miniBind(code, request);
+		response = ResponseEntity.success( bind, request);
 		return response;
 	}  
 	
