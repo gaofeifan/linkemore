@@ -20,6 +20,7 @@
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="operation" jdbcType="SMALLINT" property="operation" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="remarkId" jdbcType="BIGINT" property="remark_id" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
@@ -35,7 +36,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   
-  <select id="findByStallId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findByStallId" parameterType="java.lang.Long" resultMap="LogResultMap">
     select 
     <include refid="Base_Column_List" />
 	FROM t_stall_operate_log where stall_id = #{id} ORDER BY create_time DESC LIMIT 0,1

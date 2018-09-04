@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.EntRentRecordClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.EntRentRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
+    <result column="plate_no" jdbcType="BIGINT" property="plateNo" />
+    <result column="down_time" jdbcType="TIMESTAMP" property="downTime" />
+    <result column="leave_time" jdbcType="TIMESTAMP" property="leaveTime" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+      <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="status" jdbcType="BIGINT" property="status" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ent_id,user_id,status,ent_pre_id, plate_no, down_time, leave_time, stall_id, stall_name, pre_id, 
+    pre_name
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rented_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+   <select id="findByUser" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rented_record
+    where user_id = #{userId,jdbcType=BIGINT}
+    and status = 0
+  </select>
+  
+  <select id="findUsingRecord" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+    select 
+    count(1)
+    from t_ent_rented_record
+     where 1=1
+    	<if test="stallId != null">
+			AND stall_id = #{stallId}
+		</if>
+		<if test="userId != null">
+			AND user_id <![CDATA[ <> ]]> #{userId}
+		</if>
+    and status = 0
+  </select>
+  
+  <select id="findPage" parameterType="java.util.HashMap"
+		resultMap="BaseResultMap">
+		select
+		  record.id, record.ent_id, record.ent_pre_id, record.plate_no, record.down_time, record.leave_time, record.stall_id, record.stall_name, record.pre_id, 
+    record.pre_name,en.name ent_name
+		from t_ent_rented_record record left join t_biz_enterprise en on record.ent_id = en.id
+		where 1 = 1
+		<if test="preName != null">
+			AND pre_name = #{preName}
+		</if>
+		<if test="EntName != null">
+			AND ent_name = #{entName}
+		</if>
+		<if test="property==null">
+			order by down_time desc
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
+		limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		select
+		count(1)
+		from t_ent_rented_record
+		where 1 = 1
+		<if test="preName != null">
+			AND pre_name = #{preName}
+		</if>
+		<if test="EntName != null">
+			AND ent_name = #{entName}
+		</if>
+	</select>
+</mapper>

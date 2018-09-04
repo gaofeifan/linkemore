@@ -463,7 +463,7 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 	ORDER BY end_time DESC	
   </select>
   <select id="findMonthCountByDate" parameterType="java.util.Map" resultType="cn.linkmore.order.controller.app.response.ResMonthCount">
- 	select DATE_FORMAT(end_time,'%m') month,ifnull(SUM(actual_amount),0.0) monthAmount,COUNT(1) monthCarCount
+ 	select ifnull(DATE_FORMAT(end_time,'%m'),DATE_FORMAT(#{monthStart},'%m')) month,ifnull(SUM(actual_amount),0.0) monthAmount,COUNT(1) monthCarCount
 	 FROM o_orders 	where	status = 3 
 	 and pre_id = #{preId}
 	 AND  DATE_FORMAT(end_time,'%Y-%m-%d') >= date_format(#{monthStart},'%Y-%m-%d')

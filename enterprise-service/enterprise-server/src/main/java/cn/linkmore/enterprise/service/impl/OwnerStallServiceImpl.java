@@ -230,14 +230,14 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	
 		if(reqOperatStall.getState()==2) {
 			log.info("用户>>>"+user.getId() +"升锁>>>"+reqOperatStall.getStallId());
-			if(Objects.nonNull(record)) {
+			/*if(Objects.nonNull(record)) {
 				EntRentedRecord up = new EntRentedRecord();
 				up.setLeaveTime(new Date());
 				up.setStatus(1L);
 				up.setId(record.getId());
 				this.redisService.remove(robkey);
 				entRentedRecordMasterMapper.updateByIdSelective(up);
-			}
+			}*/
 		}else if(reqOperatStall.getState()==1) {
 			log.info("用户>>>"+user.getId() +"降锁>>>"+reqOperatStall.getStallId());
 			if(!Objects.nonNull(record)) {

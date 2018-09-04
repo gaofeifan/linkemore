@@ -10,6 +10,8 @@ public class ReqControlLock {
 	
 	private String key;
 
+	private Short type;
+	
 	public Long getStallId() {
 		return stallId;
 	}
@@ -33,6 +35,15 @@ public class ReqControlLock {
 	public void setKey(String key) {
 		this.key = key;
 	}
+
+	public Short getType() {
+		return type;
+	}
+
+	public void setType(Short type) {
+		this.type = type;
+	}
+	
 	
 	
 }

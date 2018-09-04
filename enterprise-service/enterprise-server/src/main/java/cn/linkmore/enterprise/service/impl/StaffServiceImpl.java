@@ -35,6 +35,7 @@ import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.PushClient;
+import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
@@ -59,6 +60,8 @@ public class StaffServiceImpl implements StaffService {
 	private PrefectureClient prefectureClient;
 	@Resource
 	private EntSocketClient entSocketClient;
+	@Resource
+	private SendClient sendClient;
 	@Resource
 	private PushClient pushClient;
 	@Resource
@@ -170,7 +173,7 @@ public class StaffServiceImpl implements StaffService {
 				rp.setClient(token.getClient());
 				rp.setType(PushType.USER_APP_LOGOUT_NOTICE);
 				rp.setTitle("账号已在其它设备登录"); 
-				pushClient.push(rp);
+				sendClient.send(rp);
 			}
 		}
 	}

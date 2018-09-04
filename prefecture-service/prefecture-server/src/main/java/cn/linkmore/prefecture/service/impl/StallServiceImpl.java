@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,11 +18,9 @@ import com.google.common.base.Stopwatch;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
-
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.LockStatus;
-import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
@@ -34,10 +33,13 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.dao.cluster.EntRentRecordClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
+import cn.linkmore.prefecture.dao.master.EntRentRecordMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
+import cn.linkmore.prefecture.entity.EntRentRecord;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StallLock;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -84,7 +86,15 @@ public class StallServiceImpl implements StallService {
 	private StallLockClusterMapper stallLockClusterMapper;
 	@Autowired
 	private PushClient pushClient;
+	@Autowired
+	private SendClient sendClient;	
+	@Autowired
+	private EntRentRecordMasterMapper entRentedRecordMasterMapper;
+	@Autowired
+	private EntRentRecordClusterMapper entRentedRecordClusterMapper;
+	
 
+	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -467,25 +477,71 @@ public class StallServiceImpl implements StallService {
 					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
 					if (code == 200) {
-						String robkey= RedisKey.ROB_STALL_ISHAVE.key+reqc.getStallId();
-						
 						if(reqc.getStatus() == 2) {
-							
+							String robkey= RedisKey.ROB_STALL_ISHAVE.key+reqc.getStallId();
+							//未完成记录同一用户只有一单
+							EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));	
+							if(Objects.nonNull(record)) {
+							EntRentRecord up = new EntRentRecord();
+							up.setLeaveTime(new Date());
+							up.setStatus(1L);
+							up.setId(record.getId());
+							entRentedRecordMasterMapper.updateByIdSelective(up);
+							}
+							redisService.remove(robkey);
 						}
-						
-						
 						stall.setLockStatus(reqc.getStatus()==1?2:1);
 						stall.setStatus(reqc.getStatus()==1?2:1);
 						stallMasterMapper.lockdown(stall);
-						
-						redisService.remove(robkey);
 						redisService.remove(reqc.getKey());
-			    	}
+					}
 				}
 			}
 		}).start();
 	}
 	
+	
+	@Override
+	public void operLockWY(ReqControlLock reqc) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				String uid = String.valueOf(redisService.get(reqc.getKey()));
+				Stall stall = stallClusterMapper.findById(reqc.getStallId());
+				log.info("stall:{}", JsonUtil.toJson(stall));
+				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+					log.info("downing>>>>>> name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+					ResponseMessage<LockBean> res = null;
+					// 1 降下 2 升起
+					Stopwatch stopwatch = Stopwatch.createStarted();
+					if (reqc.getStatus() == 1) {
+						res = lockFactory.lockDown(stall.getLockSn());
+					} else if (reqc.getStatus() == 2) {
+						res = lockFactory.lockUp(stall.getLockSn());
+					}
+					log.info("res>>>>>>>"+res.getMsg());
+					int code = res.getMsgCode();
+					stopwatch.stop();
+					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+					sendWYMsg(uid,reqc.getStatus(),code);
+					if (code == 200) {
+						if(reqc.getStatus() == 1) {
+							downLock(reqc.getStallId(),1);
+							stall.setLockStatus(reqc.getStatus());
+							stallMasterMapper.lockdown(stall);
+							redisService.remove(reqc.getKey());
+						}
+						
+					}else {
+						if(reqc.getStatus() == 1) {
+							downLock(reqc.getStallId(),0);
+						}
+					}
+				}
+			}
+		}).start();
+	}
+
 	@Override
 	public Map<String, Object> watch(Long stallId) {
 		log.info("stall:=====================");
@@ -517,6 +573,18 @@ public class StallServiceImpl implements StallService {
 			}
 		}).start();
 	}
+	public void sendWYMsg(String uid, Integer status, int code) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					sendWY(uid, status, code);
+				} catch (Exception e) {
+					log.info("sendWYMsg>>>"+uid);
+				}
+			}
+		}).start();
+	}
 
 	public void downLock(Long stallId,int status) {
 		ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
@@ -543,6 +611,24 @@ public class StallServiceImpl implements StallService {
 			rp.setType(type);
 			rp.setData(bool);
 			pushClient.push(rp);
+		}
+	}
+	private void sendWY(String uid, Integer lockstatus, int code) {
+		String title = "车位锁操作通知";
+		String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");
+		PushType pushType =PushType.LOCK_CONTROL_NOTICE;
+		String bool = (code == 200 ? "true" : "false");
+		Token token = (Token) redisService.get(RedisKey.STAFF_ENT_AUTH_TOKEN.key + uid.toString());
+		log.info("send>>>", JsonUtil.toJson(token));
+		if(token!=null) {
+			ReqPush rp = new ReqPush();
+			rp.setAlias(uid);
+			rp.setTitle(title);
+			rp.setContent(content);
+			rp.setClient(token.getClient());
+			rp.setType(pushType);
+			rp.setData(bool);
+			sendClient.send(rp);
 		}
 	}
 }

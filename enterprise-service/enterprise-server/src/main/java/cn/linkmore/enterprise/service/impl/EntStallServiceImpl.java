@@ -434,8 +434,10 @@ public class EntStallServiceImpl implements EntStallService {
 		//当车位状态为下线或者故障时，该车位下线，显示上线操作按钮 当车位状态为空闲或者使用中该车位上线 显示下线操作按钮
 		if(resStallEntity.getStatus()== 4 || resStallEntity.getStatus()==5 ) {
 			ResStallOperateLog operateLog = this.stallOperateLogClient.findByStallId(resStallEntity.getId());
-			resDetailStall.setFaultId(operateLog.getRemarkId());
-			resDetailStall.setFaultName(operateLog.getRemark());
+			if(operateLog != null) {
+				resDetailStall.setFaultId(operateLog.getRemarkId());
+				resDetailStall.setFaultName(operateLog.getRemark());
+			}
 			resDetailStall.setOnoffStatus(false);
 		}else {
 			resDetailStall.setOnoffStatus(true);
@@ -496,7 +498,7 @@ public class EntStallServiceImpl implements EntStallService {
 					redisService.set(RedisKey.ENT_STALL_DOING.key+stallId,ru.getId(),ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
 				}
 	        	//1 降下 2 升起
-				stallClient.controllock(reqc);
+				stallClient.operLockWY(reqc);
 	        }
 	    }).start();
 		
