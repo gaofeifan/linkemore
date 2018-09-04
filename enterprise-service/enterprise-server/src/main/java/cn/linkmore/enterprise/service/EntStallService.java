@@ -11,6 +11,7 @@ import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResStallName;
+import cn.linkmore.enterprise.entity.EntAuthStall;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
 /**
  * @author luzhishen
@@ -106,6 +107,7 @@ public interface EntStallService {
 	 * @Version  v2.0
 	 */
 	Integer downResult(HttpServletRequest request);
+
 
 
 

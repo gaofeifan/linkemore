@@ -40,7 +40,6 @@ import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
-import cn.linkmore.third.response.ResFans;
 import cn.linkmore.third.response.ResMiniSession;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
@@ -253,6 +252,17 @@ public class StaffServiceImpl implements StaffService {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void miniBind(String code, HttpServletRequest request) {
+		ResMiniSession session = this.wechatMiniClient.getSessionPlus(code, 1002);
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
+		Map<String, Object> map = new HashMap<>();
+		map.put("sql", " open_id = '"+session.getOpenid()+"'");
+		map.put("id", ru.getId());
+		this.entStaffMasterMapper.updateByColumn(map );
 	}
 	
 	

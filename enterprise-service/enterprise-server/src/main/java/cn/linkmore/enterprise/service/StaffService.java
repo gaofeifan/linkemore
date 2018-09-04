@@ -48,5 +48,12 @@ public interface StaffService {
 	 */
 	boolean checkMobile(String mobile);
 
+	/**
+	 * @Description  小程序绑定微信号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void miniBind(String code, HttpServletRequest request);
+
 
 }

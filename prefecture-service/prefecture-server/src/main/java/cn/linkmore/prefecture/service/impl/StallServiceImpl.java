@@ -627,7 +627,7 @@ public class StallServiceImpl implements StallService {
 			rp.setContent(content);
 			rp.setClient(token.getClient());
 			rp.setType(pushType);
-			rp.setData(bool);
+			rp.setData(token.getAccessToken());
 			sendClient.send(rp);
 		}
 	}
