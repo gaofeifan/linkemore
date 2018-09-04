@@ -5,6 +5,8 @@ package cn.linkmore.enterprise.controller.ent.response;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -141,6 +143,7 @@ public class ResDetailStall {
 		this.mobile = mobile;
 	}
 
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")	
 	public Date getDownTime() {
 		return downTime;
 	}
@@ -149,6 +152,7 @@ public class ResDetailStall {
 		this.downTime = downTime;
 	}
 
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")	
 	public Date getApproachTime() {
 		return approachTime;
 	}
@@ -157,6 +161,7 @@ public class ResDetailStall {
 		this.approachTime = approachTime;
 	}
 
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")	
 	public Date getStartTime() {
 		return startTime;
 	}

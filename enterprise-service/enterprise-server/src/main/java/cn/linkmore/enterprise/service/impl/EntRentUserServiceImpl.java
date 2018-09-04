@@ -170,6 +170,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	public List<EntRentUser> findAll() {
 		return this.entRentUserClusterMapper.findAll();
 	}
+
+	@Override
+	public EntRentUser findByStallId(Long id) {
+		return this.entRentUserClusterMapper.findByStallId(id);
+	}
 	
 	
 

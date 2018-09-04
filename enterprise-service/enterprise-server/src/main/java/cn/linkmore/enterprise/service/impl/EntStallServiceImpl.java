@@ -24,6 +24,7 @@ import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
 
+import cn.linkmore.account.client.UserClient;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
@@ -40,6 +41,7 @@ import cn.linkmore.enterprise.controller.ent.response.ResStallName;
 import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntAuthStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
@@ -50,6 +52,7 @@ import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.entity.StallExcStatus;
 import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.enterprise.service.EntStallService;
+import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.StallExcStatusService;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.OrderClient;
@@ -86,6 +89,10 @@ public class EntStallServiceImpl implements EntStallService {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private static final String DOWN_CAUSE = "cause_down";
 	@Autowired
+	private EnterpriseService enterpriseService;
+	@Autowired
+	private UserClient userClient;
+	@Autowired
 	private PrefectureClient prefectrueClient;
 	@Autowired
 	private StallBatteryLogClient stallBatteryLogClient;
@@ -97,7 +104,8 @@ public class EntStallServiceImpl implements EntStallService {
 	private StallExcStatusService stallExcStatusService;
 	@Autowired
 	private EntStaffAuthClusterMapper  entStaffAuthClusterMapper;
-	
+	@Autowired
+	private EntRentedRecordClusterMapper rentedRecordClusterMapper;
 	@Autowired
 	private EntAuthPreClusterMapper entAuthPreClusterMapper;
 	
@@ -186,7 +194,7 @@ public class EntStallServiceImpl implements EntStallService {
 			Map<String,ResEntTypeStalls> typeSum = new HashMap<>();
 			for(int j = 0 ; j < stalls.size(); j++){
 				ResStall resStall=stalls.get(j);
-				if(!stallListByIds.contains(resStall.getId())) {
+				if(!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
 					continue;
 				}
 				if(resStall.getStatus() == StallStatus.USED.status){
@@ -395,15 +403,27 @@ public class EntStallServiceImpl implements EntStallService {
 		List<EntRentUser> rentUsers = this.entRentUserService.findAll();
 		if(resStallEntity.getType() != null && resStallEntity.getType() == 2) {
 			StringBuilder sb = new StringBuilder();
-			StringBuilder mobiles = new StringBuilder();
 			for (EntRentUser entRentUser : rentUsers) {
 				if(entRentUser.getStallId().equals(resStallEntity.getId())) {
 					sb.append(entRentUser.getPlate()).append("/");
-					mobiles.append(entRentUser.getMobile()).append("/");
 				}
 			}
+			/*EntRentedRecord record = this.rentedRecordClusterMapper.findByStallId(resStallEntity.getId());
+			if(record == null) {
+				EntRentUser entRentUser = this.entRentUserService.findByStallId(resStallEntity.getId());
+				if(entRentUser != null) {
+					resDetailStall.setMobile(entRentUser.getMobile());
+				}
+			}else {
+				ResUser resUser = userClient.findById(record.getUserId());
+				if(resUser  != null) {
+					resDetailStall.setMobile(resUser.getMobile());
+				}
+			}*/
+//			this.entAuthStallClusterMapper.findByStall(resStallEntity.getId());
+//			this.enterpriseService.findById(ent)
+//			resDetailStall.setMobile(record.get);
 			resDetailStall.setPlate(sb.length() != 0 ? sb.substring(0, sb.length()-1):null);
-			resDetailStall.setMobile(mobiles.length() != 0 ? mobiles.substring(0, mobiles.length()-1): null);
 			if(resStallEntity.getStatus() == 2) {
 				resDetailStall.setDownTime(resEntOrder.getLockDownTime());
 			}
@@ -679,6 +699,7 @@ public class EntStallServiceImpl implements EntStallService {
 		}
 		return count;
 	}
+
 
 	
 	

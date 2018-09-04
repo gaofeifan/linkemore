@@ -26,6 +26,12 @@
     from t_ent_rent_user
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findByStallId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_user
+    where stall_id = #{stallId,jdbcType=BIGINT} order by id limit 0,1
+  </select>
   <select id="findByIdEntPreId"  resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

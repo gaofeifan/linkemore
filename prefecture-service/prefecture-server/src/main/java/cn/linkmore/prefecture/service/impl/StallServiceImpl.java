@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,11 +18,9 @@ import com.google.common.base.Stopwatch;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
-
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.LockStatus;
-import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
@@ -34,10 +33,13 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.dao.cluster.EntRentRecordClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
+import cn.linkmore.prefecture.dao.master.EntRentRecordMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
+import cn.linkmore.prefecture.entity.EntRentRecord;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StallLock;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -85,7 +87,14 @@ public class StallServiceImpl implements StallService {
 	@Autowired
 	private PushClient pushClient;
 	@Autowired
-	private SendClient sendClient;
+	private SendClient sendClient;	
+	@Autowired
+	private EntRentRecordMasterMapper entRentedRecordMasterMapper;
+	@Autowired
+	private EntRentRecordClusterMapper entRentedRecordClusterMapper;
+	
+
+	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -468,10 +477,23 @@ public class StallServiceImpl implements StallService {
 					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
 					if (code == 200) {
-						stall.setLockStatus(reqc.getStatus());
+						if(reqc.getStatus() == 2) {
+							String robkey= RedisKey.ROB_STALL_ISHAVE.key+reqc.getStallId();
+							//未完成记录同一用户只有一单
+							EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));	
+							if(Objects.nonNull(record)) {
+							EntRentRecord up = new EntRentRecord();
+							up.setLeaveTime(new Date());
+							up.setStatus(1L);
+							up.setId(record.getId());
+							entRentedRecordMasterMapper.updateByIdSelective(up);
+							}
+							redisService.remove(robkey);
+						}
+						stall.setLockStatus(reqc.getStatus()==1?2:1);
+						stall.setStatus(reqc.getStatus()==1?2:1);
 						stallMasterMapper.lockdown(stall);
 						redisService.remove(reqc.getKey());
-					
 					}
 				}
 			}
@@ -605,7 +627,7 @@ public class StallServiceImpl implements StallService {
 			rp.setContent(content);
 			rp.setClient(token.getClient());
 			rp.setType(pushType);
-			rp.setData(bool);
+			rp.setData(token.getAccessToken());
 			sendClient.send(rp);
 		}
 	}
