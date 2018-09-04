@@ -168,7 +168,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Autowired
 	private EntBrandPreClient entBrandPreClient;
-	
+
 	@Autowired
 	private EntBrandUserClient entBrandUserClient;
 
@@ -200,6 +200,7 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	private static Set<Long> ORDER_USER_SET = new HashSet<Long>();
+	private static Set<Long> STALL_ID_SET = new HashSet<Long>();
 
 	@Transactional(rollbackFor = RuntimeException.class)
 	private void order(Long prefectureId, Long plateId, Long brandId, Long stallId, CacheUser cu) {
@@ -208,31 +209,41 @@ public class OrdersServiceImpl implements OrdersService {
 		boolean resetRedis = true;
 		short failureReason = 0;
 		short bookingStatus = 0;
-		log.info(">>>>>>cu:{} booking preId:{},plateId:{},brandId:{},stallId:{}", cu.getMobile(), prefectureId, plateId, brandId, stallId);
+		log.info(">>>>>>cu:{} booking preId:{},plateId:{},brandId:{},stallId:{}", cu.getMobile(), prefectureId, plateId,
+				brandId, stallId);
 		try {
 			synchronized (this) {
-				if (ORDER_USER_SET.contains(cu.getId())) {                 //？？？
+				if (ORDER_USER_SET.contains(cu.getId())) { // ？？？
 					bookingStatus = (short) OperateStatus.FAILURE.status;
 					failureReason = (short) OrderFailureReason.UNPAID.value;
-					throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);   //预约失败
+					throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 预约失败
 				}
 				ORDER_USER_SET.add(cu.getId());
+				if (stallId != null) {
+					if (STALL_ID_SET.contains(stallId)) { // ？？？
+						bookingStatus = (short) OperateStatus.FAILURE.status;
+						failureReason = (short) OrderFailureReason.UNPAID.value;
+						throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 预约失败
+					}
+					STALL_ID_SET.add(stallId);
+					log.info("STALL_ID_SET = {}", JSON.toJSON(STALL_ID_SET));
+				}
 			}
-			ResUserOrder ruo = this.ordersClusterMapper.findUserLatest(cu.getId());    //找到最新一单 
+			ResUserOrder ruo = this.ordersClusterMapper.findUserLatest(cu.getId()); // 找到最新一单
 			if (ruo != null && (ruo.getStatus().intValue() == OrderStatus.UNPAID.value
 					|| ruo.getStatus().intValue() == OrderStatus.SUSPENDED.value)) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.UNPAID.value;
-				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);    //有订单
+				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 有订单
 			}
-			if (null == cu.getId() || null == prefectureId || null == plateId) {              
+			if (null == cu.getId() || null == prefectureId || null == plateId) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.EXCEPTION.value;
-				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);   //预约失败请重新预约
+				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 预约失败请重新预约
 			}
-			ResVechicleMark vehicleMark = vehicleMarkClient.findById(plateId);    //车牌号管理表
+			ResVechicleMark vehicleMark = vehicleMarkClient.findById(plateId); // 车牌号管理表
 
-			if (vehicleMark.getUserId().longValue() != cu.getId().longValue()) {           //无空闲车位？？
+			if (vehicleMark.getUserId().longValue() != cu.getId().longValue()) { // 无空闲车位？？
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.CARNO_NONE.value;
 				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
@@ -240,21 +251,22 @@ public class OrdersServiceImpl implements OrdersService {
 			if (!this.checkCarFree(vehicleMark.getVehMark())) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.CARNO_BUSY.value;
-				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY);  //当前车牌号已在预约中，请更换车牌号重新预约
+				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY); // 当前车牌号已在预约中，请更换车牌号重新预约
 			}
-			
+
 			String lockSn = "";
 			ResBrandPre brand = null;
 			boolean assign = false;
-			if(stallId != null) {
+			if (stallId != null) {
 				boolean flag = false;
 				stall = this.stallClient.findById(stallId);
-				if(stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					lockSn = stall.getLockSn();
 					log.info("order-stall-lockSn,{}", lockSn);
-					Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId);  //集合中所有成员元素
+					Set<Object> lockSnList = this.redisService
+							.members(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId); // 集合中所有成员元素
 					if (CollectionUtils.isNotEmpty(lockSnList)) {
-						if(lockSnList.contains(lockSn)) {
+						if (lockSnList.contains(lockSn)) {
 							flag = true;
 							log.info("current lockSn is free, flag = {}", flag);
 							this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId, lockSn);
@@ -263,22 +275,22 @@ public class OrdersServiceImpl implements OrdersService {
 						}
 					}
 					log.info("current lockSn flag = {}", flag);
-					if(!flag) {
+					if (!flag) {
 						bookingStatus = (short) OperateStatus.FAILURE.status;
 						failureReason = (short) OrderFailureReason.STALL_NONE.value;
-						//throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE); 
+						// throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);
 						throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
-					}	
+					}
 				}
-			}else {
-				String key = RedisKey.ORDER_ASSIGN_STALL.key;   //assign_lock
-				Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
-				String vehMark = vehicleMark.getVehMark();    //车牌号
+			} else {
+				String key = RedisKey.ORDER_ASSIGN_STALL.key; // assign_lock
+				Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key); // 集合中所有成员元素
+				String vehMark = vehicleMark.getVehMark(); // 车牌号
 				for (Object obj : set) {
 					JSONObject json = JSON.parseObject(obj.toString());
-					String vm = json.get("plate").toString();    //车牌
-					Long pid = Long.parseLong(json.get("preId").toString());  //车区id
-					if (pid.longValue() == prefectureId.longValue() && vehMark.equals(vm)) {   //找到车区
+					String vm = json.get("plate").toString(); // 车牌
+					Long pid = Long.parseLong(json.get("preId").toString()); // 车区id
+					if (pid.longValue() == prefectureId.longValue() && vehMark.equals(vm)) { // 找到车区
 						lockSn = json.get("lockSn").toString();
 						Map<String, Object> map = new HashMap<>();
 						map.put("lockSn", lockSn);
@@ -305,8 +317,8 @@ public class OrdersServiceImpl implements OrdersService {
 							lockSn = sn.toString();
 						}
 					}
-					
-				} else { 
+
+				} else {
 					log.info("common pre lockSn:{}", lockSn);
 					// 以下为预约流程
 					if ("".equals(lockSn)) {
@@ -323,7 +335,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if (StringUtils.isEmpty(lockSn)) {
 				bookingStatus = (short) OperateStatus.FAILURE.status;
 				failureReason = (short) OrderFailureReason.STALL_NONE.value;
-				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  //无空闲车位，请重新预约
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE); // 无空闲车位，请重新预约
 			}
 			// 根据lockSn获取车位
 			log.info("lock,{}", lockSn);
@@ -348,7 +360,7 @@ public class OrdersServiceImpl implements OrdersService {
 				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
 			}
 			log.info("{} create order with{}", cu.getMobile(), JsonUtil.toJson(stall));
-			o = new Orders();                                        //插入订单
+			o = new Orders(); // 插入订单
 			o.setOrderNo(this.getOrderNumber());
 			o.setUserType((short) 0);
 			Date current = new Date();
@@ -486,11 +498,19 @@ public class OrdersServiceImpl implements OrdersService {
 			throw new RuntimeException("异常");
 		} finally {
 			ORDER_USER_SET.remove(cu.getId());
+			if (stallId != null) {
+				log.info(" -------------cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId, JSON.toJSON(STALL_ID_SET));
+				if (STALL_ID_SET.contains(stallId)) {
+					STALL_ID_SET.remove(stallId);
+					log.info(" -------------cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId,
+							JSON.toJSON(STALL_ID_SET));
+				}
+			}
 			Thread thread = new BookingThread(prefectureId, cu.getId(), bookingStatus, failureReason);
 			thread.start();
 			String content = "订单预约失败";
-			if(stallId != null) {
-				log.info("stallId = {}当前车位已被占用，请选择其他车位",stallId);
+			if (stallId != null) {
+				log.info("cu = {}, stallId = {}当前车位已被占用，请选择其他车位", cu.getId(), stallId);
 				content = "当前车位已被占用，请选择其他车位";
 			}
 			Boolean status = false;
@@ -533,7 +553,7 @@ public class OrdersServiceImpl implements OrdersService {
 			order(rb.getPrefectureId(), rb.getPlateId(), rb.getBrandId(), null, cu);
 		}
 	}
-	
+
 	class StallOrderThread extends Thread {
 		private ReqStallBooking rsb;
 		private CacheUser cu;
@@ -669,11 +689,12 @@ public class OrdersServiceImpl implements OrdersService {
 			this.type = type;
 			this.status = status;
 		}
+
 		public void run() {
 			send(uid, title, content, type, status);
 		}
 	}
-	
+
 	class PushWYThread extends Thread {
 		private String uid;
 		private String title;
@@ -688,6 +709,7 @@ public class OrdersServiceImpl implements OrdersService {
 			this.type = type;
 			this.status = status;
 		}
+
 		public void run() {
 			sendWY(uid, title, content, type, status);
 		}
@@ -724,6 +746,7 @@ public class OrdersServiceImpl implements OrdersService {
 			pushClient.push(rp);
 		}
 	}
+
 	private void sendWY(String uid, String title, String content, PushType type, Boolean status) {
 		Token token = (Token) redisService.get(RedisKey.STAFF_ENT_AUTH_TOKEN.key + uid.toString());
 		log.info("send:{}", JsonUtil.toJson(token));
@@ -964,7 +987,7 @@ public class OrdersServiceImpl implements OrdersService {
 		log.info("key:{}", TokenUtil.getKey(request));
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		log.info("cu:{}", JsonUtil.toJson(cu));
-		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());    //查找最新
+		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); // 查找最新
 		if (orders == null) {
 			return null;
 		}
@@ -995,7 +1018,7 @@ public class OrdersServiceImpl implements OrdersService {
 				ro.setPrefectureAddress(pre.getAddress());
 				ro.setGuideImage(pre.getRouteGuidance());
 				ro.setGuideRemark(pre.getRouteDescription());
-				//ro.setPrefectureName(pre.getName());
+				// ro.setPrefectureName(pre.getName());
 			}
 			ResStallEntity stall = this.stallClient.findById(ro.getStallId());
 			if (stall != null) {
@@ -1058,38 +1081,38 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) { 
-		log.info("brand order :{}",JsonUtil.toJson(rb));
+	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) {
+		log.info("brand order :{}", JsonUtil.toJson(rb));
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		log.info(" order user is {}",JsonUtil.toJson(cu));
+		log.info(" order user is {}", JsonUtil.toJson(cu));
 		ResBrandPre brand = entBrandPreClient.findById(rb.getBrandId());
-		if(brand == null) {
-			throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL);   //预约失败请重新预约
-		}else {
-			if(brand.getLimitStatus().intValue() == 1) {
+		if (brand == null) {
+			throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 预约失败请重新预约
+		} else {
+			if (brand.getLimitStatus().intValue() == 1) {
 				log.info("check assign plate no");
 				ResVechicleMark vehicleMark = vehicleMarkClient.findById(rb.getPlateId());
-				log.info("user plate:{}",JsonUtil.toJson(vehicleMark));
-				if(vehicleMark != null) {
-					String vehMark = vehicleMark.getVehMark();    //车牌号
+				log.info("user plate:{}", JsonUtil.toJson(vehicleMark));
+				if (vehicleMark != null) {
+					String vehMark = vehicleMark.getVehMark(); // 车牌号
 					boolean flag = entBrandUserClient.checkExist(brand.getEntId(), vehMark);
-					
-					log.info("exist plate :{}",flag);
-					if(!flag) {
+
+					log.info("exist plate :{}", flag);
+					if (!flag) {
 						boolean assignFlag = false;
-						Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
+						Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key); // 集合中所有成员元素
 						for (Object obj : set) {
 							JSONObject json = JSON.parseObject(obj.toString());
-							String vm = json.get("plate").toString();    //车牌
-							Long pid = Long.parseLong(json.get("preId").toString());  //车区id
-							log.info("assing:{}",JsonUtil.toJson(json));
-							if (pid.longValue() == rb.getPrefectureId() && vehMark.equals(vm)) {   //找到车区
+							String vm = json.get("plate").toString(); // 车牌
+							Long pid = Long.parseLong(json.get("preId").toString()); // 车区id
+							log.info("assing:{}", JsonUtil.toJson(json));
+							if (pid.longValue() == rb.getPrefectureId() && vehMark.equals(vm)) { // 找到车区
 								String lockSn = json.get("lockSn").toString();
 								List<ResBrandStall> brandStallList = entBrandPreClient.brandStallList(rb.getBrandId());
-								log.info("lockSn={}, brandStallList = {}", lockSn,JSON.toJSON(brandStallList));
-								if(CollectionUtils.isNotEmpty(brandStallList)) {
-									for(ResBrandStall stall: brandStallList) {
-										if(lockSn.equals(stall.getLockSn())) {
+								log.info("lockSn={}, brandStallList = {}", lockSn, JSON.toJSON(brandStallList));
+								if (CollectionUtils.isNotEmpty(brandStallList)) {
+									for (ResBrandStall stall : brandStallList) {
+										if (lockSn.equals(stall.getLockSn())) {
 											assignFlag = true;
 											break;
 										}
@@ -1097,26 +1120,26 @@ public class OrdersServiceImpl implements OrdersService {
 								}
 							}
 						}
-						log.info("assing :{}",assignFlag);
-						if(!assignFlag) {
+						log.info("assing :{}", assignFlag);
+						if (!assignFlag) {
 							log.info("brand user {} create order error with {}", cu.getMobile(), vehMark);
 							throw new BusinessException(StatusEnum.ORDER_REASON_BRAND_USER_NONE);
 						}
 					}
-				}else {
+				} else {
 					throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
 				}
 			}
 		}
-		
+
 		Thread thread = new OrderBrandThread(rb, cu);
 		thread.start();
 	}
 
 	@Override
 	public BigDecimal findPreDayIncome(Long preId) {
-//		Date date = getDateByType(type);
-		Map<String , Object> map = new HashMap<>();
+		// Date date = getDateByType(type);
+		Map<String, Object> map = new HashMap<>();
 		map.put("startTime", new Date());
 		map.put("preId", preId);
 		return ordersClusterMapper.findPreDayIncome(map);
@@ -1131,32 +1154,32 @@ public class OrdersServiceImpl implements OrdersService {
 		List<ResPreDataList> list = this.ordersClusterMapper.findPreDataList(map);
 		int num = 0;
 		switch (type) {
-			case 0:
-				num = 6;
-				break;
-			case 1:
-				num = 14;
-				break;
-			case 2:
-				num = 29;
-				break;
-			default:
-				break;
+		case 0:
+			num = 6;
+			break;
+		case 1:
+			num = 14;
+			break;
+		case 2:
+			num = 29;
+			break;
+		default:
+			break;
 		}
 		List<ResPreDataList> lists = new ArrayList<>();
 		ResPreDataList pre = null;
-		for (;num >= 0 ; num--) {
+		for (; num >= 0; num--) {
 			Date month = DateUtils.getDateByDay(-num);
 			Date convert = DateUtils.convert(month, null);
 			boolean falg = true;
 			for (ResPreDataList resPreDataList : list) {
-				if(resPreDataList.getDayTime().getTime() == convert.getTime()) {
+				if (resPreDataList.getDayTime().getTime() == convert.getTime()) {
 					lists.add(resPreDataList);
 					falg = false;
 					break;
 				}
 			}
-			if(falg) {
+			if (falg) {
 				pre = new ResPreDataList();
 				pre.setDayNumber(0);
 				pre.setDayAmount(new BigDecimal(0));
@@ -1169,7 +1192,7 @@ public class OrdersServiceImpl implements OrdersService {
 		map.put("list", lists);
 		return map;
 	}
-	
+
 	@Override
 	public Integer findTrafficFlowCount(Map<String, Object> param) {
 		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
@@ -1186,32 +1209,32 @@ public class OrdersServiceImpl implements OrdersService {
 		List<ResPreDataList> list = this.ordersClusterMapper.findPreDataList(map);
 		int num = 0;
 		switch (type) {
-			case 0:
-				num = 6;
-				break;
-			case 1:
-				num = 14;
-				break;
-			case 2:
-				num = 29;
-				break;
-			default:
-				break;
+		case 0:
+			num = 6;
+			break;
+		case 1:
+			num = 14;
+			break;
+		case 2:
+			num = 29;
+			break;
+		default:
+			break;
 		}
 		List<ResPreDataList> lists = new ArrayList<>();
 		ResPreDataList pre = null;
-		for (;num >= 0 ; num--) {
+		for (; num >= 0; num--) {
 			Date month = DateUtils.getDateByDay(-num);
 			Date convert = DateUtils.convert(month, null);
 			boolean falg = true;
 			for (ResPreDataList resPreDataList : list) {
-				if(resPreDataList.getDayTime().getTime() == convert.getTime()) {
+				if (resPreDataList.getDayTime().getTime() == convert.getTime()) {
 					lists.add(resPreDataList);
 					falg = false;
 					break;
 				}
 			}
-			if(falg) {
+			if (falg) {
 				pre = new ResPreDataList();
 				pre.setDayNumber(0);
 				pre.setDayAmount(new BigDecimal(0));
@@ -1219,17 +1242,16 @@ public class OrdersServiceImpl implements OrdersService {
 				lists.add(pre);
 			}
 		}
-		
-//		map.put("pageSize", 10);
-//		map.put("start", getPageNo(map.get("pageNo")));
-		
+
+		// map.put("pageSize", 10);
+		// map.put("start", getPageNo(map.get("pageNo")));
+
 		map = new HashMap<>();
 		map.put("amount", decimal);
 		map.put("list", lists);
 		return map;
 	}
 
-	
 	@Override
 	public BigDecimal findProceedsAmount(Map<String, Object> param) {
 		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
@@ -1253,33 +1275,22 @@ public class OrdersServiceImpl implements OrdersService {
 		return list;
 	}
 
-	
-	/*@Override
-	public List<ResCharge> findChargeDetailNew(Map<String, Object> param) {
-		Date date = getDateByType((short) Short.parseShort(param.get("startTime").toString()));
-		param.put("startTime", date);
-		List<ResCharge> charges = new ArrayList<>();
-		ResMonthCount count = this.ordersClusterMapper.findMonthCountByDate(param);
-		List<ResChargeDetail> list = this.ordersClusterMapper.findChargeDetail(param);
-		ResCharge charge = null;
-		List<ResChargeDetail> chargeDetails = null;
-		for (ResMonthCount resMonthCount : count) {
-			charge = new ResCharge();
-			chargeDetails = new ArrayList<>();
-			for (ResChargeDetail detail : list) {
-				if (detail.getMonth() == resMonthCount.getMonth()) {
-					String str = DateUtils.getDuration(new Date(), detail.getEndTime());
-					detail.setStopTime(str);
-					chargeDetails.add(detail);
-				}
-			}
-			charge.setCharge(chargeDetails);
-			charge.setDate(chargeDetails.get(0).getStartTime());
-			charges.add(charge);
-		}
-		return charges;
-	}
-*/
+	/*
+	 * @Override public List<ResCharge> findChargeDetailNew(Map<String, Object>
+	 * param) { Date date = getDateByType((short)
+	 * Short.parseShort(param.get("startTime").toString())); param.put("startTime",
+	 * date); List<ResCharge> charges = new ArrayList<>(); ResMonthCount count =
+	 * this.ordersClusterMapper.findMonthCountByDate(param); List<ResChargeDetail>
+	 * list = this.ordersClusterMapper.findChargeDetail(param); ResCharge charge =
+	 * null; List<ResChargeDetail> chargeDetails = null; for (ResMonthCount
+	 * resMonthCount : count) { charge = new ResCharge(); chargeDetails = new
+	 * ArrayList<>(); for (ResChargeDetail detail : list) { if (detail.getMonth() ==
+	 * resMonthCount.getMonth()) { String str = DateUtils.getDuration(new Date(),
+	 * detail.getEndTime()); detail.setStopTime(str); chargeDetails.add(detail); } }
+	 * charge.setCharge(chargeDetails);
+	 * charge.setDate(chargeDetails.get(0).getStartTime()); charges.add(charge); }
+	 * return charges; }
+	 */
 	@Override
 	public List<ResTrafficFlow> findTrafficFlowList(Map<String, Object> param) {
 		Date date = getDateByType(Short.parseShort(param.get("startTime").toString()));
@@ -1299,13 +1310,13 @@ public class OrdersServiceImpl implements OrdersService {
 		for (Date da : dates) {
 			boolean falg = true;
 			for (ResTrafficFlowList resTrafficFlowList : list) {
-				if(da.getTime() == resTrafficFlowList.getDate().getTime()) {
+				if (da.getTime() == resTrafficFlowList.getDate().getTime()) {
 					newList.add(resTrafficFlowList);
 					falg = false;
 					continue;
 				}
 			}
-			if(falg) {
+			if (falg) {
 				in = new ResTrafficFlowList();
 				in.setDate(da);
 				in.setCarDayTotal(0);
@@ -1313,30 +1324,31 @@ public class OrdersServiceImpl implements OrdersService {
 				newList.add(in);
 			}
 		}
-//		List<ResMonthCount> monthCount = this.ordersClusterMapper.findMonthCount(param);
+		// List<ResMonthCount> monthCount =
+		// this.ordersClusterMapper.findMonthCount(param);
 		ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
 		List<ResTrafficFlow> flows = new ArrayList<>();
 		ResTrafficFlow flow = null;
 		Set<Integer> collect = newList.stream().map(traffic -> traffic.getMonth()).collect(Collectors.toSet());
-		if(collect.size() > 1) {
+		if (collect.size() > 1) {
 			for (Integer integer : collect) {
-				if(integer.shortValue() == monthCount.getMonth()) {
+				if (integer.shortValue() == monthCount.getMonth()) {
 					flow = new ResTrafficFlow();
 					List<ResTrafficFlowList> lists = new ArrayList<>();
 					for (ResTrafficFlowList resTrafficFlowList : newList) {
-						if(resTrafficFlowList.getMonth().equals(integer)) {
+						if (resTrafficFlowList.getMonth().equals(integer)) {
 							lists.add(resTrafficFlowList);
 						}
 					}
 					flow.setCarMonthTotal(monthCount.getMonthCarCount());
 					flow.setTime(lists.get(0).getDate());
 					flow.setTrafficFlows(lists);
-					if(flows.size() == 0) {
+					if (flows.size() == 0) {
 						flows.add(flow);
-					}else {
-						flows.add(flows.set(0,flow));
+					} else {
+						flows.add(flows.set(0, flow));
 					}
-				}else {
+				} else {
 					map = getStartEndDate(integer);
 					param.put("monthStart", map.get("monthStart"));
 					param.put("monthEnd", map.get("monthEnd"));
@@ -1344,7 +1356,7 @@ public class OrdersServiceImpl implements OrdersService {
 					flow = new ResTrafficFlow();
 					List<ResTrafficFlowList> lists = new ArrayList<>();
 					for (ResTrafficFlowList resTrafficFlowList : newList) {
-						if(resTrafficFlowList.getMonth().equals(integer)) {
+						if (resTrafficFlowList.getMonth().equals(integer)) {
 							lists.add(resTrafficFlowList);
 						}
 					}
@@ -1354,24 +1366,21 @@ public class OrdersServiceImpl implements OrdersService {
 					flows.add(flow);
 				}
 			}
-		}else {
+		} else {
 			flow = new ResTrafficFlow();
 			flow.setCarMonthTotal(monthCount.getMonthCarCount());
 			flow.setTime(map.get("monthStart"));
 			flow.setTrafficFlows(newList);
 			flows.add(flow);
 		}
-		/*for (ResMonthCount resMothCount : monthCount) {
-			List<ResTrafficFlowList> collect = list.stream()
-					.filter(month -> month.getMonth() == resMothCount.getMonth()).collect(Collectors.toList());
-			if (collect.size() != 0) {
-				flow = new ResTrafficFlow();
-				flow.setTime(collect.get(0).getDate());
-				flow.setCarMonthTotal(resMothCount.getMonthCarCount());
-				flow.setTrafficFlows(collect);
-			}
-			flowLists.add(flow);
-		}*/
+		/*
+		 * for (ResMonthCount resMothCount : monthCount) { List<ResTrafficFlowList>
+		 * collect = list.stream() .filter(month -> month.getMonth() ==
+		 * resMothCount.getMonth()).collect(Collectors.toList()); if (collect.size() !=
+		 * 0) { flow = new ResTrafficFlow(); flow.setTime(collect.get(0).getDate());
+		 * flow.setCarMonthTotal(resMothCount.getMonthCarCount());
+		 * flow.setTrafficFlows(collect); } flowLists.add(flow); }
+		 */
 		return flows;
 	}
 
@@ -1395,13 +1404,13 @@ public class OrdersServiceImpl implements OrdersService {
 		for (Date da : dates) {
 			boolean falg = true;
 			for (ResIncomeList resIncomeList : list) {
-				if(da.getTime() == resIncomeList.getDate().getTime()) {
+				if (da.getTime() == resIncomeList.getDate().getTime()) {
 					newList.add(resIncomeList);
 					falg = false;
 					continue;
 				}
 			}
-			if(falg) {
+			if (falg) {
 				in = new ResIncomeList();
 				in.setDate(da);
 				in.setDayAmount(new BigDecimal(0));
@@ -1409,37 +1418,37 @@ public class OrdersServiceImpl implements OrdersService {
 				newList.add(in);
 			}
 		}
-		
+
 		ResIncome income = null;
 		List<ResIncome> incomes = new ArrayList<>();
 		Set<Integer> collect = newList.stream().map(i -> i.getMonth()).collect(Collectors.toSet());
 		List<ResIncomeList> lists = new ArrayList<>();
-		if(collect.size() > 1) {
+		if (collect.size() > 1) {
 			for (Integer integer : collect) {
 				income = new ResIncome();
-				if(integer.intValue() == months.getMonth()) {
+				if (integer.intValue() == months.getMonth()) {
 					lists = new ArrayList<>();
 					for (ResIncomeList resIncomeList : newList) {
-						if(resIncomeList.getMonth().equals(integer)  ) {
+						if (resIncomeList.getMonth().equals(integer)) {
 							lists.add(resIncomeList);
 						}
 					}
 					income.setList(lists);
 					income.setMonthAmount(months.getMonthAmount());
 					income.setDate(newList.get(0).getDate());
-					if(incomes.size() == 0) {
+					if (incomes.size() == 0) {
 						incomes.add(income);
-					}else {
-						incomes.add(incomes.set(0,income));
+					} else {
+						incomes.add(incomes.set(0, income));
 					}
-				}else {
+				} else {
 					lists = new ArrayList<>();
-					map = getStartEndDate(newList.get(newList.size()-1).getMonth());
+					map = getStartEndDate(newList.get(newList.size() - 1).getMonth());
 					param.put("monthStart", map.get("monthStart"));
 					param.put("monthEnd", map.get("monthEnd"));
 					ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
 					for (ResIncomeList resIncomeList : newList) {
-						if(integer.equals(resIncomeList.getMonth()) ) {
+						if (integer.equals(resIncomeList.getMonth())) {
 							lists.add(resIncomeList);
 						}
 					}
@@ -1449,24 +1458,22 @@ public class OrdersServiceImpl implements OrdersService {
 					incomes.add(income);
 				}
 			}
-		}else {
+		} else {
 			income = new ResIncome();
 			income.setList(newList);
 			income.setMonthAmount(months.getMonthAmount());
 			income.setDate(map.get("monthStart"));
 			incomes.add(income);
 		}
-		/*for (ResMonthCount resMonthCount : months) {
-			List<ResIncomeList> collect = list.stream().filter(month -> month.getMonth() == resMonthCount.getMonth())
-					.collect(Collectors.toList());
-			if (collect.size() != 0) {
-				income = new ResIncome();
-				income.setList(collect);
-				income.setDate(collect.get(0).getDate());
-				income.setMonthAmount(resMonthCount.getMonthAmount());
-				incomes.add(income);
-			}
-		}*/
+		/*
+		 * for (ResMonthCount resMonthCount : months) { List<ResIncomeList> collect =
+		 * list.stream().filter(month -> month.getMonth() == resMonthCount.getMonth())
+		 * .collect(Collectors.toList()); if (collect.size() != 0) { income = new
+		 * ResIncome(); income.setList(collect);
+		 * income.setDate(collect.get(0).getDate());
+		 * income.setMonthAmount(resMonthCount.getMonthAmount()); incomes.add(income); }
+		 * }
+		 */
 		return incomes;
 	}
 
@@ -1481,20 +1488,20 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 		return date;
 	}
-	
-	private Map<String,Date> getStartEndDate(int date){
-		Map<String,Date> map = new HashMap<>();
+
+	private Map<String, Date> getStartEndDate(int date) {
+		Map<String, Date> map = new HashMap<>();
 		Date monthStart = null;
 		Date monthEnd = null;
-		if(date == 0) {
+		if (date == 0) {
 			Calendar instance = Calendar.getInstance();
 			instance.setTime(new Date());
 			instance.set(Calendar.DAY_OF_MONTH, 1);
 			monthStart = instance.getTime();
 			instance.set(Calendar.DAY_OF_MONTH, 1);
-			instance.set(Calendar.MONTH, instance.get(Calendar.MONDAY)+1);
+			instance.set(Calendar.MONTH, instance.get(Calendar.MONDAY) + 1);
 			monthEnd = instance.getTime();
-		}else {
+		} else {
 			Calendar instance = Calendar.getInstance();
 			instance.setTime(new Date());
 			instance.set(Calendar.MONTH, date - 1);
@@ -1508,8 +1515,9 @@ public class OrdersServiceImpl implements OrdersService {
 		map.put("monthEnd", monthEnd);
 		return map;
 	}
-	private Map<String,Date> getStartEndDate(Date date){
-		Map<String,Date> map = new HashMap<>();
+
+	private Map<String, Date> getStartEndDate(Date date) {
+		Map<String, Date> map = new HashMap<>();
 		Date monthStart = null;
 		Date monthEnd = null;
 		date = DateUtils.getDateByDay(date, -1);
@@ -1527,26 +1535,26 @@ public class OrdersServiceImpl implements OrdersService {
 	public ResEntOrder findOrderByStallId(Long stallId) {
 		return this.ordersClusterMapper.findOrderByStallId(stallId);
 	}
-	
+
 	private int getPageNo(Object pageNo) {
 		Integer start = null;
-		if(pageNo == null) {
+		if (pageNo == null) {
 			start = 1;
-		}else{
+		} else {
 			String str = pageNo.toString();
 			start = Integer.parseInt(str);
-			if(start == 0) {
+			if (start == 0) {
 				start = 1;
 			}
 		}
-		return (start-1)*10;
+		return (start - 1) * 10;
 	}
 
 	@Override
 	public void appoint(ReqStallBooking rsb, HttpServletRequest request) {
-		log.info("choose stall request param :{}",JsonUtil.toJson(rsb));
+		log.info("choose stall request param :{}", JsonUtil.toJson(rsb));
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		log.info("choose stall user is {}",JsonUtil.toJson(cu));
+		log.info("choose stall user is {}", JsonUtil.toJson(cu));
 		Thread thread = new StallOrderThread(rsb, cu);
 		thread.start();
 	}
@@ -1575,7 +1583,7 @@ public class OrdersServiceImpl implements OrdersService {
 		param.put("orderId", order.getId());
 		this.orderMasterMapper.updateLockStatus(param);
 		log.info("stall downing :{}", switchStatus);
-		
+
 		if (switchStatus && !downStatus) {
 			Thread thread = new PushWYThread(order.getUserId().toString(), "预约切换通知", "车位锁降下失败建议切换车位",
 					PushType.ORDER_SWITCH_STATUS_NOTICE, true);
@@ -1592,7 +1600,7 @@ public class OrdersServiceImpl implements OrdersService {
 		param.put("lockDownTime", new Date());
 		this.orderMasterMapper.updateLockStatus(param);
 	}
-	
+
 	public Integer getPlateLastOrderStatus(String carno) {
 		return this.ordersClusterMapper.getPlateLastOrderStatus(carno);
 	}
