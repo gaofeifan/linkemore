@@ -45,7 +45,7 @@ public class EntSocketServer {
 		RedisService redisService = SpringUtil.getBean(RedisService.class);
 		Boolean success = false;
 		log.info("A websokcet connceted:{}", openid);
-		if (redisService.exists(RedisKey.STAFF_ENT_AUTH_TOKEN.key + openid)) {  
+		if (redisService.exists(RedisKey.STAFF_WXAPP_AUTH_TOKEN.key + openid)) {  
 			this.openid = openid;
 			this.session = session;
 			webSocketMap.put(openid, this); 
@@ -57,7 +57,7 @@ public class EntSocketServer {
 			} catch (IOException e) {
 				log.error("websocket IO异常");
 			}
-		}else { 
+		}else {
 			return;
 		} 
 	}

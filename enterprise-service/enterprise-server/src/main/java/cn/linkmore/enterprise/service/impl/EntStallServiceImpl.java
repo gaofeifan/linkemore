@@ -152,7 +152,9 @@ public class EntStallServiceImpl implements EntStallService {
 		
 		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
 		Map<String,Object> param = new HashMap<>();
-		param.put("authId", entStaffAuth.getAuthId());
+		Set<Long> list = entStaffAuths.stream().map(ent -> ent.getAuthId()).collect(Collectors.toSet());
+		param.put("authIds", new ArrayList<>(list));
+//		param.put("authId", entStaffAuth.getAuthId());
 		List<EntAuthPre> entAuthPres= entAuthPreClusterMapper.findList(param);
 		int preSize = entAuthPres.size();
 		EntAuthPre entAuthPre = null;
@@ -681,8 +683,9 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public List<ResStallBatteryLog> findLockChangeRecord(Long stallId) {
+	public List<cn.linkmore.enterprise.controller.ent.response.ResStallBatteryLog> findLockChangeRecord(Long stallId) {
 		List<ResStallBatteryLog> list = this.stallBatteryLogClient.findBatteryLogList(stallId);
+		List<cn.linkmore.enterprise.controller.ent.response.ResStallBatteryLog> lists = new ArrayList<>();
 		List<EntStaff> staffs = this.entStaffClusterMapper.findAll();
 		for (ResStallBatteryLog resStallBatteryLog : list) {
 			for (EntStaff entStaff : staffs) {
@@ -690,8 +693,9 @@ public class EntStallServiceImpl implements EntStallService {
 					resStallBatteryLog.setAdminName(entStaff.getRealname());
 				}
 			}
+			lists.add(ObjectUtils.copyObject(resStallBatteryLog, new cn.linkmore.enterprise.controller.ent.response.ResStallBatteryLog()));
 		}
-		return list;
+		return lists;
 	}
 
 	@Override

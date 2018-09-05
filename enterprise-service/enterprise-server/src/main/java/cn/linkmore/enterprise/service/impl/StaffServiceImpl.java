@@ -69,7 +69,6 @@ public class StaffServiceImpl implements StaffService {
 	private AppWechatClient appWechatClient;
 	@Resource
 	private WechatMiniClient wechatMiniClient;
-	
 	@Resource
 	private RedisService redisService;
 	@Resource
@@ -143,6 +142,9 @@ public class StaffServiceImpl implements StaffService {
 			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			token.setTimestamp(new Date().getTime());
 			token.setAccessToken(key);
+			if(user.getClient().intValue()==ClientSource.WXAPP.source) {
+				this.redisService.set(Constants.RedisKey.STAFF_WXAPP_AUTH_TOKEN.key+user.getOpenId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+			}
 			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId(), token); 
 		} 
 		return last;

@@ -143,7 +143,7 @@ public class ResDetailStall {
 		this.mobile = mobile;
 	}
 
-	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone="GMT+8")	
 	public Date getDownTime() {
 		return downTime;
 	}
@@ -152,7 +152,7 @@ public class ResDetailStall {
 		this.downTime = downTime;
 	}
 
-	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone="GMT+8")	
 	public Date getApproachTime() {
 		return approachTime;
 	}
@@ -161,7 +161,7 @@ public class ResDetailStall {
 		this.approachTime = approachTime;
 	}
 
-	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone="GMT+8")	
 	public Date getStartTime() {
 		return startTime;
 	}

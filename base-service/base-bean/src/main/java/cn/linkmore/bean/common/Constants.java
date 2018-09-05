@@ -279,6 +279,7 @@ public class Constants {
 
 	public enum RedisKey {
 		USER_WXAPP_AUTH_TOKEN("user_wxapp:auth:openid:"),
+		STAFF_WXAPP_AUTH_TOKEN("staff_wxapp:auth:openid:"),
 		USER_APP_AUTH_TOKEN("user_app:auth:uid:"), 
 		USER_APP_AUTH_USER("user_app:auth:user:"), 
 		USER_APP_AUTH_CODE("user_app:auth:code:"), 
