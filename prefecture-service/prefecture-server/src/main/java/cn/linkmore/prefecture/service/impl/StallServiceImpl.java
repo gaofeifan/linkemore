@@ -470,7 +470,7 @@ public class StallServiceImpl implements StallService {
 				Stall stall = stallClusterMapper.findById(reqc.getStallId());
 				log.info("stall:{}", JsonUtil.toJson(stall));
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-					log.info("downing>>>>>> name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+					log.info("<<<<<<<<<controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
 					ResponseMessage<LockBean> res = null;
 					// 1 降下 2 升起
 					Stopwatch stopwatch = Stopwatch.createStarted();
@@ -479,16 +479,16 @@ public class StallServiceImpl implements StallService {
 					} else if (reqc.getStatus() == 2) {
 						res = lockFactory.lockUp(stall.getLockSn());
 					}
-					log.info("res>>>>>>>"+res.getMsg()+"code"+res.getMsgCode());
+					log.info("<<<<<<<<<respose>>>>>>>>>"+res.getMsg()+"<<<code>>>"+res.getMsgCode());
 					int code = res.getMsgCode();
 					stopwatch.stop();
-					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+					log.info("<<<<<<<<<using time>>>>>>>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
 					String robkey= RedisKey.ROB_STALL_ISHAVE.key+reqc.getStallId();
 					EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));	
 					if (code == 200) {
 						if(reqc.getStatus() == 2) {
-							log.info("up success>>>>"+record.getId());
+							log.info("<<<<<<<<<up success>>>>>>>>>"+record.getId());
 							//未完成记录同一用户只有一单
 							if(Objects.nonNull(record)) {
 							EntRentRecord up = new EntRentRecord();
@@ -498,15 +498,16 @@ public class StallServiceImpl implements StallService {
 							entRentedRecordMasterMapper.updateByIdSelective(up);
 							}
 							redisService.remove(robkey);
+						}else {
+							log.info("<<<<<<<<<down success>>>>>>>>>"+record.getId());
 						}
-						log.info("down success>>>>"+record.getId());
 						stall.setLockStatus(reqc.getStatus()==1?2:1);
 						stall.setStatus(reqc.getStatus()==1?2:1);
 						stallMasterMapper.lockdown(stall);
 						redisService.remove(reqc.getKey());
 					}else {
 						if(reqc.getStatus() == 1) {
-							log.info("down fail>>>>"+record.getId());
+							log.info("<<<<<<<<<down fail>>>>>>>>>>"+record.getId());
 							//降锁失败 取消绑定
 							if(Objects.nonNull(record)) {
 							EntRentRecord up = new EntRentRecord();
@@ -516,6 +517,8 @@ public class StallServiceImpl implements StallService {
 							entRentedRecordMasterMapper.updateByIdSelective(up);
 							}
 							redisService.remove(robkey);
+						}else {
+							log.info("<<<<<<<<<up fail>>>>>>>>>>"+record.getId());
 						}
 					}
 				}

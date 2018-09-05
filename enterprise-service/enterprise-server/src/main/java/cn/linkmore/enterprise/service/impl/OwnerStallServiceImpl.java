@@ -314,16 +314,14 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	public void tooth(ReqToothAuth reqToothAuth) {
 		String userid = String.valueOf(reqToothAuth.getUserId());
 		String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqToothAuth.getStallId();
-		String alreadyValue = String.valueOf(this.redisService.get(robkey));
-		Boolean using = false;
-		if (StringUtil.isNotBlank(alreadyValue) && !userid.equals(String.valueOf(alreadyValue))) {
-			log.info("用户>>>" +reqToothAuth.getUserId()+"nobluetooth>>"+reqToothAuth.getStallId());
-			using = false;
-		} else {
-			log.info("用户>>>" +reqToothAuth.getUserId()+"yesbluetooth>>"+reqToothAuth.getStallId());
-			using = true;
+		Boolean have = false;
+		try {
+			have = this.redisService.getLock(robkey, userid);
+			log.info("用户=======>" + reqToothAuth.getUserId() + (have == true ? "已得到" : "未得到") + "锁" + robkey);
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
-		if (!using) {
+		if (!have) {
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
 	}

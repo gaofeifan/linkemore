@@ -98,7 +98,7 @@ public class AppOwnerStallController {
 		return ResponseEntity.success(is, request);
 	}
 	
-	@ApiOperation(value = "是否位长租用户", notes = "查询用户是否有长租车位", consumes = "application/json")
+	@ApiOperation(value = "操作蓝牙许可", notes = "操作蓝牙许可", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/tooth", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> tooth(@Validated @RequestBody ReqToothAuth reqToothAuth,HttpServletRequest request) {
