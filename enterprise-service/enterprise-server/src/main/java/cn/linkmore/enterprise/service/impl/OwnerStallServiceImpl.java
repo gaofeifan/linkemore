@@ -50,93 +50,94 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Autowired
 	private OwnerStallClusterMapper ownerStallClusterMapper;
-	
+
 	@Autowired
-	private  EntRentedRecordMasterMapper entRentedRecordMasterMapper;
-	
+	private EntRentedRecordMasterMapper entRentedRecordMasterMapper;
+
 	@Autowired
-	private  EntRentedRecordClusterMapper entRentedRecordClusterMapper;
+	private EntRentedRecordClusterMapper entRentedRecordClusterMapper;
 
 	@Autowired
 	private StallClient stallClient;
 
 	@Override
-	public OwnerRes findStall(HttpServletRequest request,ReqLocation  location) {	
-			CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-			if (user == null) {
-				throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
-			}
-			OwnerRes  res = new OwnerRes();
-			Boolean isHave =false;
-			int  num = 0;
-			
-			try {
+	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		OwnerRes res = new OwnerRes();
+		Boolean isHave = false;
+		int num = 0;
+
+		try {
 			Long userId = user.getId();
-			
-			//查询是否有未完成进程
+
+			// 查询是否有未完成进程
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(userId);
-		
+
 			List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
 
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
-			log.info("车位>>>" + stalllist.size()+"车区>>>" + prelist.size()+"用户>>>" + JSON.toJSONString(user));
-			
+			log.info("车位>>>" + stalllist.size() + "车区>>>" + prelist.size() + "用户>>>" + JSON.toJSONString(user));
+
 			List<OwnerPre> list = new ArrayList<>();
-			
-			if( record!=null ) { //未完成进程
+
+			if (record != null) { // 未完成进程
 				for (EntOwnerPre pre : prelist) {
-						if(pre.getPreId().equals(record.getPreId())) {
-								OwnerPre ownerpre = new OwnerPre();
-								ownerpre.setPreId(pre.getPreId());
-								ownerpre.setPreName(pre.getPreName());
-								ownerpre.setAddress(pre.getAddress());
-								ownerpre.setLatitude(pre.getLatitude());
-								ownerpre.setLongitude(pre.getLongitude());
-								List<OwnerStall> ownerstalllist = new ArrayList<>();
-								for (EntOwnerStall enttall : stalllist) {
-										if(enttall.getStallId().equals(record.getStallId())) {
-											
-											OwnerStall OwnerStall = new OwnerStall();
-											OwnerStall.setStallId(enttall.getStallId());
-											OwnerStall.setMobile(enttall.getMobile());
-											OwnerStall.setPlate(enttall.getPlate());
-											OwnerStall.setStallName(enttall.getStallName());
-											OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
-											OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
-											OwnerStall.setImageUrl(enttall.getImageUrl());
-											OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
-											OwnerStall.setStallLocal(enttall.getStallLocal());
-											OwnerStall.setLockSn(enttall.getLockSn());
-											OwnerStall.setLockStatus(enttall.getLockStatus());
-											OwnerStall.setStatus(enttall.getStatus()==1l?1:2l);
-											
-											ownerstalllist.add(OwnerStall);
-											num++;
-											isHave = true;
-											break;
-										}
-								}
-								ownerpre.setStalls(ownerstalllist);
-								list.add(ownerpre);
-							 break;	
+					if (pre.getPreId().equals(record.getPreId())) {
+						OwnerPre ownerpre = new OwnerPre();
+						ownerpre.setPreId(pre.getPreId());
+						ownerpre.setPreName(pre.getPreName());
+						ownerpre.setAddress(pre.getAddress());
+						ownerpre.setLatitude(pre.getLatitude());
+						ownerpre.setLongitude(pre.getLongitude());
+						List<OwnerStall> ownerstalllist = new ArrayList<>();
+						for (EntOwnerStall enttall : stalllist) {
+							if (enttall.getStallId().equals(record.getStallId())) {
+
+								OwnerStall OwnerStall = new OwnerStall();
+								OwnerStall.setStallId(enttall.getStallId());
+								OwnerStall.setMobile(enttall.getMobile());
+								OwnerStall.setPlate(enttall.getPlate());
+								OwnerStall.setStallName(enttall.getStallName());
+								OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
+								OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
+								OwnerStall.setImageUrl(enttall.getImageUrl());
+								OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
+								OwnerStall.setStallLocal(enttall.getStallLocal());
+								OwnerStall.setLockSn(enttall.getLockSn());
+								OwnerStall.setLockStatus(enttall.getLockStatus());
+								OwnerStall.setStatus(enttall.getStatus() == 1l ? 1 : 2l);
+
+								ownerstalllist.add(OwnerStall);
+								num++;
+								isHave = true;
+								break;
+							}
 						}
+						ownerpre.setStalls(ownerstalllist);
+						list.add(ownerpre);
+						break;
+					}
 				}
-			}else {
+			} else {
 				for (EntOwnerPre pre : prelist) {
-					
+
 					OwnerPre ownerpre = new OwnerPre();
 					ownerpre.setPreId(pre.getPreId());
 					ownerpre.setPreName(pre.getPreName());
 					ownerpre.setAddress(pre.getAddress());
 					ownerpre.setLatitude(pre.getLatitude());
 					ownerpre.setLongitude(pre.getLongitude());
-					ownerpre.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(), new Double(pre.getLatitude()), new Double(pre.getLongitude())));
-					
+					ownerpre.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(),
+							new Double(pre.getLatitude()), new Double(pre.getLongitude())));
+
 					List<OwnerStall> ownerstalllist = new ArrayList<>();
 
 					for (EntOwnerStall enttall : stalllist) {
 						if (pre.getPreId().equals(enttall.getPreId())) {
-							
+
 							OwnerStall OwnerStall = new OwnerStall();
 							OwnerStall.setStallId(enttall.getStallId());
 							OwnerStall.setMobile(enttall.getMobile());
@@ -149,7 +150,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 							OwnerStall.setStallLocal(enttall.getStallLocal());
 							OwnerStall.setLockSn(enttall.getLockSn());
 							OwnerStall.setLockStatus(enttall.getLockStatus());
-							OwnerStall.setStatus(enttall.getStatus()==1l?1:2l);					
+							OwnerStall.setStatus(enttall.getStatus() == 1l ? 1 : 2l);
 							num++;
 							ownerstalllist.add(OwnerStall);
 						}
@@ -157,12 +158,12 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 					ownerpre.setStalls(ownerstalllist);
 					list.add(ownerpre);
 				}
-				//排序
-				Collections.sort(list,new Comparator<OwnerPre>(){
-		            public int compare(OwnerPre pre1, OwnerPre pre2) {
-		                return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));  
-		            }
-		        });
+				// 排序
+				Collections.sort(list, new Comparator<OwnerPre>() {
+					public int compare(OwnerPre pre1, OwnerPre pre2) {
+						return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));
+					}
+				});
 			}
 			res.setRes(list);
 			res.setIsHave(isHave);
@@ -182,7 +183,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		}
 		Boolean isAllow = false;
 		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
-		EntRentedRecord	 newrecord = new EntRentedRecord();
+		EntRentedRecord newrecord = new EntRentedRecord();
 		for (EntOwnerStall entOwnerStall : stalllist) {
 			if (reqOperatStall.getStallId().equals(entOwnerStall.getStallId())) {
 				newrecord.setStallId(entOwnerStall.getStallId());
@@ -195,90 +196,92 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				newrecord.setPreName(entOwnerStall.getPreName());
 				newrecord.setEntPreId(entOwnerStall.getEntPreId());
 				newrecord.setPlateNo(entOwnerStall.getPlate());
-				
+
 				isAllow = true;
 				break;
 			}
 		}
-		if(!isAllow) {
-			log.info(user.getId()+">>>STAFF_STALL_EXISTS");
+		if (!isAllow) {
+			log.info(user.getId() + ">>>STAFF_STALL_EXISTS");
 			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
 		}
-		
-		//争抢
-		String robkey= RedisKey.ROB_STALL_ISHAVE.key+reqOperatStall.getStallId();
-		Integer  using = 0;
-		Boolean have  =true;
+
+		// 争抢
+		String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqOperatStall.getStallId();
+		Integer using = 0;
+		Boolean have = true;
 		try {
-			 have =	this.redisService.getLock(robkey, user.getId());
-			 log.info("用户=======>"+user.getId()+(have==true?"已抢到":"未抢到")+"锁"+robkey);
+			have = this.redisService.getLock(robkey, user.getId());
+			log.info("用户=======>" + user.getId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
 		} catch (Exception e) {
-			Map<String,Object>  pam = new HashMap<>();
+			Map<String, Object> pam = new HashMap<>();
 			pam.put("stallId", reqOperatStall.getStallId());
 			pam.put("userId", user.getId());
 			using = entRentedRecordClusterMapper.findUsingRecord(pam);
 		}
-		if( !have || using>0  ) {
+		if (!have || using > 0) {
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
-		
-		//未完成记录同一用户只有一单
+
+		// 未完成记录同一用户只有一单
 		EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
-	
-		if(reqOperatStall.getState()==2) {
-			log.info("用户>>>"+user.getId() +"升锁>>>"+reqOperatStall.getStallId());
-		}else if(reqOperatStall.getState()==1) {
-			log.info("用户>>>"+user.getId() +"降锁>>>"+reqOperatStall.getStallId());
-			if(!Objects.nonNull(record)) {
+
+		if (reqOperatStall.getState() == 2) {
+			log.info("用户>>>" + user.getId() + "升锁>>>" + reqOperatStall.getStallId());
+		} else if (reqOperatStall.getState() == 1) {
+			log.info("用户>>>" + user.getId() + "降锁>>>" + reqOperatStall.getStallId());
+			if (!Objects.nonNull(record)) {
 				try {
 					entRentedRecordMasterMapper.saveSelective(newrecord);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				log.info("用户>>>"+user.getId()+"record>>>"+reqOperatStall.getStallId());
+				log.info("用户>>>" + user.getId() + "record>>>" + reqOperatStall.getStallId());
 			}
 		}
 		// 放入缓存
 		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
-		this.redisService.set(rediskey,user.getId(),ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
-		log.info("用户>>>"+user.getId() +"缓存>>>"+rediskey);
+		this.redisService.set(rediskey, user.getId(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+		log.info("用户>>>" + user.getId() + "缓存>>>" + rediskey);
 		// 调用
 		ReqControlLock reqc = new ReqControlLock();
 		reqc.setKey(rediskey);
 		reqc.setStallId(reqOperatStall.getStallId());
 		reqc.setStatus(reqOperatStall.getState());
 		stallClient.controllock(reqc);
-		log.info( "用户>>>"+user.getId() +"调用>>>"+reqOperatStall.getStallId());
+		log.info("用户>>>" + user.getId() + "调用>>>" + reqOperatStall.getStallId());
 	}
-	
+
 	@Override
 	public void watch(ReqWatchStatus reqWatchStatus, HttpServletRequest request) {
-			CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-			if (user == null) {
-				throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqWatchStatus.getStallId();
+		String val = String.valueOf(this.redisService.get(rediskey));
+		Map<String, Object> map = new HashMap<>();
+		map = stallClient.watch(reqWatchStatus.getStallId());
+		Boolean control = true;
+		Boolean blue = true;
+		if (map != null && !map.isEmpty()) {
+			if ("200".equals(String.valueOf(map.get("code")))
+					&& String.valueOf(map.get("status")).equals(String.valueOf(reqWatchStatus.getStatus() - 1))) {
+				blue = true;
+			} else {
+				blue = false;
 			}
-			String rediskey = RedisKey.ACTION_STALL_DOING.key + reqWatchStatus.getStallId();
-			String  val=  String.valueOf(this.redisService.get(rediskey));
-			Map<String, Object>  map = new 	HashMap<>();
-			map =stallClient.watch(reqWatchStatus.getStallId());
-			Boolean control =true;
-			Boolean blue =true;
-			if(map!=null&&!map.isEmpty()) {
-				if("200".equals(String.valueOf( map.get("code") ))&&String.valueOf(map.get("status")).equals(String.valueOf(reqWatchStatus.getStatus()-1))) {
-					blue = true;
-				}else {
-					blue = false;
-				}
+		}
+		if (StringUtil.isNotBlank(val)) {
+			if (val.equals(String.valueOf(user.getId()))) {
+				control = false;
 			}
-			if(StringUtil.isNotBlank(val)) {
-				if(val.equals( String.valueOf(user.getId()))) {
-					control = false;
-				}
-			}
-			log.info("用户>>>"+user.getId() +">>>"+rediskey);
-			if(!control&&!blue ) {
-				throw new BusinessException(reqWatchStatus.getStatus()==2?StatusEnum.ORDER_LOCKUP_FAIL:StatusEnum.ORDER_LOCKDOWN_FAIL  );
-			}
+		}
+		log.info("用户>>>" + user.getId() + ">>>" + rediskey);
+		if (!control && !blue) {
+			throw new BusinessException(
+					reqWatchStatus.getStatus() == 2 ? StatusEnum.ORDER_LOCKUP_FAIL : StatusEnum.ORDER_LOCKDOWN_FAIL);
+		}
 	}
 
 	public static String handleTime(String time) {
@@ -296,11 +299,11 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	@Override
 	public Boolean owner(HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		Boolean  is =false;
-		if(user!=null) {
+		Boolean is = false;
+		if (user != null) {
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
-			if(stalllist.size()>0) {
-				is =true;
+			if (stalllist.size() > 0) {
+				is = true;
 			}
 		}
 		log.info("用户>>>" + JSON.toJSONString(user));
@@ -309,13 +312,20 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public void tooth(ReqToothAuth reqToothAuth) {
-			Map<String,Object>  pam = new HashMap<>();
-			pam.put("stallId", reqToothAuth.getStallId());
-			pam.put("userId", reqToothAuth.getUserId());
-			Integer  using = entRentedRecordClusterMapper.findUsingRecord(pam);
-			if(using>0  ) {
-				throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
-			}
+		String userid = String.valueOf(reqToothAuth.getUserId());
+		String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqToothAuth.getStallId();
+		String alreadyValue = String.valueOf(this.redisService.get(robkey));
+		Boolean using = false;
+		if (StringUtil.isNotBlank(alreadyValue) && !userid.equals(String.valueOf(alreadyValue))) {
+			log.info("用户>>>" +reqToothAuth.getUserId()+"nobluetooth>>"+reqToothAuth.getStallId());
+			using = false;
+		} else {
+			log.info("用户>>>" +reqToothAuth.getUserId()+"yesbluetooth>>"+reqToothAuth.getStallId());
+			using = true;
 		}
+		if (!using) {
+			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+		}
+	}
 
 }

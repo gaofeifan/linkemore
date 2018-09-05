@@ -479,16 +479,17 @@ public class StallServiceImpl implements StallService {
 					} else if (reqc.getStatus() == 2) {
 						res = lockFactory.lockUp(stall.getLockSn());
 					}
-					log.info("res>>>>>>>"+res.getMsg());
+					log.info("res>>>>>>>"+res.getMsg()+"code"+res.getMsgCode());
 					int code = res.getMsgCode();
 					stopwatch.stop();
 					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
+					String robkey= RedisKey.ROB_STALL_ISHAVE.key+reqc.getStallId();
+					EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));	
 					if (code == 200) {
 						if(reqc.getStatus() == 2) {
-							String robkey= RedisKey.ROB_STALL_ISHAVE.key+reqc.getStallId();
+							log.info("up success>>>>"+record.getId());
 							//未完成记录同一用户只有一单
-							EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));	
 							if(Objects.nonNull(record)) {
 							EntRentRecord up = new EntRentRecord();
 							up.setLeaveTime(new Date());
@@ -498,10 +499,24 @@ public class StallServiceImpl implements StallService {
 							}
 							redisService.remove(robkey);
 						}
+						log.info("down success>>>>"+record.getId());
 						stall.setLockStatus(reqc.getStatus()==1?2:1);
 						stall.setStatus(reqc.getStatus()==1?2:1);
 						stallMasterMapper.lockdown(stall);
 						redisService.remove(reqc.getKey());
+					}else {
+						if(reqc.getStatus() == 1) {
+							log.info("down fail>>>>"+record.getId());
+							//降锁失败 取消绑定
+							if(Objects.nonNull(record)) {
+							EntRentRecord up = new EntRentRecord();
+							up.setLeaveTime(new Date());
+							up.setStatus(2L);
+							up.setId(record.getId());
+							entRentedRecordMasterMapper.updateByIdSelective(up);
+							}
+							redisService.remove(robkey);
+						}
 					}
 				}
 			}
