@@ -31,6 +31,11 @@ public class EntRentUser {
     
     private Date endTime;
     
+    /**
+     *  0个人 1企业
+     */ 
+    private Short type;
+    
     public Long getId() {
         return id;
     }
@@ -142,6 +147,14 @@ public class EntRentUser {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public Short getType() {
+		return type;
+	}
+
+	public void setType(Short type) {
+		this.type = type;
 	}
 	
 	
