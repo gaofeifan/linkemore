@@ -406,12 +406,18 @@ public class EntStallServiceImpl implements EntStallService {
 			resDetailStall.setPlate(resEntOrder.getPlate());
 		}
 		if(resStallEntity.getType() != null && resStallEntity.getType() == 2) {
-			/*StringBuilder sb = new StringBuilder();
+			List<String> paltes = new ArrayList<>();
+			StringBuilder sb = new StringBuilder();
+			List<EntRentUser> rentUsers = this.entRentUserService.findAll();
 			for (EntRentUser entRentUser : rentUsers) {
 				if(entRentUser.getStallId().equals(resStallEntity.getId())) {
-					sb.append(entRentUser.getPlate()).append("/");
+					if(!paltes.contains(entRentUser.getPlate())) {
+						sb.append(entRentUser.getPlate()).append("/");
+						paltes.add(entRentUser.getPlate());
+					}
 				}
 			}
+			/*
 			EntRentedRecord record = this.rentedRecordClusterMapper.findByStallId(resStallEntity.getId());
 			if(record == null) {
 				EntRentUser entRentUser = this.entRentUserService.findByStallId(resStallEntity.getId());
@@ -427,12 +433,16 @@ public class EntStallServiceImpl implements EntStallService {
 //			this.entAuthStallClusterMapper.findByStall(resStallEntity.getId());
 //			this.enterpriseService.findById(ent)
 //			resDetailStall.setMobile(record.get);
-//			resDetailStall.setPlate(sb.length() != 0 ? sb.substring(0, sb.length()-1):null);
+			resDetailStall.setPlate(sb.length() != 0 ? sb.substring(0, sb.length()-1):null);
 			EntRentUser entRentUser = this.entRentUserService.findByStallId(resStallEntity.getId());
 			if(entRentUser != null) {
-				ResEnterprise enterprise = this.enterpriseService.findById(entRentUser.getEntId());
-				if(enterprise != null) {
-					resDetailStall.setMobile(enterprise.getTellphone());
+				if(entRentUser.getType() != null && entRentUser.getType() == 1) {
+					ResEnterprise enterprise = this.enterpriseService.findById(entRentUser.getEntId());
+					if(enterprise != null) {
+						resDetailStall.setMobile(enterprise.getTellphone());
+					}
+				}else {
+					resDetailStall.setMobile(entRentUser.getMobile());
 				}
 			}
 			if(resStallEntity.getStatus() == 2) {

@@ -14,11 +14,12 @@
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+        <result column="type" jdbcType="SMALLINT" property="type" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name
+     id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type
   </sql>
   <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_ent_rent_user
@@ -34,24 +35,25 @@
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
     insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
       pre_id, mobile, realname, 
-      plate, stall_id, user_id.ent_name,pre_name,stall_name
+      plate, stall_id, user_id.ent_name,pre_name,stall_name,start_time,end_time
       )
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
       #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
       #{plate,jdbcType=VARCHAR}, #{stallId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}
-      , #{entName,jdbcType=VARCHAR}, #{preName,jdbcType=VARCHAR}, #{stallName,jdbcType=VARCHAR}
+      , #{entName,jdbcType=VARCHAR}, #{preName,jdbcType=VARCHAR}, #{stallName,jdbcType=VARCHAR},
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="saveReq" parameterType="cn.linkmore.enterprise.request.ReqRentUser">
     insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
       pre_id, mobile, realname, 
-      plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time
+      plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type
       )
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
       #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
       #{plate,jdbcType=VARCHAR}, #{stallId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}
       , #{entName,jdbcType=VARCHAR}, #{preName,jdbcType=VARCHAR}, #{stallName,jdbcType=VARCHAR}
-      ,#{startTime,jdbcType=TIMESTAMP} ,#{endTime,jdbcType=TIMESTAMP}
+      ,#{startTime,jdbcType=TIMESTAMP} ,#{endTime,jdbcType=TIMESTAMP},#{type}
       )
   </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
@@ -213,6 +215,9 @@
       </if>
       <if test="endTime != null">
         end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null">
+        type = #{type},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

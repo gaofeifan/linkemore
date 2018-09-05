@@ -26,10 +26,16 @@
     	select stall_id from t_ent_auth_stall  where auth_id = #{authId}
     </select>
     <select id="findStallListByIds" resultType="java.lang.Long" parameterType="java.util.Map">
-    	select stall_id from t_ent_auth_stall  where auth_id in
-    	 <foreach collection="authIds"  index="index" item="id" open="(" separator="," close=")" >
-    		 #{id}
-   		 </foreach>
+    	select stall_id from t_ent_auth_stall  where 1 = 1 
+    	 <if test="authIds != null">
+	    	AND auth_id in
+	    	 <foreach collection="authIds"  index="index" item="id" open="(" separator="," close=")" >
+	    		 #{id}
+	   		 </foreach>
+    	 </if>
+    	 <if test="authId != null">
+    	 	AND auth_id = #{authId}
+    	 </if>
    		 GROUP BY stall_id
     </select>
     <select id="checkAuth" resultType="java.lang.Integer" parameterType="java.util.Map">
