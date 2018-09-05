@@ -99,7 +99,7 @@ public interface EntStallService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResStallBatteryLog> findLockChangeRecord(Long stallId);
+	List<cn.linkmore.enterprise.controller.ent.response.ResStallBatteryLog> findLockChangeRecord(Long stallId);
 
 	/**
 	 * @Description  查询降锁回调

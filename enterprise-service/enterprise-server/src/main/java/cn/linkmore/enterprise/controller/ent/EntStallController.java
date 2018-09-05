@@ -133,9 +133,9 @@ public class EntStallController {
 	@ApiOperation(value = "车位地锁电池更换记录数据", notes = "车位地锁电池更换记录数据", consumes = "application/json")
 	@RequestMapping(value = "/lock-change-record", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<ResStallBatteryLog>> findLockChangeRecord(@RequestParam("stallId") Long stallId,HttpServletRequest request){
-		ResponseEntity<List<ResStallBatteryLog>> response = null;
-		List<ResStallBatteryLog> list=this.entStallService.findLockChangeRecord(stallId);
+	public ResponseEntity<List<cn.linkmore.enterprise.controller.ent.response.ResStallBatteryLog>> findLockChangeRecord(@RequestParam("stallId") Long stallId,HttpServletRequest request){
+		ResponseEntity<List<cn.linkmore.enterprise.controller.ent.response.ResStallBatteryLog>> response = null;
+		List<cn.linkmore.enterprise.controller.ent.response.ResStallBatteryLog> list=this.entStallService.findLockChangeRecord(stallId);
 		response = ResponseEntity.success(list, request);
     	return response;
 	}

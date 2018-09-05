@@ -30,6 +30,7 @@
     	 <foreach collection="authIds"  index="index" item="id" open="(" separator="," close=")" >
     		 #{id}
    		 </foreach>
+   		 GROUP BY stall_id
     </select>
     <select id="checkAuth" resultType="java.lang.Integer" parameterType="java.util.Map">
     	select count(1) FROM 

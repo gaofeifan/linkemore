@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.response;
 
 import java.util.Date;
+
 /**
  * response 车位电池日志
  * @author jiaohanbin

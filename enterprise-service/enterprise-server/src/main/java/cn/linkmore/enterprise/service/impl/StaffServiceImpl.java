@@ -69,7 +69,6 @@ public class StaffServiceImpl implements StaffService {
 	private AppWechatClient appWechatClient;
 	@Resource
 	private WechatMiniClient wechatMiniClient;
-	
 	@Resource
 	private RedisService redisService;
 	@Resource
@@ -143,6 +142,9 @@ public class StaffServiceImpl implements StaffService {
 			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			token.setTimestamp(new Date().getTime());
 			token.setAccessToken(key);
+			if(user.getClient().intValue()==ClientSource.WXAPP.source) {
+				this.redisService.set(Constants.RedisKey.STAFF_WXAPP_AUTH_TOKEN.key+user.getOpenId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+			}
 			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId(), token); 
 		} 
 		return last;
@@ -255,7 +257,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 
 	@Override
-	public void miniBind(String code, HttpServletRequest request) {
+	public String miniBind(String code, HttpServletRequest request) {
 		ResMiniSession session = this.wechatMiniClient.getSessionPlus(code, 1002);
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
@@ -263,6 +265,7 @@ public class StaffServiceImpl implements StaffService {
 		map.put("sql", " open_id = '"+session.getOpenid()+"'");
 		map.put("id", ru.getId());
 		this.entStaffMasterMapper.updateByColumn(map );
+		return session.getOpenid();
 	}
 	
 	

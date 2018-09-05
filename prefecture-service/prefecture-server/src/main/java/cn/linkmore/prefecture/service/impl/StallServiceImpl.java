@@ -18,21 +18,27 @@ import com.google.common.base.Stopwatch;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
 import com.linkmore.lock.response.ResponseMessage;
+
+import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.LockStatus;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.response.ResEntStaff;
+import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.EntStaffClient;
 import cn.linkmore.prefecture.dao.cluster.EntRentRecordClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
@@ -92,8 +98,10 @@ public class StallServiceImpl implements StallService {
 	private EntRentRecordMasterMapper entRentedRecordMasterMapper;
 	@Autowired
 	private EntRentRecordClusterMapper entRentedRecordClusterMapper;
-	
-
+	@Autowired
+	private EntSocketClient entSocketClient;
+	@Autowired
+	private EntStaffClient entStaffClient;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -631,19 +639,30 @@ public class StallServiceImpl implements StallService {
 	private void sendWY(String uid, Integer lockstatus, int code) {
 		String title = "车位锁操作通知";
 		String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");
-		PushType pushType =PushType.LOCK_CONTROL_NOTICE;
 		String bool = (code == 200 ? "true" : "false");
 		Token token = (Token) redisService.get(RedisKey.STAFF_ENT_AUTH_TOKEN.key + uid.toString());
 		log.info("send>>>", JsonUtil.toJson(token));
 		if(token!=null) {
-			ReqPush rp = new ReqPush();
-			rp.setAlias(uid);
-			rp.setTitle(title);
-			rp.setContent(content);
-			rp.setClient(token.getClient());
-			rp.setType(pushType);
-			rp.setData(token.getAccessToken());
-			sendClient.send(rp);
+			if(token.getClient() == Constants.ClientSource.WXAPP.source) {
+				CacheUser cu = (CacheUser) redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + token.getAccessToken());
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("title", title);
+				map.put("type",PushType.LOCK_CONTROL_NOTICE);
+				map.put("content",content);
+				map.put("data",token.getAccessToken());
+				map.put("alias", cu.getId());
+				ResEntStaff staff = this.entStaffClient.findById(cu.getId());
+				entSocketClient.push(JsonUtil.toJson(map), staff.getOpenId());
+			}else {
+				ReqPush rp = new ReqPush();
+				rp.setAlias(uid);
+				rp.setTitle(title);
+				rp.setContent(content);
+				rp.setClient(token.getClient());
+				rp.setType(PushType.LOCK_CONTROL_NOTICE);
+				rp.setData(token.getAccessToken());
+				sendClient.send(rp);
+			}
 		}
 	}
 }
