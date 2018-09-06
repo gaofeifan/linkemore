@@ -40,7 +40,7 @@ public class TianyangTopFee {
 		try {
 			double totalFee = 0d;
 			double topFee = (base.getTopDaily().intValue() / base.getTimelyLong()) * base.getBasePrice().doubleValue();
-			int topHour = base.getTopDaily().intValue()/base.getTimelyLong();
+			int topHour = base.getTopDaily().intValue()/60;
 			double fee = 0d;
 			// 当前日期
 			SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
@@ -58,12 +58,12 @@ public class TianyangTopFee {
 			int actualTime = getMinTime(time);
 			map.put("resideTime", actualTime);
 
-			if (actualTime <= 30) {
-				log.info("间隔时间<30m,免费停车");
+			if (actualTime <= base.getFreeMins()) {
+				log.info("间隔时间<"+ base.getFreeMins()+ "m,免费停车");
 				return map;
 			} else if (actualTime <= base.getTopDaily()) {
 				totalFee = getFee(actualTime, base);
-				log.info("间隔时间<"+topHour+"h,累计计费");
+				log.info("间隔时间<"+base.getTopDaily()/60+"h,累计计费");
 			} else {
 				if (startDay.equals(stopDay)) {
 					totalFee = topFee;
@@ -114,25 +114,35 @@ public class TianyangTopFee {
 
 	public static void main(String[] args) throws ParseException {
 		StrategyBase base = new StrategyBase();
+		/*base.setFreeMins(15);
+		base.setTimelyLong(30);
+		base.setBasePrice(new BigDecimal(8d));
+		base.setTopDaily(480);*/
+		
 		base.setFreeMins(30);
 		base.setTimelyLong(60);
 		base.setBasePrice(new BigDecimal(5d));
-		base.setTopDaily(360);
+		base.setTopDaily(720);
 
 		List<Start1> list = new ArrayList<Start1>();
-		// 不超过30分钟
-		String startString1 = "2018-05-26 20:00:01";
+		// 不超过15分钟
+		String startString1 = "2018-05-26 20:15:01";
 		String endString1 = "2018-05-26 20:30:00";
 		Start1 start1 = new Start1(startString1, endString1);
+		
+		// 不超过30分钟
+		String startString11 = "2018-05-26 20:00:01";
+		String endString11 = "2018-05-26 20:30:00";
+		Start1 start11 = new Start1(startString11, endString11);
 
-		// 同一日不超过360min
+		// 同一日不超过480min
 		String startString2 = "2018-05-26 10:00:01";
-		String endString2 = "2018-05-26 20:00:02";
+		String endString2 = "2018-05-26 12:00:02";
 		Start1 start2 = new Start1(startString2, endString2);
 
-		// 同一日超过360min
+		// 同一日超过480min
 		String startString3 = "2018-05-26 10:00:01";
-		String endString3 = "2018-05-26 17:30:02";
+		String endString3 = "2018-05-26 18:30:02";
 		Start1 start3 = new Start1(startString3, endString3);
 
 		// 隔日超过24h
@@ -150,11 +160,13 @@ public class TianyangTopFee {
 		Start1 start6 = new Start1(startString6, endString6);
 		
 		list.add(start1);
+		list.add(start11);
 		list.add(start2);
 		list.add(start3);
 		list.add(start4);
 		list.add(start5);
 		list.add(start6);
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for (Start1 start : list) {
 			Date startDate = sdf.parse(start.getStartDay());
