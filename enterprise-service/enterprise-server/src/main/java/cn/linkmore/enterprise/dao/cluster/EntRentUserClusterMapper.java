@@ -57,4 +57,11 @@ public interface EntRentUserClusterMapper {
 	 */
 	EntRentUser findByStallId(Long id);
 
+	/**
+	 * @Description  校验
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer check(Map<String, Object> param);
+
 }

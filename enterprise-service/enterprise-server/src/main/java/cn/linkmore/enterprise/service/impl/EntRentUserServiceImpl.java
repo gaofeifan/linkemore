@@ -24,9 +24,11 @@ import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.entity.EntStaff;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntRentUserService;
+import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.StringUtil;
 
@@ -153,6 +155,8 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		if(userId != null) {
 			user.setUserId(userId);
 		}
+		user.setStartTime(DateUtils.convert(user.getStartDate(), null));
+		user.setEndTime(DateUtils.convert(user.getEndDate(), null));
 		this.entRentUserMasterMapper.saveReq(user);
 	}
 
@@ -162,6 +166,8 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		if(userId != null) {
 			user.setUserId(userId);
 		}
+		user.setStartTime(DateUtils.convert(user.getStartDate(), null));
+		user.setEndTime(DateUtils.convert(user.getEndDate(), null));
 		this.entRentUserMasterMapper.updateReq(user);
 		
 	}
@@ -174,6 +180,15 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	@Override
 	public EntRentUser findByStallId(Long id) {
 		return this.entRentUserClusterMapper.findByStallId(id);
+	}
+
+	@Override
+	public Integer check(ReqCheck reqCheck) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("property", reqCheck.getProperty());
+		param.put("value", reqCheck.getValue());
+		param.put("id", reqCheck.getId());
+		return this.entRentUserClusterMapper.check(param);
 	}
 	
 	

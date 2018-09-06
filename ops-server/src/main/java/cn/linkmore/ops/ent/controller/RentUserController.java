@@ -12,6 +12,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.ops.ent.service.RentUserService;
 
@@ -36,9 +37,10 @@ public class RentUserController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(ReqRentUser auth,HttpServletRequest request) {
+	public ViewMsg save(ReqRentUser auth) {
 		ViewMsg msg = null;
 		try {
+//			ReqRentUser auth = new ReqRentUser();
 			this.rentUserService.save(auth);
 			msg = new ViewMsg("保存成功", true);
 		} catch (BusinessException e) {
@@ -50,7 +52,7 @@ public class RentUserController {
 	}
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update(ReqRentUser auth,HttpServletRequest request) {
+	public ViewMsg update( ReqRentUser auth) {
 		ViewMsg msg = null;
 		try {
 			this.rentUserService.update(auth);
@@ -75,5 +77,10 @@ public class RentUserController {
 			msg = new ViewMsg("删除失败", false);
 		}
 		return msg;
+	}
+	@RequestMapping(value = "/check", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean update(ReqCheck reqCheck) {
+		return this.rentUserService.check(reqCheck);
 	}
 }

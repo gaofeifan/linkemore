@@ -19,6 +19,8 @@ public class UserVersion {
 
     private Date commitTime;
 
+    private Integer system;
+    
     public Long getUserId() {
         return userId;
     }
@@ -81,6 +83,14 @@ public class UserVersion {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public Integer getSystem() {
+		return system;
+	}
+
+	public void setSystem(Integer system) {
+		this.system = system;
 	}
     
 }

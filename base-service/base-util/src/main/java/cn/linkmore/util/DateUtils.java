@@ -166,6 +166,19 @@ public class DateUtils {
 		}
 		  return null;
 	  }
+	  public static Date convert(String date , String dateFormat){
+		  if(StringUtils.isBlank(dateFormat)){
+			  dateFormat = "yyyy-MM-dd";
+		  }
+		  SimpleDateFormat s = new SimpleDateFormat(dateFormat);
+		  try {
+			  return s.parse(date);
+		  } catch (ParseException e) {
+			  // TODO Auto-generated catch block
+			  e.printStackTrace();
+		  }
+		  return null;
+	  }
 	  
 	  /**
 		 * @Description: 获取格式为yyyy-MM-dd HH:mm:ss的当前时间
