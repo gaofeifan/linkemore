@@ -216,7 +216,7 @@ public class StaffServiceImpl implements StaffService {
 		if(space>SPACE||space<-SPACE) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		}
-		if(this.redisService.exists(RedisKey.USER_APP_AUTH_MOBILE+rs.getMobile())) {
+		if(this.redisService.exists(RedisKey.STAFF_ENT_AUTH_MOBILE+rs.getMobile())) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		} 
 		String code = getAppSmsCode(rs.getMobile());

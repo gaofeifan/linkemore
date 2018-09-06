@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.ops.ent.service.RentUserService;
 import cn.linkmore.prefecture.client.OpsRentUserClient;
@@ -42,6 +43,12 @@ public class RentUserServiceImpl implements RentUserService {
 	@Override
 	public void delete(List<Long> ids) {
 		this.rentUserClient.delete(ids);
+	}
+
+	@Override
+	public Boolean check(ReqCheck reqCheck) {
+		return this.rentUserClient.check(reqCheck);
+		
 	}
 
 	

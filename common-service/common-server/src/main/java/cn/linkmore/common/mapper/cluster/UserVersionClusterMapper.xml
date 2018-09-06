@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.common.entity.UserVersion">
     <id column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="client" jdbcType="SMALLINT" property="client" />
+    <result column="system" jdbcType="INTEGER" property="system" />
     <result column="model" jdbcType="VARCHAR" property="model" />
     <result column="os_version" jdbcType="VARCHAR" property="osVersion" />
     <result column="uuid" jdbcType="VARCHAR" property="uuid" />
@@ -12,7 +13,7 @@
     <result column="commit_time" jdbcType="TIMESTAMP" property="commitTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    user_id, client, model, os_version, uuid, version, commit_time
+    user_id, client, model, os_version, uuid, version, commit_time,system
   </sql>
    <sql id="Ops_Column_List">
     uv.user_id, uv.client, uv.model, uv.os_version, uv.uuid, uv.version, uv.commit_time,u.mobile username
