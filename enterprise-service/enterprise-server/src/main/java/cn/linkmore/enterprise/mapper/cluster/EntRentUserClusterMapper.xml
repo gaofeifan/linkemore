@@ -96,4 +96,12 @@
     		and realname = #{realname}
     	</if>
   </select>
+  
+   <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(1)
+    from t_ent_rent_user
+    where 
+    ${property} = #{value}  
+    and id != #{id} 
+  </select>
 </mapper>

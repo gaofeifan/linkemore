@@ -1598,6 +1598,8 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public void updateLockStatus(Map<String, Object> param) {
 		param.put("lockDownTime", new Date());
+		param.put("id", param.get("orderId"));
+		param.put("beginTime",null);
 		this.orderMasterMapper.updateLockStatus(param);
 	}
 

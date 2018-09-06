@@ -51,6 +51,7 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/auth/v2.0/send");  
 
 			
+			add("/enterprise/ent/version/current");
 			add("/enterprise/ent/auth/login");
 			add("/enterprise/ent/auth/send");
 			add("/feign/stall/exc/stall-exc-cause");  

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.RentUserClientHystrix;
@@ -38,5 +39,9 @@ public interface OpsRentUserClient {
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void delete(@RequestBody List<Long> ids);
+
+	@RequestMapping(value = "/check", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean check(@RequestBody ReqCheck reqCheck);
 	
 }

@@ -1,10 +1,12 @@
 package cn.linkmore.enterprise.controller.ent;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,6 +14,8 @@ import cn.linkmore.bean.common.Constants;
 import cn.linkmore.common.response.ResWyAppVersion;
 import cn.linkmore.enterprise.service.WyVersionService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @Api(tags="version",description="物业版版本管理")
@@ -26,9 +30,10 @@ public class WyAppVersionController {
 	 * @Version  v2.0
 	 * @param  source 请求来源 1 Android 2 IOS
 	 */
-	@RequestMapping(value="/current/{source}",method = RequestMethod.GET)
+	@RequestMapping(value="/current",method = RequestMethod.GET)
 	@ResponseBody
-	public ResWyAppVersion current(@PathVariable("source")Integer source){
+	@ApiOperation(value = "查询当前版本", notes = "来源必填 1 android 2 ios", consumes = "application/json")
+	public ResWyAppVersion current(@ApiParam(value="来源" ,required=true) @NotNull(message="来源不能为空") @RequestParam("source")Integer source){
 		int appType = 0;
 		if(Constants.ClientSource.ANDROID.source == source){
 			appType = 1;
