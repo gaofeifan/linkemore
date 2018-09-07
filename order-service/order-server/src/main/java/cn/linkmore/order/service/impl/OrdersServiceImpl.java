@@ -21,10 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResVechicleMark;
@@ -226,7 +224,7 @@ public class OrdersServiceImpl implements OrdersService {
 						throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 预约失败
 					}
 					STALL_ID_SET.add(stallId);
-					log.info("STALL_ID_SET = {}", JSON.toJSON(STALL_ID_SET));
+					log.info(">>>>>>STALL_ID_SET = {}", JSON.toJSON(STALL_ID_SET));
 				}
 			}
 			ResUserOrder ruo = this.ordersClusterMapper.findUserLatest(cu.getId()); // 找到最新一单

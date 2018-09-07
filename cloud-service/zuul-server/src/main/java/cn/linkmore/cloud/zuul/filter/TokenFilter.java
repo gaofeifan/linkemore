@@ -59,7 +59,6 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/prefectures/v2.0/map/list"); 
 			add("/app/prefectures/v2.0/free/list"); 
 			add("/app/prefectures/v2.0/strategy");
-			add("/feign/stall/v2.0/update-brand");
 			
 			add("/app/brand-pre/v2.0/map/list"); 
 			add("/app/brand-pre/v2.0/free/list"); 
