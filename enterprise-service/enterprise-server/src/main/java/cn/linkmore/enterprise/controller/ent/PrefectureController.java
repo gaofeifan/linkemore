@@ -129,5 +129,4 @@ public class PrefectureController {
 		List<ResStallBatteryLog> res = this.prefectureService.StallBatteryLog(stallId);
 		return ResponseEntity.success(res, request);
 	}
-	
 }

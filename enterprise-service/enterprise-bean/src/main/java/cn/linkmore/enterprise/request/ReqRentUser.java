@@ -36,6 +36,10 @@ public class ReqRentUser {
 	private Date startTime;
 	
 	private Date endTime;
+	
+	private String startDate;
+	
+	private String endDate;
 
 	public Long getEntId() {
 		return entId;
@@ -147,5 +151,21 @@ public class ReqRentUser {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 }

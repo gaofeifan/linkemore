@@ -165,8 +165,8 @@ public class EntStallServiceImpl implements EntStallService {
 		Map<String,Object> params = null;
 		List<ResStall> stalls = null;
 		EntPrefecture entPrefeture = null;
-		Set<Long> collect = entAuthPres.stream().map(ent -> ent.getAuthId()).collect(Collectors.toSet());
-		map.put("authIds",new ArrayList<>(collect));
+//		Set<Long> collect = entAuthPres.stream().map(ent -> ent.getAuthId()).collect(Collectors.toSet());
+		map.put("authIds",new ArrayList<>(list));
 		List<Long> stallListByIds = this.entAuthStallClusterMapper.findStallListByIds(map);
 		for(int i = 0; i < preSize ; i ++){
 			entAuthPre = entAuthPres.get(i);
@@ -184,7 +184,7 @@ public class EntStallServiceImpl implements EntStallService {
 			params = new HashMap<String,Object>();
 			params.put("preId", entAuthPre.getPreId());
 			stalls = stallClient.findStallList(params);
-			param.put("authId", entAuthPre.getAuthId());
+//			param.put("authId", entAuthPre.getAuthId());
 			int preStalls = 0;
 			int preUseStalls = 0;
 			int preVipTypeStalls = 0;
@@ -411,6 +411,9 @@ public class EntStallServiceImpl implements EntStallService {
 			List<EntRentUser> rentUsers = this.entRentUserService.findAll();
 			for (EntRentUser entRentUser : rentUsers) {
 				if(entRentUser.getStallId().equals(resStallEntity.getId())) {
+					if(new Date().getTime() > entRentUser.getEndTime().getTime()) {
+						continue;
+					}
 					if(!paltes.contains(entRentUser.getPlate())) {
 						sb.append(entRentUser.getPlate()).append("/");
 						paltes.add(entRentUser.getPlate());

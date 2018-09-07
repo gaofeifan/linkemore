@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.prefecture.client.OpsRentUserClient;
 
@@ -44,6 +45,12 @@ public class RentUserClientHystrix implements OpsRentUserClient {
 	public void delete(List<Long> ids) {
 		log.info("enterprise service void delete(List<Long> ids) hystrix");
 		
+	}
+
+	@Override
+	public Boolean check(ReqCheck reqCheck) {
+		log.info("enterprise service Boolean check(ReqCheck reqCheck) hystrix");
+		return null;
 	}
 	
 	

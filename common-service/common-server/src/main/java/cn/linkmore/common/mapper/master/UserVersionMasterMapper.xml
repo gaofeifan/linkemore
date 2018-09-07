@@ -20,10 +20,10 @@
   <insert id="insert" parameterType="cn.linkmore.common.entity.UserVersion">
     insert into t_user_version (user_id, client, model, 
       os_version, uuid, version, 
-      commit_time)
+      commit_time,system)
     values (#{userId,jdbcType=BIGINT}, #{client,jdbcType=SMALLINT}, #{model,jdbcType=VARCHAR}, 
       #{osVersion,jdbcType=VARCHAR}, #{uuid,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
-      #{commitTime,jdbcType=TIMESTAMP})
+      #{commitTime,jdbcType=TIMESTAMP}, #{system,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="cn.linkmore.common.entity.UserVersion">
     insert into t_user_version
@@ -49,6 +49,9 @@
       <if test="commitTime != null">
         commit_time,
       </if>
+      <if test="system != null">
+        system,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -71,6 +74,9 @@
       </if>
       <if test="commitTime != null">
         #{commitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="system != null">
+        #{system,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -95,6 +101,9 @@
       <if test="commitTime != null">
         commit_time = #{commitTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="system != null">
+        system = #{system,jdbcType=INTEGER},
+      </if>
     </set>
     where user_id = #{userId,jdbcType=BIGINT}
   </update>
@@ -105,7 +114,8 @@
       os_version = #{osVersion,jdbcType=VARCHAR},
       uuid = #{uuid,jdbcType=VARCHAR},
       version = #{version,jdbcType=VARCHAR},
-      commit_time = #{commitTime,jdbcType=TIMESTAMP}
+      commit_time = #{commitTime,jdbcType=TIMESTAMP},
+      system = #{system,jdbcType=INTEGER}
     where user_id = #{userId,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -5,6 +5,7 @@ import java.util.List;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.entity.EntRentUser;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
 
 public interface EntRentUserService {
@@ -76,5 +77,13 @@ public interface EntRentUserService {
 	 * @Version  v2.0
 	 */
 	EntRentUser findByStallId(Long id);
+	
+	
+	/**
+	 * @Description  校验
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer check(ReqCheck reqCheck);
 
 }

@@ -17,6 +17,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.ent.request.ReqAddEntRentUser;
 import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntRentUser;
+import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.enterprise.service.EntRentUserService;
 import io.swagger.annotations.Api;
@@ -105,4 +106,13 @@ public class EntRentUserController {
 		this.entRentUserService.delete(ids);
 	}
 
+	@RequestMapping(value = "/check", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean check(@RequestBody ReqCheck reqCheck) {
+		Integer falg = this.entRentUserService.check(reqCheck);
+		if(falg >= 1) {
+			return false;
+		}
+		return true;
+	}
 }

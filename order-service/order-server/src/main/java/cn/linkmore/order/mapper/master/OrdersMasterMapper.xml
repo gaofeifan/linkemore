@@ -101,11 +101,11 @@
   <update id="updateLockStatus" parameterType="java.util.HashMap">
     update o_orders
     set  
-      lock_down_time = #{lockDownTime,jdbcType=TIMESTAMP},
-      <if test="beginTime==null"> 
-      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      lock_down_time = #{lockDownTime},
+      <if test="beginTime!=null"> 
+       begin_time = #{beginTime,jdbcType=TIMESTAMP},
       </if>
-      lock_down_status = #{lockDownStatus,jdbcType=SMALLINT}
+        lock_down_status = #{lockDownStatus}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateSwitch" parameterType="java.util.HashMap">
