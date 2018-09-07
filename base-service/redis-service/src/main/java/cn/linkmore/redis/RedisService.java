@@ -312,11 +312,13 @@ public class RedisService {
 	public boolean  getLock(String key,Object newValue) {
 		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
 		Boolean isOk = operations.setIfAbsent(key, newValue);
+		System.out.println("isOk------"+isOk+"key------"+key+"newValue------"+newValue);
         if(isOk) {
            // 获得分布锁
            return true;
         }else {
         	String alreadyValue =String.valueOf(operations.get(key));
+        	System.out.println("alreadyValue------"+alreadyValue);
         	if(alreadyValue.equals( String.valueOf(newValue ))) {
         		return true;
         	}else {
