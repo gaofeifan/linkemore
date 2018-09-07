@@ -864,10 +864,10 @@ public class PayServiceImpl implements PayService {
 			detail = new ResOrderDetail();
 			detail.copy(order);
 			//实际支付金额大于0发送停车券
-			if(detail.getActualAmount().doubleValue() > 0) {
+			/*if(detail.getActualAmount().doubleValue() > 0) {
 				log.info("pay send userId = {}, actualAmount = {}",order.getUserId(),detail.getActualAmount());
 				couponClient.paySend(order.getUserId());
-			}
+			}*/
 			if (pre != null) {
 				detail.setLeaveTime(pre.getLeaveTime());
 			} else {
