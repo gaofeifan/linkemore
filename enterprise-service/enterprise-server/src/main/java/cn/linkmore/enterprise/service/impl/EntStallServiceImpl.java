@@ -411,7 +411,7 @@ public class EntStallServiceImpl implements EntStallService {
 			List<EntRentUser> rentUsers = this.entRentUserService.findAll();
 			for (EntRentUser entRentUser : rentUsers) {
 				if(entRentUser.getStallId().equals(resStallEntity.getId())) {
-					if(new Date().getTime() > entRentUser.getEndTime().getTime()) {
+					if(new Date().getTime() >= entRentUser.getEndTime().getTime()) {
 						continue;
 					}
 					if(!paltes.contains(entRentUser.getPlate())) {
@@ -438,7 +438,7 @@ public class EntStallServiceImpl implements EntStallService {
 //			resDetailStall.setMobile(record.get);
 			resDetailStall.setPlate(sb.length() != 0 ? sb.substring(0, sb.length()-1):null);
 			EntRentUser entRentUser = this.entRentUserService.findByStallId(resStallEntity.getId());
-			if(entRentUser != null) {
+			if(entRentUser != null && new Date().getTime() >= entRentUser.getEndTime().getTime() ) {
 				if(entRentUser.getType() != null && entRentUser.getType() == 1) {
 					ResEnterprise enterprise = this.enterpriseService.findById(entRentUser.getEntId());
 					if(enterprise != null) {
@@ -482,6 +482,7 @@ public class EntStallServiceImpl implements EntStallService {
 				resDetailStall.setFaultId(operateLog.getRemarkId());
 				resDetailStall.setFaultName(operateLog.getRemark());
 			}
+			resDetailStall.setResetStatus(false);
 			resDetailStall.setOnoffStatus(false);
 		}else {
 			resDetailStall.setOnoffStatus(true);
@@ -559,6 +560,7 @@ public class EntStallServiceImpl implements EntStallService {
 		}
 		ResStallEntity entity = stallClient.findById(stallId);
 		int result ;
+		ResBaseDict baseDict = this.dictClient.find(remarkId);
 		ReqStallOperateLog sol = new ReqStallOperateLog();
 		sol.setCreateTime(new Date());
 		sol.setOperation((short)i);
@@ -566,7 +568,11 @@ public class EntStallServiceImpl implements EntStallService {
 		sol.setSource((short)1);
 		sol.setStallId(stallId);
 		sol.setRemarkId(remarkId);	
-		sol.setRemark(remark);
+		if(baseDict != null) {
+			sol.setRemark(baseDict.getName());
+		}else {
+			sol.setRemark(remark);
+		}
 		sol.setStatus(1);
 //		this.stallOperateLogClient.save(sol);
 //		this.change(request, stallId, i);

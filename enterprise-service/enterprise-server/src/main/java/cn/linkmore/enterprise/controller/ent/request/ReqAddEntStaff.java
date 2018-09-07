@@ -14,6 +14,10 @@ public class ReqAddEntStaff {
     private Short type;
 	@ApiModelProperty(value="真是姓名" ,required = true)
     private String realname;
+	@ApiModelProperty(value="状态" ,required = true)
+	private Short status;
+	
+	
 	public Long getEntId() {
 		return entId;
 	}
@@ -37,6 +41,12 @@ public class ReqAddEntStaff {
 	}
 	public void setRealname(String realname) {
 		this.realname = realname;
+	}
+	public Short getStatus() {
+		return status;
+	}
+	public void setStatus(Short status) {
+		this.status = status;
 	}
 	
 }
