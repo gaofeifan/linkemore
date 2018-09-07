@@ -1021,6 +1021,35 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Long getUserIdByMobile(String mobile) {
 		ResUser user = this.userClusterMapper.findByMobile(mobile);
+		if(user == null) {
+			user = new ResUser();
+			user.setMobile(mobile);
+			user.setUsername(mobile);
+			user.setPassword("");
+			user.setUserType("1");
+			user.setStatus("1");
+			user.setLastLoginTime(new Date());
+			user.setCreateTime(new Date());
+			user.setUpdateTime(new Date());
+			user.setIsAppRegister((short) 1);
+			user.setAppRegisterTime(new Date());
+			user.setIsWechatBind((short) 0);
+			user.setFansStatus((short)0);
+			this.userMasterMapper.save(user);
+			Account account = new Account();
+			account.setId(user.getId());
+			account.setAmount(0.00d);
+			account.setUsableAmount(0.00d);
+			account.setFrozenAmount(0.00d);
+			account.setRechagePaymentAmount(0.00d);
+			account.setRechargeAmount(0.00d);
+			account.setAccType(1);
+			account.setStatus((short) 1);
+			account.setOrderAmount(0.00d);
+			account.setOrderPaymentAmount(0.00d);
+			account.setCreateTime(new Date());
+			accountMasterMapper.insert(account);
+		}
 		return user.getId();
 	}
 

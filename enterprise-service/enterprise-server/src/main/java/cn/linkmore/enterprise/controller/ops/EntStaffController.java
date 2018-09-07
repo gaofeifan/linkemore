@@ -54,7 +54,7 @@ public class EntStaffController {
 		if(reqAddEntStaff ==  null){
 			return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request);
 		}
-		int result = entStaffService.saveEntStaff(reqAddEntStaff.getEntId(),reqAddEntStaff.getMobile(),reqAddEntStaff.getRealname(),reqAddEntStaff.getType());
+		int result = entStaffService.saveEntStaff(reqAddEntStaff.getEntId(),reqAddEntStaff.getMobile(),reqAddEntStaff.getRealname(),reqAddEntStaff.getType(),reqAddEntStaff.getStatus());
 		if(result == 0){
 			return ResponseEntity.fail(StatusEnum.VALID_EXCEPTION, request);
 		}
@@ -122,7 +122,7 @@ public class EntStaffController {
 	@RequestMapping(value = "save",method = RequestMethod.POST)
 	@ResponseBody
 	public void save(@RequestBody cn.linkmore.enterprise.request.ReqAddEntStaff staff) {
-		this.entStaffService.saveEntStaff(staff.getEntId(), staff.getMobile(), staff.getRealname(), staff.getType());
+		this.entStaffService.saveEntStaff(staff.getEntId(), staff.getMobile(), staff.getRealname(), staff.getType(),staff.getStatus());
 	}
 
 	@RequestMapping(value = "update",method = RequestMethod.PUT)

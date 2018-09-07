@@ -13,7 +13,7 @@ public interface EntStaffService {
 	 * @Date 2018年7月20日
 	 * @Version v1.0
 	 */
-	int saveEntStaff(Long entId, String mobile, String realname, Short type);
+	int saveEntStaff(Long entId, String mobile, String realname, Short type,Short status);
 
 	/**
 	 * 删除企业员工
