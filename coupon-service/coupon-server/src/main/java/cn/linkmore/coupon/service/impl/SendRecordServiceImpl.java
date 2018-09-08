@@ -14,10 +14,13 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -105,6 +108,8 @@ public class SendRecordServiceImpl implements SendRecordService {
 	@Autowired
 	private UserClient userClient;
 	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<ViewFilter> filters = pageable.getFilters();
@@ -349,6 +354,7 @@ public class SendRecordServiceImpl implements SendRecordService {
 		Map<String, Object> param = new HashMap<>();
 		param.put("userName", phone);
 		user = this.userClient.getUserByUserName(phone);
+		log.info(">>>>>>>>>>>>>>>>>getUser={}",JSON.toJSON(user));
 		if (user != null) {
 			return user;
 		} else {
