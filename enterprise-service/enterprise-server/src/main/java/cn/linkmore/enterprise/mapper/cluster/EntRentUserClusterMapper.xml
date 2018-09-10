@@ -31,7 +31,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_ent_rent_user
-    where stall_id = #{stallId,jdbcType=BIGINT} order by id limit 0,1
+    where stall_id = #{stallId,jdbcType=BIGINT} order by id desc limit 0,1
   </select>
   <select id="findByIdEntPreId"  resultMap="BaseResultMap">
     select 

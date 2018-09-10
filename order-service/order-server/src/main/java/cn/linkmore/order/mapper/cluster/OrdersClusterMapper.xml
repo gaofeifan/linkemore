@@ -433,12 +433,14 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 		WHERE
 		status = 3 
 		and pre_id = #{preId}
+		and DATE_FORMAT(end_time,'%Y-%m-%d') in
+		<foreach collection="dates"  index="index" item="date" open="(" separator="," close=")" >
+	    		 DATE_FORMAT(#{date},'%Y-%m-%d')
+	    	</foreach>
 		<!--  <![CDATA[ and #{monthStart} <= end_time]]>
 		 <![CDATA[ AND #{monthEnd} > end_time]]> -->
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
-	limit #{start},#{pageSize}
-	
   </select>
   <select id="findTrafficFlowCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
     SELECT
@@ -453,9 +455,12 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 	and pre_id = #{preId}
 	<!--  <![CDATA[ and #{monthStart} <= end_time]]>
 	 <![CDATA[ AND #{monthEnd} > end_time]]> -->
+	 and DATE_FORMAT(end_time,'%Y-%m-%d') in
+		<foreach collection="dates"  index="index" item="date" open="(" separator="," close=")" >
+	    		 DATE_FORMAT(#{date},'%Y-%m-%d')
+	    	</foreach>
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
-	limit #{start},#{pageSize}
   </select>
   <select id="findMonthCount" parameterType="java.util.Map" resultType="cn.linkmore.order.controller.app.response.ResMonthCount">
  	select DATE_FORMAT(end_time,'%m') month,SUM(actual_amount) monthAmount,COUNT(1) monthCarCount
