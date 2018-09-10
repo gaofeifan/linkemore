@@ -207,7 +207,7 @@ public class OrdersServiceImpl implements OrdersService {
 		boolean resetRedis = true;
 		short failureReason = 0;
 		short bookingStatus = 0;
-		log.info(">>>>>>cu:{} booking preId:{},plateId:{},brandId:{},stallId:{}", cu.getMobile(), prefectureId, plateId,
+		log.info("cu:{} booking preId:{},plateId:{},brandId:{},stallId:{}", cu.getMobile(), prefectureId, plateId,
 				brandId, stallId);
 		try {
 			synchronized (this) {
@@ -224,7 +224,7 @@ public class OrdersServiceImpl implements OrdersService {
 						throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 预约失败
 					}
 					STALL_ID_SET.add(stallId);
-					log.info(">>>>>>STALL_ID_SET = {}", JSON.toJSON(STALL_ID_SET));
+					log.info(">>>>>>1  STALL_ID_SET = {}", JSON.toJSON(STALL_ID_SET));
 				}
 			}
 			ResUserOrder ruo = this.ordersClusterMapper.findUserLatest(cu.getId()); // 找到最新一单
@@ -260,23 +260,26 @@ public class OrdersServiceImpl implements OrdersService {
 				stall = this.stallClient.findById(stallId);
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					lockSn = stall.getLockSn();
-					log.info("order-stall-lockSn,{}", lockSn);
+					log.info(">>>>>>>2  order-stall-lockSn,{}", lockSn);
 					Set<Object> lockSnList = this.redisService
 							.members(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId); // 集合中所有成员元素
+					log.info(">>>>>>>3  lockSnList = {}",JSON.toJSON(lockSnList));
 					if (CollectionUtils.isNotEmpty(lockSnList)) {
 						if (lockSnList.contains(lockSn)) {
 							flag = true;
 							log.info("current lockSn is free, flag = {}", flag);
+							log.info("before remove size = {}",this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId));
 							this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId, lockSn);
+							log.info("after remove size = {}",this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId));
 							this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + lockSn, lockSn,
 									ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
 						}
 					}
-					log.info("current lockSn flag = {}", flag);
+					log.info(">>>>>>>4  current lockSn flag = {}", flag);
 					if (!flag) {
+						resetRedis = false;
 						bookingStatus = (short) OperateStatus.FAILURE.status;
 						failureReason = (short) OrderFailureReason.STALL_NONE.value;
-						// throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);
 						throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
 					}
 				}
@@ -497,10 +500,10 @@ public class OrdersServiceImpl implements OrdersService {
 		} finally {
 			ORDER_USER_SET.remove(cu.getId());
 			if (stallId != null) {
-				log.info(" -------------cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId, JSON.toJSON(STALL_ID_SET));
+				log.info(">>>>>>>5  cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId, JSON.toJSON(STALL_ID_SET));
 				if (STALL_ID_SET.contains(stallId)) {
 					STALL_ID_SET.remove(stallId);
-					log.info(" -------------cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId,
+					log.info(">>>>>>>6  cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId,
 							JSON.toJSON(STALL_ID_SET));
 				}
 			}
@@ -508,7 +511,6 @@ public class OrdersServiceImpl implements OrdersService {
 			thread.start();
 			String content = "订单预约失败";
 			if (stallId != null) {
-				log.info("cu = {}, stallId = {}当前车位已被占用，请选择其他车位", cu.getId(), stallId);
 				content = "当前车位已被占用，请选择其他车位";
 			}
 			Boolean status = false;

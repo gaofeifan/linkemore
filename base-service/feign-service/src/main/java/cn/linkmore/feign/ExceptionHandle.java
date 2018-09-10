@@ -90,6 +90,42 @@ public class ExceptionHandle {
 		} 
 	}
 	
+	private ExceptionInfo opsHandle(Exception e,HttpServletRequest request, HttpServletResponse response) { 
+		ExceptionInfo ei = new ExceptionInfo();
+		response.setStatus(500);
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=utf-8");
+		try {
+			String uri = request.getRequestURI();  
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement[] stackArray = e.getStackTrace();  
+			for (int i = 0; i < stackArray.length; i++) {  
+			    StackTraceElement element = stackArray[i];  
+			    sb.append(element.toString() + "\n");   
+			}   
+			log.info("------------------------");
+			log.info("micro service throw biz exception {}", sb.toString());
+			log.info("url:{}",uri);
+			log.info("");
+			if (e instanceof BusinessException) {
+				BusinessException b = (BusinessException) e;
+				ei.setException(BusinessException.class.getName());
+				ei.setStatus(b.getCode());
+				ei.setMessage(b.getMessage());
+			} else {
+				log.info("ops handle exception = {}", e.getMessage());
+				ei.setException(InternalException.class.getName());
+				ei.setStatus(StatusEnum.SERVER_EXCEPTION.code);
+				ei.setMessage(e.getMessage());
+			}
+			ei.setPath(uri);
+			ei.setTimestamp(new Date().getTime());
+			return ei;
+		} catch (Exception e1) {
+			return ei;
+		}
+	}
+	
 	private ExceptionInfo feignHandle(Exception e,HttpServletRequest request, HttpServletResponse response) { 
 		ExceptionInfo ei = new ExceptionInfo();
 		response.setStatus(500);
@@ -113,6 +149,7 @@ public class ExceptionHandle {
 				ei.setStatus(b.getCode());
 				ei.setMessage(b.getMessage());
 			} else {
+				log.info("feign handle exception = {}", e.getMessage());
 				ei.setException(InternalException.class.getName());
 				ei.setStatus(StatusEnum.BAD_REQUEST.code);
 				ei.setMessage(StatusEnum.BAD_REQUEST.label);
@@ -166,7 +203,7 @@ public class ExceptionHandle {
 			}else if(uri.indexOf(API_APP_PATH)==0) {
 				return this.appHandle(e, request, response);
 			}else if(uri.indexOf(API_OPS_PATH)==0) {
-				
+				return this.opsHandle(e, request, response);
 			}
 		} catch (Exception e1) {
 			return this.feignHandle(e, request, response);

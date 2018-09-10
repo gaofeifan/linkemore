@@ -45,13 +45,13 @@ public class EntStaffServiceImpl implements EntStaffService {
 	 * @see cn.linkmore.enterprise.service.EntStaffService#saveEntStaff(java.lang.Long, java.lang.String, java.lang.String, java.lang.Short)
 	 */
 	@Override
-	public int saveEntStaff(Long entId, String mobile, String realname, Short type) {
+	public int saveEntStaff(Long entId, String mobile, String realname, Short type,Short status) {
 		EntStaff record = new EntStaff();
 		record.setEntId(entId);
 		record.setMobile(mobile);
 		record.setRealname(realname);
 		record.setType(type);
-		record.setStatus((short) 0);
+		record.setStatus(status);
 		record.setCreateTime(new Date());
 		return entStaffMasterMapper.save(record);
 	}
