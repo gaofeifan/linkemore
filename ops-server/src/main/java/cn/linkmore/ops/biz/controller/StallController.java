@@ -72,7 +72,10 @@ public class StallController {
 			this.stallService.update(stall);
 			msg = new ViewMsg("修改成功", true);
 		} catch (RuntimeException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
 			msg = new ViewMsg("修改失败", false);
+			return msg;
 		}
 		return msg;
 	}

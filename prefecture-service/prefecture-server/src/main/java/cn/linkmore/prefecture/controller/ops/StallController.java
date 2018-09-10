@@ -157,9 +157,13 @@ public class StallController {
 	@ResponseBody
 	public int update(@RequestBody ReqStall stall) {
 		ResStallEntity st = stallService.findById(stall.getId());
+		if(st.getBrand() == (short)1 && stall.getType() != (short)0) {
+			throw new RuntimeException("当前车位为品牌车位，车位类型必须为自营");
+		}
 		if (st != null) {
 			st.setStallName(stall.getStallName());
 			st.setStallLocal(stall.getStallLocal());
+			st.setType(stall.getType());
 			ReqStall reqStall = new ReqStall();
 			reqStall = ObjectUtils.copyObject(st, reqStall);
 			return this.stallService.update(reqStall);

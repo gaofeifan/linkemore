@@ -36,7 +36,7 @@
   <sql id="Base_Column_List">
     id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
     status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, 
-    lock_voltage, bind_order_status,type
+    lock_voltage, bind_order_status,type,brand
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

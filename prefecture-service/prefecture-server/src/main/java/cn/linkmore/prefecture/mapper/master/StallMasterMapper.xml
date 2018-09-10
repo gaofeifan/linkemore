@@ -66,6 +66,7 @@
       image_url = #{imageUrl,jdbcType=VARCHAR},
       lock_battery = #{lockBattery,jdbcType=INTEGER},
       lock_voltage = #{lockVoltage,jdbcType=REAL},
+      type = #{type,jdbcType=SMALLINT},
       bind_order_status = #{bindOrderStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
