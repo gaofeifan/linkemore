@@ -35,6 +35,7 @@ import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.service.OwnerStallService;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqControlLock;
+import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.StringUtil;
@@ -47,6 +48,9 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Autowired
 	private RedisService redisService;
+	
+	@Autowired
+	private RedisLock redisLock;
 
 	@Autowired
 	private OwnerStallClusterMapper ownerStallClusterMapper;
@@ -211,7 +215,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		Integer using = 0;
 		Boolean have = true;
 		try {
-			have = this.redisService.getLock(robkey, user.getId());
+			have = this.redisLock.getLock(robkey, user.getId());
 			log.info("用户=======>" + user.getId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
 		} catch (Exception e) {
 			Map<String, Object> pam = new HashMap<>();
@@ -316,7 +320,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqToothAuth.getStallId();
 		Boolean have = false;
 		try {
-			have = this.redisService.getLock(robkey, userid);
+			have = this.redisLock.getLock(robkey, userid);
 			log.info("用户=======>" + reqToothAuth.getUserId() + (have == true ? "已得到" : "未得到") + "锁" + robkey);
 		}catch (Exception e) {
 			e.printStackTrace();

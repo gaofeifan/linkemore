@@ -48,7 +48,6 @@ public class RentUserServiceImpl implements RentUserService {
 	@Override
 	public Boolean check(ReqCheck reqCheck) {
 		return this.rentUserClient.check(reqCheck);
-		
 	}
 
 	
