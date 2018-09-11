@@ -47,6 +47,7 @@ import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
+import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.entity.StallExcStatus;
@@ -73,6 +74,7 @@ import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallOperateLog;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DateUtils;
+import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.StringUtil;
 import cn.linkmore.util.TokenUtil;
@@ -304,8 +306,11 @@ public class EntStallServiceImpl implements EntStallService {
 		
 		List<LockBean> lockBeans = locks.getDataList();
 		//设置车位对应的车牌号
+		System.out.println(JsonUtil.toJson(lockBeans));
+		log.debug(JsonUtil.toJson(lockBeans));
 		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
-		cn.linkmore.enterprise.controller.ent.response.ResStall stall = null;
+		cn.linkmore.enterprise.controller.ent.response.
+		ResStall stall = null;
 //		lockFactory.
 		for(ResStall resStall:stalls){
 			if(orders == null ){ 
@@ -317,9 +322,10 @@ public class EntStallServiceImpl implements EntStallService {
 				stall.setStallId(resStall.getId());
 				for (LockBean lock : lockBeans) {
 					if(lock.getLockCode().equals(stall.getLockSn())) {
-						if(lock.getLockState() == 1) {
+						if(lock.getLockState().equals(1)) {
+							log.info(lock.getLockCode() +"==="+lock.getLockState());
 							stall.setLockStatus(lock.getLockState());
-						}else if(lock.getLockState() == 0) {
+						}else {
 							stall.setLockStatus(2);
 						}
 					}
@@ -364,6 +370,11 @@ public class EntStallServiceImpl implements EntStallService {
 			if(i == end) {
 				sb.append(stallList.get(i).getStallName()).append("-");
 				end += 5;
+				if(i > 1 && (i+1) ==  stallList.size()) {
+//					sb.append(stallList.get(i).getStallName());
+					stallName.setStallName(stallList.get(i).getStallName());
+					stallNames.add(stallName);
+				}
 			}else if(i == (end-1)) {
 				sb.append(stallList.get(i).getStallName());
 				stallName.setStallName(sb.toString());
@@ -403,7 +414,9 @@ public class EntStallServiceImpl implements EntStallService {
 		}*/
 		ResEntOrder resEntOrder = this.orderClient.findOrderByStallId(resStallEntity.getId());
 		if(resStallEntity.getStatus() != 1 && resStallEntity.getStatus() != 4) {
-			resDetailStall.setPlate(resEntOrder.getPlate());
+			if(resEntOrder != null) {
+				resDetailStall.setPlate(resEntOrder.getPlate());
+			}
 		}
 		if(resStallEntity.getType() != null && resStallEntity.getType() == 2) {
 			List<String> paltes = new ArrayList<>();
@@ -438,7 +451,7 @@ public class EntStallServiceImpl implements EntStallService {
 //			resDetailStall.setMobile(record.get);
 			resDetailStall.setPlate(sb.length() != 0 ? sb.substring(0, sb.length()-1):null);
 			EntRentUser entRentUser = this.entRentUserService.findByStallId(resStallEntity.getId());
-			if(entRentUser != null && new Date().getTime() >= entRentUser.getEndTime().getTime() ) {
+			if(entRentUser != null && new Date().getTime() <= entRentUser.getEndTime().getTime() ) {
 				if(entRentUser.getType() != null && entRentUser.getType() == 1) {
 					ResEnterprise enterprise = this.enterpriseService.findById(entRentUser.getEntId());
 					if(enterprise != null) {
@@ -449,7 +462,10 @@ public class EntStallServiceImpl implements EntStallService {
 				}
 			}
 			if(resStallEntity.getStatus() == 2) {
-				resDetailStall.setDownTime(resEntOrder.getLockDownTime());
+				EntRentedRecord record = this.rentedRecordClusterMapper.findByStallId(resStallEntity.getId());
+				if(record != null && record.getDownTime() != null) {
+					resDetailStall.setDownTime(record.getDownTime());
+				}
 			}
 		}else if(resStallEntity.getType() != null && resStallEntity.getType() == 1) {
 			if(resStallEntity.getStatus() == 2) {
@@ -519,9 +535,12 @@ public class EntStallServiceImpl implements EntStallService {
 		if(!checkAuth(stallId, request)) {
 			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
 		}
+		ResStallEntity resStallEntity= this.stallClient.findById(stallId);
+	/*	if(resStallEntity.getStatus() == 4) {
+			throw new BusinessException(StatusEnum.STALL_OPERATE_OFFLINED);
+		}*/
 		//需要异步记录操作锁
 		Map<String,Object> result = new HashMap<>();
-		ResStallEntity resStallEntity= this.stallClient.findById(stallId);
 		if(StringUtil.isBlank(resStallEntity.getLockSn())){
 			result.put("result", false);
 			result.put("result", "操作失败");
@@ -530,6 +549,7 @@ public class EntStallServiceImpl implements EntStallService {
 		ResponseMessage<LockBean> res = null;
 //		result.put("result", res.isResult());
 //		result.put("result", res.getMsg());
+		
 		redisService.set(STALL_LOCK_OPER_STATUS+stallId, ru.getId());
 		new Thread(new Runnable() {
 			
@@ -585,7 +605,9 @@ public class EntStallServiceImpl implements EntStallService {
 			if (entity.getStatus().intValue() != ResStallEntity.STATUS_OUTLINE ) {
 				throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
 			}
-			if (order != null && order.getStatus().intValue() == ResUserOrder.ORDERS_STATUS_UNPAY) {
+			if(entity.getType() == 2) {
+				
+			}else if (order != null && order.getStatus().intValue() == ResUserOrder.ORDERS_STATUS_UNPAY) {
 				throw new BusinessException(StatusEnum.STALL_OPERATE_ORDERING);
 			}
 			List<Long> ids=new ArrayList<>();
@@ -599,7 +621,11 @@ public class EntStallServiceImpl implements EntStallService {
 			if (entity.getStatus().intValue() > ResStallEntity.STATUS_USED) {
 				throw new BusinessException(StatusEnum.STALL_OPERATE_OFFLINED);
 			}
-			if (order != null && order.getStatus().intValue() == 2) {
+			if(entity.getType() == 2) {
+				if(entity.getStatus() == 2) {
+					throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+				}
+			}else if (order != null && order.getStatus().intValue() == 2) {
 				throw new BusinessException(StatusEnum.STALL_OPERATE_ORDERING);
 			}
 			if ((remarkId != null) && (remarkId.longValue() > 0L)) {

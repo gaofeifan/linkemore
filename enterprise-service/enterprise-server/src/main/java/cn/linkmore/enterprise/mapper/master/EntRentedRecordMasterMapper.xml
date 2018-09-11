@@ -245,4 +245,9 @@
       pre_name = #{preName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateDownTime" parameterType="java.util.Map">
+    update t_ent_rented_record
+     set down_time = now()
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

@@ -1303,9 +1303,10 @@ public class OrdersServiceImpl implements OrdersService {
 		param.put("monthEnd", map.get("monthEnd"));
 		param.put("pageSize", 10);
 		param.put("start", getPageNo(param.get("pageNo")));
+		List<Date> dates = DateUtils.getDates(now, Calendar.DAY_OF_MONTH, 10);
+		param.put("dates",dates);
 		List<ResTrafficFlowList> list = this.ordersClusterMapper.findTrafficFlowList(param);
 		List<ResTrafficFlowList> newList = new ArrayList<ResTrafficFlowList>();
-		List<Date> dates = DateUtils.getDates(now, Calendar.DAY_OF_MONTH, 10);
 		ResTrafficFlowList in = null;
 		for (Date da : dates) {
 			boolean falg = true;
@@ -1397,9 +1398,10 @@ public class OrdersServiceImpl implements OrdersService {
 		param.put("pageSize", 10);
 		param.put("start", getPageNo(param.get("pageNo")));
 		ResMonthCount months = this.ordersClusterMapper.findMonthCountByDate(param);
+		List<Date> dates = DateUtils.getDates(now, Calendar.DAY_OF_MONTH, 10);
+		param.put("dates", dates);
 		List<ResIncomeList> list = this.ordersClusterMapper.findIncomeList(param);
 		List<ResIncomeList> newList = new ArrayList<>();
-		List<Date> dates = DateUtils.getDates(now, Calendar.DAY_OF_MONTH, 10);
 		ResIncomeList in = null;
 		for (Date da : dates) {
 			boolean falg = true;

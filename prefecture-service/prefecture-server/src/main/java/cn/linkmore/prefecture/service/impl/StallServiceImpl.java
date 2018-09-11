@@ -38,6 +38,7 @@ import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
 import cn.linkmore.prefecture.dao.cluster.EntRentRecordClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
@@ -100,6 +101,8 @@ public class StallServiceImpl implements StallService {
 	private EntRentRecordClusterMapper entRentedRecordClusterMapper;
 	@Autowired
 	private EntSocketClient entSocketClient;
+	@Autowired
+	private EntRentedRecordClient entRentedRecordClient;
 	@Autowired
 	private EntStaffClient entStaffClient;
 	
@@ -551,10 +554,24 @@ public class StallServiceImpl implements StallService {
 					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendWYMsg(uid,reqc.getStatus(),code);
 					if (code == 200) {
+						if(reqc.getStatus() == 1 ) {
+							stall.setLockStatus(2);
+							if(stall.getType() == 2) {
+								if(stall.getStatus() != 4) {
+									stall.setStatus(2);
+								}
+							}
+						}else if(reqc.getStatus() == 2 ) {
+							if(stall.getType() == 2) {
+								if(stall.getStatus() != 4) {
+									stall.setStatus(1);
+								}
+							}
+							stall.setLockStatus(1);
+						}
+						stallMasterMapper.lockdown(stall);
 						if(reqc.getStatus() == 1) {
 							downLock(reqc.getStallId(),1);
-							stall.setLockStatus(reqc.getStatus());
-							stallMasterMapper.lockdown(stall);
 							redisService.remove(reqc.getKey());
 						}
 						
@@ -613,12 +630,13 @@ public class StallServiceImpl implements StallService {
 	}
 
 	public void downLock(Long stallId,int status) {
-		ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
-		Map<String,Object> param = new HashMap<>();
-		param.put( "lockDownStatus",status);
-		param.put("lockDownTime", new Date());
-		param.put("orderId", latest.getId());
-		this.entOrderClient.updateLockStatus(param);
+//		ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
+//		Map<String,Object> param = new HashMap<>();
+//		param.put( "lockDownStatus",status);
+//		param.put("lockDownTime", new Date());
+//		param.put("orderId", latest.getId());
+		this.entRentedRecordClient.updateDownTime(stallId);
+//		this.entOrderClient.updateLockStatus(param);
 	}
 	
 	private void send(String uid, Integer lockstatus, int code) {

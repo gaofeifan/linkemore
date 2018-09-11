@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.dao.master;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntRentedRecord;
@@ -20,4 +22,6 @@ public interface EntRentedRecordMasterMapper {
     int updateByIdSelective(EntRentedRecord record);
 
     int updateById(EntRentedRecord record);
+
+	void updateDownTime(Map<String, Object> map);
 }
