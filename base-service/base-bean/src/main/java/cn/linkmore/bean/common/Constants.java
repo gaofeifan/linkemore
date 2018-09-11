@@ -316,7 +316,12 @@ public class Constants {
 		WECHAT_TOKEN_KEY_MONITOR("monitor:wechat_token:"),
 		WECHAT_GET_USER_LIST_MONITOR("monitor:wechat-user-list:"), 
 		USER_GROUP_IDS("USER_GROUP_IDS:"),
-		BLACKLIST_ORDER_LIMIT("blacklist:order:limit");
+		BLACKLIST_ORDER_LIMIT("blacklist:order:limit"),
+
+		MANAGER_STALL_UP("manager:lock-uping:"),
+		MANAGER_STALL_DOWN("manager:lock-downing:"),
+		MANAGER_STALL("manager:lock:");
+		
 		public String key;
 
 		private RedisKey(String key) {
