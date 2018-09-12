@@ -146,7 +146,7 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		Integer count = this.entRentUserClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<EntRentUser> list = this.entRentUserClusterMapper.findPage(param);
+		List<ResEntRentUser> list = this.entRentUserClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 

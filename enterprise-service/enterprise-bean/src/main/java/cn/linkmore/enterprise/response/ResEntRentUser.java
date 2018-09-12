@@ -35,8 +35,18 @@ public class ResEntRentUser {
      *  0个人 1企业
      */ 
     private Short type;
+    //车位状态
+    private Integer status;
     
-    public Long getId() {
+    public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Long getId() {
         return id;
     }
 

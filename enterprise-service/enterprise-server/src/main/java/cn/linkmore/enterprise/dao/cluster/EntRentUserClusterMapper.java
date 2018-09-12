@@ -42,7 +42,7 @@ public interface EntRentUserClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<EntRentUser> findPage(Map<String, Object> param);
+	List<ResEntRentUser> findPage(Map<String, Object> param);
 
 	/**
 	 * @Description  查询所有长租用户

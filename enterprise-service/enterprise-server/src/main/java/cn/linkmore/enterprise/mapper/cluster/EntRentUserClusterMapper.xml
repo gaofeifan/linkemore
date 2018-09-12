@@ -18,6 +18,7 @@
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntRentUser">
@@ -64,11 +65,9 @@
     from t_ent_rent_user
   </select>
  
-  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select 
- 		<include refid="Base_Column_List" />
-	from
-    t_ent_rent_user
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="ResResultMap">
+    select t.*,v.status from
+    t_ent_rent_user t left join v_stall v on t.stall_id = v.id 
     where  1 = 1
    	<if test="preName != null">
    		and pre_name like #{preName,jdbcType=VARCHAR}

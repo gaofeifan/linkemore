@@ -357,7 +357,7 @@ public class UserServiceImpl implements UserService {
 		log.info(">>>>>>appLogin rus = {}",JSON.toJSON(rus));
 		if(!(rus!=null&&STAFF_CODE.equals(rl.getCode()))) {
 			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());
-			log.info(">>>>>>appLogin mobile = {}, code = {}",rl.getMobile(), cache.toString());
+			log.info(">>>>>>appLogin mobile = {}, code = {}",rl.getMobile(), cache);
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
 			}else {
