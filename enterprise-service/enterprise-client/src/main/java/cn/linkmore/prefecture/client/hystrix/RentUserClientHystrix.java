@@ -33,7 +33,6 @@ public class RentUserClientHystrix implements OpsRentUserClient {
 	@Override
 	public void save(ReqRentUser user) {
 		log.info("enterprise service void save(ReqRentUser user) hystrix");
-		
 	}
 
 	@Override
