@@ -1,26 +1,33 @@
 package cn.linkmore.ops.biz.controller;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.ops.biz.service.StallLockService;
 import cn.linkmore.ops.biz.service.StallService;
+import cn.linkmore.prefecture.client.OpsRentUserClient;
 import cn.linkmore.prefecture.client.OpsStallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
@@ -37,7 +44,12 @@ public class StallController {
 	@Resource
 	private OpsStallClient opsStallClient;
 	@Resource
+	private OpsRentUserClient opsRentUserClient;
+	
+	@Resource
 	private StallLockService stallLockService;
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping(value = "/tree", method = RequestMethod.POST)
 	@ResponseBody
@@ -154,10 +166,55 @@ public class StallController {
 		return msg;
 	}
 	
-	@RequestMapping(value = "/all", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/rent-stall", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStall> all(HttpServletRequest request) {
-		List<ResStall> list = this.opsStallClient.findStallList(new HashMap<String,Object>());
+	public List<ResStall> rentStallList(HttpServletRequest request,Long pid) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("preId", pid);
+		map.put("type", 2);
+		List<ResStall> list = this.opsStallClient.findStallList(map);
+		List<ResStall> notUsedList = new ArrayList<ResStall>();
+		List<ResEntRentUser> rentUserList = opsRentUserClient.usedStallList();
+		List<Long> usedStallId = new ArrayList<Long>();
+		for(ResEntRentUser rentUser : rentUserList) {
+			usedStallId.add(rentUser.getStallId());
+			log.info("rentUserList = {}",JSON.toJSON(usedStallId));
+		}
+		if(CollectionUtils.isNotEmpty(list)) {
+			for(ResStall resStall : list) {
+				if(!usedStallId.contains(resStall.getId())) {
+					log.info("remove the stallId = {}",resStall.getId());
+					notUsedList.add(resStall);
+				}
+			}
+		}
+		log.info("param = {}, result = {}",JSON.toJSON(map),JSON.toJSON(notUsedList));
+		return notUsedList;
+	}*/
+	
+	@RequestMapping(value = "/rent-stall", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStall> rentStallList(HttpServletRequest request,Long pid) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("preId", pid);
+		map.put("type", 2);
+		List<ResStall> list = this.opsStallClient.findStallList(map);
+		List<ResStall> notUsedList = new ArrayList<ResStall>();
+		List<ResEntRentUser> rentUserList = opsRentUserClient.usedStallList();
+		List<Long> usedStallId = new ArrayList<Long>();
+		for(ResEntRentUser rentUser : rentUserList) {
+			usedStallId.add(rentUser.getStallId());
+			log.info("rentUserList = {}",JSON.toJSON(usedStallId));
+		}
+		if(CollectionUtils.isNotEmpty(list)) {
+			for(ResStall resStall : list) {
+				if(!usedStallId.contains(resStall.getId())) {
+					log.info("remove the stallId = {}",resStall.getId());
+					notUsedList.add(resStall);
+				}
+			}
+		}
+		log.info("param = {}, result = {}",JSON.toJSON(map),JSON.toJSON(list));
 		return list;
 	}
 	

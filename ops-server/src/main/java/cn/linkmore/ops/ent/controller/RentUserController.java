@@ -40,7 +40,6 @@ public class RentUserController {
 	public ViewMsg save(ReqRentUser auth) {
 		ViewMsg msg = null;
 		try {
-//			ReqRentUser auth = new ReqRentUser();
 			this.rentUserService.save(auth);
 			msg = new ViewMsg("保存成功", true);
 		} catch (BusinessException e) {

@@ -26,6 +26,7 @@ import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
+import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.util.DateUtils;
@@ -189,6 +190,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
 		return this.entRentUserClusterMapper.check(param);
+	}
+
+	@Override
+	public List<ResEntRentUser> findUsedStall() {
+		return this.entRentUserClusterMapper.findUsedStall();
 	}
 	
 	
