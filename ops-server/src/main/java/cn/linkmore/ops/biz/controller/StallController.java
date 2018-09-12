@@ -214,8 +214,8 @@ public class StallController {
 				}
 			}
 		}
-		log.info("param = {}, result = {}",JSON.toJSON(map),JSON.toJSON(list));
-		return list;
+		log.info("param = {}, result = {}",JSON.toJSON(map),JSON.toJSON(notUsedList));
+		return notUsedList;
 	}
 	
 
