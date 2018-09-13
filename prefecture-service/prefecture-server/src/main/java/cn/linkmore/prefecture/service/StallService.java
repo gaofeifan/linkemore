@@ -12,6 +12,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
@@ -206,4 +207,11 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	List<ResStaffStallList> findStallList(HttpServletRequest request, ReqStaffStallList staffList);
+	
+	/**
+	 * @Description  查询车位详情
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResStaffStallDetail findStaffStallDetails(HttpServletRequest request, Long stallId);
 }

@@ -1,0 +1,174 @@
+package cn.linkmore.prefecture.controller.staff.response;
+
+import java.util.Date;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel("管理版车位详情")
+public class ResStaffStallDetail {
+
+	@ApiModelProperty("车位名称 (车位编号)")
+	public String stallName;
+	
+	@ApiModelProperty("锁编号(序列号)")
+	public String lockSn;
+	
+	@ApiModelProperty("锁状态(1:竖起状态 2：躺下  3使用中)")
+	public Integer lockStatus;
+	/**
+	 * 电量
+	 */
+	@ApiModelProperty("锁电量")
+	private int betty;
+	/**
+	 * 车牌号
+	 */
+	@ApiModelProperty("车牌号")
+	private String plate;
+	/**
+	 * 手机号
+	 */
+	@ApiModelProperty("手机号")
+	private String mobile;
+	@ApiModelProperty("车位id")
+	private Long stallId;
+	@ApiModelProperty("降锁时间")
+	private Date downTime;
+	@ApiModelProperty("进场时间")
+	private Date approachTime;
+	@ApiModelProperty("预约时间")
+	private Date startTime;
+	@ApiModelProperty("订单编号")
+	private String orderNo;
+	@ApiModelProperty("预约时长")
+	private String startDate;
+	@ApiModelProperty("异常原因")
+	private String excName;
+	@ApiModelProperty("异常原因Id")
+	private Long excCode;
+	@ApiModelProperty("复位状态  true可以复位 false不可以")
+	private boolean resetStatus = true;
+	@ApiModelProperty("上下线状态true上线 false下线")
+	private boolean onoffStatus = false;
+	@ApiModelProperty("故障原因Id")
+	private Long faultId;
+	@ApiModelProperty("地磁是否有车 true有车  false无车")
+	private boolean carStatus = false;
+	@ApiModelProperty("故障原因名称")
+	private String faultName;
+	public String getStallName() {
+		return stallName;
+	}
+	public void setStallName(String stallName) {
+		this.stallName = stallName;
+	}
+	public String getLockSn() {
+		return lockSn;
+	}
+	public void setLockSn(String lockSn) {
+		this.lockSn = lockSn;
+	}
+	public Integer getLockStatus() {
+		return lockStatus;
+	}
+	public void setLockStatus(Integer lockStatus) {
+		this.lockStatus = lockStatus;
+	}
+	public int getBetty() {
+		return betty;
+	}
+	public void setBetty(int betty) {
+		this.betty = betty;
+	}
+	public String getPlate() {
+		return plate;
+	}
+	public void setPlate(String plate) {
+		this.plate = plate;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	public Long getStallId() {
+		return stallId;
+	}
+	public void setStallId(Long stallId) {
+		this.stallId = stallId;
+	}
+	public Date getDownTime() {
+		return downTime;
+	}
+	public void setDownTime(Date downTime) {
+		this.downTime = downTime;
+	}
+	public Date getApproachTime() {
+		return approachTime;
+	}
+	public void setApproachTime(Date approachTime) {
+		this.approachTime = approachTime;
+	}
+	public Date getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+	public String getOrderNo() {
+		return orderNo;
+	}
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getExcName() {
+		return excName;
+	}
+	public void setExcName(String excName) {
+		this.excName = excName;
+	}
+	public Long getExcCode() {
+		return excCode;
+	}
+	public void setExcCode(Long excCode) {
+		this.excCode = excCode;
+	}
+	public boolean isResetStatus() {
+		return resetStatus;
+	}
+	public void setResetStatus(boolean resetStatus) {
+		this.resetStatus = resetStatus;
+	}
+	public boolean isOnoffStatus() {
+		return onoffStatus;
+	}
+	public void setOnoffStatus(boolean onoffStatus) {
+		this.onoffStatus = onoffStatus;
+	}
+	public Long getFaultId() {
+		return faultId;
+	}
+	public void setFaultId(Long faultId) {
+		this.faultId = faultId;
+	}
+	public boolean isCarStatus() {
+		return carStatus;
+	}
+	public void setCarStatus(boolean carStatus) {
+		this.carStatus = carStatus;
+	}
+	public String getFaultName() {
+		return faultName;
+	}
+	public void setFaultName(String faultName) {
+		this.faultName = faultName;
+	}
+}

@@ -51,6 +51,7 @@ import cn.linkmore.prefecture.client.EntStaffClient;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
@@ -828,6 +829,7 @@ public class StallServiceImpl implements StallService {
 			}
 			ResStaffStallList = new ResStaffStallList();
 			if(resStall.getStatus() == 2) {
+//				List<String> list = ObjectUtils.findFieldVlaue(plates, "plateNo", new String[]{"stallId"}, new Object[]{resStall.getId()});
 				for (ResOrderPlate resOrderPlate : plates) {
 					if(resOrderPlate.getStallId().equals(resStall.getId())) {
 						ResStaffStallList.setPlateNo(resOrderPlate.getPlateNo());
@@ -863,8 +865,6 @@ public class StallServiceImpl implements StallService {
 		return staffStallLists;
 	}
 	
-	
-	
 	public Boolean checkStaffPreAuth(Long userId, Long preId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
@@ -873,6 +873,13 @@ public class StallServiceImpl implements StallService {
 		return list != null && list.size() != 0 ? true : false;
 	}
 	
+	public Boolean checkStaffStallAuth(Long userId,Long stallId) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("stallId", stallId);
+		List<ResAdminAuthStall> list = this.adminAuthStallClusterMapper.findStallList(map);
+		return list != null && list.size() != 0 ? true : false;
+	}
 	
 	/**
 	 * 管理版锁操作
@@ -901,4 +908,16 @@ public class StallServiceImpl implements StallService {
 			}
 		});
 	}
+
+	@Override
+	public ResStaffStallDetail findStaffStallDetails(HttpServletRequest request, Long stallId) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+TokenUtil.getKey(request));
+		if(! checkStaffStallAuth(cu.getId(),stallId)) {
+			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+		}
+		
+		return null;
+	}
+	
+	
 }
