@@ -2,7 +2,10 @@
  * 
  */
 package cn.linkmore.enterprise.controller.ops;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -104,10 +107,10 @@ public class EntPreController {
 		}
 	}
 	
-	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	@RequestMapping(value = "/all", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResEntPrefecture> findAll(){
-		return this.entPreService.findList(null);
+	public List<ResEntPrefecture> findAll(@RequestBody Map<String,Object> map){
+		return this.entPreService.findList(map);
 	}
 	 
 	@RequestMapping(value = "/not-create-pre", method = RequestMethod.GET)

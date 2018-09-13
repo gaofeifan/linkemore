@@ -7,6 +7,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
+import cn.linkmore.enterprise.response.ResEntRentUser;
 
 public interface EntRentUserService {
 	
@@ -85,5 +86,10 @@ public interface EntRentUserService {
 	 * @Version  v2.0
 	 */
 	Integer check(ReqCheck reqCheck);
+	/**
+	 * 查询已使用固定车位列表
+	 * @return
+	 */
+	List<ResEntRentUser> findUsedStall();
 
 }

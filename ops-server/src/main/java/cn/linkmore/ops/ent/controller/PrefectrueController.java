@@ -1,7 +1,10 @@
 package cn.linkmore.ops.ent.controller;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,8 +39,10 @@ public class PrefectrueController {
 	}
 	@RequestMapping(value = "/all", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResEntPrefecture> findAll(HttpServletRequest request) {
-		return this.prefectrueService.findAll(request);
+	public List<ResEntPrefecture> findAll(HttpServletRequest request,Long entId) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("entId", entId);
+		return this.prefectrueService.findAll(map);
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)

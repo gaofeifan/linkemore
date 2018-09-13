@@ -10,6 +10,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
+import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.prefecture.client.OpsRentUserClient;
 
 /**
@@ -32,7 +33,6 @@ public class RentUserClientHystrix implements OpsRentUserClient {
 	@Override
 	public void save(ReqRentUser user) {
 		log.info("enterprise service void save(ReqRentUser user) hystrix");
-		
 	}
 
 	@Override
@@ -52,7 +52,11 @@ public class RentUserClientHystrix implements OpsRentUserClient {
 		log.info("enterprise service Boolean check(ReqCheck reqCheck) hystrix");
 		return null;
 	}
-	
-	
+
+	@Override
+	public List<ResEntRentUser> usedStallList() {
+		log.info("enterprise service List<ResEntRentUser> usedStallList() hystrix");
+		return null;
+	}
 	
 }

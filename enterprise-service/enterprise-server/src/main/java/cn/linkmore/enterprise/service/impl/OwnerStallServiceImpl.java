@@ -218,15 +218,19 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			have = this.redisLock.getLock(robkey, user.getId());
 			log.info("用户=======>" + user.getId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
 		} catch (Exception e) {
-			Map<String, Object> pam = new HashMap<>();
-			pam.put("stallId", reqOperatStall.getStallId());
-			pam.put("userId", user.getId());
-			using = entRentedRecordClusterMapper.findUsingRecord(pam);
+			
 		}
-		if (!have || using > 0) {
+		if (!have) {
+			throw new BusinessException(StatusEnum.STALL_HIVING_DO);
+		}
+		Map<String, Object> pam = new HashMap<>();
+		pam.put("stallId", reqOperatStall.getStallId());
+		pam.put("userId", user.getId());
+		using = entRentedRecordClusterMapper.findUsingRecord(pam);
+		if (using>0) {
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
-
+	
 		// 未完成记录同一用户只有一单
 		EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
 
@@ -322,6 +326,16 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		try {
 			have = this.redisLock.getLock(robkey, userid);
 			log.info("用户=======>" + reqToothAuth.getUserId() + (have == true ? "已得到" : "未得到") + "锁" + robkey);
+			if(have) {
+				Map<String, Object> pam = new HashMap<>();
+				pam.put("stallId", reqToothAuth.getStallId());
+				pam.put("userId", userid);
+				Integer using = entRentedRecordClusterMapper.findUsingRecord(pam);
+				log.info("用户=======>" + using);
+				if (using>0) {
+					have = false;
+				}
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

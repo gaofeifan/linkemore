@@ -119,6 +119,19 @@ public class FeignStallController {
 		log.info("controllock:{} .......................................",reqc.getStallId());
 		this.stallService.controling(reqc);
 	}
+	
+	/**
+	 * 管理版操作锁
+	 * 
+	 * @param stallId
+	 *            Long
+	 */
+	@RequestMapping(value = "/v2.0/operatelock", method = RequestMethod.POST)
+	public void managerlock(@RequestBody   ReqControlLock  reqc) {
+		log.info("managerlock:{} .......................................",reqc.getStallId());
+		this.stallService.operating(reqc);
+	}
+	
 	/**
 	 *物业版操作锁 操作锁
 	 * 

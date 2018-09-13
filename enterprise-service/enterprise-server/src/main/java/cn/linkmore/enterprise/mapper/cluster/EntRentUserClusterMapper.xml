@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.EntRentUserClusterMapper">
+  
+  <resultMap id="ResResultMap" type="cn.linkmore.enterprise.response.ResEntRentUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="plate" jdbcType="VARCHAR" property="plate" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntRentUser">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
@@ -16,7 +36,7 @@
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-        <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
   </resultMap>
   <sql id="Base_Column_List">
     id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type
@@ -44,57 +64,45 @@
     <include refid="Base_Column_List" />
     from t_ent_rent_user
   </select>
- <!--  <select id="findByIdEntPreId"  resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_ent_rent_user
-    where ent_pre_id = #{0}
-  </select> -->
-  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-    select 
- <include refid="Base_Column_List" />
-    from
-	t_ent_rent_user
-	where 
-     1 = 1
-    	<if test="mobile != null">
-    		and mobile = #{mobile}
-    	</if>
-    	<if test="type != null">
-    		and type = #{type}
-    	</if>
-    	<if test="status != null">
-    		and status = #{status}
-    	</if>
-    	<if test="realname != null">
-    		and realname = #{realname}
-    	</if>
-   	    <if test="property==null">  
-	    	order by id 
-	    </if>
-	    <if test="property!=null">  
-	   		order by  ${property} ${direction}
-	    </if>
-	    	limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+ 
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="ResResultMap">
+    select t.*,v.status from
+    t_ent_rent_user t left join v_stall v on t.stall_id = v.id 
+    where  1 = 1
+   	<if test="preName != null">
+   		and pre_name like #{preName,jdbcType=VARCHAR}
+   	</if>
+   	<if test="entName != null">
+   		and ent_name like #{entName,jdbcType=VARCHAR}
+   	</if>
+   	<if test="realname != null">
+   		and realname like #{realname,jdbcType=VARCHAR}
+   	</if>
+   	<if test="mobile != null">
+   		and mobile like #{mobile,jdbcType=VARCHAR}
+   	</if>
+  	<if test="property==null">  
+    	order by id 
+    </if>
+    <if test="property!=null">  
+   		order by  ${property} ${direction}
+    </if>
+	limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
-   select count(1)
-    from
-	t_ent_rent_user
-	where 
-     1 = 1
-    	<if test="mobile != null">
-    		and mobile = #{mobile}
-    	</if>
-    	<if test="type != null">
-    		and type = #{type}
-    	</if>
-    	<if test="status != null">
-    		and status = #{status}
-    	</if>
-    	<if test="realname != null">
-    		and realname = #{realname}
-    	</if>
+   select count(1) from t_ent_rent_user where  1 = 1
+    <if test="preName != null">
+   		and pre_name like #{preName,jdbcType=VARCHAR}
+   	</if>
+   	<if test="entName != null">
+   		and ent_name like #{entName,jdbcType=VARCHAR}
+   	</if>
+   	<if test="realname != null">
+   		and realname like #{realname,jdbcType=VARCHAR}
+   	</if>
+   	<if test="mobile != null">
+   		and mobile like #{mobile,jdbcType=VARCHAR}
+   	</if>
   </select>
   
    <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
@@ -104,4 +112,12 @@
     ${property} = #{value}  
     and id != #{id} 
   </select>
+  
+  <select id="findUsedStall"  resultMap="ResResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_user
+    where 1 = 1 <![CDATA[ and end_time > now() ]]> and type = 0
+  </select>
+  
 </mapper>
