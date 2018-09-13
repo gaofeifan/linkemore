@@ -16,4 +16,11 @@ public interface AdminAuthPreClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<AdminAuthPre> findList(Map<String, Object> map);
+
+	/**
+	 * @Description 根据车区id查询  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	AdminAuthPre findById(Long preId);
 }

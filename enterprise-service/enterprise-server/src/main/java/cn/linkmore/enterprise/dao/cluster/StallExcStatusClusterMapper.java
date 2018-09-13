@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.StallExcStatus;
+import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 
 /**
  * 车位异常状态
@@ -35,6 +36,13 @@ public interface StallExcStatusClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<StallExcStatus> findAll();
+
+	/**
+	 * @Description  查询所有
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResEntExcStallStatus> findResAll();
 
 
 }

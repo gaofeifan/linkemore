@@ -22,6 +22,9 @@
 	<if test=" userId != null">
 		AND users.user_id = #{userId}
 	</if>
+	<if test="preId != null">
+		AND pre.pre_id = #{preId}
+	</if>
   </select>
  
 </mapper>

@@ -96,16 +96,29 @@
   <select id="findPreStallList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
   	select id, stall_name, pre_id,lock_sn, status, type,lock_status
 	from v_stall 
-	where id in  
-    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
-       #{id}
-    </foreach>
-    <if test="type!=null">
-       and type = #{type,jdbcType=SMALLINT}
-    </if>
-    <if test="stallName != null and stallName != ''">
-    	and stall_name = #{stallName}
-    </if>
+	<where>
+	   <if test="list != null">
+			AND id in  
+		    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+		       #{id}
+		    </foreach>
+	   </if>
+	   <if test="preId != null">
+	   	AND pre_id = #{preId}
+	   </if>
+	    <if test="type!=null">
+	       and type = #{type,jdbcType=SMALLINT}
+	    </if>
+	    <if test="stallName != null and stallName != ''">
+	    	and stall_name = #{stallName}
+	    </if>
+	    <if test="stallNameLike != null and stallNameLike != ''">
+	    	and stall_name like #{stallNameLike}
+	    </if>
+	    <if test="status != null">
+	    	and status = #{status}
+	    </if>
+	</where>
   </select>
   
   <select id="findList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >

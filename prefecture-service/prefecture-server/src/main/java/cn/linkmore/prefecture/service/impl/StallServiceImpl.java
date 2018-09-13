@@ -37,16 +37,21 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 import cn.linkmore.enterprise.response.ResEntStaff;
 import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.FeignUnusualOrderClient;
 import cn.linkmore.order.client.OrderClient;
+import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResUnusualOrder;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
-import cn.linkmore.prefecture.controller.staff.response.ResPreList;
+import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
+import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminUserAuthClusterMapper;
@@ -68,6 +73,7 @@ import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUserAuth;
 import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
@@ -137,6 +143,8 @@ public class StallServiceImpl implements StallService {
 	private AdminUserAuthClusterMapper adminUserAuthClusterMapper;
 	@Autowired
 	private AdminAuthPreClusterMapper adminAuthPreClusterMapper;
+	@Autowired
+	private FeignStallExcStatusClient feignStallExcStatusClient;
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -719,7 +727,7 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public List<ResPreList> findPreList(HttpServletRequest request, Long cityId) {
+	public List<ResStaffPreList> findPreList(HttpServletRequest request, Long cityId) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+TokenUtil.getKey(request)); 
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", cu.getId());
@@ -733,10 +741,10 @@ public class StallServiceImpl implements StallService {
 		List<Stall> stalls = this.stallClusterMapper.findAll();
 		map = new HashMap<>();
 		List<ResUnusualOrder> unusualOrders = feignUnusualOrderClient.findList(map);
-		List<ResPreList> resPres = new ArrayList<>();
-		ResPreList preList = null; 
+		List<ResStaffPreList> resPres = new ArrayList<>();
+		ResStaffPreList preList = null; 
 		for (ResPre resPre : pre) {
-			preList = new ResPreList();
+			preList = new ResStaffPreList();
 			int preTypeStalls = 0;
 			int preUseTypeStalls = 0; 
 			int orderNum = 0;
@@ -764,6 +772,105 @@ public class StallServiceImpl implements StallService {
 			resPres.add(preList);
 		}
 		return resPres;
+	}
+
+	@Override
+	public List<ResStaffStallList> findStallList(HttpServletRequest request, ReqStaffStallList staffList) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+TokenUtil.getKey(request));
+		if(!checkStaffPreAuth(cu.getId(), staffList.getPreId())) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", cu.getId());
+		List<ResAdminAuthStall> stallAuthList = this.adminAuthStallClusterMapper.findStallList(map);
+		map.put("preId", staffList.getPreId());
+		map.put("type", 0);
+		if(StringUtils.isNotBlank(staffList.getStallName())) {
+			map.put("stallNameLike", "%"+staffList.getStallName()+"%");
+		}
+		// 预留功能根据状态查询
+		if(staffList.getStatus() != null) {
+			int status = 0;
+			switch (staffList.getStatus()) {
+			case 0:
+				status = 1;
+				break;
+			case 1:
+				status = 2;
+				break;
+			case 2:
+				status = 4;
+				break;
+			default:
+				throw new BusinessException(StatusEnum.STALL_UNKNOW_TYPE);
+			}
+			map.put("status", status);
+		}
+		List<ResStall> stallList = this.stallClusterMapper.findPreStallList(map);
+		log.info("【 ResStall list 】 "+JsonUtil.toJson(stallList));
+		List<ResStaffStallList> staffStallLists = new ArrayList<>();
+		ResStaffStallList ResStaffStallList;
+		List<ResOrderPlate> plates = this.entOrderClient.findPlateByPreId(staffList.getPreId());
+		log.info("【 ResOrderPlate 】 "+JsonUtil.toJson(plates));
+		List<Long> stallAuthIds = stallAuthList.stream().map(stall -> stall.getStallId()).collect(Collectors.toList());
+		ResPrefectureDetail detail = this.prefectureService.findById(staffList.getPreId());
+		log.info("【 ResPrefectureDetail 】 "+JsonUtil.toJson(detail));
+		ResponseMessage<LockBean> lock = lockFactory.findAvailableLock(detail.getGateway());
+		List<LockBean> bockBeans = null;
+		List<ResEntExcStallStatus> excStallList = feignStallExcStatusClient.findAll();
+		if(lock != null) {
+			bockBeans = lock.getDataList();
+			log.info("【lockBean list 】 "+JsonUtil.toJson(bockBeans));
+		}
+		for (ResStall resStall : stallList) {
+			if(!stallAuthIds.contains(resStall.getId())) {
+				continue;
+			}
+			ResStaffStallList = new ResStaffStallList();
+			if(resStall.getStatus() == 2) {
+				for (ResOrderPlate resOrderPlate : plates) {
+					if(resOrderPlate.getStallId().equals(resStall.getId())) {
+						ResStaffStallList.setPlateNo(resOrderPlate.getPlateNo());
+					}
+				}
+			}
+			for (ResEntExcStallStatus resEntExcStallStatus : excStallList) {
+				if(resEntExcStallStatus.getStallId().equals(resStall.getId())) {
+					ResStaffStallList.setExcStatus(false);
+				}
+			}
+			if(bockBeans != null) {
+				for (LockBean lockBean : bockBeans) {
+					if(lockBean.getLockCode().equals(resStall.getLockSn())) {
+						switch (lockBean.getLockState()) {
+						case 0:
+							ResStaffStallList.setLockStatus(2);
+							break;
+						default:
+							ResStaffStallList.setLockStatus(lockBean.getLockState());
+							break;
+						}
+					}
+				}
+			}else{
+				ResStaffStallList.setLockStatus(resStall.getLockStatus());
+			}
+			ResStaffStallList.setStatus(resStall.getStatus());
+			ResStaffStallList.setStallId(resStall.getId());
+			ResStaffStallList.setStallName(resStall.getStallName());
+			staffStallLists.add(ResStaffStallList);
+		}
+		return staffStallLists;
+	}
+	
+	
+	
+	public Boolean checkStaffPreAuth(Long userId, Long preId) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("preId", preId);
+		List<AdminAuthPre> list = this.adminAuthPreClusterMapper.findList(map );
+		return list != null && list.size() != 0 ? true : false;
 	}
 	
 	

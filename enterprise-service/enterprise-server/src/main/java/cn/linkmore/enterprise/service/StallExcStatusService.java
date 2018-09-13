@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.linkmore.enterprise.entity.StallExcStatus;
+import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 
 /**
  * 车位异常原因状态
@@ -47,5 +48,12 @@ public interface StallExcStatusService {
 	 * @Version  v2.0
 	 */
 	List<StallExcStatus> findAll();
+
+	/**
+	 * @Description  查询车位异常原因
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResEntExcStallStatus> findResAll();
 
 }

@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("车区列表")
-public class ResPreList {
+public class ResStaffPreList {
 
 	@ApiModelProperty(value="车区名称")
 	private String preName;

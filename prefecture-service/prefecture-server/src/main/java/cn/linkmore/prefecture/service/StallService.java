@@ -10,7 +10,9 @@ import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.prefecture.controller.staff.response.ResPreList;
+import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
@@ -184,5 +186,17 @@ public interface StallService {
 	 */
 	void operLockWY(ReqControlLock reqc);
 	
-	List<ResPreList> findPreList(HttpServletRequest request, Long cityId);
+	/**
+	 * @Description  查询车区列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStaffPreList> findPreList(HttpServletRequest request, Long cityId);
+	
+	/**
+	 * @Description  查询车位列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStaffStallList> findStallList(HttpServletRequest request, ReqStaffStallList staffList);
 }

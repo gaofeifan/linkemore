@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.enterprise.dao.cluster.StallExcStatusClusterMapper;
 import cn.linkmore.enterprise.dao.master.StallExcStatusMasterMapper;
 import cn.linkmore.enterprise.entity.StallExcStatus;
+import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 
 /**
  * 车位异常原因实现
@@ -44,6 +45,10 @@ public class StallExcStatusServiceImpl implements StallExcStatusService {
 	@Override
 	public List<StallExcStatus> findAll() {
 		return this.clusterMapper.findAll();
+	}
+	@Override
+	public List<ResEntExcStallStatus> findResAll() {
+		return this.clusterMapper.findResAll();
 	}
 	
 	
