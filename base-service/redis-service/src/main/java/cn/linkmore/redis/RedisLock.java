@@ -1,7 +1,11 @@
 package cn.linkmore.redis;
 
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,12 @@ public class RedisLock {
 	
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
+	
+	@SuppressWarnings("rawtypes")
+	@Autowired
+	private RedisTemplate redisTemplate;
+	
+	private static final long LOCK_TIMEOUT = 60 * 1000;
 	
 	/***
      * 加锁
@@ -65,16 +75,20 @@ public class RedisLock {
 	 * @return 拿到锁
 	 */
 	public boolean  getLock(String key,Object newValue) {
-		ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
 		Boolean isOk = operations.setIfAbsent(key, newValue.toString());
+
 		System.out.println("isOk------"+isOk+"key------"+key+"newValue------"+newValue);
         if(isOk) {
+        	redisTemplate.expire(key, LOCK_TIMEOUT, TimeUnit.MILLISECONDS);
            // 获得锁
            return true;
         }else {
-        	String alreadyValue =String.valueOf(operations.get(key));
+        	System.out.println(operations.get(key));
+        	String alreadyValue =(String)operations.get(key);
         	System.out.println("alreadyValue------"+alreadyValue);
-        	if(alreadyValue.equals( String.valueOf(newValue ))) {
+        	if(alreadyValue.equals(String.valueOf(newValue ))) {
+        		redisTemplate.expire(key, LOCK_TIMEOUT, TimeUnit.MILLISECONDS);
         		return true;
         	}else {
         		return false;

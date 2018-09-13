@@ -29,7 +29,7 @@ public class RedisService {
 
 	@SuppressWarnings("rawtypes")
 	@Autowired
-	private RedisTemplate redisTemplate; 
+	private RedisTemplate redisTemplate;
 	
 	
 	@Autowired

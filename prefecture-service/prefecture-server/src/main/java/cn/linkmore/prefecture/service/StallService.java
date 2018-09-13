@@ -161,6 +161,13 @@ public interface StallService {
 	void controling (ReqControlLock  reqc);
 	
 	/**
+	 * 管理版控制车位锁
+	 * @param 
+	 * @return
+	 */
+	void operating (ReqControlLock  reqc);
+	
+	/**
 	 * 查看车位锁状态
 	 * @param 
 	 * @return
