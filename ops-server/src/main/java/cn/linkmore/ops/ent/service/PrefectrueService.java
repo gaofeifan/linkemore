@@ -1,13 +1,10 @@
 package cn.linkmore.ops.ent.service;
 
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import java.util.Map;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqAddEntPreture;
-import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.prefecture.response.ResPreList;
 
@@ -48,11 +45,11 @@ public interface PrefectrueService {
 	void delete(List<Long> ids);
 
 	/**
-	 * @Description  查询所有
+	 * @Description  查询企业下所有车区
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResEntPrefecture> findAll(HttpServletRequest request);
+	List<ResEntPrefecture> findAll(Map<String, Object> map);
 
 	/**
 	 * @Description  查询未被创建的企业车区

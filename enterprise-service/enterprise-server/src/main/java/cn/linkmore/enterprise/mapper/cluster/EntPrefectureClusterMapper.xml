@@ -50,12 +50,12 @@
 		where pre_id = #{preId} and ent_id = #{entId}
 		limit 0,1
 	</select>
-	<select id="findList" parameterType="java.util.HashMap"
-		resultMap="ResBaseResultMap">
-		select
-		<include refid="Base_Column_List" />
-		from t_ent_prefecture
+	<select id="findList" parameterType="java.util.HashMap" resultMap="ResBaseResultMap">
+		select <include refid="Base_Column_List" /> from t_ent_prefecture
 		where 1 = 1
+		<if test="entId != null">
+			AND ent_id = #{entId}
+		</if>
 	</select>
 	<select id="findPage" parameterType="java.util.HashMap"
 		resultMap="BaseResultMap">

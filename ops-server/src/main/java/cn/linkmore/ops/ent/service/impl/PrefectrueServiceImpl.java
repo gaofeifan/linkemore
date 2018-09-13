@@ -1,6 +1,7 @@
 package cn.linkmore.ops.ent.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -47,12 +48,12 @@ public class PrefectrueServiceImpl implements PrefectrueService {
 	}
 
 	@Override
-	public List<ResEntPrefecture> findAll(HttpServletRequest request) {
-		return this.prefectrueClient.findAll();
+	public List<ResPreList> findNotCreateEntPre() {
+		return this.prefectrueClient.findNotCreateEntPre();
 	}
 
 	@Override
-	public List<ResPreList> findNotCreateEntPre() {
-		return this.prefectrueClient.findNotCreateEntPre();
+	public List<ResEntPrefecture> findAll(Map<String, Object> map) {
+		return this.prefectrueClient.findAll(map);
 	}
 }

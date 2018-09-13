@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntRentUser;
+import cn.linkmore.enterprise.response.ResEntRentUser;
 /**
  * 长租用户---读
  * @author   GFF
@@ -41,7 +42,7 @@ public interface EntRentUserClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<EntRentUser> findPage(Map<String, Object> param);
+	List<ResEntRentUser> findPage(Map<String, Object> param);
 
 	/**
 	 * @Description  查询所有长租用户
@@ -63,5 +64,10 @@ public interface EntRentUserClusterMapper {
 	 * @Version  v2.0
 	 */
 	Integer check(Map<String, Object> param);
+	/**
+	 * 查询已使用固定车位列表
+	 * @return
+	 */
+	List<ResEntRentUser> findUsedStall();
 
 }

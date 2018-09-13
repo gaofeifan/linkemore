@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.client;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,9 +47,9 @@ public interface PrefectrueClient {
 	@ResponseBody
 	void delete(@RequestBody List<Long> ids);
 
-	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	@RequestMapping(value = "/all", method = RequestMethod.POST)
 	@ResponseBody
-	List<ResEntPrefecture> findAll();
+	List<ResEntPrefecture> findAll(@RequestBody Map<String, Object> map);
 
 	@RequestMapping(value = "/not-create-pre", method = RequestMethod.GET)
 	@ResponseBody

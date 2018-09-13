@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +40,15 @@ public class PrefectrueClientHystrix implements PrefectrueClient {
 		log.info("ops staffauth servicevoid delete(List<Long> ids) hystrix");
 		
 	}
-	@Override
-	public List<ResEntPrefecture> findAll() {
-		log.info("ops staffauth service List<ResEntPrefectrue> findAll() hystrix");
-		return null;
-	}
+	
 	@Override
 	public List<ResPreList> findNotCreateEntPre() {
 		log.info("ops staffauth service List<ResEntPrefecture> findNotCreateEntPre() hystrix");
+		return null;
+	}
+	@Override
+	public List<ResEntPrefecture> findAll(Map<String, Object> map) {
+		log.info("ops staffauth service List<ResEntPrefecture> findAll() hystrix");
 		return null;
 	}
 	

@@ -26,6 +26,7 @@ import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
+import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.util.DateUtils;
@@ -145,7 +146,7 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		Integer count = this.entRentUserClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<EntRentUser> list = this.entRentUserClusterMapper.findPage(param);
+		List<ResEntRentUser> list = this.entRentUserClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
@@ -189,6 +190,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		param.put("value", reqCheck.getValue());
 		param.put("id", reqCheck.getId());
 		return this.entRentUserClusterMapper.check(param);
+	}
+
+	@Override
+	public List<ResEntRentUser> findUsedStall() {
+		return this.entRentUserClusterMapper.findUsedStall();
 	}
 	
 	
