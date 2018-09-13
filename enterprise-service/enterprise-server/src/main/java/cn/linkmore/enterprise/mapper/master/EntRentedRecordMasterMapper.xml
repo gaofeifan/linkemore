@@ -250,4 +250,10 @@
      set down_time = now()
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="updateStatus" parameterType="java.util.Map">
+    update t_ent_rented_record set status = 2
+    where user_id = #{userId,jdbcType=BIGINT} and stall_id = #{stallId,jdbcType=BIGINT}
+    and status = 0
+  </update>
 </mapper>

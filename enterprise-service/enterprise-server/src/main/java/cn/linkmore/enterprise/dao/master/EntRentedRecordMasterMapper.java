@@ -24,4 +24,10 @@ public interface EntRentedRecordMasterMapper {
     int updateById(EntRentedRecord record);
 
 	void updateDownTime(Map<String, Object> map);
+	/**
+	 * 更新使用记录状态
+	 * @param map
+	 */
+	void updateStatus(Map<String, Object> map);
+	
 }
