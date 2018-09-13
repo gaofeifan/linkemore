@@ -24,5 +24,6 @@
     <if test="userId!=null">  
     and user_id = #{userId}
     </if>
+    group by auth_id
   </select>
 </mapper>

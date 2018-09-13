@@ -19,6 +19,12 @@
     from t_admin_user
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findByMobile" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_admin_user
+    where cellphone = #{mobile}
+  </select>
   
   <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
   	select 

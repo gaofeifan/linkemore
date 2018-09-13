@@ -3,6 +3,8 @@ package cn.linkmore.prefecture.dao.cluster;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+
+import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminAuth;
 @Mapper
 public interface AdminAuthClusterMapper {
@@ -16,4 +18,5 @@ public interface AdminAuthClusterMapper {
 	Integer check(Map<String, Object> param);
 
 	ResAdminAuth findById(Long id);
+
 }

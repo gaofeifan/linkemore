@@ -7,9 +7,10 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, create_time, update_time, status
+    id, name, create_time, update_time, status,code
   </sql>
   <delete id="delete" parameterType="java.lang.Long">
     delete from t_admin_auth
@@ -20,16 +21,17 @@
   </delete>
   <insert id="save" parameterType="cn.linkmore.prefecture.entity.AdminAuth">
     insert into t_admin_auth (id, name, create_time, 
-      update_time, status)
+      update_time, status, code)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=SMALLINT})
+      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=SMALLINT}, #{code,jdbcType=VARCHAR})
   </insert>
   
   <update id="update" parameterType="cn.linkmore.prefecture.entity.AdminAuth">
     update t_admin_auth
     set name = #{name,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      status = #{status,jdbcType=SMALLINT}
+      status = #{status,jdbcType=SMALLINT},
+      code = #{code,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

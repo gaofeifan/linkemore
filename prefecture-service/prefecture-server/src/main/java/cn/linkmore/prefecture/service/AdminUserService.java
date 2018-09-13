@@ -7,6 +7,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqAdminUser;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminUser;
 
 /**
@@ -72,5 +73,27 @@ public interface AdminUserService {
 	 * @return
 	 */
 	List<ResAdminUser> findAll();
+	
+	/**
+	 * @Description  根据手机号查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResAdminUser findMobile(String mobile);
+	
+	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updateLoginTime(Long id);
+	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResAdmin authLogin(String mobile);
 
 }

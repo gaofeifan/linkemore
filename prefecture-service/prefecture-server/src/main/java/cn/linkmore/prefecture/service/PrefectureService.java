@@ -138,4 +138,11 @@ public interface PrefectureService {
 	 */
 	ResStallInfo findStallList(ReqBooking reqBooking);
 
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPre> findPreByIds(Map<String, Object> map);
+
 }

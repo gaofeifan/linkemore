@@ -25,4 +25,23 @@
     and auth_id = #{authId}
     </if> 
   </select>
+  <select id="findStallList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  SELECT
+		stall.auth_id,
+		stall.stall_id
+	FROM
+		t_admin_auth_stall stall
+	INNER JOIN (
+		SELECT
+			auth_id,
+			user_id
+		FROM
+			t_admin_user_auth
+		GROUP BY
+			auth_id
+	) users ON users.auth_id = stall.auth_id 	AND users.user_id = #{userId}
+	GROUP BY
+		stall_id
+
+  </select>
 </mapper>

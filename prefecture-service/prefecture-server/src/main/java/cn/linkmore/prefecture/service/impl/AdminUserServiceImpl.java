@@ -19,11 +19,11 @@ import cn.linkmore.prefecture.dao.cluster.AdminUserAuthClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminUserClusterMapper;
 import cn.linkmore.prefecture.dao.master.AdminUserAuthMasterMapper;
 import cn.linkmore.prefecture.dao.master.AdminUserMasterMapper;
-import cn.linkmore.prefecture.entity.AdminAuth;
 import cn.linkmore.prefecture.entity.AdminUser;
 import cn.linkmore.prefecture.entity.AdminUserAuth;
 import cn.linkmore.prefecture.request.ReqAdminUser;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminAuth;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.prefecture.response.ResAdminUserAuth;
@@ -50,6 +50,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 	@Autowired
 	private AdminUserAuthMasterMapper adminUserAuthMasterMapper;
 	
+	
+
+	private static final String ADMIN = "admin-";
 	/*
 	 * 管理员列表
 	 */
@@ -190,4 +193,45 @@ public class AdminUserServiceImpl implements AdminUserService {
 		return this.adminUserClusterMapper.findAll();
 	}
 
+	@Override
+	public ResAdminUser findMobile(String mobile) {
+		return this.adminUserClusterMapper.findByMobile(mobile);
+	}
+
+	@Override
+	public void updateLoginTime(Long id) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("id", id);
+		map.put("loginTime", new Date());
+		this.adminUserMasterMapper.updateLoginTime(map);
+	}
+
+	@Override
+	public ResAdmin authLogin(String mobile) {
+		ResAdminUser user = this.findMobile(mobile);
+		ResAdmin admin = new ResAdmin();
+		admin.setId(user.getId());
+		admin.setCellphone(user.getCellphone());
+		admin.setCreateTime(user.getCreateTime());
+		admin.setLoginTime(user.getLoginTime());
+		admin.setRealname(user.getRealname());
+		admin.setUpdateTime(user.getUpdateTime());
+		admin.setStatus(user.getStatus());
+		Map<String, Object> map = new HashMap<>();
+		List<ResAdminAuth> list = this.adminAuthClusterMapper.findList(map);
+		this.adminUserAuthClusterMapper.findList(map);
+		for (ResAdminAuth resAdminAuth : list) {
+			if(resAdminAuth.getCode().contains(ADMIN)) {
+				admin.setIsOperate(true);
+				if(resAdminAuth.getCode().equals(ResAdmin.ADMIN_ALL)) {
+					admin.setType(ResAdmin.ADMIN_ALL);
+					admin.setCode(ResAdmin.ADMIN_ALL_CODE);
+				}
+			}
+		}
+		return admin;
+	}             	
+
+	
+	
 }

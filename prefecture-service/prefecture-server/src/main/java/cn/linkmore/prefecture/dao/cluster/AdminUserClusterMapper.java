@@ -17,5 +17,7 @@ public interface AdminUserClusterMapper {
 	ResAdminUser findById(Long id);
 
 	List<ResAdminUser> findAll();
+
+	ResAdminUser findByMobile(String mobile);
 	
 }

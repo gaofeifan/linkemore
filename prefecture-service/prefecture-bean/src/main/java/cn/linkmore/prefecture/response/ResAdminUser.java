@@ -21,7 +21,7 @@ public class ResAdminUser {
     private Date loginTime;
 
     private Short status;
-
+    
     public Long getId() {
         return id;
     }
@@ -77,4 +77,6 @@ public class ResAdminUser {
     public void setStatus(Short status) {
         this.status = status;
     }
+
+    
 }

@@ -1,11 +1,15 @@
 package cn.linkmore.prefecture.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,16 +40,24 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.response.ResEntStaff;
 import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.order.client.EntOrderClient;
+import cn.linkmore.order.client.FeignUnusualOrderClient;
 import cn.linkmore.order.client.OrderClient;
+import cn.linkmore.order.response.ResUnusualOrder;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
+import cn.linkmore.prefecture.controller.staff.response.ResPreList;
+import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.AdminUserAuthClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.EntRentRecordClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
 import cn.linkmore.prefecture.dao.master.EntRentRecordMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
+import cn.linkmore.prefecture.entity.AdminAuthPre;
+import cn.linkmore.prefecture.entity.AdminAuthStall;
 import cn.linkmore.prefecture.entity.EntRentRecord;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StallLock;
@@ -53,10 +65,16 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResAdminAuthStall;
+import cn.linkmore.prefecture.response.ResAdminUserAuth;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
+import cn.linkmore.prefecture.service.AdminAuthService;
+import cn.linkmore.prefecture.service.AdminUserService;
+import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.PushClient;
@@ -65,6 +83,8 @@ import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.TokenUtil;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Service实现类 - 车位信息
@@ -105,7 +125,18 @@ public class StallServiceImpl implements StallService {
 	private EntRentedRecordClient entRentedRecordClient;
 	@Autowired
 	private EntStaffClient entStaffClient;
-	
+	@Autowired
+	private AdminUserService adminUserService;
+	@Autowired
+	private PrefectureService prefectureService;
+	@Autowired
+	private AdminAuthStallClusterMapper adminAuthStallClusterMapper;
+	@Autowired
+	private FeignUnusualOrderClient feignUnusualOrderClient;
+	@Autowired
+	private AdminUserAuthClusterMapper adminUserAuthClusterMapper;
+	@Autowired
+	private AdminAuthPreClusterMapper adminAuthPreClusterMapper;
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -686,4 +717,54 @@ public class StallServiceImpl implements StallService {
 			}
 		}
 	}
+
+	@Override
+	public List<ResPreList> findPreList(HttpServletRequest request, Long cityId) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+TokenUtil.getKey(request)); 
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", cu.getId());
+		List<AdminAuthPre> pres = this.adminAuthPreClusterMapper.findList(map);
+		List<Long> list = pres.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
+		map.put("preIds", list);
+		map.put("cityId", cityId);
+		List<ResPre> pre = this.prefectureService.findPreByIds(map);
+		List<ResAdminAuthStall> adminStalls = this.adminAuthStallClusterMapper.findStallList(map);
+		List<Long> collect = adminStalls.stream().map(au -> au.getStallId()).collect(Collectors.toList());
+		List<Stall> stalls = this.stallClusterMapper.findAll();
+		map = new HashMap<>();
+		List<ResUnusualOrder> unusualOrders = feignUnusualOrderClient.findList(map);
+		List<ResPreList> resPres = new ArrayList<>();
+		ResPreList preList = null; 
+		for (ResPre resPre : pre) {
+			preList = new ResPreList();
+			int preTypeStalls = 0;
+			int preUseTypeStalls = 0; 
+			int orderNum = 0;
+			for (Stall stall : stalls) {
+				if(stall.getType() != 0) {
+					continue;
+				}
+				if(collect.contains(stall.getId())) {
+					preTypeStalls++;
+					if(stall.getStatus() == 2) {
+						preUseTypeStalls++;
+					}
+				}
+			}
+			for (ResUnusualOrder resUnusualOrder : unusualOrders) {
+				if(resUnusualOrder.getPrefectureId().equals(resPre.getId())) {
+					orderNum++;
+				}
+			}
+			preList.setPreId(resPre.getId());
+			preList.setPreName(resPre.getName());
+			preList.setUnusualOrder(orderNum);
+			preList.setPreTypeStalls(preTypeStalls);
+			preList.setPreUseTypeStalls(preUseTypeStalls);
+			resPres.add(preList);
+		}
+		return resPres;
+	}
+	
+	
 }

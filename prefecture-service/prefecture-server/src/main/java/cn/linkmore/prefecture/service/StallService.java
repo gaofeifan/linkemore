@@ -3,11 +3,14 @@ package cn.linkmore.prefecture.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.controller.staff.response.ResPreList;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
@@ -180,4 +183,6 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	void operLockWY(ReqControlLock reqc);
+	
+	List<ResPreList> findPreList(HttpServletRequest request, Long cityId);
 }

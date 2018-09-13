@@ -13,10 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
-
-import cn.linkmore.account.client.UserStaffClient;
-import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.PushType;
@@ -27,97 +23,62 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.ent.request.ReqAuthLogin;
 import cn.linkmore.enterprise.controller.ent.request.ReqAuthSend;
-import cn.linkmore.enterprise.controller.ent.response.ResStaff;
-import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
-import cn.linkmore.enterprise.dao.master.EntStaffMasterMapper;
-import cn.linkmore.enterprise.entity.EntStaff;
-import cn.linkmore.enterprise.service.StaffService;
-import cn.linkmore.notice.client.EntSocketClient;
-/*import cn.linkmore.notice.client.EntSocketClient;
-import cn.linkmore.notice.client.UserSocketClient;*/
-import cn.linkmore.prefecture.client.PrefectureClient;
+import cn.linkmore.enterprise.controller.ent.response.ResAdmin;
+import cn.linkmore.enterprise.service.StaffAdminUserService;
+import cn.linkmore.prefecture.client.StaffAdminUserClient;
+import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.redis.RedisService;
-import cn.linkmore.third.client.AppWechatClient;
-import cn.linkmore.third.client.PushClient;
-import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.client.SmsClient;
-import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
-import cn.linkmore.third.response.ResMiniSession;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
-
-/**
- * 员工接口实现
- * @author   GFF
- * @Date     2018年7月20日
- * @Version  v2.0
- */
 @Service
-public class StaffServiceImpl implements StaffService {
-
-	private  final Logger log = LoggerFactory.getLogger(this.getClass());
+public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private final static long SPACE = 1000L*60*30; 
 	private final static String STAFF_CODE = "6699"; 
 	@Resource
-	private PrefectureClient prefectureClient;
-	@Resource
-	private EntSocketClient entSocketClient;
-	@Resource
-	private SendClient sendClient;
-	@Resource
-	private PushClient pushClient;
-	@Resource
-	private SmsClient smsClient;
-	@Resource
-	private AppWechatClient appWechatClient;
-	@Resource
-	private WechatMiniClient wechatMiniClient;
-	@Resource
-	
 	private RedisService redisService;
 	@Resource
-	private EntStaffMasterMapper entStaffMasterMapper;
+	private StaffAdminUserClient staffAdminUserClient;
 	@Resource
-	private EntStaffClusterMapper entStaffClusterMapper;
-	@Resource
-	private UserStaffClient staffClient;
+	private SmsClient smsClient;
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
+
 	@Override
-	public ResStaff login(ReqAuthLogin rl, HttpServletRequest request) {
-		ResUserStaff rus = staffClient.findByMobile(rl.getMobile()); 
-		log.info(">>>>>>appLogin rus = {}",JSON.toJSON(rus));
-		if(!(rus!=null&&STAFF_CODE.equals(rl.getCode()))) {
-			Object cache = this.redisService.get(RedisKey.STAFF_ENT_AUTH_CODE.key+rl.getMobile());
+	public ResAdmin login(ReqAuthLogin rl, HttpServletRequest request) {
+		if(!("6699".equals(rl.getCode()))) {
+			Object cache = this.redisService.get(RedisKey.STAFF_STAFF_AUTH_CODE.key+rl.getMobile());
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
 			}else {
 				if(!cache.toString().equals(rl.getCode())) {
 					throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
 				}else {
-					this.redisService.remove(RedisKey.STAFF_ENT_AUTH_CODE.key+rl.getMobile());
+					this.redisService.remove(RedisKey.STAFF_STAFF_AUTH_CODE.key+rl.getMobile());
 				}
 			}
 		}
 		String key = TokenUtil.getKey(request);
-		EntStaff staff = entStaffClusterMapper.findByMobile(rl.getMobile());
+		cn.linkmore.prefecture.response.ResAdmin staff = staffAdminUserClient.authLogin(rl.getMobile());
 		if(staff == null || staff.getStatus() == 0) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
 		}
 		staff.setLoginTime(new Date());
-		this.entStaffMasterMapper.updateById(staff);
-		ResStaff rs = new ResStaff();
+		this.staffAdminUserClient.updateLoginTime(staff.getId());
+		ResAdmin rs = new ResAdmin();
 		rs.setId(staff.getId());
-		rs.setMobile(staff.getMobile());
+		rs.setMobile(staff.getCellphone());
 		rs.setRealname(staff.getRealname());
 		rs.setToken(key);
+		rs.setIsOperation(staff.getIsOperate());
 		rs.setStatus(staff.getStatus());
-		rs.setType(staff.getType());
+//		rs.setType(staff.getType());
 		CacheUser u = new CacheUser();
 		u.setId(staff.getId());
-		u.setMobile(staff.getMobile());
+		u.setMobile(staff.getCellphone());
 		u.setToken(key); 
-		u.setOpenId(staff.getOpenId());
+//		u.setOpenId(staff.getOpenId());
 		u.setClient((short)ClientSource.APPLET.source);
 		Token token = this.cacheUser(request, u);  
 		if(token!=null) {
@@ -140,14 +101,14 @@ public class StaffServiceImpl implements StaffService {
 			userId = 0L;
 		}
 		synchronized(userId) {
-			last = (Token)this.redisService.get(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId());
+			last = (Token)this.redisService.get(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+user.getId());
 			if(last!=null){
-				this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId());
-				this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_USER.key+last.getAccessToken());  
+				this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+user.getId());
+				this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+last.getAccessToken());  
 				last.setAccessToken(key);
 			}
 			user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_USER.key+key, user); 
+			this.redisService.set(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+key, user); 
 			Token token = new Token();
 			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			token.setTimestamp(new Date().getTime());
@@ -155,7 +116,7 @@ public class StaffServiceImpl implements StaffService {
 			if(user.getClient().intValue()==ClientSource.WXAPP.source) {
 				this.redisService.set(Constants.RedisKey.STAFF_WXAPP_AUTH_TOKEN.key+user.getOpenId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
 			}
-			this.redisService.set(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+user.getId(), token); 
+			this.redisService.set(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+user.getId(), token); 
 		} 
 		return last;
 	}
@@ -175,7 +136,7 @@ public class StaffServiceImpl implements StaffService {
 				map.put("content", "强制退出,账号已在其它设备登录");
 //				map.put("status", status);
 				CacheUser cu = (CacheUser) redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + token.getAccessToken());
-				entSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
+//				entSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
 			} else {
 				ReqPush rp = new ReqPush();
 				rp.setAlias(uid);
@@ -184,7 +145,7 @@ public class StaffServiceImpl implements StaffService {
 				rp.setClient(token.getClient());
 				rp.setType(PushType.USER_APP_LOGOUT_NOTICE);
 				rp.setTitle("账号已在其它设备登录"); 
-				sendClient.send(rp);
+//				sendClient.send(rp);
 			}
 		}
 	}
@@ -192,16 +153,12 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	public void logout(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
-	/*	Map<String,Object> map = new HashMap<>();
-		map.put("sql", "status = 0,open_id = null");
-		map.put("id", ru.getId());
-		this.entStaffMasterMapper.updateByColumn(map);*/
-		this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_TOKEN.key+ru.getId().toString());
-		this.redisService.remove(Constants.RedisKey.STAFF_ENT_AUTH_USER.key+key); 
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
+		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+ru.getId().toString());
+		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
 	}
 
-	@Override
+/*	@Override
 	public void bindLogin(String code, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
@@ -212,7 +169,7 @@ public class StaffServiceImpl implements StaffService {
 		map.put("sql", "open_id = "+fans.getOpenid());
 		map.put("id", ru.getId());
 		this.entStaffMasterMapper.updateByColumn(map );
-	}
+	}*/
 
 	@Override
 	public void send(ReqAuthSend rs) {
@@ -226,7 +183,7 @@ public class StaffServiceImpl implements StaffService {
 		if(space>SPACE||space<-SPACE) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		}
-		if(this.redisService.exists(RedisKey.STAFF_ENT_AUTH_MOBILE+rs.getMobile())) {
+		if(this.redisService.exists(RedisKey.STAFF_STAFF_AUTH_MOBILE+rs.getMobile())) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		} 
 		String code = getAppSmsCode(rs.getMobile());
@@ -238,8 +195,8 @@ public class StaffServiceImpl implements StaffService {
 		sms.setSt(Constants.SmsTemplate.USER_APP_LOGIN_CODE);
 		boolean success = this.smsClient.send(sms);   
 		if(success){
-			this.redisService.set(RedisKey.STAFF_ENT_AUTH_CODE.key+rs.getMobile(), code, 60*10); 
-			this.redisService.set(RedisKey.STAFF_ENT_AUTH_MOBILE.key+rs.getMobile(), rs.getMobile(),1);
+			this.redisService.set(RedisKey.STAFF_STAFF_AUTH_CODE.key+rs.getMobile(), code, 60*10); 
+			this.redisService.set(RedisKey.STAFF_STAFF_AUTH_MOBILE.key+rs.getMobile(), rs.getMobile(),1);
 		}else{
 			throw new BusinessException(StatusEnum.USER_APP_SMS_FAILED);
 		} 		
@@ -259,14 +216,14 @@ public class StaffServiceImpl implements StaffService {
 
 	@Override
 	public boolean checkMobile(String mobile) {
-		EntStaff entStaff = this.entStaffClusterMapper.findByMobile(mobile);
-		if(entStaff != null) {
+		ResAdminUser user = this.staffAdminUserClient.findMobile(mobile);
+		if(user != null) {
 			return true;
 		}
 		return false;
 	}
 
-	@Override
+/*	@Override
 	public String miniBind(String code, HttpServletRequest request) {
 		ResMiniSession session = this.wechatMiniClient.getSessionPlus(code, 1002);
 		String key = TokenUtil.getKey(request);
@@ -276,9 +233,7 @@ public class StaffServiceImpl implements StaffService {
 		map.put("id", ru.getId());
 		this.entStaffMasterMapper.updateByColumn(map );
 		return session.getOpenid();
-	}
-	
+	}*/
 	
 
-	
 }

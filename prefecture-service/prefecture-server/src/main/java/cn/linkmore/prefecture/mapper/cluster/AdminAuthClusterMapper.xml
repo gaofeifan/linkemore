@@ -7,9 +7,10 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, create_time, update_time, status
+    id, name, create_time, update_time, status,code
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

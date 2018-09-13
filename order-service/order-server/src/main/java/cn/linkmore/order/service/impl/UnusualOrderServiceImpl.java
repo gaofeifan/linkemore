@@ -2,6 +2,8 @@ package cn.linkmore.order.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import cn.linkmore.order.dao.cluster.UnusualOrderClusterMapper;
 import cn.linkmore.order.dao.master.UnusualOrderMasterMapper;
 import cn.linkmore.order.entity.UnusualOrder;
 import cn.linkmore.order.response.ResOrderOps;
+import cn.linkmore.order.response.ResUnusualOrder;
 import cn.linkmore.order.service.UnusualOrderService;
 
 @Service
@@ -206,4 +209,11 @@ public class UnusualOrderServiceImpl implements UnusualOrderService {
 			this.unusualOrderMasterMapper.insertBatch(usualOrderList);
 		}
 	}
+
+	@Override
+	public List<ResUnusualOrder> findList(Map<String, Object> map) {
+		return this.unusualOrderClusterMapper.findList(map);
+	}
+	
+	
 }

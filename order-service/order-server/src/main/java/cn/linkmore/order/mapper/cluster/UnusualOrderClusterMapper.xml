@@ -17,6 +17,22 @@
     <result column="order_mobile" jdbcType="VARCHAR" property="orderMobile" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+  <resultMap id="ResBaseResultMap" type="cn.linkmore.order.response.ResUnusualOrder">
+    <id column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="order_start_time" jdbcType="TIMESTAMP" property="orderStartTime" />
+    <result column="order_end_time" jdbcType="TIMESTAMP" property="orderEndTime" />
+    <result column="order_status" jdbcType="SMALLINT" property="orderStatus" />
+    <result column="lock_down_status" jdbcType="SMALLINT" property="lockDownStatus" />
+    <result column="lock_down_time" jdbcType="TIMESTAMP" property="lockDownTime" />
+    <result column="category" jdbcType="SMALLINT" property="category" />
+    <result column="order_operate_time" jdbcType="TIMESTAMP" property="orderOperateTime" />
+    <result column="order_mobile" jdbcType="VARCHAR" property="orderMobile" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
   
   <sql id="Base_Column_List">
     stall_id, stall_name, prefecture_id, order_id, order_no, order_start_time, order_end_time, 
@@ -29,6 +45,32 @@
     <include refid="Base_Column_List" />
     from t_admin_unusual_order
     where category in ('0','1')
+  </select>
+  <select id="findList" parameterType="java.util.Map" resultMap="ResBaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_admin_unusual_order
+   <where>
+   		<if test="preId != null">
+   			AND prefecture_id = #{preId}
+   		</if>
+   		<if test="stallId != null">
+   			AND stall_id = #{stallId}
+   		</if>
+   		<if test="preIds != null">
+   			AND prefecture_id in
+	   		<foreach collection="preIds"  index="index" item="pId" open="(" separator="," close=")" >
+	    		 #{pId}
+	    	</foreach>
+   		
+   		</if>
+   		<if test="stallIds != null">
+   			AND stall_id in
+	   		<foreach collection="stallIds"  index="index" item="sId" open="(" separator="," close=")" >
+	    		 #{sId}
+	    	</foreach>
+   		</if>
+   </where>
   </select>
   
 </mapper>
