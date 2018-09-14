@@ -729,6 +729,7 @@ public class PayServiceImpl implements PayService {
 		// OrdersDetail od = ordersDetailClusterMapper.findByOrderId(order.getId());
 		if (order.getStatus() == OrderStatus.UNPAID.value) {
 			try {
+				log.info(">>>>>>stall checkout thread preName = {},stallName = {}, mobile= {}",order.getPreName(),order.getStallName(),order.getUsername());
 				new Thread(new StallCheckoutThread(order.getStallId())).start();
 			} catch (Exception e) {
 				log.info("up lock throw exception = {}",e.getMessage());
@@ -842,7 +843,9 @@ public class PayServiceImpl implements PayService {
 
 		@Override
 		public void run() {
-			stallClient.checkout(stallId);
+			log.info(">>>>>>>>>>>>>checkout>>>>>>>>>>>>{}",stallId);
+			Boolean checkoutFlag = stallClient.checkout(stallId);
+			log.info(">>>>>>>>>>>>>checkout checkoutFlag>>>>>>>>>>>>{}",checkoutFlag);
 		}
 	}
 
