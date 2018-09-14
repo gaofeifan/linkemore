@@ -306,7 +306,6 @@ public class EntStallServiceImpl implements EntStallService {
 		
 		List<LockBean> lockBeans = locks.getDataList();
 		//设置车位对应的车牌号
-		System.out.println(JsonUtil.toJson(lockBeans));
 		log.debug(JsonUtil.toJson(lockBeans));
 		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
 		cn.linkmore.enterprise.controller.ent.response.

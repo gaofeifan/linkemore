@@ -122,6 +122,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	@Override
+	public List<ResPre> findPreByIds(Map<String,Object> map) {
+		List<ResPre> list = this.prefectureClusterMapper.findPreByIds(map);
+		return list;
+	}
+	
+	@Override
 	public List<ResPrefectureList> getStallCount(HttpServletRequest request) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request)); 
 		Map<String,Object> paramMap = new HashMap<String,Object>();

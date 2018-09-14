@@ -17,6 +17,8 @@ public class AdminAuth {
     private Date updateTime;
 
     private Short status;
+    
+    private String code;
 
     public Long getId() {
         return id;
@@ -57,4 +59,14 @@ public class AdminAuth {
     public void setStatus(Short status) {
         this.status = status;
     }
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+    
+    
 }

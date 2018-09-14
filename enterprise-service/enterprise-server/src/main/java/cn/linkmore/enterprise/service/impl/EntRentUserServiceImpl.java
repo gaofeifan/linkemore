@@ -21,6 +21,7 @@ import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntRentUserClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
+import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.entity.EntStaff;
@@ -48,6 +49,8 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	private EntRentUserMasterMapper entRentUserMasterMapper;
 	@Autowired
 	private EntRentUserClusterMapper entRentUserClusterMapper;
+	@Autowired
+	private EntRentedRecordMasterMapper entRentedRecordMasterMapper;
 	
 	@Autowired
 	private EnterpriseClusterMapper enterpriseClusterMapper;
@@ -57,9 +60,7 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	@Autowired
 	private UserClient userClient;
 
-	/* (non-Javadoc)
-	 * @see cn.linkmore.enterprise.service.EntRentUserService#saveEntRentUser(java.lang.Long, java.lang.Long, java.lang.Long, java.lang.String, java.lang.String, java.lang.String)
-	 */
+	
 	@Override
 	public int saveEntRentUser(Long entId, Long entPreId, Long stallId, String mobile, String realname, String plate) {
 		
@@ -124,6 +125,16 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 
 	@Override
 	public void delete(List<Long> ids) {
+		Map<String,Object> map = null;
+		for(Long id : ids) {
+			EntRentUser entRentUser = entRentUserClusterMapper.findById(id);
+			if(entRentUser != null) {
+				map = new HashMap<String,Object>();
+				map.put("userId", entRentUser.getUserId());
+				map.put("stallId", entRentUser.getStallId());
+				this.entRentedRecordMasterMapper.updateStatus(map);
+			}
+		}
 		this.entRentUserMasterMapper.delete(ids);
 	}
 
@@ -156,8 +167,8 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		if(userId != null) {
 			user.setUserId(userId);
 		}
-		user.setStartTime(DateUtils.convert(user.getStartDate(), null));
-		user.setEndTime(DateUtils.convert(user.getEndDate(), null));
+		user.setStartTime(DateUtils.convert(user.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
+		user.setEndTime(DateUtils.convert(user.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
 		this.entRentUserMasterMapper.saveReq(user);
 	}
 
@@ -167,8 +178,8 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		if(userId != null) {
 			user.setUserId(userId);
 		}
-		user.setStartTime(DateUtils.convert(user.getStartDate(), null));
-		user.setEndTime(DateUtils.convert(user.getEndDate(), null));
+		user.setStartTime(DateUtils.convert(user.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
+		user.setEndTime(DateUtils.convert(user.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
 		this.entRentUserMasterMapper.updateReq(user);
 		
 	}

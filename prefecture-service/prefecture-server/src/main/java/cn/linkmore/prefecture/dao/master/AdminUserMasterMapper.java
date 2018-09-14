@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.dao.master;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,4 +14,6 @@ public interface AdminUserMasterMapper {
     int update(AdminUser record);
 
 	int delete(List<Long> ids);
+
+	void updateLoginTime(Map<String, Object> map);
 }

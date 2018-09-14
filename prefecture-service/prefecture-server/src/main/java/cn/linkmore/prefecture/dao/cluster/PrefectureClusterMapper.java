@@ -66,6 +66,13 @@ public interface PrefectureClusterMapper {
 	 * @return
 	 */
 	List<ResPreGateway> findPreGateList();
+
+	/**
+	 * @Description  根据条件查询车区
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPre> findPreByIds(Map<String,Object> map);
 	
 	
 }

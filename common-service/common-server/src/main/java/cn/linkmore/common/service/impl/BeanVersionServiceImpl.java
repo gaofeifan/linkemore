@@ -63,16 +63,17 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 		Map<String, Object> map = new HashMap<>();
 		String key = TokenUtil.getKey(request);
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-		ResUserStaff staff = userStaffClient.findByMobile(user.getMobile());
-		if(staff != null) {
-			ResVersionBean version = this.baseAppVersionClusterMapper.findLast(appType);
-			return version;
-		}else {
-			map.put("appType", appType);
-			map.put("status", 1);
-			List<ResVersionBean> res = this.baseAppVersionClusterMapper.findByTypeAnStatus(map);
-			return res.get(0);
+		if(user != null ) {
+			ResUserStaff staff = userStaffClient.findByMobile(user.getMobile());
+			if(staff != null) {
+				ResVersionBean version = this.baseAppVersionClusterMapper.findLast(appType);
+				return version;
+			}
 		}
+		map.put("appType", appType);
+		map.put("status", 1);
+		List<ResVersionBean> res = this.baseAppVersionClusterMapper.findByTypeAnStatus(map);
+		return res.get(0);
 	}
 	
 	public List<BaseAppVersion> findList(Common common){

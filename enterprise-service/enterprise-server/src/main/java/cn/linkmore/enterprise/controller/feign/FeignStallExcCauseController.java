@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
+import cn.linkmore.enterprise.response.ResEntExcStallStatus;
+import cn.linkmore.enterprise.service.StallExcStatusService;
 import io.swagger.annotations.ApiOperation;
 
 @RequestMapping("/feign/stall/exc")
 @RestController
 public class FeignStallExcCauseController {
 
+	@Resource
+	private StallExcStatusService excStatusService;
 	@Resource
 	private cn.linkmore.enterprise.service.EntStallService EntStallService;
 	
@@ -28,5 +32,11 @@ public class FeignStallExcCauseController {
 	public ResponseEntity<Boolean> saveStallExcCause(@RequestBody List<ReqStallExcCause> causes ,HttpServletRequest request){
 		this.EntStallService.saveStallExcCause(causes);
 		return ResponseEntity.success(true, request);
+	}
+	
+	@RequestMapping(value="/all",method=RequestMethod.GET)
+	@ResponseBody
+	public List<ResEntExcStallStatus> findAll(){
+		return this.excStatusService.findResAll();
 	}
 }

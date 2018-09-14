@@ -15,5 +15,16 @@
     from t_admin_auth_prefecture
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+	select pre.auth_id , pre.pre_id FROM t_admin_auth_prefecture pre INNER JOIN (
+	select auth_id,user_id FROM t_admin_user_auth  GROUP BY auth_id
+	) users ON users.auth_id = pre.auth_id GROUP BY pre_id 
+	<if test=" userId != null">
+		AND users.user_id = #{userId}
+	</if>
+	<if test="preId != null">
+		AND pre.pre_id = #{preId}
+	</if>
+  </select>
  
 </mapper>
