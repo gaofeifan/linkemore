@@ -323,9 +323,11 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		String userid = String.valueOf(reqToothAuth.getUserId());
 		String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqToothAuth.getStallId();
 		Boolean have = false;
-		try {
 			have = this.redisLock.getLock(robkey, userid);
 			log.info("用户=======>" + reqToothAuth.getUserId() + (have == true ? "已得到" : "未得到") + "锁" + robkey);
+			if (!have) {
+				throw new BusinessException(StatusEnum.STALL_HIVING_DO);
+			}
 			if(have) {
 				Map<String, Object> pam = new HashMap<>();
 				pam.put("stallId", reqToothAuth.getStallId());
@@ -333,15 +335,9 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				Integer using = entRentedRecordClusterMapper.findUsingRecord(pam);
 				log.info("用户=======>" + using);
 				if (using>0) {
-					have = false;
+					throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 				}
 			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (!have) {
-			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
-		}
 	}
 
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.StaffPrefectureMasterMapper">
+
+ <resultMap id="PreResultMap" type="cn.linkmore.enterprise.entity.EntOwnerPre">
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="longitude" jdbcType="DOUBLE" property="longitude" />
+    <result column="latitude" jdbcType="DOUBLE" property="latitude" />
+  </resultMap>
+   
+   <resultMap id="StallResultMap" type="cn.linkmore.enterprise.entity.EntOwnerStall">
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" /> 
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="plate" jdbcType="VARCHAR" property="plate" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="route_guidance" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="route_description" jdbcType="VARCHAR" property="routeGuidance" />
+    <result column="stall_local" jdbcType="VARCHAR" property="stallLocal" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="lock_status" jdbcType="VARCHAR" property="lockStatus" />
+    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+  </resultMap>
+
+      
+  <select id="findPre"   resultMap="PreResultMap" >
+    select  pre_id,pre_name,address,longitude,latitude
+    from 	
+    t_ent_rent_user a
+	LEFT JOIN v_prefecture b ON a.pre_id = b.id
+     where 
+     start_time <![CDATA[ < ]]> NOW()
+     and 
+     end_time <![CDATA[ > ]]>  NOW()
+     and
+     user_id =#{0}  
+     GROUP BY pre_id
+  </select>
+  
+  <select id="findStall"   resultMap="StallResultMap" >
+    select  a.pre_id as pre_id,a.stall_id as stall_id,a.stall_name as stall_name,a.plate as plate,a.mobile as mobile,
+    a.ent_id as ent_id,a.ent_pre_id as ent_pre_id,a.pre_name as pre_name,
+    c.route_description,c.route_guidance,b.stall_local,b.status,b.lock_status,b.lock_sn,
+    DATE_FORMAT(start_time,'%Y-%m-%d %H:%i:%s') as start_time,DATE_FORMAT(end_time,'%Y-%m-%d %H:%i:%s') as end_time
+    from t_ent_rent_user a  left join v_stall  b on 
+     a.stall_id = b.id left join v_prefecture c on a.pre_id = c.id
+     where 
+     start_time <![CDATA[ < ]]> NOW()
+     and 
+     end_time <![CDATA[ > ]]>  NOW()
+     and
+     user_id =#{0}  
+  </select>
+  
+</mapper>
