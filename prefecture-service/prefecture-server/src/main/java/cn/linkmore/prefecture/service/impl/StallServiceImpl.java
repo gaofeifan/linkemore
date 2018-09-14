@@ -915,6 +915,11 @@ public class StallServiceImpl implements StallService {
 		if(! checkStaffStallAuth(cu.getId(),stallId)) {
 			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
 		}
+		ResStaffStallDetail detail = new ResStaffStallDetail();
+		Stall stall = this.stallClusterMapper.findById(stallId);
+
+		
+		//		detail.set
 		
 		return null;
 	}
