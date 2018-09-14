@@ -731,7 +731,7 @@ public class PayServiceImpl implements PayService {
 			try {
 				new Thread(new StallCheckoutThread(order.getStallId())).start();
 			} catch (Exception e) {
-				log.info("up lock throw exception");
+				log.info("up lock throw exception = {}",e.getMessage());
 			}
 		}
 		// 更新订单
