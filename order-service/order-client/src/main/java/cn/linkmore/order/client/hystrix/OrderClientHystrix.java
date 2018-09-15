@@ -52,4 +52,10 @@ public class OrderClientHystrix implements OrderClient {
 		log.info("getPlateLastOrderStatus carno :{}",carno);
 		return null;
 	}
+
+	@Override
+	public ResUserOrder findStallLatest(Long stallId) {
+		log.info("ResUserOrder findStallLatest  :{}",stallId);
+		return null;
+	}
 }

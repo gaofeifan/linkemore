@@ -1,7 +1,11 @@
 package cn.linkmore.enterprise.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -10,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.linkmore.lock.response.ResponseMessage;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -26,6 +31,8 @@ import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.response.PrefectureResponseBean;
 import cn.linkmore.enterprise.dao.cluster.StaffPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.master.StaffPrefectureMasterMapper;
+import cn.linkmore.enterprise.entity.EntOwnerStall;
+import cn.linkmore.enterprise.entity.Msg;
 import cn.linkmore.enterprise.entity.OperateSource;
 import cn.linkmore.enterprise.entity.OperationEnum;
 import cn.linkmore.enterprise.entity.Orders;
@@ -33,8 +40,16 @@ import cn.linkmore.enterprise.entity.ResultEnum;
 import cn.linkmore.enterprise.entity.Stall;
 import cn.linkmore.enterprise.entity.StallOperateLog;
 import cn.linkmore.enterprise.service.StaffPrefectureService;
+import cn.linkmore.order.client.OrderClient;
+import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.StallBatteryLogClient;
 import cn.linkmore.prefecture.client.StallClient;
+import cn.linkmore.prefecture.client.StallOperateLogClient;
 import cn.linkmore.prefecture.request.ReqControlLock;
+import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.request.ReqStallOperateLog;
+import cn.linkmore.prefecture.response.ResStallBatteryLog;
+import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DateUtils;
@@ -55,6 +70,16 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 	private StallClient stallClient;
 	
 	@Autowired
+	private OrderClient orderClient;
+	
+	@Autowired
+	private StallOperateLogClient stallOperateLogClient;
+
+	@Autowired
+	private StallBatteryLogClient stallBatteryLogClient;
+	
+	
+	@Autowired
 	private StaffPrefectureClusterMapper staffPrefectureClusterMapper;
 	
 	@Autowired
@@ -62,7 +87,10 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 	
 
 	private static final int TIMEOUT= 30*1000;
-	
+
+	/**
+	 * 升锁与降锁
+	 */
 	@Override
 	public void control(SraffReqConStall reqOperatStall, HttpServletRequest request) {
 		String userid = null;
@@ -82,8 +110,21 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 		stallClient.controllock(reqc);
 	}
 
+	/**
+	 * 释放车位
+	 */
 	@Override
 	public ResponseEntity<PrefectureResponseBean> releaseStall(Long stallId, HttpServletRequest request) {
+		//查询车位是否空闲
+		
+		//查询订单有无订单
+		
+		
+		//查询车位状态
+		
+		
+		//置为空闲
+		
 		boolean flag = false;
 		String msg = "";
 		// 通过车位编号查询该车位是否处于空闲
@@ -146,6 +187,9 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 		return null;
 	}
 
+	/**
+	 * 强制释放车位
+	 */
 	@Override
 	public ResponseEntity<PrefectureResponseBean> forceReleaseStall(Long stallId, HttpServletRequest request) {
 		boolean flag = false;
@@ -208,10 +252,15 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 		return null;
 	}
 	
+	/**
+	 * 
+	 */
 	private Stall selectStallById(long id) {
 		return staffPrefectureClusterMapper.selectByPrimaryKey(id);
 	}
-
+	/**
+	 * 
+	 */
 	private int updateStallByInfo(long id, StallEnum stallEnum,OrderStatusEnum orderStatusEnum) {
 		Stall record = new Stall();
 		record.setId(id);
@@ -221,6 +270,9 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 		return i;
 	} 
 	
+	/**
+	 * 
+	 */
 	public int saveStallOperateRecord(Long stallId,int code,String salveCode, OperationEnum operationEnum,HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		
@@ -237,45 +289,295 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 		return result;
 	} 
 	
+	/**
+	 * 
+	 */
 	public PrefectureResponseBean findResponseBeanByPreId(Long preId) {
 		Map<String,Object> param = new HashMap<>();
 		param.put("preId", preId);
 		return staffPrefectureClusterMapper.findResponseBeanByPreId(param);
 	}
 
+	/**
+	 * 指定车位
+	 */
 	@Override
 	public String assign(AssignStallRequestBean bean, HttpServletRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+			return null;
 	}
 
+	/**
+	 * 删除指定车位
+	 */
 	@Override
 	public void assignDel(AssignStallRequestBean bean, HttpServletRequest request) {
-		// TODO Auto-generated method stub
-		
-	}
 
+	}
+	
+	/**
+	 * 车位下线
+	 */
 	@Override
-	public PrefectureResponseBean offline(StallOperateRequestBean bean, HttpServletRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+	public void offline(StallOperateRequestBean bean, HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		ResStallEntity  stall = stallClient.findById(bean.getStallId());
+		if(stall.getStatus().intValue()>stall.STATUS_USED) {
+			throw new BusinessException(StatusEnum.STALL_OPERATE_OFFLINED);
+		}
+		//查询订单
+		ResUserOrder orders = orderClient.findStallLatest(bean.getStallId());
+		if(orders != null && orders.getStatus().intValue() == orders.ORDERS_STATUS_UNPAY) {
+			throw new BusinessException(StatusEnum.STALL_OPERATE_ORDERING);
+		}		
+		//更换电池
+		if(bean.getRemarkId()==1) {
+			ResStallBatteryLog sbl = new ResStallBatteryLog();
+			sbl.setAdminId(user.getId());
+			sbl.setAdminName(user.getMobile());
+			sbl.setCreateTime(new Date());
+			sbl.setTotalNum(Integer.valueOf(0));
+			sbl.setVoltage(0d);
+			sbl.setStallId(stall.getId());
+			stallBatteryLogClient.save(sbl);
+		}
+		//更新车位状态
+		ReqStall  reqStall = new ReqStall();
+		reqStall.setId(bean.getStallId());
+		reqStall.setStatus(reqStall.STATUS_OUTLINE);
+		stallClient.update(reqStall);
+		//插入记录
+		ReqStallOperateLog sol = new ReqStallOperateLog();
+		sol.setCreateTime(new Date());
+		sol.setOperation(StallOperateLog.OPERATION_ONLINE);
+		sol.setOperatorId(user.getId());
+		sol.setSource(StallOperateLog.SOURCE_APP);
+		sol.setStallId(bean.getStallId());
+		sol.setRemarkId(bean.getRemarkId());
+		sol.setRemark(bean.getRemark());
+		sol.setStatus(StallOperateLog.STATUS_TRUE);
+		stallOperateLogClient.save(sol);
+		//去除redis
+		this.redisService.remove("freelock_key:" + stall.getPreId(), new Object[] { stall.getLockSn() });
 	}
-
+	
+	/**
+	 * 车位上线
+	 * @return 
+	 */
 	@Override
-	public PrefectureResponseBean online(StallOperateRequestBean bean, HttpServletRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+	public void online(StallOperateRequestBean bean, HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		ResStallEntity  stall = stallClient.findById(bean.getStallId());
+		if(stall.getStatus().intValue() !=stall.STATUS_OUTLINE&&stall.getStatus() != stall.STATUS_FAULT ) {
+			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+		}
+		ResUserOrder orders = orderClient.findStallLatest(bean.getStallId());
+		if(orders != null && orders.getStatus().intValue() == orders.ORDERS_STATUS_UNPAY) {
+			throw new BusinessException(StatusEnum.STALL_OPERATE_ORDERING);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map = stallClient.watch(bean.getStallId());
+			if(map == null || map.isEmpty() ) {
+				throw new BusinessException(StatusEnum.STALL_LOCK_NO_UP);
+			}
+			if("200".equals(String.valueOf(map.get("code")))) {
+				if(String.valueOf(map.get("status")).equals(2) ) {
+					throw new BusinessException(StatusEnum.STALL_LOCK_OFFLINE);
+				}				
+				ReqStallOperateLog sol = new ReqStallOperateLog();
+					sol.setCreateTime(new Date());
+					sol.setOperation(StallOperateLog.OPERATION_ONLINE);
+					sol.setOperatorId(user.getId());
+					sol.setSource(StallOperateLog.SOURCE_APP);
+					sol.setStallId(bean.getStallId());
+					sol.setRemarkId(bean.getRemarkId());
+					sol.setRemark(bean.getRemark());
+					sol.setStatus(StallOperateLog.STATUS_TRUE);
+					stallOperateLogClient.save(sol);	
+					
+				ReqStall  reqStall = new ReqStall();
+					reqStall.setId(bean.getStallId());
+					reqStall.setStatus(reqStall.STATUS_FREE);
+					stallClient.update(reqStall);
+			}else {
+				throw new BusinessException(StatusEnum.STALL_LOCK_NO_UP);
+			}
 	}
-
+	
+	/**
+	 * 挂起订单
+	 */
 	@Override
 	public void suspend(OrderOperateRequestBean oorb, HttpServletRequest request) {
-		// TODO Auto-generated method stub
+		/*log.info("order suspend:{},au:{}",JsonUtils.toJson(oorb),JsonUtils.toJson(au));
+		Orders orders = this.ordersMapper.find(oorb.getOrderId());
+		if(orders==null){
+			throw new BusinessException(Msg.ORDER_OPERATE_NULLORDER);
+		}else if(!orders.getStallId().equals(oorb.getStallId())){
+			throw new BusinessException(Msg.ORDER_OPERATE_NULLSTALL);
+		}else if(orders.getStatus().intValue()!=OrderStatus.UNPAID.code){
+			throw new BusinessException(Msg.ORDER_OPERATE_NOUNPAID);
+		} 
+		Stall stall = this.stallMapper.selectByPrimaryKey(oorb.getStallId());
+		orders.setStatus(OrderStatus.SUSPENDED.code); 
+		orders.setStatusHistory((short)OrderStatusHistory.SUSPENDED.code);
+		orders.setStatusTime(new Date());
+		orders.setEndTime(new Date());
 		
+		stall.setBindOrderStatus((short)BindOrderStatus.SUSPENDED.code);  
+		OrdersDetail orderDetail = this.ordersDetailMapper.findByOrderNo(orders.getOrderNo());
+		log.info(JsonUtils.toJson(orderDetail));
+		orders.setActualAmount(getFee(orders.getId(),orderDetail.getStrategyId(),orders.getBeginTime(),new Date()));
+		orderDetail.setEndTime(new Date());  
+		OrderOperateLog ool = new OrderOperateLog();
+		ool.setCreateTime(new Date());
+		ool.setOrderId(oorb.getOrderId());
+		ool.setOperatorId(au.getId());
+		ool.setSource((short)OperateSource.APP.code);
+		ool.setStallId(oorb.getStallId());
+		ool.setOperation((short)OrderOperation.SUSPENDED.code);
+		ool.setRemark(oorb.getRemark());
+		ool.setRemarkId(oorb.getRemarkId());
+		ool.setStatus(OperateStatus.SUCCESS.code);
+		this.orderOperateLogMapper.save(ool);
+		this.ordersDetailMapper.updateTime(orderDetail);
+		this.ordersMapper.updateStatus(orders);
+		this.stallMapper.updateWithoutOrder(stall);
+		//修改redis中的订单数据
+		com.pabei.backend.domain.Orders redisOrder = (com.pabei.backend.domain.Orders)redisTemplate.opsForValue().get(CacheKey.LINKMORE_APP_ORDER_KEY+orders.getUserId());
+		if(redisOrder!=null){
+			redisOrder.setStatus(Constants.OrderStatus.SUSPENDED.code); 
+			redisOrder.setEndTime(new Date());
+			redisTemplate.opsForValue().set(CacheKey.LINKMORE_APP_ORDER_KEY+orders.getUserId(), redisOrder);
+		}
+		//关闭成功 推送消息
+		try {
+			Prefecture pre = this.prefectureMapper.selectByPrimaryKey(stall.getPreId());
+			if(null != pre.getBaseDictId()){
+				log.info("pre:{}",JsonUtils.toJson(pre));
+				BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId());
+				log.info("dic:{}",JsonUtils.toJson(baseDict));
+				if(null != baseDict.getCode()){ 
+					com.pabei.backend.domain.Orders od = com.pabei.backend.domain.Orders.clone(orders,baseDict.getCode());
+					od.setTotalAmount(orders.getTotalAmount().doubleValue());
+					Thread thread = new ProduceCheckBookThread(od);
+					thread.start();
+					new SuspendPushThread(orders.getUserId()).start();
+					
+				}else{
+					log.info("null == baseDict.getCode");
+				} 
+			} 
+		} catch (Exception e) {
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement[] stackArray = e.getStackTrace();  
+			StackTraceElement element = null; 
+			if(stackArray.length>0){
+				element = stackArray[0];   
+				sb.append("\n");
+				sb.append(e.getClass().getSimpleName());
+				sb.append("\n");
+				sb.append(element.toString() + "\n"); 
+			}
+	        for (int i = 1; i < stackArray.length; i++) {  
+	            element = stackArray[i];  
+	            if(element.toString().contains("com.pabeitech")){
+	            	sb.append(element.toString() + "\n");  
+	            } 
+	        }   
+	        log.info(sb.toString());
+			log.info("suspend order push mq message throw exception");
+		} 
+		try{
+			messageService.send(orders.getUsername(), 9,SmsTemplateId.order_suspend , new HashMap<String,String>());
+		}catch(Exception e){
+			log.info("suspend order send message throw exception");
+		}*/
 	}
 
+	/**
+	 * 关闭订单
+	 */
 	@Override
 	public void close(OrderOperateRequestBean oorb, HttpServletRequest request) {
-		// TODO Auto-generated method stub
+		//log.info("order colose:{},au:{}",JsonUtils.toJson(oorb),JsonUtils.toJson(au));
+		/*Orders orders = this.ordersMapper.find(oorb.getOrderId());
+		if(orders==null){
+			throw new BusinessException(Msg.ORDER_OPERATE_NULLORDER);
+		}else if(!orders.getStallId().equals(oorb.getStallId())){
+			throw new BusinessException(Msg.ORDER_OPERATE_NULLSTALL);
+		}else if(orders.getStatus().intValue()!=OrderStatus.UNPAID.code){
+			throw new BusinessException(Msg.ORDER_OPERATE_NOUNPAID);
+		} 
+		Stall stall = this.stallMapper.selectByPrimaryKey(oorb.getStallId());
+		orders.setStatus(OrderStatus.CLOSED.code); 
+		orders.setStatusHistory((short)OrderStatusHistory.CLOSED.code);
+		orders.setStatusTime(new Date());
+		orders.setEndTime(new Date());
+		stall.setBindOrderStatus((short)BindOrderStatus.CLOSED.code);  
+		OrdersDetail orderDetail = this.ordersDetailMapper.findByOrderNo(orders.getOrderNo());
+		orderDetail.setEndTime(new Date()); 
+		
+		OrderOperateLog ool = new OrderOperateLog();
+		ool.setCreateTime(new Date());
+		ool.setOrderId(oorb.getOrderId());
+		ool.setOperatorId(au.getId());
+		ool.setSource((short)OperateSource.APP.code);
+		ool.setStallId(oorb.getStallId());
+		ool.setOperation((short)OrderOperation.CLOSED.code);
+		ool.setRemark(oorb.getRemark());
+		ool.setRemarkId(oorb.getRemarkId());
+		ool.setStatus(OperateStatus.SUCCESS.code);
+		this.orderOperateLogMapper.save(ool);
+		this.ordersDetailMapper.updateTime(orderDetail);
+		this.ordersMapper.updateStatus(orders);
+		this.stallMapper.updateWithoutOrder(stall);
+		//修改redis中的订单数据
+		com.pabei.backend.domain.Orders redisOrder = (com.pabei.backend.domain.Orders)redisTemplate.opsForValue().get(CacheKey.LINKMORE_APP_ORDER_KEY+orders.getUserId());
+		if(redisOrder!=null){
+			redisTemplate.delete("LINKMORE_APP_ORDER_"+orders.getUserId()); 
+		}
+		 
+		//关闭成功 推送消息
+		try {
+			Prefecture pre = this.prefectureMapper.selectByPrimaryKey(stall.getPreId());
+			if(null != pre.getBaseDictId()){
+				log.info("pre:{}",JsonUtils.toJson(pre));
+				BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId());
+				log.info("dic:{}",JsonUtils.toJson(baseDict));
+				if(null != baseDict.getCode()){ 
+					Thread thread = new ProduceCancelBookThread(com.pabei.backend.domain.Orders.clone(orders,baseDict.getCode()));
+					thread.start(); 
+					new ClosePushThread(orders.getUserId()).start();
+				}else{
+					log.info("null == baseDict.getCode()");
+				}
+			}
+		} catch (Exception e) {
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement[] stackArray = e.getStackTrace();  
+			StackTraceElement element = null; 
+			if(stackArray.length>0){
+				element = stackArray[0];   
+				sb.append("\n");
+				sb.append(e.getClass().getSimpleName());
+				sb.append("\n");
+				sb.append(element.toString() + "\n"); 
+			}
+	        for (int i = 1; i < stackArray.length; i++) {  
+	            element = stackArray[i];  
+	            if(element.toString().contains("com.pabeitech")){
+	            	sb.append(element.toString() + "\n");  
+	            } 
+	        }   
+	        log.info(sb.toString());
+		}*/
 		
 	}
 

@@ -105,7 +105,8 @@ public enum StatusEnum {
 	STALL_OPERATE_UNOFFLINE(8005071,"车不在下线状态"),
 	STALL_AlREADY_CONTROL(8005072,"该车位其他用户使用中"),
 	
-	STALL_HIVING_DO(8005073,"操作中，请稍候");
+	STALL_HIVING_DO(8005073,"操作中，请稍候"),
+	STALL_LOCK_NO_UP(8005074,"车位锁没有竖起");
 	
 	public int code;
 	public String label;

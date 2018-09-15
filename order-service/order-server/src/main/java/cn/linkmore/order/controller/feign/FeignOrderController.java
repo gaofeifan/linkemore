@@ -68,4 +68,10 @@ public class FeignOrderController {
 	Integer getPlateLastOrderStatus(@RequestParam("carno") String carno) {
 		return this.ordersService.getPlateLastOrderStatus(carno);
 	}
+	
+	@RequestMapping(value = "/stall-latest", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId) {
+		return this.ordersService.findStallLatest(stallId);
+	}
 }

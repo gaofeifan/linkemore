@@ -24,12 +24,14 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallLockService;
+import cn.linkmore.prefecture.service.StallOperateLogService;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.util.ObjectUtils;
 
@@ -54,6 +56,9 @@ public class FeignStallController {
 	
 	@Autowired
 	private PrefectureService preService;
+	
+	@Autowired
+	private StallOperateLogService stallOperateService;
 	
 	@RequestMapping(value = "/v2.0/close", method = RequestMethod.PUT)
 	public void close(@RequestParam("id")Long id) {
@@ -327,4 +332,16 @@ public class FeignStallController {
 		log.info("stallIds = {}",JSON.toJSON(param));
 		return this.stallService.updateBrand(param);
 	}
+	
+	/**
+	 * @Description  车位操作记录
+	 * @Author   cl
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value = "/v2.0/operate-log/save", method = RequestMethod.POST)
+	@ResponseBody
+	public void operateLogSave(@RequestBody ReqStallOperateLog sol) {
+		this.stallOperateService.save(sol);
+	}
+	
 }

@@ -45,7 +45,7 @@ public interface StaffPrefectureService {
 	 * @param bean
 	 * @param au
 	 */
-	PrefectureResponseBean offline(StallOperateRequestBean bean,HttpServletRequest request);
+	void offline(StallOperateRequestBean bean,HttpServletRequest request);
 
 	/**
 	 * 车位上线
@@ -53,7 +53,7 @@ public interface StaffPrefectureService {
 	 * @param bean
 	 * @param au
 	 */
-	PrefectureResponseBean online(StallOperateRequestBean bean,HttpServletRequest request);
+	void online(StallOperateRequestBean bean,HttpServletRequest request);
 	
 	
 	/**

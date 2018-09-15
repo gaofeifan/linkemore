@@ -111,7 +111,7 @@ public class StaffPrefectureController {
 		ResponseEntity<PrefectureResponseBean> response = null;
 		PrefectureResponseBean prb = null;
 		try {
-			prb = this.staffPrefectureService.offline(bean,request);
+			 this.staffPrefectureService.offline(bean,request);
 			response = ResponseEntity.success(prb, request);
 		} catch (BusinessException e) {
 			response = null;
@@ -127,7 +127,7 @@ public class StaffPrefectureController {
 		ResponseEntity<PrefectureResponseBean> response = null;
 		PrefectureResponseBean prb = null;
 		try {
-			prb = this.staffPrefectureService.online(bean,request);
+			 this.staffPrefectureService.online(bean,request);
 			response = ResponseEntity.success(prb, request);
 		} catch (BusinessException e) {
 			response =null;

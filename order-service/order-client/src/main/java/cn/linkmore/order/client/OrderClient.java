@@ -60,4 +60,9 @@ public interface OrderClient {
 	@ResponseBody
 	Integer getPlateLastOrderStatus(@RequestParam("carno") String carno); 
 	
+	
+	@RequestMapping(value = "/stall-latest", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId);
+	
 }
