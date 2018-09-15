@@ -47,6 +47,7 @@ import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResUnusualOrder;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
@@ -122,6 +123,8 @@ public class StallServiceImpl implements StallService {
 	private PushClient pushClient;
 	@Autowired
 	private SendClient sendClient;	
+	@Autowired
+	private EntRentedRecordClient entRentedRecordClient;
 	@Autowired
 	private EntRentRecordMasterMapper entRentedRecordMasterMapper;
 	@Autowired
@@ -587,22 +590,36 @@ public class StallServiceImpl implements StallService {
 					} else if (reqc.getStatus() == 2) {
 						res = lockFactory.lockUp(stall.getLockSn());
 					}
-					log.info("res>>>>>>>"+res.getMsg());
+					log.info("res>>>>>>>" + res.getMsg());
 					int code = res.getMsgCode();
 					stopwatch.stop();
-					log.info("usingtime>>>"+String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
-					sendWYMsg(uid,reqc.getStatus(),code);
+					log.info("usingtime>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+					sendWYMsg(uid, reqc.getStatus(), code);
 					if (code == 200) {
-						if(reqc.getStatus() == 1) {
-							downLock(reqc.getStallId(),1);
-							stall.setLockStatus(reqc.getStatus());
-							stallMasterMapper.lockdown(stall);
+						if (reqc.getStatus() == 1) {
+							stall.setLockStatus(2);
+							if (stall.getType() == 2) {
+								if (stall.getStatus() != 4) {
+									stall.setStatus(2);
+								}
+							}
+						} else if (reqc.getStatus() == 2) {
+							if (stall.getType() == 2) {
+								if (stall.getStatus() != 4) {
+									stall.setStatus(1);
+								}
+							}
+							stall.setLockStatus(1);
+						}
+						stallMasterMapper.lockdown(stall);
+						if (reqc.getStatus() == 1) {
+							downLock(reqc.getStallId(), 1);
 							redisService.remove(reqc.getKey());
 						}
-						
-					}else {
-						if(reqc.getStatus() == 1) {
-							downLock(reqc.getStallId(),0);
+
+					} else {
+						if (reqc.getStatus() == 1) {
+							downLock(reqc.getStallId(), 0);
 						}
 					}
 				}
@@ -654,13 +671,14 @@ public class StallServiceImpl implements StallService {
 		}).start();
 	}
 
-	public void downLock(Long stallId,int status) {
-		ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
-		Map<String,Object> param = new HashMap<>();
-		param.put( "lockDownStatus",status);
-		param.put("lockDownTime", new Date());
-		param.put("orderId", latest.getId());
-		this.entOrderClient.updateLockStatus(param);
+	public void downLock(Long stallId, int status) {
+		// ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
+		// Map<String,Object> param = new HashMap<>();
+		// param.put( "lockDownStatus",status);
+		// param.put("lockDownTime", new Date());
+		// param.put("orderId", latest.getId());
+		this.entRentedRecordClient.updateDownTime(stallId);
+		// this.entOrderClient.updateLockStatus(param);
 	}
 	
 	private void send(String uid, Integer lockstatus, int code) {
