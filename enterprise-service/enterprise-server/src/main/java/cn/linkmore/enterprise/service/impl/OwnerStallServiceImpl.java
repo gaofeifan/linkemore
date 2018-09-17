@@ -228,6 +228,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		pam.put("userId", user.getId());
 		using = entRentedRecordClusterMapper.findUsingRecord(pam);
 		if (using>0) {
+			this.redisService.remove(robkey);
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
 	
@@ -335,6 +336,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				Integer using = entRentedRecordClusterMapper.findUsingRecord(pam);
 				log.info("用户=======>" + using);
 				if (using>0) {
+					this.redisService.remove(robkey);
 					throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 				}
 			}
