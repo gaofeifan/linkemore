@@ -832,7 +832,7 @@ public class OrdersServiceImpl implements OrdersService {
 		param.put("lockDownTime", new Date());
 		param.put("orderId", order.getId());
 		this.orderMasterMapper.updateLockStatus(param);
-		log.info("stall downing :{}", switchStatus);
+		log.info("downing msg..................switchStatus:{} downStatus:{}", switchStatus, downStatus);
 		if (switchStatus && !downStatus) {
 			Thread thread = new PushThread(order.getUserId().toString(), "预约切换通知", "车位锁降下失败建议切换车位",
 					PushType.ORDER_SWITCH_STATUS_NOTICE, true);
