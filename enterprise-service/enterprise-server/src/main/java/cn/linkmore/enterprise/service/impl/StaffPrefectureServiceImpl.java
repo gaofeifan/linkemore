@@ -114,204 +114,66 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 	 * 释放车位
 	 */
 	@Override
-	public ResponseEntity<PrefectureResponseBean> releaseStall(Long stallId, HttpServletRequest request) {
-		//查询车位是否空闲
-		
-		//查询订单有无订单
-		
-		
-		//查询车位状态
-		
-		
-		//置为空闲
-		
-		boolean flag = false;
-		String msg = "";
-		// 通过车位编号查询该车位是否处于空闲
-		Stall stall = selectStallById(stallId);
-		if (stall != null) { 
-			Orders orders = staffPrefectureClusterMapper.findStallLatest(stallId);
-			if(orders!=null&&orders.getStatus().intValue()==Orders.ORDERS_STATUS_UNPAY){
-				return null;
-			}
-			// 如果该车位属于非空闲状态
-			if (!StallEnum.valueOf(stall.getStatus()).getValue().equals(StatusFinal.STATUS_FREE)) {
-				flag = true;
-				msg = "该车位状态处于" + StallEnum.valueOf(stall.getStatus()).getMsg() + "状态"; 
-			}
-			// 如果该车位绑定的订单状态是挂起
-			if (OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getValue().equals(StatusFinal.ORDER_STATUS_HANGUP)) {
-				flag = true;
-				if (!StringUtils.isEmpty(msg)) {
-					msg += ";车位订单处于" + OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getMsg() + "状态";
-				} else {
-					msg = "该车位订单处于" + OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getMsg() + "状态";
-				} 
-			}
-
-			// 如果该车位绑定的订单状态是关闭
-			if (OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getValue().equals(StatusFinal.ORDER_STATUS_CLOSE)) {
-				flag = true;
-				if (!StringUtils.isEmpty(msg)) {
-					msg += ";车位订单处于" + OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getMsg() + "状态";
-				} else {
-					msg = "该车位订单处于" + OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getMsg() + "状态";
-				} 
-			}
-			// 通过车位查询该车位当前订单状态，如果是挂起/关闭，则需要将该车位释放 
-			// 对锁执行上升操作
-			if (flag) {  
-				ResponseMessage<com.linkmore.lock.bean.LockBean> res = null;
-				//res = lockFactory.lockUp(stall.getLockSn()); 
-				if (res.getMsgCode().intValue() == 200) { 
-					// 插入上升成功记录
-					this.saveStallOperateRecord(stallId, ResultEnum.SUCCESS.getCode(),
-							stall.getLockSn(), OperationEnum.FREE, request); 
-					// 需要将该车位设置为空闲
-					 updateStallByInfo(stall.getId(), StallEnum.STATUS_FREE,OrderStatusEnum.ORDER_STATUS_NORMAL);
-					PrefectureResponseBean prefectureResponseBean=this.findResponseBeanByPreId(stall.getPreId());
-					
-					return ResponseEntity.success(prefectureResponseBean, request);
-				} else {
-					// 插入失败的记录
-					int i = this.saveStallOperateRecord(stallId, ResultEnum.FAIL.getCode(),
-							stall.getLockSn(), OperationEnum.FREE, request);
-					log.info("插入下降失败记录的返回值：" + i + "(i>0为成功)");
-					log.error("车位锁上升失败");
-					return null;
-				}
-			}else{
-				return null;
-			}
+	public void releaseStall(Long stallId, HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
-		return null;
+		//查询车位是否空闲
+		ResStallEntity  stall = stallClient.findById(stallId);
+		if(stall== null) {
+			throw new BusinessException(StatusEnum.STALL_UNKNOW_TYPE);
+		}
+		//查询订单有无订单
+		ResUserOrder orders = orderClient.findStallLatest(stallId);
+		if(orders != null && orders.getStatus().intValue() == orders.ORDERS_STATUS_UNPAY) {
+			throw new BusinessException(StatusEnum.STALL_OPERATE_ORDERING);
+		} 
+		//查询车位状态
+		Map<String, Object> map = new HashMap<>();
+		map = stallClient.watch(stallId);
+		if(map == null || map.isEmpty() ) {
+			throw new BusinessException(StatusEnum.STALL_LOCK_NO_UP);
+		}
+		if(!"200".equals(String.valueOf(map.get("code")))) {
+			throw new BusinessException(StatusEnum.STALL_LOCK_NO_UP);
+		}
+	    if(String.valueOf(map.get("status")).equals(2) ) {
+			throw new BusinessException(StatusEnum.STALL_LOCK_OFFLINE);
+		}
+		//置为空闲
+	    stallClient.checkout(stallId);
 	}
 
 	/**
 	 * 强制释放车位
 	 */
 	@Override
-	public ResponseEntity<PrefectureResponseBean> forceReleaseStall(Long stallId, HttpServletRequest request) {
-		boolean flag = false;
-		String msg = "";
-		// 通过车位编号查询该车位是否处于空闲 
-		Stall stall = selectStallById(stallId);
-		if (stall != null) { 
-			Orders orders = staffPrefectureClusterMapper.findStallLatest(stallId);
-			if(orders!=null&&orders.getStatus().intValue()==Orders.ORDERS_STATUS_UNPAY){
-				return null;
-			}
-			// 如果该车位属于非空闲状态
-			if (!StallEnum.valueOf(stall.getStatus()).getValue().equals(StatusFinal.STATUS_FREE)) {
-				flag = true;
-				msg = "该车位状态处于" + StallEnum.valueOf(stall.getStatus()).getMsg() + "状态"; 
-			}
-			// 如果该车位绑定的订单状态是挂起
-			if (OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getValue().equals(StatusFinal.ORDER_STATUS_HANGUP)) {
-				flag = true;
-				if (StringUtils.isEmpty(msg)) {
-					msg += ";车位订单处于" + OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getMsg() + "状态";
-				} else {
-					msg = "该车位订单处于" + OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getMsg() + "状态";
-				} 
-			}
-
-			// 如果该车位绑定的订单状态是关闭
-			if (OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getValue().equals(StatusFinal.ORDER_STATUS_CLOSE)) {
-				flag = true;
-				if (StringUtils.isEmpty(msg)) {
-					msg += ";车位订单处于" + OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getMsg() + "状态";
-				} else {
-					msg = "该车位订单处于" + OrderStatusEnum.valueOf(stall.getBindOrderStatus()).getMsg() + "状态";
-				} 
-			}
-			// 通过车位查询该车位当前订单状态，如果是挂起/关闭，则需要将该车位释放 
-			// 对锁执行上升操作
-			if (flag) {  
-				ResponseMessage<com.linkmore.lock.bean.LockBean> res = null;
-				//res = lockFactory.lockUp(stall.getLockSn()); 
-				if (res.getMsgCode().intValue() == 200) { 
-					// 插入上升成功记录
-					this.saveStallOperateRecord(stallId, ResultEnum.SUCCESS.getCode(),
-							stall.getLockSn(), OperationEnum.FORCE, request);  
-					// 需要将该车位设置为空闲
-				} else {
-					// 插入失败的记录
-					int i = this.saveStallOperateRecord(stallId, ResultEnum.FAIL.getCode(),
-							stall.getLockSn(), OperationEnum.FORCE, request);
-					log.info("插入下降失败记录的返回值：" + i + "(i>0为成功)");
-					log.error("车位锁上升失败");
-				}
-				updateStallByInfo(stall.getId(), StallEnum.STATUS_FREE,OrderStatusEnum.ORDER_STATUS_NORMAL); 
-				PrefectureResponseBean prefectureResponseBean = this.findResponseBeanByPreId(stall.getPreId());
-				return null;
-			}else{
-				return null;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * 
-	 */
-	private Stall selectStallById(long id) {
-		return staffPrefectureClusterMapper.selectByPrimaryKey(id);
-	}
-	/**
-	 * 
-	 */
-	private int updateStallByInfo(long id, StallEnum stallEnum,OrderStatusEnum orderStatusEnum) {
-		Stall record = new Stall();
-		record.setId(id);
-		record.setStatus(stallEnum.getCode());
-		record.setBindOrderStatus((short) orderStatusEnum.getCode());
-		int i = staffPrefectureClusterMapper.updateStallByInfo(record);
-		return i;
-	} 
-	
-	/**
-	 * 
-	 */
-	public int saveStallOperateRecord(Long stallId,int code,String salveCode, OperationEnum operationEnum,HttpServletRequest request) {
+	public void forceReleaseStall(Long stallId, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		
-		StallOperateLog record = new StallOperateLog();
-		log.info("获取到用户信息："+JSON.toJSONString(user));
-		record.setOperatorId(user.getId());
-		record.setSource(OperateSource.ADMIN.getCode());
-		record.setStatus(code);
-		record.setStallId(stallId);
-		record.setCreateTime(DateUtils.getCurrentDateTime());
-		record.setOperation((short) operationEnum.getCode());
-		record.setRemark("车位编号："+stallId+"车位锁编号："+salveCode+"；上升操作"+(code>0?"成功":"失败"));
-		int result = staffPrefectureMasterMapper.insert(record);
-		return result;
-	} 
-	
-	/**
-	 * 
-	 */
-	public PrefectureResponseBean findResponseBeanByPreId(Long preId) {
-		Map<String,Object> param = new HashMap<>();
-		param.put("preId", preId);
-		return staffPrefectureClusterMapper.findResponseBeanByPreId(param);
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		//查询车位是否空闲
+		ResStallEntity  stall = stallClient.findById(stallId);
+		if(stall== null) {
+			throw new BusinessException(StatusEnum.STALL_UNKNOW_TYPE);
+		}
+		//查询订单有无订单
+		ResUserOrder orders = orderClient.findStallLatest(stallId);
+		if(orders != null && orders.getStatus().intValue() == orders.ORDERS_STATUS_UNPAY) {
+			throw new BusinessException(StatusEnum.STALL_OPERATE_ORDERING);
+		} 
+		//置为空闲
+	    stallClient.checkout(stallId);
 	}
-
+	
 	/**
 	 * 指定车位
 	 */
 	@Override
-	public String assign(AssignStallRequestBean bean, HttpServletRequest request) {
-			return null;
-	}
-
-	/**
-	 * 删除指定车位
-	 */
-	@Override
-	public void assignDel(AssignStallRequestBean bean, HttpServletRequest request) {
-
+	public void assign(AssignStallRequestBean bean, HttpServletRequest request) {
+		
 	}
 	
 	/**
@@ -415,90 +277,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 	 */
 	@Override
 	public void suspend(OrderOperateRequestBean oorb, HttpServletRequest request) {
-		/*log.info("order suspend:{},au:{}",JsonUtils.toJson(oorb),JsonUtils.toJson(au));
-		Orders orders = this.ordersMapper.find(oorb.getOrderId());
-		if(orders==null){
-			throw new BusinessException(Msg.ORDER_OPERATE_NULLORDER);
-		}else if(!orders.getStallId().equals(oorb.getStallId())){
-			throw new BusinessException(Msg.ORDER_OPERATE_NULLSTALL);
-		}else if(orders.getStatus().intValue()!=OrderStatus.UNPAID.code){
-			throw new BusinessException(Msg.ORDER_OPERATE_NOUNPAID);
-		} 
-		Stall stall = this.stallMapper.selectByPrimaryKey(oorb.getStallId());
-		orders.setStatus(OrderStatus.SUSPENDED.code); 
-		orders.setStatusHistory((short)OrderStatusHistory.SUSPENDED.code);
-		orders.setStatusTime(new Date());
-		orders.setEndTime(new Date());
 		
-		stall.setBindOrderStatus((short)BindOrderStatus.SUSPENDED.code);  
-		OrdersDetail orderDetail = this.ordersDetailMapper.findByOrderNo(orders.getOrderNo());
-		log.info(JsonUtils.toJson(orderDetail));
-		orders.setActualAmount(getFee(orders.getId(),orderDetail.getStrategyId(),orders.getBeginTime(),new Date()));
-		orderDetail.setEndTime(new Date());  
-		OrderOperateLog ool = new OrderOperateLog();
-		ool.setCreateTime(new Date());
-		ool.setOrderId(oorb.getOrderId());
-		ool.setOperatorId(au.getId());
-		ool.setSource((short)OperateSource.APP.code);
-		ool.setStallId(oorb.getStallId());
-		ool.setOperation((short)OrderOperation.SUSPENDED.code);
-		ool.setRemark(oorb.getRemark());
-		ool.setRemarkId(oorb.getRemarkId());
-		ool.setStatus(OperateStatus.SUCCESS.code);
-		this.orderOperateLogMapper.save(ool);
-		this.ordersDetailMapper.updateTime(orderDetail);
-		this.ordersMapper.updateStatus(orders);
-		this.stallMapper.updateWithoutOrder(stall);
-		//修改redis中的订单数据
-		com.pabei.backend.domain.Orders redisOrder = (com.pabei.backend.domain.Orders)redisTemplate.opsForValue().get(CacheKey.LINKMORE_APP_ORDER_KEY+orders.getUserId());
-		if(redisOrder!=null){
-			redisOrder.setStatus(Constants.OrderStatus.SUSPENDED.code); 
-			redisOrder.setEndTime(new Date());
-			redisTemplate.opsForValue().set(CacheKey.LINKMORE_APP_ORDER_KEY+orders.getUserId(), redisOrder);
-		}
-		//关闭成功 推送消息
-		try {
-			Prefecture pre = this.prefectureMapper.selectByPrimaryKey(stall.getPreId());
-			if(null != pre.getBaseDictId()){
-				log.info("pre:{}",JsonUtils.toJson(pre));
-				BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId());
-				log.info("dic:{}",JsonUtils.toJson(baseDict));
-				if(null != baseDict.getCode()){ 
-					com.pabei.backend.domain.Orders od = com.pabei.backend.domain.Orders.clone(orders,baseDict.getCode());
-					od.setTotalAmount(orders.getTotalAmount().doubleValue());
-					Thread thread = new ProduceCheckBookThread(od);
-					thread.start();
-					new SuspendPushThread(orders.getUserId()).start();
-					
-				}else{
-					log.info("null == baseDict.getCode");
-				} 
-			} 
-		} catch (Exception e) {
-			StringBuffer sb = new StringBuffer();
-			StackTraceElement[] stackArray = e.getStackTrace();  
-			StackTraceElement element = null; 
-			if(stackArray.length>0){
-				element = stackArray[0];   
-				sb.append("\n");
-				sb.append(e.getClass().getSimpleName());
-				sb.append("\n");
-				sb.append(element.toString() + "\n"); 
-			}
-	        for (int i = 1; i < stackArray.length; i++) {  
-	            element = stackArray[i];  
-	            if(element.toString().contains("com.pabeitech")){
-	            	sb.append(element.toString() + "\n");  
-	            } 
-	        }   
-	        log.info(sb.toString());
-			log.info("suspend order push mq message throw exception");
-		} 
-		try{
-			messageService.send(orders.getUsername(), 9,SmsTemplateId.order_suspend , new HashMap<String,String>());
-		}catch(Exception e){
-			log.info("suspend order send message throw exception");
-		}*/
 	}
 
 	/**
@@ -506,79 +285,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService{
 	 */
 	@Override
 	public void close(OrderOperateRequestBean oorb, HttpServletRequest request) {
-		//log.info("order colose:{},au:{}",JsonUtils.toJson(oorb),JsonUtils.toJson(au));
-		/*Orders orders = this.ordersMapper.find(oorb.getOrderId());
-		if(orders==null){
-			throw new BusinessException(Msg.ORDER_OPERATE_NULLORDER);
-		}else if(!orders.getStallId().equals(oorb.getStallId())){
-			throw new BusinessException(Msg.ORDER_OPERATE_NULLSTALL);
-		}else if(orders.getStatus().intValue()!=OrderStatus.UNPAID.code){
-			throw new BusinessException(Msg.ORDER_OPERATE_NOUNPAID);
-		} 
-		Stall stall = this.stallMapper.selectByPrimaryKey(oorb.getStallId());
-		orders.setStatus(OrderStatus.CLOSED.code); 
-		orders.setStatusHistory((short)OrderStatusHistory.CLOSED.code);
-		orders.setStatusTime(new Date());
-		orders.setEndTime(new Date());
-		stall.setBindOrderStatus((short)BindOrderStatus.CLOSED.code);  
-		OrdersDetail orderDetail = this.ordersDetailMapper.findByOrderNo(orders.getOrderNo());
-		orderDetail.setEndTime(new Date()); 
-		
-		OrderOperateLog ool = new OrderOperateLog();
-		ool.setCreateTime(new Date());
-		ool.setOrderId(oorb.getOrderId());
-		ool.setOperatorId(au.getId());
-		ool.setSource((short)OperateSource.APP.code);
-		ool.setStallId(oorb.getStallId());
-		ool.setOperation((short)OrderOperation.CLOSED.code);
-		ool.setRemark(oorb.getRemark());
-		ool.setRemarkId(oorb.getRemarkId());
-		ool.setStatus(OperateStatus.SUCCESS.code);
-		this.orderOperateLogMapper.save(ool);
-		this.ordersDetailMapper.updateTime(orderDetail);
-		this.ordersMapper.updateStatus(orders);
-		this.stallMapper.updateWithoutOrder(stall);
-		//修改redis中的订单数据
-		com.pabei.backend.domain.Orders redisOrder = (com.pabei.backend.domain.Orders)redisTemplate.opsForValue().get(CacheKey.LINKMORE_APP_ORDER_KEY+orders.getUserId());
-		if(redisOrder!=null){
-			redisTemplate.delete("LINKMORE_APP_ORDER_"+orders.getUserId()); 
-		}
-		 
-		//关闭成功 推送消息
-		try {
-			Prefecture pre = this.prefectureMapper.selectByPrimaryKey(stall.getPreId());
-			if(null != pre.getBaseDictId()){
-				log.info("pre:{}",JsonUtils.toJson(pre));
-				BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId());
-				log.info("dic:{}",JsonUtils.toJson(baseDict));
-				if(null != baseDict.getCode()){ 
-					Thread thread = new ProduceCancelBookThread(com.pabei.backend.domain.Orders.clone(orders,baseDict.getCode()));
-					thread.start(); 
-					new ClosePushThread(orders.getUserId()).start();
-				}else{
-					log.info("null == baseDict.getCode()");
-				}
-			}
-		} catch (Exception e) {
-			StringBuffer sb = new StringBuffer();
-			StackTraceElement[] stackArray = e.getStackTrace();  
-			StackTraceElement element = null; 
-			if(stackArray.length>0){
-				element = stackArray[0];   
-				sb.append("\n");
-				sb.append(e.getClass().getSimpleName());
-				sb.append("\n");
-				sb.append(element.toString() + "\n"); 
-			}
-	        for (int i = 1; i < stackArray.length; i++) {  
-	            element = stackArray[i];  
-	            if(element.toString().contains("com.pabeitech")){
-	            	sb.append(element.toString() + "\n");  
-	            } 
-	        }   
-	        log.info(sb.toString());
-		}*/
-		
+			
 	}
 
 
