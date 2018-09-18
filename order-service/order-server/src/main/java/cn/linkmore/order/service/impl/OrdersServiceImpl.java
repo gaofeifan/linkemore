@@ -1034,7 +1034,7 @@ public class OrdersServiceImpl implements OrdersService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());
 		Integer count = 0;
-		Object o = this.redisService.get(RedisKey.ENT_STALL_DOING.key + orders.getId());
+		Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + orders.getId());
 		if (o != null) {
 			count = new Integer(o.toString());
 		}
