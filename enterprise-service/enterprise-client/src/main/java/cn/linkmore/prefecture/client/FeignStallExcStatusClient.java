@@ -25,6 +25,10 @@ public interface FeignStallExcStatusClient {
 	@RequestMapping(value="/all",method=RequestMethod.GET)
 	@ResponseBody
 	List<ResEntExcStallStatus> findAll();
+
+	@RequestMapping(value="/by-stall-id",method=RequestMethod.GET)
+	@ResponseBody
+	ResEntExcStallStatus findByStallId(@RequestParam("stallId")Long stallId);
 	
 
 }

@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.service;
 
 import java.util.List;
+
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -49,6 +50,10 @@ public class StallExcStatusServiceImpl implements StallExcStatusService {
 	@Override
 	public List<ResEntExcStallStatus> findResAll() {
 		return this.clusterMapper.findResAll();
+	}
+	@Override
+	public ResEntExcStallStatus findByStallId(Long stallId) {
+		return this.clusterMapper.findByStallId(stallId);
 	}
 	
 	

@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@Api(tags="version",description="物业版版本管理")
+@Api(tags="version",description="【物业版】版本管理")
 @RequestMapping(value="/ent/version")
 public class WyAppVersionController {
 

@@ -15,6 +15,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.OrderClientHystrix;
 import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResOrder;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResUserOrder;
 
@@ -59,7 +60,11 @@ public interface OrderClient {
 	 */
 	@RequestMapping(value = "/v2.0/last-order", method = RequestMethod.GET)
 	@ResponseBody
-	Integer getPlateLastOrderStatus(@RequestParam("carno") String carno); 
+	Integer getPlateLastOrderStatus(@RequestParam("carno") String carno);
+
+	@RequestMapping(value = "/v2.0/by-id", method = RequestMethod.GET)
+	@ResponseBody
+	ResOrder findById(@RequestParam("id")Long id); 
 	
 
 	

@@ -8,6 +8,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.response.ResAdminAuth;
+import cn.linkmore.prefecture.response.ResStaffCity;
 
 /**
  * Service - 线下管理员 授权
@@ -33,5 +34,12 @@ public interface AdminAuthService {
 	void bind(Long id, String json,String citys,String pres);
 
 	Map<String, Object> resource(Long id);
+
+	/**
+	 * @Description  查询管理版用户城市
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStaffCity> findStaffCitysByAdminId(Long id);
 
 }

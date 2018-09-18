@@ -28,7 +28,7 @@ public class ResAdmin {
 
 	private String code;
 
-	private Boolean isOperate;
+	private Boolean isOperate = false;
 
 	private String type;
 	

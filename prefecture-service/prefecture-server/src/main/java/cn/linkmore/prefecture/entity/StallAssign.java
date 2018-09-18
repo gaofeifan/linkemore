@@ -3,7 +3,10 @@ package cn.linkmore.prefecture.entity;
 import java.util.Date;
 
 public class StallAssign {
-    private Long id;
+    public static final short STATUS_ASSIGN = 0;
+    public static final short STATUS_CANCEL = 1;
+
+	private Long id;
 
     private Long staffId;
 

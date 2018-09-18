@@ -18,6 +18,13 @@ public class FeignStallExcStatusClientHystrix implements FeignStallExcStatusClie
 		log.info("=======Hystrix==========List<ResEntExcStallStatus> findAll()");
 		return null;
 	}
+
+	@Override
+	public ResEntExcStallStatus findByStallId(Long stallId) {
+		log.info("=======Hystrix==========ResEntExcStallStatus findByStallId(Long stallId");
+		return null;
+	}
+	
 	
 	
 }

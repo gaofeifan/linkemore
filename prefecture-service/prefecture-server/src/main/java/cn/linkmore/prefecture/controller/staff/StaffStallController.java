@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.service.StallService;
 import io.swagger.annotations.Api;
@@ -47,4 +49,31 @@ public class StaffStallController {
 		List<ResStaffStallList> list = this.stallService.findStallList(request,staffList);
 		return ResponseEntity.success(list, request);
 	}
+	
+	@RequestMapping(value="/stall-detail",method=RequestMethod.GET)
+	@ResponseBody
+	@ApiOperation(value = "车位详情", notes = "车位详情", consumes = "application/json")
+	public ResponseEntity<ResStaffStallDetail> findStaffStallDetails(HttpServletRequest request,  @ApiParam("车位id") @NotNull(message="车位id不能为空") @RequestParam("stallId") Long stallId) {
+		ResStaffStallDetail detail = this.stallService.findStaffStallDetails(request,stallId);
+		return ResponseEntity.success(detail, request);
+	}
+	
+	@ApiOperation(value = "指定车位操作", notes = "指定车位操作")
+	@RequestMapping(value = "/staff-assign", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> staffAssign(HttpServletRequest request, @Validated @RequestBody ReqAssignStall bean) {
+		ResponseEntity<String> response = null;
+			String plate = this.stallService.staffAssign(bean,request);
+			response = ResponseEntity.success(plate, request);
+		return response;
+	}
+	
+	@ApiOperation(value = "删除指定车位操作", notes = "删除指定车位操作")
+	@RequestMapping(value = "/assignDel", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Void> staffAssignDel(HttpServletRequest request, @Validated @RequestBody ReqAssignStall bean) {
+		this.stallService.staffAssignDel(bean);
+		return ResponseEntity.success(null, request);
+	}
+
 }

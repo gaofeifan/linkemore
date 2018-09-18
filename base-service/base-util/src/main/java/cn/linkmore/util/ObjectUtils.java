@@ -71,6 +71,53 @@ public class ObjectUtils {
 		return null;
 		
 	}
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Date       2018年4月17日
+	 * @Param    list 查询集合中某个字段的值
+	 * @Param    fieldName   获取该字段的值
+	 * @Param    properts 条件字段
+	 * @Param    values 条件值
+	 * @Return   List<String>
+	 */
+	/*public static final List<String> findFieldVlaue(List<?> list , String fieldName ,String properts,Object values){
+		if(list.size() != 0){
+			List<String> ids = new ArrayList<>(); 
+			Class<? extends Object> clazz;
+			try {
+				for (Object t : list) {
+					clazz = t.getClass();
+					Field field = clazz.getDeclaredField(fieldName);
+					Field[] fields = clazz.getDeclaredFields();
+					boolean flag = true;
+					if(properts != null){
+						for (Field f : fields) {
+							f.setAccessible(true);
+							if(f.getName().equals(properts)){
+								if(!f.get(t).toString().equals(values.toString())){
+									flag = false;
+								}
+							}
+						}
+					}
+					if(flag){
+						if(field != null){
+							field.setAccessible(true);
+							Object object = field.get(t);
+							if(object != null){
+								ids.add(object.toString());
+							}
+						}
+					}
+				}
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			}
+			return ids;
+		}
+		return null;
+		
+	}*/
 	
 	public static <T> List<T> getListBean(List<Map<String,Object>> list,Class<T> clazz){
 		List<T> resultLit = new ArrayList<>();

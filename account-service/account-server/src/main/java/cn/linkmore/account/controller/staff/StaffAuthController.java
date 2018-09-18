@@ -1,6 +1,7 @@
-package cn.linkmore.enterprise.controller.staff;
+package cn.linkmore.account.controller.staff;
 
 import javax.annotation.Resource;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -14,12 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.account.controller.app.request.ReqAuthLogin;
+import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.staff.response.ResAdmin;
+import cn.linkmore.account.service.StaffAdminUserService;
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.enterprise.controller.ent.request.ReqAuthLogin;
-import cn.linkmore.enterprise.controller.ent.request.ReqAuthSend;
-import cn.linkmore.enterprise.controller.ent.response.ResStaff;
-import cn.linkmore.enterprise.service.StaffAdminUserService;
-import cn.linkmore.enterprise.service.StaffService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -39,13 +39,13 @@ public class StaffAuthController {
 
 	@Resource
 	private StaffAdminUserService adminUserService; 
-	/*
+	
 	@ApiOperation(value="用户登录",notes="手机号及短信验证码不能为空", consumes = "application/json")
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<ResStaff> login(@Validated @RequestBody ReqAuthLogin rl, HttpServletRequest request) {
-		ResponseEntity<ResStaff> response = null; 
-		ResStaff ru = this.adminUserService.login(rl,request);
+	public ResponseEntity<ResAdmin> login(@Validated @RequestBody ReqAuthLogin rl, HttpServletRequest request) {
+		ResponseEntity<ResAdmin> response = null; 
+		ResAdmin ru = this.adminUserService.login(rl,request);
 		response = ResponseEntity.success(ru, request);
 		return response;
 	}
@@ -55,12 +55,12 @@ public class StaffAuthController {
 	@ResponseBody
 	public ResponseEntity<?> logout(HttpServletRequest request) {
 		ResponseEntity<?> response = null;
-		this.staffService.logout(request);
+		this.adminUserService.logout(request);
 		response = ResponseEntity.success("用户退出成功", request);
 		return response;
 	}
 	
-	@ApiOperation(value = "微信登录", notes = "微信登录", consumes = "application/json")
+	/*@ApiOperation(value = "微信登录", notes = "微信登录", consumes = "application/json")
 	@RequestMapping(value = "/wechat", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> login( 
@@ -69,7 +69,7 @@ public class StaffAuthController {
 			@Size(min =32,max=36,message="授权码为无效")
 			String code, HttpServletRequest request) {
 		ResponseEntity<?> response = null;
-		this.staffService.bindLogin(code, request);
+		this.adminUserService.bindLogin(code, request);
 		response = ResponseEntity.success( "绑定成功", request);
 		return response;
 	}  
@@ -86,7 +86,7 @@ public class StaffAuthController {
 		response = ResponseEntity.success( bind, request);
 		return response;
 	}  
-	
+	*/
 	@ApiOperation(value="校验手机号是否存在",notes="校验手机号是否存在", consumes = "application/json")
 	@RequestMapping(value = "/check-mobile", method = RequestMethod.GET)
 	@ResponseBody
@@ -96,7 +96,7 @@ public class StaffAuthController {
 			@ApiParam("手机号") @RequestParam("mobile") String mobile
 			, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
-		boolean flag = this.staffService.checkMobile(mobile);
+		boolean flag = this.adminUserService.checkMobile(mobile);
 		response = ResponseEntity.success(flag, request);
 		return response;
 	}
@@ -106,8 +106,8 @@ public class StaffAuthController {
 	@ResponseBody
 	public ResponseEntity<?> send(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
-		this.staffService.send(rs);
+		this.adminUserService.send(rs);
 		response = ResponseEntity.success(null, request);
 		return response;
-	}*/
+	}
 }

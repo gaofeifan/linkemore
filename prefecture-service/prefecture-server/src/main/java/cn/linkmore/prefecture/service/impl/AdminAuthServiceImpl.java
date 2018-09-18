@@ -14,6 +14,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResCity;
+import cn.linkmore.prefecture.dao.cluster.AdminAuthCityClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
@@ -34,6 +35,7 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.response.ResAdminAuth;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.prefecture.response.ResStaffCity;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.service.AdminAuthService;
 import cn.linkmore.util.DomainUtil;
@@ -62,6 +64,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 	private AdminUserAuthMasterMapper adminUserAuthMasterMapper;
 	@Autowired
 	private AdminAuthCityMasterMapper adminAuthCityMasterMapper;
+	@Autowired
+	private AdminAuthCityClusterMapper adminAuthCityClusterMapper;
 	@Autowired
 	private AdminAuthPreMasterMapper adminAuthPreMasterMapper;
 	@Autowired
@@ -280,4 +284,10 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 		return param;
 	}
 
+	@Override
+	public List<ResStaffCity> findStaffCitysByAdminId(Long id) {
+		return this.adminAuthCityClusterMapper.findStaffCitysByAdminId(id);
+	}
+
+	
 }

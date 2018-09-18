@@ -14,6 +14,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResOrder;
 import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResUserOrder;
@@ -63,6 +64,12 @@ public class OrderClientHystrix implements OrderClient {
 	}
 
 	@Override
+	public ResOrder findById(Long id) {
+		log.info("ResOrder findById(Long id)");
+		return null;
+	}
+	
+	
 	public void updateLockStatus(Map<String, Object> param) {
 		log.info("updateLockStatus param :{}",JSON.toJSON(param));
 	}
