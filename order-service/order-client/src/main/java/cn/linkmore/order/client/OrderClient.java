@@ -1,6 +1,7 @@
 package cn.linkmore.order.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,9 +61,15 @@ public interface OrderClient {
 	@ResponseBody
 	Integer getPlateLastOrderStatus(@RequestParam("carno") String carno); 
 	
+
 	
 	@RequestMapping(value = "/stall-latest", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId);
+
+	@RequestMapping(value = "/v2.0/update-lock-status", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateLockStatus(@RequestBody Map<String, Object> param);
+
 	
 }

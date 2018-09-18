@@ -97,7 +97,7 @@ public class FeignStallController {
 	 */
 	@RequestMapping(value = "/v2.0/downlock", method = RequestMethod.PUT)
 	public void downlock(@RequestBody ReqOrderStall stall) {
-		log.info("downlock:{} .......................................", stall.toString());
+		log.info("downlock:{} .......................................",JSON.toJSON(stall));
 		this.stallService.downlock(stall);
 	}
 
