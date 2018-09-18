@@ -13,8 +13,9 @@ public class ResStallEntity {
 	public static int STATUS_USED = 2;
 	public static int STATUS_PREOUTLINE = 3;
 	public static int STATUS_OUTLINE = 4;
+	public static int STATUS_FAULT  = 5;
 	public static int LOCK_STATUS_DOWN = 2;
-	public static int LOCK_STATUS_UP = 1; 
+	public static int LOCK_STATUS_UP = 1;
 	public static short BIND_ORDER_STATUS_NONE = 0; 
 	/**
 	 * 主键

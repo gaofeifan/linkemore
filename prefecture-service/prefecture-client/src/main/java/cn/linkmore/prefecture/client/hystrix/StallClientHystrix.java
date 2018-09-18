@@ -14,6 +14,7 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
@@ -188,7 +189,5 @@ public class StallClientHystrix implements StallClient {
 	public void managerlock(ReqControlLock reqc) {
 		log.info("prefecture service void managerlock(ReqControlLock reqc)  hystrix");
 	}
-	
-	
 
 }

@@ -16,12 +16,28 @@ import cn.linkmore.enterprise.controller.staff.response.PrefectureResponseBean;
  * @Version  v2.0
  */
 public interface StaffPrefectureService {
-
+	/**
+	 * 操作车位
+	 * 
+	 * @param bean
+	 * @return
+	 */
 	void  control(SraffReqConStall reqOperatStall,HttpServletRequest request);
 	
-	ResponseEntity<PrefectureResponseBean> releaseStall(Long stall_id, HttpServletRequest request);
-
-	ResponseEntity<PrefectureResponseBean> forceReleaseStall(Long stall_id, HttpServletRequest request);
+	/**
+	 * 释放车位
+	 * 
+	 * @param bean
+	 * @return
+	 */
+	void releaseStall(Long stall_id, HttpServletRequest request);
+	/**
+	 * 强制释放车位
+	 * 
+	 * @param bean
+	 * @return
+	 */
+	void forceReleaseStall(Long stall_id, HttpServletRequest request);
 	
 	/**
 	 * 指定车位
@@ -29,15 +45,8 @@ public interface StaffPrefectureService {
 	 * @param bean
 	 * @return
 	 */
-	String assign(AssignStallRequestBean bean,HttpServletRequest request);
+	void assign(AssignStallRequestBean bean,HttpServletRequest request);
 	
-	/**
-	 * 删除指定车位
-	 * 
-	 * @param bean
-	 * @return
-	 */
-	void assignDel(AssignStallRequestBean bean,HttpServletRequest request);
 	
 	/**
 	 * 车位下线
@@ -45,7 +54,7 @@ public interface StaffPrefectureService {
 	 * @param bean
 	 * @param au
 	 */
-	PrefectureResponseBean offline(StallOperateRequestBean bean,HttpServletRequest request);
+	void offline(StallOperateRequestBean bean,HttpServletRequest request);
 
 	/**
 	 * 车位上线
@@ -53,7 +62,7 @@ public interface StaffPrefectureService {
 	 * @param bean
 	 * @param au
 	 */
-	PrefectureResponseBean online(StallOperateRequestBean bean,HttpServletRequest request);
+	void online(StallOperateRequestBean bean,HttpServletRequest request);
 	
 	
 	/**

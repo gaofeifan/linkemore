@@ -58,6 +58,12 @@ public class OrderClientHystrix implements OrderClient {
 	}
 
 	@Override
+	public ResUserOrder findStallLatest(Long stallId) {
+		log.info("ResUserOrder findStallLatest  :{}",stallId);
+		return null;
+	}
+
+	@Override
 	public ResOrder findById(Long id) {
 		log.info("ResOrder findById(Long id)");
 		return null;

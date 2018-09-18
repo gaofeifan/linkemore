@@ -57,8 +57,8 @@ public class StaffPrefectureController {
 	@RequestMapping(value = "/release_stall/{stallId}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> releaseStall(@PathVariable("stallId") Long stallId, HttpServletRequest request) {
-		ResponseEntity<PrefectureResponseBean> response = this.staffPrefectureService.releaseStall(stallId,request);
-		return response;
+		this.staffPrefectureService.releaseStall(stallId,request);
+		return null;
 	}
 	
 	@ApiOperation(value = "强制释放车位接口", notes = "强制释放车位接口", consumes = "application/json")
@@ -66,8 +66,8 @@ public class StaffPrefectureController {
 	@ResponseBody
 	public ResponseEntity<PrefectureResponseBean> forceReleaseStall(@PathVariable("stallId") Long stallId,
 			HttpServletRequest request) {
-		ResponseEntity<PrefectureResponseBean> response = this.staffPrefectureService.forceReleaseStall(stallId,request);
-		return response;
+		 this.staffPrefectureService.forceReleaseStall(stallId,request);
+		return null;
 	}
 	
 	@ApiOperation(value = "关闭订单", notes = "关闭订单", consumes = "application/json")
@@ -111,7 +111,7 @@ public class StaffPrefectureController {
 		ResponseEntity<PrefectureResponseBean> response = null;
 		PrefectureResponseBean prb = null;
 		try {
-			prb = this.staffPrefectureService.offline(bean,request);
+			 this.staffPrefectureService.offline(bean,request);
 			response = ResponseEntity.success(prb, request);
 		} catch (BusinessException e) {
 			response = null;
@@ -127,7 +127,7 @@ public class StaffPrefectureController {
 		ResponseEntity<PrefectureResponseBean> response = null;
 		PrefectureResponseBean prb = null;
 		try {
-			prb = this.staffPrefectureService.online(bean,request);
+			 this.staffPrefectureService.online(bean,request);
 			response = ResponseEntity.success(prb, request);
 		} catch (BusinessException e) {
 			response =null;
@@ -141,26 +141,11 @@ public class StaffPrefectureController {
 	public ResponseEntity<String> assign(HttpServletRequest request, @Valid @RequestBody AssignStallRequestBean bean) {
 		ResponseEntity<String> response = null;
 		try {
-			String plate = this.staffPrefectureService.assign(bean,request);
+			 this.staffPrefectureService.assign(bean,request);
 			response = null;
 		} catch (BusinessException e) {
 			response = null;
 		}
 		return response;
 	}
-	
-	@ApiOperation(value = "删除指定车位操作", notes = "删除指定车位操作")
-	@RequestMapping(value = "/assignDel", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<Void> assignDel(HttpServletRequest request, @Valid @RequestBody AssignStallRequestBean bean) {
-		ResponseEntity<Void> response = null;
-		try {
-			this.staffPrefectureService.assignDel(bean,request);
-			response = ResponseEntity.success(null, request);
-		} catch (BusinessException e) {
-			response = null;
-		}
-		return response;
-	}
-	
 }

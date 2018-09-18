@@ -66,8 +66,15 @@ public interface OrderClient {
 	@ResponseBody
 	ResOrder findById(@RequestParam("id")Long id); 
 	
+
+	
+	@RequestMapping(value = "/stall-latest", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId);
+
 	@RequestMapping(value = "/v2.0/update-lock-status", method = RequestMethod.POST)
 	@ResponseBody
 	public void updateLockStatus(@RequestBody Map<String, Object> param);
+
 	
 }
