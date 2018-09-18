@@ -32,7 +32,6 @@ public class BaseVersionServiceImpl implements BaseVersionService {
 	public void save(ReqBaseVersion record) {
 		ReqAppVersion version = ObjectUtils.copyObject(record, new ReqAppVersion());
 		this.baseVersionClient.saveApp(version);
-		this.save(record);
 	}
 
 	@Override

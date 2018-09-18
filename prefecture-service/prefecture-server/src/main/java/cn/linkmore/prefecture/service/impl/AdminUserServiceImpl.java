@@ -209,27 +209,30 @@ public class AdminUserServiceImpl implements AdminUserService {
 	@Override
 	public ResAdmin authLogin(String mobile) {
 		ResAdminUser user = this.findMobile(mobile);
-		ResAdmin admin = new ResAdmin();
-		admin.setId(user.getId());
-		admin.setCellphone(user.getCellphone());
-		admin.setCreateTime(user.getCreateTime());
-		admin.setLoginTime(user.getLoginTime());
-		admin.setRealname(user.getRealname());
-		admin.setUpdateTime(user.getUpdateTime());
-		admin.setStatus(user.getStatus());
-		Map<String, Object> map = new HashMap<>();
-		List<ResAdminAuth> list = this.adminAuthClusterMapper.findList(map);
-		this.adminUserAuthClusterMapper.findList(map);
-		for (ResAdminAuth resAdminAuth : list) {
-			if(resAdminAuth.getCode().contains(ADMIN)) {
-				admin.setIsOperate(true);
-				if(resAdminAuth.getCode().equals(ResAdmin.ADMIN_ALL)) {
-					admin.setType(ResAdmin.ADMIN_ALL);
-					admin.setCode(ResAdmin.ADMIN_ALL_CODE);
+		if(user != null) {
+			ResAdmin admin = new ResAdmin();
+			admin.setId(user.getId());
+			admin.setCellphone(user.getCellphone());
+			admin.setCreateTime(user.getCreateTime());
+			admin.setLoginTime(user.getLoginTime());
+			admin.setRealname(user.getRealname());
+			admin.setUpdateTime(user.getUpdateTime());
+			admin.setStatus(user.getStatus());
+			Map<String, Object> map = new HashMap<>();
+			List<ResAdminAuth> list = this.adminAuthClusterMapper.findList(map);
+			this.adminUserAuthClusterMapper.findList(map);
+			for (ResAdminAuth resAdminAuth : list) {
+				if(resAdminAuth.getCode()!= null && resAdminAuth.getCode().contains(ADMIN)) {
+					admin.setIsOperate(true);
+					if(resAdminAuth.getCode().equals(ResAdmin.ADMIN_ALL)) {
+						admin.setType(ResAdmin.ADMIN_ALL);
+						admin.setCode(ResAdmin.ADMIN_ALL_CODE);
+					}
 				}
 			}
+			return admin;
 		}
-		return admin;
+		return null;
 	}             	
 
 	

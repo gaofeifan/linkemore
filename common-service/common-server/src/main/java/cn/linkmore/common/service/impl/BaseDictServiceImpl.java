@@ -25,6 +25,8 @@ import cn.linkmore.util.ObjectUtils;
 public class BaseDictServiceImpl implements BaseDictService {
 
 	public static final String DOWN_LOCK_ERROR_CAUSE = "order_stall_down_error";
+	public static final String DOWN_CAUSE = "cause_down";	
+	public static final String CAUSE_HANG = "cause_hang";	
 	@Resource
 	private BaseDictClusterMapper baseDictClusterMapper;
 
@@ -74,6 +76,16 @@ public class BaseDictServiceImpl implements BaseDictService {
 	public List<ResBaseDict> findListByCodes(List<String> codes) {
 		return this.baseDictClusterMapper.findListByCodes(codes);
 	}
-	
+
+	@Override
+	public List<ResBaseDict> downCause() {
+		return this.findList(DOWN_CAUSE);
+	}
+
+	@Override
+	public List<ResBaseDict> causeHang() {
+		return this.findList(CAUSE_HANG);
+	}
+
 	
 }

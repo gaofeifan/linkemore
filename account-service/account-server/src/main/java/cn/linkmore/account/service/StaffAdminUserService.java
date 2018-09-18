@@ -1,10 +1,12 @@
-package cn.linkmore.enterprise.service;
+package cn.linkmore.account.service;
 
 import javax.servlet.http.HttpServletRequest;
 
-import cn.linkmore.enterprise.controller.ent.request.ReqAuthLogin;
-import cn.linkmore.enterprise.controller.ent.request.ReqAuthSend;
-import cn.linkmore.enterprise.controller.ent.response.ResAdmin;
+import cn.linkmore.account.controller.app.request.ReqAuthLogin;
+import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.staff.response.ResAdmin;
+
+
 
 /**
  * 管理版用户
@@ -41,5 +43,6 @@ public interface StaffAdminUserService {
 	 * @Version  v2.0
 	 */
 	boolean checkMobile(String mobile);
+
 
 }

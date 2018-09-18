@@ -87,5 +87,9 @@ public interface AdminUserClient {
 	@ResponseBody
 	public List<ResAdminUser> findAll();
 
+	@RequestMapping(value = "/by-id", method = RequestMethod.GET)
+	@ResponseBody
+	public ResAdminUser findById(@RequestParam("id")Long id);
+
 	
 }

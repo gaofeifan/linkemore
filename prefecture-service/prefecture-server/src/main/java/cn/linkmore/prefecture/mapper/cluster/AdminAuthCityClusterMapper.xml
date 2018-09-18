@@ -15,4 +15,23 @@
     from t_admin_auth_city
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findStaffCitysByAdminId" parameterType="java.lang.Long" resultType="cn.linkmore.prefecture.response.ResStaffCity">
+	SELECT
+		c.id,
+		c.auth_id authId,
+		c.city_id cityId
+	FROM
+		t_admin_auth_city c
+	INNER JOIN (
+		SELECT
+			auth_id
+		FROM
+			t_admin_user_auth
+		WHERE
+			user_id = #{adminId}
+	) au ON au.auth_id = c.auth_id
+	GROUP BY
+	c.city_id
+
+  </select>
 </mapper>

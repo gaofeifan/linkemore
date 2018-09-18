@@ -93,7 +93,7 @@
     order by stall_name asc
   </select>
   
-  <select id="findPreStallList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+  <select id="findPreStallList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
   	select id, stall_name, pre_id,lock_sn, status, type,lock_status
 	from v_stall 
 	<where>

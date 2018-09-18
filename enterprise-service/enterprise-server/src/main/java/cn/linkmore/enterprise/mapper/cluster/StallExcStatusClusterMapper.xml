@@ -48,4 +48,12 @@
  	  and status = 0
  	  order by create_time desc
  </select>
+  <select id="findByStallId" parameterType="java.lang.Long" resultMap="ResBaseResultMap">
+  	select <include refid="Base_Column_List"/> from v_stall_exc_status
+  	where stall_id 
+ 	  and status = 0
+ 	  and stall_id = #{id}
+ 	  order by create_time desc
+ 	  limit 0,1
+ </select>
 </mapper>

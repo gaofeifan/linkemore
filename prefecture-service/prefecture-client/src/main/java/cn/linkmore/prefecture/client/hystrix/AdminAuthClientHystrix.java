@@ -11,6 +11,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.client.AdminAuthClient;
 import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResStaffCity;
 /**
  * 远程调用实现 - 车位授权
  * @author jiaohanbin
@@ -67,4 +68,12 @@ public class AdminAuthClientHystrix implements AdminAuthClient {
 		log.info("prefecture service admin_auth delete() hystrix");
 		return 0;
 	}
+
+	@Override
+	public List<ResStaffCity> findStaffCitysByAdminId(Long id) {
+		log.info("prefecture Map<String, Object> findStaffCitysByUserId(Long id) hystrix");
+		return null;
+	}
+	
+	
 }

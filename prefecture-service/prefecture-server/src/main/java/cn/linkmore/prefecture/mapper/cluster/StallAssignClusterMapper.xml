@@ -76,5 +76,12 @@
     </if>
     limit  #{start},#{pageSize}
   </select> 
+  <select id="findByLockSn" resultMap="BaseResultMap"  parameterType="java.lang.String" >
+	select 
+    <include refid="Base_Column_List" />
+    from t_admin_stall_assign
+	where lock_sn = #{lockSn}
+    limit  #{start},#{pageSize}
+  </select> 
   
 </mapper>

@@ -16,6 +16,9 @@ public class ResStaffStallDetail {
 	
 	@ApiModelProperty("锁状态(1:竖起状态 2：躺下  3使用中)")
 	public Integer lockStatus;
+	
+	@ApiModelProperty(value="车位状态 状态:1，空闲；2，使用中；4，下线  ")
+	private Integer status;
 	/**
 	 * 电量
 	 */
@@ -53,10 +56,12 @@ public class ResStaffStallDetail {
 	private boolean onoffStatus = false;
 	@ApiModelProperty("故障原因Id")
 	private Long faultId;
-	@ApiModelProperty("地磁是否有车 true有车  false无车")
-	private boolean carStatus = false;
+	@ApiModelProperty("地磁车状态 0无车  1有车  2其他")
+	private Integer carStatus = 2;
 	@ApiModelProperty("故障原因名称")
 	private String faultName;
+	@ApiModelProperty("订单类型")
+	private String orderType;
 	public String getStallName() {
 		return stallName;
 	}
@@ -159,10 +164,10 @@ public class ResStaffStallDetail {
 	public void setFaultId(Long faultId) {
 		this.faultId = faultId;
 	}
-	public boolean isCarStatus() {
+	public Integer getCarStatus() {
 		return carStatus;
 	}
-	public void setCarStatus(boolean carStatus) {
+	public void setCarStatus(Integer carStatus) {
 		this.carStatus = carStatus;
 	}
 	public String getFaultName() {
@@ -171,4 +176,19 @@ public class ResStaffStallDetail {
 	public void setFaultName(String faultName) {
 		this.faultName = faultName;
 	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public String getOrderType() {
+		return orderType;
+	}
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+	
+	
+	
 }

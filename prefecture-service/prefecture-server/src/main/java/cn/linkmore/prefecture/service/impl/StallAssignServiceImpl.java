@@ -11,6 +11,8 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.dao.cluster.StallAssignClusterMapper;
+import cn.linkmore.prefecture.dao.master.StallAssignMasterMapper;
+import cn.linkmore.prefecture.entity.StallAssign;
 import cn.linkmore.prefecture.response.ResStallAssign;
 import cn.linkmore.prefecture.service.StallAssignService;
 import cn.linkmore.util.DomainUtil;
@@ -26,7 +28,8 @@ public class StallAssignServiceImpl implements StallAssignService {
 	
 	@Autowired
 	private StallAssignClusterMapper stallAssignClusterMapper; 
-	
+	@Autowired
+	private StallAssignMasterMapper assignMasterMapper;
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String,Object> param = new HashMap<String,Object>(); 
@@ -52,4 +55,25 @@ public class StallAssignServiceImpl implements StallAssignService {
 		}
 		return new ViewPage(count,pageable.getPageSize(),list);
 	}
+
+	@Override
+	public void save(StallAssign sa) {
+		this.assignMasterMapper.save(sa);
+		
+	}
+
+	@Override
+	public StallAssign find(String lockSn) {
+		return this.stallAssignClusterMapper.findByLockSn(lockSn);
+	}
+
+	@Override
+	public void cancel(StallAssign sa) {
+		this.assignMasterMapper.cancel(sa);
+	}
+
+	
+	
+	
+	
 }

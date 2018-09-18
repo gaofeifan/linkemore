@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 
+import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -22,8 +26,10 @@ import cn.linkmore.common.dao.master.CityMasterMapper;
 import cn.linkmore.common.entity.City;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.service.CityService;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.LocateClient;
 import cn.linkmore.util.EntityUtil;
+import cn.linkmore.util.TokenUtil;
 /**
  * Service实现类 - 城市信息
  * @author liwenlong
@@ -35,10 +41,10 @@ public class CityServiceImpl implements CityService {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CityClusterMapper cityClusterMapper;
-	
+	@Autowired
+	private RedisService redisService;
 	@Autowired
 	private CityMasterMapper cityMasterMapper;
-	
 	@Autowired
 	private LocateClient locateClient;
 
@@ -161,6 +167,8 @@ public class CityServiceImpl implements CityService {
 		}
 		return res;
 	}
+	
+	
 	
 	
 }

@@ -37,8 +37,7 @@
 			user_id
 		FROM
 			t_admin_user_auth
-		GROUP BY
-			auth_id
+
 	) users ON users.auth_id = stall.auth_id 	AND users.user_id = #{userId}
 	<where>
 		<if test="stallId != null">

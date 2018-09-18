@@ -14,6 +14,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResStaffCity;
 import cn.linkmore.prefecture.service.AdminAuthService;
 
 
@@ -97,5 +98,12 @@ public class AdminAuthController {
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids){ 
 		return	this.adminAuthService.delete(ids);
+	}
+	
+
+	@RequestMapping(value = "/by-admin-id", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResStaffCity> findStaffCitysByAdminId(@RequestParam("id")Long id){
+		return this.adminAuthService.findStaffCitysByAdminId(id);
 	}
 }

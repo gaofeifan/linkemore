@@ -54,4 +54,12 @@
       lock_sn = #{lockSn,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="cancel" parameterType="cn.linkmore.prefecture.entity.StallAssign">
+    update t_admin_stall_assign
+    set  
+      status = #{status,jdbcType=SMALLINT}, 
+      cancel_time = #{cancelTime,jdbcType=TIMESTAMP} 
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

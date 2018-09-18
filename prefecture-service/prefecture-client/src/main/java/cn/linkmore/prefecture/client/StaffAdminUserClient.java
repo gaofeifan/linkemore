@@ -41,4 +41,8 @@ public interface StaffAdminUserClient {
 	@ResponseBody
 	public ResAdmin authLogin(@RequestParam("mobile") String mobile);
 	
+	@RequestMapping(value = "/by-id", method = RequestMethod.GET)
+	@ResponseBody
+	public ResAdminUser findById(@RequestParam("id")Long id);
+	
 }

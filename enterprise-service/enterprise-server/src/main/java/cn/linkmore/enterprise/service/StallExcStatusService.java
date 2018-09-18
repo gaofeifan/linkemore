@@ -56,4 +56,11 @@ public interface StallExcStatusService {
 	 */
 	List<ResEntExcStallStatus> findResAll();
 
+	/**
+	 * @Description  根据车位id查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResEntExcStallStatus findByStallId(Long stallId);
+
 }
