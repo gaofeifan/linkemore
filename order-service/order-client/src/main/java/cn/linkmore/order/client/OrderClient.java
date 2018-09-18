@@ -1,6 +1,7 @@
 package cn.linkmore.order.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,5 +65,9 @@ public interface OrderClient {
 	@RequestMapping(value = "/v2.0/by-id", method = RequestMethod.GET)
 	@ResponseBody
 	ResOrder findById(@RequestParam("id")Long id); 
+	
+	@RequestMapping(value = "/v2.0/update-lock-status", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateLockStatus(@RequestBody Map<String, Object> param);
 	
 }

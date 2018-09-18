@@ -732,59 +732,62 @@ public class CouponServiceImpl implements CouponService {
 			ResSubject subject = list.get(0);
 			ResTemplate temp = this.templateClusterMapper.findById(subject.getTemplateId());
 			log.info("pay-------------temp = {}",JSON.toJSON(temp));
-			SendRecord sendRecord = new SendRecord();
-			sendRecord.setTemplateId(temp.getId());
-			sendRecord.setCreateTime(new Date());
-			sendRecord.setType(0);
-			sendRecord.setStatus(1);
-			sendRecord.setSendTime(new Date());
-			sendRecordMasterMapper.save(sendRecord);
-			SendUser couponSendUser = new SendUser();
-			couponSendUser.setCreateTime(new Date());
-			couponSendUser.setUserId(userId);
-			couponSendUser.setRecordId(sendRecord.getId());
-			couponSendUser.setTemplateId(sendRecord.getTemplateId());
-			couponSendUser.setRollbackFlag(0);
-			couponSendUser.setCreateTime(new Date());
-			sendUserMasterMapper.save(couponSendUser);
-			List<ResTemplateItem> items = templateItemClusterMapper.findList(sendRecord.getTemplateId());
-			List<Coupon> couponList = new ArrayList<Coupon>();
-			Coupon coupon = null;
-			for (ResTemplateItem item : items) {
-				// 停车券里配置多少张发送多少张
-				for (int i = 0; i < item.getQuantity(); i++) {
-					coupon = new Coupon();
-					coupon.setUserId(couponSendUser.getUserId());
-					coupon.setConditionId(sendRecord.getConditionId());
-					coupon.setTemplateId(sendRecord.getTemplateId());
-					coupon.setRecordId(sendRecord.getId());
-					coupon.setItemId(item.getId());
-					coupon.setType(item.getType());
-					coupon.setFaceAmount(item.getFaceAmount());
-					coupon.setDiscount(item.getDiscount());
-					coupon.setConditionAmount(item.getConditionAmount());
-					coupon.setValidTime(DateUtils.getDate(new Date(), 0, 0, item.getValidDay(), 0, 0, 0));
-					coupon.setStatus((short) 0);
-					coupon.setCreateTime(new Date());
-					coupon.setSendUserId(couponSendUser.getId());
-					couponList.add(coupon);
+			//当优惠券启用时可以发送优惠券
+			if(temp.getStatus() == 1) {
+				SendRecord sendRecord = new SendRecord();
+				sendRecord.setTemplateId(temp.getId());
+				sendRecord.setCreateTime(new Date());
+				sendRecord.setType(0);
+				sendRecord.setStatus(1);
+				sendRecord.setSendTime(new Date());
+				sendRecordMasterMapper.save(sendRecord);
+				SendUser couponSendUser = new SendUser();
+				couponSendUser.setCreateTime(new Date());
+				couponSendUser.setUserId(userId);
+				couponSendUser.setRecordId(sendRecord.getId());
+				couponSendUser.setTemplateId(sendRecord.getTemplateId());
+				couponSendUser.setRollbackFlag(0);
+				couponSendUser.setCreateTime(new Date());
+				sendUserMasterMapper.save(couponSendUser);
+				List<ResTemplateItem> items = templateItemClusterMapper.findList(sendRecord.getTemplateId());
+				List<Coupon> couponList = new ArrayList<Coupon>();
+				Coupon coupon = null;
+				for (ResTemplateItem item : items) {
+					// 停车券里配置多少张发送多少张
+					for (int i = 0; i < item.getQuantity(); i++) {
+						coupon = new Coupon();
+						coupon.setUserId(couponSendUser.getUserId());
+						coupon.setConditionId(sendRecord.getConditionId());
+						coupon.setTemplateId(sendRecord.getTemplateId());
+						coupon.setRecordId(sendRecord.getId());
+						coupon.setItemId(item.getId());
+						coupon.setType(item.getType());
+						coupon.setFaceAmount(item.getFaceAmount());
+						coupon.setDiscount(item.getDiscount());
+						coupon.setConditionAmount(item.getConditionAmount());
+						coupon.setValidTime(DateUtils.getDate(new Date(), 0, 0, item.getValidDay(), 0, 0, 0));
+						coupon.setStatus((short) 0);
+						coupon.setCreateTime(new Date());
+						coupon.setSendUserId(couponSendUser.getId());
+						couponList.add(coupon);
+					}
 				}
+				log.info("pay-------------couponList = {}",JSON.toJSON(couponList));
+				couponMasterMapper.insertBatch(couponList);
+				// 更新发送用户数量
+				temp.setSendQuantity(temp.getSendQuantity() + 1);
+				Template template = ObjectUtils.copyObject(temp, new Template());
+				this.templateMasterMapper.update(template);
+				// 发送短信通知
+//				Map<String, String> param = new HashMap<String, String>();
+//				param.put("money", temp.getUnitAmount().toString());
+//				param.put("enterprise", "凌猫停车");
+				ReqSms sms = new ReqSms();
+				sms.setMobile(resUser.getUsername());
+//				sms.setParam(param);
+				sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+				smsClient.send(sms);
 			}
-			log.info("pay-------------couponList = {}",JSON.toJSON(couponList));
-			couponMasterMapper.insertBatch(couponList);
-			// 更新发送用户数量
-			temp.setSendQuantity(temp.getSendQuantity() + 1);
-			Template template = ObjectUtils.copyObject(temp, new Template());
-			this.templateMasterMapper.update(template);
-			// 发送短信通知
-//			Map<String, String> param = new HashMap<String, String>();
-//			param.put("money", temp.getUnitAmount().toString());
-//			param.put("enterprise", "凌猫停车");
-			ReqSms sms = new ReqSms();
-			sms.setMobile(resUser.getUsername());
-//			sms.setParam(param);
-			sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
-			smsClient.send(sms);
 		}
 		return true;
 	}

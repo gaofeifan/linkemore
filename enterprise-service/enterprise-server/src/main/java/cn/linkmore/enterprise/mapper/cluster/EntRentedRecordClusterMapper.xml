@@ -57,18 +57,17 @@
     and status = 0
   </select>
   
-  <select id="findPage" parameterType="java.util.HashMap"
-		resultMap="BaseResultMap">
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
 		select
 		  record.id, record.ent_id, record.ent_pre_id, record.plate_no, record.down_time, record.leave_time, record.stall_id, record.stall_name, record.pre_id, 
-    record.pre_name,en.name ent_name
+          record.pre_name,en.name ent_name
 		from t_ent_rented_record record left join t_biz_enterprise en on record.ent_id = en.id
 		where 1 = 1
 		<if test="preName != null">
-			AND pre_name = #{preName}
+			AND pre_name like #{preName}
 		</if>
-		<if test="EntName != null">
-			AND ent_name = #{entName}
+		<if test="entName != null">
+			AND en.name like #{entName}
 		</if>
 		<if test="property==null">
 			order by down_time desc
@@ -81,13 +80,13 @@
 	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
 		select
 		count(1)
-		from t_ent_rented_record
+		from t_ent_rented_record record left join t_biz_enterprise en on record.ent_id = en.id
 		where 1 = 1
 		<if test="preName != null">
-			AND pre_name = #{preName}
+			AND pre_name like #{preName}
 		</if>
-		<if test="EntName != null">
-			AND ent_name = #{entName}
+		<if test="entName != null">
+			AND en.name like #{entName}
 		</if>
 	</select>
 </mapper>

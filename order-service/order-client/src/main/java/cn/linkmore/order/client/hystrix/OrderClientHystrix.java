@@ -1,11 +1,14 @@
 package cn.linkmore.order.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -61,4 +64,7 @@ public class OrderClientHystrix implements OrderClient {
 	}
 	
 	
+	public void updateLockStatus(Map<String, Object> param) {
+		log.info("updateLockStatus param :{}",JSON.toJSON(param));
+	}
 }

@@ -464,6 +464,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		ResPrefectureDetail pre = this.prefectureClusterMapper.findById(reqBooking.getPrefectureId());
 		if(pre != null) {
 			stallInfo.setPreName(pre.getName());
+			if(pre.getStatus() == 1) {
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  //无空闲车位可用
+			}
 		}
 		stallInfo.setAssignFlag(assign);
 		stallInfo.setStalls(stallList);

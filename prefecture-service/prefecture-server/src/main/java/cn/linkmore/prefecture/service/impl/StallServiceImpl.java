@@ -552,40 +552,39 @@ public class StallServiceImpl implements StallService {
 					String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqc.getStallId();
 					EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));
 					if (code == 200) {
-						if (reqc.getStatus() == 2) {
-							log.info("<<<<<<<<<up success>>>>>>>>>" + record.getId());
-							// 未完成记录同一用户只有一单
-							if (Objects.nonNull(record)) {
-								EntRentRecord up = new EntRentRecord();
-								up.setLeaveTime(new Date());
-								up.setStatus(1L);
-								up.setId(record.getId());
-								entRentedRecordMasterMapper.updateByIdSelective(up);
-							}
-							redisService.remove(robkey);
-						} else {
-							log.info("<<<<<<<<<down success>>>>>>>>>" + record.getId());
-						}
-						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
-						stall.setStatus(reqc.getStatus() == 1 ? 2 : 1);
-						stallMasterMapper.lockdown(stall);
 						redisService.remove(reqc.getKey());
-					} else {
-						if (reqc.getStatus() == 1) {
-							log.info("<<<<<<<<<down fail>>>>>>>>>>" + record.getId());
-							// 降锁失败 取消绑定
-							if (Objects.nonNull(record)) {
-								EntRentRecord up = new EntRentRecord();
-								up.setLeaveTime(new Date());
-								up.setStatus(2L);
-								up.setId(record.getId());
-								entRentedRecordMasterMapper.updateByIdSelective(up);
+						if(reqc.getStatus() == 2) {
+							log.info("<<<<<<<<<up success>>>>>>>>>");
+							//未完成记录同一用户只有一单
+							if(Objects.nonNull(record)) {
+							EntRentRecord up = new EntRentRecord();
+							up.setLeaveTime(new Date());
+							up.setStatus(1L);
+							up.setId(record.getId());
+							entRentedRecordMasterMapper.updateByIdSelective(up);
 							}
-							redisService.remove(robkey);
-						} else {
-							log.info("<<<<<<<<<up fail>>>>>>>>>>" + record.getId());
+						}else {
+							log.info("<<<<<<<<<down success>>>>>>>>>");
+						}
+						stall.setLockStatus(reqc.getStatus()==1?2:1);
+						stall.setStatus(reqc.getStatus()==1?2:1);
+						stallMasterMapper.lockdown(stall);
+					}else {
+						if(reqc.getStatus() == 1) {
+							log.info("<<<<<<<<<down fail>>>>>>>>>>");
+							//降锁失败 取消绑定
+							if(Objects.nonNull(record)) {
+							EntRentRecord up = new EntRentRecord();
+							up.setLeaveTime(new Date());
+							up.setStatus(2L);
+							up.setId(record.getId());
+							entRentedRecordMasterMapper.updateByIdSelective(up);
+							}
+						}else {
+							log.info("<<<<<<<<<up fail>>>>>>>>>>");
 						}
 					}
+					redisService.remove(robkey);
 				}
 			}
 		}).start();

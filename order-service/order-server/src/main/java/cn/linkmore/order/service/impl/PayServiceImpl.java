@@ -729,9 +729,10 @@ public class PayServiceImpl implements PayService {
 		// OrdersDetail od = ordersDetailClusterMapper.findByOrderId(order.getId());
 		if (order.getStatus() == OrderStatus.UNPAID.value) {
 			try {
+				log.info(">>>>>>stall checkout thread preName = {},stallName = {}, mobile= {}",order.getPreName(),order.getStallName(),order.getUsername());
 				new Thread(new StallCheckoutThread(order.getStallId())).start();
 			} catch (Exception e) {
-				log.info("up lock throw exception");
+				log.info("up lock throw exception = {}",e.getMessage());
 			}
 		}
 		// 更新订单
@@ -842,7 +843,9 @@ public class PayServiceImpl implements PayService {
 
 		@Override
 		public void run() {
-			stallClient.checkout(stallId);
+			log.info(">>>>>>>>>>>>>checkout>>>>>>>>>>>>{}",stallId);
+			Boolean checkoutFlag = stallClient.checkout(stallId);
+			log.info(">>>>>>>>>>>>>checkout checkoutFlag>>>>>>>>>>>>{}",checkoutFlag);
 		}
 	}
 
@@ -864,10 +867,10 @@ public class PayServiceImpl implements PayService {
 			detail = new ResOrderDetail();
 			detail.copy(order);
 			//实际支付金额大于0发送停车券
-			/*if(detail.getActualAmount().doubleValue() > 0) {
+			if(detail.getActualAmount().doubleValue() > 0) {
 				log.info("pay send userId = {}, actualAmount = {}",order.getUserId(),detail.getActualAmount());
 				couponClient.paySend(order.getUserId());
-			}*/
+			}
 			if (pre != null) {
 				detail.setLeaveTime(pre.getLeaveTime());
 			} else {

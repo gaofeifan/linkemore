@@ -1,28 +1,9 @@
 package cn.linkmore.ops.coupon.service.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import cn.linkmore.bean.exception.DataException;
-import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.client.TemplateClient;
@@ -30,13 +11,7 @@ import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqTemplate;
 import cn.linkmore.coupon.response.ResQrc;
 import cn.linkmore.coupon.response.ResTemplate;
-import cn.linkmore.coupon.response.ResTemplateItem;
 import cn.linkmore.ops.coupon.service.TemplateService;
-import cn.linkmore.util.DateUtils;
-import cn.linkmore.util.DomainUtil;
-import cn.linkmore.util.ObjectUtils;
-
-
 
 @Service
 public class TemplateServiceImpl implements TemplateService {

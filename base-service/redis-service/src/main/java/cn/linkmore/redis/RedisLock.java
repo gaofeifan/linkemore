@@ -78,15 +78,14 @@ public class RedisLock {
 		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
 		Boolean isOk = operations.setIfAbsent(key, newValue.toString());
 
-		System.out.println("isOk------"+isOk+"key------"+key+"newValue------"+newValue);
+		System.out.println("isOk："+isOk+"--key："+key+"--newValue："+newValue);
         if(isOk) {
         	redisTemplate.expire(key, LOCK_TIMEOUT, TimeUnit.MILLISECONDS);
            // 获得锁
            return true;
         }else {
-        	System.out.println(operations.get(key));
         	String alreadyValue =(String)operations.get(key);
-        	System.out.println("alreadyValue------"+alreadyValue);
+        	System.out.println("alreadyValue："+alreadyValue);
         	if(alreadyValue.equals(String.valueOf(newValue ))) {
         		redisTemplate.expire(key, LOCK_TIMEOUT, TimeUnit.MILLISECONDS);
         		return true;
