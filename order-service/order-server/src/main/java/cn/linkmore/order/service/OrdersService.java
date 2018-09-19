@@ -23,6 +23,7 @@ import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderOperateLog;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
@@ -49,6 +50,15 @@ public interface OrdersService {
 	 * @return
 	 */
 	ResUserOrder latest(Long userId);
+	
+	
+	/**
+	 * 订单详情
+	 * @param userId
+	 * @return
+	 */
+	ResUserOrder getOrderById(Long id);
+	
 	/**
 	 * 当前车牌最新订单
 	 * @param carno
@@ -237,7 +247,21 @@ public interface OrdersService {
 	 */
 	void updateLockStatus(Map<String, Object> param);
 
+	/**
+	 * 更新订单
+	 */
+	void updateClose(Map<String, Object> param);
+	
 
+	/**
+	 * 更新订单详情
+	 */
+	void updateDetail(Map<String, Object> param);
+	
+	/**
+	 * 插入订单记录
+	 */
+	void savelog(ResOrderOperateLog resOrderOperateLog);
 
 	
 }

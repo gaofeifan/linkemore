@@ -20,6 +20,7 @@ import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeList;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderOperateLog;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
@@ -74,4 +75,29 @@ public class FeignOrderController {
 	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId) {
 		return this.ordersService.findStallLatest(stallId);
 	}
+	
+	@RequestMapping(value = "/findOrderById", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserOrder findOrderById(@RequestParam("id") Long id) {
+		return this.ordersService.getOrderById(id);
+	}
+	
+	@RequestMapping(value = "/updateClose", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateClose(@RequestBody Map<String, Object> param ) {
+		 this.ordersService.updateClose(param);
+	}
+	
+	@RequestMapping(value = "/update-order-detail", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateDetail(@RequestBody Map<String, Object> param ) {
+		this.ordersService.updateClose(param);
+	}
+	
+	@RequestMapping(value = "/save-order-log", method = RequestMethod.POST)
+	@ResponseBody
+	public void savel(@RequestBody  ResOrderOperateLog resOrderOperateLog) {
+		this.ordersService.savelog(resOrderOperateLog);
+	}
+	
 }
