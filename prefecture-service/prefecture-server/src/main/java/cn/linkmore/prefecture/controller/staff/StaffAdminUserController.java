@@ -14,7 +14,7 @@ import cn.linkmore.prefecture.service.AdminUserService;
 import io.swagger.annotations.Api;
 import springfox.documentation.annotations.ApiIgnore;
 
-@Api(tags="Staff-Admin-user",description="管理版用户信息")
+@Api(tags="Staff-Admin-user",description="【管理版】用户信息")
 @RestController
 @RequestMapping("/staff/admin-user")
 @ApiIgnore

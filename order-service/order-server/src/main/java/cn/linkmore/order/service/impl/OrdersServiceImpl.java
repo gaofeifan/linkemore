@@ -1479,7 +1479,7 @@ public class OrdersServiceImpl implements OrdersService {
 		return incomes;
 	}
 
-	private Date getDateByType(Short type) {
+	public static Date getDateByType(Short type) {
 		Date date = null;
 		if (type == 0) {
 			date = DateUtils.getPast2Date(+7);
@@ -1491,7 +1491,7 @@ public class OrdersServiceImpl implements OrdersService {
 		return date;
 	}
 
-	private Map<String, Date> getStartEndDate(int date) {
+	public static Map<String, Date> getStartEndDate(int date) {
 		Map<String, Date> map = new HashMap<>();
 		Date monthStart = null;
 		Date monthEnd = null;
@@ -1518,7 +1518,7 @@ public class OrdersServiceImpl implements OrdersService {
 		return map;
 	}
 
-	private Map<String, Date> getStartEndDate(Date date) {
+	public static Map<String, Date> getStartEndDate(Date date) {
 		Map<String, Date> map = new HashMap<>();
 		Date monthStart = null;
 		Date monthEnd = null;

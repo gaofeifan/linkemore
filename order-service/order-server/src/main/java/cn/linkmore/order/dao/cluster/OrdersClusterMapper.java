@@ -203,6 +203,62 @@ public interface OrdersClusterMapper {
 	 */
 	ResEntOrder findOrderByStallId(Long stallId);
 
+	/**
+	 * @Description  查询管理版
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPreOrderCount> findStaffPreListCount(Map<String, Object> param);
+
+	/**
+	 * @Description  查询管理版今日收入
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	BigDecimal findStaffDayIncome(Map<String, Object> map);
+
+	/**
+	 * @Description  查询管理版报表金额统计
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	BigDecimal findStaffAmountReportCount(Map<String, Object> map);
+	
+	/**
+	 * @Description  查询管理版报表车流量统计
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Integer findStaffCarReportCount(Map<String, Object> map);
+
+	/**
+	 * @Description  查询管理版车场数据列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPreDataList> findStaffPreDataList(Map<String, Object> map);
+
+	/**
+	 * @Description  查询管理版月数据
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResMonthCount findStaffMonthCountByDate(Map<String, Object> param);
+
+	/**
+	 * @Description  查询管理版收入月列表数据
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResIncomeList> findStaffAmountMonthList(Map<String, Object> param);
+
+	/**
+	 * @Description  查询管理版车流量月数据列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResTrafficFlowList> findStaffCarMonthList(Map<String, Object> param);
+
 
 
 }

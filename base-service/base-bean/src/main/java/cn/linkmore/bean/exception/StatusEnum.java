@@ -96,6 +96,7 @@ public enum StatusEnum {
 	
 	
 	DOWN_CAUSE_EXISTS(8005067,"没有该下线原因"),
+	STAFF_CITY_EXISTS(8005076,"没有该城市权限"),
 	STAFF_STALL_EXISTS(8005065,"没有该车位权限"),
 	STAFF_PREFECTURE_EXISTS(8005066,"没有该车区权限"),
 	STALL_OPERATE_ORDERING(8005068,"车位有预约订单"),

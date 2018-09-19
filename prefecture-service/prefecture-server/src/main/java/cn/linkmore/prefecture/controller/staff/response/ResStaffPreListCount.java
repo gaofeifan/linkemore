@@ -1,59 +1,45 @@
-package cn.linkmore.order.response;
+package cn.linkmore.prefecture.controller.staff.response;
 
 import java.math.BigDecimal;
 
-/**
- * @author   GFF
- * @Date     2018年7月21日
- * @Version  v2.0
- */
-public class ResPreOrderCount {
-	
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
-	/**
-	 * 车区名称
-	 */
-	private String preName;
-	
-	/**
-	 * 车区id
-	 */
+@ApiModel("车区运营统计")
+public class ResStaffPreListCount {
+
+	@ApiModelProperty(value="车区id")
 	private Long preId;
 	
+	@ApiModelProperty(value="车区名称")
+	private String preName;
 	/**
-	 * 今日总额
+	 * 今日收入
 	 */ 
+	@ApiModelProperty(value="今日收入金额")
 	private BigDecimal dayAmount;
 
 	/**
 	 * 今日订单
 	 */ 
+	@ApiModelProperty(value="今日订单数量")
 	private Integer dayOrder;
-	
-	/**
-	 * 车位id
-	 */
-	private Long stallId;
-
-	public String getPreName() {
-		return preName;
-	}
-
 
 	public Long getPreId() {
 		return preId;
 	}
 
-
 	public void setPreId(Long preId) {
 		this.preId = preId;
 	}
 
+	public String getPreName() {
+		return preName;
+	}
 
 	public void setPreName(String preName) {
 		this.preName = preName;
 	}
-
 
 	public BigDecimal getDayAmount() {
 		return dayAmount;
@@ -70,15 +56,4 @@ public class ResPreOrderCount {
 	public void setDayOrder(Integer dayOrder) {
 		this.dayOrder = dayOrder;
 	}
-
-
-	public Long getStallId() {
-		return stallId;
-	}
-
-	public void setStallId(Long stallId) {
-		this.stallId = stallId;
-	}
-	
-	
 }

@@ -1,4 +1,4 @@
-package cn.linkmore.prefecture.service;
+package cn.linkmore.prefecture.service.impl;
 
 import java.util.HashMap;
 
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.prefecture.dao.cluster.AdminUserPackClusterMapper;
 import cn.linkmore.prefecture.dao.master.AdminUserPackMasterMapper;
+import cn.linkmore.prefecture.service.StaffAdminUserPackService;
 
 /**
  * @author   GFF

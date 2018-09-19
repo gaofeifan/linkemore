@@ -58,6 +58,7 @@ import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
+import cn.linkmore.prefecture.dao.cluster.AdminAuthCityClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminUserAuthClusterMapper;
@@ -67,6 +68,7 @@ import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
 import cn.linkmore.prefecture.dao.master.EntRentRecordMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
+import cn.linkmore.prefecture.entity.AdminAuthCity;
 import cn.linkmore.prefecture.entity.AdminAuthPre;
 import cn.linkmore.prefecture.entity.AdminAuthStall;
 import cn.linkmore.prefecture.entity.EntRentRecord;
@@ -128,6 +130,8 @@ public class StallServiceImpl implements StallService {
 	private OrderClient orderClient;
 	@Autowired
 	private EntOrderClient entOrderClient;
+	@Autowired
+	private AdminAuthCityClusterMapper adminAuthCityClusterMapper;
 	@Autowired
 	private StallLockMasterMapper stallLockMasterMapper;
 	@Autowired
@@ -766,6 +770,9 @@ public class StallServiceImpl implements StallService {
 	public List<ResStaffPreList> findPreList(HttpServletRequest request, Long cityId) {
 		CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+		if(!checkStaffCityAuth(cu.getId(), cityId)) {
+			throw new BusinessException(StatusEnum.STAFF_CITY_EXISTS);
+		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", cu.getId());
 		List<AdminAuthPre> pres = this.adminAuthPreClusterMapper.findList(map);
@@ -784,6 +791,8 @@ public class StallServiceImpl implements StallService {
 			preList = new ResStaffPreList();
 			int preTypeStalls = 0;
 			int preUseTypeStalls = 0;
+			int preLeisureTypeStalls = 0;
+			int preFaultTypeStalls = 0;
 			int orderNum = 0;
 			for (Stall stall : stalls) {
 				if (stall.getType() != 0 || !stall.getPreId().equals(resPre.getId())) {
@@ -793,6 +802,10 @@ public class StallServiceImpl implements StallService {
 					preTypeStalls++;
 					if (stall.getStatus() == 2) {
 						preUseTypeStalls++;
+					}else if(stall.getStatus() == 1) {
+						preLeisureTypeStalls++;
+					}else if(stall.getStatus() == 4) {
+						preFaultTypeStalls++;
 					}
 				}
 			}
@@ -803,6 +816,8 @@ public class StallServiceImpl implements StallService {
 					}
 				}
 			}
+			preList.setPreLeisureTypeStalls(preLeisureTypeStalls);
+			preList.setPreFaultTypeStalls(preFaultTypeStalls);
 			preList.setPreId(resPre.getId());
 			preList.setPreName(resPre.getName());
 			preList.setUnusualOrder(orderNum);
@@ -885,9 +900,11 @@ public class StallServiceImpl implements StallService {
 					}
 				}
 			}
+			boolean falg = true;
 			if (bockBeans != null) {
 				for (LockBean lockBean : bockBeans) {
 					if (lockBean.getLockCode().equals(resStall.getLockSn())) {
+						falg = false;
 						switch (lockBean.getLockState()) {
 						case 0:
 							ResStaffStallList.setLockStatus(2);
@@ -896,9 +913,11 @@ public class StallServiceImpl implements StallService {
 							ResStaffStallList.setLockStatus(lockBean.getLockState());
 							break;
 						}
+						break;
 					}
 				}
-			} else {
+			} 
+			if(falg){
 				ResStaffStallList.setLockStatus(resStall.getLockStatus());
 			}
 			ResStaffStallList.setStatus(resStall.getStatus());
@@ -909,6 +928,15 @@ public class StallServiceImpl implements StallService {
 		return staffStallLists;
 	}
 
+	@Override
+	public Boolean checkStaffCityAuth(Long userId,Long cityId) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("cityId", cityId);
+		List<AdminAuthCity> list = this.adminAuthCityClusterMapper.findList(map);
+		return list != null && list.size() != 0 ? true : false;
+	}
+	@Override
 	public Boolean checkStaffPreAuth(Long userId, Long preId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
@@ -916,7 +944,7 @@ public class StallServiceImpl implements StallService {
 		List<AdminAuthPre> list = this.adminAuthPreClusterMapper.findList(map);
 		return list != null && list.size() != 0 ? true : false;
 	}
-
+	@Override
 	public Boolean checkStaffStallAuth(Long userId, Long stallId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
@@ -1132,6 +1160,11 @@ public class StallServiceImpl implements StallService {
 		} catch (Exception e) {
 			throw new BusinessException(StatusEnum.STALL_OPERATE_ASSIGN_DELETE);
 		}
+	}
+
+	@Override
+	public List<ResStall> findStallsByPreIds(Map<String, Object> map) {
+		return this.stallClusterMapper.findStallsByPreIds(map);
 	}
  
 
