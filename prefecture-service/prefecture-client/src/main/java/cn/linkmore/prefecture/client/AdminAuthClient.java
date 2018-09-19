@@ -2,12 +2,14 @@ package cn.linkmore.prefecture.client;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -15,6 +17,7 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.AdminAuthClientHystrix;
 import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResStaffCity;
 /**
  * 远程调用 - 车位授权
  * @author jiaohanbin
@@ -73,4 +76,8 @@ public interface AdminAuthClient {
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids);
+
+	@RequestMapping(value = "/by-admin-id", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResStaffCity> findStaffCitysByAdminId(@RequestParam("id")Long id);
 }

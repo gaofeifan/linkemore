@@ -31,6 +31,7 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="type" jdbcType="SMALLINT" property="type" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
+        <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
   </resultMap>
   
   <sql id="Base_Column_List">
@@ -67,6 +68,23 @@
   <select id="findStallsByPreId" parameterType="java.lang.Long" resultMap="ResponseResultMap">
   	select id,stall_name,lock_sn,pre_id from v_stall where status = 1 and pre_id = #{preId}
   </select>
+  <select id="findStallsByPreIds" parameterType="java.util.HashMap" resultMap="ResponseResultMap">
+  	select id,stall_name,lock_sn,pre_id from v_stall 
+  	<where>
+  		<if test="preIds != null">
+  		AND pre_id in  
+		    <foreach collection="preIds"  index="index" item="id" open="(" separator="," close=")"  >
+		       #{id}
+		    </foreach>
+  		</if>
+  		<if test="status != null">
+  			AND status = #{status}
+  		</if>
+  		<if test="type != null">
+  			AND type = #{type}
+  		</if>
+  	</where>
+  </select>
   
   <select id="findAll" resultMap="BaseResultMap" >
     select id, stall_name, sell_count, pre_id, lock_id, lock_sn, lock_status, 
@@ -93,7 +111,7 @@
     order by stall_name asc
   </select>
   
-  <select id="findPreStallList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+  <select id="findPreStallList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
   	select id, stall_name, pre_id,lock_sn, status, type,lock_status
 	from v_stall 
 	<where>

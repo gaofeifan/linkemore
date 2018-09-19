@@ -64,4 +64,18 @@ public interface BaseDictService {
 	 */
 	List<ResBaseDict> findListByCodes(List<String> codes);
 
+	/**
+	 * @Description  查询下线原因
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResBaseDict> downCause();
+
+	/**
+	 * @Description  查询挂起原因
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResBaseDict> causeHang();
+
 }

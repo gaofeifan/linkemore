@@ -25,7 +25,8 @@ import io.swagger.annotations.ApiOperation;
 
 /**
  * Controller -车区【管理版】
- * @author 
+ * 
+ * @author
  * @version 2.0
  *
  */
@@ -33,134 +34,118 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/staff/pre")
 public class StaffPrefectureController {
-	
+
 	@Autowired
 	private StaffPrefectureService staffPrefectureService;
-	
+
 	@ApiOperation(value = "管理员操作车位锁", notes = "管理员操作车位锁", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Boolean> controlLock(@Validated @RequestBody SraffReqConStall reqConStall,HttpServletRequest request) {
+	public ResponseEntity<Boolean> controlLock(@Validated @RequestBody SraffReqConStall reqConStall,
+			HttpServletRequest request) {
 		ResponseEntity<Boolean> response = null;
-		 try {
-			 staffPrefectureService.control(reqConStall, request);
-			 response  =	 ResponseEntity.success(true, request);
-		}  catch (BusinessException e) {
-			response = ResponseEntity.fail( e.getStatusEnum(),  request);
-		} catch (Exception e) { 
+		try {
+			staffPrefectureService.control(reqConStall, request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
-		 return response;
+		return response;
 	}
-	
+
 	@ApiOperation(value = "释放车位接口", notes = "释放车位接口", consumes = "application/json")
 	@RequestMapping(value = "/release_stall/{stallId}", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> releaseStall(@PathVariable("stallId") Long stallId, HttpServletRequest request) {
-		ResponseEntity<PrefectureResponseBean> response = this.staffPrefectureService.releaseStall(stallId,request);
+		ResponseEntity<Boolean> response = null;
+		try {
+			this.staffPrefectureService.releaseStall(stallId, request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
 		return response;
 	}
-	
+
 	@ApiOperation(value = "强制释放车位接口", notes = "强制释放车位接口", consumes = "application/json")
 	@RequestMapping(value = "/force_release_stall/{stallId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<PrefectureResponseBean> forceReleaseStall(@PathVariable("stallId") Long stallId,
-			HttpServletRequest request) {
-		ResponseEntity<PrefectureResponseBean> response = this.staffPrefectureService.forceReleaseStall(stallId,request);
+	public ResponseEntity<?> forceReleaseStall(@PathVariable("stallId") Long stallId, HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			this.staffPrefectureService.forceReleaseStall(stallId, request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
 		return response;
 	}
-	
+
 	@ApiOperation(value = "关闭订单", notes = "关闭订单", consumes = "application/json")
 	@RequestMapping(value = "/close", method = RequestMethod.POST)
-	public ResponseEntity<Void> close(@Valid @RequestBody OrderOperateRequestBean oorb,HttpServletRequest request) {
-		ResponseEntity<Void> re = null;
-		try{
-			this.staffPrefectureService.close(oorb,request);
-			re = ResponseEntity.success(null, request);
-		}catch (BusinessException e) {
-			re = null;
-		} catch(Exception e){
-			e.printStackTrace();
-			re = null;
-		} 
-		return re;
+	public ResponseEntity<?> close(@Valid @RequestBody OrderOperateRequestBean oorb, HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			this.staffPrefectureService.close(oorb, request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
-	
-	
+
 	@ApiOperation(value = "挂起订单", notes = "挂起订单", consumes = "application/json")
 	@RequestMapping(value = "/suspend", method = RequestMethod.POST)
-	public ResponseEntity<Void> suspend(@Valid @RequestBody OrderOperateRequestBean oorb,HttpServletRequest request) {
-		ResponseEntity<Void> re = null;
-		try{
-			this.staffPrefectureService.suspend(oorb,request);
-			re = ResponseEntity.success(null, request);
-		}catch (BusinessException e) { 
-			re = null;
-		} catch(Exception e){ 
-			re = null;
-		} 
-		return re;
+	public ResponseEntity<?> suspend(@Valid @RequestBody OrderOperateRequestBean oorb, HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			this.staffPrefectureService.suspend(oorb, request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
-	
-	
+
 	@ApiOperation(value = "下线", notes = "车位下线操作")
 	@RequestMapping(value = "/offline", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<PrefectureResponseBean> offline(HttpServletRequest request,
-			@Valid @RequestBody StallOperateRequestBean bean) {
-		ResponseEntity<PrefectureResponseBean> response = null;
-		PrefectureResponseBean prb = null;
+	public ResponseEntity<?> offline(HttpServletRequest request, @Valid @RequestBody StallOperateRequestBean bean) {
+		ResponseEntity<Boolean> response = null;
 		try {
-			prb = this.staffPrefectureService.offline(bean,request);
-			response = ResponseEntity.success(prb, request);
+			this.staffPrefectureService.offline(bean, request);
+			response = ResponseEntity.success(true, request);
 		} catch (BusinessException e) {
-			response = null;
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
 	}
-	
+
 	@ApiOperation(value = "上线", notes = "车位上线操作")
 	@RequestMapping(value = "/online", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<PrefectureResponseBean> online(HttpServletRequest request,
-			@Valid @RequestBody StallOperateRequestBean bean) {
-		ResponseEntity<PrefectureResponseBean> response = null;
-		PrefectureResponseBean prb = null;
+	public ResponseEntity<?> online(HttpServletRequest request, @Valid @RequestBody StallOperateRequestBean bean) {
+		ResponseEntity<Boolean> response = null;
 		try {
-			prb = this.staffPrefectureService.online(bean,request);
-			response = ResponseEntity.success(prb, request);
+			this.staffPrefectureService.online(bean, request);
+			response = ResponseEntity.success(true, request);
 		} catch (BusinessException e) {
-			response =null;
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
 	}
-	
-	@ApiOperation(value = "指定车位操作", notes = "指定车位操作")
-	@RequestMapping(value = "/assign", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<String> assign(HttpServletRequest request, @Valid @RequestBody AssignStallRequestBean bean) {
-		ResponseEntity<String> response = null;
-		try {
-			String plate = this.staffPrefectureService.assign(bean,request);
-			response = null;
-		} catch (BusinessException e) {
-			response = null;
-		}
-		return response;
-	}
-	
-	@ApiOperation(value = "删除指定车位操作", notes = "删除指定车位操作")
-	@RequestMapping(value = "/assignDel", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<Void> assignDel(HttpServletRequest request, @Valid @RequestBody AssignStallRequestBean bean) {
-		ResponseEntity<Void> response = null;
-		try {
-			this.staffPrefectureService.assignDel(bean,request);
-			response = ResponseEntity.success(null, request);
-		} catch (BusinessException e) {
-			response = null;
-		}
-		return response;
-	}
-	
 }

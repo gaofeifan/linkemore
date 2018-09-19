@@ -1,4 +1,4 @@
-package cn.linkmore.enterprise.service.impl;
+package cn.linkmore.account.service.impl;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -13,6 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.account.controller.app.request.ReqAuthLogin;
+import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.staff.response.ResAdmin;
+import cn.linkmore.account.service.StaffAdminUserService;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.PushType;
@@ -21,10 +25,6 @@ import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.enterprise.controller.ent.request.ReqAuthLogin;
-import cn.linkmore.enterprise.controller.ent.request.ReqAuthSend;
-import cn.linkmore.enterprise.controller.ent.response.ResAdmin;
-import cn.linkmore.enterprise.service.StaffAdminUserService;
 import cn.linkmore.prefecture.client.StaffAdminUserClient;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.redis.RedisService;
@@ -132,7 +132,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 			if (token.getClient().intValue() == ClientSource.WXAPP.source) {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("title", "账号已在其它设备登录");
-				map.put("type",PushType.STAFF_ENT_LOGOUT_NOTICE);
+				map.put("type",PushType.STAFF_STAFF_LOGOUT_NOTICE);
 				map.put("content", "强制退出,账号已在其它设备登录");
 //				map.put("status", status);
 				CacheUser cu = (CacheUser) redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + token.getAccessToken());
@@ -143,7 +143,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 				rp.setContent("强制退出,账号已在其它设备登录");
 				rp.setData(token.getAccessToken());
 				rp.setClient(token.getClient());
-				rp.setType(PushType.USER_APP_LOGOUT_NOTICE);
+				rp.setType(PushType.STAFF_STAFF_LOGOUT_NOTICE);
 				rp.setTitle("账号已在其它设备登录"); 
 //				sendClient.send(rp);
 			}
@@ -178,7 +178,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 //		if(!DigestUtils.md5Hex(rs.getMobile()+rs.getTimestamp()+"v2.0").equals(rs.getToken())) {
 //			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 //		} 
-		long space = new Date().getTime()	-new Long(rs.getTimestamp()).longValue(); 
+		long space = new Date().getTime()-new Long(rs.getTimestamp()).longValue(); 
 		log.info("space:{},SPACE:{} verify:{}",space,SPACE,space>SPACE||space<-SPACE);
 		if(space>SPACE||space<-SPACE) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);

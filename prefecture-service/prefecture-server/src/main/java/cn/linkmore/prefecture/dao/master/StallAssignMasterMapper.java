@@ -9,4 +9,6 @@ public interface StallAssignMasterMapper {
     int save(StallAssign record);
 
     int update(StallAssign record);
+
+	void cancel(StallAssign sa);
 }

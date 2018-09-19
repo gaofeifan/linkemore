@@ -77,6 +77,7 @@ import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderOperateLog;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreDataList;
 import cn.linkmore.order.response.ResPreOrderCount;
@@ -1479,7 +1480,7 @@ public class OrdersServiceImpl implements OrdersService {
 		return incomes;
 	}
 
-	private Date getDateByType(Short type) {
+	public static Date getDateByType(Short type) {
 		Date date = null;
 		if (type == 0) {
 			date = DateUtils.getPast2Date(+7);
@@ -1491,7 +1492,7 @@ public class OrdersServiceImpl implements OrdersService {
 		return date;
 	}
 
-	private Map<String, Date> getStartEndDate(int date) {
+	public static Map<String, Date> getStartEndDate(int date) {
 		Map<String, Date> map = new HashMap<>();
 		Date monthStart = null;
 		Date monthEnd = null;
@@ -1518,7 +1519,7 @@ public class OrdersServiceImpl implements OrdersService {
 		return map;
 	}
 
-	private Map<String, Date> getStartEndDate(Date date) {
+	public static Map<String, Date> getStartEndDate(Date date) {
 		Map<String, Date> map = new HashMap<>();
 		Date monthStart = null;
 		Date monthEnd = null;
@@ -1608,4 +1609,25 @@ public class OrdersServiceImpl implements OrdersService {
 	public Integer getPlateLastOrderStatus(String carno) {
 		return this.ordersClusterMapper.getPlateLastOrderStatus(carno);
 	}
+
+	@Override
+	public ResUserOrder getOrderById(Long id) {
+		return this.ordersClusterMapper.findDetail(id);
+	}
+	
+	@Override
+	public void updateClose(Map<String, Object> param) {
+		 this.orderMasterMapper.updateClose(param);
+	}
+
+	@Override
+	public void updateDetail(Map<String, Object> param) {
+		this.ordersDetailMasterMapper.updateT(param);
+	}
+
+	@Override
+	public void savelog(ResOrderOperateLog resOrderOperateLog) {
+		this.ordersDetailMasterMapper.savelog(resOrderOperateLog);
+	}
+	
 }

@@ -25,6 +25,11 @@ public class StaffAdminUserClientHystrix implements StaffAdminUserClient {
 		log.info(" ResAdminUser authLogin(String mobile) hystrix");
 		return null;
 	}
+	@Override
+	public ResAdminUser findById(Long id) {
+		log.info(" ResAdminUser findById(Long id) hystrix");
+		return null;
+	}
 	
 	
 	

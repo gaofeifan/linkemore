@@ -5,13 +5,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.linkmore.lock.bean.LockBean;
-import com.linkmore.lock.response.ResponseMessage;
-
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
@@ -206,4 +205,54 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	List<ResStaffStallList> findStallList(HttpServletRequest request, ReqStaffStallList staffList);
+	
+	/**
+	 * @Description  查询车位详情
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResStaffStallDetail findStaffStallDetails(HttpServletRequest request, Long stallId);
+	
+	/**
+	 * @Description  管理指定车牌号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	String staffAssign(ReqAssignStall bean, HttpServletRequest request);
+	
+	/**
+	 * @Description  删除管理版指定车牌号
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void staffAssignDel(ReqAssignStall bean);
+	
+	
+	/**
+	 * @Description  查询角色城市
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean checkStaffCityAuth(Long userId, Long cityId);
+
+	/**
+	 * @Description  根据条件查询车位
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStall> findStallsByPreIds(Map<String, Object> map);
+	
+	/**
+	 * @Description  校验管理版车区
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean checkStaffPreAuth(Long userId, Long preId);
+	
+	/**
+	 * @Description  校验管理版车位
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean checkStaffStallAuth(Long userId, Long stallId);
 }

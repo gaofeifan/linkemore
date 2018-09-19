@@ -79,6 +79,11 @@ public class TokenFilter extends ZuulFilter {
 			add("/ent/auth/v2.0/login");
 			add("/ent/auth/v2.0/send");  
 			
+			add("/staff/auth/send");  
+			add("/staff/auth/login");  
+			add("/staff/auth/check-mobile");  
+			add("/ent/auth/send");  
+			
 			add("/attach/image_upload"); 
 		}
 	};  
@@ -123,6 +128,19 @@ public class TokenFilter extends ZuulFilter {
             ctx.setResponseStatusCode(200);
             ctx.set("isSuccess", true);
             return null;
+        }else if (uri.contains(API_STAFF_PATH)) {
+        	CacheUser staffCu = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key);  
+        	if(staffCu == null) {
+        		 ctx.setSendZuulResponse(false);
+                 ctx.setResponseStatusCode(200);
+                 ctx.setResponseBody(JsonUtil.toJson(ResponseEntity.fail(StatusEnum.USER_APP_NO_LOGIN, request)));
+                 ctx.getResponse().setContentType(CONTENTTYPE);
+                 ctx.set("isSuccess", false);
+        	}
+        	ctx.setSendZuulResponse(true);
+        	ctx.setResponseStatusCode(200);
+        	ctx.set("isSuccess", true);
+        	return null;
         } else if(uri.contains(API_APP_PATH)){  
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(200);

@@ -12,10 +12,12 @@ import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.prefecture.service.AdminUserService;
 import io.swagger.annotations.Api;
+import springfox.documentation.annotations.ApiIgnore;
 
-@Api(tags="Staff-Admin-user",description="管理版用户信息")
+@Api(tags="Staff-Admin-user",description="【管理版】用户信息")
 @RestController
 @RequestMapping("/staff/admin-user")
+@ApiIgnore
 public class StaffAdminUserController {
 
 	@Resource
@@ -37,5 +39,11 @@ public class StaffAdminUserController {
 	@ResponseBody
 	public ResAdmin authLogin(@RequestParam("mobile") String mobile) {
 		return this.adminUserService.authLogin(mobile);
+	}
+	
+	@RequestMapping(value = "/by-id", method = RequestMethod.GET)
+	@ResponseBody
+	public ResAdminUser findById(@RequestParam("id")Long id) {
+		return this.adminUserService.find(id);
 	}
 }

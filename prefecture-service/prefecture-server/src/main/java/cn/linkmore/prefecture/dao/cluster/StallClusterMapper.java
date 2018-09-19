@@ -85,4 +85,11 @@ public interface StallClusterMapper {
 	
 	List<ResStall> findFreeStallList(Map<String, Object> params);
 	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStall> findStallsByPreIds(Map<String, Object> map);
+	
 }

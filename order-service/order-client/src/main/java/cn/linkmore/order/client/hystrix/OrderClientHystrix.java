@@ -6,7 +6,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 
@@ -14,7 +18,9 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.request.ReqOrderExcel;
+import cn.linkmore.order.response.ResOrder;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderOperateLog;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResUserOrder;
 
@@ -57,7 +63,41 @@ public class OrderClientHystrix implements OrderClient {
 	}
 
 	@Override
+	public ResUserOrder findStallLatest(Long stallId) {
+		log.info("ResUserOrder findStallLatest  :{}",stallId);
+		return null;
+	}
+
+	@Override
+	public ResOrder findById(Long id) {
+		log.info("ResOrder findById(Long id)");
+		return null;
+	}
+	
+	
 	public void updateLockStatus(Map<String, Object> param) {
 		log.info("updateLockStatus param :{}",JSON.toJSON(param));
+	}
+
+	@Override
+	public ResUserOrder findOrderById(Long id) {
+		log.info("findOrderById :{}",id);
+		return null;
+	}
+
+	@Override
+	public void updateClose(Map<String, Object> param) {
+		log.info("updateClose :{}",param);
+	}
+	
+	@Override
+	public void updateDetail(Map<String, Object> param) {
+		log.info("updateDetail :{}",param);
+	}
+
+	@Override
+	public void savel(ResOrderOperateLog resOrderOperateLog) {
+		log.info("savel :{}",resOrderOperateLog);
+		
 	}
 }

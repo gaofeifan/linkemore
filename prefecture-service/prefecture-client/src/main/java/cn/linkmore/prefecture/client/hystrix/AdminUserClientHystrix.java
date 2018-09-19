@@ -74,6 +74,12 @@ public class AdminUserClientHystrix implements AdminUserClient {
 		log.info("prefecture service List<ResAdminUser> findAll() hystrix");
 		return null;
 	}
+
+	@Override
+	public ResAdminUser findById(Long id) {
+		log.info("prefecture service ResAdminUser findById(Long id) hystrix");
+		return null;
+	}
 	
 	
 	

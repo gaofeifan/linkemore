@@ -20,6 +20,12 @@ public class ResStaffPreList {
 	
 	@ApiModelProperty(value = "车位使用总数")
 	private int preUseTypeStalls;
+	
+	@ApiModelProperty(value = "车位空闲总数")
+	private int preLeisureTypeStalls;
+
+	@ApiModelProperty(value = "车位故障总数")
+	private int preFaultTypeStalls;
 
 	public String getPreName() {
 		return preName;
@@ -60,5 +66,23 @@ public class ResStaffPreList {
 	public void setPreUseTypeStalls(int preUseTypeStalls) {
 		this.preUseTypeStalls = preUseTypeStalls;
 	}
+
+	public int getPreLeisureTypeStalls() {
+		return preLeisureTypeStalls;
+	}
+
+	public void setPreLeisureTypeStalls(int preLeisureTypeStalls) {
+		this.preLeisureTypeStalls = preLeisureTypeStalls;
+	}
+
+	public int getPreFaultTypeStalls() {
+		return preFaultTypeStalls;
+	}
+
+	public void setPreFaultTypeStalls(int preFaultTypeStalls) {
+		this.preFaultTypeStalls = preFaultTypeStalls;
+	}
+	
+	
 	
 }
