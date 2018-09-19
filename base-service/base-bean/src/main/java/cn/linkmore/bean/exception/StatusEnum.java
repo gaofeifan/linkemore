@@ -110,7 +110,12 @@ public enum StatusEnum {
 	STALL_OPERATE_ASSIGN_DELETE(8005075,"删除指定车位失败"),
 	
 	STALL_HIVING_DO(8005073,"操作中，请稍候"),
-	STALL_LOCK_NO_UP(8005074,"车位锁没有竖起");
+	STALL_LOCK_NO_UP(8005076,"车位锁没有竖起"),
+	
+	ORDER_OPERATE_NULLORDER(8005077,"订单不存在"),
+	ORDER_OPERATE_NULLSTALL(8005078,"车位不匹配"),
+	
+	ORDER_OPERATE_NOUNPAID(8005079,"非预约中订单");
 	
 	public int code;
 	public String label;

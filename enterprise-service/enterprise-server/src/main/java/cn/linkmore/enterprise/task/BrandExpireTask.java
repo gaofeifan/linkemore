@@ -21,6 +21,7 @@ import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.prefecture.client.StallClient;
 
+
 @Component
 public class BrandExpireTask {
 

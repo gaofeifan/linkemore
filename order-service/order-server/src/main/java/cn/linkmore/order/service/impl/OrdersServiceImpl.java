@@ -77,6 +77,7 @@ import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderOperateLog;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreDataList;
 import cn.linkmore.order.response.ResPreOrderCount;
@@ -1608,4 +1609,25 @@ public class OrdersServiceImpl implements OrdersService {
 	public Integer getPlateLastOrderStatus(String carno) {
 		return this.ordersClusterMapper.getPlateLastOrderStatus(carno);
 	}
+
+	@Override
+	public ResUserOrder getOrderById(Long id) {
+		return this.ordersClusterMapper.findDetail(id);
+	}
+	
+	@Override
+	public void updateClose(Map<String, Object> param) {
+		 this.orderMasterMapper.updateClose(param);
+	}
+
+	@Override
+	public void updateDetail(Map<String, Object> param) {
+		this.ordersDetailMasterMapper.updateT(param);
+	}
+
+	@Override
+	public void savelog(ResOrderOperateLog resOrderOperateLog) {
+		this.ordersDetailMasterMapper.savelog(resOrderOperateLog);
+	}
+	
 }

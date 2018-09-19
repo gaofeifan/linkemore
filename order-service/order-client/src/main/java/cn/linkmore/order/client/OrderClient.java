@@ -17,6 +17,7 @@ import cn.linkmore.order.client.hystrix.OrderClientHystrix;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrder;
 import cn.linkmore.order.response.ResOrderExcel;
+import cn.linkmore.order.response.ResOrderOperateLog;
 import cn.linkmore.order.response.ResUserOrder;
 
 @FeignClient(value = "order-server", path = "/feign/orders", fallback=OrderClientHystrix.class,configuration = FeignConfiguration.class)
@@ -71,10 +72,27 @@ public interface OrderClient {
 	@RequestMapping(value = "/stall-latest", method = RequestMethod.GET)
 	@ResponseBody
 	public ResUserOrder findStallLatest(@RequestParam("stallId") Long stallId);
+	
+	
+	@RequestMapping(value = "/findOrderById", method = RequestMethod.GET)
+	@ResponseBody
+	public ResUserOrder findOrderById(@RequestParam("id") Long id);
+	
 
 	@RequestMapping(value = "/v2.0/update-lock-status", method = RequestMethod.POST)
 	@ResponseBody
 	public void updateLockStatus(@RequestBody Map<String, Object> param);
 
+	@RequestMapping(value = "/updateClose", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateClose(@RequestBody Map<String, Object> param );
+	
+	@RequestMapping(value = "/update-order-detail", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateDetail(@RequestBody Map<String, Object> param );
+	
+	@RequestMapping(value = "/save-order-log", method = RequestMethod.POST)
+	@ResponseBody
+	public void savel(@RequestBody  ResOrderOperateLog resOrderOperateLog);
 	
 }

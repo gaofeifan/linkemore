@@ -84,4 +84,23 @@
       order_id = #{orderId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+    <update id="updateT" parameterType="java.util.HashMap">
+    update o_orders_detail
+    set
+      end_time = #{endTime,jdbcType=TIMESTAMP}
+    where ord_no = #{ordNo,jdbcType=VARCHAR}
+  </update>
+  
+   <insert id="savelog" parameterType="cn.linkmore.order.response.ResOrderOperateLog" >
+    insert into t_order_operate_log (id, order_id, operator_id,
+      source, stall_id, operation, 
+      remark, create_time, status, 
+      remark_id)
+    values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{operatorId,jdbcType=BIGINT}, 
+      #{source,jdbcType=SMALLINT}, #{stallId,jdbcType=BIGINT}, #{operation,jdbcType=SMALLINT}, 
+      #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{remarkId,jdbcType=BIGINT})
+  </insert>
+  
 </mapper>
