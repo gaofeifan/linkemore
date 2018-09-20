@@ -11,7 +11,7 @@
     <result column="brand" jdbcType="VARCHAR" property="brand" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, app_version, os_version, model, client_type, level, brand
+    id, app_version, os_version, model, client_type, level, brand,system
   </sql>
   <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_app_unusual_log
@@ -20,10 +20,10 @@
   <insert id="insert" parameterType="cn.linkmore.common.entity.UnusualLog" useGeneratedKeys="true" keyProperty="id">
     insert into t_app_unusual_log (id, app_version, os_version, 
       model, client_type, level, 
-      brand)
+      brand,system)
     values (#{id,jdbcType=BIGINT}, #{appVersion,jdbcType=VARCHAR}, #{osVersion,jdbcType=VARCHAR}, 
       #{model,jdbcType=VARCHAR}, #{clientType,jdbcType=INTEGER}, #{level,jdbcType=VARCHAR}, 
-      #{brand,jdbcType=VARCHAR})
+      #{brand,jdbcType=VARCHAR}, #{system,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="cn.linkmore.common.entity.UnusualLog" useGeneratedKeys="true" keyProperty="id">
     insert into t_app_unusual_log
@@ -49,6 +49,9 @@
       <if test="brand != null">
         brand,
       </if>
+      <if test="system != null">
+        system,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -71,6 +74,9 @@
       </if>
       <if test="brand != null">
         #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="system != null">
+        #{system,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -95,6 +101,9 @@
       <if test="brand != null">
         brand = #{brand,jdbcType=VARCHAR},
       </if>
+      <if test="system != null">
+        system = #{system,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -105,7 +114,8 @@
       model = #{model,jdbcType=VARCHAR},
       client_type = #{clientType,jdbcType=INTEGER},
       level = #{level,jdbcType=VARCHAR},
-      brand = #{brand,jdbcType=VARCHAR}
+      brand = #{brand,jdbcType=VARCHAR},
+      system = #{system,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

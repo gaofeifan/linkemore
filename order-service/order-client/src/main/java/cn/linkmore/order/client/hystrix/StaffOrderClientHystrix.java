@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import cn.linkmore.order.client.StaffOrderClient;
+import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
@@ -53,6 +54,11 @@ public class StaffOrderClientHystrix implements StaffOrderClient {
 	@Override
 	public List<ResIncome> findAmountMonthList(Map<String, Object> map) {
 		log.info("====Hystrix===== List<ResIncome> findAmountMonthList(Map<String, Object> map)");
+		return null;
+	}
+	@Override
+	public List<ResChargeDetail> findAmountDetail(Map<String, Object> param) {
+		log.info("====Hystrix===== List<ResChargeDetail> findAmountDetail(Map<String, Object> param");
 		return null;
 	}
 	

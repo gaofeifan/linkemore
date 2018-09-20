@@ -1,5 +1,6 @@
 package cn.linkmore.enterprise.service;
 
+import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResWyAppVersion;
 
 /**
@@ -16,5 +17,6 @@ public interface WyVersionService {
 	 * @Version  v2.0
 	 */
 	ResWyAppVersion currentAppVersion(int appType, Object object);
+
 
 }

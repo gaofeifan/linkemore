@@ -16,7 +16,7 @@ public class ReqPreTypePage {
 	@Digits(message="参数必须为整数")
 	private Long preId;
 	
-	@ApiModelProperty(required=false,value = "2018-09-01 当前页的最后一条数据 默认为当前时间")
+	@ApiModelProperty(required=true,value = "2018-09-01 当前页的最后一条数据 默认为当前时间")
 	@NotNull(message="参数不能为空")
 	private Date now;
 	

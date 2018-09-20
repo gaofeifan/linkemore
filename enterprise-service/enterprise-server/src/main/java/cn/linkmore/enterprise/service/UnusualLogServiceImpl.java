@@ -18,6 +18,7 @@ public class UnusualLogServiceImpl implements UnusualLogService {
 	private UnusualLogClient unusualLogClient;
 	@Override
 	public void insert(ReqUnusualLog unusualLog) {
+		unusualLog.setSystem(2);
 		this.unusualLogClient.insert(unusualLog);
 	}
 

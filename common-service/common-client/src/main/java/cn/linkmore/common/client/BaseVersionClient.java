@@ -13,6 +13,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.hystrix.BaseVersionClientHystrix;
 import cn.linkmore.common.request.ReqAppVersion;
 import cn.linkmore.common.request.ReqCheck;
+import cn.linkmore.common.request.ReqStaffAppVersion;
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.feign.FeignConfiguration;
@@ -91,4 +92,52 @@ public interface BaseVersionClient {
 	 */
 	@RequestMapping(value="/user_page",method = RequestMethod.POST)
 	public ViewPage findUserPage(@RequestBody ViewPageable pageable);
+	
+	/**
+	 * @Description  添加管理版本
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff",method = RequestMethod.POST)
+	public void saveStaff(@RequestBody ReqStaffAppVersion version);
+	
+	/**
+	 * @Description  更新管理版版本
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff/update",method = RequestMethod.PUT)
+	public void updateStaff(@RequestBody ReqStaffAppVersion version);
+	
+	/**
+	 * @Description  删除a管理版版本
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff",method = RequestMethod.DELETE)
+	public void deleteStaffById(@RequestBody List<Long> ids);
+	
+	/**
+	 * @Description  查询分页管理版
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff/page",method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage findStaffPage(@RequestBody ViewPageable pageable);
+	
+	/**
+	 * @Description  校验管理版
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff/check",method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean checkStaff(@RequestBody ReqCheck check);
+
+
+	@RequestMapping(value="/staff",method = RequestMethod.DELETE)
+	@ResponseBody
+	public void deleteStaff(@RequestBody List<Long> ids);
+
 }

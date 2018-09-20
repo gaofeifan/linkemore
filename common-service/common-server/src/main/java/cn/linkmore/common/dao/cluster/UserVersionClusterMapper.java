@@ -20,7 +20,7 @@ public interface UserVersionClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    UserVersion findById(Long userId);
+    UserVersion findById(Map<String, Object> map);
 
 	/**
 	 * @Description  查询总数

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.order.controller.app.response.ResMonthCount;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.master.OrdersMasterMapper;
+import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResPreDataList;
@@ -160,8 +161,6 @@ public class StaffOrderServiceImpl implements StaffOrderService {
 
 	@Override
 	public List<ResIncome> findAmountMonthList(Map<String, Object> param) {
-		Date date = OrdersServiceImpl.getDateByType(Short.parseShort(param.get("startTime").toString()));
-		param.put("startTime", date);
 		Calendar instance = Calendar.getInstance();
 		instance.setTimeInMillis(Long.decode(param.get("now").toString()));
 		Date now = instance.getTime();
@@ -220,7 +219,7 @@ public class StaffOrderServiceImpl implements StaffOrderService {
 					map = OrdersServiceImpl.getStartEndDate(newList.get(newList.size() - 1).getMonth());
 					param.put("monthStart", map.get("monthStart"));
 					param.put("monthEnd", map.get("monthEnd"));
-					ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
+					ResMonthCount monthCount = this.ordersClusterMapper.findStaffMonthCountByDate(param);
 					for (ResIncomeList resIncomeList : newList) {
 						if (integer.equals(resIncomeList.getMonth())) {
 							lists.add(resIncomeList);
@@ -241,7 +240,6 @@ public class StaffOrderServiceImpl implements StaffOrderService {
 		}
 		return incomes;
 	}
-
 	@Override
 	public List<ResTrafficFlow> findCarMonthList(Map<String, Object> param) {
 		Calendar instance = Calendar.getInstance();
@@ -273,7 +271,7 @@ public class StaffOrderServiceImpl implements StaffOrderService {
 				newList.add(in);
 			}
 		}
-		ResMonthCount monthCount = this.ordersClusterMapper.findMonthCountByDate(param);
+		ResMonthCount monthCount = this.ordersClusterMapper.findStaffMonthCountByDate(param);
 		List<ResTrafficFlow> flows = new ArrayList<>();
 		ResTrafficFlow flow = null;
 		Set<Integer> collect = newList.stream().map(traffic -> traffic.getMonth()).collect(Collectors.toSet());
@@ -299,7 +297,7 @@ public class StaffOrderServiceImpl implements StaffOrderService {
 					map = OrdersServiceImpl.getStartEndDate(integer);
 					param.put("monthStart", map.get("monthStart"));
 					param.put("monthEnd", map.get("monthEnd"));
-					ResMonthCount resMonthCount = this.ordersClusterMapper.findMonthCountByDate(param);
+					ResMonthCount resMonthCount = this.ordersClusterMapper.findStaffMonthCountByDate(param);
 					flow = new ResTrafficFlow();
 					List<ResTrafficFlowList> lists = new ArrayList<>();
 					for (ResTrafficFlowList resTrafficFlowList : newList) {
@@ -321,6 +319,21 @@ public class StaffOrderServiceImpl implements StaffOrderService {
 			flows.add(flow);
 		}
 		return flows;
+	}
+
+	@Override
+	public List<ResChargeDetail> findAmountDetail(Map<String, Object> param) {
+		param.put("start", OrdersServiceImpl.getPageNo(param.get("pageNo")));
+		param.put("pageSize", 10);
+		param.put("startTime", new Date());
+		List<ResChargeDetail> list = this.ordersClusterMapper.findStaffAmountDetail(param);
+		for (ResChargeDetail detail : list) {
+			if (detail.getMonth() == detail.getMonth()) {
+				String str = DateUtils.getDurationDetail(detail.getEndTime(), detail.getStartTime());
+				detail.setStopTime(str);
+			}
+		}
+		return list;
 	}
 	
 	

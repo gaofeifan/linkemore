@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Range;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * app异常日志上报请求bean
@@ -72,6 +73,13 @@ public class ReqUnusualLog {
 	@ApiModelProperty(value="内容 必填",required=true)
 	@NotBlank(message="内容不能为空") 
 	private String content;
+	
+	/**
+	 *  系统
+	 */ 
+	@ApiModelProperty(value="1 个人版 2 物业版 3管理版",required=false)
+//	@NotBlank(message="内容不能为空") 
+	private Integer system;
 
 	public Long getId() {
 		return id;
@@ -136,6 +144,15 @@ public class ReqUnusualLog {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	public Integer getSystem() {
+		return system;
+	}
+
+	public void setSystem(Integer system) {
+		this.system = system;
+	}
+	
 	
 	
 }

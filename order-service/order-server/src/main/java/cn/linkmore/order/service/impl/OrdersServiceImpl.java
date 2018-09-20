@@ -1483,11 +1483,11 @@ public class OrdersServiceImpl implements OrdersService {
 	public static Date getDateByType(Short type) {
 		Date date = null;
 		if (type == 0) {
-			date = DateUtils.getPast2Date(+7);
+			date = DateUtils.getPast2Date(+6);
 		} else if (type == 1) {
-			date = DateUtils.getPast2Date(+15);
+			date = DateUtils.getPast2Date(+14);
 		} else if (type == 2) {
-			date = DateUtils.getPast2Date(+30);
+			date = DateUtils.getPast2Date(+29);
 		}
 		return date;
 	}
@@ -1539,7 +1539,7 @@ public class OrdersServiceImpl implements OrdersService {
 		return this.ordersClusterMapper.findOrderByStallId(stallId);
 	}
 
-	private int getPageNo(Object pageNo) {
+	public static int getPageNo(Object pageNo) {
 		Integer start = null;
 		if (pageNo == null) {
 			start = 1;

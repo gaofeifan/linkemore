@@ -15,6 +15,7 @@ import cn.linkmore.common.client.hystrix.WyAppVersionClientHystrix;
 import cn.linkmore.common.request.ReqAppVersion;
 import cn.linkmore.common.request.ReqCheck;
 import cn.linkmore.common.request.ReqVersion;
+import cn.linkmore.common.request.ReqWyAppVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.response.ResWyAppVersion;
 import cn.linkmore.feign.FeignConfiguration;
@@ -45,6 +46,26 @@ public interface WyAppVersionClient {
 	 */
 	@RequestMapping(value="/report",method = RequestMethod.POST)
 	public void report(@RequestBody ReqVersion vrb);
+
+	@RequestMapping(value="/list-page",method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage findPage(@RequestBody ViewPageable pageable);
+
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	public void save(@RequestBody ReqWyAppVersion copyObject);
+
+	@RequestMapping(method = RequestMethod.PUT)
+	@ResponseBody
+	public void update(@RequestBody ReqWyAppVersion copyObject);
+
+	@RequestMapping(method = RequestMethod.DELETE)
+	@ResponseBody
+	public void delete(@RequestBody List<Long> ids);
+
+	@RequestMapping(value="/check",method = RequestMethod.PUT)
+	@ResponseBody
+	public Boolean check(@RequestBody ReqCheck check);
 
 	
 }

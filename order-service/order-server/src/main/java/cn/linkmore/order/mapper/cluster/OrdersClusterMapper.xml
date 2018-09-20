@@ -401,6 +401,8 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 		GROUP BY pre_id
 	) de ON de.pre_id = o.pre_id -->
 	<where>
+	 STATUS = 3
+		AND DATE_FORMAT(NOW(), '%Y-%m-%d') = DATE_FORMAT(end_time, '%Y-%m-%d')
 	<if test="stallIds !=null">
 		AND o.stall_id IN
 		  <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
@@ -521,6 +523,28 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 	order by end_time desc
 	limit #{start},#{pageSize}
   </select>
+  <select id="findStaffAmountDetail" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResChargeDetail">
+   SELECT
+	plate_no plateNo,begin_time startTime,actual_amount orderAmount,end_time endTime,DATE_FORMAT(end_time,'%m') month
+	FROM
+		o_orders
+	<where>
+	    1 = 1
+		and status = 3 
+		<if test="preId != null">
+			and pre_id = #{preId}
+		</if>
+		<if test="stallIds != null">
+			and stall_id in
+			<foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
+	    		 #{id}
+	    	</foreach>
+		</if>
+		AND date_format(end_time,'%Y-%m-%d') = date_format(#{startTime},'%Y-%m-%d')
+	</where>
+	order by end_time desc
+	limit #{start},#{pageSize}
+  </select>
   <select id="findTrafficFlowList" parameterType="java.util.HashMap" resultType="cn.linkmore.order.response.ResTrafficFlowList">
     SELECT
 		DATE_FORMAT(end_time,'%Y-%m-%d')  date,count(1) carDayTotal,DATE_FORMAT(end_time,'%m') month
@@ -554,8 +578,8 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
    		#{id}
    	</foreach>
 	</if>
-	AND  DATE_FORMAT(#{startTime},'%Y-%m-%d') >= DATE_FORMAT(end_time,'%Y-%m-%d')
-	AND <![CDATA[ DATE_FORMAT(#{endTime},'%Y-%m-%d') <= DATE_FORMAT(end_time,'%Y-%m-%d')]]>
+	AND  <![CDATA[  DATE_FORMAT(#{startTime},'%Y-%m-%d') <= DATE_FORMAT(end_time,'%Y-%m-%d')]]>
+	AND <![CDATA[ DATE_FORMAT(#{endTime},'%Y-%m-%d') >= DATE_FORMAT(end_time,'%Y-%m-%d')]]>
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
   </select>
@@ -591,8 +615,8 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
    		#{id}
    	</foreach>
 	</if>
-	AND  DATE_FORMAT(#{startTime},'%Y-%m-%d') >= DATE_FORMAT(end_time,'%Y-%m-%d')
-	AND <![CDATA[ DATE_FORMAT(#{endTime},'%Y-%m-%d') <= DATE_FORMAT(end_time,'%Y-%m-%d')]]>
+	AND  <![CDATA[  DATE_FORMAT(#{startTime},'%Y-%m-%d') <= DATE_FORMAT(end_time,'%Y-%m-%d')]]>
+	AND <![CDATA[ DATE_FORMAT(#{endTime},'%Y-%m-%d') >= DATE_FORMAT(end_time,'%Y-%m-%d')]]>
 	GROUP BY DATE_FORMAT(end_time,'%Y-%m-%d')
 	ORDER BY end_time DESC
   </select>

@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import cn.linkmore.bean.view.ViewPage;
+import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.UnusualLogClient;
 import cn.linkmore.common.request.ReqUnusualLog;
 
@@ -21,6 +23,12 @@ public class UnusualLogClientHystrix implements UnusualLogClient {
 	@Override
 	public void insert(ReqUnusualLog unusualLog) {
 		log.info("common service unusuallog insert(ReqUnusualLog unusualLog) hystrix");
+	}
+
+	@Override
+	public ViewPage findPage(ViewPageable pageable) {
+		log.info("common service ViewPage findPage(ViewPageable pageable)  hystrix");
+		return null;
 	}
 
 	
