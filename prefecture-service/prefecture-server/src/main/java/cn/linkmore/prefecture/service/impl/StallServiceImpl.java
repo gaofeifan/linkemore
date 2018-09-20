@@ -209,7 +209,7 @@ public class StallServiceImpl implements StallService {
 		public void run() {
 			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
 			int code = res.getMsgCode();
-			log.info("lock msg:{}", JsonUtil.toJson(res));
+			log.info("checkout.....................lock msg:{}", JsonUtil.toJson(res));
 			if (code == 200) {
 				redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			}
@@ -218,7 +218,7 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public boolean checkout(Long stallId) {
-		log.info("checkout stall :{}", stallId);
+		log.info("checkout..................... stallId :{}", stallId);
 		boolean flag = false;
 		Stall stall = stallClusterMapper.findById(stallId);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
@@ -229,22 +229,33 @@ public class StallServiceImpl implements StallService {
 			stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
 			this.stallMasterMapper.checkout(stall);
 			new StallUpThread(stall).start();
+			log.info("checkout..................... stall-up-thread start");
 		}
 		return flag;
 	}
 
 	private void downing(ReqOrderStall reqos) {
 		Stall stall = stallClusterMapper.findById(reqos.getStallId());
-		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			log.info("downing... name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			log.info("downing.....................stall:{},lockSn:{}", JsonUtil.toJson(stall), stall.getLockSn());
 			ResponseMessage<LockBean> res = lockFactory.lockDown(stall.getLockSn());
-			log.info("res:{}", JsonUtil.toJson(res));
+			log.info("downing.....................res:{}", JsonUtil.toJson(res));
 			int code = res.getMsgCode();
 			if (code == 200) {
+				log.info("downing.....................success");
 				stall.setLockStatus(LockStatus.DOWN.status);
 				stallMasterMapper.lockdown(stall);
 				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqos.getOrderId());
+				Map<String,Object> param = new HashMap<String,Object>();
+				param.put("orderId", reqos.getOrderId());
+				param.put("lockDownStatus", (short)Constants.DownLockStatus.SUCCESS.status);
+				orderClient.updateLockStatus(param);
+			}else {
+				log.info("downing.....................failure");
+				Map<String,Object> param = new HashMap<String,Object>();
+				param.put("orderId", reqos.getOrderId());
+				param.put("lockDownStatus", (short)Constants.DownLockStatus.FAILURE.status);
+				orderClient.updateLockStatus(param);
 			}
 			orderClient.downMsgPush(reqos.getOrderId(), reqos.getStallId());
 		}
@@ -273,9 +284,9 @@ public class StallServiceImpl implements StallService {
 		boolean flag = true;
 		Stall stall = stallClusterMapper.findById(stallId);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			log.info("uping... name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			log.info("uping.....................name:{},sn:{}", stall.getStallName(), stall.getLockSn());
 			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
-			log.info("res:{}", JsonUtil.toJson(res));
+			log.info("uping.....................res:{}", JsonUtil.toJson(res));
 			int code = res.getMsgCode();
 			if (code != 200) {
 				// 此处为升锁操作
