@@ -9,8 +9,11 @@ import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.prefecture.controller.staff.request.ReqPreType;
 import cn.linkmore.prefecture.controller.staff.request.ReqPreTypePage;
+import cn.linkmore.prefecture.controller.staff.response.ResAmountDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResAmountReport;
 import cn.linkmore.prefecture.controller.staff.response.ResCarReport;
+import cn.linkmore.prefecture.controller.staff.response.ResDayIncome;
+import cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlow;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreListCount;
 
 /**
@@ -68,13 +71,20 @@ public interface StaffPrefectureService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResTrafficFlow> findCarMonthList(HttpServletRequest request,ReqPreTypePage page);
+	List<ResDayTrafficFlow> findCarMonthList(HttpServletRequest request,ReqPreTypePage page);
 
 	/**
 	 * @Description  查询收入月数据列表
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResIncome> findAmountMonthList(HttpServletRequest request,ReqPreTypePage page);
+	List<ResDayIncome> findAmountMonthList(HttpServletRequest request,ReqPreTypePage page);
+
+	/**
+	 * @Description  查询车场实时收费明细
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResAmountDetail> findAmountDetail(Integer pageNo, Long preId, HttpServletRequest request);
 
 }

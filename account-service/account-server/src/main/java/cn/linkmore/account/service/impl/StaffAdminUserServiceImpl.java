@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
 import cn.linkmore.account.controller.staff.response.ResAdmin;
+import cn.linkmore.account.entity.StaffAppfans;
 import cn.linkmore.account.service.StaffAdminUserService;
+import cn.linkmore.account.service.StaffAppfansService;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.PushType;
@@ -29,8 +31,10 @@ import cn.linkmore.prefecture.client.StaffAdminUserClient;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.SmsClient;
+import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
+import cn.linkmore.third.response.ResMiniSession;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 @Service
@@ -38,11 +42,15 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private final static long SPACE = 1000L*60*30; 
 	private final static String STAFF_CODE = "6699"; 
 	@Resource
+	private StaffAppfansService staffAppfansService; 
+	@Resource
 	private RedisService redisService;
 	@Resource
 	private StaffAdminUserClient staffAdminUserClient;
 	@Resource
 	private SmsClient smsClient;
+	@Resource
+	private WechatMiniClient wechatMiniClient;
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -223,17 +231,29 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		return false;
 	}
 
-/*	@Override
-	public String miniBind(String code, HttpServletRequest request) {
+	@Override
+	public String bindWechat(String code, HttpServletRequest request) {
 		ResMiniSession session = this.wechatMiniClient.getSessionPlus(code, 1002);
 		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key+key); 
-		Map<String, Object> map = new HashMap<>();
-		map.put("sql", " open_id = '"+session.getOpenid()+"'");
-		map.put("id", ru.getId());
-		this.entStaffMasterMapper.updateByColumn(map );
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
+		StaffAppfans staffAppfans = this.staffAppfansService.findById(session.getOpenid());
+		if(staffAppfans != null) {
+			if(staffAppfans.getUserId().equals(ru.getId())) {
+				return staffAppfans.getId();
+			}else {
+				this.staffAppfansService.deleteByUserId(ru.getId());
+				staffAppfans.setUserId(ru.getId());
+				this.staffAppfansService.updateByIdSelective(staffAppfans);
+				return staffAppfans.getId();
+			}
+		}
+		staffAppfans = new StaffAppfans();
+		staffAppfans.setCreateTime(new Date());
+		staffAppfans.setId(session.getOpenid());
+		staffAppfans.setUserId(ru.getId());
+		this.staffAppfansService.insertSelective(staffAppfans);
 		return session.getOpenid();
-	}*/
+	}
 	
 
 }

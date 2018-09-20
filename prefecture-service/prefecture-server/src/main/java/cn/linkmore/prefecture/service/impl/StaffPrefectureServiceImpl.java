@@ -19,11 +19,13 @@ import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.client.StaffOrderClient;
-import cn.linkmore.order.response.ResIncome;
+import cn.linkmore.order.response.ResIncomeList;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
+import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.prefecture.controller.staff.request.ReqPreType;
 import cn.linkmore.prefecture.controller.staff.request.ReqPreTypePage;
+import cn.linkmore.prefecture.controller.staff.response.ResAmountDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResAmountReport;
 import cn.linkmore.prefecture.controller.staff.response.ResAmountReportList;
 import cn.linkmore.prefecture.controller.staff.response.ResCarReport;
@@ -38,6 +40,7 @@ import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StaffPrefectureService;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
 
 /**
@@ -244,25 +247,29 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	}
 
 	@Override
-	public List<ResTrafficFlow> findCarMonthList(HttpServletRequest request, ReqPreTypePage page) {
+	public List<cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlow> findCarMonthList(HttpServletRequest request, ReqPreTypePage page) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+TokenUtil.getKey(request)); 
 		if(!stallService.checkStaffPreAuth(cu.getId(), page.getPreId())) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		Map<String,Object> param = new HashMap<>();
-		param.put("preId", page.getPreId()); 
+		param.put("preIds", Arrays.asList(page.getPreId()));
+		param.put("type", 0);
+		List<ResStall> stalls = this.stallService.findStallsByPreIds(param);
+		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
+		param = new HashMap<>();
 		param.put("now", page.getNow());
+		param.put("stallIds", stallIds);
 		List<ResTrafficFlow> flowList = this.staffOrderClient.findCarMonthList(param);
-		List<cn.linkmore.prefecture.controller.staff.response.ResTrafficFlow> dayTFs = new ArrayList<>();
+		List<cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlow> dayTFs = new ArrayList<>();
 		if(flowList == null) {
-			return null;
+			return dayTFs;
 		}
-		cn.linkmore.prefecture.controller.staff.response.ResTrafficFlow dayTF = null;
+		cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlow dayTF = null;
 		List<cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlows> flows = null;
-		/*for (ResTrafficFlow resTrafficFlow : flowList) {
-			dayTF = new cn.linkmore.prefecture.controller.staff.response.ResTrafficFlow();
+		for (ResTrafficFlow resTrafficFlow : flowList) {
+			dayTF = new cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlow();
 			dayTF.setCarMonthTotal(resTrafficFlow.getCarMonthTotal());
-			dayTF.sett
 			dayTF.setTime(resTrafficFlow.getTime());
 			flows = new ArrayList<>();
 			for (ResTrafficFlowList tf : resTrafficFlow.getTrafficFlows()) {
@@ -270,39 +277,66 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 			}
 			dayTF.setTrafficFlows(flows);
 			dayTFs.add(dayTF);
-		}*/
-		return null;
+		}
+		return dayTFs;
 	}
 
 	@Override
-	public List<ResIncome> findAmountMonthList(HttpServletRequest request, ReqPreTypePage page) {
+	public List<cn.linkmore.prefecture.controller.staff.response.ResDayIncome> findAmountMonthList(HttpServletRequest request, ReqPreTypePage page) {
 		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+TokenUtil.getKey(request)); 
 		if(!stallService.checkStaffPreAuth(cu.getId(), page.getPreId())) {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		Map<String,Object> param = new HashMap<>();
-		param.put("preId", page.getPreId());
+		param.put("preIds", Arrays.asList(page.getPreId()));
+		param.put("type", 0);
+		List<ResStall> stalls = this.stallService.findStallsByPreIds(param);
+		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
+		param = new HashMap<>();
 		param.put("now", page.getNow());
-		/*List<ResDayIncome> incomes = new ArrayList<>();
-		ResDayIncome income = null;
+		param.put("stallIds", stallIds);
+		List<cn.linkmore.prefecture.controller.staff.response.ResDayIncome> incomes = new ArrayList<>();
+		cn.linkmore.prefecture.controller.staff.response.ResDayIncome income = null;
 //		List<ResDayIncomes> incomeLists = new ArrayList<>();
-		List<cn.linkmore.order.response.ResIncome> oIncomes = this.orderClient.findIncomeList(param);
+		List<cn.linkmore.order.response.ResIncome> oIncomes = this.staffOrderClient.findAmountMonthList(param);
 		if(oIncomes == null) {
 			return incomes;
 		}
-		List<ResDayIncomes> lists = null;
+		List<cn.linkmore.prefecture.controller.staff.response.ResDayIncomes> lists = null;
 		for (cn.linkmore.order.response.ResIncome resIncome : oIncomes) {
-			income = new ResDayIncome();
+			income = new cn.linkmore.prefecture.controller.staff.response.ResDayIncome();
 			income.setDate(resIncome.getDate());
 			income.setMonthAmount(resIncome.getMonthAmount());
 			lists = new ArrayList<>();
 			for (ResIncomeList in : resIncome.getList()) {
-				lists.add(ObjectUtils.copyObject(in, new ResDayIncomes()));
+				lists.add(ObjectUtils.copyObject(in, new cn.linkmore.prefecture.controller.staff.response.ResDayIncomes()));
 			}
 			income.setList(lists);
 			incomes.add(income);
-		}*/
-		return null;
+		}
+		return incomes;
+	}
+
+	@Override
+	public List<ResAmountDetail> findAmountDetail(Integer pageNo, Long preId, HttpServletRequest request) {
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+TokenUtil.getKey(request)); 
+		if(!stallService.checkStaffPreAuth(cu.getId(), preId)) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
+		Map<String,Object> param = new HashMap<>();
+		param.put("preIds", Arrays.asList(preId));
+		param.put("type", 0);
+		List<ResStall> stalls = this.stallService.findStallsByPreIds(param);
+		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
+		param = new HashMap<>();
+		param.put("stallIds", stallIds);
+		param.put("pageNo", pageNo);
+		List<cn.linkmore.order.response.ResChargeDetail> list = this.staffOrderClient.findAmountDetail(param);
+		List<ResAmountDetail> chargeDetail = new ArrayList<>();
+		for (cn.linkmore.order.response.ResChargeDetail resChargeDetail : list) {
+			chargeDetail.add(ObjectUtils.copyObject(resChargeDetail, new ResAmountDetail() ));
+		}
+		return chargeDetail;
 	}
 	
 	

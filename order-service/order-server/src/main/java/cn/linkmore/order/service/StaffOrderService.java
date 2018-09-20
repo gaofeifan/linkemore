@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
@@ -70,5 +71,12 @@ public interface StaffOrderService {
 	 * @Version  v2.0
 	 */
 	List<ResTrafficFlow> findCarMonthList(Map<String, Object> map);
+
+	/**
+	 * @Description  查询实时收费明细
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResChargeDetail> findAmountDetail(Map<String, Object> param);
 
 }

@@ -89,12 +89,16 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 		ReqVersion reqVersion = ObjectUtils.copyObject(vrb, new ReqVersion());
 		reqVersion.setUserId(user.getId());
 		boolean falg = false;
-		UserVersion version = this.versionClusterMapper.findById(user.getId());
+		Map<String,Object> map = new HashMap<>();
+		map.put("userId", user.getId());
+		map.put("system", 1);
+		UserVersion version = this.versionClusterMapper.findById(map);
 		if(version != null) {
 			falg = true;
 		}
 		version = ObjectUtils.copyObject(reqVersion, new UserVersion());
 		version.setCommitTime(new Date());
+		version.setSystem(1);
 		if(falg) {
 			this.versionMasterMapper.updateById(version);
 			return;

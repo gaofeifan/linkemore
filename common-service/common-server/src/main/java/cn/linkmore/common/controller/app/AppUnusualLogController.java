@@ -43,6 +43,7 @@ public class AppUnusualLogController {
 	@ApiOperation(value="新增异常日志上报",notes="新增异常日志上报", consumes = "application/json")
 	@AopIgnore
 	public ResponseEntity<?> upload(@RequestBody @Validated ReqUnusualLog unusualLog,HttpServletRequest request) {
+		unusualLog.setSystem(1);
 		this.unusualLogService.insert(unusualLog);
 		return ResponseEntity.success("上报成功",request );
 	}

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.StaffOrderClientHystrix;
+import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
@@ -51,4 +52,8 @@ public interface StaffOrderClient {
 	@RequestMapping(value = "/amount-month-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResIncome> findAmountMonthList(@RequestBody Map<String, Object> map);
+
+	@RequestMapping(value = "/amount-detail-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResChargeDetail> findAmountDetail(@RequestBody Map<String, Object> param);
 }

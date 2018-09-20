@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.order.response.ResChargeDetail;
 import cn.linkmore.order.response.ResIncome;
 import cn.linkmore.order.response.ResPreOrderCount;
 import cn.linkmore.order.response.ResTrafficFlow;
@@ -88,5 +89,11 @@ public class StaffOrderController {
 	@ResponseBody
 	public List<ResIncome> findAmountMonthList(@RequestBody Map<String, Object> map){
 		return this.staffOrderService.findAmountMonthList(map);
+	}
+	
+	@RequestMapping(value = "/amount-detail-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResChargeDetail> findAmountDetail(@RequestBody Map<String, Object> param){
+		return this.staffOrderService.findAmountDetail(param);
 	}
 }

@@ -25,7 +25,7 @@ public class ReqVersion {
 	@ApiModelProperty(value="版本",required=true)
 	@NotBlank(message="版本不能为空")
 	private String version;
-
+	
 	public Short getClient() {
 		return client;
 	}

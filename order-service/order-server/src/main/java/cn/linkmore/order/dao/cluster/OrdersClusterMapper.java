@@ -259,6 +259,13 @@ public interface OrdersClusterMapper {
 	 */
 	List<ResTrafficFlowList> findStaffCarMonthList(Map<String, Object> param);
 
+	/**
+	 * @Description  查询管理版实时收费明细
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResChargeDetail> findStaffAmountDetail(Map<String, Object> param);
+
 
 
 }

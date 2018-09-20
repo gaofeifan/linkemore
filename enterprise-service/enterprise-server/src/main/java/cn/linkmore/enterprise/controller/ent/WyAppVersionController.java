@@ -3,7 +3,6 @@ package cn.linkmore.enterprise.controller.ent;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,14 +43,5 @@ public class WyAppVersionController {
 		return app;
 	}
 	
-	/**
-	 * @Description  上报用户版本
-	 * @Author  	 GFF 
-	 * @Version  	 v2.0
-	 */
-	/*@RequestMapping(value="/report",method = RequestMethod.POST)
-	public void report(@RequestBody ReqVersion vrb){
-		this.beanVersionService.report(vrb);
-	}*/
 	
 }

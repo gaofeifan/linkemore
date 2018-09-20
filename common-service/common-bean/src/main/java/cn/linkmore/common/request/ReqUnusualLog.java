@@ -46,6 +46,8 @@ public class ReqUnusualLog {
 	 */ 
 	private String content;
 
+	private Integer system;
+	
 	public Long getId() {
 		return id;
 	}
@@ -110,6 +112,12 @@ public class ReqUnusualLog {
 		this.content = content;
 	}
 
-	
+	public Integer getSystem() {
+		return system;
+	}
+
+	public void setSystem(Integer system) {
+		this.system = system;
+	}
 	
 }
