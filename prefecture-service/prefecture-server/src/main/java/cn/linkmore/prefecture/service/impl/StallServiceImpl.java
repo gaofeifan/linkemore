@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Stopwatch;
 import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
@@ -568,34 +569,34 @@ public class StallServiceImpl implements StallService {
 					EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
-						if(reqc.getStatus() == 2) {
+						if (reqc.getStatus() == 2) {
 							log.info("<<<<<<<<<up success>>>>>>>>>");
-							//未完成记录同一用户只有一单
-							if(Objects.nonNull(record)) {
-							EntRentRecord up = new EntRentRecord();
-							up.setLeaveTime(new Date());
-							up.setStatus(1L);
-							up.setId(record.getId());
-							entRentedRecordMasterMapper.updateByIdSelective(up);
+							// 未完成记录同一用户只有一单
+							if (Objects.nonNull(record)) {
+								EntRentRecord up = new EntRentRecord();
+								up.setLeaveTime(new Date());
+								up.setStatus(1L);
+								up.setId(record.getId());
+								entRentedRecordMasterMapper.updateByIdSelective(up);
 							}
-						}else {
+						} else {
 							log.info("<<<<<<<<<down success>>>>>>>>>");
 						}
-						stall.setLockStatus(reqc.getStatus()==1?2:1);
-						stall.setStatus(reqc.getStatus()==1?2:1);
+						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
+						stall.setStatus(reqc.getStatus() == 1 ? 2 : 1);
 						stallMasterMapper.lockdown(stall);
-					}else {
-						if(reqc.getStatus() == 1) {
+					} else {
+						if (reqc.getStatus() == 1) {
 							log.info("<<<<<<<<<down fail>>>>>>>>>>");
-							//降锁失败 取消绑定
-							if(Objects.nonNull(record)) {
-							EntRentRecord up = new EntRentRecord();
-							up.setLeaveTime(new Date());
-							up.setStatus(2L);
-							up.setId(record.getId());
-							entRentedRecordMasterMapper.updateByIdSelective(up);
+							// 降锁失败 取消绑定
+							if (Objects.nonNull(record)) {
+								EntRentRecord up = new EntRentRecord();
+								up.setLeaveTime(new Date());
+								up.setStatus(2L);
+								up.setId(record.getId());
+								entRentedRecordMasterMapper.updateByIdSelective(up);
 							}
-						}else {
+						} else {
 							log.info("<<<<<<<<<up fail>>>>>>>>>>");
 						}
 					}
@@ -781,7 +782,7 @@ public class StallServiceImpl implements StallService {
 	public List<ResStaffPreList> findPreList(HttpServletRequest request, Long cityId) {
 		CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
-		if(!checkStaffCityAuth(cu.getId(), cityId)) {
+		if (!checkStaffCityAuth(cu.getId(), cityId)) {
 			throw new BusinessException(StatusEnum.STAFF_CITY_EXISTS);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -813,14 +814,14 @@ public class StallServiceImpl implements StallService {
 					preTypeStalls++;
 					if (stall.getStatus() == 2) {
 						preUseTypeStalls++;
-					}else if(stall.getStatus() == 1) {
+					} else if (stall.getStatus() == 1) {
 						preLeisureTypeStalls++;
-					}else if(stall.getStatus() == 4) {
+					} else if (stall.getStatus() == 4) {
 						preFaultTypeStalls++;
 					}
 				}
 			}
-			if(unusualOrders != null) {
+			if (unusualOrders != null) {
 				for (ResUnusualOrder resUnusualOrder : unusualOrders) {
 					if (resUnusualOrder.getPrefectureId().equals(resPre.getId())) {
 						orderNum++;
@@ -873,8 +874,7 @@ public class StallServiceImpl implements StallService {
 			map.put("status", status);
 		}
 		List<ResStall> stallList = this.stallClusterMapper.findPreStallList(map);
-		
-			
+
 		log.info("【 ResStall list 】 " + JsonUtil.toJson(stallList));
 		List<ResStaffStallList> staffStallLists = new ArrayList<>();
 		ResStaffStallList ResStaffStallList;
@@ -904,7 +904,7 @@ public class StallServiceImpl implements StallService {
 					}
 				}
 			}
-			if(resStall.getStatus() != 4) {
+			if (resStall.getStatus() != 4) {
 				for (ResEntExcStallStatus resEntExcStallStatus : excStallList) {
 					if (resEntExcStallStatus.getStallId().equals(resStall.getId())) {
 						ResStaffStallList.setExcStatus(false);
@@ -927,8 +927,8 @@ public class StallServiceImpl implements StallService {
 						break;
 					}
 				}
-			} 
-			if(falg){
+			}
+			if (falg) {
 				ResStaffStallList.setLockStatus(resStall.getLockStatus());
 			}
 			ResStaffStallList.setStatus(resStall.getStatus());
@@ -940,13 +940,14 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public Boolean checkStaffCityAuth(Long userId,Long cityId) {
+	public Boolean checkStaffCityAuth(Long userId, Long cityId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
 		map.put("cityId", cityId);
 		List<AdminAuthCity> list = this.adminAuthCityClusterMapper.findList(map);
 		return list != null && list.size() != 0 ? true : false;
 	}
+
 	@Override
 	public Boolean checkStaffPreAuth(Long userId, Long preId) {
 		Map<String, Object> map = new HashMap<>();
@@ -955,6 +956,7 @@ public class StallServiceImpl implements StallService {
 		List<AdminAuthPre> list = this.adminAuthPreClusterMapper.findList(map);
 		return list != null && list.size() != 0 ? true : false;
 	}
+
 	@Override
 	public Boolean checkStaffStallAuth(Long userId, Long stallId) {
 		Map<String, Object> map = new HashMap<>();
@@ -1073,6 +1075,24 @@ public class StallServiceImpl implements StallService {
 				}
 			}
 		}
+		// 指定车位锁
+		int assignStatus = 1;
+		String lockSn = stall.getLockSn();
+		Set<Object> set = redisService.members(Constants.RedisKey.ORDER_ASSIGN_STALL.key);
+		log.info("指定锁池个数: {}", set.size());
+		log.info("指定锁池: {}", set.toString());
+		Long preId = stall.getPreId();
+		for (Object obj : set) {
+			JSONObject json = JSON.parseObject(obj.toString());
+			String sn = json.get("lockSn").toString();
+			Long pid = Long.parseLong(json.get("preId").toString());
+			if (pid.longValue() == preId.longValue() && lockSn.equals(sn)) {
+				assignStatus = 0;
+				detail.setAssignPlate(json.get("plate").toString());
+				break;
+			}
+		}
+		detail.setAssignStatus(assignStatus);
 		return detail;
 	}
 
@@ -1163,7 +1183,7 @@ public class StallServiceImpl implements StallService {
 			val = lockSn;
 			this.redisSetOper(0, key, val);
 			StallAssign sa = this.assignService.find(lockSn);
-			if(sa!=null){
+			if (sa != null) {
 				sa.setCancelTime(new Date());
 				sa.setStatus(StallAssign.STATUS_CANCEL);
 				this.assignService.cancel(sa);
@@ -1177,7 +1197,5 @@ public class StallServiceImpl implements StallService {
 	public List<ResStall> findStallsByPreIds(Map<String, Object> map) {
 		return this.stallClusterMapper.findStallsByPreIds(map);
 	}
- 
 
-	
 }
