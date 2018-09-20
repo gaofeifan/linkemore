@@ -831,9 +831,9 @@ public class OrdersServiceImpl implements OrdersService {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("lockDownStatus", switchStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
 		param.put("lockDownTime", new Date());
-		param.put("orderId", order.getId());
+		param.put("id", order.getId());
 		this.orderMasterMapper.updateLockStatus(param);
-		log.info("downing msg..................switchStatus:{} downStatus:{}", switchStatus, downStatus);
+		log.info("downing msg..................orderId:{} switchStatus:{} downStatus:{}", order.getId(), switchStatus, downStatus);
 		if (switchStatus && !downStatus) {
 			Thread thread = new PushThread(order.getUserId().toString(), "预约切换通知", "车位锁降下失败建议切换车位",
 					PushType.ORDER_SWITCH_STATUS_NOTICE, true);
@@ -1483,11 +1483,11 @@ public class OrdersServiceImpl implements OrdersService {
 	public static Date getDateByType(Short type) {
 		Date date = null;
 		if (type == 0) {
-			date = DateUtils.getPast2Date(+7);
+			date = DateUtils.getPast2Date(+6);
 		} else if (type == 1) {
-			date = DateUtils.getPast2Date(+15);
+			date = DateUtils.getPast2Date(+14);
 		} else if (type == 2) {
-			date = DateUtils.getPast2Date(+30);
+			date = DateUtils.getPast2Date(+29);
 		}
 		return date;
 	}
@@ -1539,7 +1539,7 @@ public class OrdersServiceImpl implements OrdersService {
 		return this.ordersClusterMapper.findOrderByStallId(stallId);
 	}
 
-	private int getPageNo(Object pageNo) {
+	public static int getPageNo(Object pageNo) {
 		Integer start = null;
 		if (pageNo == null) {
 			start = 1;
