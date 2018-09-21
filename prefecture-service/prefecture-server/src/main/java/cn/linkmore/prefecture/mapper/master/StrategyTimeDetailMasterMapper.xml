@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.StrategyTimeDetailMasterMapper">
+
+ <delete id="delete" parameterType="java.util.List">
+    delete from v_strategy_time_detail
+    where strategy_time_id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>
+  </delete>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from v_strategy_time_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.linkmore.prefecture.entity.StrategyTimeDetail">
+    insert into v_strategy_time_detail (id, begin_time, end_time, 
+      strategy_time_id)
+    values (#{id,jdbcType=BIGINT}, #{beginTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR}, 
+      #{strategyTimeId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.prefecture.entity.StrategyTimeDetail">
+    insert into v_strategy_time_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="strategyTimeId != null">
+        strategy_time_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyTimeId != null">
+        #{strategyTimeId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.linkmore.prefecture.entity.StrategyTimeDetail">
+    update v_strategy_time_detail
+    <set>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyTimeId != null">
+        strategy_time_id = #{strategyTimeId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.linkmore.prefecture.entity.StrategyTimeDetail">
+    update v_strategy_time_detail
+    set begin_time = #{beginTime,jdbcType=VARCHAR},
+      end_time = #{endTime,jdbcType=VARCHAR},
+      strategy_time_id = #{strategyTimeId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

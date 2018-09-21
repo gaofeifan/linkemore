@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.StrategyTimeDetailClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.StrategyTimeDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="begin_time" jdbcType="VARCHAR" property="beginTime" />
+    <result column="end_time" jdbcType="VARCHAR" property="endTime" />
+    <result column="strategy_time_id" jdbcType="BIGINT" property="strategyTimeId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, begin_time, end_time, strategy_time_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_strategy_time_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findList" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from v_strategy_time_detail
+		where 1 = 1
+		and strategy_time_id =	#{strategyTimeId,jdbcType=BIGINT}
+		order by id ASC
+ </select>
+</mapper>
