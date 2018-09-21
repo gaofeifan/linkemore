@@ -829,7 +829,7 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("lockDownStatus", switchStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
+		param.put("lockDownStatus", downStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
 		param.put("lockDownTime", new Date());
 		param.put("id", order.getId());
 		this.orderMasterMapper.updateLockStatus(param);
@@ -1581,9 +1581,9 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("lockDownStatus", switchStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
+		param.put("lockDownStatus", downStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
 		param.put("lockDownTime", new Date());
-		param.put("orderId", order.getId());
+		param.put("id", order.getId());
 		this.orderMasterMapper.updateLockStatus(param);
 		log.info("stall downing :{}", switchStatus);
 
