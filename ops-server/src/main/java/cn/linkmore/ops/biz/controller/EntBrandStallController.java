@@ -51,6 +51,7 @@ public class EntBrandStallController {
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("preId", preId);
 		param.put("brand", 0);
+		param.put("type", 0);
 		return stallClient.findStallList(param);
 	}
 	
