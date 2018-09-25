@@ -196,4 +196,65 @@ public class PushServiceImpl implements PushService {
 			jSendClient.sendPush(androidppl);
 		} catch (Exception e) { }
 	}
+	
+	/**
+	 * 管理版推送
+	 */
+	@Override
+	public void give(ReqPush rp) {
+		log.info("send message:{}",JsonUtil.toJson(rp));
+		new IOSGiveThread(rp).start();
+	} 
+
+	class IOSGiveThread extends Thread{
+		private ReqPush rp;
+		public IOSGiveThread(ReqPush rp) {
+			this.rp =rp;
+		}
+		public void run() {
+			if(rp.getClient().intValue()  ==Constants.ClientSource.ANDROID.source) {
+				androidgive(rp);
+			}else {
+				iosgive(rp);
+			}
+		}
+	}
+	
+	void iosgive(ReqPush rp) {
+		JPushClient jSendClient = this.beanFactory.jGiveClient();
+		Builder ios = PushPayload.newBuilder();
+		ios.setAudience(Audience.alias("u"+rp.getAlias()));
+		ios.setMessage(Message.newBuilder()
+				.addExtra("title", rp.getTitle())
+				.addExtra("content", rp.getContent())
+				.addExtra("type",rp.getType().id) 
+				.addExtra("timestamp", new Date().getTime())
+				.addExtra("data", rp.getData())
+				.setMsgContent(rp.getContent()).build());
+		ios.setPlatform(Platform.ios());
+		ios.setOptions(Options.newBuilder().setApnsProduction(baseConfig.getOnline()).build());
+		PushPayload iosppl = ios.build();
+		try {
+			jSendClient.sendPush(iosppl);
+		} catch (Exception e) { }
+	}
+	
+	void androidgive(ReqPush rp) {
+		JPushClient jSendClient = this.beanFactory.jGiveClient();
+		Builder android = PushPayload.newBuilder();
+		android.setAudience(Audience.alias("u"+rp.getAlias()));
+		android.setMessage(Message.newBuilder()
+				.addExtra("title", rp.getTitle())
+				.addExtra("content", rp.getContent())
+				.addExtra("type",rp.getType().id) 
+				.addExtra("timestamp", new Date().getTime())
+				.addExtra("data", rp.getData())
+				.setMsgContent(rp.getContent()).build());
+		android.setPlatform(Platform.android());
+		android.setOptions(Options.newBuilder().setApnsProduction(baseConfig.getOnline()).build());
+		PushPayload androidppl = android.build();
+		try {
+			jSendClient.sendPush(androidppl);
+		} catch (Exception e) { }
+	}
 }

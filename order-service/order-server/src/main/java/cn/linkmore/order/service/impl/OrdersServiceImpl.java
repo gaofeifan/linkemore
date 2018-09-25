@@ -61,6 +61,8 @@ import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResMonthCount;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
+import cn.linkmore.order.controller.staff.request.ReqUnusualOrder;
+import cn.linkmore.order.controller.staff.response.UnusualOrderResponseBean;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.cluster.StallAssignClusterMapper;
 import cn.linkmore.order.dao.master.BookingMasterMapper;
@@ -829,11 +831,11 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("lockDownStatus", switchStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
+		param.put("lockDownStatus", downStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
 		param.put("lockDownTime", new Date());
-		param.put("orderId", order.getId());
+		param.put("id", order.getId());
 		this.orderMasterMapper.updateLockStatus(param);
-		log.info("downing msg..................switchStatus:{} downStatus:{}", switchStatus, downStatus);
+		log.info("downing msg..................orderId:{} switchStatus:{} downStatus:{}", order.getId(), switchStatus, downStatus);
 		if (switchStatus && !downStatus) {
 			Thread thread = new PushThread(order.getUserId().toString(), "预约切换通知", "车位锁降下失败建议切换车位",
 					PushType.ORDER_SWITCH_STATUS_NOTICE, true);
@@ -1581,9 +1583,9 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("lockDownStatus", switchStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
+		param.put("lockDownStatus", downStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
 		param.put("lockDownTime", new Date());
-		param.put("orderId", order.getId());
+		param.put("id", order.getId());
 		this.orderMasterMapper.updateLockStatus(param);
 		log.info("stall downing :{}", switchStatus);
 
@@ -1629,5 +1631,6 @@ public class OrdersServiceImpl implements OrdersService {
 	public void savelog(ResOrderOperateLog resOrderOperateLog) {
 		this.ordersDetailMasterMapper.savelog(resOrderOperateLog);
 	}
+
 	
 }

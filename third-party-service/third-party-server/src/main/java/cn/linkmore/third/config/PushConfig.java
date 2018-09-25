@@ -19,6 +19,23 @@ public class PushConfig {
 	private String keyAdd;
 	private String secretAdd;
 	
+	private String keyAddM;
+	private String secretAddM;
+	
+	
+	
+	public String getKeyAddM() {
+		return keyAddM;
+	}
+	public void setKeyAddM(String keyAddM) {
+		this.keyAddM = keyAddM;
+	}
+	public String getSecretAddM() {
+		return secretAddM;
+	}
+	public void setSecretAddM(String secretAddM) {
+		this.secretAddM = secretAddM;
+	}
 	public String getKey() {
 		return key;
 	}

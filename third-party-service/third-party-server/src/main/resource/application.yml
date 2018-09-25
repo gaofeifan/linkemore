@@ -282,10 +282,11 @@ wechat-mini:
   key: 74d958cf41994d67876eb9b12d459992 
   
 #小程序配置3.0
+
 wechat-mini-plus:  
   miniProps:
     appId1001: wx62db01dddd56972f
-    appId1002: wx788664e943eee6bd  
+    appId1002: wx788664e943eee6bd
     appId1003: wx788664e943eee6bd
     appSecret1001: 78cd1e2349a7133b0b9ef8c5ad2a2eb0 
     appSecret1002: 6c16738365d20f5c79894f944bcc957f
@@ -306,6 +307,9 @@ push:
 #极光推送配置(物业版)
   key-add: 81d6cbbcae88bf5563dfa8b1
   secret-add: ad2d7a5906fdfc8dffb99e16
+  #极光推送配置(管理版)
+  key-add-m: 81d6cbbcae88bf5563dfa8b1
+  secret-add-m: ad2d7a5906fdfc8dffb99e16
  
 #阿里OSS配置
 oss:

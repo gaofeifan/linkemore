@@ -15,8 +15,10 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.staff.request.AssignStallRequestBean;
+import cn.linkmore.enterprise.controller.staff.request.CustomerRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.OrderOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.SraffReqConStall;
+import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.response.PrefectureResponseBean;
 import cn.linkmore.enterprise.service.StaffPrefectureService;
@@ -136,7 +138,7 @@ public class StaffPrefectureController {
 	@ApiOperation(value = "上线", notes = "车位上线操作")
 	@RequestMapping(value = "/online", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> online(HttpServletRequest request, @Valid @RequestBody StallOperateRequestBean bean) {
+	public ResponseEntity<?> online(HttpServletRequest request, @Valid @RequestBody StallOnLineRequest bean) {
 		ResponseEntity<Boolean> response = null;
 		try {
 			this.staffPrefectureService.online(bean, request);
@@ -148,4 +150,22 @@ public class StaffPrefectureController {
 		}
 		return response;
 	}
+	
+	@ApiOperation(value = "保存顾客信息", notes = "保存顾客信息", consumes = "application/json")
+	@RequestMapping(value = "/submit", method = RequestMethod.POST)
+	public ResponseEntity<?>  submit(@RequestBody CustomerRequestBean crb, HttpServletRequest request){ 
+		
+		ResponseEntity<Boolean> response = null;
+		try {
+			
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+		
+	}
+	
 }

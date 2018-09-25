@@ -227,6 +227,12 @@ public interface StallService {
 	 */
 	void staffAssignDel(ReqAssignStall bean);
 	
+	/**
+	 * @Description  安装地锁
+	 * @Author   cl
+	 * @Version  v2.0
+	 */
+	public void install(ReqStall reqStall);
 	
 	/**
 	 * @Description  查询角色城市

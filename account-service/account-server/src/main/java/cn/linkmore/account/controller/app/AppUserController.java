@@ -50,8 +50,16 @@ public class AppUserController {
 	@RequestMapping(value = "/v2.0/mobile", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<?> bindMobile(@RequestBody @Validated ReqMobileBind rmb, HttpServletRequest request){
-		ResUser user = this.userService.bindMobile(rmb,request);
-		return ResponseEntity.success(user, request);
+		ResponseEntity<?> response = null;
+		try { 
+			ResUser user = this.userService.bindMobile(rmb,request);
+			return ResponseEntity.success(user, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 	
 	@ApiOperation(value="发短信验证码",notes="手机号不能为空", consumes = "application/json")

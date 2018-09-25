@@ -324,7 +324,9 @@ public class Constants {
 		WECHAT_GET_USER_LIST_MONITOR("monitor:wechat-user-list:"), 
 		USER_GROUP_IDS("USER_GROUP_IDS:"),
 		BLACKLIST_ORDER_LIMIT("blacklist:order:limit"),
-
+		
+		 LINKMORE_APP_ORDER_KEY("LINKMORE_APP_ORDER_"),
+		
 		MANAGER_STALL_UP("manager:lock-uping:"),
 		MANAGER_STALL_DOWN("manager:lock-downing:"),
 		MANAGER_STALL("manager:lock:");
