@@ -18,11 +18,22 @@
    <sql id="Ops_Column_List">
     uv.user_id, uv.client, uv.model, uv.os_version, uv.uuid, uv.version, uv.commit_time,u.mobile username
   </sql>
-  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user_version
     where user_id = #{userId,jdbcType=BIGINT}
+    <if test="system != null">
+    	<choose>
+    		<when test="system == 1">
+    			AND system = #{system} OR system is null
+    		</when>
+    		<otherwise>
+    			AND system = #{system}
+    		</otherwise>
+    	</choose>
+    	
+    </if>
   </select>
   <select id="findByTypeAnStatus" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

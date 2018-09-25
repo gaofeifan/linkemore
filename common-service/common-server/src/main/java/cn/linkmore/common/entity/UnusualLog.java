@@ -1,5 +1,7 @@
 package cn.linkmore.common.entity;
 
+import java.util.Date;
+
 /**
  * app异常日志
  * @author   GFF
@@ -38,6 +40,12 @@ public class UnusualLog {
      *  品牌
      */ 
     private String brand;
+    
+    private Integer system;
+    
+    private String content;
+    
+    private Date createTime;
 
     public Long getId() {
         return id;
@@ -94,4 +102,29 @@ public class UnusualLog {
     public void setBrand(String brand) {
         this.brand = brand == null ? null : brand.trim();
     }
+
+	public Integer getSystem() {
+		return system;
+	}
+
+	public void setSystem(Integer system) {
+		this.system = system;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+    
 }

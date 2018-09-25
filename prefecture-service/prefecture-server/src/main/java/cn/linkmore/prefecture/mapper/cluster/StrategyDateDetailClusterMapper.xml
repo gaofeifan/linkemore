@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="cn.linkmore.prefecture.dao.cluster.StrategyDateDetailClusterMapper">
+	<resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.StrategyDateDetail">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="begin_date" jdbcType="VARCHAR" property="beginDate" />
+		<result column="end_date" jdbcType="VARCHAR" property="endDate" />
+		<result column="strategy_date_id" jdbcType="BIGINT"	property="strategyDateId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, begin_date, end_date, strategy_date_id
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from v_strategy_date_detail
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from v_strategy_date_detail
+		where 1 = 1
+		and strategy_date_id =	#{strategyDateId,jdbcType=BIGINT}
+		order by id ASC
+	</select>
+
+</mapper>

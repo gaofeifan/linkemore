@@ -2,6 +2,8 @@ package cn.linkmore.prefecture.controller.staff.response;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -62,6 +64,10 @@ public class ResStaffStallDetail {
 	private String faultName;
 	@ApiModelProperty("订单类型")
 	private String orderType;
+	@ApiModelProperty(value = "是否被指定 0已经指定，1未指定")
+	private int assignStatus;
+	@ApiModelProperty(value = "指定的车牌号")
+	private String assignPlate;
 	public String getStallName() {
 		return stallName;
 	}
@@ -104,21 +110,29 @@ public class ResStaffStallDetail {
 	public void setStallId(Long stallId) {
 		this.stallId = stallId;
 	}
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone="GMT+8")	
 	public Date getDownTime() {
 		return downTime;
 	}
+
 	public void setDownTime(Date downTime) {
 		this.downTime = downTime;
 	}
+
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone="GMT+8")	
 	public Date getApproachTime() {
 		return approachTime;
 	}
+
 	public void setApproachTime(Date approachTime) {
 		this.approachTime = approachTime;
 	}
+
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone="GMT+8")	
 	public Date getStartTime() {
 		return startTime;
 	}
+
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
@@ -187,6 +201,18 @@ public class ResStaffStallDetail {
 	}
 	public void setOrderType(String orderType) {
 		this.orderType = orderType;
+	}
+	public int getAssignStatus() {
+		return assignStatus;
+	}
+	public void setAssignStatus(int assignStatus) {
+		this.assignStatus = assignStatus;
+	}
+	public String getAssignPlate() {
+		return assignPlate;
+	}
+	public void setAssignPlate(String assignPlate) {
+		this.assignPlate = assignPlate;
 	}
 	
 	

@@ -35,6 +35,12 @@ public class FeignOrderController {
 	@Autowired
 	private OrdersService ordersService;
 	
+	@RequestMapping(value = "/v2.0/update-lock-status", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateLockStatus(@RequestBody Map<String, Object> param) {
+		this.ordersService.updateLockStatus(param);
+	}
+	
 	@RequestMapping(value = "/v2.0/last", method = RequestMethod.GET)
 	@ResponseBody
 	ResUserOrder last(@RequestParam("userId") Long userId) {

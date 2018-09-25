@@ -29,7 +29,7 @@ import cn.linkmore.ops.ent.service.StaffService;
  * @Version  v2.0
  */
 @RequestMapping(value="/admin/ent/staff")
-@Controller
+@Controller 
 public class StaffController {
 
 	@Resource

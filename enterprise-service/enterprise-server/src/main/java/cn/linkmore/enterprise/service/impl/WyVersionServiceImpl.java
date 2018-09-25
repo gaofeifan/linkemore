@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.common.client.WyAppVersionClient;
+import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResWyAppVersion;
 import cn.linkmore.enterprise.service.WyVersionService;
 /**
@@ -22,6 +23,5 @@ public class WyVersionServiceImpl implements WyVersionService {
 	public ResWyAppVersion currentAppVersion(int appType, Object object) {
 		return this.wyAppVersionClient.current(appType);
 	}
-
 	
 }

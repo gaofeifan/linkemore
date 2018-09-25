@@ -44,5 +44,13 @@ public interface StaffAdminUserService {
 	 */
 	boolean checkMobile(String mobile);
 
+	/**
+	 * 绑定管理版微信
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	String bindWechat(String code, HttpServletRequest request);
+
 
 }

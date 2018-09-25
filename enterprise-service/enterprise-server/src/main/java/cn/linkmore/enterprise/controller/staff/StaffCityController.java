@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -46,8 +47,8 @@ public class StaffCityController{
 	@RequestMapping(value="/list",method=RequestMethod.GET)
 	@ResponseBody 
 	@ApiOperation(value="/citys",notes="查询城市列表", consumes = "application/json")
-	public List<cn.linkmore.enterprise.controller.staff.response.ResCity> findStaffCity(HttpServletRequest request) {
-		return this.cityService.findStaffCity(request);
+	public ResponseEntity<List<cn.linkmore.enterprise.controller.staff.response.ResCity>> findStaffCity(HttpServletRequest request) {
+		return ResponseEntity.success(this.cityService.findStaffCity(request), request);
 	}
 
 }

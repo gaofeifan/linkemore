@@ -14,7 +14,7 @@ import cn.linkmore.prefecture.service.StaffAdminUserPackService;
 import io.swagger.annotations.Api;
 import springfox.documentation.annotations.ApiIgnore;
 
-@Api(tags="Staff-Admin-user-pack",description="管理版  用户包")
+@Api(tags="Staff-Admin-user-pack",description="【管理版】  用户包")
 @RestController
 @RequestMapping("/staff/admin-user-pack")
 @ApiIgnore

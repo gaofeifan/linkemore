@@ -29,6 +29,11 @@ public class ResPreOrderCount {
 	 * 今日订单
 	 */ 
 	private Integer dayOrder;
+	
+	/**
+	 * 车位id
+	 */
+	private Long stallId;
 
 	public String getPreName() {
 		return preName;
@@ -65,4 +70,15 @@ public class ResPreOrderCount {
 	public void setDayOrder(Integer dayOrder) {
 		this.dayOrder = dayOrder;
 	}
+
+
+	public Long getStallId() {
+		return stallId;
+	}
+
+	public void setStallId(Long stallId) {
+		this.stallId = stallId;
+	}
+	
+	
 }

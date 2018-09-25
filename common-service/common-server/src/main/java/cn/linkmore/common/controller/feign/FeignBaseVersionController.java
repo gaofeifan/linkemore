@@ -13,9 +13,11 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.request.ReqAppVersion;
 import cn.linkmore.common.request.ReqCheck;
+import cn.linkmore.common.request.ReqStaffAppVersion;
 import cn.linkmore.common.request.ReqVersion;
 import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.service.BeanVersionService;
+import cn.linkmore.common.service.StaffVersionService;
 
 /**
  * 版本管理
@@ -29,7 +31,8 @@ public class FeignBaseVersionController {
 	
 	@Resource
 	private BeanVersionService beanVersionService;
-	
+	@Resource
+	private StaffVersionService staffVersionService;
 	/**
 	 * @Description  当前版本 
 	 * @Author   GFF 
@@ -123,4 +126,62 @@ public class FeignBaseVersionController {
 	public ViewPage findUserPage(@RequestBody ViewPageable pageable) {
 		return this.beanVersionService.findUserPage(pageable);
 	}
+	
+	/**
+	 * @Description  添加管理版本
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff",method = RequestMethod.POST)
+	public void saveStaff(@RequestBody ReqStaffAppVersion version) {
+		this.staffVersionService.saveApp(version);
+	}
+	
+	/**
+	 * @Description  更新管理版版本
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff/update",method = RequestMethod.PUT)
+	public void updateStaff(@RequestBody ReqStaffAppVersion version) {
+		this.staffVersionService.updateApp(version);
+	}
+	
+	/**
+	 * @Description  删除a管理版版本
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff",method = RequestMethod.DELETE)
+	public void deleteStaffById(@RequestBody List<Long> ids) {
+		this.staffVersionService.deleteAppById(ids);
+	}
+	
+	/**
+	 * @Description  查询分页管理版
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff/page",method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage findStaffPage(@RequestBody ViewPageable pageable) {
+		return this.staffVersionService.findPage(pageable);
+	}
+	
+	/**
+	 * @Description  校验管理版
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@RequestMapping(value="/staff/check",method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean checkStaff(@RequestBody ReqCheck check) {
+		Boolean flag = true ;
+		Integer count = this.staffVersionService.check(check); 
+		if(count>0){
+            flag = false;
+        }
+        return flag;
+	}
+	
 }

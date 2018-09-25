@@ -73,20 +73,21 @@ public class StaffAuthController {
 		response = ResponseEntity.success( "绑定成功", request);
 		return response;
 	}  
-	@ApiOperation(value = "小程序绑定微信号", notes = "小程序绑定微信号", consumes = "application/json")
-	@RequestMapping(value = "/mini-bind", method = RequestMethod.GET)
+	*/
+	@ApiOperation(value = "绑定微信号", notes = "小程序绑定微信号", consumes = "application/json")
+	@RequestMapping(value = "/bind-wechat", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<?> miniBind( 
+	public ResponseEntity<?> bindWechat( 
 			@RequestParam(value="code")  
 			@NotBlank(message="授权码不能为空") 
 			@Size(min =32,max=36,message="授权码为无效")
 			String code, HttpServletRequest request) {
 		ResponseEntity<?> response = null;
-		String bind = this.staffService.miniBind(code, request);
+		String bind = this.adminUserService.bindWechat(code, request);
 		response = ResponseEntity.success( bind, request);
 		return response;
 	}  
-	*/
+	
 	@ApiOperation(value="校验手机号是否存在",notes="校验手机号是否存在", consumes = "application/json")
 	@RequestMapping(value = "/check-mobile", method = RequestMethod.GET)
 	@ResponseBody
