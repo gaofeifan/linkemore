@@ -2,6 +2,7 @@ package cn.linkmore.account.controller.app;
 
 import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.account.controller.app.request.ReqMiniMobile;
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.controller.app.response.ResUser;
@@ -31,6 +34,8 @@ import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.TokenUtil;
 import io.swagger.annotations.Api;
@@ -74,16 +79,34 @@ public class AppMiniController {
 	@ResponseBody
 	public ResponseEntity<ResUser> bindMobile(@RequestParam(value = "mobile", required = true) String mobile,
 			HttpServletRequest request) {
-		ResUser user = this.userService.bindWechatMobile(mobile, request);
-		return ResponseEntity.success(user, request);
+		ResponseEntity<ResUser> response = null;
+		try { 
+			ResUser user = this.userService.bindWechatMobile(mobile, request);
+			log.info("bindMobile..............{}",JSON.toJSON(user));
+			return ResponseEntity.success(user, request);
+		} catch (BusinessException e) {
+			log.info("BusinessException..............{}",e.getStatusEnum().label);
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 
 	@ApiOperation(value = "绑定普通手机号", notes = "手机号不能为空,短信验证码不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<ResUser> bind(@RequestBody @Validated ReqMobileBind rmb, HttpServletRequest request) {
-		ResUser user = this.userService.bindNormalMobile(rmb, request);
-		return ResponseEntity.success(user, request);
+		ResponseEntity<ResUser> response = null;
+		try { 
+			ResUser user = this.userService.bindNormalMobile(rmb, request);
+			return ResponseEntity.success(user, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 
 	@ApiOperation(value = "发短信验证码", notes = "手机号不能为空", consumes = "application/json")

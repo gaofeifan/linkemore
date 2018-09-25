@@ -963,12 +963,14 @@ public class UserServiceImpl implements UserService {
 		} else if (user.getStatus().equals("2")) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {
-			user.setLastLoginTime(new Date());
+			log.info("mobile exist..................");
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
+			/*user.setLastLoginTime(new Date());
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("id", user.getId());
 			param.put("lastLoginTime", new Date());
 			param.put("updateTime", new Date());
-			this.userMasterMapper.updateLoginTime(param);
+			this.userMasterMapper.updateLoginTime(param);*/
 		}
 		CacheUser cu = this.getCacheUser(request);
 		UserInfo ui = this.userInfoClusterMapper.find(cu.getOpenId());
