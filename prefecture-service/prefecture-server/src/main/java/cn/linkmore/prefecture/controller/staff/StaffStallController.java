@@ -21,6 +21,7 @@ import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
+import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.service.StallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -73,6 +74,15 @@ public class StaffStallController {
 	@ResponseBody
 	public ResponseEntity<Void> staffAssignDel(HttpServletRequest request, @Validated @RequestBody ReqAssignStall bean) {
 		this.stallService.staffAssignDel(bean);
+		return ResponseEntity.success(null, request);
+	}
+	
+	
+	@ApiOperation(value = "地锁安装", notes = "地锁安装")
+	@RequestMapping(value = "/installLock", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Void> installLock(HttpServletRequest request, @Validated @RequestBody ReqStall reqStall) {
+		this.stallService.install(reqStall);
 		return ResponseEntity.success(null, request);
 	}
 

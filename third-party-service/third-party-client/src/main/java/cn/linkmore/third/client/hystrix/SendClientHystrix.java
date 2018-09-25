@@ -16,6 +16,12 @@ public class SendClientHystrix implements  SendClient{
 	public void send(ReqPush rp) {
 		log.warn("push failure");
 	}
+
+
+	@Override
+	public void give(ReqPush rp) {
+		log.warn("give failure");
+	}
 	
 	
 	

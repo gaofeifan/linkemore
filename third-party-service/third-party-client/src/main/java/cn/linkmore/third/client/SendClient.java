@@ -24,4 +24,12 @@ public interface SendClient {
 	 */ 
 	@RequestMapping(value = "/v2.0", method = RequestMethod.POST) 
 	void send(@RequestBody ReqPush rp) ;
+	
+	/**
+	 * Client - 推送
+	 * 管理版
+	 * @param rps
+	 */ 
+	@RequestMapping(value = "/v3.0", method = RequestMethod.POST) 
+	void give(@RequestBody ReqPush rp) ;
 }

@@ -15,6 +15,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.staff.request.AssignStallRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.OrderOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.SraffReqConStall;
+import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
 import cn.linkmore.enterprise.dao.cluster.StaffPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.master.StaffPrefectureMasterMapper;
@@ -22,6 +23,7 @@ import cn.linkmore.enterprise.entity.StallOperateLog;
 import cn.linkmore.enterprise.service.StaffPrefectureService;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResOrderOperateLog;
+import cn.linkmore.order.response.ResRedisOrders;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.StallBatteryLogClient;
 import cn.linkmore.prefecture.client.StallClient;
@@ -210,13 +212,18 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	 * @return
 	 */
 	@Override
-	public void online(StallOperateRequestBean bean, HttpServletRequest request) {
+	public void online(StallOnLineRequest bean, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_CODE.key + TokenUtil.getKey(request));
+		
+		user = new CacheUser();
+		user.setId(1111l);
+		
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
 		ResStallEntity stall = stallClient.findById(bean.getStallId());
+		
 		if (stall.getStatus().intValue() != stall.STATUS_OUTLINE && stall.getStatus() != stall.STATUS_FAULT) {
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
@@ -239,8 +246,6 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 			sol.setOperatorId(user.getId());
 			sol.setSource(StallOperateLog.SOURCE_APP);
 			sol.setStallId(bean.getStallId());
-			sol.setRemarkId(bean.getRemarkId());
-			sol.setRemark(bean.getRemark());
 			sol.setStatus(StallOperateLog.STATUS_TRUE);
 			stallOperateLogClient.save(sol);
 
@@ -277,21 +282,24 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		if (order.getStatus().intValue() != order.ORDERS_STATUS_UNPAY) {
 			throw new BusinessException(StatusEnum.ORDER_OPERATE_NOUNPAID); // //非预约中订单
 		}
-		// 关闭订单
+		// 计算金额
+
 		// 关闭订单
 		Map<String, Object> map = new HashMap<>();
 		map.put("endTime", new Date());
 		map.put("updateTime", new Date());
 		map.put("statusTime", new Date());
-		map.put("statusHistory", 2);
-		map.put("status", 7);
+		map.put("statusHistory", 1);
+		map.put("status", 6);
 		map.put("id", oorb.getOrderId());
 		orderClient.updateClose(map);
+
 		// 更新详情
 		map.clear();
 		map.put("endTime", new Date());
 		map.put("ordNo", order.getOrderNo());
 		orderClient.updateDetail(map);
+
 		// 插入订单记录
 		ResOrderOperateLog ool = new ResOrderOperateLog();
 		ool.setCreateTime(new Date());
@@ -299,7 +307,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		ool.setOperatorId(user.getId());
 		ool.setSource(ool.ADMIN);
 		ool.setStallId(oorb.getStallId());
-		ool.setOperation(ool.ORDER_ClOSE);
+		ool.setOperation(ool.SUSPENDED);
 		ool.setRemark(oorb.getRemark());
 		ool.setRemarkId(oorb.getRemarkId());
 		ool.setStatus(ool.SUCCESS);
@@ -309,11 +317,18 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		// 更新车位
 		ReqStall reqStall = new ReqStall();
 		reqStall.setId(oorb.getStallId());
-		reqStall.setStatus(reqStall.STATUS_FREE);
-		reqStall.setBindOrderStatus(reqStall.ORDER_ClOSE);
+		reqStall.setStatus(reqStall.STATUS_USED);
+		reqStall.setBindOrderStatus(reqStall.ORDER_SUSPENDED);
 		stallClient.update(reqStall);
+
 		// 更新redis
-		this.redisService.remove("freelock_key:" + stall.getPreId(), new Object[] { stall.getLockSn() });
+		ResRedisOrders resRedisOrders = (ResRedisOrders) this.redisService
+				.get(RedisKey.LINKMORE_APP_ORDER_KEY.key + order.getUserId());
+		if (resRedisOrders != null) {
+			resRedisOrders.setStatus(resRedisOrders.ORDERS_STATUS_PENDING);
+			resRedisOrders.setEndTime(new Date());
+			this.redisService.set(RedisKey.LINKMORE_APP_ORDER_KEY.key + order.getUserId(), resRedisOrders);
+		}
 	}
 
 	/**
@@ -385,4 +400,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	public void assign(AssignStallRequestBean bean, HttpServletRequest request) {
 
 	}
+	
+	
+	
 }

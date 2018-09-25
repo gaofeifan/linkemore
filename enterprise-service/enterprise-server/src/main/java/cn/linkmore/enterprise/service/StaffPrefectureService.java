@@ -5,6 +5,7 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.enterprise.controller.staff.request.AssignStallRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.OrderOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.SraffReqConStall;
+import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.response.PrefectureResponseBean;
 
@@ -62,7 +63,7 @@ public interface StaffPrefectureService {
 	 * @param bean
 	 * @param au
 	 */
-	void online(StallOperateRequestBean bean,HttpServletRequest request);
+	void online(StallOnLineRequest bean,HttpServletRequest request);
 	
 	
 	/**

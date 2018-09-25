@@ -26,4 +26,9 @@ public class SendController {
 		this.pushService.send(rp);
 	}
 	
+	@RequestMapping(value = "/v3.0", method = RequestMethod.POST) 
+	public void give(@RequestBody ReqPush rp) {
+		this.pushService.give(rp);
+	}
+	
 }

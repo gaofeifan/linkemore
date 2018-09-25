@@ -348,6 +348,38 @@ public class StallServiceImpl implements StallService {
 		log.info("--------save--------interface------stall = {}", JSON.toJSON(stall));
 		return this.stallMasterMapper.save(stall);
 	}
+	
+	@Override
+	public void install(ReqStall reqStall) {
+		Date now = new Date();
+		reqStall.setSellCount(0);
+		reqStall.setGatewayId(0l);
+		reqStall.setStatus(4);
+		reqStall.setBindOrderStatus((short) 0);
+		reqStall.setCreateTime(now);
+		reqStall.setUpdateTime(now);
+		
+		reqStall.setLockStatus(null);
+		reqStall.setLockSn(reqStall.getLockSn());
+		reqStall.setStatus(4);
+		reqStall.setLockBattery(0);
+
+		Stall stall = new Stall();
+		stall = ObjectUtils.copyObject(reqStall, stall);
+		//插入车位
+		this.stallMasterMapper.save(stall);
+		
+		ResStallLock lock = stallLockClusterMapper.findById(stall.getLockId());
+		lock.setBindTime(now);
+		lock.setPrefectureId(reqStall.getPreId());
+		lock.setStallId(reqStall.getId());
+		
+		StallLock stallLock = new StallLock();
+		stallLock = ObjectUtils.copyObject(lock, stallLock);
+		//更新锁
+		this.stallLockMasterMapper.updateBind(stallLock);
+	}
+	
 
 	@Override
 	public int update(ReqStall reqStall) {

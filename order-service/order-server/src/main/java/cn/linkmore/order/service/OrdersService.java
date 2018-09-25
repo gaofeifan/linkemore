@@ -16,6 +16,8 @@ import cn.linkmore.order.controller.app.request.ReqSwitch;
 import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
+import cn.linkmore.order.controller.staff.request.ReqUnusualOrder;
+import cn.linkmore.order.controller.staff.response.UnusualOrderResponseBean;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
@@ -262,6 +264,5 @@ public interface OrdersService {
 	 * 插入订单记录
 	 */
 	void savelog(ResOrderOperateLog resOrderOperateLog);
-
-	
+		
 }

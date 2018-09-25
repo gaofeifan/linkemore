@@ -32,5 +32,12 @@ public interface PushService {
 	 * @return
 	 */
 	void send(ReqPush rp);
+	
+	/**
+	 * 管理版推送
+	 * @param rp 消息体
+	 * @return
+	 */
+	void give(ReqPush rp);
 
 }

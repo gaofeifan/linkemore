@@ -45,4 +45,9 @@ public class BeanFactory {
 		return new JPushClient(PushConfig.getSecretAdd(),PushConfig.getKeyAdd() , 3);
 	}
 	
+	@Bean(name = "jGiveClient")
+	public JPushClient jGiveClient() {
+		return new JPushClient(PushConfig.getSecretAddM(),PushConfig.getKeyAddM() , 3);
+	}
+	
 }

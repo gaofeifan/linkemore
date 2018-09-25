@@ -46,6 +46,7 @@
     from t_admin_unusual_order
     where category in ('0','1')
   </select>
+  
   <select id="findList" parameterType="java.util.Map" resultMap="ResBaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -70,6 +71,20 @@
 	    		 #{sId}
 	    	</foreach>
    		</if>
+   </where>
+  </select>
+  
+    <select id="findList2" parameterType="java.util.Map" resultMap="ResBaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_admin_unusual_order
+   <where>
+   		<if test="preId != null">
+   			AND prefecture_id = #{preId}
+   		</if>
+   		<if test="stallId != null">
+   			AND stall_id = #{stallId}
+   		</if>   		
    </where>
   </select>
   

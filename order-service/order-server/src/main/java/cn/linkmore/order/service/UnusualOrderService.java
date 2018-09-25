@@ -3,7 +3,10 @@ package cn.linkmore.order.service;
 import java.util.List;
 import java.util.Map;
 
+import cn.linkmore.order.controller.staff.request.ReqUnusualOrder;
+import cn.linkmore.order.controller.staff.response.ResUnusualOd;
 import cn.linkmore.order.response.ResUnusualOrder;
+
 
 /**
  * Service接口 －异常订单
@@ -24,5 +27,7 @@ public interface UnusualOrderService {
 	void updateUnreleaseCompleteOrders();
 
 	List<ResUnusualOrder> findList(Map<String, Object> map);
+	
+	List<ResUnusualOd> findList2(ReqUnusualOrder reqUnusualOrder);
 
 }

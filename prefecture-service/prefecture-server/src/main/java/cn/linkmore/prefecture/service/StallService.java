@@ -226,4 +226,12 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	void staffAssignDel(ReqAssignStall bean);
+	
+	/**
+	 * @Description  安装地锁
+	 * @Author   cl
+	 * @Version  v2.0
+	 */
+	public void install(ReqStall reqStall);
+	
 }

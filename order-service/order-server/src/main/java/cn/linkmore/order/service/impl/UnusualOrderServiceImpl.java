@@ -1,6 +1,7 @@
 package cn.linkmore.order.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
+
+import cn.linkmore.order.controller.staff.request.ReqUnusualOrder;
+import cn.linkmore.order.controller.staff.response.ResUnusualOd;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.cluster.UnusualOrderClusterMapper;
 import cn.linkmore.order.dao.master.UnusualOrderMasterMapper;
@@ -215,5 +219,12 @@ public class UnusualOrderServiceImpl implements UnusualOrderService {
 		return this.unusualOrderClusterMapper.findList(map);
 	}
 	
+	@Override
+	public List<ResUnusualOd> findList2(ReqUnusualOrder reqUnusualOrder) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("preId", reqUnusualOrder.getPrfId());
+		map.put("stallId", reqUnusualOrder.getStallId());
+		return this.unusualOrderClusterMapper.findList2(map);
+	}
 	
 }
