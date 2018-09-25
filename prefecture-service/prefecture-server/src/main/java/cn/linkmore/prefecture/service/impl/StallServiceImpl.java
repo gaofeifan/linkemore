@@ -246,16 +246,6 @@ public class StallServiceImpl implements StallService {
 				stall.setLockStatus(LockStatus.DOWN.status);
 				stallMasterMapper.lockdown(stall);
 				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqos.getOrderId());
-				Map<String,Object> param = new HashMap<String,Object>();
-				param.put("orderId", reqos.getOrderId());
-				param.put("lockDownStatus", (short)Constants.DownLockStatus.SUCCESS.status);
-				orderClient.updateLockStatus(param);
-			}else {
-				log.info("downing.....................failure");
-				Map<String,Object> param = new HashMap<String,Object>();
-				param.put("orderId", reqos.getOrderId());
-				param.put("lockDownStatus", (short)Constants.DownLockStatus.FAILURE.status);
-				orderClient.updateLockStatus(param);
 			}
 			orderClient.downMsgPush(reqos.getOrderId(), reqos.getStallId());
 		}
