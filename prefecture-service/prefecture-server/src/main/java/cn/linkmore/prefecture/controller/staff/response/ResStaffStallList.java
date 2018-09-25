@@ -25,6 +25,9 @@ public class ResStaffStallList {
 	 */ 
 	@ApiModelProperty(value="车位锁异常状态  true 正常车位  false 异常车位")
 	private boolean excStatus = true;
+	
+	@ApiModelProperty(value = "是否被指定 0已经指定，1未指定")
+	private int assignStatus;
 
 	public Long getStallId() {
 		return stallId;
@@ -72,5 +75,13 @@ public class ResStaffStallList {
 
 	public void setExcStatus(boolean excStatus) {
 		this.excStatus = excStatus;
+	}
+
+	public int getAssignStatus() {
+		return assignStatus;
+	}
+
+	public void setAssignStatus(int assignStatus) {
+		this.assignStatus = assignStatus;
 	}
 }

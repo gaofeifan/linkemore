@@ -69,7 +69,7 @@ public class StaffStallController {
 	}
 	
 	@ApiOperation(value = "删除指定车位操作", notes = "删除指定车位操作")
-	@RequestMapping(value = "/assignDel", method = RequestMethod.POST)
+	@RequestMapping(value = "/assign-del", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Void> staffAssignDel(HttpServletRequest request, @Validated @RequestBody ReqAssignStall bean) {
 		this.stallService.staffAssignDel(bean);

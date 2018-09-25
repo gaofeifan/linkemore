@@ -18,5 +18,5 @@ public interface StallAssignClusterMapper {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	StallAssign findByLockSn(String lockSn);
+	ResStallAssign findByLockSn(String lockSn);
 }

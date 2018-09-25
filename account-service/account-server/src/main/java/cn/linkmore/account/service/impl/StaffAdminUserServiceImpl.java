@@ -30,6 +30,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.client.StaffAdminUserClient;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
@@ -49,6 +50,8 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private StaffAdminUserClient staffAdminUserClient;
 	@Resource
 	private SmsClient smsClient;
+	@Resource
+	private SendClient sendClient;
 	@Resource
 	private WechatMiniClient wechatMiniClient;
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -153,7 +156,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 				rp.setClient(token.getClient());
 				rp.setType(PushType.STAFF_STAFF_LOGOUT_NOTICE);
 				rp.setTitle("账号已在其它设备登录"); 
-//				sendClient.send(rp);
+				sendClient.send(rp);
 			}
 		}
 	}
