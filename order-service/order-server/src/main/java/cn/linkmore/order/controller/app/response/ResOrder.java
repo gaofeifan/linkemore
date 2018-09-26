@@ -61,6 +61,10 @@ public class ResOrder {
 	private String bluetooth;
 	@ApiModelProperty(value = "金额[字符串]")
 	private String amount;
+	@ApiModelProperty(value = "订单状态[1取消预约,2结账离场]")
+	private Short cancelFlag = 1;
+	@ApiModelProperty(value = "免费时长")
+	private int freeMins;
 	public Long getId() {
 		return id;
 	}
@@ -245,6 +249,16 @@ public class ResOrder {
 	public void setBluetooth(String bluetooth) {
 		this.bluetooth = bluetooth;
 	}
-	 
-	
+	public Short getCancelFlag() {
+		return cancelFlag;
+	}
+	public void setCancelFlag(Short cancelFlag) {
+		this.cancelFlag = cancelFlag;
+	}
+	public int getFreeMins() {
+		return freeMins;
+	}
+	public void setFreeMins(int freeMins) {
+		this.freeMins = freeMins;
+	}
 }

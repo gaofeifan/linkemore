@@ -265,6 +265,12 @@ public interface OrdersClusterMapper {
 	 * @Version  v2.0
 	 */
 	List<ResChargeDetail> findStaffAmountDetail(Map<String, Object> param);
+	/**
+	 * 当前用户当天取消订单次数
+	 * @param userId
+	 * @return
+	 */
+	List<ResUserOrder> getDayOfCanceOrderlList(Long userId);
 
 
 

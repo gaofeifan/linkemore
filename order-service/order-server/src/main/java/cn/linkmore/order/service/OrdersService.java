@@ -264,5 +264,7 @@ public interface OrdersService {
 	 * 插入订单记录
 	 */
 	void savelog(ResOrderOperateLog resOrderOperateLog);
+
+	void cancel(Long orderId, HttpServletRequest request);
 		
 }

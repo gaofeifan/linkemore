@@ -11,6 +11,8 @@ public class BaseConfig {
 	private Integer rechargeNumber = 5;
 	private Integer tradeNumber = 5;
 	private String freePlate;
+	private Integer cancelNumber = 5;
+	
 	public Boolean getOnline() {
 		return online;
 	}
@@ -41,5 +43,10 @@ public class BaseConfig {
 	public void setFreePlate(String freePlate) {
 		this.freePlate = freePlate;
 	}
-	
+	public Integer getCancelNumber() {
+		return cancelNumber;
+	}
+	public void setCancelNumber(Integer cancelNumber) {
+		this.cancelNumber = cancelNumber;
+	}
 }
