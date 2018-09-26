@@ -195,6 +195,7 @@ public class StallServiceImpl implements StallService {
 			stall.setLockStatus(LockStatus.UP.status);
 			stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
 			stallMasterMapper.cancel(stall);
+			redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			flag = true;
 		}
 		return flag;
