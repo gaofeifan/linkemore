@@ -19,15 +19,15 @@ public class StaffAppfansServiceImpl implements StaffAppfansService {
 	@Resource
 	private AccountMasterMapper accountMasterMapper;
 	@Resource
-	private StaffAppfansClusterMapper userAppfansClusterMapper;
+	private StaffAppfansClusterMapper staffAppfansClusterMapper;
 	@Resource
-	private StaffAppfansMasterMapper userAppfansMasterMapper;
+	private StaffAppfansMasterMapper staffAppfansMasterMapper;
 	@Resource
 	@Lazy
 	private UserService userService;
 	@Override
 	public StaffAppfans findById(String id) {
-		return this.userAppfansClusterMapper.findById(id);
+		return this.staffAppfansClusterMapper.findById(id);
 	}
 
 //	@Override
@@ -38,24 +38,24 @@ public class StaffAppfansServiceImpl implements StaffAppfansService {
 
 	@Override
 	public void insertSelective(StaffAppfans record) {
-		this.userAppfansMasterMapper.insertSelective(record);
+		this.staffAppfansMasterMapper.insertSelective(record);
 	}
 	
 	@Override
 	public void updateByIdSelective(StaffAppfans record) {
-		this.userAppfansMasterMapper.updateByIdSelective(record);
+		this.staffAppfansMasterMapper.updateByIdSelective(record);
 	}
 
 	@Override
 	public void updateStatusByUserId(Long userId, int status) {
-		this.userAppfansMasterMapper.updateStatusByUserId(userId, status);
+		this.staffAppfansMasterMapper.updateStatusByUserId(userId, status);
 	}
 
 	
 
 	@Override
 	public void deleteByUserId(Long userId) {
-		this.userAppfansMasterMapper.deleteByUserId(userId);
+		this.staffAppfansMasterMapper.deleteByUserId(userId);
 	}
 	
 	

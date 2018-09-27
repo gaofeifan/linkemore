@@ -1,5 +1,7 @@
 package cn.linkmore.util;
 
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -24,4 +26,26 @@ public class TokenUtil {
 		}
 		return sessionId;
 	}
+	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public static String getUUID(HttpServletRequest request) {
+		return UUID.randomUUID().toString().replaceAll("-", "");
+	}
+	
+	/**
+	 * @Description  获取key
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public static String createKey(Short type,HttpServletRequest request) {
+		if(type == null || type !=  1) {
+			return request.getSession().getId().replaceAll("-", "");
+		}
+		return getUUID(request);
+	}
+	
 }	
