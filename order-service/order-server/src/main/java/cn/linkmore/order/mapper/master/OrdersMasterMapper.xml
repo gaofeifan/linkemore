@@ -143,8 +143,10 @@
     set    
       end_time = #{endTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      status_time = #{statusTime,jdbcType=TIMESTAMP},
-      status_history = #{statusHistory,jdbcType=SMALLINT},
+      <if test="statusTime != null">
+		 status_time = #{statusTime,jdbcType=TIMESTAMP},
+		 status_history = #{statusHistory,jdbcType=SMALLINT},
+	  </if>
       status = #{status,jdbcType=INTEGER} 
     where id = #{id,jdbcType=BIGINT}
   </update>

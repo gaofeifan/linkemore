@@ -71,6 +71,14 @@ public class AppOrderController {
 		return ResponseEntity.success(null, request);
 	}
 	
+	@ApiOperation(value = "取消订单", notes = "订单ID不能为空", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/cancel", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> cancel(@RequestParam("orderId")Long orderId,HttpServletRequest request) {
+		this.ordersService.cancel(orderId, request);
+		return ResponseEntity.success(null, request);
+	}
+	
 	@ApiOperation(value = "切换车位回调", notes = "切换车位回调校验结果[0失败、1成功、2关闭订单]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/switch/result", method = RequestMethod.GET)
 	@ResponseBody
