@@ -143,12 +143,24 @@
     set    
       end_time = #{endTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
+      <if test="actualAmount != null">
+       actual_amount = #{actualAmount,jdbcType=DECIMAL},
+      </if>
       <if test="statusTime != null">
-		 status_time = #{statusTime,jdbcType=TIMESTAMP},
+       status_time = #{statusTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusHistory != null">
 		 status_history = #{statusHistory,jdbcType=SMALLINT},
 	  </if>
       status = #{status,jdbcType=INTEGER} 
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateT" parameterType="java.util.HashMap">
+    update o_orders
+    set    
+      end_time = #{endTime,jdbcType=TIMESTAMP}
+    where ord_no = #{ordNo,jdbcType=BIGINT}
   </update>
   
   

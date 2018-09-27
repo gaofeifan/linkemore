@@ -8,7 +8,7 @@ public class ResOrderOperateLog {
 	public static short ORDER_ClOSE = 2; 
 	
 	public static short FAILURE = 0; 
-	public static Integer SUCCESS = 2; 
+	public static Integer SUCCESS = 1; 
 	
 	public static short ADMIN = 2; 
 	

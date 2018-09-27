@@ -39,16 +39,7 @@ public interface StaffPrefectureService {
 	 * @return
 	 */
 	void forceReleaseStall(Long stall_id, HttpServletRequest request);
-	
-	/**
-	 * 指定车位
-	 * 
-	 * @param bean
-	 * @return
-	 */
-	void assign(AssignStallRequestBean bean,HttpServletRequest request);
-	
-	
+		
 	/**
 	 * 车位下线
 	 * 

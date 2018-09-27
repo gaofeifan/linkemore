@@ -256,6 +256,20 @@ public class FeignStallController {
 		}
 		return 0;
 	}
+	
+	
+	@RequestMapping(value = "/v2.0/updateStatus", method = RequestMethod.POST)
+	@ResponseBody
+	public int updateStatus(@RequestBody ReqStall stall) {
+		ResStallEntity st = stallService.findById(stall.getId());
+		if (st != null) {
+			st.setStatus(stall.getStatus());
+			ReqStall reqStall = new ReqStall();
+			reqStall = ObjectUtils.copyObject(st, reqStall);
+			return this.stallService.update(reqStall);
+		}
+		return 0;
+	}
 
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
 	@ResponseBody

@@ -36,15 +36,15 @@ public class RedisLock {
      */
     public boolean lock(String key,String value){
     	//争抢锁
-        if(stringRedisTemplate.opsForValue().setIfAbsent(key,value)){//setNX 返回boolean
+        if(redisTemplate.opsForValue().setIfAbsent(key,value)){//setNX 返回boolean
             return true;
         }
         //当前key的值
-        String currentValue = stringRedisTemplate.opsForValue().get(key);
+        String currentValue =String.valueOf(redisTemplate.opsForValue().get(key));
         //拿到锁比对过期
         if(!StringUtils.isEmpty(currentValue) && Long.parseLong(currentValue)<System.currentTimeMillis()){
             //抢先更新超时时间并获取当前key的值
-            String oldvalue  = stringRedisTemplate.opsForValue().getAndSet(key,value);
+            String oldvalue  = String.valueOf(redisTemplate.opsForValue().getAndSet(key,value));
             if(!StringUtils.isEmpty(oldvalue)&&oldvalue.equals(currentValue)){
                 return true;
             }

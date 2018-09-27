@@ -308,8 +308,8 @@ push:
   key-add: 81d6cbbcae88bf5563dfa8b1
   secret-add: ad2d7a5906fdfc8dffb99e16
   #极光推送配置(管理版)
-  key-add-m: 81d6cbbcae88bf5563dfa8b1
-  secret-add-m: ad2d7a5906fdfc8dffb99e16
+  key-add-m: fdde7a74e91b2b0b82172555
+  secret-add-m: 148ba7bd213a23a1e360f499
  
 #阿里OSS配置
 oss:

@@ -97,7 +97,7 @@ public class FeignOrderController {
 	@RequestMapping(value = "/update-order-detail", method = RequestMethod.POST)
 	@ResponseBody
 	public void updateDetail(@RequestBody Map<String, Object> param ) {
-		this.ordersService.updateClose(param);
+		this.ordersService.updateDetail(param);
 	}
 	
 	@RequestMapping(value = "/save-order-log", method = RequestMethod.POST)
