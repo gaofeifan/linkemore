@@ -54,6 +54,7 @@
   <resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
   	<id column="id" property="id"/>
   	<result column="name" property="name" />
+  	<result column="city_id" property="cityId" />
   </resultMap>
   
    <resultMap id="ResPreGateMap" type="cn.linkmore.prefecture.response.ResPreGateway">
@@ -126,7 +127,7 @@
   </select>
   
   <select id="findByIds" parameterType="java.util.List" resultMap="ResPreMap">
-    select  p.id ,p.name
+    select  p.id ,p.name,p.city_id
     from v_prefecture p
     where id in
     <foreach collection="list" item="id" open="(" separator="," close=")"  >

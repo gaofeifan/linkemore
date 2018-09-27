@@ -6,6 +6,11 @@
     <result column="auth_id" jdbcType="BIGINT" property="authId" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
   </resultMap>
+  <resultMap id="ResBaseResultMap" type="cn.linkmore.prefecture.response.ResAdminAuthPre">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="auth_id" jdbcType="BIGINT" property="authId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, auth_id, pre_id
   </sql>
@@ -16,6 +21,18 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+	select pre.auth_id , pre.pre_id FROM t_admin_auth_prefecture pre INNER JOIN (
+	select auth_id,user_id FROM t_admin_user_auth  
+	) users ON users.auth_id = pre.auth_id 
+	<if test=" userId != null">
+		AND users.user_id = #{userId}
+	</if>
+	<if test="preId != null">
+		AND pre.pre_id = #{preId}
+	</if>
+	GROUP BY pre_id 
+  </select>
+  <select id="findListRes" parameterType="java.util.Map" resultMap="ResBaseResultMap">
 	select pre.auth_id , pre.pre_id FROM t_admin_auth_prefecture pre INNER JOIN (
 	select auth_id,user_id FROM t_admin_user_auth  
 	) users ON users.auth_id = pre.auth_id 

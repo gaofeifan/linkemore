@@ -5,9 +5,13 @@ import java.util.Map;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.entity.AdminAuthPre;
 import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.response.ResAdminAuth;
+import cn.linkmore.prefecture.response.ResAdminAuthPre;
+import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResStaffCity;
 
 /**
@@ -41,5 +45,12 @@ public interface AdminAuthService {
 	 * @Version  v2.0
 	 */
 	List<ResStaffCity> findStaffCitysByAdminId(Long id);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResPre> findStaffPreByAdminId(Long id);
 
 }

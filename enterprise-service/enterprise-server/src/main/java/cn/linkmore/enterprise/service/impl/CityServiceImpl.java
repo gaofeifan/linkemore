@@ -14,6 +14,9 @@ import cn.linkmore.common.client.CityClient;
 import cn.linkmore.enterprise.controller.staff.response.ResCity;
 import cn.linkmore.enterprise.service.CityService;
 import cn.linkmore.prefecture.client.AdminAuthClient;
+import cn.linkmore.prefecture.response.ResAdminAuthPre;
+import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResStaffCity;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.TokenUtil;
@@ -41,12 +44,20 @@ public class CityServiceImpl implements CityService {
 		}
 		List<cn.linkmore.common.response.ResCity> list = this.cityClient.findSelectList();
 		ResCity city = null;
+		List<ResPre> pres = this.adminAuthClient.findStaffPreByAdminId(cu.getId());
 		for (ResStaffCity entry : map) {
 			for (cn.linkmore.common.response.ResCity resCity : list) {
-				if(resCity.getId().equals(entry.getCityId())) {
+				if(resCity.getId().equals(entry.getCityId())){
 					city = new ResCity();
 					city.setCityName(resCity.getCityName());
 					city.setId(resCity.getId());
+					int count = 0;
+					for (ResPre pre : pres) {
+						if(pre.getCityId().equals(resCity.getId())) {
+							count++;
+						}
+					}
+					city.setPreNumber(count);
 					citys.add(city);
 				}
 			}
