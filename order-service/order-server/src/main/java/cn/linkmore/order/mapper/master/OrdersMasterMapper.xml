@@ -145,8 +145,16 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       status_time = #{statusTime,jdbcType=TIMESTAMP},
       status_history = #{statusHistory,jdbcType=SMALLINT},
+      actual_amount = #{actualAmount,jdbcType=DECIMAL},
       status = #{status,jdbcType=INTEGER} 
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateT" parameterType="java.util.HashMap">
+    update o_orders
+    set    
+      end_time = #{endTime,jdbcType=TIMESTAMP}
+    where ord_no = #{ordNo,jdbcType=BIGINT}
   </update>
   
   

@@ -190,4 +190,10 @@ public class StallClientHystrix implements StallClient {
 		log.info("prefecture service void managerlock(ReqControlLock reqc)  hystrix");
 	}
 
+	@Override
+	public int updateStatus(ReqStall stall) {
+		
+		return 0;
+	}
+
 }

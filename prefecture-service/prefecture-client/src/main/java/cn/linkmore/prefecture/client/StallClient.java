@@ -173,6 +173,10 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.POST)
 	@ResponseBody
 	public int update(@RequestBody ReqStall stall);
+	
+	@RequestMapping(value = "/v2.0/updateStatus", method = RequestMethod.POST)
+	@ResponseBody
+	public int updateStatus(@RequestBody ReqStall stall);
 
 	@RequestMapping(value = "/v2.0/check", method = RequestMethod.POST)
 	@ResponseBody

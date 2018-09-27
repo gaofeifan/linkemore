@@ -24,6 +24,7 @@ public class StallOperateRequestBean  implements Serializable{
 	
 	@ApiModelProperty(value = "原因文字", required = true)
 	private String remark;
+	
 	public Long getStallId() {
 		return stallId;
 	}
