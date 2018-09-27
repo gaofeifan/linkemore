@@ -821,6 +821,7 @@ public class OrdersServiceImpl implements OrdersService {
 		Boolean downStatus = true;
 		if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId())) {
 			Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId());
+			log.info("downMsgPush failed times = {}",count.toString());
 			if (Integer.valueOf(count.toString()) > 1) {
 				switchStatus = true;
 			}
@@ -1025,17 +1026,15 @@ public class OrdersServiceImpl implements OrdersService {
 				ro.setStallName(stall.getStallName());
 				ro.setBluetooth(stall.getLockSn());
 			}
-			Map<String,Object> lockParam = stallClient.watch(ro.getStallId());
-			if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
+			if(orders.getLockDownStatus() != null && orders.getLockDownStatus().intValue() == 1) {
 				ro.setCancelFlag((short)2);
-				log.info(">>>>>>>>>>>>>>>>>>>>>>>>>lock down success" );
+				log.info(">>>>>>>>>>>>>>>>>>>>>>>>>lock down success");
 			}
 			long beginTime = orders.getBeginTime().getTime();
 			long now = new Date().getTime();
 			if(orders.getStrategyId() != null) {
 				int freeMins = strategyBaseClient.findById(orders.getStrategyId()).getFreeMins();
 				ro.setFreeMins(freeMins);
-				log.info(">>>>>>>>>>>>>>>>>>>>>>>>>appoint time out freeMins = {}", freeMins);
 				if(now - beginTime > freeMins * 60 * 1000){
 					ro.setCancelFlag((short)2);
 				}
@@ -1054,6 +1053,7 @@ public class OrdersServiceImpl implements OrdersService {
 		if (o != null) {
 			count = new Integer(o.toString());
 		}
+		log.info(">>>>>>>>>>>>>>>>>>>>downResult orderId ={} fail_num = {}",orders.getId(), count);
 		return count;
 	}
 
