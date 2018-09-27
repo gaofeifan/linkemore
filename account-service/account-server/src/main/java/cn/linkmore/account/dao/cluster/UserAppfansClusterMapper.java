@@ -2,10 +2,8 @@ package cn.linkmore.account.dao.cluster;
 
 
 import org.apache.ibatis.annotations.Mapper;
-
 import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.response.ResUserAppfans;
-import feign.Param;
 /**
  * 用户微信(读)
  * @author   GFF

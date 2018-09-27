@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.controller.staff;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -25,6 +26,7 @@ import cn.linkmore.prefecture.controller.staff.response.ResDayIncome;
 import cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlow;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreListCount;
 import cn.linkmore.prefecture.service.StaffPrefectureService;
+import cn.linkmore.util.DateUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -92,15 +94,15 @@ public class StaffPrefectureController {
 	@RequestMapping(value = "/car-month-list", method = RequestMethod.POST)
 	@ResponseBody
 	@ApiOperation(value = "查询月数据车流量列表", notes = "查询月数据车流量列表", consumes = "application/json")
-	public List<ResDayTrafficFlow> findCarMonthList(HttpServletRequest request,@RequestBody @Validated ReqPreTypePage page){
-		return this.staffPrefectureService.findCarMonthList(request,page);
+	public ResponseEntity<List<ResDayTrafficFlow>> findCarMonthList(HttpServletRequest request,@RequestBody @Validated ReqPreTypePage page){
+		return ResponseEntity.success(this.staffPrefectureService.findCarMonthList(request,page), request);
 	}
 
 	@RequestMapping(value = "/amount-month-list", method = RequestMethod.POST)
 	@ResponseBody
 	@ApiOperation(value = "查询月收入列表", notes = "查询月收入列表", consumes = "application/json")
-	public List<ResDayIncome> finbudAmountMonthList(HttpServletRequest request,@RequestBody  @Validated ReqPreTypePage page){
-		return this.staffPrefectureService.findAmountMonthList(request,page);
+	public ResponseEntity<List<ResDayIncome>> finbudAmountMonthList(HttpServletRequest request,@RequestBody  @Validated ReqPreTypePage page){
+		return ResponseEntity.success(this.staffPrefectureService.findAmountMonthList(request,page), request);
 	}
 	
 	@RequestMapping(value="/amount-detail-list" ,method=RequestMethod.GET)
@@ -112,4 +114,13 @@ public class StaffPrefectureController {
 		List<ResAmountDetail> list = this.staffPrefectureService.findAmountDetail(pageNo,preId,request);
 		return ResponseEntity.success(list, request);
 	}
+	
+	@RequestMapping(value="/time" ,method=RequestMethod.GET)
+	@ApiOperation(value = "获取系统+1天时间", notes = "获取系统+1天时间", consumes = "application/json")
+	@ResponseBody
+	public ResponseEntity<String> getTime(HttpServletRequest request){
+		String converter = DateUtils.converter(DateUtils.getPast2Date(-1), null);
+		return ResponseEntity.success(converter, request);
+	}
+	
 }
