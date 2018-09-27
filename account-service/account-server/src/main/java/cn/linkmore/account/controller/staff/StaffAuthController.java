@@ -38,14 +38,14 @@ import lombok.val;
 public class StaffAuthController {
 
 	@Resource
-	private StaffAdminUserService adminUserService; 
+	private StaffAdminUserService staffAdminUserService; 
 	
 	@ApiOperation(value="用户登录",notes="手机号及短信验证码不能为空", consumes = "application/json")
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<ResAdmin> login(@Validated @RequestBody ReqAuthLogin rl, HttpServletRequest request) {
 		ResponseEntity<ResAdmin> response = null; 
-		ResAdmin ru = this.adminUserService.login(rl,request);
+		ResAdmin ru = this.staffAdminUserService.login(rl,request);
 		response = ResponseEntity.success(ru, request);
 		return response;
 	}
@@ -55,7 +55,7 @@ public class StaffAuthController {
 	@ResponseBody
 	public ResponseEntity<?> logout(HttpServletRequest request) {
 		ResponseEntity<?> response = null;
-		this.adminUserService.logout(request);
+		this.staffAdminUserService.logout(request);
 		response = ResponseEntity.success("用户退出成功", request);
 		return response;
 	}
@@ -83,7 +83,7 @@ public class StaffAuthController {
 			@Size(min =32,max=36,message="授权码为无效")
 			String code, HttpServletRequest request) {
 		ResponseEntity<?> response = null;
-		String bind = this.adminUserService.bindWechat(code, request);
+		String bind = this.staffAdminUserService.bindWechat(code, request);
 		response = ResponseEntity.success( bind, request);
 		return response;
 	}  
@@ -97,7 +97,7 @@ public class StaffAuthController {
 			@ApiParam("手机号") @RequestParam("mobile") String mobile
 			, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
-		boolean flag = this.adminUserService.checkMobile(mobile);
+		boolean flag = this.staffAdminUserService.checkMobile(mobile);
 		response = ResponseEntity.success(flag, request);
 		return response;
 	}
@@ -107,7 +107,7 @@ public class StaffAuthController {
 	@ResponseBody
 	public ResponseEntity<?> send(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
-		this.adminUserService.send(rs);
+		this.staffAdminUserService.send(rs);
 		response = ResponseEntity.success(null, request);
 		return response;
 	}

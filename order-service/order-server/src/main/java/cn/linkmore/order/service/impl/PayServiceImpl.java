@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.CouponStatus;
@@ -187,9 +189,8 @@ public class PayServiceImpl implements PayService {
 			log.error("confirm order.status {}" + order.getStatus());
 			throw new BusinessException(StatusEnum.ORDER_CHECK_EXPIRE);
 		}
-		log.info("order:{}", JsonUtil.toJson(order));
-		log.info("orderId:{},userId:{}", orderId, cu.getId());
-		log.info("order==null:{},order.getUserId()!=userId:{}", order == null, order.getUserId() != cu.getId());
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout order:{}", JsonUtil.toJson(order));
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout orderId:{},userId:{}", orderId, cu.getId());
 		if (order == null || order.getUserId().longValue() != cu.getId().longValue()) {
 			return null;
 		}
@@ -199,7 +200,6 @@ public class PayServiceImpl implements PayService {
 		}
 		ResOrderCheckout roc = new ResOrderCheckout();
 		roc.setAccountAmount(account.getUsableAmount());
-		// List<ResCoupon> rcs = this.couponClient.order(cu.getId(), orderId);
 		roc.setStartTime(order.getCreateTime());
 		roc.setEndTime(new Date());
 		if (order.getStatus() == OrderStatus.SUSPENDED.value) {
@@ -233,6 +233,7 @@ public class PayServiceImpl implements PayService {
 		Map<String, Object> map = this.strategyBaseClient.fee(strategy);
 		String totalStr = map.get("totalAmount").toString();
 		String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout totalAmount:{}", totalAmountStr);
 		roc.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
 		ResPayCheckout result = null;
 		if (roc != null) {
@@ -249,6 +250,7 @@ public class PayServiceImpl implements PayService {
 			result.setStartTime(roc.getStartTime());
 			result.setOrderId(roc.getOrderId());
 		}
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout result:{}",JSON.toJSON(result));
 		return result;
 	}
 
@@ -311,7 +313,7 @@ public class PayServiceImpl implements PayService {
 		ResCoupon coupon = null;
 		if (roc.getCouponId() != null) {
 			coupon = this.couponClient.get(roc.getCouponId());
-			log.info("coupon:{}", JsonUtil.toJson(coupon));
+			log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm coupon:{}", JsonUtil.toJson(coupon));
 			if (coupon != null && coupon.getStatus() != CouponStatus.FREE.status) {
 				coupon = null;
 			} else if (coupon != null && coupon.getUserId().longValue() != cu.getId().longValue()) {
@@ -328,6 +330,7 @@ public class PayServiceImpl implements PayService {
 			reqStrategy.setEndTime(order.getStatusTime().getTime());
 		}
 		Map<String, Object> rm = strategyBaseClient.fee(reqStrategy);
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm order:{} fee:{}",JSON.toJSON(order), JSON.toJSON(rm));
 		String totalStr = rm.get("totalAmount").toString();
 		String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
 		order.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
@@ -353,6 +356,7 @@ public class PayServiceImpl implements PayService {
 		} else {
 			orderPayType = OrderPayType.ACCOUNT.type;
 		}
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>orderPayType:{}", orderPayType);
 		order.setActualAmount(new BigDecimal(amount - (null == coupon ? 0.00 : faceAmount)));
 		if (null != coupon) {
 			order.setCouponId(coupon.getId());
@@ -386,6 +390,7 @@ public class PayServiceImpl implements PayService {
 			confirm.setAmount(new BigDecimal(0.0D));
 			confirm.setNumber(null);
 			confirm.setPayType((short) (orderPayType - OrderPayType.ACCOUNT.type));
+			log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm order actualAmount <= 0 confirm:{}",JSON.toJSON(confirm));
 			return getConfirmResult(confirm);
 		}
 
@@ -394,6 +399,7 @@ public class PayServiceImpl implements PayService {
 			account = initAccount(order.getUserId());
 		}
 		if (roc.getPayType() == TradePayType.ACCOUNT.type) {
+			log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm account pay = 0");
 			Double usableAmount = account.getAmount().doubleValue();
 			if ((order.getActualAmount().doubleValue() <= usableAmount)) {
 				// 调起结账接口
@@ -503,7 +509,7 @@ public class PayServiceImpl implements PayService {
 				confirm.setNumber(rechargeRecord.getCode());
 				confirm.setPayType((short) roc.getPayType());
 				confirm.setUnion(tn);
-				log.info("apple confir :{}", JsonUtil.toJson(confirm));
+				log.info("union confir :{}", JsonUtil.toJson(confirm));
 				return getConfirmResult(confirm);
 			} else if (roc.getPayType() == TradePayType.WECHAT_MINI.type) {
 				ReqWechatMiniOrder wechat = new ReqWechatMiniOrder();

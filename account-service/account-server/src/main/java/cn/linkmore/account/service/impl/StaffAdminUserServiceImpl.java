@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
@@ -30,6 +31,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.client.StaffAdminUserClient;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
@@ -41,15 +43,17 @@ import cn.linkmore.util.TokenUtil;
 public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private final static long SPACE = 1000L*60*30; 
 	private final static String STAFF_CODE = "6699"; 
-	@Resource
+	@Autowired
 	private StaffAppfansService staffAppfansService; 
-	@Resource
+	@Autowired
 	private RedisService redisService;
-	@Resource
+	@Autowired
 	private StaffAdminUserClient staffAdminUserClient;
-	@Resource
+	@Autowired
 	private SmsClient smsClient;
-	@Resource
+	@Autowired
+	private SendClient sendClient;
+	@Autowired
 	private WechatMiniClient wechatMiniClient;
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -67,7 +71,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 				}
 			}
 		}
-		String key = TokenUtil.getKey(request);
+		String key = TokenUtil.createKey(rl.getType(),request);
 		cn.linkmore.prefecture.response.ResAdmin staff = staffAdminUserClient.authLogin(rl.getMobile());
 		if(staff == null || staff.getStatus() == 0) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
@@ -88,16 +92,15 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		u.setToken(key); 
 //		u.setOpenId(staff.getOpenId());
 		u.setClient((short)ClientSource.APPLET.source);
-		Token token = this.cacheUser(request, u);  
+		Token token = this.cacheUser(request, u,key);  
 		if(token!=null) {
 			new PushThread(rs.getId().toString(), token).start(); 
 		}
 		return rs;
 	}
 	private final static ConcurrentHashMap<Long,Long> LOGIN_USER = new ConcurrentHashMap<Long,Long>();
-	private Token cacheUser(HttpServletRequest request, CacheUser user) {
+	private Token cacheUser(HttpServletRequest request, CacheUser user,String key) {
 		Token last  = null;
-		String key = TokenUtil.getKey(request);
 		Long userId = null;
 		if(user.getId()!=null) {
 			userId = LOGIN_USER.get(user.getId());
@@ -153,7 +156,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 				rp.setClient(token.getClient());
 				rp.setType(PushType.STAFF_STAFF_LOGOUT_NOTICE);
 				rp.setTitle("账号已在其它设备登录"); 
-//				sendClient.send(rp);
+				sendClient.give(rp);
 			}
 		}
 	}

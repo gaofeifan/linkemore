@@ -18,6 +18,9 @@ public class ReqAuthLogin {
 	@Range(min=1000, max=9999,message="验证码是4位有效数字")
 	@NotBlank(message="验证码不能为空") 
 	private String code;
+	@ApiModelProperty(value="swagger登录不需要传参 ,其他方式传 1 ",required=false)
+	private Short type;
+	
 	public String getMobile() {
 		return mobile;
 	}
@@ -29,5 +32,11 @@ public class ReqAuthLogin {
 	}
 	public void setCode(String code) {
 		this.code = code;
+	}
+	public Short getType() {
+		return type;
+	}
+	public void setType(Short type) {
+		this.type = type;
 	} 
 }

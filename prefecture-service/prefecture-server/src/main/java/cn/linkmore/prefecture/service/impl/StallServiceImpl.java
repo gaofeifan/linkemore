@@ -86,6 +86,7 @@ import cn.linkmore.prefecture.response.ResAdminUserAuth;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
+import cn.linkmore.prefecture.response.ResStallAssign;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOperateLog;
@@ -194,6 +195,7 @@ public class StallServiceImpl implements StallService {
 			stall.setLockStatus(LockStatus.UP.status);
 			stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
 			stallMasterMapper.cancel(stall);
+			redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			flag = true;
 		}
 		return flag;
@@ -896,7 +898,6 @@ public class StallServiceImpl implements StallService {
 			map.put("status", status);
 		}
 		List<ResStall> stallList = this.stallClusterMapper.findPreStallList(map);
-
 		log.info("【 ResStall list 】 " + JsonUtil.toJson(stallList));
 		List<ResStaffStallList> staffStallLists = new ArrayList<>();
 		ResStaffStallList ResStaffStallList;
@@ -925,6 +926,25 @@ public class StallServiceImpl implements StallService {
 						ResStaffStallList.setPlateNo(resOrderPlate.getPlateNo());
 					}
 				}
+			}else if(resStall.getStatus() == 1) {
+				// 指定车位锁
+				int assignStatus = 1;
+				String lockSn = resStall.getLockSn();
+				Set<Object> set = redisService.members(Constants.RedisKey.ORDER_ASSIGN_STALL.key);
+				log.info("指定锁池个数: {}", set.size());
+				log.info("指定锁池: {}", set.toString());
+				Long preId = resStall.getPreId();
+				for (Object obj : set) {
+					JSONObject json = JSON.parseObject(obj.toString());
+					String sn = json.get("lockSn").toString();
+					Long pid = Long.parseLong(json.get("preId").toString());
+					if (pid.longValue() == preId.longValue() && lockSn.equals(sn)) {
+						assignStatus = 0;
+						ResStaffStallList.setPlateNo(json.get("plate").toString());
+						break;
+					}
+				}
+				ResStaffStallList.setAssignStatus(assignStatus);
 			}
 			if (resStall.getStatus() != 4) {
 				for (ResEntExcStallStatus resEntExcStallStatus : excStallList) {
@@ -990,7 +1010,11 @@ public class StallServiceImpl implements StallService {
 
 	/**
 	 * 管理版锁操作
-	 */
+	 */ 
+	
+	
+	
+	
 	@Override
 	public void operating(ReqControlLock reqc) {
 		TaskPool.getInstance().task(new Runnable() {
@@ -1078,6 +1102,7 @@ public class StallServiceImpl implements StallService {
 		}
 		if (lockBean != null) {
 			detail.setBetty(lockBean.getElectricity());
+			detail.setStallId(stall.getId());
 			detail.setCarStatus(lockBean.getParkingState());
 			switch (lockBean.getLockState()) {
 			case 0:
@@ -1248,11 +1273,11 @@ public class StallServiceImpl implements StallService {
 			key = Constants.RedisKey.PREFECTURE_FREE_STALL.key + preId;
 			val = lockSn;
 			this.redisSetOper(0, key, val);
-			StallAssign sa = this.assignService.find(lockSn);
+			ResStallAssign sa = this.assignService.find(lockSn);
 			if (sa != null) {
 				sa.setCancelTime(new Date());
 				sa.setStatus(StallAssign.STATUS_CANCEL);
-				this.assignService.cancel(sa);
+				this.assignService.cancel(ObjectUtils.copyObject(sa, new StallAssign()));
 			}
 		} catch (Exception e) {
 			throw new BusinessException(StatusEnum.STALL_OPERATE_ASSIGN_DELETE);

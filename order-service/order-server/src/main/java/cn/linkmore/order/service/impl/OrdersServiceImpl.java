@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -28,6 +26,7 @@ import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
+import cn.linkmore.bean.common.Constants.LockStatus;
 import cn.linkmore.bean.common.Constants.OperateStatus;
 import cn.linkmore.bean.common.Constants.OrderFailureReason;
 import cn.linkmore.bean.common.Constants.OrderPayType;
@@ -61,8 +60,6 @@ import cn.linkmore.order.controller.app.response.ResCheckedOrder;
 import cn.linkmore.order.controller.app.response.ResMonthCount;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
-import cn.linkmore.order.controller.staff.request.ReqUnusualOrder;
-import cn.linkmore.order.controller.staff.response.UnusualOrderResponseBean;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.cluster.StallAssignClusterMapper;
 import cn.linkmore.order.dao.master.BookingMasterMapper;
@@ -824,6 +821,7 @@ public class OrdersServiceImpl implements OrdersService {
 		Boolean downStatus = true;
 		if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId())) {
 			Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId());
+			log.info("downMsgPush failed times = {}",count.toString());
 			if (Integer.valueOf(count.toString()) > 1) {
 				switchStatus = true;
 			}
@@ -1028,6 +1026,20 @@ public class OrdersServiceImpl implements OrdersService {
 				ro.setStallName(stall.getStallName());
 				ro.setBluetooth(stall.getLockSn());
 			}
+			if(orders.getLockDownStatus() != null && orders.getLockDownStatus().intValue() == 1) {
+				ro.setCancelFlag((short)2);
+				log.info(">>>>>>>>>>>>>>>>>>>>>>>>>lock down success");
+			}
+			long beginTime = orders.getBeginTime().getTime();
+			long now = new Date().getTime();
+			if(orders.getStrategyId() != null) {
+				int freeMins = strategyBaseClient.findById(orders.getStrategyId()).getFreeMins();
+				ro.setFreeMins(freeMins);
+				if(now - beginTime > freeMins * 60 * 1000){
+					ro.setCancelFlag((short)2);
+				}
+			}
+			log.info(">>>>>>>>>>>>>>>>>>>>>>>>>current order = {}",JSON.toJSON(ro));
 		}
 		return ro;
 	}
@@ -1041,6 +1053,7 @@ public class OrdersServiceImpl implements OrdersService {
 		if (o != null) {
 			count = new Integer(o.toString());
 		}
+		log.info(">>>>>>>>>>>>>>>>>>>>downResult orderId ={} fail_num = {}",orders.getId(), count);
 		return count;
 	}
 
@@ -1630,6 +1643,94 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public void savelog(ResOrderOperateLog resOrderOperateLog) {
 		this.ordersDetailMasterMapper.savelog(resOrderOperateLog);
+	}
+
+	@Override
+	@Transactional(rollbackFor = RuntimeException.class)
+	public void cancel(Long orderId, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		Orders order = this.ordersClusterMapper.findById(orderId);
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>>cancel order :{},cu:{}", JsonUtil.toJson(order), JsonUtil.toJson(cu));
+		//判断订单是否属于当前登录用户
+		if(order.getUserId().equals(cu.getId())){
+			try {
+				if(order.getOrderNo().indexOf("YL")>=0){
+					throw new BusinessException(StatusEnum.ORDER_CHECK_YL_ORDER); // 预约失败
+	    		}
+				//1.判断订单状态是否为未支付状态
+				if(order.getStatus() == 6){
+					throw new BusinessException(StatusEnum.ORDER_WAS_PENDING);
+				}
+				if(order.getStatus() != 1){
+					throw new BusinessException(StatusEnum.ORDER_STATUS_EXPIRE);
+				}
+				//根据车位锁编号判断车锁状态是否为降下
+				Map<String,Object> lockParam = stallClient.watch(order.getStallId());
+				log.info(">>>>>>>>>>>>>>>>>>>>>>>>>cancel param = {}", JSON.toJSON(lockParam));
+				if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
+					throw new BusinessException(StatusEnum.ORDER_LOCK_DOWN);
+				}
+				long beginTime = order.getBeginTime().getTime();
+				long now = new Date().getTime();
+				if(order.getStrategyId() != null) {
+					int freeMins = strategyBaseClient.findById(order.getStrategyId()).getFreeMins();
+					log.info(">>>>>>>>>>>>>>>>>>>>>>>>>cancel freeMins = {}", freeMins);
+					if(now - beginTime > freeMins * 60 * 1000){
+						throw new BusinessException(StatusEnum.ORDER_CANCEL_TIMEOUT);
+					}
+				}
+				//3.判断当前订单是否超过免费分钟数
+				List<ResUserOrder> ordersList = ordersClusterMapper.getDayOfCanceOrderlList(cu.getId());
+				//4.判断当天取消预约次数是否超过5次
+				if(null != ordersList && ordersList.size() >= baseConfig.getCancelNumber()){
+					throw new BusinessException(StatusEnum.ORDER_CANCEL_MORETIMES);
+	            }
+				
+				Map<String,Object> param = new HashMap<String,Object>();
+				param.put("endTime", new Date());
+				param.put("status", 4);
+				param.put("updateTime", new Date());
+				param.put("id", order.getId());
+				orderMasterMapper.updateClose(param);
+				boolean cancelFlag = stallClient.cancel(order.getStallId());
+				log.info(">>>>>>>>>>>>>>>>>>>>>>>>>cancel falg = {}", cancelFlag);
+				if (StringUtils.isNotBlank(order.getDockId())) {
+					// 取消预约 新版停车场 推送消息
+					Thread thread = new ProduceCancelThread(order);
+					thread.start();
+				}
+			} catch (Exception e) {
+				throw new BusinessException(StatusEnum.ORDER_CANCEL_FAILED);
+			}
+		} else {
+			throw new BusinessException(StatusEnum.ORDER_USERID_ERROR);
+		}
+	}
+	
+	class ProduceCancelThread extends Thread {
+		private Orders order;
+
+		public ProduceCancelThread(Orders order) {
+			this.order = order;
+		}
+
+		public void run() {
+			try {
+				cn.linkmore.third.request.ReqOrder ro = new cn.linkmore.third.request.ReqOrder();
+				ro.setActualAmount(order.getActualAmount());
+				ro.setTotalAmount(order.getTotalAmount());
+				ro.setBeginTime(order.getBeginTime());
+				ro.setDockId(order.getDockId());
+				ro.setOrderNo(order.getOrderNo());
+				ro.setStatus(order.getStatus());
+				ro.setEndTime(order.getEndTime());
+				ro.setPreId(order.getPreId());
+				ro.setPlateNo(order.getPlateNo());
+				dockingClient.order(ro);
+			} catch (Exception e) {
+				log.info("call park producer error with cancel msg");
+			}
+		}
 	}
 
 	

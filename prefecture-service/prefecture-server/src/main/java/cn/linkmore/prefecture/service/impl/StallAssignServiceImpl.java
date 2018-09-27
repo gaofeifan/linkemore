@@ -63,7 +63,7 @@ public class StallAssignServiceImpl implements StallAssignService {
 	}
 
 	@Override
-	public StallAssign find(String lockSn) {
+	public ResStallAssign find(String lockSn) {
 		return this.stallAssignClusterMapper.findByLockSn(lockSn);
 	}
 

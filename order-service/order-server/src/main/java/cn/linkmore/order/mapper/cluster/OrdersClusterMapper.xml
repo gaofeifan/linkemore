@@ -738,4 +738,12 @@ GROUP BY
  	limit 0,1
   </select>
   
+  <select id="getDayOfCanceOrderlList" parameterType="java.lang.Long" resultMap="ResResultMap">
+    select 
+    <include refid="Res_Column_List" />
+    from o_orders  
+    where user_id = #{userId,jdbcType=BIGINT} and status = 4 
+    <![CDATA[ and date(create_time) = curdate()]]>
+  </select>
+  
 </mapper>

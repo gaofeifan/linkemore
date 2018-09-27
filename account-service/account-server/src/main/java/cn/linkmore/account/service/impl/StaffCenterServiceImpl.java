@@ -48,7 +48,6 @@ public class StaffCenterServiceImpl implements StaffCenterService {
 				bean.setSendTotal(Double.parseDouble(cause.get("sendTotal").toString()));
 			}
 		}
-
 		bean.setName(admin.getRealname());
 		bean.setUsername(admin.getCellphone());
 		return bean;
