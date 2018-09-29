@@ -145,10 +145,10 @@
     	AND city_id = #{cityId}
     </if>
     <if test="category != null">
-    	category = #{category}
+    	AND category = #{category}
     </if>
     <if test="categorys != null">
-    	category in
+    	AND category in
     	<foreach collection="categorys" item="cid" open="(" separator="," close=")"  >
        		#{cid}
     	</foreach>
