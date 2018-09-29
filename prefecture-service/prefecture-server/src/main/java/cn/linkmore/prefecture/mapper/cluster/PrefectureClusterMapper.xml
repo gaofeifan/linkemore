@@ -109,9 +109,9 @@
   		p.charge_time,p.image_url
 	from v_prefecture p 
 	where p.status = #{status} and (p.type is null or p.type = 0 )
-    and p.category = 0
+    and p.category in ('0','2')
     <if test="cityId != null">
-		and p.city_id ={#cityId}
+		and p.city_id = #{cityId,jdbcType=BIGINT}
 	</if>
   </select>
   
@@ -122,7 +122,7 @@
 	where p.status = #{status} 
     and p.category != 0
     <if test="cityId != null">
-		and p.city_id ={#cityId}
+		and p.city_id = #{cityId,jdbcType=BIGINT}
 	</if>
   </select>
   

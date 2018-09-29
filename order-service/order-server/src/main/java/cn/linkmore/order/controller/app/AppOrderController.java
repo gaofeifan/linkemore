@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.SwitchResult;
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqBrandBooking;
@@ -75,8 +76,16 @@ public class AppOrderController {
 	@RequestMapping(value = "/v2.0/cancel", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> cancel(@RequestParam("orderId")Long orderId,HttpServletRequest request) {
-		this.ordersService.cancel(orderId, request);
-		return ResponseEntity.success(null, request);
+		ResponseEntity<?> response = null;
+		try { 
+			this.ordersService.cancel(orderId, request);
+			response = ResponseEntity.success(null, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 	
 	@ApiOperation(value = "切换车位回调", notes = "切换车位回调校验结果[0失败、1成功、2关闭订单]", consumes = "application/json")

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResVechicleMark;
@@ -1029,19 +1030,34 @@ public class OrdersServiceImpl implements OrdersService {
 			if(orders.getLockDownStatus() != null && orders.getLockDownStatus().intValue() == 1) {
 				ro.setCancelFlag((short)2);
 				log.info(">>>>>>>>>>>>>>>>>>>>>>>>>lock down success");
+			}else if(orders.getLockDownStatus() != null && orders.getLockDownStatus().intValue() == 0){
+				//根据车位锁编号判断车锁状态是否为降下
+				Map<String,Object> lockParam = stallClient.watch(orders.getStallId());
+				log.info(">>>>>>>>>>>>>>>>>>>>>>>>>lock down failed param = {}", JSON.toJSON(lockParam));
+				if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
+					ro.setCancelFlag((short)2);
+				}
 			}
 			long beginTime = orders.getBeginTime().getTime();
 			long now = new Date().getTime();
 			if(orders.getStrategyId() != null) {
 				int freeMins = strategyBaseClient.findById(orders.getStrategyId()).getFreeMins();
 				ro.setFreeMins(freeMins);
-				if(now - beginTime > freeMins * 60 * 1000){
+				log.info("now {}, beginTime {}, freeMin{}", now, beginTime , freeMins * 60 * 1000);
+				if(now >= beginTime + freeMins * 60 * 1000){
 					ro.setCancelFlag((short)2);
+				}else {
+					ro.setRemainMins(getSecondTime(beginTime + freeMins * 60 * 1000 - now));
 				}
 			}
 			log.info(">>>>>>>>>>>>>>>>>>>>>>>>>current order = {}",JSON.toJSON(ro));
 		}
 		return ro;
+	}
+	
+	private static int getSecondTime(Long time) {
+		int seconds = (int) (time % 1000 == 0 ? time / 1000 : time / 1000 + 2);
+		return seconds;
 	}
 
 	@Override
@@ -1052,6 +1068,16 @@ public class OrdersServiceImpl implements OrdersService {
 		Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + orders.getId());
 		if (o != null) {
 			count = new Integer(o.toString());
+		}
+		//如果为蓝牙降锁成功，回调时直接获取车位状态
+		if(count == 1) {
+			long startTime = System.currentTimeMillis();
+			Map<String,Object> lockParam = stallClient.watch(orders.getStallId());
+			long endTime = System.currentTimeMillis();
+			log.info("downResult.....................{}获取降锁状态时间:{}秒", JSON.toJSON(lockParam), (endTime - startTime)/1000);
+			if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
+				count = 0;
+			}
 		}
 		log.info(">>>>>>>>>>>>>>>>>>>>downResult orderId ={} fail_num = {}",orders.getId(), count);
 		return count;

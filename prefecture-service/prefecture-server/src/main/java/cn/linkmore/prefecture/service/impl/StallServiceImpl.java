@@ -241,8 +241,10 @@ public class StallServiceImpl implements StallService {
 		Stall stall = stallClusterMapper.findById(reqos.getStallId());
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			log.info("downing.....................stall:{},lockSn:{}", JsonUtil.toJson(stall), stall.getLockSn());
+			long startTime = System.currentTimeMillis();
 			ResponseMessage<LockBean> res = lockFactory.lockDown(stall.getLockSn());
-			log.info("downing.....................res:{}", JsonUtil.toJson(res));
+			long endTime = System.currentTimeMillis();
+			log.info("downing.....................{}降锁成功时间:{}秒",stall.getStallName(), (endTime - startTime)/1000);
 			int code = res.getMsgCode();
 			if (code == 200) {
 				log.info("downing.....................success");
