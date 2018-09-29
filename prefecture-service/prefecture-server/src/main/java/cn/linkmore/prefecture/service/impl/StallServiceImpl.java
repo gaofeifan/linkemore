@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -815,13 +816,17 @@ public class StallServiceImpl implements StallService {
 		List<Long> list = pres.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
 		map.put("preIds", list);
 		map.put("cityId", cityId);
+		map.put("categorys", Arrays.asList(0,1));
 		List<ResPre> pre = this.prefectureService.findPreByIds(map);
+		List<ResStaffPreList> resPres = new ArrayList<>();
+		if(pre == null || pre.size() ==0 ) {
+			return resPres;
+		}
 		List<ResAdminAuthStall> adminStalls = this.adminAuthStallClusterMapper.findStallList(map);
 		List<Long> collect = adminStalls.stream().map(au -> au.getStallId()).collect(Collectors.toList());
 		List<Stall> stalls = this.stallClusterMapper.findAll();
 		map = new HashMap<>();
 		List<ResUnusualOrder> unusualOrders = feignUnusualOrderClient.findList(map);
-		List<ResStaffPreList> resPres = new ArrayList<>();
 		ResStaffPreList preList = null;
 		for (ResPre resPre : pre) {
 			preList = new ResStaffPreList();
@@ -1007,7 +1012,6 @@ public class StallServiceImpl implements StallService {
 		List<ResAdminAuthStall> list = this.adminAuthStallClusterMapper.findStallList(map);
 		return list != null && list.size() != 0 ? true : false;
 	}
-
 	/**
 	 * 管理版锁操作
 	 */ 

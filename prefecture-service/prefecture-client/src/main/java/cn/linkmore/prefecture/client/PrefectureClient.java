@@ -73,6 +73,8 @@ public interface PrefectureClient {
 	@ResponseBody
 	public List<ResPrefectureList> refreshFreeStall();
 	
-	
+	@RequestMapping(value = "/v2.0/by-pre-ids", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPre> findPreByIds(@RequestBody Map<String, Object> map);
 		
 }

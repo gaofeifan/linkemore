@@ -143,7 +143,16 @@
     </foreach>
     <if test="cityId != null">
     	AND city_id = #{cityId}
-    </if> 
+    </if>
+    <if test="category != null">
+    	category = #{category}
+    </if>
+    <if test="categorys != null">
+    	category in
+    	<foreach collection="categorys" item="cid" open="(" separator="," close=")"  >
+       		#{cid}
+    	</foreach>
+    </if>
   </select> 
   
   <select id="findPreIdList"  resultType="java.lang.Long">

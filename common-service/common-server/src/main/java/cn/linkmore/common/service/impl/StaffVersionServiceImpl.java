@@ -70,7 +70,16 @@ public class StaffVersionServiceImpl implements StaffVersionService {
 		map.put("status", 1);
 		List<cn.linkmore.common.response.ResStaffAppVersion> res = this.staffAppVersionClusterMapper.findByTypeAnStatus(map);
 		if(res != null && res.size() > 0) {
-			return ObjectUtils.copyObject(res.get(0),new ResStaffAppVersion());
+			cn.linkmore.common.response.ResStaffAppVersion v = res.get(0);
+			ResStaffAppVersion version = new ResStaffAppVersion();
+			version.setDescription(v.getDescription());
+			version.setDownloadUrl(v.getUrl());
+			version.setMustUpdate(v.getUpdateStatus());
+			version.setVersion(v.getVersion());
+			version.setVersionCode(v.getCode());
+			version.setVersionName(v.getName());
+			version.setDownloadUrl(v.getType()+"");
+			return version;
 		}
 		return null;
 	}

@@ -56,7 +56,7 @@ public class StaffVersionController {
 	 */
 	@RequestMapping(value="/report",method = RequestMethod.POST)
 	public ResponseEntity<Void> report(@RequestBody @Validated ReqVersion vrb,HttpServletRequest request){
-		this.staffVersionService.report(vrb,null);
+		this.staffVersionService.report(vrb,request);
 		return ResponseEntity.success(null, request);
 	}
 	

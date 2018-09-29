@@ -86,5 +86,6 @@ public interface AdminAuthClient {
 	
 	@RequestMapping(value = "/pre-by-admin-id", method = RequestMethod.GET)
 	@ResponseBody
-	public List<ResPre> findStaffPreByAdminId(Long id);
+	public List<ResPre> findStaffPreByAdminId(@RequestParam("id") Long id);
+	
 }

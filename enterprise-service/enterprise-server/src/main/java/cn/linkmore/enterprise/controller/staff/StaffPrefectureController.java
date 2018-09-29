@@ -157,7 +157,6 @@ public class StaffPrefectureController {
 		
 		ResponseEntity<Boolean> response = null;
 		try {
-			
 			response = ResponseEntity.success(true, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);

@@ -35,6 +35,9 @@ import cn.linkmore.enterprise.service.EntPreService;
 import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.OperateAuthService;
 import cn.linkmore.prefecture.client.OpsStallClient;
+import cn.linkmore.prefecture.client.PrefectrueClient;
+import cn.linkmore.prefecture.client.PrefectureClient;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.util.DomainUtil;
 
@@ -63,15 +66,26 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 	@Resource
 	private EntPreService entPreService;
 	@Resource
+	private PrefectureClient prefectureClient;
+	@Resource
 	private OpsStallClient stallClient;
 	@Override
 	public List<Tree> tree() {
 		List<ResEnterprise> list = this.enterpriseService.findList(null);
 		List<ResEntPrefecture> preList = this.entPreService.findList(null);
-		List<ResStall> stallList = stallClient.findStallList(new HashMap<String, Object>());
+		Map<String, Object> map = new HashMap<>();
+		List<Tree> roots = new ArrayList<>();
+		List<Long> ids = preList.stream().map(p -> p.getPreId()).collect(Collectors.toList());
+		map.put("preIds", ids);
+		map.put("category", 2);
+		List<ResPre> byIds = this.prefectureClient.findPreByIds(map );
+		if(byIds == null) {
+			return roots;
+		}
+		ids = byIds.stream().map(b -> b.getId()).collect(Collectors.toList());
 		List<Tree> pchildren = null;
 		List<Tree> children = null;
-		List<Tree> roots = new ArrayList<>();
+		List<ResStall> stallList = stallClient.findStallList(new HashMap<String, Object>());
 		Tree root = null;
 		Tree chi = null;
 		Tree pchi = null;
@@ -85,7 +99,7 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 			root.setpId("0");
 			children = new ArrayList<>();
 			for (ResEntPrefecture entPrefecture : preList) {
-				if(entPrefecture.getEntId().equals(ent.getId())) {
+				if(entPrefecture.getEntId().equals(ent.getId()) && ids.contains(entPrefecture.getPreId())) {
 					chi = new Tree();
 					chi.setName(entPrefecture.getPreName());
 					chi.setId(entPrefecture.getPreId().toString());
@@ -216,9 +230,4 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 		param.put("stas", rps);
 		return param;
 	}
-
-	
-	
-	
-	
 }
