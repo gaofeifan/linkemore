@@ -100,7 +100,7 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("status", 0);
 		// 此处cityId暂时为空，返回所有的车区信息
-		if(rp.getCityFlag()) {
+		if("1".equals(rp.getCityFlag())) {
 			paramMap.put("cityId", rp.getCityId());
 		}
 		List<ResEntBrandPre> preList = entBrandPreClusterMapper.findBrandPre(paramMap);

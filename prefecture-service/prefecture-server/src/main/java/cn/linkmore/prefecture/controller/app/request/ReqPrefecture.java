@@ -20,7 +20,7 @@ public class ReqPrefecture {
 	private String latitude;
 	
 	@ApiModelProperty(value = "城市标识", required = true) 
-	private Boolean cityFlag = false;
+	private String cityFlag = "0";
 	
 	public Long getCityId() {
 		return cityId;
@@ -40,10 +40,10 @@ public class ReqPrefecture {
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
-	public Boolean getCityFlag() {
+	public String getCityFlag() {
 		return cityFlag;
 	}
-	public void setCityFlag(Boolean cityFlag) {
+	public void setCityFlag(String cityFlag) {
 		this.cityFlag = cityFlag;
 	}
 	
