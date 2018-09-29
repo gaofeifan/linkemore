@@ -18,6 +18,10 @@ public class ReqPrefecture {
 //	@Range(min=3, max=54,message="纬度请确保在中国范围内")
 	@NotBlank(message="纬度不能为空") 
 	private String latitude;
+	
+	@ApiModelProperty(value = "城市标识", required = true) 
+	private Boolean cityFlag = false;
+	
 	public Long getCityId() {
 		return cityId;
 	}
@@ -35,6 +39,12 @@ public class ReqPrefecture {
 	}
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
+	}
+	public Boolean getCityFlag() {
+		return cityFlag;
+	}
+	public void setCityFlag(Boolean cityFlag) {
+		this.cityFlag = cityFlag;
 	}
 	
 }
