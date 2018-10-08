@@ -72,7 +72,6 @@ import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
 import cn.linkmore.prefecture.entity.AdminAuthCity;
 import cn.linkmore.prefecture.entity.AdminAuthPre;
-import cn.linkmore.prefecture.entity.AdminAuthStall;
 import cn.linkmore.prefecture.entity.EntRentRecord;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StallAssign;
@@ -83,7 +82,6 @@ import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
-import cn.linkmore.prefecture.response.ResAdminUserAuth;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
@@ -92,7 +90,6 @@ import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOperateLog;
 import cn.linkmore.prefecture.response.ResStallOps;
-import cn.linkmore.prefecture.service.AdminAuthService;
 import cn.linkmore.prefecture.service.AdminUserService;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallAssignService;
@@ -108,7 +105,6 @@ import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Service实现类 - 车位信息
@@ -969,8 +965,14 @@ public class StallServiceImpl implements StallService {
 						case 0:
 							ResStaffStallList.setLockStatus(2);
 							break;
-						default:
-							ResStaffStallList.setLockStatus(lockBean.getLockState());
+						case 2:
+							ResStaffStallList.setLockStatus(1);
+							break;
+						case 3:
+							ResStaffStallList.setLockStatus(2);
+							break;
+						case 1:
+							ResStaffStallList.setLockStatus(1);
 							break;
 						}
 						break;
@@ -1114,8 +1116,14 @@ public class StallServiceImpl implements StallService {
 			case 0:
 				detail.setLockStatus(2);
 				break;
-			default:
-				detail.setLockStatus(lockBean.getLockState());
+			case 2:
+				detail.setLockStatus(1);
+				break;
+			case 3:
+				detail.setLockStatus(2);
+				break;
+			case 1:
+				detail.setLockStatus(1);
 				break;
 			}
 		} else {
@@ -1139,6 +1147,7 @@ public class StallServiceImpl implements StallService {
 				detail.setDownTime(resUserOrder.getLockDownTime());
 				detail.setOrderNo(resUserOrder.getOrderNo());
 				detail.setMobile(resUserOrder.getUsername());
+				detail.setOrderStatus(resUserOrder.getStatus().shortValue());
 				String date = DateUtils.getDurationDetail(new Date(), resUserOrder.getBeginTime());
 				detail.setStartDate(date);
 				if (resUserOrder.getOrderNo().contains("WX")) {

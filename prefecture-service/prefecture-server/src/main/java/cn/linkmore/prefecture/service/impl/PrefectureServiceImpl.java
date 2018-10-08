@@ -149,7 +149,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			} 
 		}
-		
 		log.info("get_stall_count pre size :{}", preList.size());
 		List<ResPrefectureList> list = new ArrayList<ResPrefectureList>();
 		ResPrefectureList pre = null;
@@ -346,8 +345,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 					plateNumber = null; 
 				}
 			}
-
-			if(plateNumber==null&&CollectionUtils.isNotEmpty(plates)){
+			if(plateNumber==null && CollectionUtils.isNotEmpty(plates)){
 				plateId = plates.get(0).getId();
 				plateNumber = plates.get(0).getVehMark();
 			}

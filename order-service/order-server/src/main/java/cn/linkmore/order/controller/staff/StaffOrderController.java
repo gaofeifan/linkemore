@@ -43,6 +43,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/staff/orders")
 @ApiIgnore
+@Api(tags = "Unusual Orders", description = "异常订单【管理版】")
 public class StaffOrderController {
 
 	@Autowired
@@ -57,6 +58,7 @@ public class StaffOrderController {
 	 */
 	@ApiOperation(value = "查询所有异常订单", notes = "查询所有异常订单", consumes = "application/json")
 	@RequestMapping(value = "/select", method = RequestMethod.POST)
+	@ResponseBody
 	public ResponseEntity<List<ResUnusualOd>> selectDetails(@RequestBody ReqUnusualOrder reqUnusualOrder,HttpServletRequest request){
 		List<ResUnusualOd> list =this.unusualOrderService.findList2(reqUnusualOrder);
 		return ResponseEntity.success(list, request);

@@ -97,7 +97,7 @@ public class AdminUserController {
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids){ 
 		return	this.adminUserService.delete(ids);
-	}
+	}	
 	
 	@RequestMapping(value = "/by-id", method = RequestMethod.GET)
 	@ResponseBody

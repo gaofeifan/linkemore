@@ -8,14 +8,17 @@ import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
 
 @SpringBootApplication 
 @EnableFeignClients(basePackages = { "cn.linkmore" })
 @ComponentScan(basePackages = { "cn.linkmore" })
-@EnableAsync 
+//@EnableAsync 
+@EnableTransactionManagement(proxyTargetClass = true)
 @EnableHystrix
+
 public class Launch {
 	public static void main(String[] args) {
 		SpringApplication.run(Launch.class, args);
