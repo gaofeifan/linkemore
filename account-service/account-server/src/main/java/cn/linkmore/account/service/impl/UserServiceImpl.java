@@ -541,7 +541,6 @@ public class UserServiceImpl implements UserService {
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
 		Token   last  = null;
 		String key = TokenUtil.getKey(request);
-		log.info("cacheUser key = {},LOGIN_USER = {}", key, JSON.toJSON(LOGIN_USER));
 		Long userId = null;
 		if(user.getId()!=null) {
 			userId = LOGIN_USER.get(user.getId());

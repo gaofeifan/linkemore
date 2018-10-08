@@ -1046,6 +1046,7 @@ public class OrdersServiceImpl implements OrdersService {
 				log.info("now {}, beginTime {}, freeMin{}", now, beginTime , freeMins * 60 * 1000);
 				if(now >= beginTime + freeMins * 60 * 1000){
 					ro.setCancelFlag((short)2);
+					ro.setRemainMins(0);
 				}else {
 					ro.setRemainMins(getSecondTime(beginTime + freeMins * 60 * 1000 - now));
 				}
