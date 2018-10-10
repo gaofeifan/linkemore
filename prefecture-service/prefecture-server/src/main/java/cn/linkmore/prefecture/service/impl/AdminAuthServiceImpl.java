@@ -196,7 +196,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 		Tree child3 = null;
 		for(Stall stall:stalls) {
 			child = treeMap2.get(stall.getPreId());
-			if(tree==null) {
+			if(child==null) {
 				continue;
 			}
 			child3 = new Tree();
