@@ -114,7 +114,7 @@
 	LEFT JOIN v_prefecture v ON p.pre_id = v.id
 	WHERE
 		v.status = 0
-	AND v.category != 0
+	AND v.category = 1
 	AND p. STATUS = 1
 	<if test="cityId != null">
 		and v.city_id ={#cityId,jdbcType=BIGINT}
