@@ -98,10 +98,10 @@
 	WHERE
 		v.status = 0
 	AND (v.type IS NULL OR v.type = 0)
-	AND v.category = 0
+	AND v.category in ('0','2')
 	AND p. STATUS = 1
 	<if test="cityId != null">
-		and v.city_id ={#cityId,jdbcType=BIGINT}
+		and v.city_id = #{cityId,jdbcType=BIGINT}
 	</if>
   </select>
   
@@ -130,7 +130,7 @@
 	AND v.category != 0
 	AND p. STATUS = 1
 	<if test="cityId != null">
-		and v.city_id ={#cityId,jdbcType=BIGINT}
+		and v.city_id = #{cityId,jdbcType=BIGINT}
 	</if>
   </select>
   

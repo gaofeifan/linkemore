@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.controller.feign;
 
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,4 +55,12 @@ public class FeignPrefectureController {
 	public ResPrefectureDetail findById(@PathVariable("id") Long id) {
 		return this.preService.findById(id);
 	}
+
+	@RequestMapping(value = "/v2.0/by-pre-ids", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPre> findPreByIds(@RequestBody Map<String, Object> map) {
+		return this.preService.findPreByIds(map);
+	}
+	
+	
 }

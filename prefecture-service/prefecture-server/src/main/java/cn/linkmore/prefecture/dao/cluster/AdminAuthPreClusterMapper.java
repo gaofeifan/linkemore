@@ -1,11 +1,13 @@
 package cn.linkmore.prefecture.dao.cluster;
 
 import java.util.List;
+
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.prefecture.entity.AdminAuthPre;
+import cn.linkmore.prefecture.response.ResAdminAuthPre;
 
 @Mapper
 public interface AdminAuthPreClusterMapper {
@@ -23,4 +25,12 @@ public interface AdminAuthPreClusterMapper {
 	 * @Version  v2.0
 	 */
 	AdminAuthPre findById(Long preId);
+	
+	/**
+	 * @Description 根据res车区id查询  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResAdminAuthPre> findListRes(Map<String, Object> map);
+
 }

@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthCityClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
@@ -33,7 +36,10 @@ import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.response.ResAdminAuth;
+import cn.linkmore.prefecture.response.ResAdminAuthPre;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
+import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStaffCity;
 import cn.linkmore.prefecture.response.ResStall;
@@ -66,6 +72,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 	private AdminAuthCityMasterMapper adminAuthCityMasterMapper;
 	@Autowired
 	private AdminAuthCityClusterMapper adminAuthCityClusterMapper;
+	@Autowired
+	private AdminAuthPreClusterMapper adminAuthPreClusterMapper;
 	@Autowired
 	private AdminAuthPreMasterMapper adminAuthPreMasterMapper;
 	@Autowired
@@ -170,6 +178,9 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 			if(tree==null) {
 				continue;
 			}
+			if(!(pre.getCategory() == 1 || pre.getCategory() == 0)) {
+				continue;
+			}
 			child = new Tree();
 			child.setIsParent(false);
 			child.setId("pre"+pre.getId().toString());
@@ -185,7 +196,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 		Tree child3 = null;
 		for(Stall stall:stalls) {
 			child = treeMap2.get(stall.getPreId());
-			if(tree==null) {
+			if(child==null) {
 				continue;
 			}
 			child3 = new Tree();
@@ -287,6 +298,16 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 	@Override
 	public List<ResStaffCity> findStaffCitysByAdminId(Long id) {
 		return this.adminAuthCityClusterMapper.findStaffCitysByAdminId(id);
+	}
+
+	@Override
+	public List<ResPre> findStaffPreByAdminId(Long id) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", id);
+		List<ResAdminAuthPre> list = this.adminAuthPreClusterMapper.findListRes(map);
+		List<Long> collect = list.stream().map(p -> p.getPreId()).collect(Collectors.toList());
+		List<ResPre> pres = this.prefectureClusterMapper.findByIds(collect);
+		return pres;
 	}
 
 	

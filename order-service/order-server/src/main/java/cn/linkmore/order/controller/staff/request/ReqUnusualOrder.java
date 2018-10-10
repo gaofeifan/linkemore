@@ -6,10 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("异常订单参数")
 public class ReqUnusualOrder {
 	
-	@ApiModelProperty(value = "车区id", required = false)
+	@ApiModelProperty(value = "车区id ", required = false)
 	private Long prfId;
 	
-	@ApiModelProperty(value = "车位id", required = false)
+	@ApiModelProperty(value = "车位id 非必填", required = false)
 	private Long stallId;
 
 

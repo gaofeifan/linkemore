@@ -17,6 +17,9 @@ import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.AdminAuthClientHystrix;
 import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResAdminAuthPre;
+import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResStaffCity;
 /**
  * 远程调用 - 车位授权
@@ -80,4 +83,9 @@ public interface AdminAuthClient {
 	@RequestMapping(value = "/by-admin-id", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ResStaffCity> findStaffCitysByAdminId(@RequestParam("id")Long id);
+	
+	@RequestMapping(value = "/pre-by-admin-id", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResPre> findStaffPreByAdminId(@RequestParam("id") Long id);
+	
 }

@@ -43,6 +43,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/staff/orders")
 @ApiIgnore
+@Api(tags = "Unusual Orders", description = "异常订单【管理版】")
 public class StaffOrderController {
 
 	@Autowired

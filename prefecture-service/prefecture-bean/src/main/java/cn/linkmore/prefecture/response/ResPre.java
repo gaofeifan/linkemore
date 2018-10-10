@@ -15,6 +15,8 @@ public class ResPre {
 	 */
 	private String name;
 	
+	private Long cityId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -27,5 +29,10 @@ public class ResPre {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+	public Long getCityId() {
+		return cityId;
+	}
+	public void setCityId(Long cityId) {
+		this.cityId = cityId;
+	}
 }

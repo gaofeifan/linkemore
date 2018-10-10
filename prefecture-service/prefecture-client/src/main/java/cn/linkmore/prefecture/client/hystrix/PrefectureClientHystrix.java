@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,12 @@ public class PrefectureClientHystrix implements PrefectureClient {
 	@Override
 	public ResPrefectureDetail findById(Long id) {
 		log.info("prefecture service pres findById(id) hystrix");
+		return null;
+	}
+
+	@Override
+	public List<ResPre> findPreByIds(Map<String, Object> map) {
+		log.info("List<ResPre> findPreByIds(Map<String, Object> map) hystrix");
 		return null;
 	}
 	

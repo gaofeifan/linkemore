@@ -54,6 +54,7 @@
   <resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
   	<id column="id" property="id"/>
   	<result column="name" property="name" />
+  	<result column="city_id" property="cityId" />
   </resultMap>
   
    <resultMap id="ResPreGateMap" type="cn.linkmore.prefecture.response.ResPreGateway">
@@ -108,9 +109,9 @@
   		p.charge_time,p.image_url
 	from v_prefecture p 
 	where p.status = #{status} and (p.type is null or p.type = 0 )
-    and p.category = 0
+    and p.category in ('0','2')
     <if test="cityId != null">
-		and p.city_id ={#cityId}
+		and p.city_id = #{cityId,jdbcType=BIGINT}
 	</if>
   </select>
   
@@ -121,12 +122,12 @@
 	where p.status = #{status} 
     and p.category != 0
     <if test="cityId != null">
-		and p.city_id ={#cityId}
+		and p.city_id = #{cityId,jdbcType=BIGINT}
 	</if>
   </select>
   
   <select id="findByIds" parameterType="java.util.List" resultMap="ResPreMap">
-    select  p.id ,p.name
+    select  p.id ,p.name,p.city_id
     from v_prefecture p
     where id in
     <foreach collection="list" item="id" open="(" separator="," close=")"  >
@@ -142,7 +143,16 @@
     </foreach>
     <if test="cityId != null">
     	AND city_id = #{cityId}
-    </if> 
+    </if>
+    <if test="category != null">
+    	AND category = #{category}
+    </if>
+    <if test="categorys != null">
+    	AND category in
+    	<foreach collection="categorys" item="cid" open="(" separator="," close=")"  >
+       		#{cid}
+    	</foreach>
+    </if>
   </select> 
   
   <select id="findPreIdList"  resultType="java.lang.Long">

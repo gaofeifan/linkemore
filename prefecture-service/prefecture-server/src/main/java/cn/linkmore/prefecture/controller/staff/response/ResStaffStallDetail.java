@@ -16,7 +16,7 @@ public class ResStaffStallDetail {
 	@ApiModelProperty("锁编号(序列号)")
 	public String lockSn;
 	
-	@ApiModelProperty("锁状态(1:竖起状态 2：躺下  3使用中)")
+	@ApiModelProperty("锁状态(1:竖起状态 2：躺下 )")
 	public Integer lockStatus;
 	
 	@ApiModelProperty(value="车位状态 状态:1，空闲；2，使用中；4，下线  ")
@@ -68,6 +68,8 @@ public class ResStaffStallDetail {
 	private int assignStatus;
 	@ApiModelProperty(value = "指定的车牌号")
 	private String assignPlate;
+	@ApiModelProperty(value = "订单状态 状态：1，未支付；2，已支付；3，已完成；4，已取消 5 退款，6挂起订单，7关闭订单")
+	private Short orderStatus;
 	public String getStallName() {
 		return stallName;
 	}
@@ -214,7 +216,10 @@ public class ResStaffStallDetail {
 	public void setAssignPlate(String assignPlate) {
 		this.assignPlate = assignPlate;
 	}
-	
-	
-	
+	public Short getOrderStatus() {
+		return orderStatus;
+	}
+	public void setOrderStatus(Short orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 }

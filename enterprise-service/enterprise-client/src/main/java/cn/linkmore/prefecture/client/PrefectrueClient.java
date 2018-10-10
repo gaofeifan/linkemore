@@ -14,6 +14,7 @@ import cn.linkmore.enterprise.request.ReqAddEntPreture;
 import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.PrefectrueClientHystrix;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreList;
 
 /**
@@ -54,4 +55,5 @@ public interface PrefectrueClient {
 	@RequestMapping(value = "/not-create-pre", method = RequestMethod.GET)
 	@ResponseBody
 	List<ResPreList> findNotCreateEntPre();
+	
 }

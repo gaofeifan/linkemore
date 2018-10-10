@@ -65,6 +65,8 @@ public class ResOrder {
 	private Short cancelFlag = 1;
 	@ApiModelProperty(value = "免费时长")
 	private int freeMins;
+	@ApiModelProperty(value = "剩余时长")
+	private int remainMins;
 	public Long getId() {
 		return id;
 	}
@@ -260,5 +262,11 @@ public class ResOrder {
 	}
 	public void setFreeMins(int freeMins) {
 		this.freeMins = freeMins;
+	}
+	public int getRemainMins() {
+		return remainMins;
+	}
+	public void setRemainMins(int remainMins) {
+		this.remainMins = remainMins;
 	}
 }

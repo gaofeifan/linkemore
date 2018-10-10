@@ -54,7 +54,7 @@
     select 
     <include refid="Base_Column_List" />
     from v_stall
-    where type = 0 and status = #{status}
+    where type in('0','1') and status = #{status}
   </select>
   
   <select id="findByLockSn" resultMap="BaseResultMap" parameterType="java.lang.String" >

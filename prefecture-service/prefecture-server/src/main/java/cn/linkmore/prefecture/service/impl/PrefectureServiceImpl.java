@@ -149,7 +149,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			} 
 		}
-		
 		log.info("get_stall_count pre size :{}", preList.size());
 		List<ResPrefectureList> list = new ArrayList<ResPrefectureList>();
 		ResPrefectureList pre = null;
@@ -326,7 +325,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("status", 0);
 		//此处cityId暂时为空，返回所有的车区信息
-		paramMap.put("cityId", null);
+		if("1".equals(rp.getCityFlag())) {
+			paramMap.put("cityId", rp.getCityId());
+		}
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap); 
 		Long plateId = null;
 		String plateNumber = null;
@@ -344,8 +345,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 					plateNumber = null; 
 				}
 			}
-
-			if(plateNumber==null&&CollectionUtils.isNotEmpty(plates)){
+			if(plateNumber==null && CollectionUtils.isNotEmpty(plates)){
 				plateId = plates.get(0).getId();
 				plateNumber = plates.get(0).getVehMark();
 			}

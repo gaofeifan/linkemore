@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.entity.AdminAuthPre;
 import cn.linkmore.prefecture.request.ReqAdminAuth;
 import cn.linkmore.prefecture.request.ReqCheck;
+import cn.linkmore.prefecture.response.ResAdminAuthPre;
+import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResStaffCity;
 import cn.linkmore.prefecture.service.AdminAuthService;
 
@@ -105,5 +109,11 @@ public class AdminAuthController {
 	@ResponseBody
 	public List<ResStaffCity> findStaffCitysByAdminId(@RequestParam("id")Long id){
 		return this.adminAuthService.findStaffCitysByAdminId(id);
+	}
+	
+	@RequestMapping(value = "/pre-by-admin-id", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResPre> findStaffPreByAdminId(@RequestParam("id")  Long id){
+		return this.adminAuthService.findStaffPreByAdminId(id);
 	}
 }

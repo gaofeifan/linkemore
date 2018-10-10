@@ -79,8 +79,9 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		List<Long> list = pres.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
 		map.put("preIds", list);
 		map.put("cityId", cityId);
+		map.put("categorys", Arrays.asList(0,1));
 		List<ResPre> pre = this.prefectureService.findPreByIds(map);
-		if(pre == null) {
+		if(pre == null || pre.size() == 0) {
 			return preListCounts;
 		}
 		list = pre.stream().map(p -> p.getId()).collect(Collectors.toList());

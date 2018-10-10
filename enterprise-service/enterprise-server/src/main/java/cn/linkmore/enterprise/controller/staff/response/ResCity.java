@@ -11,6 +11,9 @@ public class ResCity {
 
 	@ApiModelProperty("城市名称")
     private String cityName;
+	
+	@ApiModelProperty("车区总数")
+	private Integer preNumber;
 
     public Long getId() {
         return id;
@@ -27,4 +30,12 @@ public class ResCity {
     public void setCityName(String cityName) {
         this.cityName = cityName == null ? null : cityName.trim();
     }
+
+	public Integer getPreNumber() {
+		return preNumber;
+	}
+
+	public void setPreNumber(Integer preNumber) {
+		this.preNumber = preNumber;
+	}
 }

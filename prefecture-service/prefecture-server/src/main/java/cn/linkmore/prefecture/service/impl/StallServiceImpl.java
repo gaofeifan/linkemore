@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +72,6 @@ import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
 import cn.linkmore.prefecture.entity.AdminAuthCity;
 import cn.linkmore.prefecture.entity.AdminAuthPre;
-import cn.linkmore.prefecture.entity.AdminAuthStall;
 import cn.linkmore.prefecture.entity.EntRentRecord;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StallAssign;
@@ -82,7 +82,6 @@ import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
-import cn.linkmore.prefecture.response.ResAdminUserAuth;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
@@ -91,7 +90,6 @@ import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOperateLog;
 import cn.linkmore.prefecture.response.ResStallOps;
-import cn.linkmore.prefecture.service.AdminAuthService;
 import cn.linkmore.prefecture.service.AdminUserService;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallAssignService;
@@ -107,7 +105,6 @@ import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Service实现类 - 车位信息
@@ -240,8 +237,10 @@ public class StallServiceImpl implements StallService {
 		Stall stall = stallClusterMapper.findById(reqos.getStallId());
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			log.info("downing.....................stall:{},lockSn:{}", JsonUtil.toJson(stall), stall.getLockSn());
+			long startTime = System.currentTimeMillis();
 			ResponseMessage<LockBean> res = lockFactory.lockDown(stall.getLockSn());
-			log.info("downing.....................res:{}", JsonUtil.toJson(res));
+			long endTime = System.currentTimeMillis();
+			log.info("downing.....................{}降锁成功时间:{}秒",stall.getStallName(), (endTime - startTime)/1000);
 			int code = res.getMsgCode();
 			if (code == 200) {
 				log.info("downing.....................success");
@@ -815,13 +814,17 @@ public class StallServiceImpl implements StallService {
 		List<Long> list = pres.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
 		map.put("preIds", list);
 		map.put("cityId", cityId);
+		map.put("categorys", Arrays.asList(0,1));
 		List<ResPre> pre = this.prefectureService.findPreByIds(map);
+		List<ResStaffPreList> resPres = new ArrayList<>();
+		if(pre == null || pre.size() ==0 ) {
+			return resPres;
+		}
 		List<ResAdminAuthStall> adminStalls = this.adminAuthStallClusterMapper.findStallList(map);
 		List<Long> collect = adminStalls.stream().map(au -> au.getStallId()).collect(Collectors.toList());
 		List<Stall> stalls = this.stallClusterMapper.findAll();
 		map = new HashMap<>();
 		List<ResUnusualOrder> unusualOrders = feignUnusualOrderClient.findList(map);
-		List<ResStaffPreList> resPres = new ArrayList<>();
 		ResStaffPreList preList = null;
 		for (ResPre resPre : pre) {
 			preList = new ResStaffPreList();
@@ -962,8 +965,14 @@ public class StallServiceImpl implements StallService {
 						case 0:
 							ResStaffStallList.setLockStatus(2);
 							break;
-						default:
-							ResStaffStallList.setLockStatus(lockBean.getLockState());
+						case 2:
+							ResStaffStallList.setLockStatus(1);
+							break;
+						case 3:
+							ResStaffStallList.setLockStatus(2);
+							break;
+						case 1:
+							ResStaffStallList.setLockStatus(1);
 							break;
 						}
 						break;
@@ -1007,7 +1016,6 @@ public class StallServiceImpl implements StallService {
 		List<ResAdminAuthStall> list = this.adminAuthStallClusterMapper.findStallList(map);
 		return list != null && list.size() != 0 ? true : false;
 	}
-
 	/**
 	 * 管理版锁操作
 	 */ 
@@ -1108,8 +1116,14 @@ public class StallServiceImpl implements StallService {
 			case 0:
 				detail.setLockStatus(2);
 				break;
-			default:
-				detail.setLockStatus(lockBean.getLockState());
+			case 2:
+				detail.setLockStatus(1);
+				break;
+			case 3:
+				detail.setLockStatus(2);
+				break;
+			case 1:
+				detail.setLockStatus(1);
 				break;
 			}
 		} else {
@@ -1133,6 +1147,7 @@ public class StallServiceImpl implements StallService {
 				detail.setDownTime(resUserOrder.getLockDownTime());
 				detail.setOrderNo(resUserOrder.getOrderNo());
 				detail.setMobile(resUserOrder.getUsername());
+				detail.setOrderStatus(resUserOrder.getStatus().shortValue());
 				String date = DateUtils.getDurationDetail(new Date(), resUserOrder.getBeginTime());
 				detail.setStartDate(date);
 				if (resUserOrder.getOrderNo().contains("WX")) {
