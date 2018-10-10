@@ -35,6 +35,7 @@ public class ResStall {
 	 */
 	private Long preId;
 	
+	private Integer bindOrderStatus;
 	/**
 	 *  锁状态
 	 */ 
@@ -87,5 +88,11 @@ public class ResStall {
 	}
 	public void setLockStatus(Integer lockStatus) {
 		this.lockStatus = lockStatus;
+	}
+	public Integer getBindOrderStatus() {
+		return bindOrderStatus;
+	}
+	public void setBindOrderStatus(Integer bindOrderStatus) {
+		this.bindOrderStatus = bindOrderStatus;
 	}
 }
