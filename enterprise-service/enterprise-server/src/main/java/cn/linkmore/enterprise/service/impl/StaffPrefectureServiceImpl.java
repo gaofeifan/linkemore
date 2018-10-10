@@ -67,13 +67,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 
 	@Autowired
 	private StrategyBaseClient strategyBaseClient;
-
-	@Autowired
-	private StaffPrefectureClusterMapper staffPrefectureClusterMapper;
-
-	@Autowired
-	private StaffPrefectureMasterMapper staffPrefectureMasterMapper;
-
+	
 	private static final int TIMEOUT = 30 * 1000;
 
 	/**
@@ -82,7 +76,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Override
 	public void control(SraffReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
-				.get(RedisKey.STAFF_STAFF_AUTH_CODE.key + TokenUtil.getKey(request));
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -110,7 +104,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Override
 	public void releaseStall(Long stallId, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
-				.get(RedisKey.STAFF_STAFF_AUTH_CODE.key + TokenUtil.getKey(request));
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
@@ -148,7 +142,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Override
 	public void forceReleaseStall(Long stallId, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
-				.get(RedisKey.STAFF_STAFF_AUTH_CODE.key + TokenUtil.getKey(request));
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -172,7 +166,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Override
 	public void offline(StallOperateRequestBean bean, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
-				.get(RedisKey.STAFF_STAFF_AUTH_CODE.key + TokenUtil.getKey(request));
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));		
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -227,7 +221,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Override
 	public void online(StallOnLineRequest bean, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
-				.get(RedisKey.STAFF_STAFF_AUTH_CODE.key + TokenUtil.getKey(request));
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
@@ -277,10 +271,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Override
 	public void suspend(OrderOperateRequestBean oorb, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
-				.get(RedisKey.STAFF_STAFF_AUTH_CODE.key + TokenUtil.getKey(request));
-
-		user = new CacheUser();
-		user.setId(1L);
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
@@ -364,7 +355,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Override
 	public void close(OrderOperateRequestBean oorb, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
-				.get(RedisKey.STAFF_STAFF_AUTH_CODE.key + TokenUtil.getKey(request));
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}

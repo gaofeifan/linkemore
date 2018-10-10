@@ -78,7 +78,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_admin_unusual_order
-   <where>
+   <where> 
    		<if test="preId != null">
    			AND prefecture_id = #{preId}
    		</if>

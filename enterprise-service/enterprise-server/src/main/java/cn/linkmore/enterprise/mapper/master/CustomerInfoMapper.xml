@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.linkmore.enterprise.dao.master.CustomerInfoMapper" >
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.CustomerInfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="admin_id" property="adminId" jdbcType="BIGINT" />
+    <result column="sex_name" property="sexName" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="BIGINT" />
+    <result column="age_name" property="ageName" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="BIGINT" />
+    <result column="child_age_name" property="childAgeName" jdbcType="VARCHAR" />
+    <result column="child_age" property="childAge" jdbcType="VARCHAR" />
+    <result column="model_name" property="modelName" jdbcType="VARCHAR" />
+    <result column="model" property="model" jdbcType="INTEGER" />
+    <result column="brand_name" property="brandName" jdbcType="VARCHAR" />
+    <result column="brand_id" property="brandId" jdbcType="INTEGER" />
+    <result column="car_colour_name" property="carColourName" jdbcType="VARCHAR" />
+    <result column="car_colour" property="carColour" jdbcType="BIGINT" />
+    <result column="car_dis_name" property="carDisName" jdbcType="VARCHAR" />
+    <result column="car_dis" property="carDis" jdbcType="BIGINT" />
+    <result column="stop_cause_name" property="stopCauseName" jdbcType="VARCHAR" />
+    <result column="stop_cause" property="stopCause" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="child_num" property="childNum" jdbcType="SMALLINT" />
+    <result column="child_exist" property="childExist" jdbcType="SMALLINT" />
+    <result column="user_plate_num" property="userPlateNum" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, admin_id, sex_name, sex, age_name, age, child_age_name, child_age, model_name, 
+    model, brand_name, brand_id, car_colour_name, car_colour, car_dis_name, car_dis, 
+    stop_cause_name, stop_cause, create_time, update_time, child_num, child_exist, user_plate_num
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_acc_customer_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <insert id="insert" parameterType="cn.linkmore.enterprise.entity.CustomerInfo" >
+    insert into t_acc_customer_info (id, admin_id, sex_name, 
+      sex, age_name, age, child_age_name, 
+      child_age, model_name, model, 
+      brand_name, brand_id, car_colour_name, 
+      car_colour, car_dis_name, car_dis, 
+      stop_cause_name, stop_cause, create_time, 
+      update_time, child_num, child_exist, 
+      user_plate_num)
+    values (#{id,jdbcType=BIGINT}, #{adminId,jdbcType=BIGINT}, #{sexName,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=BIGINT}, #{ageName,jdbcType=VARCHAR}, #{age,jdbcType=BIGINT}, #{childAgeName,jdbcType=VARCHAR}, 
+      #{childAge,jdbcType=VARCHAR}, #{modelName,jdbcType=VARCHAR}, #{model,jdbcType=INTEGER}, 
+      #{brandName,jdbcType=VARCHAR}, #{brandId,jdbcType=INTEGER}, #{carColourName,jdbcType=VARCHAR}, 
+      #{carColour,jdbcType=BIGINT}, #{carDisName,jdbcType=VARCHAR}, #{carDis,jdbcType=BIGINT}, 
+      #{stopCauseName,jdbcType=VARCHAR}, #{stopCause,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{childNum,jdbcType=SMALLINT}, #{childExist,jdbcType=SMALLINT}, 
+      #{userPlateNum,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.enterprise.entity.CustomerInfo" >
+    insert into t_acc_customer_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="adminId != null" >
+        admin_id,
+      </if>
+      <if test="sexName != null" >
+        sex_name,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="ageName != null" >
+        age_name,
+      </if>
+      <if test="age != null" >
+        age,
+      </if>
+      <if test="childAgeName != null" >
+        child_age_name,
+      </if>
+      <if test="childAge != null" >
+        child_age,
+      </if>
+      <if test="modelName != null" >
+        model_name,
+      </if>
+      <if test="model != null" >
+        model,
+      </if>
+      <if test="brandName != null" >
+        brand_name,
+      </if>
+      <if test="brandId != null" >
+        brand_id,
+      </if>
+      <if test="carColourName != null" >
+        car_colour_name,
+      </if>
+      <if test="carColour != null" >
+        car_colour,
+      </if>
+      <if test="carDisName != null" >
+        car_dis_name,
+      </if>
+      <if test="carDis != null" >
+        car_dis,
+      </if>
+      <if test="stopCauseName != null" >
+        stop_cause_name,
+      </if>
+      <if test="stopCause != null" >
+        stop_cause,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="childNum != null" >
+        child_num,
+      </if>
+      <if test="childExist != null" >
+        child_exist,
+      </if>
+      <if test="userPlateNum != null" >
+        user_plate_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="adminId != null" >
+        #{adminId,jdbcType=BIGINT},
+      </if>
+      <if test="sexName != null" >
+        #{sexName,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=BIGINT},
+      </if>
+      <if test="ageName != null" >
+        #{ageName,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        #{age,jdbcType=BIGINT},
+      </if>
+      <if test="childAgeName != null" >
+        #{childAgeName,jdbcType=VARCHAR},
+      </if>
+      <if test="childAge != null" >
+        #{childAge,jdbcType=VARCHAR},
+      </if>
+      <if test="modelName != null" >
+        #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        #{model,jdbcType=INTEGER},
+      </if>
+      <if test="brandName != null" >
+        #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null" >
+        #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="carColourName != null" >
+        #{carColourName,jdbcType=VARCHAR},
+      </if>
+      <if test="carColour != null" >
+        #{carColour,jdbcType=BIGINT},
+      </if>
+      <if test="carDisName != null" >
+        #{carDisName,jdbcType=VARCHAR},
+      </if>
+      <if test="carDis != null" >
+        #{carDis,jdbcType=BIGINT},
+      </if>
+      <if test="stopCauseName != null" >
+        #{stopCauseName,jdbcType=VARCHAR},
+      </if>
+      <if test="stopCause != null" >
+        #{stopCause,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="childNum != null" >
+        #{childNum,jdbcType=SMALLINT},
+      </if>
+      <if test="childExist != null" >
+        #{childExist,jdbcType=SMALLINT},
+      </if>
+      <if test="userPlateNum != null" >
+        #{userPlateNum,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.linkmore.enterprise.entity.CustomerInfo" >
+    update t_acc_customer_info
+    <set >
+      <if test="adminId != null" >
+        admin_id = #{adminId,jdbcType=BIGINT},
+      </if>
+      <if test="sexName != null" >
+        sex_name = #{sexName,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=BIGINT},
+      </if>
+      <if test="ageName != null" >
+        age_name = #{ageName,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=BIGINT},
+      </if>
+      <if test="childAgeName != null" >
+        child_age_name = #{childAgeName,jdbcType=VARCHAR},
+      </if>
+      <if test="childAge != null" >
+        child_age = #{childAge,jdbcType=VARCHAR},
+      </if>
+      <if test="modelName != null" >
+        model_name = #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        model = #{model,jdbcType=INTEGER},
+      </if>
+      <if test="brandName != null" >
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null" >
+        brand_id = #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="carColourName != null" >
+        car_colour_name = #{carColourName,jdbcType=VARCHAR},
+      </if>
+      <if test="carColour != null" >
+        car_colour = #{carColour,jdbcType=BIGINT},
+      </if>
+      <if test="carDisName != null" >
+        car_dis_name = #{carDisName,jdbcType=VARCHAR},
+      </if>
+      <if test="carDis != null" >
+        car_dis = #{carDis,jdbcType=BIGINT},
+      </if>
+      <if test="stopCauseName != null" >
+        stop_cause_name = #{stopCauseName,jdbcType=VARCHAR},
+      </if>
+      <if test="stopCause != null" >
+        stop_cause = #{stopCause,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="childNum != null" >
+        child_num = #{childNum,jdbcType=SMALLINT},
+      </if>
+      <if test="childExist != null" >
+        child_exist = #{childExist,jdbcType=SMALLINT},
+      </if>
+      <if test="userPlateNum != null" >
+        user_plate_num = #{userPlateNum,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.linkmore.enterprise.entity.CustomerInfo" >
+    update t_acc_customer_info
+    set admin_id = #{adminId,jdbcType=BIGINT},
+      sex_name = #{sexName,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=BIGINT},
+      age_name = #{ageName,jdbcType=VARCHAR},
+      age = #{age,jdbcType=BIGINT},
+      child_age_name = #{childAgeName,jdbcType=VARCHAR},
+      child_age = #{childAge,jdbcType=VARCHAR},
+      model_name = #{modelName,jdbcType=VARCHAR},
+      model = #{model,jdbcType=INTEGER},
+      brand_name = #{brandName,jdbcType=VARCHAR},
+      brand_id = #{brandId,jdbcType=INTEGER},
+      car_colour_name = #{carColourName,jdbcType=VARCHAR},
+      car_colour = #{carColour,jdbcType=BIGINT},
+      car_dis_name = #{carDisName,jdbcType=VARCHAR},
+      car_dis = #{carDis,jdbcType=BIGINT},
+      stop_cause_name = #{stopCauseName,jdbcType=VARCHAR},
+      stop_cause = #{stopCause,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      child_num = #{childNum,jdbcType=SMALLINT},
+      child_exist = #{childExist,jdbcType=SMALLINT},
+      user_plate_num = #{userPlateNum,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

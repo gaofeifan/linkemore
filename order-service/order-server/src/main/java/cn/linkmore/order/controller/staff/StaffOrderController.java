@@ -52,19 +52,6 @@ public class StaffOrderController {
 	private StaffOrderService staffOrderService;
 	
 	/**
-	 * @Description  查询所有异常订单
-	 * @Author   c.l 
-	 * @Version  v2.0
-	 */
-	@ApiOperation(value = "查询所有异常订单", notes = "查询所有异常订单", consumes = "application/json")
-	@RequestMapping(value = "/select", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<List<ResUnusualOd>> selectDetails(@RequestBody ReqUnusualOrder reqUnusualOrder,HttpServletRequest request){
-		List<ResUnusualOd> list =this.unusualOrderService.findList2(reqUnusualOrder);
-		return ResponseEntity.success(list, request);
-	}
-	
-	/**
 	 * @Description  查询管理版车区统计
 	 * @Author   GFF 
 	 * @Version  v2.0
