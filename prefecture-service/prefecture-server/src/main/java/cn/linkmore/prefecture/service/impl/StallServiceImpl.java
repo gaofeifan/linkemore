@@ -1019,10 +1019,6 @@ public class StallServiceImpl implements StallService {
 	/**
 	 * 管理版锁操作
 	 */ 
-	
-	
-	
-	
 	@Override
 	public void operating(ReqControlLock reqc) {
 		TaskPool.getInstance().task(new Runnable() {
