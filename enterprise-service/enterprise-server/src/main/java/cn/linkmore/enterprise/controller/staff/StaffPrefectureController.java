@@ -14,13 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.enterprise.controller.staff.request.AssignStallRequestBean;
-import cn.linkmore.enterprise.controller.staff.request.CustomerRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.OrderOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.SraffReqConStall;
 import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
-import cn.linkmore.enterprise.controller.staff.response.PrefectureResponseBean;
 import cn.linkmore.enterprise.service.StaffPrefectureService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +36,8 @@ public class StaffPrefectureController {
 
 	@Autowired
 	private StaffPrefectureService staffPrefectureService;
+	
+	
 
 	@ApiOperation(value = "管理员操作车位锁", notes = "管理员操作车位锁", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control", method = RequestMethod.POST)
@@ -150,22 +149,5 @@ public class StaffPrefectureController {
 		}
 		return response;
 	}
-	
-	@ApiOperation(value = "保存顾客信息", notes = "保存顾客信息", consumes = "application/json")
-	@RequestMapping(value = "/submit", method = RequestMethod.POST)
-	public ResponseEntity<?>  submit(@RequestBody CustomerRequestBean crb, HttpServletRequest request){ 
 		
-		ResponseEntity<Boolean> response = null;
-		try {
-			
-			response = ResponseEntity.success(true, request);
-		} catch (BusinessException e) {
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) {
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
-		
-	}
-	
 }

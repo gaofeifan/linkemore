@@ -5,6 +5,5 @@ import cn.linkmore.enterprise.controller.staff.response.MessageSearchResponseBea
 public interface StaffOperateService {
 
 	MessageSearchResponseBean getMessage(Long mobile);
-	
-	
+		
 }
