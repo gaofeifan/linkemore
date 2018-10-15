@@ -272,7 +272,6 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	public void suspend(OrderOperateRequestBean oorb, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
-
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
