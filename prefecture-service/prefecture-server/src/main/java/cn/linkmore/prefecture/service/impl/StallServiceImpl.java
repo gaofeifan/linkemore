@@ -1020,6 +1020,7 @@ public class StallServiceImpl implements StallService {
 		List<ResAdminAuthStall> list = this.adminAuthStallClusterMapper.findStallList(map);
 		return list != null && list.size() != 0 ? true : false;
 	}
+	
 	/**
 	 * 管理版锁操作
 	 */ 

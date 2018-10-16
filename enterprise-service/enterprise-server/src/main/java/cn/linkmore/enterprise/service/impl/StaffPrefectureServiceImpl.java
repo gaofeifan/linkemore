@@ -10,7 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+
+
 import cn.linkmore.bean.common.Constants.RedisKey;
+import cn.linkmore.bean.common.Constants.SmsTemplate;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -19,14 +24,17 @@ import cn.linkmore.enterprise.controller.staff.request.OrderOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.SraffReqConStall;
 import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
+import cn.linkmore.enterprise.dao.cluster.BaseDictMapper;
 import cn.linkmore.enterprise.dao.cluster.StaffPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.master.StaffPrefectureMasterMapper;
+import cn.linkmore.enterprise.entity.BaseDict;
 import cn.linkmore.enterprise.entity.StallOperateLog;
 import cn.linkmore.enterprise.service.StaffPrefectureService;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResOrderOperateLog;
 import cn.linkmore.order.response.ResRedisOrders;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallBatteryLogClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.client.StallOperateLogClient;
@@ -35,10 +43,16 @@ import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.request.ReqStrategy;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.task.TaskPool;
+import cn.linkmore.third.client.SmsClient;
+import cn.linkmore.third.request.ReqSms;
+import cn.linkmore.util.HttpUtil;
+import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
 
@@ -57,7 +71,16 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	private StallClient stallClient;
 
 	@Autowired
+	private SmsClient smsClient;
+	
+	@Autowired
+	private PrefectureClient prefectureClient;
+
+	@Autowired
 	private OrderClient orderClient;
+	
+	@Autowired
+	private BaseDictMapper baseDictMapper;
 
 	@Autowired
 	private StallOperateLogClient stallOperateLogClient;
@@ -77,6 +100,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	public void control(SraffReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+		
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -272,6 +296,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	public void suspend(OrderOperateRequestBean oorb, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -346,7 +371,63 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 			resRedisOrders.setEndTime(new Date());
 			this.redisService.set(RedisKey.LINKMORE_APP_ORDER_KEY.key + order.getUserId(), resRedisOrders);
 		}
+		
+		//通知闸机
+		//查询车区
+		ResPrefectureDetail pre =prefectureClient.findById(stall.getPreId());
+		BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId()); //根据字典id 去查询字典值
+		// 查订单
+		ResUserOrder neworder = orderClient.findOrderById(oorb.getOrderId());
+		ReqSms req = new ReqSms();
+		req.setMobile(order.getUsername());
+		req.setSt(SmsTemplate.ORDER_SUSPEND_NOTICE);
+		tell(neworder,req);
 	}
+	
+	public void tell(ResUserOrder orders,ReqSms req) {
+		TaskPool.getInstance().task(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Map<String,Object> map = new HashMap<String,Object>();
+				 	map.put("orderNo",orders.getOrderNo());
+			        map.put("beginTime",orders.getBeginTime());
+			        map.put("endTime",orders.getEndTime());
+			        map.put("totalAmount",orders.getTotalAmount());
+			        map.put("actualAmount",orders.getActualAmount());
+			        map.put("plateNo",orders.getPlateNo());
+			        map.put("preId",orders.getPreId());
+			        map.put("dockId",orders.getDockId());
+			        map.put("status",orders.getStatus());
+			        String json = JsonUtil.toJson(map);
+			        HttpUtil.sendJson("http://192.168.1.172:8086/order/orderDeal", json);
+				} catch (Exception e) {
+					log.info("tell lock erro");
+					}try {
+						if(req != null) {
+							smsClient.send(req);
+						}
+					} catch (Exception e) {
+						log.info("send sms erro");
+					}
+				}
+			}
+		);
+	}
+	
+	public void sendSms(ReqSms req) {
+		TaskPool.getInstance().task(new Runnable() {
+			@Override
+			public void run() {
+				smsClient.send(req);
+				}
+			}
+		);
+	}
+	
+	
+	
+	
 
 	/**
 	 * 关闭订单
@@ -407,6 +488,12 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		stallClient.updateStatus(reqStall);
 		// 更新redis
 		this.redisService.remove("freelock_key:" + stall.getPreId(), new Object[] { stall.getLockSn() });
+
+		//通知闸机
+		ResPrefectureDetail pre =prefectureClient.findById(stall.getPreId());	//查询车区
+		BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId()); //根据字典id 去查询字典值
+		ResUserOrder neworder = orderClient.findOrderById(oorb.getOrderId());		// 查订单
+		tell(neworder,null);
 	}
 
 }

@@ -263,6 +263,7 @@ public class FeignStallController {
 	public int updateStatus(@RequestBody ReqStall stall) {
 		ResStallEntity st = stallService.findById(stall.getId());
 		if (st != null) {
+			st.setBindOrderStatus(stall.getBindOrderStatus());
 			st.setStatus(stall.getStatus());
 			ReqStall reqStall = new ReqStall();
 			reqStall = ObjectUtils.copyObject(st, reqStall);
