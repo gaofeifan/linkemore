@@ -1310,4 +1310,21 @@ public class StallServiceImpl implements StallService {
 		return this.stallClusterMapper.findStallsByPreIds(map);
 	}
 
+	@Override
+	public void reset(Long stallId, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+		if(checkStaffStallAuth(cu.getId(), stallId)) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("stallId", stallId);
+			map.put("status", 1);
+			this.feignStallExcStatusClient.updateExcStatus(map);
+		}else {
+			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+		}
+	}
+	
+	
+	
+
 }

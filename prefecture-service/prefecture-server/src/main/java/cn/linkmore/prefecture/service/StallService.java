@@ -261,4 +261,11 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	Boolean checkStaffStallAuth(Long userId, Long stallId);
+	
+	/**
+	 * @Description  复位
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void reset(Long stallId, HttpServletRequest request);
 }

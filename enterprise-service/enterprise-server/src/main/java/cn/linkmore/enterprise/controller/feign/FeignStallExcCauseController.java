@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.controller.feign;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -46,4 +47,11 @@ public class FeignStallExcCauseController {
 	public ResEntExcStallStatus findByStallId(@RequestParam("stallId")Long stallId) {
 		return this.excStatusService.findByStallId(stallId);
 	}
+	
+	@RequestMapping(value="/exc-status",method=RequestMethod.PUT)
+	@ResponseBody
+	public void updateExcStatus(@RequestBody Map<String, Object> map) {
+		this.excStatusService.updateExcStatus(map);
+	}
+	
 }
