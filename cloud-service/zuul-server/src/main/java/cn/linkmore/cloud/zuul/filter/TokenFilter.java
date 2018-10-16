@@ -81,6 +81,7 @@ public class TokenFilter extends ZuulFilter {
 			
 			add("/staff/auth/send");  
 			add("/staff/auth/login");  
+			add("/staff/vehicle-brands");  
 			add("/staff/auth/check-mobile");  
 			add("/ent/auth/send");  
 			

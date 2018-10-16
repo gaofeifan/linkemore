@@ -70,6 +70,8 @@ public class ResStaffStallDetail {
 	private String assignPlate;
 	@ApiModelProperty(value = "订单状态 状态：1，未支付；2，已支付；3，已完成；4，已取消 5 退款，6挂起订单，7关闭订单")
 	private Short orderStatus;
+	@ApiModelProperty(value = "订单id")
+	private Long orderId;
 	public String getStallName() {
 		return stallName;
 	}
@@ -221,5 +223,11 @@ public class ResStaffStallDetail {
 	}
 	public void setOrderStatus(Short orderStatus) {
 		this.orderStatus = orderStatus;
+	}
+	public Long getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
 	}
 }

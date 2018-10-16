@@ -51,5 +51,17 @@ public class StaffBaseDictController {
 		List<ResBaseDict> cause = this.baseDictService.causeHang();
 		return ResponseEntity.success(cause, request);
 	}
+	/**
+	 * @Description  查询关闭原因
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	@ApiOperation(value = "【通用】查询关闭原因", notes = "【通用】查询关闭原因", consumes = "application/json")
+	@RequestMapping(value = "/cause-close",method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResBaseDict>> causeClose(HttpServletRequest request){
+		List<ResBaseDict> cause = this.baseDictService.causeClose();
+		return ResponseEntity.success(cause, request);
+	}
 
 }

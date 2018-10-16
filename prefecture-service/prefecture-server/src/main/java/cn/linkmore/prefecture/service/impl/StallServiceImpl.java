@@ -929,6 +929,7 @@ public class StallServiceImpl implements StallService {
 						ResStaffStallList.setPlateNo(resOrderPlate.getPlateNo());
 					}
 				}
+				
 			}else if(resStall.getStatus() == 1) {
 				// 指定车位锁
 				int assignStatus = 1;
@@ -955,6 +956,9 @@ public class StallServiceImpl implements StallService {
 						ResStaffStallList.setExcStatus(false);
 					}
 				}
+			}
+			if(resStall.getBindOrderStatus() != null && resStall.getBindOrderStatus() != 0) {
+				ResStaffStallList.setExcStatus(false);
 			}
 			boolean falg = true;
 			if (bockBeans != null) {
@@ -1147,6 +1151,7 @@ public class StallServiceImpl implements StallService {
 				detail.setOrderStatus(resUserOrder.getStatus().shortValue());
 				String date = DateUtils.getDurationDetail(new Date(), resUserOrder.getBeginTime());
 				detail.setStartDate(date);
+				detail.setOrderId(resUserOrder.getId());
 				if (resUserOrder.getOrderNo().contains("WX")) {
 					detail.setOrderType("微信");
 				} else if (resUserOrder.getOrderNo().contains("YL")) {
@@ -1177,6 +1182,11 @@ public class StallServiceImpl implements StallService {
 					}
 				}
 			}
+		}
+		if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() != 0) {
+			detail.setResetStatus(false);
+			detail.setExcCode(0L);
+			detail.setExcName("订单挂起或关闭后未释放");
 		}
 		// 指定车位锁
 		int assignStatus = 1;

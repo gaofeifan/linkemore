@@ -25,6 +25,11 @@
     from t_admin_user
     where cellphone = #{mobile}
   </select>
+  <select id="findAll"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_admin_user
+  </select>
   
   <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
   	select 
