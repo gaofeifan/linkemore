@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.common.Constants;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.third.service.SmsService;
 /**
@@ -23,6 +24,16 @@ public class SmsController {
 	@RequestMapping(method=RequestMethod.POST)
 	@ResponseBody
 	public Boolean send(@RequestBody ReqSms req) {
+		return this.smsService.send(req);
+	}
+	
+	
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@ResponseBody
+	public Boolean sendtest() {
+		ReqSms req = new ReqSms();
+		req.setMobile("18310151716");
+		req.setSt(Constants.SmsTemplate.ORDER_SUSPEND_NOTICE);
 		return this.smsService.send(req);
 	}
 }
