@@ -78,4 +78,11 @@ public interface BaseDictService {
 	 */
 	List<ResBaseDict> causeHang();
 
+	/**
+	 * @Description  查询订单关闭原因
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResBaseDict> causeClose();
+
 }
