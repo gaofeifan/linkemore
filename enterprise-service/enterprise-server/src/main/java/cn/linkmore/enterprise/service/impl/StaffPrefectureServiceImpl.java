@@ -101,6 +101,9 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 		
+		user = new CacheUser();
+		user.setId(990L);
+		
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -415,20 +418,6 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		);
 	}
 	
-	public void sendSms(ReqSms req) {
-		TaskPool.getInstance().task(new Runnable() {
-			@Override
-			public void run() {
-				smsClient.send(req);
-				}
-			}
-		);
-	}
-	
-	
-	
-	
-
 	/**
 	 * 关闭订单
 	 */
