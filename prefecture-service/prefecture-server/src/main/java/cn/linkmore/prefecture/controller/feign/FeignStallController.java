@@ -227,8 +227,8 @@ public class FeignStallController {
 
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
 	@ResponseBody
-	public Tree tree() {
-		return preService.findTree();
+	public Tree tree(@RequestBody Map<String,Object> param) {
+		return preService.findTree(param);
 	}
 
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)

@@ -42,7 +42,7 @@ public interface OpsStallClient {
 	
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
 	@ResponseBody
-	public Tree tree();
+	public Tree tree(@RequestBody Map<String,Object> param);
 
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody

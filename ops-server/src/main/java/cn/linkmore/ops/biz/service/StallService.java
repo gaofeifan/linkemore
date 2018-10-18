@@ -2,13 +2,11 @@ package cn.linkmore.ops.biz.service;
 
 import java.util.List;
 import java.util.Map;
-
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
-import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallOps;
 
@@ -24,7 +22,7 @@ public interface StallService {
 	 * 
 	 * @return
 	 */
-	Tree findTree();
+	Tree findTree(Map<String,Object> param);
 
 	/**
 	 * 查询分页

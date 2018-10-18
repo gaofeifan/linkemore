@@ -35,6 +35,8 @@
     <result column="runtime" jdbcType="INTEGER" property="runtime" />
     <result column="increase" jdbcType="VARCHAR" property="increase" />
     <result column="month_rent" jdbcType="INTEGER" property="monthRent" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
   </resultMap>
   
   <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.controller.app.response.ResPrefecture">
@@ -85,6 +87,8 @@
     <result column="night_price" property="nightPrice" jdbcType="DECIMAL" />
     <result column="timely_unit" property="timelyUnit" jdbcType="CHAR" />
     <result column="type" property="type" jdbcType="SMALLINT" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
  </resultMap>
   
   <sql id="Base_Column_List">
@@ -92,7 +96,7 @@
     image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
     route_description, base_dict_id, city_id, order_index, leave_time, charge_price, 
     charge_time, type, enterprise_id, category, limit_status, gateway, 
-    strategy_description, runtime, increase, month_rent
+    strategy_description, runtime, increase, month_rent, version, create_user_id
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -176,6 +180,9 @@
 	<if test="status!=null">  
     and status = #{status}
     </if>
+    <if test="createUserId!=null">  
+    and create_user_id = #{createUserId} 
+    </if>
     <if test="property==null">  
     order by create_time desc
     </if>
@@ -204,18 +211,22 @@
     	</if> 
     <if test="status!=null">  
     and status = #{status} 
-    </if> 
+    </if>
     <if test="startTime!=null">
     and date_contract &gt;= #{startTime} 
     </if> 
     <if test="endTime!=null">
     and valid_time &lt;= #{endTime}
     </if> 
+    <if test="createUserId!=null">  
+    and create_user_id = #{createUserId} 
+    </if>
   </select>
   
   <select id="findPage" resultMap="ResPreExcelMap"   parameterType="java.util.HashMap" >
   	select p.id,p.name,p.date_contract,p.valid_time,p.order_index,p.status,p.type,COUNT(stall.id) stall_total,
-	s.name strategy_name,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit,p.category
+	s.name strategy_name,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit,
+	p.category, p.version, p.create_user_name
 	from v_prefecture p 
 	LEFT JOIN v_stall stall on p.id=stall.pre_id 
 	LEFT JOIN v_strategy_base s on p.strategy_id = s.id
@@ -223,12 +234,12 @@
     <if test="name!=null">  
     and p.name like #{name}
     </if> 
-    	<if test="type == 0">
-    	 and p.type = #{type} or p.type is null
-    	</if>  
-    	<if test="type == 1">
-    	 and p.type = #{type} 
-    	</if> 
+   	<if test="type == 0">
+   	 and p.type = #{type} or p.type is null
+   	</if>  
+   	<if test="type == 1">
+   	 and p.type = #{type} 
+   	</if> 
     <if test="status!=null">  
     and p.status = #{status}
     </if> 
@@ -238,6 +249,9 @@
     <if test="endTime!=null">
     and p.valid_time &lt;= #{endTime}
     </if> 
+    <if test="createUserId!=null">  
+    and create_user_id = #{createUserId} 
+    </if>
     GROUP BY p.id 
     <if test="property==null">  
     order by p.create_time desc

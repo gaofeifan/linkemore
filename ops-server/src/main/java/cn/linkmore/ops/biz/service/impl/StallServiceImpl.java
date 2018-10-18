@@ -2,7 +2,6 @@ package cn.linkmore.ops.biz.service.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +11,8 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.StallService;
 import cn.linkmore.prefecture.client.OpsStallClient;
-import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
-import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallOps;
 
@@ -34,8 +31,8 @@ public class StallServiceImpl implements StallService {
 	private static final Logger log = LoggerFactory.getLogger(Logger.class);
 
 	@Override
-	public Tree findTree() {
-		return this.stallClient.tree();
+	public Tree findTree(Map<String,Object> param) {
+		return this.stallClient.tree(param);
 	}
 
 	@Override
