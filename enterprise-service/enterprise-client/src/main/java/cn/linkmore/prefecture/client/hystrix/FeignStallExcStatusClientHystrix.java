@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,12 @@ public class FeignStallExcStatusClientHystrix implements FeignStallExcStatusClie
 	public ResEntExcStallStatus findByStallId(Long stallId) {
 		log.info("=======Hystrix==========ResEntExcStallStatus findByStallId(Long stallId");
 		return null;
+	}
+
+	@Override
+	public void updateExcStatus(Map<String, Object> map) {
+		log.info("=======Hystrix==========void updateExcStatus(Map<String, Object> map");
+		
 	}
 	
 	

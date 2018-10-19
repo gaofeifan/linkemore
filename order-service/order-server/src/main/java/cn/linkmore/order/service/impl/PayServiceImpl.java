@@ -613,7 +613,7 @@ public class PayServiceImpl implements PayService {
 		CompanyTradeRecord ctr = companyTradeRecordClusterMapper.findLast();
 		CompanyTradeRecord newCtr = new CompanyTradeRecord();
 		newCtr.copy(ctr);
-		newCtr.setCreateTime(new Date());
+		newCtr.setCreateTime(new Date()); 
 		newCtr.setUpdateTime(new Date());
 		newCtr.setTradeId(trade.getId());
 		newCtr.setTotalAmount(

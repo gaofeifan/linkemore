@@ -77,6 +77,14 @@ public class StaffStallController {
 		return ResponseEntity.success(null, request);
 	}
 	
+	@ApiOperation(value = "复位", notes = "复位", consumes = "application/json")
+	@RequestMapping(value = "/reset",method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<String> reset(@RequestParam("stallId") @ApiParam("车位id") @NotNull(message="车位不能为null") Long stallId,HttpServletRequest request){
+		this.stallService.reset(stallId,request);
+		return ResponseEntity.success("复位成功", request);
+	}
+	
 	
 	@ApiOperation(value = "地锁安装", notes = "地锁安装")
 	@RequestMapping(value = "/installLock", method = RequestMethod.POST)

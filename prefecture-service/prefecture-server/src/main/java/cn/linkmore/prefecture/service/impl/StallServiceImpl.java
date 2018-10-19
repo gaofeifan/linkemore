@@ -1020,6 +1020,7 @@ public class StallServiceImpl implements StallService {
 		List<ResAdminAuthStall> list = this.adminAuthStallClusterMapper.findStallList(map);
 		return list != null && list.size() != 0 ? true : false;
 	}
+	
 	/**
 	 * 管理版锁操作
 	 */ 
@@ -1062,12 +1063,12 @@ public class StallServiceImpl implements StallService {
 				String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");
 				PushType type = PushType.LOCK_CONTROL_NOTICE;
 				String bool = (code == 200 ? "true" : "false");
-				Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
+				Token token = (Token) redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key + uid.toString());
 				log.info("send>>>" + JsonUtil.toJson(token));
 				if (token != null) {
 					if (token.getClient() == Constants.ClientSource.WXAPP.source) {
 						log.info("..........socket start...............");
-						CacheUser cu = (CacheUser) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + token.getAccessToken());
+						/*CacheUser cu = (CacheUser) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + token.getAccessToken());
 						Map<String, Object> map = new HashMap<String, Object>();
 						map.put("title", title);
 						map.put("type", type);
@@ -1075,7 +1076,7 @@ public class StallServiceImpl implements StallService {
 						map.put("data", token.getAccessToken());
 						map.put("alias", cu.getId());
 						ResEntStaff staff = entStaffClient.findById(cu.getId());
-						userSocketClient.push(JsonUtil.toJson(map), staff.getOpenId());
+						userSocketClient.push(JsonUtil.toJson(map), staff.getOpenId());*/
 					} else {
 						ReqPush rp = new ReqPush();
 						rp.setAlias(uid);
@@ -1309,5 +1310,22 @@ public class StallServiceImpl implements StallService {
 	public List<ResStall> findStallsByPreIds(Map<String, Object> map) {
 		return this.stallClusterMapper.findStallsByPreIds(map);
 	}
+
+	@Override
+	public void reset(Long stallId, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+		if(checkStaffStallAuth(cu.getId(), stallId)) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("stallId", stallId);
+			map.put("status", 1);
+			this.feignStallExcStatusClient.updateExcStatus(map);
+		}else {
+			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+		}
+	}
+	
+	
+	
 
 }

@@ -1,8 +1,10 @@
 package cn.linkmore.prefecture.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +31,10 @@ public interface FeignStallExcStatusClient {
 	@RequestMapping(value="/by-stall-id",method=RequestMethod.GET)
 	@ResponseBody
 	ResEntExcStallStatus findByStallId(@RequestParam("stallId")Long stallId);
+
+	@RequestMapping(value="/exc-status",method=RequestMethod.PUT)
+	@ResponseBody
+	void updateExcStatus(@RequestBody Map<String, Object> map);
 	
 
 }

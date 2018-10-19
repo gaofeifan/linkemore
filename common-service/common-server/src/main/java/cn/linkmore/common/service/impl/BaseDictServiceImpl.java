@@ -27,6 +27,7 @@ public class BaseDictServiceImpl implements BaseDictService {
 	public static final String DOWN_LOCK_ERROR_CAUSE = "order_stall_down_error";
 	public static final String DOWN_CAUSE = "cause_down";	
 	public static final String CAUSE_HANG = "cause_hang";	
+	public static final String CAUSE_CLOSE = "cause_close";	
 	@Resource
 	private BaseDictClusterMapper baseDictClusterMapper;
 
@@ -85,6 +86,11 @@ public class BaseDictServiceImpl implements BaseDictService {
 	@Override
 	public List<ResBaseDict> causeHang() {
 		return this.findList(CAUSE_HANG);
+	}
+
+	@Override
+	public List<ResBaseDict> causeClose() {
+		return this.findList(CAUSE_CLOSE);
 	}
 
 	
