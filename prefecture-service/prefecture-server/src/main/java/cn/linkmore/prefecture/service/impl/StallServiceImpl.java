@@ -1055,6 +1055,14 @@ public class StallServiceImpl implements StallService {
 	}
 	
 	
+	public static void main(String[] args) {
+		
+		
+		
+		
+	}
+	
+	
 	void	sendMsgT(String uid, Integer lockstatus, int code){
 		TaskPool.getInstance().task( new Runnable() {
 			@Override
@@ -1064,20 +1072,7 @@ public class StallServiceImpl implements StallService {
 				PushType type = PushType.LOCK_CONTROL_NOTICE;
 				String bool = (code == 200 ? "true" : "false");
 				Token token = (Token) redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key + uid.toString());
-				log.info("send>>>" + JsonUtil.toJson(token));
-				if (token != null) {
-					if (token.getClient() == Constants.ClientSource.WXAPP.source) {
-						log.info("..........socket start...............");
-						/*CacheUser cu = (CacheUser) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + token.getAccessToken());
-						Map<String, Object> map = new HashMap<String, Object>();
-						map.put("title", title);
-						map.put("type", type);
-						map.put("content", content);
-						map.put("data", token.getAccessToken());
-						map.put("alias", cu.getId());
-						ResEntStaff staff = entStaffClient.findById(cu.getId());
-						userSocketClient.push(JsonUtil.toJson(map), staff.getOpenId());*/
-					} else {
+				log.info("sendMsgT   send>>>"+uid);
 						ReqPush rp = new ReqPush();
 						rp.setAlias(uid);
 						rp.setTitle(title);
@@ -1085,9 +1080,7 @@ public class StallServiceImpl implements StallService {
 						rp.setClient(token.getClient());
 						rp.setType(type);
 						rp.setData(bool);
-						sendClient.give(rp);
-					}
-				}
+			   sendClient.give(rp);	
 			}
 		});
 	}

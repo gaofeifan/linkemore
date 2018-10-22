@@ -100,10 +100,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	public void control(SraffReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
-		
-		user = new CacheUser();
-		user.setId(990L);
-		
+			
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -121,7 +118,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		ReqControlLock reqc = new ReqControlLock();
 		reqc.setStallId(reqOperatStall.getStallId());
 		reqc.setStatus(reqOperatStall.getState());
-		reqc.setKey(reskey);
+		reqc.setKey(String.valueOf(sb));
 		stallClient.managerlock(reqc);
 	}
 
