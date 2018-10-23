@@ -7,6 +7,8 @@ import cn.linkmore.order.controller.app.request.ReqPayConfirm;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.controller.app.response.ResPayCheckout;
 import cn.linkmore.order.controller.app.response.ResPayConfirm;
+import cn.linkmore.order.request.ReqOrderConfirm;
+import cn.linkmore.order.response.ResOrderConfirm;
 
 /**
  * Service接口 - 支付
@@ -64,5 +66,13 @@ public interface PayService {
 	 * @param request
 	 */
 	void wechatMiniOrderNotice(HttpServletResponse response, HttpServletRequest request);
+
+	/**
+	 * @Description  建行龙支付回调
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void appleLongOrderNotice(HttpServletResponse response, HttpServletRequest request);
+
 
 }

@@ -1,7 +1,13 @@
 package cn.linkmore.order.service.impl;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Signature;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -9,6 +15,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.ShortBufferException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -60,10 +70,12 @@ import cn.linkmore.order.dao.master.WalletDetailMasterMapper;
 import cn.linkmore.order.entity.Account;
 import cn.linkmore.order.entity.AccountHistory;
 import cn.linkmore.order.entity.CompanyTradeRecord;
+import cn.linkmore.order.entity.MCipherDecode;
 import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.RechargeRecord;
 import cn.linkmore.order.entity.TradeRecord;
 import cn.linkmore.order.entity.WalletDetail;
+import cn.linkmore.order.request.ReqOrderConfirm;
 import cn.linkmore.order.response.ResOrderCheckout;
 import cn.linkmore.order.response.ResOrderConfirm;
 import cn.linkmore.order.response.ResOrderWeixin;
@@ -85,6 +97,7 @@ import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqAppWechatOrder;
 import cn.linkmore.third.request.ReqApplePay;
+import cn.linkmore.third.request.ReqLongPay;
 import cn.linkmore.third.request.ReqOrder;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqWechatMiniOrder;
@@ -1040,6 +1053,21 @@ public class PayServiceImpl implements PayService {
 		}
 		String json = JsonUtil.toJson(respData);
 		this.apple(json);
+	}
+
+	@Override
+	public void appleLongOrderNotice(HttpServletResponse response, HttpServletRequest request) {
+		String POSTID = request.getParameter("POSTID");
+		String BRANCHID = request.getParameter("BRANCHID");
+		String ORDERID = request.getParameter("ORDERID");
+		String PAYMENT = request.getParameter("PAYMENT");
+		String CURCODE = request.getParameter("CURCODE");
+		String REMARK1 = request.getParameter("REMARK1");
+		String REMARK2 = request.getParameter("REMARK2");
+		String SUCCESS = request.getParameter("SUCCESS");
+		String sign = request.getParameter("Sign");
+		
+		
 	}
 
 	@Override

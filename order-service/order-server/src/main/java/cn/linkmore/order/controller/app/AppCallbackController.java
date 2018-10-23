@@ -52,4 +52,10 @@ public class AppCallbackController {
 		log.info("apple async callback");
 		this.payService.appleOrderNotice(response,request);
 	}
+
+	@RequestMapping(value ="/v2.0/long/order")
+	public void jianHangLong(HttpServletResponse response,HttpServletRequest request){  
+		log.info("jianHangLong async callback");
+		this.payService.appleLongOrderNotice(response,request);
+	}
 }

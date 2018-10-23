@@ -72,7 +72,7 @@ public class StaffVersionServiceImpl implements StaffVersionService {
 		if(res != null && res.size() > 0) {
 			cn.linkmore.common.response.ResStaffAppVersion v = res.get(0);
 			ResStaffAppVersion version = new ResStaffAppVersion();
-			version.setDescription(v.getDescription());
+			version.setDescription(v.getDescription()); 
 			version.setDownloadUrl(v.getUrl());
 			version.setMustUpdate(v.getUpdateStatus());
 			version.setVersion(v.getVersion());

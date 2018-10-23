@@ -55,9 +55,49 @@ public class AppPayController {
 			e.printStackTrace();
 		}
 		return ResponseEntity.fail(null, request);
-		
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	  
 	@ApiOperation(value = "校验支付", notes = "校验支付[订单ID不为空]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/verify", method = RequestMethod.GET)
 	@ResponseBody
