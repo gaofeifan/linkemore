@@ -1,10 +1,10 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.HashMap;
+
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.google.gson.Gson;
 
 import cn.linkmore.enterprise.controller.staff.response.MessageSearchResponseBean;
