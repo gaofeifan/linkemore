@@ -89,7 +89,7 @@
   
   <select id="findAll" resultMap="BaseResultMap" >
     select id, stall_name, sell_count, pre_id, lock_id, lock_sn, lock_status, 
-    status, create_time, update_time, lock_voltage, bind_order_status
+    status, create_time, update_time, lock_voltage, bind_order_status,type
     from v_stall
   </select>
   
