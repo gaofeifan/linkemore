@@ -115,7 +115,9 @@ public enum StatusEnum {
 	ORDER_OPERATE_NULLORDER(8005077,"订单不存在"),
 	ORDER_OPERATE_NULLSTALL(8005078,"车位不匹配"),
 	
-	ORDER_OPERATE_NOUNPAID(8005079,"非预约中订单");
+	ORDER_OPERATE_NOUNPAID(8005079,"非预约中订单"),
+	
+	LOCK_SN_AlREADY_BAND(8005080,"该锁编码已经绑定");
 	
 	public int code;
 	public String label;

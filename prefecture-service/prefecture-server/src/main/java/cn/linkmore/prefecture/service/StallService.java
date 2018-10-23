@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
+import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
@@ -232,7 +233,7 @@ public interface StallService {
 	 * @Author   cl
 	 * @Version  v2.0
 	 */
-	public void install(ReqStall reqStall);
+	public void install(ReqLockIntall reqLockIntall);
 	
 	/**
 	 * @Description  查询角色城市

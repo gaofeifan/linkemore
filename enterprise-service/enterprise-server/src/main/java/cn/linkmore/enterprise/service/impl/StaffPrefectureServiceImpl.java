@@ -110,15 +110,14 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		if (!redisLock.lock(String.valueOf(robkey), String.valueOf(time))) {
 			log.info("no get it,wait a moment");
 			throw new BusinessException(StatusEnum.STALL_HIVING_DO);
-		}
+		} 
 		String reskey = (reqOperatStall.getState() == 1 ? RedisKey.MANAGER_STALL_DOWN.key
 				: RedisKey.MANAGER_STALL_UP.key);
-		StringBuilder sb = new StringBuilder(reskey).append(userid);
-		redisService.set(String.valueOf(sb), userid);
+		redisService.set(reskey+userid, userid);
 		ReqControlLock reqc = new ReqControlLock();
 		reqc.setStallId(reqOperatStall.getStallId());
 		reqc.setStatus(reqOperatStall.getState());
-		reqc.setKey(String.valueOf(sb));
+		reqc.setKey(reskey+userid);
 		stallClient.managerlock(reqc);
 	}
 

@@ -202,9 +202,9 @@ public class PushServiceImpl implements PushService {
 	 */
 	@Override
 	public void give(ReqPush rp) {
-		log.info("send message:{}",JsonUtil.toJson(rp));
+		log.info("give message:{}",JsonUtil.toJson(rp));
 		new IOSGiveThread(rp).start();
-	} 
+	}
 
 	class IOSGiveThread extends Thread{
 		private ReqPush rp;
