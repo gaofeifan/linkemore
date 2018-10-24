@@ -151,6 +151,11 @@
 			<artifactId>third-party-bean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.linkmore</groupId>
+			<artifactId>netpay</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

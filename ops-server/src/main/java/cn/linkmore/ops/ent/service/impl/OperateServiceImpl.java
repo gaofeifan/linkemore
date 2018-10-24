@@ -6,6 +6,9 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.view.Tree;
@@ -15,10 +18,10 @@ import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.request.ReqOperateBind;
 import cn.linkmore.ops.ent.request.ReqBindStaffAuth;
 import cn.linkmore.ops.ent.service.OperateService;
+import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.client.OpsOperateAuthClient;
 @Service
 public class OperateServiceImpl implements OperateService {
-	
 	@Resource
 	private OpsOperateAuthClient opsOperateAuthClient;
 
@@ -30,7 +33,15 @@ public class OperateServiceImpl implements OperateService {
 
 	@Override
 	public List<Tree> tree(HttpServletRequest request) {
-		List<Tree> list = this.opsOperateAuthClient.tree();
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+		Long entId = null;
+		if(person.getType() == 0) {
+			entId = 0L;
+		}else {
+			entId = person.getEntId();
+		}
+		List<Tree> list = this.opsOperateAuthClient.tree(entId);
 		return list;
 	}
 

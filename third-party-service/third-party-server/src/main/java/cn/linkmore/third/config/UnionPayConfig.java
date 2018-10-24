@@ -22,11 +22,7 @@ public class UnionPayConfig {
 	private String encryptCertPath;
 	private String middleCertPath;
 	private String rootCertPath;
-
 	private Boolean online; 
- 
-	 
-
 	public String getUnionServiceUrl() {
 		return unionServiceUrl;
 	}
