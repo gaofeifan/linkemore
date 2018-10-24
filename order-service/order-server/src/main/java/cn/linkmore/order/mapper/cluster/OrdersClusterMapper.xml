@@ -541,6 +541,7 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 	    	</foreach>
 		</if>
 		AND date_format(end_time,'%Y-%m-%d') = date_format(#{startTime},'%Y-%m-%d')
+		AND actual_amount != 0
 	</where>
 	order by end_time desc
 	limit #{start},#{pageSize}

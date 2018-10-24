@@ -2,10 +2,11 @@ package cn.linkmore.enterprise.service.impl;
 
 import java.util.HashMap;
 
+
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 import cn.linkmore.enterprise.controller.staff.response.MessageSearchResponseBean;
 import cn.linkmore.enterprise.dao.cluster.StaffOperateClusterMapper;
@@ -34,8 +35,8 @@ public class StaffOperateServiceImpl implements StaffOperateService{
 		MessageSearchResponseBean  mes =new  MessageSearchResponseBean();
 		Map<String,Object> param = new HashMap<String, Object>();
 		if(message!=null) {
-			Gson gson = new Gson();
-			 param =gson.fromJson(message.getParameter(), param.getClass());
+//			Gson gson = new Gson();
+//			 param =gson.fromJson(message.getParameter(), param.getClass());
 			mes.setContent( String.valueOf(param.get("code")));
 			mes.setCreateTime(message.getCreateTime());
 		}

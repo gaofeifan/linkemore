@@ -17,7 +17,7 @@
     delete from t_biz_enterprise
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.enterprise.entity.Enterprise">
+  <insert id="save" parameterType="cn.linkmore.enterprise.entity.Enterprise" useGeneratedKeys="true" keyProperty="id">
     insert into t_biz_enterprise (id, account, name, 
       industry, create_time, update_time, 
       region, address, tellphone, 
