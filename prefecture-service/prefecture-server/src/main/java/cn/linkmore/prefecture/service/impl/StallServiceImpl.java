@@ -359,7 +359,6 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public void install(ReqLockIntall reqLockIntall) {
 		
 		Date now = new Date();

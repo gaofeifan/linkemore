@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 
-
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.SmsTemplate;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -72,13 +71,13 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 
 	@Autowired
 	private SmsClient smsClient;
-	
+
 	@Autowired
 	private PrefectureClient prefectureClient;
 
 	@Autowired
 	private OrderClient orderClient;
-	
+
 	@Autowired
 	private BaseDictMapper baseDictMapper;
 
@@ -90,7 +89,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 
 	@Autowired
 	private StrategyBaseClient strategyBaseClient;
-	
+
 	private static final int TIMEOUT = 30 * 1000;
 
 	/**
@@ -100,7 +99,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	public void control(SraffReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
-			
+
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -110,14 +109,14 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		if (!redisLock.lock(String.valueOf(robkey), String.valueOf(time))) {
 			log.info("no get it,wait a moment");
 			throw new BusinessException(StatusEnum.STALL_HIVING_DO);
-		} 
+		}
 		String reskey = (reqOperatStall.getState() == 1 ? RedisKey.MANAGER_STALL_DOWN.key
 				: RedisKey.MANAGER_STALL_UP.key);
-		redisService.set(reskey+userid, userid);
+		redisService.set(reskey + userid, userid);
 		ReqControlLock reqc = new ReqControlLock();
 		reqc.setStallId(reqOperatStall.getStallId());
 		reqc.setStatus(reqOperatStall.getState());
-		reqc.setKey(reskey+userid);
+		reqc.setKey(reskey + userid);
 		stallClient.managerlock(reqc);
 	}
 
@@ -189,7 +188,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Override
 	public void offline(StallOperateRequestBean bean, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
-				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));		
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -370,50 +369,50 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 			resRedisOrders.setEndTime(new Date());
 			this.redisService.set(RedisKey.LINKMORE_APP_ORDER_KEY.key + order.getUserId(), resRedisOrders);
 		}
-		
-		//通知闸机
-		//查询车区
-		ResPrefectureDetail pre =prefectureClient.findById(stall.getPreId());
-		BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId()); //根据字典id 去查询字典值
+
+		// 通知闸机
+		// 查询车区
+		ResPrefectureDetail pre = prefectureClient.findById(stall.getPreId());
+		BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId()); // 根据字典id 去查询字典值
 		// 查订单
 		ResUserOrder neworder = orderClient.findOrderById(oorb.getOrderId());
 		ReqSms req = new ReqSms();
 		req.setMobile(order.getUsername());
 		req.setSt(SmsTemplate.ORDER_SUSPEND_NOTICE);
-		tell(neworder,req);
+		tell(neworder, req);
 	}
-	
-	public void tell(ResUserOrder orders,ReqSms req) {
+
+	public void tell(ResUserOrder orders, ReqSms req) {
 		TaskPool.getInstance().task(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					Map<String,Object> map = new HashMap<String,Object>();
-				 	map.put("orderNo",orders.getOrderNo());
-			        map.put("beginTime",orders.getBeginTime());
-			        map.put("endTime",orders.getEndTime());
-			        map.put("totalAmount",orders.getTotalAmount());
-			        map.put("actualAmount",orders.getActualAmount());
-			        map.put("plateNo",orders.getPlateNo());
-			        map.put("preId",orders.getPreId());
-			        map.put("dockId",orders.getDockId());
-			        map.put("status",orders.getStatus());
-			        String json = JsonUtil.toJson(map);
-			        HttpUtil.sendJson("http://192.168.1.172:8086/order/orderDeal", json);
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("orderNo", orders.getOrderNo());
+					map.put("beginTime", orders.getBeginTime());
+					map.put("endTime", orders.getEndTime());
+					map.put("totalAmount", orders.getTotalAmount());
+					map.put("actualAmount", orders.getActualAmount());
+					map.put("plateNo", orders.getPlateNo());
+					map.put("preId", orders.getPreId());
+					map.put("dockId", orders.getDockId());
+					map.put("status", orders.getStatus());
+					String json = JsonUtil.toJson(map);
+					HttpUtil.sendJson("http://192.168.1.172:8086/order/orderDeal", json);
 				} catch (Exception e) {
 					log.info("tell lock erro");
-					}try {
-						if(req != null) {
-							smsClient.send(req);
-						}
-					} catch (Exception e) {
-						log.info("send sms erro");
+				}
+				try {
+					if (req != null) {
+						smsClient.send(req);
 					}
+				} catch (Exception e) {
+					log.info("send sms erro");
 				}
 			}
-		);
+		});
 	}
-	
+
 	/**
 	 * 关闭订单
 	 */
@@ -474,11 +473,11 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		// 更新redis
 		this.redisService.remove("freelock_key:" + stall.getPreId(), new Object[] { stall.getLockSn() });
 
-		//通知闸机
-		ResPrefectureDetail pre =prefectureClient.findById(stall.getPreId());	//查询车区
-		BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId()); //根据字典id 去查询字典值
-		ResUserOrder neworder = orderClient.findOrderById(oorb.getOrderId());		// 查订单
-		tell(neworder,null);
+		// 通知闸机
+		ResPrefectureDetail pre = prefectureClient.findById(stall.getPreId()); // 查询车区
+		BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId()); // 根据字典id 去查询字典值
+		ResUserOrder neworder = orderClient.findOrderById(oorb.getOrderId()); // 查订单
+		tell(neworder, null);
 	}
 
 }
