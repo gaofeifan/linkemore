@@ -108,7 +108,7 @@ public interface PrefectureService {
 	 * 车区树
 	 * @return
 	 */
-	Tree findTree();
+	Tree findTree(Map<String, Object> param);
 	
 	ResPrefectureDetail checkName(Map<String, Object> param);
 	/**
@@ -144,5 +144,7 @@ public interface PrefectureService {
 	 * @Version  v2.0
 	 */
 	List<ResPre> findPreByIds(Map<String, Object> map);
+
+	cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId);
 
 }

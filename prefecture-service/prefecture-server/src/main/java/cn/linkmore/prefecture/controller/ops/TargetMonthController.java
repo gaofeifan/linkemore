@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.controller.ops;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,8 +36,8 @@ public class TargetMonthController {
 	
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
 	@ResponseBody
-	public Tree tree() {
-		return preService.findTree();
+	public Tree tree(@RequestBody Map<String,Object> param) {
+		return preService.findTree(param);
 	}
 	
 }

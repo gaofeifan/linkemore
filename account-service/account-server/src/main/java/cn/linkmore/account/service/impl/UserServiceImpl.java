@@ -931,6 +931,7 @@ public class UserServiceImpl implements UserService {
 	public cn.linkmore.account.controller.app.response.ResUser bindWechatMobile(String mobile,
 			HttpServletRequest request) {
 		ResUser user = this.findByMobile(mobile);
+		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
 		if (user == null) {
 			user = new ResUser();
 			user.setMobile(mobile);
@@ -958,17 +959,26 @@ public class UserServiceImpl implements UserService {
 			account.setOrderPaymentAmount(0.00d);
 			account.setCreateTime(new Date());
 			accountMasterMapper.insert(account);
+			ru.setNewUserFlag((short)1);
 		} else if (user.getStatus().equals("2")) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {
 			log.info("mobile exist..................");
-			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
+			//throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
 			/*user.setLastLoginTime(new Date());
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("id", user.getId());
 			param.put("lastLoginTime", new Date());
 			param.put("updateTime", new Date());
 			this.userMasterMapper.updateLoginTime(param);*/
+
+			user.setLastLoginTime(new Date());
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", user.getId());
+			param.put("lastLoginTime", new Date());
+			param.put("updateTime", new Date());
+			this.userMasterMapper.updateLoginTime(param);
+			this.updateFansStatus((short)0, user.getId());
 		}
 		CacheUser cu = this.getCacheUser(request);
 		UserInfo ui = this.userInfoClusterMapper.find(cu.getOpenId());
@@ -976,7 +986,7 @@ public class UserServiceImpl implements UserService {
 		ui.setBindTime(new Date());
 		this.userInfoMasterMapper.update(ui);
 		String key = TokenUtil.getKey(request); 
-		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
+		
 		ru.setId(user.getId());
 		ru.setMobile(user.getUsername());
 		ru.setToken(key); 

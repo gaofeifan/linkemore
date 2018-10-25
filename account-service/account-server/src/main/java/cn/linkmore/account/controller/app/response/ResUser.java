@@ -28,6 +28,9 @@ public class ResUser implements Serializable {
 	private Short type;
 	@ApiModelProperty(value = "极光标签")
 	private List<String> tags; 
+	
+	@ApiModelProperty(value = "是否新用户")
+	private Short newUserFlag = 0;
 	public Long getId() {
 		return id;
 	}
@@ -75,5 +78,12 @@ public class ResUser implements Serializable {
 	}
 	public void setType(Short type) {
 		this.type = type;
+	}
+	public Short getNewUserFlag() {
+		return newUserFlag;
+	}
+	public void setNewUserFlag(Short newUserFlag) {
+		this.newUserFlag = newUserFlag;
 	} 
+	
 }

@@ -18,7 +18,6 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
-import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
@@ -160,7 +159,7 @@ public interface StallClient {
 	
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.POST)
 	@ResponseBody
-	public Tree tree();
+	public Tree tree(@RequestBody Map<String,Object> param);
 
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
