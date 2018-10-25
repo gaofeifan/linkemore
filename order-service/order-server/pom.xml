@@ -108,6 +108,11 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>com.linkmore</groupId>
+			<artifactId>netpay</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
