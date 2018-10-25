@@ -272,7 +272,7 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public boolean uplock(Long stallId) {
-		/*boolean flag = true;
+		boolean flag = true;
 		Stall stall = stallClusterMapper.findById(stallId);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			log.info("uping.....................name:{},sn:{}", stall.getStallName(), stall.getLockSn());
@@ -286,25 +286,6 @@ public class StallServiceImpl implements StallService {
 			}
 			stall.setLockStatus(LockStatus.UP.status);
 			stallMasterMapper.lockdown(stall);
-		}
-		return flag;*/
-		boolean flag = true;
-		Stall stall = stallClusterMapper.findById(stallId);
-		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			log.info("uping.....................name:{},sn:{}", stall.getStallName(), stall.getLockSn());
-			LockBean lock = lockFactory.getLockInfo(stall.getLockSn()).getData();
-			if(lock != null && lock.getLockState() == LockStatus.DOWN.status && lock.getParkingState() == 0) {
-				ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
-				log.info("uping.....................lock:{}, res:{}", JsonUtil.toJson(lock), JsonUtil.toJson(res));
-				int code = res.getMsgCode();
-				if (code != 200) {
-					// 此处为升锁操作
-					flag = false;
-					throw new BusinessException(StatusEnum.ORDER_LOCKUP_FAIL);
-				}
-				stall.setLockStatus(LockStatus.UP.status);
-				stallMasterMapper.lockdown(stall);
-			}
 		}
 		return flag;
 	}
