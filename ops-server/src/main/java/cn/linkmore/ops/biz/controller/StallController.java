@@ -9,8 +9,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +24,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.bean.view.Tree;
+import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.response.ResEntRentUser;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.StallLockService;
 import cn.linkmore.ops.biz.service.StallService;
+import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.client.OpsRentUserClient;
 import cn.linkmore.prefecture.client.OpsStallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -41,6 +48,8 @@ public class StallController {
 
 	@Resource
 	private StallService stallService;
+	@Autowired
+	private EnterpriseService enterService;
 	@Resource
 	private OpsStallClient opsStallClient;
 	@Resource
@@ -54,7 +63,16 @@ public class StallController {
 	@RequestMapping(value = "/tree", method = RequestMethod.POST)
 	@ResponseBody
 	public Tree tree(HttpServletRequest request) {
-		return stallService.findTree();
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", "id");
+		param.put("value", person.getId());
+		ResEnterprise enter = enterService.find(param);
+		if(enter != null) {
+			param.put("createUserId", person.getId());
+		}
+		return stallService.findTree(param);
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.POST)

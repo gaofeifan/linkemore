@@ -19,8 +19,32 @@ public class ReqStallLock {
     private Date createTime;
 
     private Date bindTime;
+    /**
+     * 创建用户Id
+     */
+    private Long createUserId;
+    /**
+     * 创建用户名称
+     */
+    private String createUserName;
 
-    public Long getId() {
+    public Long getCreateUserId() {
+		return createUserId;
+	}
+
+	public void setCreateUserId(Long createUserId) {
+		this.createUserId = createUserId;
+	}
+
+	public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
+
+	public Long getId() {
         return id;
     }
 

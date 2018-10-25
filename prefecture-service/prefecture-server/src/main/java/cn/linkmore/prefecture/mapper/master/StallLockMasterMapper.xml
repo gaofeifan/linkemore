@@ -8,10 +8,10 @@
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="bind_time" jdbcType="TIMESTAMP" property="bindTime" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
   </resultMap>
-  <sql id="Base_Column_List">
-    id, sn, prefecture_id, stall_id, create_time, bind_time
-  </sql>
+  
   <delete id="delete" parameterType="java.lang.Long">
     delete from t_biz_stall_lock
     where id = #{id,jdbcType=BIGINT}
@@ -24,8 +24,8 @@
   </update>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.linkmore.prefecture.entity.StallLock">
-  	insert into t_biz_stall_lock (sn,  create_time)
-    values ( #{sn,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  	insert into t_biz_stall_lock (sn,  create_time, create_user_id, create_user_name)
+    values ( #{sn,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},#{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR} )
   </insert>
   
   <insert id="batchSave"  parameterType="java.util.List"> 

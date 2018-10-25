@@ -108,7 +108,7 @@ public interface PrefectureService {
 	 * 车区树
 	 * @return
 	 */
-	Tree findTree();
+	Tree findTree(Map<String, Object> param);
 	
 	ResPrefectureDetail checkName(Map<String, Object> param);
 	/**

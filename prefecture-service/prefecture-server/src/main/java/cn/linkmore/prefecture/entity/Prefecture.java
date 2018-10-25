@@ -143,12 +143,45 @@ public class Prefecture {
      * 租金涨幅 百分比
      */
     private String increase;
+    /**
+     * 所属版本
+     */
+    private String version = "A";
+    
     /** 
      * 计费策略描述
      */
     private String strategyDescription;
+    
+    private Long createUserId;
+    
+    private String createUserName;
+    
+    public Long getCreateUserId() {
+		return createUserId;
+	}
 
-    public String getStrategyDescription() {
+	public void setCreateUserId(Long createUserId) {
+		this.createUserId = createUserId;
+	}
+
+	public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getStrategyDescription() {
 		return strategyDescription;
 	}
 

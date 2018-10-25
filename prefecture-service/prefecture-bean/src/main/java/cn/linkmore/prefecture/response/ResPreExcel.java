@@ -37,6 +37,28 @@ public class ResPreExcel {
 	private Short type;
 	
 	private Short category;
+	
+	private String version;
+
+	/**
+     * 创建用户
+     */
+    private String createUserName;
+    
+    public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 	public Short getType() {
 		return type;

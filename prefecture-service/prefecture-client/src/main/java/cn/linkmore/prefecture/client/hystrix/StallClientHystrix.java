@@ -85,7 +85,7 @@ public class StallClientHystrix implements StallClient {
 	
 
 	@Override
-	public Tree tree() {
+	public Tree tree(Map<String, Object> param) {
 		log.info("prefecture service stall tree() hystrix");
 		return null;
 	}

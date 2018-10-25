@@ -27,7 +27,7 @@ public class OpsStallClientHystrix implements OpsStallClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public Tree tree() {
+	public Tree tree(Map<String,Object> param) {
 		log.info("prefecture service stall tree() hystrix");
 		return null;
 	}

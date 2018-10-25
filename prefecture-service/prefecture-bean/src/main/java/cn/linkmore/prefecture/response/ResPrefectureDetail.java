@@ -147,8 +147,32 @@ public class ResPrefectureDetail {
      * 网关分组
      */
     private String gateway;
+    /**
+     * 当前版本A、B
+     */
+    private String version;
+    /**
+     * 创建用户
+     */
+    private String createUserName;
+    
+    public String getCreateUserName() {
+		return createUserName;
+	}
 
-    public Long getId() {
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public Long getId() {
         return id;
     }
 
