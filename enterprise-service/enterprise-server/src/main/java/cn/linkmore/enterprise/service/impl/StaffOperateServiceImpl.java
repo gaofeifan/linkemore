@@ -27,7 +27,6 @@ public class StaffOperateServiceImpl implements StaffOperateService{
 	
 	@Autowired 
 	StaffOperateClusterMapper staffOperateClusterMapper;
-
 	@Override
 	public MessageSearchResponseBean getMessage(Long mobile) {
 		MobileMessage message = staffOperateClusterMapper.findLatest(mobile);

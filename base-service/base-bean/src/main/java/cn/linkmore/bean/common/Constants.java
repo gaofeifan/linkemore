@@ -47,6 +47,21 @@ public class Constants {
 			this.type = type;
 		}
 	}
+	public enum MessageType{
+		REGISTER(1),
+		UPDATE_PASSWORD( 2),
+		FIND_PASSWORD ( 3), 
+		LOGIN (4),
+		STALL_LOCK_ACCREDIT (5),
+		CANCEL_ACCREDIT(6),
+		WECHAT_LOGIN(7),
+		SEND_COUPON(8),
+		SUSPEND_ORDER(9);
+		public int type;
+		private MessageType(int type) {
+			this.type = type;
+		}
+	}
 	
 	public enum OrderPayType{
 		FREE(1),COUPON(2),ACCOUNT(3);

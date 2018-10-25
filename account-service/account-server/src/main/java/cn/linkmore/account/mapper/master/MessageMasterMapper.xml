@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.MessageMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.response.ResMessage">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="message_type" jdbcType="INTEGER" property="messageType" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="template" jdbcType="VARCHAR" property="template" />
+    <result column="parameter" jdbcType="VARCHAR" property="parameter" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, message_type, mobile, create_time, template, parameter
+  </sql>
+  <insert id="save" parameterType="cn.linkmore.account.request.ReqMessage">
+    insert into t_message (id, message_type, mobile, 
+      create_time, template, parameter
+      )
+    values (#{id,jdbcType=BIGINT}, #{messageType,jdbcType=INTEGER}, #{mobile,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{template,jdbcType=VARCHAR}, #{parameter,jdbcType=VARCHAR}
+      )
+  </insert>  
+  <update id="update" parameterType="cn.linkmore.account.request.ReqMessage">
+    update t_message
+    set message_type = #{messageType,jdbcType=INTEGER},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      template = #{template,jdbcType=VARCHAR},
+      parameter = #{parameter,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

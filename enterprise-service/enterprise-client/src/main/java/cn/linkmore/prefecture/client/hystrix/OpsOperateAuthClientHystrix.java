@@ -58,16 +58,18 @@ public class OpsOperateAuthClientHystrix implements OpsOperateAuthClient {
 		return null;
 	}
 
-	@Override
-	public List<Tree> tree() {
-		log.info("operate service List<Tree> tree() hystrix");		
-		return null;
-	}
 
 	@Override
 	public Map<String, Object> resource(Long id) {
 		log.info("operate service Map<String, Object> resource(Long id)hystrix");		
 		return null;
 	}
+
+	@Override
+	public List<Tree> tree(Long entId) {
+		log.info("operate service Map<String, Object> tree(Long entId)hystrix");		
+		return null;
+	}
+
 
 }

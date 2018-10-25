@@ -37,8 +37,11 @@
     <if test="name!=null">  
     and name like #{name,jdbcType=VARCHAR}
     </if> 
-    <if test="account!=null">  
-    and account = #{account,jdbcType=VARCHAR}
+    <if test="id != null">  
+    and id = #{id}
+    </if> 
+    <if test="entId!=null">  
+    and id = #{account,jdbcType=VARCHAR}
     </if> 
     <if test="industry!=null">  
     and industry = #{industry,jdbcType=VARCHAR}

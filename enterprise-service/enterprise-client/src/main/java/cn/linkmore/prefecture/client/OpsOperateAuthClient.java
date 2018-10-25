@@ -53,7 +53,7 @@ public interface OpsOperateAuthClient {
 
 	@RequestMapping(value="/tree" , method=RequestMethod.GET)
 	@ResponseBody
-	public List<Tree> tree();
+	public List<Tree> tree(@RequestParam("entId") Long entId);
 
 	@RequestMapping(value="/bind" , method=RequestMethod.POST)
 	@ResponseBody

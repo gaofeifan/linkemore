@@ -19,11 +19,12 @@ import cn.linkmore.enterprise.request.ReqOperateBind;
 public interface OperateAuthService {
 
 	/**
+	 * @param entId 
 	 * @Description  查询树桩数据
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<Tree> tree();
+	List<Tree> tree(Long entId);
 
 	/**
 	 * @Description  新增

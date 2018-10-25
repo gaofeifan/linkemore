@@ -12,12 +12,15 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
 import cn.linkmore.account.controller.staff.response.ResAdmin;
 import cn.linkmore.account.entity.StaffAppfans;
+import cn.linkmore.account.request.ReqMessage;
+import cn.linkmore.account.service.MessageService;
 import cn.linkmore.account.service.StaffAdminUserService;
 import cn.linkmore.account.service.StaffAppfansService;
 import cn.linkmore.bean.common.Constants;
@@ -53,6 +56,8 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private SmsClient smsClient;
 	@Autowired
 	private SendClient sendClient;
+	@Autowired
+	private MessageService messageService;
 	@Autowired
 	private WechatMiniClient wechatMiniClient;
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -204,11 +209,19 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		sms.setMobile(rs.getMobile());
 		sms.setParam(param);
 		sms.setSt(Constants.SmsTemplate.USER_APP_LOGIN_CODE);
-		boolean success = this.smsClient.send(sms);   
+		boolean success = this.smsClient.send(sms);  
 		if(success){
 			this.redisService.set(RedisKey.STAFF_STAFF_AUTH_CODE.key+rs.getMobile(), code, 60*10); 
 			this.redisService.set(RedisKey.STAFF_STAFF_AUTH_MOBILE.key+rs.getMobile(), rs.getMobile(),1);
+			ReqMessage msg = new ReqMessage();
+			msg.setCreateTime(new Date());
+			msg.setMessageType(Constants.MessageType.LOGIN.type);
+			msg.setMobile(rs.getMobile());
+			msg.setTemplate("SMS_63275171");
+			msg.setParameter(JsonUtil.toJson(param));
+			this.messageService.save(msg);
 		}else{
+			
 			throw new BusinessException(StatusEnum.USER_APP_SMS_FAILED);
 		} 		
 	}
