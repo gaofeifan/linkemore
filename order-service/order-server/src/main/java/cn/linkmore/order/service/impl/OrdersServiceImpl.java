@@ -1051,6 +1051,14 @@ public class OrdersServiceImpl implements OrdersService {
 					ro.setRemainMins(getSecondTime(beginTime + freeMins * 60 * 1000 - now));
 				}
 			}
+			
+			//当前用户当天取消订单数
+			List<ResUserOrder> ordersList = ordersClusterMapper.getDayOfCanceOrderlList(cu.getId());
+			//4.判断当天取消预约次数是否超过5次
+			if(null != ordersList && ordersList.size() >= baseConfig.getCancelNumber()){
+				ro.setCancelFlag((short)2);
+            }
+			
 			log.info(">>>>>>>>>>>>>>>>>>>>>>>>>current order = {}",JSON.toJSON(ro));
 		}
 		return ro;
