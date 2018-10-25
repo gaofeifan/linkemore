@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.controller.app.response;
 
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -29,8 +31,8 @@ public class ResPrefectureDetail {
 	@ApiModelProperty(value = "24小时封顶计费")
 	private String topFee;
 	
-	@ApiModelProperty(value = "距离")
-	private String distance;
+	@ApiModelProperty(value = "车区分组列表")
+	private List<ResPrefectureGroup> preGroupList; 
 
 	public Long getId() {
 		return id;
@@ -96,11 +98,12 @@ public class ResPrefectureDetail {
 		this.topFee = topFee;
 	}
 
-	public String getDistance() {
-		return distance;
+	public List<ResPrefectureGroup> getPreGroupList() {
+		return preGroupList;
 	}
 
-	public void setDistance(String distance) {
-		this.distance = distance;
+	public void setPreGroupList(List<ResPrefectureGroup> preGroupList) {
+		this.preGroupList = preGroupList;
 	}
+	
 }
