@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import cn.linkmore.bean.exception.DataException;
+import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.PrefectureService;
 import cn.linkmore.ops.biz.service.StallLockService;
 import cn.linkmore.ops.biz.service.StallService;
+import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStallLock;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
@@ -44,12 +50,19 @@ public class StallLockController {
 
 	@Resource
 	private StallService stallService;
+	
+	@Autowired
+	private EnterpriseService enterService;
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg save(ReqStallLock record) {
 		ViewMsg msg = null;
 		try {
+			Subject subject = SecurityUtils.getSubject();
+			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+			record.setCreateUserId(person.getId());
+			record.setCreateUserName(person.getUsername());
 			this.stallLockService.save(record);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
@@ -102,6 +115,20 @@ public class StallLockController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", "id");
+		param.put("value", person.getId());
+		ResEnterprise enter = enterService.find(param);
+		if(enter != null) {
+			List<ViewFilter> filters = pageable.getFilters();
+			ViewFilter vf = new ViewFilter();
+			vf.setProperty("createUserId");
+			vf.setValue(person.getId());
+			filters.add(vf);
+		}
+		
 		return this.stallLockService.findPage(pageable);
 	}
 

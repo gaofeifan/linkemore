@@ -34,7 +34,11 @@
     <result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
     <result column="runtime" jdbcType="INTEGER" property="runtime" />
     <result column="increase" jdbcType="VARCHAR" property="increase" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="month_rent" jdbcType="INTEGER" property="monthRent" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    
   </resultMap>
   
   <delete id="delete" parameterType="java.util.List" >
@@ -54,7 +58,8 @@
       base_dict_id, city_id, order_index, 
       leave_time, charge_price, charge_time, 
       type, enterprise_id, category, 
-      limit_status,gateway ,strategy_description, runtime, increase, month_rent)
+      limit_status,gateway ,strategy_description,
+      runtime, increase, month_rent, version, create_user_id, create_user_name)
     values (#{id,jdbcType=BIGINT}, #{strategyId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR}, #{districtId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=DECIMAL}, #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, 
@@ -66,7 +71,8 @@
       #{type,jdbcType=SMALLINT}, #{enterpriseId,jdbcType=BIGINT}, #{category,jdbcType=SMALLINT}, 
       #{limitStatus,jdbcType=SMALLINT}, #{gateway,jdbcType=VARCHAR},
       #{strategyDescription,jdbcType=VARCHAR}, #{runtime,jdbcType=INTEGER},
-      #{monthRent,jdbcType=INTEGER}, #{increase,jdbcType=VARCHAR}
+      #{monthRent,jdbcType=INTEGER}, #{increase,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR},
+      #{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR}
       )
   </insert>
   
@@ -108,7 +114,8 @@
       strategy_description = #{strategyDescription,jdbcType=VARCHAR},
       runtime = #{runtime,jdbcType=INTEGER},
       month_rent = #{monthRent,jdbcType=INTEGER},
-      increase = #{increase,jdbcType=VARCHAR}
+      increase = #{increase,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR}
       
     where id = #{id,jdbcType=BIGINT}
   </update>

@@ -119,6 +119,9 @@
     <result column="lock_down_status" property="lockDownStatus" jdbcType="SMALLINT" />
     <result column="lock_down_time" property="lockDownTime" jdbcType="TIMESTAMP" />
     <result column="status_history" jdbcType="INTEGER" property="statusHistory" />
+    
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, user_id, pre_id,pre_name, stall_id,stall_name, order_no, pay_type, total_amount, actual_amount, status, 
@@ -182,7 +185,7 @@
   <sql id="Ops_Column_List">
     o.id, o.user_id, o.pre_id, o.stall_id, o.order_no, o.pay_type, o.total_amount, o.actual_amount, o.status, 
     o.begin_time, o.username, o.end_time, o.plate_no, o.create_time, o.update_time, o.dock_id,
-    p.name prefecture_name,s.stall_name ,status_time,o.lock_down_status,o.lock_down_time
+    p.name prefecture_name,s.stall_name ,status_time,o.lock_down_status,o.lock_down_time,o.create_user_name
   </sql>
   <select id="findPage" parameterType="java.util.HashMap" resultMap="OpsResultMap">
     select 
@@ -204,6 +207,9 @@
      <if test="stallId!=null">  
     and o.stall_id = #{stallId,jdbcType=VARCHAR}
     </if> 
+    <if test="createUserId!=null">  
+    and o.create_user_id = #{createUserId,jdbcType=BIGINT}
+    </if>
    	<if test="startTime!=null">  
     <![CDATA[and o.create_time >= #{startTime,jdbcType=VARCHAR}]]>
     </if> 
@@ -238,6 +244,9 @@
      <if test="stallId!=null">  
     and o.stall_id = #{stallId,jdbcType=VARCHAR}
     </if> 
+    <if test="createUserId!=null">  
+    and o.create_user_id = #{createUserId,jdbcType=BIGINT}
+    </if>
    	<if test="startTime!=null">  
     <![CDATA[and o.create_time >= #{startTime,jdbcType=VARCHAR}]]>
     </if> 

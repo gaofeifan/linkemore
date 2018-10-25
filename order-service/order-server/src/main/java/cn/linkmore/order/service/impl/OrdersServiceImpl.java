@@ -202,7 +202,7 @@ public class OrdersServiceImpl implements OrdersService {
 	private static Set<Long> STALL_ID_SET = new HashSet<Long>();
 
 	@Transactional(rollbackFor = RuntimeException.class)
-	private void order(Long prefectureId, Long plateId, Long brandId, Long stallId, CacheUser cu) {
+	private void order2(Long prefectureId, Long plateId, Long brandId, Long stallId, CacheUser cu) {
 		ResStallEntity stall = null;
 		Orders o = null;
 		boolean resetRedis = true;
@@ -567,6 +567,19 @@ public class OrdersServiceImpl implements OrdersService {
 		public void run() {
 			log.info("choose stall order thread starting");
 			order(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), cu);
+		}
+	}
+	
+	class UplockThread extends Thread {
+		private Long stallId;
+
+		public UplockThread(Long stallId) {
+			this.stallId = stallId;
+		}
+
+		public void run() {
+			log.info("uplock thread starting {}", stallId);
+			stallClient.uplock(stallId);
 		}
 	}
 
@@ -1768,5 +1781,335 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 	}
 
+	@Transactional(rollbackFor = RuntimeException.class)
+	private void order(Long prefectureId, Long plateId, Long brandId, Long stallId, CacheUser cu) {
+		ResStallEntity stall = null;
+		Orders o = null;
+		boolean resetRedis = true;
+		short failureReason = 0;
+		short bookingStatus = 0;
+		log.info("cu:{} booking preId:{},plateId:{},brandId:{},stallId:{}", cu.getMobile(), prefectureId, plateId,
+				brandId, stallId);
+		try {
+			synchronized (this) {
+				if (ORDER_USER_SET.contains(cu.getId())) { // ？？？
+					bookingStatus = (short) OperateStatus.FAILURE.status;
+					failureReason = (short) OrderFailureReason.UNPAID.value;
+					throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 预约失败
+				}
+				ORDER_USER_SET.add(cu.getId());
+				if (stallId != null) {
+					if (STALL_ID_SET.contains(stallId)) { // ？？？
+						bookingStatus = (short) OperateStatus.FAILURE.status;
+						failureReason = (short) OrderFailureReason.UNPAID.value;
+						throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 预约失败
+					}
+					STALL_ID_SET.add(stallId);
+					log.info(">>>>>>1  STALL_ID_SET = {}", JSON.toJSON(STALL_ID_SET));
+				}
+			}
+			ResUserOrder ruo = this.ordersClusterMapper.findUserLatest(cu.getId()); // 找到最新一单
+			if (ruo != null && (ruo.getStatus().intValue() == OrderStatus.UNPAID.value
+					|| ruo.getStatus().intValue() == OrderStatus.SUSPENDED.value)) {
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.UNPAID.value;
+				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 有订单
+			}
+			if (null == cu.getId() || null == prefectureId || null == plateId) {
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.EXCEPTION.value;
+				throw new BusinessException(StatusEnum.ORDER_CREATE_FAIL); // 预约失败请重新预约
+			}
+			ResVechicleMark vehicleMark = vehicleMarkClient.findById(plateId); // 车牌号管理表
+
+			if (vehicleMark.getUserId().longValue() != cu.getId().longValue()) { // 无空闲车位？？
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.CARNO_NONE.value;
+				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_NONE);
+			}
+			if (!this.checkCarFree(vehicleMark.getVehMark())) {
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.CARNO_BUSY.value;
+				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY); // 当前车牌号已在预约中，请更换车牌号重新预约
+			}
+
+			ResPrefectureDetail pre = prefectureClient.findById(prefectureId);
+			log.info("order-pre:{}", JsonUtil.toJson(pre));
+			String lockSn = "";
+			ResBrandPre brand = null;
+			boolean assign = false;
+			if (stallId != null) {
+				boolean flag = false;
+				stall = this.stallClient.findById(stallId);
+				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+					lockSn = stall.getLockSn();
+					log.info(">>>>>>>2  order-stall-lockSn,{}", lockSn);
+					if(pre != null  && pre.getCategory() == 2) {
+						//根据lockCode查询当前车位是否降下并且上方无车
+						//若上方无车则升起地锁
+						flag = true;
+						Thread thread = new UplockThread(stallId);
+						thread.start();
+					}else {
+						Set<Object> lockSnList = this.redisService
+								.members(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId); // 集合中所有成员元素
+						log.info(">>>>>>>3  lockSnList = {}",JSON.toJSON(lockSnList));
+						if (CollectionUtils.isNotEmpty(lockSnList)) {
+							if (lockSnList.contains(lockSn)) {
+								flag = true;
+								log.info("current lockSn is free, flag = {}", flag);
+								log.info("before remove size = {}",this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId));
+								this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId, lockSn);
+								log.info("after remove size = {}",this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId));
+								this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + lockSn, lockSn,
+										ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+							}
+						}
+					}
+					log.info(">>>>>>>4  current lockSn flag = {}", flag);
+					if (!flag) {
+						resetRedis = false;
+						bookingStatus = (short) OperateStatus.FAILURE.status;
+						failureReason = (short) OrderFailureReason.STALL_NONE.value;
+						throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
+					}
+				}
+			} else {
+				String key = RedisKey.ORDER_ASSIGN_STALL.key; // assign_lock
+				Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key); // 集合中所有成员元素
+				String vehMark = vehicleMark.getVehMark(); // 车牌号
+				for (Object obj : set) {
+					JSONObject json = JSON.parseObject(obj.toString());
+					String vm = json.get("plate").toString(); // 车牌
+					Long pid = Long.parseLong(json.get("preId").toString()); // 车区id
+					if (pid.longValue() == prefectureId.longValue() && vehMark.equals(vm)) { // 找到车区
+						lockSn = json.get("lockSn").toString();
+						Map<String, Object> map = new HashMap<>();
+						map.put("lockSn", lockSn);
+						map.put("plate", vm);
+						map.put("preId", prefectureId.toString());
+						String val = JSON.toJSON(map).toString();
+						this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + val, val,
+								ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+						this.redisService.remove(key, val);
+						assign = true;
+						log.info("use the admin assign stall:{},plate:{}", lockSn, vehicleMark.getVehMark());
+						break;
+					}
+				}
+				if (brandId != null) {
+					log.info("brand pre lockSn:{}", lockSn);
+					brand = entBrandPreClient.findById(brandId);
+					log.info("brandId {},brand {}", JSON.toJSON(brand));
+					if ("".equals(lockSn)) {
+						Object sn = redisService.pop(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + brandId);
+						if (sn != null) {
+							this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + sn.toString(), sn.toString(),
+									ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+							lockSn = sn.toString();
+						}
+					}
+
+				} else {
+					log.info("common pre lockSn:{}", lockSn);
+					// 以下为预约流程
+					if ("".equals(lockSn)) {
+						Object sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + prefectureId);
+						if (sn != null) {
+							this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + sn.toString(), sn.toString(),
+									ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+							lockSn = sn.toString();
+						}
+					}
+				}
+			}
+
+			if (StringUtils.isEmpty(lockSn)) {
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.STALL_NONE.value;
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE); // 无空闲车位，请重新预约
+			}
+			// 根据lockSn获取车位
+			log.info("lock,{}", lockSn);
+			stall = this.stallClient.findByLock(lockSn.trim());
+			log.info("order-stall:{}", JsonUtil.toJson(stall));
+			if (stall == null || stall.getStatus().intValue() != StallStatus.FREE.status) {
+				resetRedis = false;
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.STALL_EXCEPTION.value;
+				log.info("{} create order error with {}", cu.getMobile(), JsonUtil.toJson(stall));
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_EXCEPTION);
+			}
+			ResUserOrder latest = this.ordersClusterMapper.findStallLatest(stall.getId());
+			if (latest != null && latest.getStatus().intValue() == 1) {
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.STALL_ORDERED.value;
+				resetRedis = false;
+				log.info("{} create order error latest order {} is unpaid with stall  ", cu.getMobile(),
+						JsonUtil.toJson(latest), JsonUtil.toJson(stall));
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
+			}
+			log.info("{} create order with{}", cu.getMobile(), JsonUtil.toJson(stall));
+			o = new Orders(); // 插入订单
+			o.setOrderNo(this.getOrderNumber());
+			o.setUserType((short) 0);
+			Date current = new Date();
+			o.setPlateNo(vehicleMark.getVehMark());
+			o.setUsername(cu.getMobile());
+			o.setActualAmount(new BigDecimal(0.0d));
+			o.setBeginTime(current);
+			o.setCreateTime(current);
+			o.setUpdateTime(current);
+			o.setEndTime(current);
+			o.setStrategyId(pre.getStrategyId());
+			// 支付类型1免费2优惠券3账户
+			// 初始化支付类型为账户支付
+			o.setPayType(OrderPayType.FREE.type);
+			o.setPreId(prefectureId);
+			o.setStallId(stall.getId());
+			o.setPreName(pre.getName());
+			o.setStallName(stall.getStallName());
+			o.setStatus(OrderStatus.UNPAID.value);
+			o.setTotalAmount(new BigDecimal(0.0D));
+			o.setUserId(cu.getId());
+			o.setUsername(o.getUsername());
+			o.setClientType(cu.getClient());
+			// 更新车位状态
+			// 订单详情
+			Long dictId = pre.getBaseDictId();
+			if (null != dictId) {
+				ResOldDict dict = this.baseDictClient.findOld(dictId);
+				if (null != dict) {
+					o.setDockId(dict.getCode());
+				}
+			}
+			o.setStallGuidance(pre.getAddress() + stall.getStallName());
+			o.setStallType(stall.getType());
+			if (brand != null) {
+				o.setBrandId(brandId);
+				o.setEntId(brand.getEntId());
+				o.setStrategyId(brand.getStrategyId());
+				o.setPreName(brand.getName());
+			}
+			o.setStallLocal(o.getPreName() + stall.getStallName());
+			this.orderMasterMapper.save(o);
+
+			OrdersDetail od = new OrdersDetail();
+			od.setAccountId(cu.getId());
+			od.setBeginTime(current);
+			od.setCouponsMoney(new BigDecimal(0.0D));
+			od.setCreateTime(current);
+			od.setDayFee(new BigDecimal(0.0D));
+			od.setDayTime(0);
+			od.setNightFee(new BigDecimal(0.0D));
+			od.setEndTime(new Date());
+			od.setNightTime(0);
+			od.setOrdNo(o.getOrderNo());
+			od.setStallName(stall.getStallName());
+			od.setStrategyId(pre.getStrategyId());
+			od.setParkName(pre.getName());
+			od.setUpdateTime(current);
+			od.setOrderId(o.getId());
+			this.ordersDetailMasterMapper.save(od);
+			this.stallClient.order(stall.getId());
+			bookingStatus = (short) OperateStatus.SUCCESS.status;
+			failureReason = (short) OrderFailureReason.NONE.value;
+			this.userClient.order(cu.getId());
+			if (assign) {
+				log.info("use the admin assign stall:{},orderNo:{}", lockSn, o.getOrderNo());
+				StallAssign sa = stallAssignClusterMapper.findByLockSn(lockSn);
+				if (sa != null && sa.getStatus().intValue() == StallAssignStatus.FREE.status) {
+					sa.setLockSn(lockSn);
+					sa.setOrderId(o.getId());
+					sa.setOrderNo(o.getOrderNo());
+					sa.setOrderTime(o.getCreateTime());
+					sa.setStatus((short) StallAssignStatus.ORDER.status);
+					stallAssignMasterMapper.orderUpdate(sa);
+				}
+			}
+			if (StringUtils.isNotBlank(o.getDockId())) {
+				Thread thread = new ProduceBookThread(o);
+				thread.start();
+			}
+		} catch (BusinessException e) {
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement[] stackArray = e.getStackTrace();
+			for (int i = 0; i < stackArray.length; i++) {
+				StackTraceElement element = stackArray[i];
+				if (element.toString().indexOf("cn.linkmore") >= 0) {
+					sb.append(element.toString() + "\n");
+				}
+			}
+			log.info(sb.toString());
+			if (null != stall && resetRedis) {
+				if (brandId != null) {
+					this.redisService.add(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + brandId, stall.getLockSn());
+				} else {
+					this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+				}
+			}
+			throw e;
+		} catch (RuntimeException e) {
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement[] stackArray = e.getStackTrace();
+			for (int i = 0; i < stackArray.length; i++) {
+				StackTraceElement element = stackArray[i];
+				if (element.toString().indexOf("cn.linkmore") >= 0) {
+					sb.append(element.toString() + "\n");
+				}
+			}
+			log.info(sb.toString());
+			if (null != stall && resetRedis) {
+				if (brandId != null) {
+					this.redisService.add(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + brandId, stall.getLockSn());
+				} else {
+					this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+				}
+			}
+			throw e;
+		} catch (Exception e) {
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement[] stackArray = e.getStackTrace();
+			for (int i = 0; i < stackArray.length; i++) {
+				StackTraceElement element = stackArray[i];
+				if (element.toString().indexOf("cn.linkmore") >= 0) {
+					sb.append(element.toString() + "\n");
+				}
+			}
+			log.info(sb.toString());
+			if (null != stall && resetRedis) {
+				if (brandId != null) {
+					this.redisService.add(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + brandId, stall.getLockSn());
+				} else {
+					this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+				}
+			}
+			throw new RuntimeException("异常");
+		} finally {
+			ORDER_USER_SET.remove(cu.getId());
+			if (stallId != null) {
+				log.info(">>>>>>>5  cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId, JSON.toJSON(STALL_ID_SET));
+				if (STALL_ID_SET.contains(stallId)) {
+					STALL_ID_SET.remove(stallId);
+					log.info(">>>>>>>6  cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId,
+							JSON.toJSON(STALL_ID_SET));
+				}
+			}
+			Thread thread = new BookingThread(prefectureId, cu.getId(), bookingStatus, failureReason);
+			thread.start();
+			String content = "订单预约失败";
+			if (stallId != null) {
+				content = "当前车位已被占用，请选择其他车位";
+			}
+			Boolean status = false;
+			if (bookingStatus == OperateStatus.SUCCESS.status) {
+				content = "订单预约成功";
+				status = true;
+			}
+			thread = new PushThread(cu.getId().toString(), "车位预约通知", content, PushType.ORDER_CREATE_NOTICE, status);
+			thread.start();
+		}
+
+	}
 	
 }

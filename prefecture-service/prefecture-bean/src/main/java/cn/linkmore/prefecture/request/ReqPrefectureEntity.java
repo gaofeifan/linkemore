@@ -148,8 +148,44 @@ public class ReqPrefectureEntity {
      * 计费策略描述
      */
     private String strategyDescription;
+    /**
+     * 版本
+     */
+    private String version;
+    /**
+     * 创建用户Id
+     */
+    private Long createUserId;
+    /**
+     * 创建用户名称
+     */
+    private String createUserName;
     
-    public Integer getRuntime() {
+    public Long getCreateUserId() {
+		return createUserId;
+	}
+
+	public void setCreateUserId(Long createUserId) {
+		this.createUserId = createUserId;
+	}
+
+	public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public Integer getRuntime() {
 		return runtime;
 	}
 

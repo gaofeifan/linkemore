@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,11 +23,15 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.linkmore.lock.bean.LockBean;
+import com.linkmore.lock.factory.LockFactory;
+import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.response.ResVechicleMark;
+import cn.linkmore.bean.common.Constants.LockStatus;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -62,6 +67,7 @@ import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
@@ -94,6 +100,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Autowired
 	private RedisService redisService;
+	
+	@Autowired
+	private LockFactory lockFactory;
 	
 	@Override
 	public ResPrefectureDetail findById(Long preId) {
@@ -286,8 +295,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return this.prefectureMasterMapper.update(pre);
 	}
 	@Override
-	public Tree findTree() {
-		Map<String, Object> param = new HashMap<>();
+	public Tree findTree(Map<String,Object> param) {
+		/*Map<String, Object> param = new HashMap<>();*/
 		param.put("status", "0");
 		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
 		Tree tree = null;
@@ -420,8 +429,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return flag;
 	}
 
-	@Override
-	public ResStallInfo findStallList(ReqBooking reqBooking) {
+	public ResStallInfo findStallList2(ReqBooking reqBooking) {
 		ResStallInfo stallInfo = new ResStallInfo();
 		List<ResStall> stallList = new ArrayList<ResStall>();
 		ResVechicleMark vehicleMark = vehicleMarkClient.findById(reqBooking.getPlateId());
@@ -466,6 +474,90 @@ public class PrefectureServiceImpl implements PrefectureService {
 			stallInfo.setPreName(pre.getName());
 			if(pre.getStatus() == 1) {
 				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  //无空闲车位可用
+			}
+		}
+		stallInfo.setAssignFlag(assign);
+		stallInfo.setStalls(stallList);
+		log.info("stallInfo = {}",JSON.toJSON(stallInfo));
+		if(!assign) {
+			if(CollectionUtils.isEmpty(stallList)) {
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  //无空闲车位可用
+			}
+		}
+		return stallInfo;
+	}
+
+	@Override
+	public cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId) {
+		ResPrefectureDetail prefecture = prefectureClusterMapper.findById(preId);
+		
+		return null;
+	}
+	
+	public ResStallInfo findStallList(ReqBooking reqBooking) {
+		ResStallInfo stallInfo = new ResStallInfo();
+		List<ResStall> stallList = new ArrayList<ResStall>();
+		ResVechicleMark vehicleMark = vehicleMarkClient.findById(reqBooking.getPlateId());
+		if(vehicleMark == null) {
+			throw new BusinessException(StatusEnum.VALID_EXCEPTION);
+		}
+		String vehMark = vehicleMark.getVehMark();    //车牌号
+		log.info("vehicleMark = {}",JSON.toJSON(vehicleMark));
+		if (!this.checkCarFree(vehicleMark.getVehMark())) {
+			throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY);  //当前车牌号已在预约中，请更换车牌号重新预约
+		}
+		boolean assign = false;
+		ResponseMessage<LockBean> rm = null ;
+		List<LockBean> lbs = null;
+		Set<Object> lockSnList = new HashSet<Object>();
+		ResPrefectureDetail pre = this.prefectureClusterMapper.findById(reqBooking.getPrefectureId());
+		if(pre != null && StringUtils.isNotBlank(pre.getGateway())) {
+			stallInfo.setPreName(pre.getName());
+			if(pre.getStatus() == 1) {
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE);  //无空闲车位可用
+			}
+			if(pre.getCategory() == 2) {
+				//共享车位逻辑
+				rm = this.lockFactory.findAvailableLock(pre.getGateway());
+				lbs = rm.getDataList();
+				log.info("share pre rm = {}",JsonUtil.toJson(rm));
+				if (rm.getMsgCode() != null && rm.getMsgCode() == 200 && rm.getDataList() != null) {
+					for (LockBean lb : lbs) {
+						if (lb.getLockState().intValue() == LockStatus.DOWN.status && lb.getParkingState() == 0) {
+							lockSnList.add(lb.getLockCode());
+						}
+					}
+				}
+				log.info("share pre lockSnList = {}",JsonUtil.toJson(lockSnList));
+			} else {
+				Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key);  //集合中所有成员元素
+				for (Object obj : set) {
+					JSONObject json = JSON.parseObject(obj.toString());
+					String vm = json.get("plate").toString();    //车牌
+					Long pid = Long.parseLong(json.get("preId").toString());  //车区id
+					if (pid.longValue() == reqBooking.getPrefectureId().longValue() && vehMark.equals(vm)) {   //找到车区
+						String lockSn = json.get("lockSn").toString();
+						assign = true;
+						log.info("use the admin assign stall:{},plate:{}", lockSn, vehicleMark.getVehMark());
+						break;
+					}
+				}
+				lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + reqBooking.getPrefectureId());  //集合中所有成员元素
+				log.info("common pre lockSnList = {}",JsonUtil.toJson(lockSnList));
+			}
+		}
+		if(CollectionUtils.isNotEmpty(lockSnList)) {
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("list", lockSnList);
+			ResStall resStall = null;
+			List<cn.linkmore.prefecture.response.ResStall> freeStallList = stallClusterMapper.findFreeStallList(params);
+			log.info("---------freeStallList = {}",JSON.toJSON(freeStallList));
+			for(cn.linkmore.prefecture.response.ResStall stall: freeStallList) {
+				resStall = new ResStall();
+				resStall.setStallId(stall.getId());
+				resStall.setLockSn(stall.getLockSn());
+				resStall.setStallName(stall.getStallName());
+				stallList.add(resStall);
 			}
 		}
 		stallInfo.setAssignFlag(assign);

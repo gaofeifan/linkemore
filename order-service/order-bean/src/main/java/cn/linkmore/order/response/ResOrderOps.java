@@ -43,8 +43,28 @@ public class ResOrderOps {
     private String dockId;
     
     private Short statusHistory;//挂起和关闭状态
+    
+    private Long createUserId;
+    
+    private String createUserName;
 
-    public Short getStatusHistory() {
+    public Long getCreateUserId() {
+		return createUserId;
+	}
+
+	public void setCreateUserId(Long createUserId) {
+		this.createUserId = createUserId;
+	}
+
+	public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
+
+	public Short getStatusHistory() {
 		return statusHistory;
 	}
 

@@ -19,6 +19,10 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -30,13 +34,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import cn.linkmore.bean.exception.DataException;
+import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.response.ResDistrict;
 import cn.linkmore.common.response.ResOldDict;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.PrefectureService;
+import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.utils.ExcelUtil;
 import cn.linkmore.ops.utils.QrCodeGenerateUtil;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -59,18 +67,41 @@ public class PrefectureController {
 
 	@Autowired
 	private PrefectureService preService;
-
-	/*
-	 * @Resource private EnterpriseService enterpriseService;
-	 */
-
+    
+	@Autowired
+	private EnterpriseService enterService;
+	
 	/*
 	 * 专区信息列表
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", "id");
+		param.put("value", person.getId());
+		ResEnterprise enter = enterService.find(param);
+		if(enter != null) {
+			List<ViewFilter> filters = pageable.getFilters();
+			ViewFilter vf = new ViewFilter();
+			vf.setProperty("createUserId");
+			vf.setValue(person.getId());
+			filters.add(vf);
+		}
 		return this.preService.findPage(pageable);
+	}
+	
+	/*
+	 * 合作商家专区信息列表
+	 */
+	@RequestMapping(value = "/list-business", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage listBusiness(HttpServletRequest request, ViewPageable pageable) {
+		 Subject subject = SecurityUtils.getSubject();
+		 ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+		 return this.preService.findPage(pageable);
 	}
 
 	/*
@@ -154,6 +185,10 @@ public class PrefectureController {
 	public ViewMsg save(ReqPrefectureEntity prefecture) {
 		ViewMsg msg = null;
 		try {
+			Subject subject = SecurityUtils.getSubject();
+			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+			prefecture.setCreateUserId(person.getId());
+			prefecture.setCreateUserName(person.getUsername());
 			this.preService.save(prefecture);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
