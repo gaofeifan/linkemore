@@ -509,6 +509,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 				if(strategyBase.getType() == 4) {
 					Double topFee = strategyBase.getTopDaily()/strategyBase.getTimelyLong() * strategyBase.getBasePrice().doubleValue();
 					detail.setTopFee(topFee.toString());
+				}else {
+					detail.setTopFee("无");
 				}
 			}
 			List<ResPrefectureGroup> preGroup = new ArrayList<ResPrefectureGroup>();
