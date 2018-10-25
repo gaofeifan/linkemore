@@ -52,7 +52,7 @@ public class AuthController {
 	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
-		log.info("session person {}, request method{}",JSON.toJSON(person),request.getMethod());
+ 		log.info("session person {}, request method{}",JSON.toJSON(person),request.getMethod());
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (person != null) {
 			map.put("login", true);

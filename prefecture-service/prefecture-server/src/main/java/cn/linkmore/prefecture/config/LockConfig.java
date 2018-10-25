@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import com.linkmore.lock.bean.AbuttingBean;
+import com.linkmore.lock.bean.LockBean;
 import com.linkmore.lock.factory.LockFactory;
+import com.linkmore.lock.response.ResponseMessage;
 /**
  * Config - lock配置
  * @author liwenlong
@@ -31,4 +33,20 @@ public class LockConfig {
 		lockFactory.setAbuttingBean(abuttingBean);
 		return lockFactory;
 	}
+	
+	public static void main(String[] args) {
+		
+		LockFactory lockFactory =   LockFactory.getInstance();
+		AbuttingBean abuttingBean = new AbuttingBean();
+		abuttingBean.setLinkmoreUrl("http://192.168.1.211:8081");
+		abuttingBean.setLinkmoreNewUrl("http://192.168.1.211:8081");
+		lockFactory.setAbuttingBean(abuttingBean);
+		ResponseMessage<LockBean> res =	lockFactory.lockDown("FC7A707E315A");
+		System.out.println(res.getMsgCode());
+		
+	}
+	
+	
 }
+
+

@@ -36,7 +36,7 @@
       lock_id, lock_sn, lock_status, 
       status, stall_local, route_guidance, 
       create_time, update_time, image_url, 
-      lock_battery, lock_voltage, bind_order_status, type, brand 
+      lock_battery, lock_voltage, bind_order_status, type, brand ,area_name
       )
     values (#{id,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}, #{sellCount,jdbcType=INTEGER}, 
       #{preId,jdbcType=BIGINT}, #{gatewayId,jdbcType=BIGINT}, #{radar,jdbcType=VARCHAR}, 
@@ -44,7 +44,7 @@
       #{status,jdbcType=INTEGER}, #{stallLocal,jdbcType=VARCHAR}, #{routeGuidance,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{imageUrl,jdbcType=VARCHAR}, 
       #{lockBattery,jdbcType=INTEGER}, #{lockVoltage,jdbcType=REAL}, #{bindOrderStatus,jdbcType=SMALLINT},
-      #{type,jdbcType=SMALLINT}, #{brand,jdbcType=SMALLINT}
+      #{type,jdbcType=SMALLINT}, #{brand,jdbcType=SMALLINT},#{areaName,jdbcType=VARCHAR}
       )
   </insert>
   

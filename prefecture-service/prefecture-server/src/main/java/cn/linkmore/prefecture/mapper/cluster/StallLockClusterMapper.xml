@@ -11,6 +11,16 @@
     <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
   </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="cn.linkmore.prefecture.entity.StallLock">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="bind_time" jdbcType="TIMESTAMP" property="bindTime" />
+  </resultMap>
+  
   <sql id="Base_Column_List">
     id, sn, prefecture_id, stall_id, create_time, bind_time, create_user_id, create_user_name
   </sql>
@@ -19,6 +29,13 @@
     <include refid="Base_Column_List" />
     from t_biz_stall_lock
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+   <select id="findBySn" parameterType="java.lang.String" resultMap="BaseResultMap2">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_stall_lock
+    where sn = #{sn,jdbcType=BIGINT}
   </select>
   
   <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">

@@ -3,12 +3,16 @@ package cn.linkmore.prefecture.dao.cluster;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+
+import cn.linkmore.prefecture.entity.StallLock;
 import cn.linkmore.prefecture.response.ResStallLock;
 @Mapper
 public interface StallLockClusterMapper {
 
     ResStallLock findById(Long id);
 
+    StallLock findBySn(String sn);
+    
 	Integer count(Map<String, Object> param);
 
 	List<ResStallLock> findPage(Map<String, Object> param);
