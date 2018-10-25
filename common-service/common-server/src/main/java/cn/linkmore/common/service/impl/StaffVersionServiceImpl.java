@@ -78,7 +78,6 @@ public class StaffVersionServiceImpl implements StaffVersionService {
 			version.setVersion(v.getVersion());
 			version.setVersionCode(v.getCode());
 			version.setVersionName(v.getName());
-			version.setDownloadUrl(v.getType()+"");
 			return version;
 		}
 		return null;

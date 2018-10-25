@@ -70,8 +70,8 @@ public class EntOperateAuthController {
 
 	@RequestMapping(value="/tree" , method=RequestMethod.GET)
 	@ResponseBody
-	public List<Tree> tree(){
-		return this.operateService.tree();
+	public List<Tree> tree(@RequestParam("entId") Long entId){
+		return this.operateService.tree(entId);
 	}
 
 	@RequestMapping(value="/bind" , method=RequestMethod.POST)

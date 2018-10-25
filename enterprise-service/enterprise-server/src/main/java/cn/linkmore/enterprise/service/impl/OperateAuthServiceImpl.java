@@ -70,9 +70,19 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 	@Resource
 	private OpsStallClient stallClient;
 	@Override
-	public List<Tree> tree() {
-		List<ResEnterprise> list = this.enterpriseService.findList(null);
-		List<ResEntPrefecture> preList = this.entPreService.findList(null);
+	public List<Tree> tree(Long entId) {
+		List<ResEnterprise> list = null;
+		List<ResEntPrefecture> preList = null;
+		if(entId == 0) {
+			list = this.enterpriseService.findList(null);
+			preList = this.entPreService.findList(null);
+		}else {
+			Map<String,Object> param = new HashMap<>();
+			param.put("id", entId);
+			list = this.enterpriseService.findList(param);
+			param.put("entId", entId);
+			preList = this.entPreService.findList(param);
+		}
 		Map<String, Object> map = new HashMap<>();
 		List<Tree> roots = new ArrayList<>();
 		List<Long> ids = preList.stream().map(p -> p.getPreId()).collect(Collectors.toList());
