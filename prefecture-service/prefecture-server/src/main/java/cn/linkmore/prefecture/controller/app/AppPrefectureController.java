@@ -16,6 +16,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
+import cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResStallInfo;
@@ -68,6 +69,23 @@ public class AppPrefectureController {
 		}
 		return response;
 	} 
+	
+	@ApiOperation(value = "车区详情", notes = "根据车区ID查看车区详情", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<ResPrefectureDetail> findById(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
+		ResponseEntity<ResPrefectureDetail> response = null;
+		try { 
+			ResPrefectureDetail preDetail = this.prefectureService.findPreDetailById(preId);
+			response = ResponseEntity.success(preDetail, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
+	
 	
 	/**
 	 * 查询车区空闲车位

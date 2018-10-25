@@ -145,4 +145,6 @@ public interface PrefectureService {
 	 */
 	List<ResPre> findPreByIds(Map<String, Object> map);
 
+	cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId);
+
 }

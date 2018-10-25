@@ -478,5 +478,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}
 		return stallInfo;
 	}
+
+	@Override
+	public cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId) {
+		ResPrefectureDetail prefecture = prefectureClusterMapper.findById(preId);
+		
+		return null;
+	}
 	
 }
