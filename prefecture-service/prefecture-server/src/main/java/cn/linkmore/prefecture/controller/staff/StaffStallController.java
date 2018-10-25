@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
+import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
@@ -89,9 +92,17 @@ public class StaffStallController {
 	@ApiOperation(value = "地锁安装", notes = "地锁安装")
 	@RequestMapping(value = "/installLock", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Void> installLock(HttpServletRequest request, @Validated @RequestBody ReqStall reqStall) {
-		this.stallService.install(reqStall);
-		return ResponseEntity.success(null, request);
+	public ResponseEntity<?> installLock(HttpServletRequest request, @Validated @RequestBody ReqLockIntall reqLockIntall) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			this.stallService.install(reqLockIntall);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 
 }

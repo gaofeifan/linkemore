@@ -51,7 +51,7 @@ public class CusTomerInfoServiceImpl implements CusTomerInfoService {
 		cus = customerInfoMapper.selectByPrimaryKey(userId);
 		Date createDate = new Date();
 		CustomerResponseBean dict = this.findCustoerData();
-		Object obj = redisTemplate.opsForValue().get("car_brand_list");
+		Object obj = redisTemplate.opsForValue().get("common:car-brand:");
 		if (cus == null) {
 			cus = new CustomerInfo();
 			cus.setId(userId);

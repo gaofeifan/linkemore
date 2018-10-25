@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -56,6 +57,7 @@ import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
+import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
@@ -240,7 +242,7 @@ public class StallServiceImpl implements StallService {
 			long startTime = System.currentTimeMillis();
 			ResponseMessage<LockBean> res = lockFactory.lockDown(stall.getLockSn());
 			long endTime = System.currentTimeMillis();
-			log.info("downing.....................{}降锁成功时间:{}秒",stall.getStallName(), (endTime - startTime)/1000);
+			log.info("downing.....................{}降锁成功时间:{}秒", stall.getStallName(), (endTime - startTime) / 1000);
 			int code = res.getMsgCode();
 			if (code == 200) {
 				log.info("downing.....................success");
@@ -355,38 +357,56 @@ public class StallServiceImpl implements StallService {
 		log.info("--------save--------interface------stall = {}", JSON.toJSON(stall));
 		return this.stallMasterMapper.save(stall);
 	}
-	
-	@Override
-	public void install(ReqStall reqStall) {
-		Date now = new Date();
-		reqStall.setSellCount(0);
-		reqStall.setGatewayId(0l);
-		reqStall.setStatus(4);
-		reqStall.setBindOrderStatus((short) 0);
-		reqStall.setCreateTime(now);
-		reqStall.setUpdateTime(now);
-		
-		reqStall.setLockStatus(null);
-		reqStall.setLockSn(reqStall.getLockSn());
-		reqStall.setStatus(4);
-		reqStall.setLockBattery(0);
 
-		Stall stall = new Stall();
-		stall = ObjectUtils.copyObject(reqStall, stall);
-		//插入车位
+	@Override
+	public void install(ReqLockIntall reqLockIntall) {
+		
+		Date now = new Date();
+	    StallLock stallLock = new StallLock();
+	    Stall stall = new Stall();
+
+	    stallLock =	stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
+		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
+	    //验证
+		if(stallLock!=null|| stall!=null ) {
+			throw new BusinessException(StatusEnum.LOCK_SN_AlREADY_BAND);
+		}
+		
+		 stallLock = new StallLock();
+	     stall = new Stall();
+		
+		// 插入锁
+		stallLock.setCreateTime(now);
+		stallLock.setSn(reqLockIntall.getLockSn());
+		stallLockMasterMapper.save(stallLock);
+		stallLock = stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
+
+		// 插入新车位并绑定
+		stall.setStallName(reqLockIntall.getStallName());
+		stall.setSellCount(0);
+		stall.setPreId(reqLockIntall.getPreId());
+		stall.setGatewayId(0l);
+		stall.setBindOrderStatus((short) 0);
+		stall.setStatus(4);
+		stall.setLockBattery(0);
+		stall.setCreateTime(now);
+		stall.setUpdateTime(now);
+		stall.setLockSn(reqLockIntall.getLockSn());
+		stall.setLockId(stallLock.getId());
+		stall.setLockStatus(0);
+		stall.setLockBattery(0);
+		stall.setAreaName(reqLockIntall.getAreaName());
+		stall.setStallLocal(reqLockIntall.getStallName());
+		// 插入车位
 		this.stallMasterMapper.save(stall);
-		
-		ResStallLock lock = stallLockClusterMapper.findById(stall.getLockId());
-		lock.setBindTime(now);
-		lock.setPrefectureId(reqStall.getPreId());
-		lock.setStallId(reqStall.getId());
-		
-		StallLock stallLock = new StallLock();
-		stallLock = ObjectUtils.copyObject(lock, stallLock);
+		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
+
 		//更新锁
-		this.stallLockMasterMapper.updateBind(stallLock);
+		stallLock.setBindTime(now);
+		stallLock.setStallId(stall.getId());
+		stallLock.setPrefectureId(reqLockIntall.getPreId());
+		stallLockMasterMapper.updateBind(stallLock);
 	}
-	
 
 	@Override
 	public int update(ReqStall reqStall) {
@@ -814,10 +834,10 @@ public class StallServiceImpl implements StallService {
 		List<Long> list = pres.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
 		map.put("preIds", list);
 		map.put("cityId", cityId);
-		map.put("categorys", Arrays.asList(0,1));
+		map.put("categorys", Arrays.asList(0, 1));
 		List<ResPre> pre = this.prefectureService.findPreByIds(map);
 		List<ResStaffPreList> resPres = new ArrayList<>();
-		if(pre == null || pre.size() ==0 ) {
+		if (pre == null || pre.size() == 0) {
 			return resPres;
 		}
 		List<ResAdminAuthStall> adminStalls = this.adminAuthStallClusterMapper.findStallList(map);
@@ -929,8 +949,8 @@ public class StallServiceImpl implements StallService {
 						ResStaffStallList.setPlateNo(resOrderPlate.getPlateNo());
 					}
 				}
-				
-			}else if(resStall.getStatus() == 1) {
+
+			} else if (resStall.getStatus() == 1) {
 				// 指定车位锁
 				int assignStatus = 1;
 				String lockSn = resStall.getLockSn();
@@ -957,7 +977,7 @@ public class StallServiceImpl implements StallService {
 					}
 				}
 			}
-			if(resStall.getBindOrderStatus() != null && resStall.getBindOrderStatus() != 0) {
+			if (resStall.getBindOrderStatus() != null && resStall.getBindOrderStatus() != 0) {
 				ResStaffStallList.setExcStatus(false);
 			}
 			boolean falg = true;
@@ -1020,10 +1040,10 @@ public class StallServiceImpl implements StallService {
 		List<ResAdminAuthStall> list = this.adminAuthStallClusterMapper.findStallList(map);
 		return list != null && list.size() != 0 ? true : false;
 	}
-	
+
 	/**
 	 * 管理版锁操作
-	 */ 
+	 */
 	@Override
 	public void operating(ReqControlLock reqc) {
 		TaskPool.getInstance().task(new Runnable() {
@@ -1032,7 +1052,8 @@ public class StallServiceImpl implements StallService {
 				String uid = String.valueOf(redisService.get(reqc.getKey()));
 				Stall stall = stallClusterMapper.findById(reqc.getStallId());
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-					log.info("operating············name:{},··········sn:{}", stall.getStallName(), stall.getLockSn());
+					log.info("operating············name:{},··········sn:{},··········uid:{}", stall.getStallName(),
+							stall.getLockSn(), uid);
 					ResponseMessage<LockBean> res = null;
 					// 1 降下 2 升起
 					if (reqc.getStatus() == 1) {
@@ -1053,45 +1074,29 @@ public class StallServiceImpl implements StallService {
 			}
 		});
 	}
-	
-	
-	void	sendMsgT(String uid, Integer lockstatus, int code){
-		TaskPool.getInstance().task( new Runnable() {
+
+	void sendMsgT(String uid, Integer lockstatus, int code) {
+		TaskPool.getInstance().task(new Runnable() {
 			@Override
 			public void run() {
 				String title = "车位锁操作通知";
 				String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");
 				PushType type = PushType.LOCK_CONTROL_NOTICE;
 				String bool = (code == 200 ? "true" : "false");
-				Token token = (Token) redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key + uid.toString());
-				log.info("send>>>" + JsonUtil.toJson(token));
-				if (token != null) {
-					if (token.getClient() == Constants.ClientSource.WXAPP.source) {
-						log.info("..........socket start...............");
-						/*CacheUser cu = (CacheUser) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + token.getAccessToken());
-						Map<String, Object> map = new HashMap<String, Object>();
-						map.put("title", title);
-						map.put("type", type);
-						map.put("content", content);
-						map.put("data", token.getAccessToken());
-						map.put("alias", cu.getId());
-						ResEntStaff staff = entStaffClient.findById(cu.getId());
-						userSocketClient.push(JsonUtil.toJson(map), staff.getOpenId());*/
-					} else {
-						ReqPush rp = new ReqPush();
-						rp.setAlias(uid);
-						rp.setTitle(title);
-						rp.setContent(content);
-						rp.setClient(token.getClient());
-						rp.setType(type);
-						rp.setData(bool);
-						sendClient.give(rp);
-					}
-				}
+				Token token = (Token) redisService.get(RedisKey.STAFF_STAFF_AUTH_TOKEN.key + uid.toString());
+
+				log.info("sendMsgT   send>>>" + uid);
+				ReqPush rp = new ReqPush();
+				rp.setAlias(uid);
+				rp.setTitle(title);
+				rp.setContent(content);
+				rp.setClient(token.getClient());
+				rp.setType(type);
+				rp.setData(bool);
+				sendClient.give(rp);
 			}
 		});
 	}
-	
 
 	@Override
 	public ResStaffStallDetail findStaffStallDetails(HttpServletRequest request, Long stallId) {
@@ -1317,17 +1322,14 @@ public class StallServiceImpl implements StallService {
 	public void reset(Long stallId, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
-		if(checkStaffStallAuth(cu.getId(), stallId)) {
+		if (checkStaffStallAuth(cu.getId(), stallId)) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("stallId", stallId);
 			map.put("status", 1);
 			this.feignStallExcStatusClient.updateExcStatus(map);
-		}else {
+		} else {
 			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
 		}
 	}
-	
-	
-	
 
 }

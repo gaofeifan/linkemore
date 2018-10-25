@@ -94,7 +94,23 @@ public class Stall {
      */
     private Short brand = 0;
     
-    public Short getType() {
+    
+    /**
+     * 分区名称
+     */
+    private String areaName;
+    
+    
+    
+    public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+
+	public Short getType() {
 		return type;
 	}
 

@@ -45,15 +45,6 @@ public interface StallClusterMapper {
 	 */
 	List<ResStall> findStallsByPreId(Long preId);
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * 查找所有的车位
 	 * @return
