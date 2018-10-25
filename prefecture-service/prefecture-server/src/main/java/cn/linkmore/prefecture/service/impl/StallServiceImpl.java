@@ -1183,10 +1183,12 @@ public class StallServiceImpl implements StallService {
 				}
 			}
 		}
-		if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() != 0) {
+		if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 1) {
 			detail.setResetStatus(false);
 			detail.setExcCode(0L);
-			detail.setExcName("订单挂起或关闭后未释放");
+			detail.setExcName("订单挂起未释放");
+		}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
+			detail.setOrderStatus((short)7);
 		}
 		// 指定车位锁
 		int assignStatus = 1;
