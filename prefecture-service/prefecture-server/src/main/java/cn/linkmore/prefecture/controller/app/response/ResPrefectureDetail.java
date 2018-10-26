@@ -31,8 +31,30 @@ public class ResPrefectureDetail {
 	@ApiModelProperty(value = "24小时封顶计费")
 	private String topFee;
 	
+	@ApiModelProperty(value = "推荐车牌ID")
+	private Long plateId;
+	
+	@ApiModelProperty(value = "推荐车牌号")
+	private String plateNumber;
+	
 	@ApiModelProperty(value = "车区分组列表")
 	private List<ResPrefectureGroup> preGroupList; 
+	
+	public Long getPlateId() {
+		return plateId;
+	}
+
+	public void setPlateId(Long plateId) {
+		this.plateId = plateId;
+	}
+
+	public String getPlateNumber() {
+		return plateNumber;
+	}
+
+	public void setPlateNumber(String plateNumber) {
+		this.plateNumber = plateNumber;
+	}
 
 	public Long getId() {
 		return id;

@@ -489,8 +489,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 
 	@Override
-	public cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId) {
+	public cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId, HttpServletRequest request) {
 		cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail detail = new cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail();
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request));
 		ResPrefectureDetail preDetail = prefectureClusterMapper.findById(preId);
 		if(preDetail != null) {
 			detail.setId(preDetail.getId());
@@ -521,6 +522,28 @@ public class PrefectureServiceImpl implements PrefectureService {
 			group.setLeisureStall(count.intValue());
 			preGroup.add(group);
 			detail.setPreGroupList(preGroup);
+			
+			Long plateId = null;
+			String plateNumber = null;
+			if(cu!=null && cu.getId()!=null){
+				ResUserOrder ro = this.orderClient.last(cu.getId());
+				List<ResVechicleMark> plates = this.vehicleMarkClient.list(cu.getId());
+				if(ro!=null) {
+					Map<String,Long> plateMap = new HashMap<String,Long>();
+					for(ResVechicleMark rvm:plates) {
+						plateMap.put(rvm.getVehMark(), rvm.getId());
+					}
+					plateNumber = ro.getPlateNo();
+					plateId = plateMap.get(plateNumber);
+					if(plateId==null) {
+						plateNumber = null; 
+					}
+				}
+				if(plateNumber==null && CollectionUtils.isNotEmpty(plates)){
+					plateId = plates.get(0).getId();
+					plateNumber = plates.get(0).getVehMark();
+				}
+			}
 		}
 		return detail;
 	}
