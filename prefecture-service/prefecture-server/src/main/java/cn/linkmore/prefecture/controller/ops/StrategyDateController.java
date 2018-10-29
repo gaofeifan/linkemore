@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.controller.ops;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +81,20 @@ public class StrategyDateController {
 	public ViewPage list(@RequestBody ViewPageable pageable) {
 		return this.strategyDateService.findPage(pageable);
 	}
+	
+	/**
+	 * 列表-无分页
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStrategyDate> findList(){
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("status", 2);
+		return this.strategyDateService.findList(param);
+	}
+	
 	
 	/**
 	 * 根据id获取一条记录
