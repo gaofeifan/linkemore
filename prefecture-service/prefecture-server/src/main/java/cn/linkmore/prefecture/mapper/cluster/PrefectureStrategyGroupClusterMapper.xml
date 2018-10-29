@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.PrefectureStrategyGroupClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.PrefectureStrategyGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="prefecture_strategy_id" jdbcType="BIGINT" property="prefectureStrategyId" />
+    <result column="strategy_group_id" jdbcType="BIGINT" property="strategyGroupId" />
+    <result column="strategy_date_id" jdbcType="BIGINT" property="strategyDateId" />
+    <result column="park_code" jdbcType="BIGINT" property="parkCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, prefecture_strategy_id, strategy_group_id, strategy_date_id, park_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_prefecture_strategy_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findList" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from v_prefecture_strategy_group
+		where 1 = 1
+		and prefecture_strategy_id =	#{prefectureStrategyId,jdbcType=BIGINT}
+		order by id ASC
+ </select>
+ 
+</mapper>
