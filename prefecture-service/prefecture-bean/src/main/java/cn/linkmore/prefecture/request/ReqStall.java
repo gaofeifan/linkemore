@@ -16,7 +16,6 @@ public class ReqStall {
 	public static int LOCK_STATUS_UP = 1; 
 	public static short BIND_ORDER_STATUS_NONE = 0; 
 	public static short ORDER_ClOSE = 2; 
-	public static short ORDER_SUSPENDED   = 1; 
 	/**
 	 * 主键
 	 */
@@ -98,7 +97,11 @@ public class ReqStall {
      * 0普通 ，1品牌[自营属性]
      */
     private Short brand = 0;
-
+    /**
+     * 停车场内分区名称
+     */
+    private String areaName;
+    
     public Short getType() {
 		return type;
 	}
@@ -258,4 +261,13 @@ public class ReqStall {
     public void setBindOrderStatus(Short bindOrderStatus) {
         this.bindOrderStatus = bindOrderStatus;
     }
+
+	public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+    
 }
