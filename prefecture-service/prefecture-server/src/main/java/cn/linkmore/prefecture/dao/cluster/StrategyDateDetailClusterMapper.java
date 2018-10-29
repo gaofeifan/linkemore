@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.linkmore.prefecture.entity.StrategyDateDetail;
+import cn.linkmore.prefecture.entity.StrategyTimeDetail;
 
 public interface StrategyDateDetailClusterMapper {
 
@@ -11,4 +12,5 @@ public interface StrategyDateDetailClusterMapper {
 
     List<StrategyDateDetail> findList(Long strategyDateId);
 
+    List<StrategyDateDetail> findListByIds(List<Long> ids);
 }
