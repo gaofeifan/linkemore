@@ -14,11 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,15 +25,17 @@ import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.ops.biz.service.StrategyDateService;
+import cn.linkmore.ops.biz.service.PrefectureStrategyService;
 import cn.linkmore.ops.security.response.ResPerson;
-import cn.linkmore.prefecture.request.ReqStrategyDate;
-import cn.linkmore.prefecture.request.ReqStrategyDateDetail;
-import cn.linkmore.prefecture.response.ResStrategyDate;
+import cn.linkmore.prefecture.request.ReqPrefectureLockTime;
+import cn.linkmore.prefecture.request.ReqPrefectureStrategy;
+import cn.linkmore.prefecture.request.ReqPrefectureStrategyGroup;
+import cn.linkmore.prefecture.response.ResPrefectureStrategyNew;
+import cn.linkmore.prefecture.response.ResStrategyFee;
 
 
 /**
- * Controller - 分期策略
+ * Controller - 车区策略
  * 
  * @author lilinhai
  * @version 1.0
@@ -42,54 +43,52 @@ import cn.linkmore.prefecture.response.ResStrategyDate;
  */
 
 @RestController
-@RequestMapping("/admin/biz/strategy/date")
+@RequestMapping("/admin/biz/prefecture_strategy")
 
-public class StrategyDateController {
+public class PrefectureStrategyController {
 	@Autowired
-	private StrategyDateService strategyDateService;
+	private PrefectureStrategyService prefectureStrategyService;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private ObjectMapper mapper= new ObjectMapper();
+	
 	/**
 	 * 新增时段
-	 * @param reqStrategyBase
+	 * @param reqStrategyGroup
 	 * @return
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(ReqStrategyDate reqStrategyInterval) {
+
+	public ViewMsg save(ReqPrefectureStrategy reqPrefectureStrategy) {
 		ViewMsg msg = null;
 		try {
-			reqStrategyInterval.setCreateTime(new Date());
-			reqStrategyInterval.setUpdateTime(new Date());
-			reqStrategyInterval.setStatus((byte)1);
+			reqPrefectureStrategy.setCreateTime(new Date());
+			reqPrefectureStrategy.setUpdateTime(new Date());
+			reqPrefectureStrategy.setStatus((byte)1);
 
 			Subject subject = SecurityUtils.getSubject();
 			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
 
-			reqStrategyInterval.setCreateUserId(person.getId());
-			reqStrategyInterval.setCreateUserName(person.getUsername());
-			reqStrategyInterval.setUpdateUserId(person.getId());
-			reqStrategyInterval.setUpdateUserName(person.getUsername());
-
-			if(StringUtils.isNotEmpty(reqStrategyInterval.getDateGroup())) {
-				 JavaType javaType = getCollectionType(ArrayList.class, ReqStrategyDateDetail.class); 
-				 List<ReqStrategyDateDetail> reqStrategyDateDetailList =  mapper.readValue(reqStrategyInterval.getDateGroup(), javaType);   //这里不需要强制转换
-				 reqStrategyInterval.setStrategyDateDetail(reqStrategyDateDetailList);
-				 /*
-				JSONArray jsonArray = JSONObject.parseArray(reqStrategyInterval.getDateGroup());
-				if (jsonArray != null) {
-					for (int i = 0; i < jsonArray.size(); i++) {
-						JSONObject json = jsonArray.getJSONObject(i);
-						objectMapper.readValue(src, valueType)
-					}
-				}	*/
+			reqPrefectureStrategy.setCreateUserId(person.getId());
+			reqPrefectureStrategy.setCreateUserName(person.getUsername());
+			reqPrefectureStrategy.setUpdateUserId(person.getId());
+			reqPrefectureStrategy.setUpdateUserName(person.getUsername());
+			
+			if(StringUtils.isNotEmpty(reqPrefectureStrategy.getJsonStrategyGroup())) {
+				 JavaType javaType = getCollectionType(ArrayList.class, ReqPrefectureStrategyGroup.class); 
+				 List<ReqPrefectureStrategyGroup> reqReqPrefectureStrategyGroup =  mapper.readValue(reqPrefectureStrategy.getJsonStrategyGroup(), javaType);   //这里不需要强制转换
+				 reqPrefectureStrategy.setStrategyGroup(reqReqPrefectureStrategyGroup);
 			}
 			
+			if(StringUtils.isNotEmpty(reqPrefectureStrategy.getJsonLockTime())) {
+				 JavaType javaType = getCollectionType(ArrayList.class, ReqPrefectureLockTime.class); 
+				 List<ReqPrefectureLockTime> reqReqPrefectureLockTime =  mapper.readValue(reqPrefectureStrategy.getJsonLockTime(), javaType);   //这里不需要强制转换
+				 reqPrefectureStrategy.setLockTime(reqReqPrefectureLockTime);
+			}
 			
-			
-			this.strategyDateService.save(reqStrategyInterval);
+			this.prefectureStrategyService.save(reqPrefectureStrategy);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
@@ -101,7 +100,7 @@ public class StrategyDateController {
 	}
 	public JavaType getCollectionType(Class<?> collectionClass, Class<?>... elementClasses) {   
 		return mapper.getTypeFactory().constructParametricType(collectionClass, elementClasses);   
-	}
+	}	
 	/**
 	 * 更新
 	 * @param reqStrategyBase
@@ -109,24 +108,30 @@ public class StrategyDateController {
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update(ReqStrategyDate reqStrategyInterval) {
+	public ViewMsg update(ReqPrefectureStrategy reqPrefectureStrategy) {
 		ViewMsg msg = null;
 		try {
 			
 			Subject subject = SecurityUtils.getSubject();
 			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
 			
-			reqStrategyInterval.setUpdateUserId(person.getId());
-			reqStrategyInterval.setUpdateUserName(person.getUsername());			
-			reqStrategyInterval.setUpdateTime(new Date());
-
-			if(StringUtils.isNotEmpty(reqStrategyInterval.getDateGroup())) {
-				 JavaType javaType = getCollectionType(ArrayList.class, ReqStrategyDateDetail.class); 
-				 List<ReqStrategyDateDetail> reqStrategyDateDetailList =  mapper.readValue(reqStrategyInterval.getDateGroup(), javaType);   //这里不需要强制转换
-				 reqStrategyInterval.setStrategyDateDetail(reqStrategyDateDetailList);
+			reqPrefectureStrategy.setUpdateUserId(person.getId());
+			reqPrefectureStrategy.setUpdateUserName(person.getUsername());			
+			reqPrefectureStrategy.setUpdateTime(new Date());
+			
+			if(StringUtils.isNotEmpty(reqPrefectureStrategy.getJsonStrategyGroup())) {
+				 JavaType javaType = getCollectionType(ArrayList.class, ReqPrefectureStrategyGroup.class); 
+				 List<ReqPrefectureStrategyGroup> reqReqPrefectureStrategyGroup =  mapper.readValue(reqPrefectureStrategy.getJsonStrategyGroup(), javaType);   //这里不需要强制转换
+				 reqPrefectureStrategy.setStrategyGroup(reqReqPrefectureStrategyGroup);
 			}
-
-			this.strategyDateService.update(reqStrategyInterval);
+			
+			if(StringUtils.isNotEmpty(reqPrefectureStrategy.getJsonLockTime())) {
+				 JavaType javaType = getCollectionType(ArrayList.class, ReqPrefectureLockTime.class); 
+				 List<ReqPrefectureLockTime> reqReqPrefectureLockTime =  mapper.readValue(reqPrefectureStrategy.getJsonLockTime(), javaType);   //这里不需要强制转换
+				 reqPrefectureStrategy.setLockTime(reqReqPrefectureLockTime);
+			}
+			
+			this.prefectureStrategyService.update(reqPrefectureStrategy);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
@@ -156,7 +161,8 @@ public class StrategyDateController {
 			map.put("updateUserName", person.getUsername());
 			map.put("ids", ids);
 			
-			this.strategyDateService.updateStatus(map);
+			
+			this.prefectureStrategyService.updateStatus(map);
 			msg = new ViewMsg("修改成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
@@ -183,7 +189,7 @@ public class StrategyDateController {
 			map.put("updateUserId", person.getId());
 			map.put("updateUserName", person.getUsername());
 			map.put("ids", ids);
-			this.strategyDateService.updateStatus(map);
+			this.prefectureStrategyService.updateStatus(map);
 			msg = new ViewMsg("修改成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
@@ -204,7 +210,7 @@ public class StrategyDateController {
 	public ViewMsg delete(@RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			this.strategyDateService.delete(ids);
+			this.prefectureStrategyService.delete(ids);
 			msg = new ViewMsg("删除成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
@@ -213,10 +219,9 @@ public class StrategyDateController {
 			msg = new ViewMsg("删除失败", false);
 		}
 		return msg;
-	}	
+	}
 	
 
-	
 	/**
 	 * 列表-分页
 	 * @param pageable
@@ -225,21 +230,9 @@ public class StrategyDateController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable) {
-		return this.strategyDateService.findPage(pageable);
+		return this.prefectureStrategyService.findPage(pageable);
 	}
-	
-	/**
-	 * 列表-无分页
-	 * @param pageable
-	 * @return
-	 */
-	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResStrategyDate> findList(){
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("status", 2);
-		return this.strategyDateService.findList();
-	}
+
 	/**
 	 * 根据id获取一条记录
 	 * @param pageable
@@ -247,7 +240,39 @@ public class StrategyDateController {
 	 */
 	@RequestMapping(value = "/get", method = RequestMethod.POST)
 	@ResponseBody
-	public ResStrategyDate getByPrimarkey(@RequestBody Long id) {
-		return this.strategyDateService.selectByPrimaryKey(id);
+	public ResPrefectureStrategyNew getByPrimarkey(@RequestBody Long id) {
+		return this.prefectureStrategyService.selectByPrimaryKey(id);
 	}
+	
+	/**
+	 * 获取计费策略列表
+	 * @return
+	 */
+	@RequestMapping(value = "/strategy_fee/find_list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStrategyFee> findList(){
+		return this.prefectureStrategyService.findList();
+	}
+	/**
+	 * 验证运营时段
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/validate/time", method = RequestMethod.POST)
+	@ResponseBody
+	public int validateTime(@RequestParam Map<String,String> map) {
+		return this.prefectureStrategyService.validateTime(map);
+	}
+
+	/**
+	 * 验证运营 分期策略是否交叉
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/validate/date", method = RequestMethod.POST)
+	@ResponseBody
+	public int validateDate(@RequestParam Map<String,String> map) {
+		return this.prefectureStrategyService.validateDate(map);
+	}
+	
 }
