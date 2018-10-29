@@ -16,6 +16,7 @@ public class ReqStall {
 	public static int LOCK_STATUS_UP = 1; 
 	public static short BIND_ORDER_STATUS_NONE = 0; 
 	public static short ORDER_ClOSE = 2; 
+	public static short ORDER_SUSPENDED   = 1; 
 	/**
 	 * 主键
 	 */
