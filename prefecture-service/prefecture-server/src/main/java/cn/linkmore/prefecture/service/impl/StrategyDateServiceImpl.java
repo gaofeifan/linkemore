@@ -43,6 +43,8 @@ public class StrategyDateServiceImpl implements StrategyDateService {
 	@Autowired
 	private StrategyDateDetailClusterMapper strategyDateDetailClusterMapper;	
 	
+	
+	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	
@@ -179,6 +181,11 @@ public class StrategyDateServiceImpl implements StrategyDateService {
 		param.put("pageSize", pageable.getPageSize());
 		List<StrategyDate> list = this.strategyDateClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list);
+	}
+
+	@Override
+	public List<ResStrategyDate> findList(Map<String, Object> param) {
+		return this.strategyDateClusterMapper.findList(param);
 	}
 
 
