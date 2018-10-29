@@ -788,8 +788,8 @@ public class CouponServiceImpl implements CouponService {
 				if(type == 7) {
 					sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
 				}else if (type == 8){
-					//sms.setSt(Constants.SmsTemplate.NEW_USER_REG_NOTICE);
-					sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+					sms.setSt(Constants.SmsTemplate.NEW_USER_REG_NOTICE);
+					log.info("new user reg notice = {}",JSON.toJSON(sms));
 				}
 				smsClient.send(sms);
 			}
