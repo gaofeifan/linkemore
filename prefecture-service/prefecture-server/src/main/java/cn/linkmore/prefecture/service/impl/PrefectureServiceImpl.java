@@ -544,6 +544,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 					plateNumber = plates.get(0).getVehMark();
 				}
 			}
+			detail.setPlateId(plateId);
+			detail.setPlateNumber(plateNumber);
 		}
 		return detail;
 	}

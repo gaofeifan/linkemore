@@ -724,8 +724,8 @@ public class CouponServiceImpl implements CouponService {
 	}
 
 	@Override
-	public boolean paySend(Long userId) {
-		List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
+	public boolean paySend(Long userId , Integer type) {
+		List<ResSubject> list = subjectClusterMapper.findBrandSubjectList(type);
 		log.info("pay-------------list = {}",JSON.toJSON(list));
 		ResUser resUser = userClient.findById(userId);
 		if (CollectionUtils.isNotEmpty(list) && resUser != null) {
@@ -785,7 +785,12 @@ public class CouponServiceImpl implements CouponService {
 				ReqSms sms = new ReqSms();
 				sms.setMobile(resUser.getUsername());
 //				sms.setParam(param);
-				sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+				if(type == 7) {
+					sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+				}else if (type == 8){
+					//sms.setSt(Constants.SmsTemplate.NEW_USER_REG_NOTICE);
+					sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+				}
 				smsClient.send(sms);
 			}
 		}

@@ -61,8 +61,8 @@ public class CouponClientHystrix implements CouponClient {
 	}
 
 	@Override
-	public boolean paySend(Long userId) {
-		log.info("coupon client hystrix paySend userId {}",userId);
+	public boolean paySend(Long userId, Integer type) {
+		log.info("coupon client hystrix paySend userId {},type{}",userId,type);
 		return false;
 	}
 
