@@ -98,7 +98,11 @@ public class ReqStall {
      * 0普通 ，1品牌[自营属性]
      */
     private Short brand = 0;
-
+    /**
+     * 停车场内分区名称
+     */
+    private String areaName;
+    
     public Short getType() {
 		return type;
 	}
@@ -258,4 +262,13 @@ public class ReqStall {
     public void setBindOrderStatus(Short bindOrderStatus) {
         this.bindOrderStatus = bindOrderStatus;
     }
+
+	public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+    
 }

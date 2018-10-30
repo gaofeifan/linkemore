@@ -42,7 +42,7 @@
   	select 
 	<include refid="Base_Column_List" />
     from v_strategy_time
-    where 1 = 1 
+    where status = 2 
   </select>
 
   <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >

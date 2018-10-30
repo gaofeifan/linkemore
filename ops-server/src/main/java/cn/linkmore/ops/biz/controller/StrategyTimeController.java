@@ -71,7 +71,7 @@ public class StrategyTimeController {
 			reqStrategyTime.setCreateUserName(person.getUsername());
 			reqStrategyTime.setUpdateUserId(person.getId());
 			reqStrategyTime.setUpdateUserName(person.getUsername());			
-			
+
 			if(StringUtils.isNotEmpty(reqStrategyTime.getTimeGroup())) {
 				 JavaType javaType = getCollectionType(ArrayList.class, ReqStrategyTimeDetail.class); 
 				 List<ReqStrategyTimeDetail> reqStrategyTimeDetail =  mapper.readValue(reqStrategyTime.getTimeGroup(), javaType);   //这里不需要强制转换

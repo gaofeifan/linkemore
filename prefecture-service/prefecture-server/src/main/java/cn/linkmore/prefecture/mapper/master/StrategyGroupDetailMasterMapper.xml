@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.StrategyGroupDetailMasterMapper">
+
+  <delete id="delete" parameterType="java.util.List">
+    delete from v_strategy_group_detail
+    where strategy_group_id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </delete>
+	
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from v_strategy_group_detail
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
+       #{id}
+    </foreach>
+  </delete>
+
+  <delete id="deleteByStallId" parameterType="java.util.List">
+    delete from v_strategy_group_detail
+    where stall_id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </delete>
+
+  <insert id="insert" parameterType="cn.linkmore.prefecture.entity.StrategyGroupDetail">
+    insert into v_strategy_group_detail (strategy_group_id, stall_id, stall_name, area_id, area_name)
+    select #{strategyGroupId,jdbcType=BIGINT},stall.id,stall.stall_name,#{areaId,jdbcType=BIGINT}, stall.area_name from v_stall stall
+	where stall.id=#{stallId,jdbcType=BIGINT}
+  </insert>
+
+  <insert id="insertSelective" parameterType="cn.linkmore.prefecture.entity.StrategyGroupDetail">
+    insert into v_strategy_group_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="strategyGroupId != null">
+        strategy_group_id,
+      </if>
+      <if test="stallId != null">
+        stall_id,
+      </if>
+      <if test="stallName != null">
+        stall_name,
+      </if>
+      <if test="areaId != null">
+        area_id,
+      </if>
+      <if test="areaName != null">
+        area_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="strategyGroupId != null">
+        #{strategyGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="stallId != null">
+        #{stallId,jdbcType=BIGINT},
+      </if>
+      <if test="stallName != null">
+        #{stallName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId != null">
+        #{areaId,jdbcType=BIGINT},
+      </if>
+      <if test="areaName != null">
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="cn.linkmore.prefecture.entity.StrategyGroupDetail">
+    update v_strategy_group_detail
+    <set>
+      <if test="strategyGroupId != null">
+        strategy_group_id = #{strategyGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="stallId != null">
+        stall_id = #{stallId,jdbcType=BIGINT},
+      </if>
+      <if test="stallName != null">
+        stall_name = #{stallName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId != null">
+        area_id = #{areaId,jdbcType=BIGINT},
+      </if>
+      <if test="areaName != null">
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="cn.linkmore.prefecture.entity.StrategyGroupDetail">
+    update v_strategy_group_detail
+    set strategy_group_id = #{strategyGroupId,jdbcType=BIGINT},
+      stall_id = #{stallId,jdbcType=BIGINT},
+      stall_name = #{stallName,jdbcType=VARCHAR},
+      area_id = #{areaId,jdbcType=BIGINT},
+      area_name = #{areaName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

@@ -237,7 +237,7 @@ public class StrategyDateController {
 	@ResponseBody
 	public List<ResStrategyDate> findList(){
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("status", 1);
+		param.put("status", 2);
 		return this.strategyDateService.findList();
 	}
 	/**

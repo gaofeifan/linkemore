@@ -516,14 +516,14 @@ public class CouponServiceImpl implements CouponService {
 
 	@Override
 	public List<cn.linkmore.coupon.controller.app.response.ResCoupon> paymentList(HttpServletRequest request) {
-//		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		ResUserOrder ruo = this.orderClient.last(2836L);
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		ResUserOrder ruo = this.orderClient.last(cu.getId());
 		if (ruo == null || !(ruo.getStatus().intValue() != OrderStatus.UNPAID.value
 				|| ruo.getStatus().intValue() != OrderStatus.SUSPENDED.value)) {
 			return null;
 		}
 
-		List<cn.linkmore.coupon.response.ResCoupon> list = this.userOrderEnableList(2836L, ruo.getId());
+		List<cn.linkmore.coupon.response.ResCoupon> list = this.userOrderEnableList(cu.getId(), ruo.getId());
 		List<cn.linkmore.coupon.controller.app.response.ResCoupon> rcs = new ArrayList<cn.linkmore.coupon.controller.app.response.ResCoupon>();
 		cn.linkmore.coupon.controller.app.response.ResCoupon r = null;
 		for (cn.linkmore.coupon.response.ResCoupon rc : list) {
@@ -724,8 +724,8 @@ public class CouponServiceImpl implements CouponService {
 	}
 
 	@Override
-	public boolean paySend(Long userId) {
-		List<ResSubject> list = subjectClusterMapper.findBrandSubjectList();
+	public boolean paySend(Long userId , Integer type) {
+		List<ResSubject> list = subjectClusterMapper.findBrandSubjectList(type);
 		log.info("pay-------------list = {}",JSON.toJSON(list));
 		ResUser resUser = userClient.findById(userId);
 		if (CollectionUtils.isNotEmpty(list) && resUser != null) {
@@ -785,7 +785,12 @@ public class CouponServiceImpl implements CouponService {
 				ReqSms sms = new ReqSms();
 				sms.setMobile(resUser.getUsername());
 //				sms.setParam(param);
-				sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+				if(type == 7) {
+					sms.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+				}else if (type == 8){
+					sms.setSt(Constants.SmsTemplate.NEW_USER_REG_NOTICE);
+					log.info("new user reg notice = {}",JSON.toJSON(sms));
+				}
 				smsClient.send(sms);
 			}
 		}

@@ -47,6 +47,7 @@ import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResPrefectureGroup;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResStall;
@@ -488,10 +489,65 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 
 	@Override
-	public cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId) {
-		ResPrefectureDetail prefecture = prefectureClusterMapper.findById(preId);
-		
-		return null;
+	public cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId, HttpServletRequest request) {
+		cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail detail = new cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail();
+		CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+TokenUtil.getKey(request));
+		ResPrefectureDetail preDetail = prefectureClusterMapper.findById(preId);
+		if(preDetail != null) {
+			detail.setId(preDetail.getId());
+			detail.setAddress(preDetail.getAddress());
+			detail.setName(preDetail.getName());
+			detail.setLatitude(preDetail.getLatitude().doubleValue());
+			detail.setLongitude(preDetail.getLongitude().doubleValue());
+			Long count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + preDetail.getId());
+			if(count==null) {
+				count = 0L;
+			}
+			detail.setLeisureStall(count.intValue());
+			StrategyBase strategyBase = strategyBaseClusterMapper.findById(preDetail.getStrategyId());
+			if(strategyBase != null) {
+				detail.setFreeMins(strategyBase.getFreeMins().toString());
+				if(strategyBase.getType() == 4) {
+					Double topFee = strategyBase.getTopDaily()/strategyBase.getTimelyLong() * strategyBase.getBasePrice().doubleValue();
+					detail.setTopFee(topFee.toString());
+				}else {
+					detail.setTopFee("无");
+				}
+			}
+			List<ResPrefectureGroup> preGroup = new ArrayList<ResPrefectureGroup>();
+			ResPrefectureGroup group = new ResPrefectureGroup();
+			group.setAreaName(preDetail.getName());
+			group.setDesc(preDetail.getStrategyDescription());
+			group.setId(preDetail.getId());
+			group.setLeisureStall(count.intValue());
+			preGroup.add(group);
+			detail.setPreGroupList(preGroup);
+			
+			Long plateId = null;
+			String plateNumber = null;
+			if(cu!=null && cu.getId()!=null){
+				ResUserOrder ro = this.orderClient.last(cu.getId());
+				List<ResVechicleMark> plates = this.vehicleMarkClient.list(cu.getId());
+				if(ro!=null) {
+					Map<String,Long> plateMap = new HashMap<String,Long>();
+					for(ResVechicleMark rvm:plates) {
+						plateMap.put(rvm.getVehMark(), rvm.getId());
+					}
+					plateNumber = ro.getPlateNo();
+					plateId = plateMap.get(plateNumber);
+					if(plateId==null) {
+						plateNumber = null; 
+					}
+				}
+				if(plateNumber==null && CollectionUtils.isNotEmpty(plates)){
+					plateId = plates.get(0).getId();
+					plateNumber = plates.get(0).getVehMark();
+				}
+			}
+			detail.setPlateId(plateId);
+			detail.setPlateNumber(plateNumber);
+		}
+		return detail;
 	}
 	
 	public ResStallInfo findStallList(ReqBooking reqBooking) {

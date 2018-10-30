@@ -43,7 +43,6 @@ public class StrategyTimeController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public int save(@RequestBody ReqStrategyTime reqStrategyInterval) {
-		System.out.println(111);
 		return this.strategyTimeService.save(reqStrategyInterval);
 	}
 	
@@ -101,7 +100,7 @@ public class StrategyTimeController {
 	@ResponseBody
 	public List<ResStrategyTime> findList(){
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("status", 1);
+		param.put("status", 2);
 		return this.strategyTimeService.findList(param);
 	}	
 	

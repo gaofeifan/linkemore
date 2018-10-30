@@ -45,6 +45,23 @@ public interface StallClusterMapper {
 	 */
 	List<ResStall> findStallsByPreId(Long preId);
 	
+	
+	
+	/**
+	 * 根据 商业场所，车场分区，临时小分区 取出车位信息
+	 * @param param
+	 * @return
+	 */
+	List<ResStall> findListByArea(Map<String, Object> param);
+	
+	
+	/**
+	 * 获取所有车区名称
+	 * @param preId
+	 * @return
+	 */
+	List<String> findAllAreaByPreId(Long preId);
+	
 	/**
 	 * 查找所有的车位
 	 * @return

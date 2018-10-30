@@ -24,5 +24,7 @@ public interface StrategyDateService {
 
 	int updateStatus(Map<String, Object> map);
 
+	List<ResStrategyDate> findList(Map<String, Object> param);
+
 
 }

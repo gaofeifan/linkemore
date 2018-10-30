@@ -1072,6 +1072,11 @@ public class OrdersServiceImpl implements OrdersService {
 				ro.setCancelFlag((short)2);
             }
 			
+			if(orders.getStatus() == OrderStatus.SUSPENDED.value) {
+				//当订单处于挂起状态时，直接结账离场
+				ro.setCancelFlag((short)2);
+			}
+			
 			log.info(">>>>>>>>>>>>>>>>>>>>>>>>>current order = {}",JSON.toJSON(ro));
 		}
 		return ro;

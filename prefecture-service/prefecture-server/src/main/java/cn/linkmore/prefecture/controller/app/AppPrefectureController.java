@@ -75,8 +75,8 @@ public class AppPrefectureController {
 	@ResponseBody
 	public ResponseEntity<ResPrefectureDetail> findById(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
 		ResponseEntity<ResPrefectureDetail> response = null;
-		try { 
-			ResPrefectureDetail preDetail = this.prefectureService.findPreDetailById(preId);
+		try {
+			ResPrefectureDetail preDetail = this.prefectureService.findPreDetailById(preId, request);
 			response = ResponseEntity.success(preDetail, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);

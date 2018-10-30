@@ -97,7 +97,7 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 		person.setType(2);
 		person.setStatus(1);
 		person.setCreateTime(new Date());
-		person.setPassword(PasswordUtil.encode(record.getPassword()));
+		person.setPassword(record.getPassword());
 		person.setLockCount(0);
 		person.setLockStatus(0);
 		person.setLockTime(new Date());
@@ -109,20 +109,20 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 		record.setCreateTime(new Date());
 		record.setUpdateTime(new Date());
 		Enterprise enter = ObjectUtils.copyObject(record, new Enterprise());
-		this.enterpriseMasterMapper.save(enter);
-		Map<String, Object> param = new HashMap<String, Object>();
+		return this.enterpriseMasterMapper.save(enter);
+		/*Map<String, Object> param = new HashMap<String, Object>();
 		param.put("code", "enterprise-base-role");
-		/*List<ResRole> list = this.roleClient.findList(param);
+		List<ResRole> list = this.roleClient.findList(param);
 		if (list != null && list.size() > 0) {
 			ResRole role = list.get(0);
 			ReqPersonRole pr = new ReqPersonRole();
 			pr.setPersonId(person.getId());
 			pr.setRoleId(role.getId());
 			this.personRoleMapper.save(pr);
-		}*/
+		}
 		person.setId(personId);
 		person.setEntId(enter.getId());
-		return this.personClient.update(person);
+		return this.personClient.update(person);*/
 	}
 
 	@Override

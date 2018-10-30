@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.StrategyGroupClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.StrategyGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="prefecture_id" jdbcType="INTEGER" property="prefectureId" />
+    <result column="prefecture_name" jdbcType="VARCHAR" property="prefectureName" />
+    <result column="parking_count" jdbcType="INTEGER" property="parkingCount" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name,prefecture_id,prefecture_name, parking_count, create_user_id, create_user_name, create_time, update_user_id, 
+    update_user_name, update_time, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_strategy_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select 
+	<include refid="Base_Column_List" />
+    from v_strategy_group
+    where 1 = 1
+    order by update_time DESC
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  <select id="findList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select 
+	<include refid="Base_Column_List" />
+    from v_strategy_group
+    where status=2
+    order by update_time DESC
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select  count(1)
+    from v_strategy_group
+    where 1= 1 
+  </select>
+
+
+
+</mapper>
