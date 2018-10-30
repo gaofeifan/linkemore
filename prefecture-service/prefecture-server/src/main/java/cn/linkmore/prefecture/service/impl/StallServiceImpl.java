@@ -731,9 +731,9 @@ public class StallServiceImpl implements StallService {
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			ResponseMessage<LockBean> res = lockFactory.getLockInfo(stall.getLockSn());
-			map.put("code", res.getMsgCode());
-			if (res.getMsgCode() == 200) {
+			if (res.getData()!=null) {
 				LockBean Lockbean = res.getData();
+				map.put("code", res.getMsgCode());
 				map.put("status", Lockbean.getLockState());
 				map.put("onlineState", Lockbean.getOnlineState());
 				map.put("parkingState", Lockbean.getParkingState());
