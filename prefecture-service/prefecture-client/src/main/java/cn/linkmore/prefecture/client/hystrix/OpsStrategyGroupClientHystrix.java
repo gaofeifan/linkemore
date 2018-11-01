@@ -99,7 +99,7 @@ public class OpsStrategyGroupClientHystrix implements OpsStrategyGroupClient {
 	}
 
 	@Override
-	public List<ResStrategyGroup> findList() {
+	public List<ResStrategyGroup> findList(Map<String, Object> map) {
 		log.info("prefecture service List<ResStrategyGroup> findList hystrix");
 		return null;
 	}
