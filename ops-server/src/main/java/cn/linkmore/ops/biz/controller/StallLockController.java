@@ -40,7 +40,7 @@ import cn.linkmore.util.ExcelRead;
  */
 @Controller
 @RequestMapping("/admin/biz/stall_lock")
-public class StallLockController {
+public class StallLockController extends BaseController{
 
 	@Resource
 	private PrefectureService prefectureService;
@@ -122,11 +122,12 @@ public class StallLockController {
 		param.put("value", person.getId());
 		ResEnterprise enter = enterService.find(param);
 		if(enter != null) {
-			List<ViewFilter> filters = pageable.getFilters();
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+			/*List<ViewFilter> filters = pageable.getFilters();
 			ViewFilter vf = new ViewFilter();
 			vf.setProperty("createUserId");
 			vf.setValue(person.getId());
-			filters.add(vf);
+			filters.add(vf);*/
 		}
 		
 		return this.stallLockService.findPage(pageable);

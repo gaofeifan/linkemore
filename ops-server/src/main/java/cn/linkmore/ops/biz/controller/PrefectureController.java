@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import cn.linkmore.bean.exception.DataException;
-import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -62,7 +61,7 @@ import cn.linkmore.prefecture.response.ResPrefectureDetail;
  */
 @Controller
 @RequestMapping("/admin/biz/prefecture")
-public class PrefectureController {
+public class PrefectureController extends BaseController{
 
 	@Autowired
 	private PrefectureService preService;
@@ -85,11 +84,12 @@ public class PrefectureController {
 		param.put("value", person.getId());
 		ResEnterprise enter = enterService.find(param);
 		if(enter != null) {
-			List<ViewFilter> filters = pageable.getFilters();
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+			/*List<ViewFilter> filters = pageable.getFilters();
 			ViewFilter vf = new ViewFilter();
 			vf.setProperty("createUserId");
 			vf.setValue(person.getId());
-			filters.add(vf);
+			filters.add(vf);*/
 		}
 		return this.preService.findPage(pageable);
 	}
