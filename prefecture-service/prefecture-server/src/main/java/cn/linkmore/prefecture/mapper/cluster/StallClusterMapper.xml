@@ -63,13 +63,13 @@
   <select id="findByLockSn" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
     status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, lock_voltage,
-    type, brand
+    type, brand, area_name
     from v_stall
     where lock_sn = #{lockSn,jdbcType=VARCHAR} limit 0,1
   </select>
   
   <select id="findStallsByPreId" parameterType="java.lang.Long" resultMap="ResponseResultMap">
-  	select id,stall_name,lock_sn,pre_id from v_stall where status = 1 and pre_id = #{preId}
+  	select id,stall_name,lock_sn,pre_id,area_name from v_stall where status = 1 and pre_id = #{preId}
   </select>
   <select id="findStallsByPreIds" parameterType="java.util.HashMap" resultMap="ResponseResultMap">
   	select id,stall_name,lock_sn,pre_id from v_stall 
@@ -104,13 +104,19 @@
     </foreach>
   </select>
   
-  <select id="findFreeStallList" resultMap="ResponseResultMap" parameterType="java.util.List" >
+  <select id="findFreeStallList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
   	select id, stall_name, pre_id, lock_sn
 	from v_stall 
 	where status = 1 and lock_sn in  
     <foreach collection="list"  index="index" item="lockSn" open="(" separator="," close=")"  >
        #{lockSn}
     </foreach>
+    <if test="areaName != null and areaName !='' ">
+	   	AND area_name = #{areaName,jdbcType=VARCHAR}
+	</if>
+	<if test="areaName == '' ">
+	   	AND area_name is null
+	</if>
     order by stall_name asc
   </select>
   

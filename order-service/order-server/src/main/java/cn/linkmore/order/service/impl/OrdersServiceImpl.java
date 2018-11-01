@@ -1978,6 +1978,7 @@ public class OrdersServiceImpl implements OrdersService {
 			o.setUsername(o.getUsername());
 			o.setClientType(cu.getClient());
 			o.setOrderSource(new Short(orderSource));
+			o.setAreaName(stall.getAreaName());
 			// 更新车位状态
 			// 订单详情
 			Long dictId = pre.getBaseDictId();

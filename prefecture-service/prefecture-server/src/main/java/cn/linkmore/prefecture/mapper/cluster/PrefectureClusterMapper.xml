@@ -204,11 +204,11 @@
     and name like #{name}
     </if>
    	<if test="type == 0">
-    	 and type = #{type} or type is null
-    	</if>  
-    	<if test="type == 1">
-    	 and type = #{type} 
-    	</if> 
+    	 and (type = #{type} or type is null)
+   	</if>  
+   	<if test="type == 1">
+   	and type = #{type} 
+   	</if> 
     <if test="status!=null">  
     and status = #{status} 
     </if>
@@ -235,7 +235,7 @@
     and p.name like #{name}
     </if> 
    	<if test="type == 0">
-   	 and p.type = #{type} or p.type is null
+   	 and (p.type = #{type} or p.type is null)
    	</if>  
    	<if test="type == 1">
    	 and p.type = #{type} 

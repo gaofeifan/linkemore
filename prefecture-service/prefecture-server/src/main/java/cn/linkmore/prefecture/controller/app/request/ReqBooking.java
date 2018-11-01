@@ -17,6 +17,15 @@ public class ReqBooking {
 	@NotNull(message="车牌不能为空") 
 	private Long plateId;
 	
+	@ApiModelProperty(value = "车区分组编号", required = false)
+	private String areaName;
+	
+	public String getAreaName() {
+		return areaName;
+	}
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
 	public Long getPrefectureId() {
 		return prefectureId;
 	}
