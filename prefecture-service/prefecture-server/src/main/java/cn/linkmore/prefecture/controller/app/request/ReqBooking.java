@@ -18,7 +18,7 @@ public class ReqBooking {
 	private Long plateId;
 	
 	@ApiModelProperty(value = "车区分组编号", required = false)
-	private String areaName;
+	private String areaName = "";
 	
 	public String getAreaName() {
 		return areaName;
