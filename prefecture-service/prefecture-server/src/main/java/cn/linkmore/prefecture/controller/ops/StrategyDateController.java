@@ -89,10 +89,8 @@ public class StrategyDateController {
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStrategyDate> findList(){
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("status", 2);
-		return this.strategyDateService.findList(param);
+	public List<ResStrategyDate> findList(@RequestBody Map<String, Object> map){
+		return this.strategyDateService.findList(map);
 	}
 	
 	

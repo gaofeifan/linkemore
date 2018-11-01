@@ -26,8 +26,8 @@ public class StrategyTimeServiceImpl implements StrategyTimeService {
 	}
 
 	@Override
-	public List<ResStrategyTime> findList() {
-		return opsStrategyTimeClient.findList();
+	public List<ResStrategyTime> findList(Map<String, Object> map) {
+		return opsStrategyTimeClient.findList(map);
 	}
 
 	@Override

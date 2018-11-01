@@ -26,8 +26,8 @@ public class StrategyDateServiceImpl implements StrategyDateService {
 	}
 
 	@Override
-	public List<ResStrategyDate> findList() {
-		return opsStrategyDateClient.findList();
+	public List<ResStrategyDate> findList(Map<String, Object> map) {
+		return opsStrategyDateClient.findList(map);
 	}
 
 	@Override

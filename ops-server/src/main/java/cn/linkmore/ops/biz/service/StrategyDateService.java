@@ -18,7 +18,7 @@ public interface StrategyDateService {
 
 	ViewPage findPage(ViewPageable pageable);
 
-	List<ResStrategyDate> findList();
+	List<ResStrategyDate> findList(Map<String, Object> map);
 
 	int save(ReqStrategyDate record);
 

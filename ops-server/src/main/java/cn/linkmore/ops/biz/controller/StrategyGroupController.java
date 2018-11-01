@@ -1,6 +1,5 @@
 package cn.linkmore.ops.biz.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.Tree;
@@ -27,7 +23,6 @@ import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.StrategyGroupService;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.request.ReqStrategyGroup;
 import cn.linkmore.prefecture.request.ReqStrategyGroupDetail;
 import cn.linkmore.prefecture.response.ResStall;
@@ -46,16 +41,12 @@ import cn.linkmore.prefecture.response.ResStrategyGroupArea;
 @RestController
 @RequestMapping("/admin/biz/strategy/group")
 
-public class StrategyGroupController {
+public class StrategyGroupController extends BaseController{
 	@Autowired
 	private StrategyGroupService strategyGroupService;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
-	private ObjectMapper mapper= new ObjectMapper();
-	
 	/**
-	 * 新增时段
+	 * 新增
 	 * @param reqStrategyGroup
 	 * @return
 	 */
@@ -68,13 +59,10 @@ public class StrategyGroupController {
 			reqStrategyGroup.setUpdateTime(new Date());
 			reqStrategyGroup.setStatus((byte)1);
 
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
-
-			reqStrategyGroup.setCreateUserId(person.getId());
-			reqStrategyGroup.setCreateUserName(person.getUsername());
-			reqStrategyGroup.setUpdateUserId(person.getId());
-			reqStrategyGroup.setUpdateUserName(person.getUsername());
+			reqStrategyGroup.setCreateUserId(getPerson().getId());
+			reqStrategyGroup.setCreateUserName(getPerson().getUsername());
+			reqStrategyGroup.setUpdateUserId(getPerson().getId());
+			reqStrategyGroup.setUpdateUserName(getPerson().getUsername());
 
 			if(StringUtils.isNotEmpty(reqStrategyGroup.getStallGroup())) {
 				 JavaType javaType = getCollectionType(ArrayList.class, ReqStrategyGroupDetail.class); 
@@ -104,12 +92,8 @@ public class StrategyGroupController {
 	public ViewMsg update(ReqStrategyGroup reqStrategyGroup) {
 		ViewMsg msg = null;
 		try {
-			
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
-			
-			reqStrategyGroup.setUpdateUserId(person.getId());
-			reqStrategyGroup.setUpdateUserName(person.getUsername());			
+			reqStrategyGroup.setUpdateUserId(getPerson().getId());
+			reqStrategyGroup.setUpdateUserName(getPerson().getUsername());			
 			reqStrategyGroup.setUpdateTime(new Date());
 
 			this.strategyGroupService.update(reqStrategyGroup);
@@ -132,17 +116,13 @@ public class StrategyGroupController {
 	public ViewMsg statusStart( @RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
-			
 			Map<String, Object> map=new HashMap<String, Object>();
 			map.put("status", 2);
 			map.put("updateTime",sdf.format(new Date()) );
-			map.put("updateUserId", person.getId());
-			map.put("updateUserName", person.getUsername());
+			map.put("updateUserId", getPerson().getId());
+			map.put("updateUserName", getPerson().getUsername());
 			map.put("ids", ids);
-			
-			
+
 			this.strategyGroupService.updateStatus(map);
 			msg = new ViewMsg("修改成功", true);
 		} catch (DataException e) {
@@ -162,13 +142,11 @@ public class StrategyGroupController {
 	public ViewMsg statusStop(@RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
 			Map<String, Object> map=new HashMap<String, Object>();
 			map.put("status", 1);
 			map.put("updateTime", sdf.format(new Date()));
-			map.put("updateUserId", person.getId());
-			map.put("updateUserName", person.getUsername());
+			map.put("updateUserId", getPerson().getId());
+			map.put("updateUserName", getPerson().getUsername());
 			map.put("ids", ids);
 			this.strategyGroupService.updateStatus(map);
 			msg = new ViewMsg("修改成功", true);
@@ -200,7 +178,7 @@ public class StrategyGroupController {
 			msg = new ViewMsg("删除失败", false);
 		}
 		return msg;
-	}	
+	}
 
 	/**
 	 * 删除分组中的车位
@@ -249,9 +227,7 @@ public class StrategyGroupController {
 		}
 		return msg;
 	}
-	
-	
-	
+
 	/**
 	 * 列表-分页
 	 * @param pageable
@@ -260,17 +236,18 @@ public class StrategyGroupController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable) {
+		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
 		return this.strategyGroupService.findPage(pageable);
 	}
+
 	/*
 	 * 信息列表-无分页
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStrategyGroup> findList() {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("status", 1);
-		return this.strategyGroupService.findList(param);
+	public List<ResStrategyGroup> findList(@RequestParam Map<String, Object> map) {
+		map.put("createUserId", getPerson().getId());
+		return this.strategyGroupService.findList(map);
 	}
 	
 	/**
@@ -283,7 +260,6 @@ public class StrategyGroupController {
 	public ResStrategyGroup getByPrimarkey(@RequestBody Long id) {
 		return this.strategyGroupService.selectByPrimaryKey(id);
 	}
-	
 	
 	/**
 	 * 获取分区信息，以及分区下的车位信息
@@ -303,10 +279,12 @@ public class StrategyGroupController {
 	 */
 	@RequestMapping(value = "/tree", method = RequestMethod.POST)
 	@ResponseBody
-	public Tree findTree(@RequestParam("preId") Integer preId, @RequestParam("parkingInterval") Integer parkingInterval) {
-		Map<String, Object> param=new HashMap<String, Object>();
-		param.put("preId", preId);
-		param.put("parkingInterval", parkingInterval);
+	//public Tree findTree(@RequestParam("preId") Integer preId, @RequestParam("parkingInterval") Integer parkingInterval) {
+	public Tree findTree(@RequestParam Map<String, Object> param) {	
+		//Map<String, Object> param=new HashMap<String, Object>();
+		//param.put("preId", preId);
+		//param.put("parkingInterval", parkingInterval);
+		param.put("createUserId", getPerson().getId());
 		return this.strategyGroupService.findTree(param);
 	}
 	

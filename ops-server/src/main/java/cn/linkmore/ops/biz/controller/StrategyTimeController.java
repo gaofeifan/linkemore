@@ -1,6 +1,5 @@
 package cn.linkmore.ops.biz.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
@@ -42,14 +41,10 @@ import cn.linkmore.prefecture.response.ResStrategyTime;
 @RestController
 @RequestMapping("/admin/biz/strategy/time")
 
-public class StrategyTimeController {
+public class StrategyTimeController extends BaseController{
 	@Autowired
 	private StrategyTimeService strategyTimeService;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
-	private ObjectMapper mapper= new ObjectMapper();
-	
 	/**
 	 * 新增时段
 	 * @param reqStrategyBase
@@ -212,6 +207,7 @@ public class StrategyTimeController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable) {
+		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
 		return this.strategyTimeService.findPage(pageable);
 	}
 	
@@ -222,10 +218,9 @@ public class StrategyTimeController {
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStrategyTime> findList(){
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("status", 1);
-		return this.strategyTimeService.findList();
+	public List<ResStrategyTime> findList(@RequestParam Map<String, Object> map){
+		map.put("createUserId", getPerson().getId());
+		return this.strategyTimeService.findList(map);
 	}
 	
 	/**
