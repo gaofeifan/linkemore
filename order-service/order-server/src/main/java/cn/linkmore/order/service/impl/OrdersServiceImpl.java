@@ -536,7 +536,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 		public void run() {
 			log.info("order thread starting");
-			order(rb.getPrefectureId(), rb.getPlateId(), null, null, cu);
+			order(rb.getPrefectureId(), rb.getPlateId(), null, null, rb.getOrderSource(), cu);
 		}
 	}
 
@@ -551,7 +551,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 		public void run() {
 			log.info("brand order thread starting {}", rb.getBrandId());
-			order(rb.getPrefectureId(), rb.getPlateId(), rb.getBrandId(), null, cu);
+			order(rb.getPrefectureId(), rb.getPlateId(), rb.getBrandId(), null, "1", cu);
 		}
 	}
 
@@ -566,7 +566,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 		public void run() {
 			log.info("choose stall order thread starting");
-			order(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), cu);
+			order(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu);
 		}
 	}
 	
@@ -1785,14 +1785,14 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Transactional(rollbackFor = RuntimeException.class)
-	private void order(Long prefectureId, Long plateId, Long brandId, Long stallId, CacheUser cu) {
+	private void order(Long prefectureId, Long plateId, Long brandId, Long stallId, String orderSource, CacheUser cu) {
 		ResStallEntity stall = null;
 		Orders o = null;
 		boolean resetRedis = true;
 		short failureReason = 0;
 		short bookingStatus = 0;
-		log.info("cu:{} booking preId:{},plateId:{},brandId:{},stallId:{}", cu.getMobile(), prefectureId, plateId,
-				brandId, stallId);
+		log.info("cu:{} booking preId:{},plateId:{},brandId:{},stallId:{} orderSource:{}", cu.getMobile(), prefectureId, plateId,
+				brandId, stallId, orderSource);
 		try {
 			synchronized (this) {
 				if (ORDER_USER_SET.contains(cu.getId())) { // ？？？
@@ -1977,6 +1977,7 @@ public class OrdersServiceImpl implements OrdersService {
 			o.setUserId(cu.getId());
 			o.setUsername(o.getUsername());
 			o.setClientType(cu.getClient());
+			o.setOrderSource(new Short(orderSource));
 			// 更新车位状态
 			// 订单详情
 			Long dictId = pre.getBaseDictId();
