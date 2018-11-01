@@ -106,6 +106,6 @@
     select 
     <include refid="Base_Column_List" />
     from t_coupon_subject
-    where status = 1 and type=7
+    where status = 1 and type= #{type,jdbcType=INTEGER}
   </select>
 </mapper>

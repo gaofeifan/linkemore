@@ -21,7 +21,7 @@ public interface RoleClusterMapper {
 
 	Integer check(Map<String, Object> param);
 
-	List<Role> findPage(Map<String, Object> param);
+	List<ResRole> findPage(Map<String, Object> param);
 
 	Integer count(Map<String, Object> param);
 

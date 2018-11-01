@@ -71,6 +71,12 @@ public class RoleClientHystrix implements RoleClient {
 		log.info("role bind");
 	}
 
+	@Override
+	public List<ResRole> findList(Map<String, Object> param) {
+		log.info("role findList");
+		return null;
+	}
+
 	
 	
 }

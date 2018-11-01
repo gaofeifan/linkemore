@@ -103,6 +103,12 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
+		
+		ResStallEntity stall = stallClient.findById(reqOperatStall.getStallId());
+		if(stall ==null   ) {
+			throw new BusinessException(StatusEnum.FAIL_STALL_NUM);
+		}
+		
 		String userid = user.getId().toString();
 		long time = System.currentTimeMillis() + TIMEOUT;
 		String robkey = RedisKey.MANAGER_STALL.key + reqOperatStall.getStallId();
@@ -244,12 +250,15 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	public void online(StallOnLineRequest bean, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
-
+		
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
 		ResStallEntity stall = stallClient.findById(bean.getStallId());
 
+		if(stall ==null   ) {
+			throw new BusinessException(StatusEnum.FAIL_STALL_NUM);
+		}
 		if (stall.getStatus().intValue() != stall.STATUS_OUTLINE && stall.getStatus() != stall.STATUS_FAULT) {
 			throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
 		}
@@ -281,7 +290,6 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 			stall.setStatus(reqStall.STATUS_FREE);
 			reqStall = ObjectUtils.copyObject(stall, reqStall);
 			stallClient.updateStatus(reqStall);
-
 		} else {
 			throw new BusinessException(StatusEnum.STALL_LOCK_NO_UP);
 		}

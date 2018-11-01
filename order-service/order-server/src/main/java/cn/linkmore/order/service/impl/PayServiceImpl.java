@@ -1,27 +1,15 @@
 package cn.linkmore.order.service.impl;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Signature;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.ShortBufferException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,12 +58,10 @@ import cn.linkmore.order.dao.master.WalletDetailMasterMapper;
 import cn.linkmore.order.entity.Account;
 import cn.linkmore.order.entity.AccountHistory;
 import cn.linkmore.order.entity.CompanyTradeRecord;
-import cn.linkmore.order.entity.MCipherDecode;
 import cn.linkmore.order.entity.Orders;
 import cn.linkmore.order.entity.RechargeRecord;
 import cn.linkmore.order.entity.TradeRecord;
 import cn.linkmore.order.entity.WalletDetail;
-import cn.linkmore.order.request.ReqOrderConfirm;
 import cn.linkmore.order.response.ResOrderCheckout;
 import cn.linkmore.order.response.ResOrderConfirm;
 import cn.linkmore.order.response.ResOrderWeixin;
@@ -97,7 +83,6 @@ import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqAppWechatOrder;
 import cn.linkmore.third.request.ReqApplePay;
-import cn.linkmore.third.request.ReqLongPay;
 import cn.linkmore.third.request.ReqOrder;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqWechatMiniOrder;
@@ -888,7 +873,7 @@ public class PayServiceImpl implements PayService {
 			//实际支付金额大于0发送停车券
 			if(detail.getActualAmount().doubleValue() > 0) {
 				log.info("pay send userId = {}, actualAmount = {}",order.getUserId(),detail.getActualAmount());
-				couponClient.paySend(order.getUserId());
+				couponClient.paySend(order.getUserId(), 7);
 			}
 			if (pre != null) {
 				detail.setLeaveTime(pre.getLeaveTime());

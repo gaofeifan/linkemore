@@ -88,8 +88,9 @@ public interface CouponService {
 	/**
 	 * 实付结账发送优惠券
 	 * @param userId
+	 * @param type 
 	 * @return
 	 */
-	boolean paySend(Long userId);
+	boolean paySend(Long userId, Integer type);
 
 }

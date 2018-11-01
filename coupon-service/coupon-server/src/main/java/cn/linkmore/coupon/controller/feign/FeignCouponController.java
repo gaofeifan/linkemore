@@ -57,8 +57,8 @@ public class FeignCouponController {
 	
 	@RequestMapping(value = "/v2.0/pay-send", method = RequestMethod.GET)
 	@ResponseBody
-	public boolean paySend(@RequestParam(value="userId") Long userId){
-		return this.couponService.paySend(userId);
+	public boolean paySend(@RequestParam(value="userId") Long userId, @RequestParam(value="type") Integer type){
+		return this.couponService.paySend(userId, type);
 	}
 	
 	@RequestMapping(value = "/v2.0/send_brand_coupon", method = RequestMethod.GET)
