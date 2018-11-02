@@ -183,6 +183,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 		return new ViewPage(count,pageable.getPageSize(),list);
 	}
 
+	
 	@Override
 	public Tree findTree(Map<String, Object> param) {
 		//分组间隔(每组的车位个数)
@@ -290,6 +291,13 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 
 	@Override
 	public List<ResStall> findAreaStall(Map<String, Object> param) {
+		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
+		if (preList==null || preList.size()<=0) {
+			return new ArrayList<ResStall>();
+		}
+		param.put("preId", preList.get(0).getId());
+		
+		
 		return stallClusterMapper.findListByArea(param);
 	}
 

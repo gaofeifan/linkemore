@@ -148,10 +148,12 @@
 		from v_stall
 		where pre_id = #{preId,jdbcType=BIGINT}
 		
-		<if test="areaName != null and areaName != null"> 
-		and area_name=#{areaName}
+		<if test="areaName != null and areaName != 'null' and areaName != '' "> 
+			and area_name=#{areaName}
 		</if>
-		
+		<if test="areaName == 'null' or areaName == 'NULL' "> 
+			and area_name is null
+		</if>
 	    <if test="startName != null and endName != null"> 
 		and stall_name between #{startName} and #{endName}
 		</if>

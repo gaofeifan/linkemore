@@ -301,6 +301,7 @@ public class StrategyGroupController extends BaseController{
 	@RequestMapping(value = "/findAreaStall", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStall> findAreaStall(@RequestParam Map<String, Object> param) {
+		param.put("createUserId", getPerson().getId());
 		return this.strategyGroupService.findAreaStall(param);
 	}
 	
