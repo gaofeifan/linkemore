@@ -75,7 +75,7 @@ public class OpsStrategyGroupClientHystrix implements OpsStrategyGroupClient {
 	}
 
 	@Override
-	public int deleteStall(List<Long> ids) {
+	public int deleteStall(Map<String, Object> map) {
 		log.info("prefecture service deleteStall List<Long> hystrix");
 		return 0;
 	}

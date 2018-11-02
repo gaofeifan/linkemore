@@ -63,8 +63,8 @@ public interface OpsStrategyGroupClient {
 	 */
 	@RequestMapping(value = "/stall/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public int deleteStall(@RequestBody List<Long> ids);
-	
+	public int deleteStall(@RequestBody Map<String, Object> map);
+
 	/**
 	 * 按名称查询车位是否存在
 	 * @param stallName
