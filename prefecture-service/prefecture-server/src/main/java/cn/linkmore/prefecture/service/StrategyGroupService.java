@@ -80,7 +80,7 @@ public interface StrategyGroupService {
 	 * @param ids
 	 * @return
 	 */
-	int deleteStall(List<Long> ids);
+	int deleteStall(Map<String, Object> map);
 	
 	/**
 	 * 添加一个车位
@@ -101,6 +101,7 @@ public interface StrategyGroupService {
 	 * @return
 	 */
 	Long existsStall( Map<String, Object> map);
+	
 
 
 }

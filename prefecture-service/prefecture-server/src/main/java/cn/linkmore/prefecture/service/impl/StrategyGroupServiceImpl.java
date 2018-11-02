@@ -9,6 +9,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -58,6 +61,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	public int save(ReqStrategyGroup reqStrategyGroup) {
 		StrategyGroup strategyGroup = new StrategyGroup();
 		strategyGroup = ObjectUtils.copyObject(reqStrategyGroup, strategyGroup);
+		strategyGroup.setParkingCount(reqStrategyGroup.getStrategyGroupDetail().size());
 		int count=strategyGroupMasterMapper.insert(strategyGroup);
 		if(reqStrategyGroup.getStrategyGroupDetail()!=null) {
 			for (ReqStrategyGroupDetail reqStrategyGroupDetail : reqStrategyGroup.getStrategyGroupDetail()) {
@@ -290,15 +294,27 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	}
 
 	@Override
-	public int deleteStall(List<Long> ids) {
-		return strategyGroupDetailMasterMapper.deleteByPrimaryKey(ids);
+	public int deleteStall(Map<String, Object> map) {
+		Long strategyGroupId=Long.valueOf(String.valueOf(map.get("strategyGroupId")));
+		List<Long> ids=null;
+		try {
+			ids = new ObjectMapper().readValue(String.valueOf(map.get("ids")),new TypeReference<List<Long>>() { });
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		int count= strategyGroupDetailMasterMapper.deleteByPrimaryKey(ids);
+		strategyGroupMasterMapper.updateStallCount(strategyGroupId);
+		return count;
 	}
 
 	@Override
 	public int addStall(ReqStrategyGroupDetail reqStrategyGroupDetail) {
 		StrategyGroupDetail strategyGroupDetail = new StrategyGroupDetail();
 		strategyGroupDetail = ObjectUtils.copyObject(reqStrategyGroupDetail, strategyGroupDetail);
-		return strategyGroupDetailMasterMapper.insert(strategyGroupDetail);
+		int count=strategyGroupDetailMasterMapper.insert(strategyGroupDetail);
+		strategyGroupMasterMapper.updateStallCount(strategyGroupDetail.getStrategyGroupId());
+		return count;
 	}
 
 	@Override

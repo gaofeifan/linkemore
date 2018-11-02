@@ -46,8 +46,8 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 		return opsStrategyGroupClient.updateStatus(map);
 	}
 	@Override
-	public int deleteStall(List<Long> ids) {
-		return opsStrategyGroupClient.deleteStall(ids);
+	public int deleteStall(Map<String, Object> map) {
+		return opsStrategyGroupClient.deleteStall(map);
 	}
 	@Override
 	public int addStall(ReqStrategyGroupDetail reqStrategyGroupDetail) {

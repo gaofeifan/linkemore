@@ -16,6 +16,8 @@ public interface StrategyGroupMasterMapper {
 
     int updateByPrimaryKey(StrategyGroup record);
     
+    int updateStallCount (Long id);
+    
     int delete(List<Long> ids);
     
 	int updateStatus(Map<String, Object> map);

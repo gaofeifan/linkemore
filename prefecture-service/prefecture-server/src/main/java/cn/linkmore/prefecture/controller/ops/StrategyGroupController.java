@@ -39,7 +39,7 @@ public class StrategyGroupController {
 	private StrategyGroupService strategyGroupService;
 	
 	/**
-	 * 新增时段
+	 * 新增
 	 * @param reqStrategyBase
 	 * @return
 	 */
@@ -78,8 +78,8 @@ public class StrategyGroupController {
 	 */
 	@RequestMapping(value = "/stall/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public int deleteStall(@RequestBody List<Long> ids) {
-		return this.strategyGroupService.deleteStall(ids);
+	public int deleteStall(@RequestBody Map<String, Object> map) {
+		return this.strategyGroupService.deleteStall(map);
 	}
 	
 	

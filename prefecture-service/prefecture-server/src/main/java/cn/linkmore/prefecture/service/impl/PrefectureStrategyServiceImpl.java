@@ -3,7 +3,6 @@ package cn.linkmore.prefecture.service.impl;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.PrefectureLockTimeClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.PrefectureStrategyClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.PrefectureStrategyGroupClusterMapper;
@@ -38,6 +38,7 @@ import cn.linkmore.prefecture.entity.StrategyTimeDetail;
 import cn.linkmore.prefecture.request.ReqPrefectureLockTime;
 import cn.linkmore.prefecture.request.ReqPrefectureStrategy;
 import cn.linkmore.prefecture.request.ReqPrefectureStrategyGroup;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureLockTime;
 import cn.linkmore.prefecture.response.ResPrefectureStrategyGroup;
 import cn.linkmore.prefecture.response.ResPrefectureStrategyNew;
@@ -68,12 +69,23 @@ public class PrefectureStrategyServiceImpl implements PrefectureStrategyService 
 	@Autowired
 	StrategyDateDetailClusterMapper strategyDateDetailClusterMapper;
 	
+	@Autowired
+	PrefectureClusterMapper prefectureClusterMapper;
+	
 	ObjectMapper mapper = new ObjectMapper();
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	@Override
 	public int save(ReqPrefectureStrategy reqPrefectureStrategy) {
 		PrefectureStrategy prefectureStrategy = new PrefectureStrategy();
 		prefectureStrategy = ObjectUtils.copyObject(reqPrefectureStrategy, prefectureStrategy);
+		
+		Map<String, Object> param =new HashMap<String, Object>();
+		param.put("createUserId", reqPrefectureStrategy.getCreateUserId());
+		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
+		if (preList != null && preList.size()>0) {
+			prefectureStrategy.setPrefectureId(preList.get(0).getId());
+		}
+		
 		int count=prefectureStrategyMasterMapper.insert(prefectureStrategy);
 		if(reqPrefectureStrategy.getLockTime()!=null) {
 			for (ReqPrefectureLockTime reqPrefectureLockTime:reqPrefectureStrategy.getLockTime()) {

@@ -36,7 +36,7 @@ public interface StrategyGroupService {
 
 	List<ResStall> findAreaStall(Map<String, Object> param);
 
-	int deleteStall(List<Long> ids);
+	int deleteStall(Map<String, Object> map);
 
 	int addStall(ReqStrategyGroupDetail reqStrategyGroupDetail);
 

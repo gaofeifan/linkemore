@@ -1,5 +1,6 @@
 package cn.linkmore.ops.biz.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.Tree;
@@ -187,10 +191,11 @@ public class StrategyGroupController extends BaseController{
 	 */
 	@RequestMapping(value = "/stall/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg deleteStall(@RequestBody List<Long> ids) {
+	//public ViewMsg deleteStall(@RequestBody Long strategyGroupId,@RequestBody List<Long> ids) {
+	public ViewMsg deleteStall(@RequestParam Map<String,Object> map) {
 		ViewMsg msg = null;
 		try {
-			this.strategyGroupService.deleteStall(ids);
+			this.strategyGroupService.deleteStall(map);
 			msg = new ViewMsg("删除成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
