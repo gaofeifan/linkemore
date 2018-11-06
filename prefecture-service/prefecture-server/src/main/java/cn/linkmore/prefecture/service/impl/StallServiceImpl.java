@@ -1067,7 +1067,6 @@ public class StallServiceImpl implements StallService {
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
 						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
-						stall.setStatus(reqc.getStatus() == 1 ? 2 : 1);
 						stallMasterMapper.lockdown(stall);
 					}
 				}
