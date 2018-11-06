@@ -108,7 +108,7 @@ public interface OpsStrategyGroupClient {
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStrategyGroup> findList();
+	public List<ResStrategyGroup> findList(Map<String, Object> map);
 	/**
 	 * 根据id获取一条记录
 	 * @param pageable

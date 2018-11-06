@@ -81,7 +81,7 @@ public interface OpsStrategyTimeClient {
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStrategyTime> findList();
+	public List<ResStrategyTime> findList(Map<String, Object> map);
 	/**
 	 * 根据id获取一条记录
 	 * @param pageable

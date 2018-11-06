@@ -1,6 +1,5 @@
 package cn.linkmore.prefecture.controller.ops;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -116,7 +115,6 @@ public class StrategyGroupController {
 	public int updateStatus(@RequestBody Map<String, Object> map) {
 		return this.strategyGroupService.updateStatus(map);
 	}
-
 	
 	/**
 	 * 列表-分页
@@ -136,10 +134,8 @@ public class StrategyGroupController {
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStrategyGroup> findList() {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("status", 2);
-		return this.strategyGroupService.findList(param);
+	public List<ResStrategyGroup> findList(@RequestBody Map<String, Object> map) {
+		return this.strategyGroupService.findList(map);
 	}
 
 	
@@ -175,7 +171,7 @@ public class StrategyGroupController {
 	@ResponseBody
 	public Tree findTree(@RequestBody Map<String, Object> param) {
 		return this.strategyGroupService.findTree(param);
-	}	
+	}
 	/**
 	 * 根据preId,areaId,startName,endName 获取车区信息
 	 * @param param

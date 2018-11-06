@@ -24,6 +24,9 @@ public class ReqStallBooking {
 	@NotBlank(message="车位ID不能为空") 
 	private Long stallId;
 	
+	@ApiModelProperty(value = "订单来源标识：1预约 2扫码", required = false) 
+	private String orderSource = "1";
+	
 	public Long getPrefectureId() {
 		return prefectureId;
 	}
@@ -42,4 +45,11 @@ public class ReqStallBooking {
 	public void setStallId(Long stallId) {
 		this.stallId = stallId;
 	}
+	public String getOrderSource() {
+		return orderSource;
+	}
+	public void setOrderSource(String orderSource) {
+		this.orderSource = orderSource;
+	}
+	
 }

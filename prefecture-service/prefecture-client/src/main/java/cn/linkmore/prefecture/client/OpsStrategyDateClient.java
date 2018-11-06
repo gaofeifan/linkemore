@@ -80,7 +80,7 @@ public interface OpsStrategyDateClient {
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStrategyDate> findList();
+	public List<ResStrategyDate> findList(Map<String, Object> map);
 	
 	/**
 	 * 根据id获取一条记录

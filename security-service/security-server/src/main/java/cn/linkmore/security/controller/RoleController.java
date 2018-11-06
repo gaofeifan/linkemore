@@ -16,6 +16,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqRole;
+import cn.linkmore.security.response.ResRole;
 import cn.linkmore.security.service.RoleService;
 
 /**
@@ -85,5 +86,12 @@ public class RoleController {
 	@ResponseBody
 	public void bind(@RequestParam("id") Long id,@RequestParam("pids") String pids,@RequestParam("eids") String eids){ 
 		this.roleService.bind(id,pids,eids);
+	}
+	
+	@RequestMapping(value = "/v2.0/findList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResRole> findList(@RequestBody Map<String, Object> param){
+		List<ResRole> list = this.roleService.findList(param);
+		return list;
 	}
 }

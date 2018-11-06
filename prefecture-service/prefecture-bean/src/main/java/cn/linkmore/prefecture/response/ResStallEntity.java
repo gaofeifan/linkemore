@@ -97,8 +97,20 @@ public class ResStallEntity {
      * 0普通 ，1品牌[自营属性]
      */
     private Short brand;
+    /**
+     * 车区分组名称
+     */
+    private String areaName;
     
-    public Short getType() {
+    public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+
+	public Short getType() {
 		return type;
 	}
 

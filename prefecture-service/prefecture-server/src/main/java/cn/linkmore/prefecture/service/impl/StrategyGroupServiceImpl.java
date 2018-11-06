@@ -13,6 +13,7 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyGroupClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyGroupDetailClusterMapper;
@@ -22,11 +23,11 @@ import cn.linkmore.prefecture.entity.StrategyGroup;
 import cn.linkmore.prefecture.entity.StrategyGroupDetail;
 import cn.linkmore.prefecture.request.ReqStrategyGroup;
 import cn.linkmore.prefecture.request.ReqStrategyGroupDetail;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStrategyGroup;
 import cn.linkmore.prefecture.response.ResStrategyGroupArea;
 import cn.linkmore.prefecture.response.ResStrategyGroupDetail;
-import cn.linkmore.prefecture.response.ResStrategyTime;
 import cn.linkmore.prefecture.service.StrategyGroupService;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -48,7 +49,11 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	
 	@Autowired
 	private StallClusterMapper stallClusterMapper;
-
+	
+	@Autowired
+	private PrefectureClusterMapper prefectureClusterMapper;
+	
+	
 	@Override
 	public int save(ReqStrategyGroup reqStrategyGroup) {
 		StrategyGroup strategyGroup = new StrategyGroup();
@@ -161,10 +166,12 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 				param.put(filter.getProperty(), filter.getValue());
 			}
 		}
+		
 		if(StringUtils.isNotBlank(pageable.getOrderProperty())) {
 			param.put("property", DomainUtil.camelToUnderline(pageable.getOrderProperty()));
 			param.put("direction", pageable.getOrderDirection());
 		}
+		
 		Integer count = this.strategyGroupClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
@@ -179,6 +186,13 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 		if(param !=null && param.get("parkingInterval")!=null) {
 			parkingInterval=Integer.parseInt(param.get("parkingInterval").toString());
 		}
+
+		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
+		if (preList==null || preList.size()<=0) {
+			return  new Tree();
+		}
+		param.put("preId", preList.get(0).getId());
+		
 		
 		//根节点
 		Tree root = new Tree();
@@ -242,7 +256,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 			}
 		}
 		//根结点
-		root.setName("车区树");
+		root.setName( preList.get(0).getName() );
 		root.setId("0");
 		root.setIsParent(false);
 		root.setCode("0");

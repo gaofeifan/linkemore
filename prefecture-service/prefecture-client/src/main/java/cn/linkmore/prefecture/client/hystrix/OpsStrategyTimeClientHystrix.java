@@ -53,7 +53,7 @@ public class OpsStrategyTimeClientHystrix implements OpsStrategyTimeClient {
 	}
 
 	@Override
-	public List<ResStrategyTime> findList() {
+	public List<ResStrategyTime> findList(Map<String, Object> map) {
 		log.info("prefecture service strategy findList() hystrix");
 		return new ArrayList<ResStrategyTime>();
 	}

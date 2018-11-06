@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import cn.linkmore.bean.view.Tree;
+import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.StrategyGroupService;
@@ -86,7 +87,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 
 	@Override
 	public List<ResStrategyGroup> findList(Map<String, Object> param) {
-		return opsStrategyGroupClient.findList();
+		return opsStrategyGroupClient.findList(param);
 	}
 	
 }

@@ -1,6 +1,5 @@
 package cn.linkmore.ops.biz.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
@@ -45,14 +43,10 @@ import cn.linkmore.prefecture.response.ResStrategyFee;
 @RestController
 @RequestMapping("/admin/biz/prefecture_strategy")
 
-public class PrefectureStrategyController {
+public class PrefectureStrategyController extends BaseController{
 	@Autowired
 	private PrefectureStrategyService prefectureStrategyService;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
-	private ObjectMapper mapper= new ObjectMapper();
-	
 	/**
 	 * 新增时段
 	 * @param reqStrategyGroup
@@ -230,6 +224,7 @@ public class PrefectureStrategyController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable) {
+		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
 		return this.prefectureStrategyService.findPage(pageable);
 	}
 

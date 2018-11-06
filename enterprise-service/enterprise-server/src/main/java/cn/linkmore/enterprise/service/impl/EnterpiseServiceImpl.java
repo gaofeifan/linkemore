@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,6 +27,7 @@ import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.security.client.PersonClient;
 import cn.linkmore.security.client.RoleClient;
 import cn.linkmore.security.request.ReqPerson;
+import cn.linkmore.security.response.ResRole;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.PasswordUtil;
@@ -34,6 +36,7 @@ import cn.linkmore.util.PasswordUtil;
 @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackForClassName = "RuntimeExcpeiton")
 public class EnterpiseServiceImpl implements EnterpriseService {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private EnterpriseMasterMapper enterpriseMasterMapper;
 	
@@ -42,9 +45,6 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 
 	@Resource
 	private RoleClient roleClient;
-
-	/*@Resource
-	private PersonRoleClient personRoleClient;*/
 
 	@Resource
 	private PersonClient personClient;
@@ -109,20 +109,16 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 		record.setCreateTime(new Date());
 		record.setUpdateTime(new Date());
 		Enterprise enter = ObjectUtils.copyObject(record, new Enterprise());
-		return this.enterpriseMasterMapper.save(enter);
-		/*Map<String, Object> param = new HashMap<String, Object>();
-		param.put("code", "enterprise-base-role");
+	    this.enterpriseMasterMapper.save(enter);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("code", "corp");
 		List<ResRole> list = this.roleClient.findList(param);
 		if (list != null && list.size() > 0) {
 			ResRole role = list.get(0);
-			ReqPersonRole pr = new ReqPersonRole();
-			pr.setPersonId(person.getId());
-			pr.setRoleId(role.getId());
-			this.personRoleMapper.save(pr);
+			log.info(">>>>>>>>>>>>>>>>personId={} , roleId={}",personId,role.getId());
+			this.personClient.bind(personId, role.getId().toString());
 		}
-		person.setId(personId);
-		person.setEntId(enter.getId());
-		return this.personClient.update(person);*/
+		return 1;
 	}
 
 	@Override

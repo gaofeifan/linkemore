@@ -31,6 +31,9 @@
 	<include refid="Base_Column_List" />
     from v_strategy_group
     where 1 = 1
+    <if test="createUserId != null">
+       and create_user_id = #{createUserId,jdbcType=BIGINT}
+    </if>
     order by update_time DESC
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
@@ -40,6 +43,9 @@
 	<include refid="Base_Column_List" />
     from v_strategy_group
     where status=2
+    <if test="createUserId != null">
+       and create_user_id = #{createUserId,jdbcType=BIGINT}
+    </if>
     order by update_time DESC
   </select>
   
@@ -47,6 +53,9 @@
    	select  count(1)
     from v_strategy_group
     where 1= 1 
+    <if test="createUserId != null">
+       and create_user_id = #{createUserId,jdbcType=BIGINT}
+    </if>
   </select>
 
 

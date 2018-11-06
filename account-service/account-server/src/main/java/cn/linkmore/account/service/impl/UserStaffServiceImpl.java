@@ -1,5 +1,6 @@
 package cn.linkmore.account.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +10,13 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.account.dao.cluster.UserClusterMapper;
 import cn.linkmore.account.dao.cluster.UserStaffClusterMapper;
 import cn.linkmore.account.dao.master.UserStaffMasterMapper;
 import cn.linkmore.account.entity.UserStaff;
 import cn.linkmore.account.request.ReqCheck;
 import cn.linkmore.account.request.ReqUserStaff;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.service.UserStaffService;
 import cn.linkmore.bean.view.ViewFilter;
@@ -32,6 +35,8 @@ public class UserStaffServiceImpl implements UserStaffService {
 	private UserStaffClusterMapper userStaffClusterMapper;
 	@Resource
 	private UserStaffMasterMapper userStaffMasterMapper;
+	@Resource
+	private UserClusterMapper userClusterMapper;
 
 	@Override
 	public ResUserStaff findById(Long userId) {
@@ -40,7 +45,12 @@ public class UserStaffServiceImpl implements UserStaffService {
 
 	@Override
 	public void save(ReqUserStaff record) {
-		this.userStaffMasterMapper.saveReq(record);
+		ResUser user = this.userClusterMapper.findByMobile(record.getUsername());
+		if(user != null){
+			record.setCreateTime(new Date());
+			record.setId(user.getId());
+			this.userStaffMasterMapper.saveReq(record);
+		}
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.security.request.ReqCheck;
 import cn.linkmore.security.request.ReqRole;
+import cn.linkmore.security.response.ResRole;
 
 /**
  * Service接口 - 权限模块 - 角色信息
@@ -68,6 +69,8 @@ public interface RoleService {
 	 * @param pids
 	 * @param eids
 	 */
-	void bind(Long id, String pids, String eids); 
+	void bind(Long id, String pids, String eids);
+	
+	List<ResRole> findList(Map<String, Object> param); 
 
 }

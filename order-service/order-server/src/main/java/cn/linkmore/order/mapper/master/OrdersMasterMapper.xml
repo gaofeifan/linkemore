@@ -37,6 +37,7 @@
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="brand_id" jdbcType="BIGINT" property="brandId" />
     <result column="switch_status" jdbcType="SMALLINT" property="switchStatus" />
+    <result column="order_source" jdbcType="SMALLINT" property="orderSource" />
   </resultMap>
   <sql id="Base_Column_List">
     id, user_id, pre_id,pre_name,strategy_id, stall_id,stall_name, order_no, pay_type, total_amount, actual_amount, status, 
@@ -56,7 +57,8 @@
       plate_no, stall_image, stall_local, 
       stall_guidance, create_time, update_time, 
       dock_id, status_history, user_type, client_type,
-      status_time, lock_down_time, lock_down_status,strategy_id,switch_status,stall_type,ent_id,brand_id
+      status_time, lock_down_time, lock_down_status,strategy_id,
+      switch_status,stall_type,ent_id,brand_id,order_source, area_name
       )
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{preId,jdbcType=BIGINT},  #{preName,jdbcType=VARCHAR},
       #{stallId,jdbcType=BIGINT},  #{stallName,jdbcType=VARCHAR},#{orderNo,jdbcType=VARCHAR}, #{payType,jdbcType=INTEGER}, 
@@ -67,7 +69,8 @@
       #{dockId,jdbcType=VARCHAR}, #{statusHistory,jdbcType=SMALLINT}, #{userType,jdbcType=SMALLINT}, #{clientType,jdbcType=SMALLINT}, 
       #{statusTime,jdbcType=TIMESTAMP}, #{lockDownTime,jdbcType=TIMESTAMP}, 
       #{lockDownStatus,jdbcType=SMALLINT},#{strategyId,jdbcType=BIGINT} ,#{switchStatus,jdbcType=SMALLINT},
-      #{stallType,jdbcType=SMALLINT},#{entId,jdbcType=BIGINT},#{brandId,jdbcType=BIGINT}
+      #{stallType,jdbcType=SMALLINT},#{entId,jdbcType=BIGINT},#{brandId,jdbcType=BIGINT},
+      #{orderSource,jdbcType=SMALLINT},#{areaName,jdbcType=VARCHAR}
       )
   </insert>
   
