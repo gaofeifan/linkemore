@@ -36,10 +36,10 @@ public class OperateServiceImpl implements OperateService {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
 		Long entId = null;
-		if(person.getType() == 0) {
+		if(person.getType() == 0 || person.getType() == 1) {
 			entId = 0L;
 		}else {
-			entId = person.getEntId();
+			entId = person.getId();
 		}
 		List<Tree> list = this.opsOperateAuthClient.tree(entId);
 		return list;

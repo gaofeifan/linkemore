@@ -62,6 +62,7 @@ import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthCityClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
@@ -1332,4 +1333,44 @@ public class StallServiceImpl implements StallService {
 		}
 	}
 
+	@Override
+	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn) {
+		ResponseMessage<LockBean> lock = this.lockFactory.getLockInfo(sn);
+		LockBean data = null;
+		if(lock != null) {
+			 data = lock.getData();
+		}
+		ResStaffStallSn stallSn = new ResStaffStallSn();
+		stallSn.setStallSn(sn);
+		Stall stall = this.stallClusterMapper.findByLockSn(sn);
+		if(data != null) {
+			stallSn.setBattery(data.getElectricity().shortValue());
+			switch (data.getLockState()) {
+			case 0:
+				stallSn.setStallLockStatus(2);
+				break;
+			case 2:
+				stallSn.setStallLockStatus(1);
+				break;
+			case 3:
+				stallSn.setStallLockStatus(2);
+				break;
+			case 1:
+				stallSn.setStallLockStatus(1);
+				break;
+			}
+			stallSn.setUltrasonic(data.getParkingState().shortValue());
+		}else {
+			if(stall == null) {
+				throw new BusinessException(StatusEnum.LOCK_SN_EXISTS);
+			}
+		}
+		if(stall != null) {
+			stallSn.setInstallStatus((short)1);
+			ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
+			stallSn.setPreName(detail.getName());
+			stallSn.setStallName(stall.getStallName());
+		}
+		return stallSn;
+	}
 }

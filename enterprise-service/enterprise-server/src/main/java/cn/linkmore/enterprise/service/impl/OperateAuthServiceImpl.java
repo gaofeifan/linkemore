@@ -73,6 +73,8 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 	public List<Tree> tree(Long entId) {
 		List<ResEnterprise> list = null;
 		List<ResEntPrefecture> preList = null;
+		Map<String, Object> map = new HashMap<>();
+		List<Tree> roots = new ArrayList<>();
 		if(entId == 0) {
 			list = this.enterpriseService.findList(null);
 			preList = this.entPreService.findList(null);
@@ -80,11 +82,12 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 			Map<String,Object> param = new HashMap<>();
 			param.put("id", entId);
 			list = this.enterpriseService.findList(param);
+			if(list == null || list.size() == 0) {
+				return roots;
+			}
 			param.put("entId", entId);
 			preList = this.entPreService.findList(param);
 		}
-		Map<String, Object> map = new HashMap<>();
-		List<Tree> roots = new ArrayList<>();
 		List<Long> ids = preList.stream().map(p -> p.getPreId()).collect(Collectors.toList());
 		map.put("preIds", ids);
 		map.put("category", 2);

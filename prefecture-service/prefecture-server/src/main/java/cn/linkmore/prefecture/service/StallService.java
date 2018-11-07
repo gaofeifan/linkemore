@@ -13,6 +13,7 @@ import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
@@ -269,4 +270,12 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	void reset(Long stallId, HttpServletRequest request);
+	
+	
+	/**
+	 * @Description  根据车位锁编号查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn);
 }

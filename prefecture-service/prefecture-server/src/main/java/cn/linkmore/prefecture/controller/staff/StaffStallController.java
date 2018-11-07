@@ -24,6 +24,7 @@ import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.service.StallService;
 import io.swagger.annotations.Api;
@@ -62,13 +63,21 @@ public class StaffStallController {
 		return ResponseEntity.success(detail, request);
 	}
 	
+	@RequestMapping(value="/stall-detail-sn",method=RequestMethod.GET)
+	@ResponseBody
+	@ApiOperation(value = "根据车位锁编号查询车位编号", notes = "根据车位锁编号查询车位编号", consumes = "application/json")
+	public ResponseEntity<ResStaffStallSn> findStaffStallSn(HttpServletRequest request,  @ApiParam("车位锁编号") @NotNull(message="sn") @RequestParam("sn") String sn) {
+		ResStaffStallSn detail = this.stallService.findStaffStallSn(request,sn);
+		return ResponseEntity.success(detail, request);
+	}
+	
 	@ApiOperation(value = "指定车位操作", notes = "指定车位操作")
 	@RequestMapping(value = "/staff-assign", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> staffAssign(HttpServletRequest request, @Validated @RequestBody ReqAssignStall bean) {
 		ResponseEntity<String> response = null;
-			String plate = this.stallService.staffAssign(bean,request);
-			response = ResponseEntity.success(plate, request);
+		String plate = this.stallService.staffAssign(bean,request);
+		response = ResponseEntity.success(plate, request);
 		return response;
 	}
 	

@@ -89,7 +89,6 @@ public class StallController {
 
 	/**
 	 * 升锁操作
-	 * 
 	 * @param stallId
 	 *            Long
 	 */
