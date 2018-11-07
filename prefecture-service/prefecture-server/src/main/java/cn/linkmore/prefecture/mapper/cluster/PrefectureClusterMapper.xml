@@ -177,9 +177,9 @@
   	select id,name
 	from v_prefecture 
 	where 1 = 1 
-	<if test="status!=null">  
+	<!-- <if test="status!=null">  
     and status = #{status}
-    </if>
+    </if> -->
     <if test="createUserId!=null">  
     and create_user_id = #{createUserId} 
     </if>

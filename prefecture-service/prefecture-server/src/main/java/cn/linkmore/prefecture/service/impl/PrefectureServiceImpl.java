@@ -298,8 +298,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public Tree findTree(Map<String,Object> param) {
-		/*Map<String, Object> param = new HashMap<>();*/
-		param.put("status", "0");
+		/*Map<String, Object> param = new HashMap<>();
+		param.put("status", "0");*/
 		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
 		Tree tree = null;
 		List<Tree> rtrees = new ArrayList<Tree>();
