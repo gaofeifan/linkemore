@@ -109,7 +109,12 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 				List<String[]> listDateTime=splitDateTime(startTime,endTime);
 				for(String[] arrayDateTime: listDateTime) {
 					for(StrategyStall strategyStall:listStrategyStall) {
-						if (isAcross(sdf.format(strategyStall.getStartDate()),sdf.format(strategyStall.getStopDate()),arrayDateTime[0],arrayDateTime[1])) {
+						
+						System.out.printf("isAcross(%s,%s,%s,%s)=%s%n",
+								sdf.format(strategyStall.getStartDate()),formatEndDateTime(sdf_date.format(strategyStall.getStopDate())),arrayDateTime[0],arrayDateTime[1]
+								,isAcross(sdf.format(strategyStall.getStartDate()),formatEndDateTime(sdf_date.format(strategyStall.getStopDate())),arrayDateTime[0],arrayDateTime[1])
+								);
+						if (isAcross(sdf.format(strategyStall.getStartDate()),formatEndDateTime(sdf_date.format(strategyStall.getStopDate())),arrayDateTime[0],arrayDateTime[1])) {
 							int week= getWeek(arrayDateTime[0]);
 							if( week>= Integer.parseInt(strategyStall.getBeginDate()) && week<= Integer.parseInt(strategyStall.getEndDate())) {
 								StrategyStall strategyStallRequest=new StrategyStall();
@@ -122,7 +127,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 					}
 				}
 			}
-			
+
 			double chargePrice=0D;
 			if(CollectionUtils.isNotEmpty(listStrategyStallRequest)) {
 				//System.out.println(listStrategyStallRequest.size());
@@ -131,6 +136,10 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 							,formatStartDateTime(strategyStall.getBeginDate())
 							,formatEndDateTime(strategyStall.getEndDate()) );
 					//System.out.println(price);
+					log.error("{},{},{},{}=>{}",plateNo,strategyStall.getParkCode()
+							,formatStartDateTime(strategyStall.getBeginDate())
+							,formatEndDateTime(strategyStall.getEndDate()),price );
+					
 					if(price != -1D) {
 						chargePrice+=price;
 					}else {
@@ -166,6 +175,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
         c.setTime(d);
         return c.get(Calendar.DAY_OF_WEEK)==1? 7:c.get(Calendar.DAY_OF_WEEK)-1;
 	}
+
 	/**
 	 * 按天分割日期段
 	 * @param beginDateTime
@@ -180,7 +190,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		LocalDate d_beginDate=LocalDate.parse(d_begin[0]);
 		LocalDate d_endDate=LocalDate.parse(d_end[0]);
 		List<String[]> listRes=new ArrayList<String[]>();
-		while(d_endDate.isAfter(d_beginDate) ) {
+		while(d_endDate.isAfter(d_beginDate.plusDays(-1)) ) {
 			String [] d =new String[2];
 			d[0]=d_beginDate.format(dtf_date);
 			d[1]=d[0];
@@ -203,7 +213,6 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		return listRes;
 	}
 
-	
 	//取两个时间段的交集时间段
 	private  String  getTheSame(String beginDate1,String endDate1,String beginDate2,String endDate2) {
 		if (isAcross(beginDate1,endDate1,beginDate2,endDate2)) {
@@ -213,10 +222,11 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		}
 		return null;
 	}
+	
 	private double getFee(String plateNo,String parkCode,String beginTime,String endTime) {
-		log.error("\n{},{},{},{}",plateNo,parkCode,beginTime,endTime);
+		//log.error("\n{},{},{},{}",plateNo,parkCode,beginTime,endTime);
 		String res=httpGetFee(plateNo,parkCode,beginTime,endTime);
-		log.error("\nres={}",res);
+		//log.error("\nres={}",res);
 		JSONObject obj = JSONObject.fromObject(res);
 		if(obj.has("code")) {
 			if(StringUtils.equalsIgnoreCase("200", obj.getString("code")) ) {
@@ -284,7 +294,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		//System.out.printf("%s,%s\n",beginDate,endDate);
 		LocalDateTime d_beginDate = LocalDateTime.parse(formatStartDateTime(beginDate),dtf);
 		LocalDateTime d_endDate = LocalDateTime.parse(formatEndDateTime(endDate),dtf);
-		return ChronoUnit.DAYS.between(d_beginDate, d_endDate);
+		return ChronoUnit.SECONDS.between(d_beginDate, d_endDate);
 	}
 	
 }
