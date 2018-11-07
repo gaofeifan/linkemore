@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.entity;
 
+import java.util.Date;
+
 /**
  * 计费策略
  * @author kobe
@@ -22,7 +24,11 @@ public class StrategyFee {
      * 状态
      */
     private Byte status;
-
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+    
     public Long getId() {
         return id;
     }
@@ -54,4 +60,13 @@ public class StrategyFee {
     public void setStatus(Byte status) {
         this.status = status;
     }
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+    
 }

@@ -22,7 +22,7 @@ public class PrefectureStrategyGroup {
      */
     private Long strategyDateId;
     /**
-     * 费用策略id
+     * 费用策略code
      */
     private String parkCode;
 

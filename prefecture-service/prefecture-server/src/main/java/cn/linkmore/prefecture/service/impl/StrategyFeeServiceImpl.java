@@ -1,25 +1,231 @@
 package cn.linkmore.prefecture.service.impl;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import cn.linkmore.prefecture.dao.cluster.StrategyFeeClusterMapper;
+import cn.linkmore.prefecture.entity.StrategyStall;
 import cn.linkmore.prefecture.response.ResStrategyFee;
 import cn.linkmore.prefecture.service.StrategyFeeService;
+import cn.linkmore.util.HttpUtils;
+import net.sf.json.JSONObject;
 @Service
 public class StrategyFeeServiceImpl implements StrategyFeeService {
-
-
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private StrategyFeeClusterMapper strategyFeeClusterMapper;
 	
+	private ObjectMapper mapper = new ObjectMapper();
 	
+	private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	private SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	//@Value("${strategyFeeURL}")
+
+	private String strategyFeeURL="http://192.168.1.76:8086/charge/api/reckon_charge_price";
+	private String strategyFeeCode="987656";
+	
+	private String strategyFeesSecret="99876505523";	
+	
+	/**
+	 * 获取费用列表
+	 */
 	@Override
 	public List<ResStrategyFee> findList() {
 		return this.strategyFeeClusterMapper.findList();
 
 	}
 
+	/**
+	 * 计算总金额
+	 * 1 根据车位id找到对应的分时策略
+	 * 2 分时策略如果是按日期段的，比较查询出对应的计费策略code,拆分时间段
+	 * 3 分时策略如果是按周期段的, 比较查询出对应的计费策略code,拆分时间段
+	 * 4 将 计费策略与时间段的 list,从接口获取金额，最后汇总出总金额.
+	 */
+	@Override
+	public Map<String, Object> amount(Map<String, Object> param) {
+		long stallId=Long.parseLong(String.valueOf(param.get("stallId")));
+		String plateNo=String.valueOf(param.get("plateNo"));
+		String startTime=String.valueOf(param.get("startTime"));
+		String endTime=String.valueOf(param.get("endTime"));
+
+		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyStallList(stallId);
+		List<StrategyStall> listStrategyStallRequest=new ArrayList<StrategyStall>();
+		 Map<String, Object> resultMap=new HashMap<String, Object>();
+		if (CollectionUtils.isNotEmpty(listStrategyStall)) {
+			if (listStrategyStall.get(0).getDatetype()==1) {
+				//按日期段
+				for(StrategyStall strategyStall:listStrategyStall) {
+					String sameDateStr=getTheSame(formatStartDateTime(strategyStall.getBeginDate()),formatEndDateTime(strategyStall.getEndDate()),formatStartDateTime(startTime),formatEndDateTime(endTime));
+					if(StringUtils.isNotEmpty(sameDateStr)) {
+						String [] sameDate=sameDateStr.split("#");
+						StrategyStall strategyStallRequest=new StrategyStall();
+						strategyStallRequest.setBeginDate(sameDate[0]);
+						strategyStallRequest.setEndDate(sameDate[1]);
+						strategyStallRequest.setParkCode(strategyStall.getParkCode());
+						listStrategyStallRequest.add(strategyStallRequest);
+					}
+				}
+				double chargePrice=0D;
+				if(CollectionUtils.isNotEmpty(listStrategyStallRequest)) {
+					System.out.println(listStrategyStallRequest.size());
+					for(StrategyStall strategyStall:listStrategyStallRequest) {
+						double price=getFee(plateNo,strategyStall.getParkCode()
+								,formatStartDateTime(strategyStall.getBeginDate())
+								,formatEndDateTime(strategyStall.getEndDate()) );
+						System.out.println(price);
+						if(price != -1D) {
+							chargePrice+=price;
+						}else {
+							chargePrice=-1;
+							
+							//break;
+						}
+					}
+				}else {
+					chargePrice=-1D;
+				}
+				resultMap.put("chargePrice", chargePrice);
+			}else {
+				//按周期段
+				for(StrategyStall strategyStall:listStrategyStall) {
+					if (isAcross(sdf.format(strategyStall.getStartDate()),sdf.format(strategyStall.getStopDate()),startTime,endTime)) {
+						
+						
+						
+					}
+
+				}
+			}
+		}
+		return resultMap;
+	}
+	
+	private String formatStartDateTime(String dateTime) {
+		return dateTime.length()<=10?dateTime+" 00:00:00":dateTime;
+	}
+	private String formatEndDateTime(String dateTime) {
+		return dateTime.length()<=10?dateTime+" 23:59:59":dateTime;
+	}
+	
+	//取两个时间段的交集时间段
+	private  String  getTheSame(String beginDate1,String endDate1,String beginDate2,String endDate2) {
+		if (isAcross(beginDate1,endDate1,beginDate2,endDate2)) {
+			String [] a= {beginDate1,endDate1,beginDate2,endDate2};
+			Arrays.sort(a);
+			return a[1]+"#"+a[2];
+		}
+		return null;
+	}
+	private double getFee(String plateNo,String parkCode,String beginTime,String endTime) {
+		log.error("\n{},{},{},{}",plateNo,parkCode,beginTime,endTime);
+		String res=httpGetFee(plateNo,parkCode,beginTime,endTime);
+		log.error("\nres={}",res);
+		JSONObject obj = JSONObject.fromObject(res);
+		if(obj.has("code")) {
+			if(StringUtils.equalsIgnoreCase("200", obj.getString("code")) ) {
+				if(obj.has("returnData")) {
+					JSONObject returnDataObj=obj.getJSONObject("returnData");
+					if(returnDataObj.has("chargePrice")) {
+						return returnDataObj.getDouble("chargePrice");
+					}
+				}
+			}
+		}
+		return -1D;
+	}
+
+	private String httpGetFee(String plateNo,String parkCode,String beginTime,String endTime) {
+		Map<String, String> headers=new HashMap<String, String>();
+		headers.put("Content-Type", "application/json; charset=utf-8");
+		Map<String,String> mapBody=new TreeMap<String, String>();
+		mapBody.put("code", strategyFeeCode);
+		mapBody.put("timestamp",String.valueOf(new Date().getTime()));
+		mapBody.put("plateNo", plateNo);
+		mapBody.put("parkCode", parkCode);
+		mapBody.put("beginTime", beginTime);
+		mapBody.put("endTime", endTime);
+		mapBody.put("sign", "324");
+		JSONObject json = JSONObject.fromObject(mapBody);
+		try {
+			
+			HttpResponse r=HttpUtils.doPost(strategyFeeURL, "", "", headers, null, json.toString());
+			return EntityUtils.toString(r.getEntity(),"UTF-8");
+			
+			//return sendHttpPost1(strategyFeeURL,json.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 判断两个时间段是否有交叉
+	 * @param beginDate1
+	 * @param endDate1
+	 * @param beginDate2
+	 * @param endDate2
+	 * @return
+	 */
+	private boolean isAcross(String beginDate1,String endDate1,String beginDate2,String endDate2) {
+		if( myDateTimeDiff(endDate1,beginDate2) >= 0 || myDateTimeDiff(endDate2,beginDate1) >= 0 ){
+			return false;
+		}
+		return true;
+	}
+	
+	private long myTimeDiff(String beginTime,String endTime) {
+	    LocalDateTime d_beginTime = LocalDateTime.parse("2018-01-01 "+beginTime, dtf);
+	    LocalDateTime d_endTime = LocalDateTime.parse("2018-01-01 "+endTime, dtf);
+	   // System.out.printf("beginTime:%s,endTime:%s,diff=%s\n","2018-01-01 "+beginTime,"2018-01-01 "+endTime,Duration.between(beginDate, endDate).getSeconds());
+		return Duration.between(d_beginTime, d_endTime).getSeconds();
+	}
+	
+	private long myDateDiff(String beginDate,String endDate) {
+		LocalDate d_beginDate = LocalDate.parse(beginDate);
+		LocalDate d_endDate = LocalDate.parse(endDate);
+		return ChronoUnit.DAYS.between(d_beginDate, d_endDate);
+	}
+
+	private long myDateTimeDiff(String beginDate,String endDate) {
+		//System.out.printf("%s,%s\n",beginDate,endDate);
+		LocalDateTime d_beginDate = LocalDateTime.parse(formatStartDateTime(beginDate),dtf);
+		LocalDateTime d_endDate = LocalDateTime.parse(formatEndDateTime(endDate),dtf);
+		return ChronoUnit.DAYS.between(d_beginDate, d_endDate);
+	}
+	
 }

@@ -7,14 +7,33 @@
     <result column="park_name" jdbcType="VARCHAR" property="parkName" />
     <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
+
+  <resultMap id="StrategyStallResultMap" type="cn.linkmore.prefecture.entity.StrategyStall">
+	<result column="datetype" jdbcType="TINYINT"	property="datetype" />
+	<result column="start_date" jdbcType="DATE"	property="startDate" />
+	<result column="stop_date" jdbcType="DATE" property="stopDate" />
+	<result column="begin_date" jdbcType="VARCHAR" property="beginDate" />
+	<result column="end_date" jdbcType="VARCHAR" property="endDate" />
+    <result column="park_code" jdbcType="VARCHAR" property="parkCode" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, park_code, park_name, status
   </sql>
   
-   <select id="findList"  resultMap="BaseResultMap">
+  <select id="findList"  resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from v_strategy_fee
   </select>
-  
+
+  <select id="findStrategyStallList" parameterType = "java.lang.Long"  resultMap="StrategyStallResultMap">
+    select sd.datetype,sd.start_date,sd.stop_date,sdd.begin_date,sdd.end_date, psg.park_code from v_prefecture_strategy_group psg
+	inner join v_strategy_group_detail  sgd on psg.strategy_group_id=sgd.strategy_group_id
+	inner join v_strategy_date_detail sdd on sdd.strategy_date_id=psg.strategy_date_id
+	inner join v_strategy_date sd on sdd.strategy_date_id=sd.id
+	where sgd.stall_id = #{id,jdbcType=BIGINT}
+  </select>
+
+
 </mapper>

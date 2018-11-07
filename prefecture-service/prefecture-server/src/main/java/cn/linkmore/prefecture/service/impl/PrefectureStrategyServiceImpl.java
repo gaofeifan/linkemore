@@ -241,9 +241,21 @@ public class PrefectureStrategyServiceImpl implements PrefectureStrategyService 
 	private long myDateDiff(String beginDate,String endDate) {
 		LocalDate d_beginDate = LocalDate.parse(beginDate);
 		LocalDate d_endDate = LocalDate.parse(endDate);
-		//System.out.printf("beginDate:%s,endDate:%s,diff=%s\n","2018-01-01 "+beginDate,"2018-01-01 "+endDate,ChronoUnit.DAYS.between(d_beginDate, d_endDate));
-
 		return ChronoUnit.DAYS.between(d_beginDate, d_endDate);
+	}
+	/**
+	 * 判断日期段是否交叉
+	 * @param beginDate1
+	 * @param endDate1
+	 * @param beginDate2
+	 * @param endDate2
+	 * @return
+	 */
+	private boolean isAcross(String beginDate1,String endDate1,String beginDate2,String endDate2) {
+		if( myDateDiff(endDate1,beginDate2) >= 0 || myDateDiff(endDate2,beginDate1) >= 0 ){
+			return false;
+		}
+		return true;
 	}
 	
 	@Override
@@ -261,22 +273,18 @@ public class PrefectureStrategyServiceImpl implements PrefectureStrategyService 
 		}
 		List<StrategyDateDetail> listStrategyDateDetail = strategyDateDetailClusterMapper.findListByIds(ids);
 		int len=listStrategyDateDetail.size();
-		
+
 		if (datetype==1) {
 			//按日期
 			 for (int i=0;i<len;i++) {
-			    	for (int j=0;j<len;j++) {
-			    		if(i!=j){
-							if(  (myDateDiff(listStrategyDateDetail.get(i).getBeginDate(),listStrategyDateDetail.get(j).getBeginDate())<=0 
-									&& myDateDiff(listStrategyDateDetail.get(i).getBeginDate(),listStrategyDateDetail.get(j).getEndDate() )>=0 )
-								|| 	(myDateDiff(listStrategyDateDetail.get(i).getEndDate(),listStrategyDateDetail.get(j).getBeginDate())<=0 
-								   && myDateDiff(listStrategyDateDetail.get(i).getEndDate(),listStrategyDateDetail.get(j).getEndDate())>=0 )
-							){
-								//System.out.println("日期出现交叉!");
-								return 1;
-							}
-						}
-			    	}
+				 for (int j=0;j<len;j++) {
+					 if(i!=j){
+						 if(isAcross(listStrategyDateDetail.get(i).getBeginDate(),listStrategyDateDetail.get(i).getEndDate()
+								 ,listStrategyDateDetail.get(j).getBeginDate(),listStrategyDateDetail.get(j).getEndDate() )) {
+							 return 1;
+						 }
+					 }
+				 }
 			 }
 		}
 		return 0;

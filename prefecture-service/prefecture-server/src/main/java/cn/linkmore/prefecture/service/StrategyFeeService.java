@@ -9,5 +9,7 @@ public interface StrategyFeeService {
 
 	List<ResStrategyFee> findList();
 
+	Map<String, Object> amount(Map<String, Object> param);
+
 	
 }

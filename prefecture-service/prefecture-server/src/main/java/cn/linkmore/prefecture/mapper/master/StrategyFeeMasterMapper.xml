@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.StrategyFeeMasterMapper">
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from v_strategy_fee
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <delete id="deleteAll" >
+   	truncate table v_strategy_fee
+  </delete>
+  
+  <insert id="insert" parameterType="cn.linkmore.prefecture.entity.StrategyFee">
+    insert into v_strategy_fee (id, park_code, park_name, 
+      status,update_time)
+    values (#{id,jdbcType=BIGINT}, #{parkCode,jdbcType=VARCHAR}, #{parkName,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT},#{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
+</mapper>
