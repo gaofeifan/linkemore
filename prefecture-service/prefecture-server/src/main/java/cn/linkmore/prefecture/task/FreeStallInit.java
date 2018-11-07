@@ -172,7 +172,7 @@ public class FreeStallInit {
 			}
 		}
 		List<Stall> list = this.stallClusterMapper.findByStatus(StallStatus.FREE.status);
-		try {
+		/*try {
 			this.brand(lbm, list);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -184,7 +184,7 @@ public class FreeStallInit {
 			}   
 			log.info("------------------------");
 			log.info("micro service throw biz exception {}", sb.toString());
-		}
+		}*/
 		try {
 			this.common(lbm, list);
 		} catch (Exception e) {

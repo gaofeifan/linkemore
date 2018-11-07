@@ -112,7 +112,6 @@ public class Orders {
     
     private String preName;
     
-    
     private String stallName;
     
     private Long couponId;
@@ -144,7 +143,32 @@ public class Orders {
      */
     private Long brandId;
     
-    public Short getStallType() {
+    /**
+     * 订单来源[1预约,2扫码]
+     */
+    private Short orderSource;
+    /**
+     * 车区分组名称
+     */
+    private String areaName;
+    
+    public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+
+	public Short getOrderSource() {
+		return orderSource;
+	}
+
+	public void setOrderSource(Short orderSource) {
+		this.orderSource = orderSource;
+	}
+
+	public Short getStallType() {
 		return stallType;
 	}
 

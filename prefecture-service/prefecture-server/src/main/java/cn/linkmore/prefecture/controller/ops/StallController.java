@@ -164,6 +164,7 @@ public class StallController {
 			st.setStallName(stall.getStallName());
 			st.setStallLocal(stall.getStallLocal());
 			st.setType(stall.getType());
+			st.setAreaName(stall.getAreaName());
 			ReqStall reqStall = new ReqStall();
 			reqStall = ObjectUtils.copyObject(st, reqStall);
 			return this.stallService.update(reqStall);

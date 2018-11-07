@@ -41,7 +41,7 @@ public class LockConfig {
 		abuttingBean.setLinkmoreUrl("http://192.168.1.211:8081");
 		abuttingBean.setLinkmoreNewUrl("http://192.168.1.211:8081");
 		lockFactory.setAbuttingBean(abuttingBean);
-		ResponseMessage<LockBean> res =	lockFactory.lockDown("ECCB1E57A0CD111");
+		ResponseMessage<LockBean> res =	lockFactory.lockDown("ECCB1E57A0CD");
 		System.out.println(res.getMsgCode());
 		
 	}
