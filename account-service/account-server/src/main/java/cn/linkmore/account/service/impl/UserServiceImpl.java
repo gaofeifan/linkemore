@@ -61,6 +61,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.PushClient;
@@ -100,6 +101,10 @@ public class UserServiceImpl implements UserService {
 	private SmsClient smsClient;
 	@Autowired
 	private PushClient pushClient;
+	
+	@Autowired
+	private CouponClient couponClient;
+	
 	@Resource
 	private UserAppfansClusterMapper userAppfansClusterMapper;
 	@Resource
@@ -960,6 +965,8 @@ public class UserServiceImpl implements UserService {
 			account.setCreateTime(new Date());
 			accountMasterMapper.insert(account);
 			ru.setNewUserFlag((short)1);
+			couponClient.paySend(user.getId(), 8);
+			
 		} else if (user.getStatus().equals("2")) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {

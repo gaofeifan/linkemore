@@ -19,6 +19,9 @@ public class ReqBooking {
 	@NotBlank(message="车牌不能为空") 
 	private Long plateId;
 	
+	@ApiModelProperty(value = "订单来源标识：1预约 2扫码", required = false) 
+	private String orderSource = "1";
+	
 	public Long getPrefectureId() {
 		return prefectureId;
 	}
@@ -31,5 +34,10 @@ public class ReqBooking {
 	public void setPlateId(Long plateId) {
 		this.plateId = plateId;
 	}
-	
+	public String getOrderSource() {
+		return orderSource;
+	}
+	public void setOrderSource(String orderSource) {
+		this.orderSource = orderSource;
+	}
 }

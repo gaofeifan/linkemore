@@ -57,6 +57,7 @@ import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
+import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
@@ -297,8 +298,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	@Override
 	public Tree findTree(Map<String,Object> param) {
-		/*Map<String, Object> param = new HashMap<>();*/
-		param.put("status", "0");
+		/*Map<String, Object> param = new HashMap<>();
+		param.put("status", "0");*/
 		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
 		Tree tree = null;
 		List<Tree> rtrees = new ArrayList<Tree>();
@@ -515,14 +516,48 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			}
 			List<ResPrefectureGroup> preGroup = new ArrayList<ResPrefectureGroup>();
-			ResPrefectureGroup group = new ResPrefectureGroup();
-			group.setAreaName(preDetail.getName());
-			group.setDesc(preDetail.getStrategyDescription());
-			group.setId(preDetail.getId());
-			group.setLeisureStall(count.intValue());
-			preGroup.add(group);
-			detail.setPreGroupList(preGroup);
+			ResPrefectureGroup group = null;
+			List<String> listArea = stallClusterMapper.findAllAreaByPreId(preId);
+			List<cn.linkmore.prefecture.response.ResStall> resStall = stallClusterMapper.findStallsByPreId(preId);
+			Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + preId); 
+			Map<String, Set<Object>> map = new HashMap<String, Set<Object>>();
+			Set<Object> sns = null;
+			if(CollectionUtils.isNotEmpty(lockSnList)) {
+				for (cn.linkmore.prefecture.response.ResStall stall : resStall) {
+					String areaName = stall.getAreaName();
+					if(areaName == null) {
+						areaName = "";
+					}
+					if(lockSnList.contains(stall.getLockSn()) && !this.redisService.exists(RedisKey.PREFECTURE_BUSY_STALL.key + stall.getLockSn())) {
+						sns = map.get(areaName);
+						if (sns == null) {
+							sns = new HashSet<>();
+							map.put(areaName, sns);
+						}
+						sns.add(stall.getLockSn());
+					}
+				}
+			}
 			
+			if(CollectionUtils.isNotEmpty(listArea)) {
+				for(String area: listArea) {
+					if(area == null) {
+						area = "";
+					}
+					group = new ResPrefectureGroup();
+					group.setAreaName(area);
+					group.setDesc(preDetail.getStrategyDescription());
+					group.setId(preDetail.getId());
+					//group.setLeisureStall(count.intValue());
+					if(map.get(area) == null) {
+						group.setLeisureStall(0);
+					}else {
+						group.setLeisureStall(map.get(area).size());
+					}
+					preGroup.add(group);
+				}
+			}
+			detail.setPreGroupList(preGroup);
 			Long plateId = null;
 			String plateNumber = null;
 			if(cu!=null && cu.getId()!=null){
@@ -544,6 +579,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 					plateNumber = plates.get(0).getVehMark();
 				}
 			}
+			detail.setPlateId(plateId);
+			detail.setPlateNumber(plateNumber);
 		}
 		return detail;
 	}
@@ -603,9 +640,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 		if(CollectionUtils.isNotEmpty(lockSnList)) {
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("list", lockSnList);
+			params.put("areaName", reqBooking.getAreaName());
 			ResStall resStall = null;
 			List<cn.linkmore.prefecture.response.ResStall> freeStallList = stallClusterMapper.findFreeStallList(params);
-			log.info("---------freeStallList = {}",JSON.toJSON(freeStallList));
+			log.info(">>>>>>>>>>>>areaName = {} freeStallList = {}",reqBooking.getAreaName(), JSON.toJSON(freeStallList));
 			for(cn.linkmore.prefecture.response.ResStall stall: freeStallList) {
 				resStall = new ResStall();
 				resStall.setStallId(stall.getId());

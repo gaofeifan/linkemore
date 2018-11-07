@@ -22,6 +22,8 @@
     <result column="bind_order_status" jdbcType="SMALLINT" property="bindOrderStatus" />
     <result column="type" jdbcType="SMALLINT" property="type" />
     <result column="brand" jdbcType="SMALLINT" property="brand" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    
   </resultMap>
   
   <resultMap id="ResponseResultMap" type="cn.linkmore.prefecture.response.ResStall">
@@ -31,14 +33,14 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="type" jdbcType="SMALLINT" property="type" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
-        <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
-        <result column="bind_order_status" jdbcType="SMALLINT" property="bindOrderStatus" />
+    <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
   </resultMap>
   
   <sql id="Base_Column_List">
     id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
     status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, 
-    lock_voltage, bind_order_status,type,brand
+    lock_voltage, bind_order_status,type,brand,area_name
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -55,19 +57,19 @@
     select 
     <include refid="Base_Column_List" />
     from v_stall
-    where type in('0','1') and status = #{status}
+    where type = 0 and status = #{status}
   </select>
   
   <select id="findByLockSn" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
     status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, lock_voltage,
-    type, brand
+    type, brand, area_name
     from v_stall
     where lock_sn = #{lockSn,jdbcType=VARCHAR} limit 0,1
   </select>
   
   <select id="findStallsByPreId" parameterType="java.lang.Long" resultMap="ResponseResultMap">
-  	select id,stall_name,lock_sn,pre_id from v_stall where status = 1 and pre_id = #{preId}
+  	select id,stall_name,lock_sn,pre_id,area_name from v_stall where status = 1 and pre_id = #{preId}
   </select>
   <select id="findStallsByPreIds" parameterType="java.util.HashMap" resultMap="ResponseResultMap">
   	select id,stall_name,lock_sn,pre_id from v_stall 
@@ -89,7 +91,7 @@
   
   <select id="findAll" resultMap="BaseResultMap" >
     select id, stall_name, sell_count, pre_id, lock_id, lock_sn, lock_status, 
-    status, create_time, update_time, lock_voltage, bind_order_status,type
+    status, create_time, update_time, lock_voltage, bind_order_status
     from v_stall
   </select>
   
@@ -102,18 +104,24 @@
     </foreach>
   </select>
   
-  <select id="findFreeStallList" resultMap="ResponseResultMap" parameterType="java.util.List" >
+  <select id="findFreeStallList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
   	select id, stall_name, pre_id, lock_sn
 	from v_stall 
 	where status = 1 and lock_sn in  
     <foreach collection="list"  index="index" item="lockSn" open="(" separator="," close=")"  >
        #{lockSn}
     </foreach>
+    <if test="areaName != null and areaName !='' ">
+	   	AND area_name = #{areaName,jdbcType=VARCHAR}
+	</if>
+	<if test="areaName == '' ">
+	   	AND area_name is null
+	</if>
     order by stall_name asc
   </select>
   
   <select id="findPreStallList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
-  	select id, stall_name, pre_id,lock_sn, status, type,lock_status,bind_order_status
+  	select id, stall_name, pre_id,lock_sn, status, type,lock_status
 	from v_stall 
 	<where>
 	   <if test="list != null">
@@ -139,7 +147,34 @@
 	    </if>
 	</where>
   </select>
-  
+
+  <select id="findListByArea" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
+		select 
+	    <include refid="Base_Column_List" />
+		from v_stall
+		where pre_id = #{preId,jdbcType=BIGINT}
+		
+		<if test="areaName != null and areaName != 'null' and areaName != '' "> 
+			and area_name=#{areaName}
+		</if>
+		<if test="areaName == 'null' or areaName == 'NULL' "> 
+			and area_name is null
+		</if>
+	    <if test="startName != null and endName != null"> 
+		and stall_name between #{startName} and #{endName}
+		</if>
+		and id not in (select stall_id from v_strategy_group_detail)
+		order by area_name ASC,stall_name ASC
+  </select>
+
+  <select id="findAllAreaByPreId" resultType="java.lang.String" parameterType="java.lang.Long" >
+  	select area_name 
+  	from v_stall
+    where pre_id = #{preId,jdbcType=BIGINT}
+    group by area_name
+    order by area_name ASC
+  </select>
+
   <select id="findList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
   	select id, stall_name, lock_sn, status, type, pre_id
 	from v_stall 

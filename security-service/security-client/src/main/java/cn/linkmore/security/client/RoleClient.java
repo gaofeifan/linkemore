@@ -58,5 +58,9 @@ public interface RoleClient {
 	@ResponseBody
 	public void bind(@RequestParam("id") Long id,@RequestParam("pids") String pids,@RequestParam("eids") String eids);
 
+	@RequestMapping(value = "/v2.0/findList", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResRole> findList(@RequestBody Map<String, Object> param);
+
 	
 }

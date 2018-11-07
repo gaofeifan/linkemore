@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.StrategyGroupMasterMapper">
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from v_strategy_group
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  
+  <insert id="insert" parameterType="cn.linkmore.prefecture.entity.StrategyGroup" useGeneratedKeys="true" keyProperty="id">
+    insert into v_strategy_group (id, name, prefecture_id,prefecture_name,parking_count, 
+      create_user_id, create_user_name, create_time, 
+      update_user_id, update_user_name, update_time, 
+      status)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},#{prefectureId,jdbcType=BIGINT}, #{prefectureName,jdbcType=VARCHAR}, #{parkingCount,jdbcType=INTEGER}, 
+      #{createUserId,jdbcType=BIGINT}, #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateUserId,jdbcType=BIGINT}, #{updateUserName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.prefecture.entity.StrategyGroup" useGeneratedKeys="true" keyProperty="id">
+    insert into v_strategy_group
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="parkingCount != null">
+        parking_count,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createUserName != null">
+        create_user_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="updateUserName != null">
+        update_user_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="prefectureId != null">
+        #{prefectureId,jdbcType=INTEGER},
+      </if>
+      <if test="prefectureName != null">
+        #{prefectureName,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingCount != null">
+        #{parkingCount,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=BIGINT},
+      </if>
+      <if test="createUserName != null">
+        #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=BIGINT},
+      </if>
+      <if test="updateUserName != null">
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.linkmore.prefecture.entity.StrategyGroup">
+    update v_strategy_group
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="prefectureId != null">
+        prefecture_id = #{prefectureId,jdbcType=INTEGER},
+      </if>
+      <if test="prefectureName != null">
+        prefecture_name = #{prefectureName,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingCount != null">
+        parking_count = #{parkingCount,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=BIGINT},
+      </if>
+      <if test="createUserName != null">
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=BIGINT},
+      </if>
+      <if test="updateUserName != null">
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.linkmore.prefecture.entity.StrategyGroup">
+    update v_strategy_group
+    set name = #{name,jdbcType=VARCHAR},
+      parking_count = #{parkingCount,jdbcType=INTEGER},
+      update_user_id = #{updateUserId,jdbcType=BIGINT},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateStallCount" parameterType="java.lang.Long">
+	  update v_strategy_group set parking_count=
+	   (select count(*) from v_strategy_group_detail where strategy_group_id=#{id,jdbcType=BIGINT} )
+	  where id=#{id,jdbcType=BIGINT}
+  </update>
+  
+  <delete id="delete" parameterType="java.util.List">
+    delete from v_strategy_group
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>
+  </delete>
+
+ <update id="updateStatus" parameterType="java.util.HashMap">
+    update v_strategy_group
+    set status=#{status,jdbcType=INTEGER},
+      update_user_id = #{updateUserId,jdbcType=BIGINT},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id in
+    <foreach collection="ids"  index="index" item="id" open="(" separator="," close=")" >
+       #{id}
+    </foreach> 
+  </update>
+
+  
+</mapper>

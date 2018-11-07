@@ -1,6 +1,5 @@
 package cn.linkmore.prefecture.controller.ops;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +42,6 @@ public class StrategyTimeController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public int save(@RequestBody ReqStrategyTime reqStrategyInterval) {
-		System.out.println(111);
 		return this.strategyTimeService.save(reqStrategyInterval);
 	}
 	
@@ -99,10 +97,8 @@ public class StrategyTimeController {
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStrategyTime> findList(){
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("status", 1);
-		return this.strategyTimeService.findList(param);
+	public List<ResStrategyTime> findList(@RequestBody Map<String, Object> map){
+		return this.strategyTimeService.findList(map);
 	}	
 	
 	/**

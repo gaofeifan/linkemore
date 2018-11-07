@@ -261,7 +261,9 @@ public class Constants {
 		ORDER_SEARCH_NOTICE_(4, "order_search_notice"),
 		ORDER_CLOSED_NOTICE(5,"order_closed_coupon_notice"),
 		BRAND_USER_INVITE_NOTICE(6,"subed_brand_coupon_notice"),
-		UN_BRAND_USER_INVITE_NOTICE(7,"unsub_brand_coupon_notice");
+		UN_BRAND_USER_INVITE_NOTICE(7,"unsub_brand_coupon_notice"),
+		STAFF_ENT_LOGIN_CODE(8, "staff_ent_login_code"),
+		NEW_USER_REG_NOTICE(9, "new_user_reg_notice");
 		public int type;
 		public String id;
 

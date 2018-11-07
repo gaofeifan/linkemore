@@ -123,7 +123,6 @@ public class HttpUtils {
         if (org.apache.commons.lang3.StringUtils.isNotBlank(body)) {
         	request.setEntity(new StringEntity(body, "utf-8"));
         }
-
         return httpClient.execute(request);
     }
 	

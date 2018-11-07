@@ -33,6 +33,7 @@ import cn.linkmore.security.request.ReqRole;
 import cn.linkmore.security.response.ResDict;
 import cn.linkmore.security.response.ResPage;
 import cn.linkmore.security.response.ResPageElement;
+import cn.linkmore.security.response.ResRole;
 import cn.linkmore.security.response.ResRoleElement;
 import cn.linkmore.security.response.ResRolePage;
 import cn.linkmore.security.service.RoleService;
@@ -97,7 +98,7 @@ public class RoleServiceImpl implements RoleService {
 		Integer count = this.roleClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<Role> list = this.roleClusterMapper.findPage(param);
+		List<ResRole> list = this.roleClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
@@ -240,5 +241,10 @@ public class RoleServiceImpl implements RoleService {
 		if(res.size()>0){
 			this.roleElementMasterMapper.batchSave(res);
 		} 
+	}
+
+	@Override
+	public List<ResRole> findList(Map<String, Object> param) {
+		return this.roleClusterMapper.findList(param);
 	}
 }

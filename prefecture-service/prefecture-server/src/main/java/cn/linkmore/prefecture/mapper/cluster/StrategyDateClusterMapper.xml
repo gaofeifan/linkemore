@@ -34,6 +34,10 @@
     <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
 	   	select  count(1)
 	    from v_strategy_date
+	    where 1 = 1
+	    <if test="createUserId != null">
+	       and create_user_id = #{createUserId,jdbcType=BIGINT}
+	    </if>
     </select>
   
 	<select id="findPage" resultMap="BaseResultMap"	parameterType="java.util.HashMap">
@@ -41,9 +45,20 @@
 		<include refid="Base_Column_List" />
 		from v_strategy_date
 		where 1 = 1
+	    <if test="createUserId != null">
+	       and create_user_id = #{createUserId,jdbcType=BIGINT}
+	    </if>
 		order by update_time DESC
 		limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
-
 	</select>
-
+	<select id="findList" resultMap="BaseResultMap"	parameterType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from v_strategy_date
+		where status = 2
+	    <if test="createUserId != null">
+	       and create_user_id = #{createUserId,jdbcType=BIGINT}
+	    </if>
+		order by update_time DESC
+	</select>
 </mapper>

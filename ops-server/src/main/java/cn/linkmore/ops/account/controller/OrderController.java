@@ -32,6 +32,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.account.service.OrdersService;
+import cn.linkmore.ops.biz.controller.BaseController;
 import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.PrefectureService;
 import cn.linkmore.ops.biz.service.StallService;
@@ -49,7 +50,7 @@ import cn.linkmore.util.ExcelUtil;
  */
 @Controller
 @RequestMapping("/admin/account/order")
-public class OrderController {
+public class OrderController extends BaseController{
 	@Resource
 	private OrdersService ordersService;
 	
@@ -72,11 +73,12 @@ public class OrderController {
 		param.put("value", person.getId());
 		ResEnterprise enter = enterService.find(param);
 		if(enter != null) {
-			List<ViewFilter> filters = pageable.getFilters();
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+			/*List<ViewFilter> filters = pageable.getFilters();
 			ViewFilter vf = new ViewFilter();
 			vf.setProperty("createUserId");
 			vf.setValue(person.getId());
-			filters.add(vf);
+			filters.add(vf);*/
 		}
 		return this.ordersService.findPage(pageable); 
 	} 

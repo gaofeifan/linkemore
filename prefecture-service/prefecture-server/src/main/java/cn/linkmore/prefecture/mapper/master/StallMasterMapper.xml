@@ -67,6 +67,7 @@
       lock_battery = #{lockBattery,jdbcType=INTEGER},
       lock_voltage = #{lockVoltage,jdbcType=REAL},
       type = #{type,jdbcType=SMALLINT},
+      area_name = #{areaName,jdbcType=VARCHAR},
       bind_order_status = #{bindOrderStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>

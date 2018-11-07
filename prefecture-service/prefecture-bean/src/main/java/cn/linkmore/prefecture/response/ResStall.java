@@ -41,6 +41,11 @@ public class ResStall {
 	 */ 
 	private Integer lockStatus;
 	
+    /**
+     * 停车场内分区名称
+     */
+    private String areaName;
+    
 	public Long getPreId() {
 		return preId;
 	}
@@ -95,4 +100,11 @@ public class ResStall {
 	public void setBindOrderStatus(Integer bindOrderStatus) {
 		this.bindOrderStatus = bindOrderStatus;
 	}
+	public String getAreaName() {
+		return areaName;
+	}
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+	
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,7 +45,7 @@ import cn.linkmore.prefecture.response.ResStrategyDate;
 @RestController
 @RequestMapping("/admin/biz/strategy/date")
 
-public class StrategyDateController {
+public class StrategyDateController  extends BaseController{
 	@Autowired
 	private StrategyDateService strategyDateService;
 
@@ -225,6 +226,7 @@ public class StrategyDateController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable) {
+		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
 		return this.strategyDateService.findPage(pageable);
 	}
 	
@@ -235,10 +237,9 @@ public class StrategyDateController {
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStrategyDate> findList(){
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("status", 1);
-		return this.strategyDateService.findList();
+	public List<ResStrategyDate> findList(@RequestParam Map<String, Object> map){
+		map.put("createUserId", getPerson().getId());
+		return this.strategyDateService.findList(map);
 	}
 	/**
 	 * 根据id获取一条记录

@@ -14,15 +14,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.imageio.stream.FileImageInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -34,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import cn.linkmore.bean.exception.DataException;
-import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -63,13 +61,15 @@ import cn.linkmore.prefecture.response.ResPrefectureDetail;
  */
 @Controller
 @RequestMapping("/admin/biz/prefecture")
-public class PrefectureController {
+public class PrefectureController extends BaseController{
 
 	@Autowired
 	private PrefectureService preService;
     
 	@Autowired
 	private EnterpriseService enterService;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	/*
 	 * 专区信息列表
@@ -84,11 +84,12 @@ public class PrefectureController {
 		param.put("value", person.getId());
 		ResEnterprise enter = enterService.find(param);
 		if(enter != null) {
-			List<ViewFilter> filters = pageable.getFilters();
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+			/*List<ViewFilter> filters = pageable.getFilters();
 			ViewFilter vf = new ViewFilter();
 			vf.setProperty("createUserId");
 			vf.setValue(person.getId());
-			filters.add(vf);
+			filters.add(vf);*/
 		}
 		return this.preService.findPage(pageable);
 	}
@@ -300,17 +301,6 @@ public class PrefectureController {
 	}
 
 	/*
-	 * 区域列表
-	 */
-	/*
-	 * @RequestMapping(value = "/select_ent", method = RequestMethod.POST)
-	 * 
-	 * @ResponseBody public List<Enterprise> findEntprise() { Map<String, Object>
-	 * param = new HashMap<>(); List<Enterprise> find =
-	 * enterpriseService.find(param); return find; }
-	 */
-
-	/*
 	 * 专区列表
 	 */
 	@RequestMapping(value = "/find_city", method = RequestMethod.POST)
@@ -323,13 +313,14 @@ public class PrefectureController {
 	 * 下载二维码
 	 */
 	@RequestMapping(value = "/download", method = RequestMethod.POST)
-	public void download(Long id, HttpServletResponse response) {
+	public void download(Long id,  HttpServletRequest request, HttpServletResponse response) {
 		FileImageInputStream bis = null;
 		BufferedOutputStream bos = null;
 		ServletOutputStream out = null;
 		try {
 			ResPrefectureDetail pre = preService.findById(id);
-			String content = "cityId:" + pre.getCityId().toString() + "-prefectureId:" + id.toString();
+			String content = request.getHeader("Origin") + "/mini?cityId="+pre.getCityId().toString() + "&prefectureId=" + id.toString();
+			log.info("down ...........{}",content);
 			String rootPathText = "/data/qrc"; //服务器路径
 			//String rootPathText = "C:\\test\\"; // 本机测试路径
 			String realPath = rootPathText + File.separatorChar;// 临时文件夹

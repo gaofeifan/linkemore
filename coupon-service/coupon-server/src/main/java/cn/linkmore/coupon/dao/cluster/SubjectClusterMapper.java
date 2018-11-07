@@ -22,7 +22,8 @@ public interface SubjectClusterMapper {
 	List<ResSubject> findSubjectList();
 	/**
 	 * 查询品牌专题列表
+	 * @param type 
 	 * @return
 	 */
-	List<ResSubject> findBrandSubjectList();
+	List<ResSubject> findBrandSubjectList(Integer type);
 }
