@@ -94,7 +94,11 @@ public class PersonServiceImpl implements PersonService {
 		person.setLockStatus(0); 
 		person.setLockTime(new Date());
 		person.setLoginIp("");
-		person.setType(1); 
+		if(reqPerson.getType() == 2) {
+			person.setType(2); 
+		}else {
+			person.setType(1); 
+		}
 		person.setLoginTime(new Date());
 		this.personMasterMapper.save(person);
 		return person.getId();
