@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +53,9 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	private DateTimeFormatter dtf_date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
+	private SimpleDateFormat sdf_date= new SimpleDateFormat("yyyy-MM-dd");
 	//@Value("${strategyFeeURL}")
 
 	private String strategyFeeURL="http://192.168.1.76:8086/charge/api/reckon_charge_price";
@@ -100,37 +103,46 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 						listStrategyStallRequest.add(strategyStallRequest);
 					}
 				}
-				double chargePrice=0D;
-				if(CollectionUtils.isNotEmpty(listStrategyStallRequest)) {
-					System.out.println(listStrategyStallRequest.size());
-					for(StrategyStall strategyStall:listStrategyStallRequest) {
-						double price=getFee(plateNo,strategyStall.getParkCode()
-								,formatStartDateTime(strategyStall.getBeginDate())
-								,formatEndDateTime(strategyStall.getEndDate()) );
-						System.out.println(price);
-						if(price != -1D) {
-							chargePrice+=price;
-						}else {
-							chargePrice=-1;
-							
-							//break;
-						}
-					}
-				}else {
-					chargePrice=-1D;
-				}
-				resultMap.put("chargePrice", chargePrice);
+				
 			}else {
 				//按周期段
-				for(StrategyStall strategyStall:listStrategyStall) {
-					if (isAcross(sdf.format(strategyStall.getStartDate()),sdf.format(strategyStall.getStopDate()),startTime,endTime)) {
-						
-						
-						
+				List<String[]> listDateTime=splitDateTime(startTime,endTime);
+				for(String[] arrayDateTime: listDateTime) {
+					for(StrategyStall strategyStall:listStrategyStall) {
+						if (isAcross(sdf.format(strategyStall.getStartDate()),sdf.format(strategyStall.getStopDate()),arrayDateTime[0],arrayDateTime[1])) {
+							int week= getWeek(arrayDateTime[0]);
+							if( week>= Integer.parseInt(strategyStall.getBeginDate()) && week<= Integer.parseInt(strategyStall.getEndDate())) {
+								StrategyStall strategyStallRequest=new StrategyStall();
+								strategyStallRequest.setBeginDate(arrayDateTime[0]);
+								strategyStallRequest.setEndDate(arrayDateTime[1]);
+								strategyStallRequest.setParkCode(strategyStall.getParkCode());
+								listStrategyStallRequest.add(strategyStallRequest);
+							}
+						}
 					}
-
 				}
 			}
+			
+			double chargePrice=0D;
+			if(CollectionUtils.isNotEmpty(listStrategyStallRequest)) {
+				//System.out.println(listStrategyStallRequest.size());
+				for(StrategyStall strategyStall:listStrategyStallRequest) {
+					double price=getFee(plateNo,strategyStall.getParkCode()
+							,formatStartDateTime(strategyStall.getBeginDate())
+							,formatEndDateTime(strategyStall.getEndDate()) );
+					//System.out.println(price);
+					if(price != -1D) {
+						chargePrice+=price;
+					}else {
+						chargePrice=-1;
+						break;
+					}
+				}
+			}else {
+				chargePrice=-1D;
+			}
+			resultMap.put("chargePrice", chargePrice);			
+			
 		}
 		return resultMap;
 	}
@@ -138,9 +150,59 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 	private String formatStartDateTime(String dateTime) {
 		return dateTime.length()<=10?dateTime+" 00:00:00":dateTime;
 	}
+	
 	private String formatEndDateTime(String dateTime) {
 		return dateTime.length()<=10?dateTime+" 23:59:59":dateTime;
 	}
+	
+	private int getWeek(String ds) {
+		Date d=null;
+		try {
+			d = sdf_date.parse(ds);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+        Calendar c=Calendar.getInstance();
+        c.setTime(d);
+        return c.get(Calendar.DAY_OF_WEEK)==1? 7:c.get(Calendar.DAY_OF_WEEK)-1;
+	}
+	/**
+	 * 按天分割日期段
+	 * @param beginDateTime
+	 * @param endDateTime
+	 * @return
+	 */
+	private  List<String[]> splitDateTime(String beginDateTime,String endDateTime){
+		beginDateTime=formatStartDateTime(beginDateTime);
+		endDateTime=formatEndDateTime(endDateTime);
+		String[] d_begin=beginDateTime.split(" ");
+		String[] d_end=endDateTime.split(" ");
+		LocalDate d_beginDate=LocalDate.parse(d_begin[0]);
+		LocalDate d_endDate=LocalDate.parse(d_end[0]);
+		List<String[]> listRes=new ArrayList<String[]>();
+		while(d_endDate.isAfter(d_beginDate) ) {
+			String [] d =new String[2];
+			d[0]=d_beginDate.format(dtf_date);
+			d[1]=d[0];
+			listRes.add(d);
+			d_beginDate=d_beginDate.plusDays(1);
+		}
+		int len=listRes.size();
+		for (int i=0;i<len;i++) {
+			if (i==0) {
+				listRes.get(i)[0] = listRes.get(i)[0] + " " + d_begin[1];
+				listRes.get(i)[1]=listRes.get(i)[1]+" 23:59:59";
+			}else if(i>=len-1) {
+				listRes.get(i)[0]=listRes.get(i)[0]+" 00:00:00";
+				listRes.get(i)[1] = listRes.get(i)[1] + " " + d_end[1];
+			}else {
+				listRes.get(i)[0]=listRes.get(i)[0]+" 00:00:00";
+				listRes.get(i)[1]=listRes.get(i)[1]+" 23:59:59";
+			}
+		}
+		return listRes;
+	}
+
 	
 	//取两个时间段的交集时间段
 	private  String  getTheSame(String beginDate1,String endDate1,String beginDate2,String endDate2) {
