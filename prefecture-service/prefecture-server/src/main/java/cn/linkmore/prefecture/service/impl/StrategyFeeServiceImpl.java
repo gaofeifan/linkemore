@@ -182,11 +182,8 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		mapBody.put("sign", "324");
 		JSONObject json = JSONObject.fromObject(mapBody);
 		try {
-			
 			HttpResponse r=HttpUtils.doPost(strategyFeeURL, "", "", headers, null, json.toString());
 			return EntityUtils.toString(r.getEntity(),"UTF-8");
-			
-			//return sendHttpPost1(strategyFeeURL,json.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
