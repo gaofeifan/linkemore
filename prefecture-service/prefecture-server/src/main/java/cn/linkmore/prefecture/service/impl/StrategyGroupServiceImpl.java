@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,13 +56,20 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	
 	@Autowired
 	private PrefectureClusterMapper prefectureClusterMapper;
-	
-	
+
 	@Override
 	public int save(ReqStrategyGroup reqStrategyGroup) {
 		StrategyGroup strategyGroup = new StrategyGroup();
 		strategyGroup = ObjectUtils.copyObject(reqStrategyGroup, strategyGroup);
 		strategyGroup.setParkingCount(reqStrategyGroup.getStrategyGroupDetail().size());
+
+		Map<String,Object> param= new HashMap<String,Object>();
+		param.put("createUserId",strategyGroup.getCreateUserId());
+		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
+		if(CollectionUtils.isNotEmpty(preList)&& preList.size()>0){
+			strategyGroup.setPrefectureId(preList.get(0).getId());
+		}
+
 		int count=strategyGroupMasterMapper.insert(strategyGroup);
 		if(reqStrategyGroup.getStrategyGroupDetail()!=null) {
 			for (ReqStrategyGroupDetail reqStrategyGroupDetail : reqStrategyGroup.getStrategyGroupDetail()) {
@@ -191,7 +199,6 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 		if(param !=null && param.get("parkingInterval")!=null) {
 			parkingInterval=Integer.parseInt(param.get("parkingInterval").toString());
 		}
-
 		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
 		if (preList==null || preList.size()<=0) {
 			return  new Tree();
