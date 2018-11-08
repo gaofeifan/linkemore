@@ -11,5 +11,7 @@ public interface StrategyFeeService {
 
 	Map<String, Object> amount(Map<String, Object> param);
 
+	Map<String, Object> info(Map<String, Object> param);
+
 	
 }
