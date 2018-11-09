@@ -172,6 +172,15 @@
     where status = 0
   </select>
   
+  <select id="findSelectListByUser" resultMap="ResPreListMap" parameterType="java.util.HashMap" >
+    select id,name,status 
+    from v_prefecture
+    where status = 0
+    <if test="createUserId!=null">  
+    	and create_user_id = #{createUserId} 
+    </if>
+  </select>
+  
   <!-- 增加过滤条件的车区 -->
   <select id="findTreeList" resultMap="ResPreMap"   parameterType="java.util.HashMap" >
   	select id,name

@@ -282,6 +282,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	@Override
+	public List<ResPreList> findSelectListByUser(Map<String, Object> param) {
+		return this.prefectureClusterMapper.findSelectListByUser(param);
+	}
+	
+	@Override
 	public int delete(List<Long> ids) {
 		return this.prefectureMasterMapper.delete(ids);
 	}

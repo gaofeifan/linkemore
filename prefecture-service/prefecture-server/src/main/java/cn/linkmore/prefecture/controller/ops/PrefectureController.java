@@ -180,4 +180,11 @@ public class PrefectureController {
 	public List<ResPrefectureDetail> findList(@RequestBody Map<String, Object> param){
 		return this.preService.findList(param);
 	}
+	
+	@RequestMapping(value = "/v2.0/selectListByUser", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPreList> findSelectListByUser(@RequestBody Map<String, Object> param){
+		return this.preService.findSelectListByUser(param);
+	}
+	
 }

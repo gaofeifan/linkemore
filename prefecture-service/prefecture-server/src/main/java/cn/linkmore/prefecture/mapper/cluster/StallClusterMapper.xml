@@ -152,7 +152,7 @@
 		select 
 	    <include refid="Base_Column_List" />
 		from v_stall
-		where pre_id = #{preId,jdbcType=BIGINT}
+		where pre_id = #{prefectureId,jdbcType=BIGINT}
 		
 		<if test="areaName != null and areaName != 'null' and areaName != '' "> 
 			and area_name=#{areaName}
