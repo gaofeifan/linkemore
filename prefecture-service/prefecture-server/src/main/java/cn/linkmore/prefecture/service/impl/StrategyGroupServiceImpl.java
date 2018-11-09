@@ -103,10 +103,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 
 	@Override
 	public ResStrategyGroup selectByPrimaryKey(Long id) {
-		ResStrategyGroup resStrategyGroup = new ResStrategyGroup();
-		StrategyGroup strategyGroup=strategyGroupClusterMapper.selectByPrimaryKey(id);
-		resStrategyGroup = ObjectUtils.copyObject(strategyGroup, resStrategyGroup);
-
+		ResStrategyGroup resStrategyGroup = strategyGroupClusterMapper.selectByPrimaryKey(id);
 		List<ResStrategyGroupDetail> listResStrategyGroupDetail =new ArrayList<ResStrategyGroupDetail>();
 		List<StrategyGroupDetail> findList = strategyGroupDetailClusterMapper.findList(id);
 		if(findList!=null) {
@@ -123,7 +120,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	@Override
 	public List<ResStrategyGroupArea> selectStallByPrimaryKey(Long id) {
 		//分组信息
-		StrategyGroup strategyGroup=strategyGroupClusterMapper.selectByPrimaryKey(id);
+		ResStrategyGroup strategyGroup=strategyGroupClusterMapper.selectByPrimaryKey(id);
 		//分组下的车位信息List
 		List<StrategyGroupDetail> listGroupDetail = strategyGroupDetailClusterMapper.findList(id);
 		//返回的分区信息
