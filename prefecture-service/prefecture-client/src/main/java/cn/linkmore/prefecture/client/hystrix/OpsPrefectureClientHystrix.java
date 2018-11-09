@@ -97,4 +97,9 @@ public class OpsPrefectureClientHystrix implements OpsPrefectureClient {
 		log.info("prefecture service pres prenames(ids) hystrix");
 		return null;
 	}
+	@Override
+	public List<ResPreList> findSelectListByUser(Map<String, Object> map) {
+		log.info("prefecture List<ResPreList> findSelectListByUser(map) hystrix");
+		return null;
+	}
 }
