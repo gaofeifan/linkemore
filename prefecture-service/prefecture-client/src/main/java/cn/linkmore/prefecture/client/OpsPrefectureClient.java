@@ -130,4 +130,8 @@ public interface OpsPrefectureClient {
 	@RequestMapping(value = "/v2.0/pre-list", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ResPrefecture> findPreList();
+	
+	@RequestMapping(value = "/v2.0/selectListByUser", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPreList> findSelectListByUser(@RequestBody Map<String, Object> map);
 }

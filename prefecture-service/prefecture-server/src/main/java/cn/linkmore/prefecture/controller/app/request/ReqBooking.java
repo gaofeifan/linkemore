@@ -18,13 +18,13 @@ public class ReqBooking {
 	private Long plateId;
 	
 	@ApiModelProperty(value = "车区分组编号", required = false)
-	private String areaName = "";
+	private Long groupId  = 0L;
 	
-	public String getAreaName() {
-		return areaName;
+	public Long getGroupId() {
+		return groupId;
 	}
-	public void setAreaName(String areaName) {
-		this.areaName = areaName;
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
 	}
 	public Long getPrefectureId() {
 		return prefectureId;

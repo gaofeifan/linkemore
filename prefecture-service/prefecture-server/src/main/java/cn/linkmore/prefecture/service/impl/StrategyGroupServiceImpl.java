@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import cn.linkmore.prefecture.entity.StrategyGroupDetail;
 import cn.linkmore.prefecture.request.ReqStrategyGroup;
 import cn.linkmore.prefecture.request.ReqStrategyGroupDetail;
 import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStrategyGroup;
 import cn.linkmore.prefecture.response.ResStrategyGroupArea;
@@ -55,13 +57,26 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	
 	@Autowired
 	private PrefectureClusterMapper prefectureClusterMapper;
-	
-	
+
 	@Override
 	public int save(ReqStrategyGroup reqStrategyGroup) {
 		StrategyGroup strategyGroup = new StrategyGroup();
 		strategyGroup = ObjectUtils.copyObject(reqStrategyGroup, strategyGroup);
 		strategyGroup.setParkingCount(reqStrategyGroup.getStrategyGroupDetail().size());
+		
+		ResPrefectureDetail resPrefectureDetail = resPrefectureDetail = prefectureClusterMapper.findById(strategyGroup.getPrefectureId());
+		if(resPrefectureDetail!=null) {
+			strategyGroup.setPrefectureName(resPrefectureDetail.getName());
+		}
+		
+		/*
+		Map<String,Object> param= new HashMap<String,Object>();
+		param.put("createUserId",strategyGroup.getCreateUserId());
+		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
+		if(CollectionUtils.isNotEmpty(preList)&& preList.size()>0){
+			strategyGroup.setPrefectureId(preList.get(0).getId());
+		}
+*/
 		int count=strategyGroupMasterMapper.insert(strategyGroup);
 		if(reqStrategyGroup.getStrategyGroupDetail()!=null) {
 			for (ReqStrategyGroupDetail reqStrategyGroupDetail : reqStrategyGroup.getStrategyGroupDetail()) {
@@ -95,10 +110,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 
 	@Override
 	public ResStrategyGroup selectByPrimaryKey(Long id) {
-		ResStrategyGroup resStrategyGroup = new ResStrategyGroup();
-		StrategyGroup strategyGroup=strategyGroupClusterMapper.selectByPrimaryKey(id);
-		resStrategyGroup = ObjectUtils.copyObject(strategyGroup, resStrategyGroup);
-
+		ResStrategyGroup resStrategyGroup = strategyGroupClusterMapper.selectByPrimaryKey(id);
 		List<ResStrategyGroupDetail> listResStrategyGroupDetail =new ArrayList<ResStrategyGroupDetail>();
 		List<StrategyGroupDetail> findList = strategyGroupDetailClusterMapper.findList(id);
 		if(findList!=null) {
@@ -115,7 +127,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	@Override
 	public List<ResStrategyGroupArea> selectStallByPrimaryKey(Long id) {
 		//分组信息
-		StrategyGroup strategyGroup=strategyGroupClusterMapper.selectByPrimaryKey(id);
+		ResStrategyGroup strategyGroup=strategyGroupClusterMapper.selectByPrimaryKey(id);
 		//分组下的车位信息List
 		List<StrategyGroupDetail> listGroupDetail = strategyGroupDetailClusterMapper.findList(id);
 		//返回的分区信息
@@ -192,12 +204,22 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 			parkingInterval=Integer.parseInt(param.get("parkingInterval").toString());
 		}
 
+		ResPrefectureDetail resPrefectureDetail =null;
+		if(param !=null && param.get("prefectureId")!=null) {
+			resPrefectureDetail = prefectureClusterMapper.findById(Long.parseLong(param.get("prefectureId").toString()));
+		}
+		
+		if (resPrefectureDetail==null ) {
+			return  new Tree();
+		}
+		
+		/*
 		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
 		if (preList==null || preList.size()<=0) {
 			return  new Tree();
 		}
 		param.put("preId", preList.get(0).getId());
-		
+		*/
 		
 		//根节点
 		Tree root = new Tree();
@@ -261,7 +283,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 			}
 		}
 		//根结点
-		root.setName( preList.get(0).getName() );
+		root.setName( resPrefectureDetail.getName() );
 		root.setId("0");
 		root.setIsParent(false);
 		root.setCode("0");
@@ -291,12 +313,13 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 
 	@Override
 	public List<ResStall> findAreaStall(Map<String, Object> param) {
+		/*
 		List<ResPre> preList = prefectureClusterMapper.findTreeList(param);
 		if (preList==null || preList.size()<=0) {
 			return new ArrayList<ResStall>();
 		}
 		param.put("preId", preList.get(0).getId());
-		
+		*/
 		
 		return stallClusterMapper.findListByArea(param);
 	}

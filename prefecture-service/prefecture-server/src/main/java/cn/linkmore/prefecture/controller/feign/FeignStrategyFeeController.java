@@ -33,4 +33,16 @@ public class FeignStrategyFeeController {
 		return strategyFeeService.amount(param);
 	}
 	
+	
+	/**
+	 * 获取收费策略信息
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value = "/info", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> info(@RequestBody Map<String, Object> param) {
+		return strategyFeeService.info(param);
+	}
+	
 }

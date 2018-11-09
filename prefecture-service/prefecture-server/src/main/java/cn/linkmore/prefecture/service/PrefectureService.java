@@ -147,4 +147,6 @@ public interface PrefectureService {
 	
 	cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId, HttpServletRequest request);
 
+	List<ResPreList> findSelectListByUser(Map<String, Object> param);
+
 }

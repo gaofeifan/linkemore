@@ -104,4 +104,6 @@ public interface PrefectureService {
 	
 	List<cn.linkmore.prefecture.response.ResPrefecture> findPreList();
 	
+	List<ResPreList> findSelectListByUser(Map<String, Object> map);
+	
 }

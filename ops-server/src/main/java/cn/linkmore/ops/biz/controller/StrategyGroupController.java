@@ -290,6 +290,7 @@ public class StrategyGroupController extends BaseController{
 		//param.put("preId", preId);
 		//param.put("parkingInterval", parkingInterval);
 		param.put("createUserId", getPerson().getId());
+		
 		return this.strategyGroupService.findTree(param);
 	}
 	

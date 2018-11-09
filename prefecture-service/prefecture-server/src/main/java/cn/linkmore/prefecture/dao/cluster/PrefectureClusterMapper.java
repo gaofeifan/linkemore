@@ -74,5 +74,5 @@ public interface PrefectureClusterMapper {
 	 */
 	List<ResPre> findPreByIds(Map<String,Object> map);
 	
-	
+	List<ResPreList> findSelectListByUser(Map<String,Object> map);
 }

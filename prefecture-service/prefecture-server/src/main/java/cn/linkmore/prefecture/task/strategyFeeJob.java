@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +29,14 @@ public class strategyFeeJob {
 	
 	
 	//@Value("${strategyFeeURL}")
-	private String strategyFeeListURL="http://192.168.1.76:8086/charge/api/get_charge_list";
+	@Value("${strategyfee.url.list}")
+	private String strategyFeeListURL;//="http://192.168.1.76:8086/charge/api/get_charge_list";
 	
-	private String strategyFeeCode="987656";
+	@Value("${strategyfee.fee-code}")
+	private String strategyFeeCode;//="987656";
 	
-	private String strategyFeesSecret="99876505523";
+	@Value("${strategyfee.fee-secret}")
+	private String strategyFeesSecret;//="99876505523";
 	
 	@Scheduled(cron = "0 0/10 * * * *")
 	public void remoteGetFee() {

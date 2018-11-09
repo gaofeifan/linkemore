@@ -1,12 +1,13 @@
 package cn.linkmore.ops.biz.service.impl;
 
 import java.util.Calendar;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
@@ -15,7 +16,6 @@ import cn.linkmore.common.client.DistrictClient;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.common.response.ResDistrict;
 import cn.linkmore.common.response.ResOldDict;
-import cn.linkmore.ops.biz.response.ResPrefecture;
 import cn.linkmore.ops.biz.service.PrefectureService;
 import cn.linkmore.prefecture.client.OpsPrefectureClient;
 import cn.linkmore.prefecture.client.OpsStrategyBaseClient;
@@ -23,10 +23,10 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
 import cn.linkmore.prefecture.response.ResFeeStrategy;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
-import cn.linkmore.util.ObjectUtils;
 
 @Service
 public class PrefectureServiceImpl implements PrefectureService {
@@ -173,7 +173,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 		List<cn.linkmore.prefecture.response.ResPrefecture> preList = this.prefectureClient.findPreList();
 		return preList;
 	}
-	
+
+	@Override
+	public List<ResPreList> findSelectListByUser(Map<String, Object> map) {
+		return this.prefectureClient.findSelectListByUser(map);
+	}
 	
 
 }

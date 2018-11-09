@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import cn.linkmore.bean.exception.DataException;
@@ -141,7 +142,15 @@ public class PrefectureController extends BaseController{
 	public List<ResPreList> selectList() {
 		return this.preService.findSelectList();
 	}
-
+	
+	@RequestMapping(value = "/selectListByUser", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResPreList> findSelectListByUser() {
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("createUserId", getPerson().getId());
+		return this.preService.findSelectListByUser(map);
+	}
+	
 	/*
 	 * 计费策略列表
 	 */

@@ -1,13 +1,13 @@
 server:
-  port: 8002
+  port: 8002 
   session:
-    timeout: 10000 
+    timeout: 60
 spring:
   application:
     name: prefecture-server
   boot: 
     admin:
-      url: http://192.168.1.223:6002
+      url: http://192.168.1.128:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -17,7 +17,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.223:6003/eureka/ 
+      defaultZone: http://192.168.1.128:6003/eureka/
 feign:
   hystrix:
     enabled: true
@@ -27,9 +27,9 @@ master-db:
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
-  initial-size: 2
-  min-idle: 2
-  max-active: 5 
+  initial-size: 10
+  min-idle: 10
+  max-active: 20 
   max-wait: 60000 
   time-between-eviction-runs-millis: 60000 
   min-evictable-idle-time-millis: 30000
@@ -47,9 +47,9 @@ cluster-db:
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
-  initial-size: 2
-  min-idle: 2
-  max-active: 5 
+  initial-size: 10
+  min-idle: 10
+  max-active: 20 
   max-wait: 60000 
   time-between-eviction-runs-millis: 60000 
   min-evictable-idle-time-millis: 30000
@@ -87,6 +87,10 @@ lock:
   linkmore-url: http://192.168.1.211:8081
   linkmore-new-url: http://192.168.1.211:8081
 
+logging:
+  level:
+     cn.linkmore.prefecture.dao : debug
+
 swagger:
   enable: true
   title: 凌猫车区车位服务接口文档
@@ -94,4 +98,11 @@ swagger:
   version: 2.0
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
-  base-package: cn.linkmore.prefecture.controller.app,cn.linkmore.prefecture.controller.staff
+  base-package: cn.linkmore.prefecture.controller.app
+   
+strategyfee: 
+  url: 
+    fee: http://192.168.1.76:8086/charge/api/reckon_charge_price
+    list: http://192.168.1.76:8086/charge/api/get_charge_list
+  fee-code: 987656
+  fee-secret: 99876505523

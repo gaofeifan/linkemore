@@ -111,12 +111,12 @@
     <foreach collection="list"  index="index" item="lockSn" open="(" separator="," close=")"  >
        #{lockSn}
     </foreach>
-    <if test="areaName != null and areaName !='' ">
-	   	AND area_name = #{areaName,jdbcType=VARCHAR}
-	</if>
-	<if test="areaName == '' ">
-	   	AND area_name is null
-	</if>
+    <if test="stallList != null">
+		AND id in  
+	    <foreach collection="stallList"  index="index" item="id" open="(" separator="," close=")"  >
+	       #{id}
+	    </foreach>
+   </if>
     order by stall_name asc
   </select>
   
@@ -152,7 +152,7 @@
 		select 
 	    <include refid="Base_Column_List" />
 		from v_stall
-		where pre_id = #{preId,jdbcType=BIGINT}
+		where pre_id = #{prefectureId,jdbcType=BIGINT}
 		
 		<if test="areaName != null and areaName != 'null' and areaName != '' "> 
 			and area_name=#{areaName}
