@@ -12,8 +12,18 @@ public class StrategyGroupDetail {
     private Long areaId;
 
     private String areaName;
+    //车位锁编号
+    private String lockSn;
+    
+    public String getLockSn() {
+		return lockSn;
+	}
 
-    public Long getId() {
+	public void setLockSn(String lockSn) {
+		this.lockSn = lockSn;
+	}
+
+	public Long getId() {
         return id;
     }
 

@@ -6,31 +6,53 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("车区分组信息")
 public class ResPrefectureGroup { 
 	@ApiModelProperty(value = "车区主键")
-	private Long id; 
+	private Long preId; 
+	
+	@ApiModelProperty(value = "车区分组主键")
+	private Long groupId; 
 	
 	@ApiModelProperty(value = "车区分组名称")
-	private String areaName;
+	private String groupName;
 	
 	@ApiModelProperty(value = "空闲车位数量")
 	private Integer leisureStall;
 	
 	@ApiModelProperty(value = "计价规则")
 	private String desc;
-
-	public Long getId() {
-		return id;
+	
+	@ApiModelProperty(value = "是否启用： 1禁用2启用")
+	private Integer status;
+	
+	public Long getPreId() {
+		return preId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setPreId(Long preId) {
+		this.preId = preId;
 	}
 
-	public String getAreaName() {
-		return areaName;
+	public Integer getStatus() {
+		return status;
 	}
 
-	public void setAreaName(String areaName) {
-		this.areaName = areaName;
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 	public Integer getLeisureStall() {

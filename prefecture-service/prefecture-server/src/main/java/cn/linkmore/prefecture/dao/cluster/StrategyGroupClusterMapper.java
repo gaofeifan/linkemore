@@ -15,4 +15,11 @@ public interface StrategyGroupClusterMapper {
     List<ResStrategyGroup> findPage(Map<String, Object> param);
     
     List<ResStrategyGroup> findList(Map<String, Object> param);
+    
+    /**
+     * 根据车区id查找车区分组列表
+     * @param param
+     * @return
+     */
+    List<ResStrategyGroup> findPreGroupList(Map<String, Object> param);
 }

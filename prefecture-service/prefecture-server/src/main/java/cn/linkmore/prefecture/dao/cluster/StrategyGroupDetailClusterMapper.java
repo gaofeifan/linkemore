@@ -9,5 +9,7 @@ public interface StrategyGroupDetailClusterMapper {
     StrategyGroupDetail selectByPrimaryKey(Long id);
     
     List<StrategyGroupDetail> findList(Long strategyGroupId);
+    
+	List<StrategyGroupDetail> findPreGroupDetailList(Long preId);
 
 }

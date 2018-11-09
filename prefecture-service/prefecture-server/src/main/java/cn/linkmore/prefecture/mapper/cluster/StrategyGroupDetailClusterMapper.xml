@@ -8,10 +8,10 @@
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="area_id" jdbcType="BIGINT" property="areaId" />
     <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, strategy_group_id, stall_id, stall_name, area_id, 
-    area_name
+    id, strategy_group_id, stall_id, stall_name, area_id, area_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -27,6 +27,14 @@
 		where 1 = 1
 		and strategy_group_id =	#{strategyGroupId,jdbcType=BIGINT}
 		order by area_name ASC,stall_name asc
+ </select>
+ 
+ <select id="findPreGroupDetailList" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select d.id,d.stall_id,d.stall_name,d.strategy_group_id,v.lock_sn from v_strategy_group g 
+		left join v_strategy_group_detail d on g.id = d.strategy_group_id 
+		left join v_stall v on d.stall_id = v.id 
+		where g.prefecture_id =	#{preId,jdbcType=BIGINT}
+		order by d.stall_name asc
  </select>
  
 </mapper>

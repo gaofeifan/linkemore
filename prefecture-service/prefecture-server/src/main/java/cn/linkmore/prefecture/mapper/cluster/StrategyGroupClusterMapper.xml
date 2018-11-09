@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.prefecture.dao.cluster.StrategyGroupClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.StrategyGroup">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.response.ResStrategyGroup">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="prefecture_id" jdbcType="INTEGER" property="prefectureId" />
@@ -56,6 +56,17 @@
     <if test="createUserId != null">
        and create_user_id = #{createUserId,jdbcType=BIGINT}
     </if>
+  </select>
+  
+  <select id="findPreGroupList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+  	select 
+	<include refid="Base_Column_List" />
+    from v_strategy_group
+    where 1 = 1 and status=2
+    <if test="prefectureId != null">
+       and prefecture_id = #{prefectureId , jdbcType=BIGINT}
+    </if>
+    order by status desc
   </select>
 
 
