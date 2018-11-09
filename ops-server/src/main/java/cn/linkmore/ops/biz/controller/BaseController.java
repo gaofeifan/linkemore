@@ -1,7 +1,6 @@
 package cn.linkmore.ops.biz.controller;
 
 import java.text.SimpleDateFormat;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.codehaus.jettison.json.JSONArray;

@@ -19,10 +19,10 @@ public class ResStaffStallSn {
 	private Integer stallLockStatus;
 	
 	@ApiModelProperty(value="超声波 0 无车 1 有车 2其他")
-	private Short ultrasonic;
+	private int ultrasonic;
 	
 	@ApiModelProperty(value="电池电量")
-	private short battery;
+	private int battery;
 	
 	@ApiModelProperty(value="车位名称")
 	private String stallName;
@@ -68,19 +68,19 @@ public class ResStaffStallSn {
 		this.stallLockStatus = stallLockStatus;
 	}
 
-	public Short getUltrasonic() {
+	public int getUltrasonic() {
 		return ultrasonic;
 	}
 
-	public void setUltrasonic(Short ultrasonic) {
+	public void setUltrasonic(int ultrasonic) {
 		this.ultrasonic = ultrasonic;
 	}
 
-	public short getBattery() {
+	public int getBattery() {
 		return battery;
 	}
 
-	public void setBattery(short battery) {
+	public void setBattery(int battery) {
 		this.battery = battery;
 	}
 

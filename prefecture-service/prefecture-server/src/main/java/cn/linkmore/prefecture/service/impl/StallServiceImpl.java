@@ -56,9 +56,11 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
+import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
@@ -85,6 +87,7 @@ import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
+import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
@@ -118,6 +121,8 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class StallServiceImpl implements StallService {
+	@Autowired
+	private LockTools lockTools;
 	@Autowired
 	private StallAssignService assignService;
 	@Autowired
@@ -1334,17 +1339,13 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn) {
-		ResponseMessage<LockBean> lock = this.lockFactory.getLockInfo(sn);
-		LockBean data = null;
-		if(lock != null) {
-			 data = lock.getData();
-		}
+		ResLockInfo lock = this.lockTools.lockInfo(sn);
 		ResStaffStallSn stallSn = new ResStaffStallSn();
 		stallSn.setStallSn(sn);
 		Stall stall = this.stallClusterMapper.findByLockSn(sn);
-		if(data != null) {
-			stallSn.setBattery(data.getElectricity().shortValue());
-			switch (data.getLockState()) {
+		if(lock != null) {
+			stallSn.setBattery(lock.getElectricity());
+			switch (lock.getLockState()) {
 			case 0:
 				stallSn.setStallLockStatus(2);
 				break;
@@ -1358,7 +1359,9 @@ public class StallServiceImpl implements StallService {
 				stallSn.setStallLockStatus(1);
 				break;
 			}
-			stallSn.setUltrasonic(data.getParkingState().shortValue());
+			stallSn.setUltrasonic(lock.getParkingState());
+			stallSn.setModel(lock.getModel());
+			stallSn.setVersion(lock.getVersion());
 		}else {
 			if(stall == null) {
 				throw new BusinessException(StatusEnum.LOCK_SN_EXISTS);
@@ -1372,4 +1375,12 @@ public class StallServiceImpl implements StallService {
 		}
 		return stallSn;
 	}
+
+	@Override
+	public ResSignalHistory lockSignalHistory(HttpServletRequest request, String sn) {
+		return this.lockTools.lockSignalHistory(sn);
+	}
+	
+	
+	
 }

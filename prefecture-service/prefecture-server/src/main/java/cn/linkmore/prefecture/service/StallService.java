@@ -10,6 +10,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
@@ -278,4 +279,11 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn);
+	
+	/**
+	 * @Description  查询车位锁在一定时间端内的信号强度变化
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResSignalHistory lockSignalHistory(HttpServletRequest request, String sn);
 }

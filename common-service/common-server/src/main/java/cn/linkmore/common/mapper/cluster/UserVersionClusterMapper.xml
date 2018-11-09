@@ -26,13 +26,12 @@
     <if test="system != null">
     	<choose>
     		<when test="system == 1">
-    			AND system = #{system} OR system is null
+    			AND (system = #{system} OR system is null)
     		</when>
     		<otherwise>
     			AND system = #{system}
     		</otherwise>
     	</choose>
-    	
     </if>
   </select>
   <select id="findByTypeAnStatus" parameterType="java.lang.Long" resultMap="BaseResultMap">

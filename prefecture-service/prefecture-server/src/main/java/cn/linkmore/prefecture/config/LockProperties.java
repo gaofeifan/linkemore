@@ -8,6 +8,10 @@ import org.springframework.context.annotation.Configuration;
 public class LockProperties {
 	private String linkmoreUrl;
 	private String linkmoreNewUrl; 
+	private String linkemoreLockUrl;
+	
+	private String lockInfo = "/api/v1/lock-info";
+	private String lockSignalHistory = "/api/v1/lock/lock­signal­history";
 	
 	public String getLinkmoreUrl() {
 		return linkmoreUrl;
@@ -21,5 +25,16 @@ public class LockProperties {
 	public void setLinkmoreNewUrl(String linkmoreNewUrl) {
 		this.linkmoreNewUrl = linkmoreNewUrl;
 	}
-	
+	public String getLinkemoreLockUrl() {
+		return linkemoreLockUrl;
+	}
+	public void setLinkemoreLockUrl(String linkemoreLockUrl) {
+		this.linkemoreLockUrl = linkemoreLockUrl;
+	}
+	public String getLockInfo() {
+		return lockInfo;
+	}
+	public String getLockSignalHistory() {
+		return lockSignalHistory;
+	}
 }

@@ -21,6 +21,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
@@ -69,6 +70,14 @@ public class StaffStallController {
 	public ResponseEntity<ResStaffStallSn> findStaffStallSn(HttpServletRequest request,  @ApiParam("车位锁编号") @NotNull(message="sn") @RequestParam("sn") String sn) {
 		ResStaffStallSn detail = this.stallService.findStaffStallSn(request,sn);
 		return ResponseEntity.success(detail, request);
+	}
+	
+	@RequestMapping(value="/lock­signal­history",method=RequestMethod.GET)
+	@ResponseBody
+	@ApiOperation(value = "查询车位锁在一定时间内的信号强度", notes = "查询车位锁在一定时间内的信号强度", consumes = "application/json")
+	public ResponseEntity<ResSignalHistory> lockSignalHistory(HttpServletRequest request,  @ApiParam("车位锁编号") @NotNull(message="sn") @RequestParam("sn") String sn) {
+		ResSignalHistory history = this.stallService.lockSignalHistory(request,sn);
+		return ResponseEntity.success(history, request);
 	}
 	
 	@ApiOperation(value = "指定车位操作", notes = "指定车位操作")
