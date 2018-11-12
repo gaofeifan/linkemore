@@ -19,6 +19,12 @@ public class StallLock {
     private Date createTime;
 
     private Date bindTime;
+    
+    private String model;
+    
+    private String version;
+    
+    private int battery;
     /**
      * 创建用户id
      */
@@ -93,4 +99,30 @@ public class StallLock {
 	public void setCreateUserName(String createUserName) {
 		this.createUserName = createUserName;
 	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public int getBattery() {
+		return battery;
+	}
+
+	public void setBattery(int battery) {
+		this.battery = battery;
+	}
+	
+	
 }

@@ -9,6 +9,9 @@ public class ResStaffStallSn {
 	@ApiModelProperty(value="车位锁编号")
 	private String stallSn;
 	
+	@ApiModelProperty(value="车位锁序列号")
+	private String serialNumber;
+	
 	@ApiModelProperty(value="型号")
 	private String model;
 	
@@ -17,6 +20,9 @@ public class ResStaffStallSn {
 	
 	@ApiModelProperty(value="车位锁状态 1 升起  2 降下")
 	private Integer stallLockStatus;
+
+	@ApiModelProperty(value="车位锁离线状态 1离线  2 在线")
+	private Integer lockOffLine = 1;
 	
 	@ApiModelProperty(value="超声波 0 无车 1 有车 2其他")
 	private int ultrasonic;
@@ -35,6 +41,10 @@ public class ResStaffStallSn {
 
 	@ApiModelProperty(value=" 0 未安装  1已安装 ")
 	private short installStatus = 0;
+	
+	@ApiModelProperty(value=" 是否绑定 true是 false 否 ")
+	private boolean bindStatus = false;
+	
 
 	public String getStallSn() {
 		return stallSn;
@@ -115,4 +125,27 @@ public class ResStaffStallSn {
 	public void setInstallStatus(short installStatus) {
 		this.installStatus = installStatus;
 	}
+
+	public Integer getLockOffLine() {
+		return lockOffLine;
+	}
+
+	public void setLockOffLine(Integer lockOffLine) {
+		this.lockOffLine = lockOffLine;
+	}
+
+	public boolean isBindStatus() {
+		return bindStatus;
+	}
+
+	public void setBindStatus(boolean bindStatus) {
+		this.bindStatus = bindStatus;
+	}
+
+	public String getSerialNumber() {
+		return "0000"+stallSn.toUpperCase();
+	}
+
+	
+	
 }

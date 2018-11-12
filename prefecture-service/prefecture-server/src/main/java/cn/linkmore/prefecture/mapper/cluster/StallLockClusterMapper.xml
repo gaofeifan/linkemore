@@ -19,10 +19,13 @@
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="bind_time" jdbcType="TIMESTAMP" property="bindTime" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="battery" jdbcType="INTEGER" property="battery" />
   </resultMap>
   
   <sql id="Base_Column_List">
-    id, sn, prefecture_id, stall_id, create_time, bind_time, create_user_id, create_user_name
+    id, sn, prefecture_id, stall_id, create_time, bind_time, create_user_id, create_user_name,model,version,battery
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

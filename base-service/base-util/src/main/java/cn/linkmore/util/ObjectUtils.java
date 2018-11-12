@@ -299,4 +299,30 @@ public class ObjectUtils {
 		}
 		return null;
 	}
+	
+	/**
+	 * @Description  map转bean
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public static <T> T toBean(Class<T> clazz , Map<String, Object> map){
+		Field[] fields = clazz.getDeclaredFields();
+		T t = null;
+		try {
+			t = clazz.newInstance();
+			for (Field field : fields) {
+				field.setAccessible(true);
+				if(map.containsKey(field.getName())) {
+					if(map.get(field.getName()) != null) {
+						field.set(t, map.get(field.getName()));
+					}else {
+						field.set(t, null);
+					}
+					
+				}
+			}
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+		}
+		return t;
+	}
 }

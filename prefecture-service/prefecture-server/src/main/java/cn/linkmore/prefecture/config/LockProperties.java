@@ -9,9 +9,13 @@ public class LockProperties {
 	private String linkmoreUrl;
 	private String linkmoreNewUrl; 
 	private String linkemoreLockUrl;
+	private String appId;
+	private String appSecret;
 	
-	private String lockInfo = "/api/v1/lock-info";
-	private String lockSignalHistory = "/api/v1/lock/lock­signal­history";
+	
+	
+	private static final String lockInfo = "/api/v1/lock-info";
+	private static final String lockSignalHistory = "/api/v1/lock/lock­signal­history";
 	
 	public String getLinkmoreUrl() {
 		return linkmoreUrl;
@@ -36,5 +40,17 @@ public class LockProperties {
 	}
 	public String getLockSignalHistory() {
 		return lockSignalHistory;
+	}
+	public String getAppId() {
+		return appId;
+	}
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
+	public String getAppSecret() {
+		return appSecret;
+	}
+	public void setAppSecret(String appSecret) {
+		this.appSecret = appSecret;
 	}
 }

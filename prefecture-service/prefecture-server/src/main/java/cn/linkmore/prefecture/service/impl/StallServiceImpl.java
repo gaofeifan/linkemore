@@ -406,7 +406,12 @@ public class StallServiceImpl implements StallService {
 		// 插入车位
 		this.stallMasterMapper.save(stall);
 		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
-
+		ResLockInfo info = this.lockTools.lockInfo(reqLockIntall.getLockSn());
+		if(info != null) {
+			stallLock.setBattery(info.getElectricity());
+			stallLock.setModel(info.getModel());
+			stallLock.setVersion(info.getVersion());
+		}
 		//更新锁
 		stallLock.setBindTime(now);
 		stallLock.setStallId(stall.getId());
@@ -1339,45 +1344,63 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn) {
-		ResLockInfo lock = this.lockTools.lockInfo(sn);
 		ResStaffStallSn stallSn = new ResStaffStallSn();
-		stallSn.setStallSn(sn);
+		if(sn.contains("0000")) {
+			sn = sn.substring(4).toLowerCase();
+		}
 		Stall stall = this.stallClusterMapper.findByLockSn(sn);
-		if(lock != null) {
-			stallSn.setBattery(lock.getElectricity());
-			switch (lock.getLockState()) {
-			case 0:
-				stallSn.setStallLockStatus(2);
-				break;
-			case 2:
-				stallSn.setStallLockStatus(1);
-				break;
-			case 3:
-				stallSn.setStallLockStatus(2);
-				break;
-			case 1:
-				stallSn.setStallLockStatus(1);
-				break;
-			}
-			stallSn.setUltrasonic(lock.getParkingState());
-			stallSn.setModel(lock.getModel());
-			stallSn.setVersion(lock.getVersion());
+		if(stall == null) {
+			return stallSn;
 		}else {
-			if(stall == null) {
-				throw new BusinessException(StatusEnum.LOCK_SN_EXISTS);
+			stallSn.setStallSn(sn);
+			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
+			if(stallLock == null) {
+				return stallSn;
+			}else {
+				stallSn.setInstallStatus((short)1);
+				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
+				stallSn.setPreName(detail.getName());
+				stallSn.setStallName(stall.getStallName());
+				stallSn.setBindStatus(true);
+				ResLockInfo lock = this.lockTools.lockInfo(sn);
+				if(lock != null) {
+					stallSn.setLockOffLine(2);
+					stallSn.setBattery(lock.getElectricity());
+					switch (lock.getLockState()) {
+					case 0:
+						stallSn.setStallLockStatus(2);
+						break;
+					case 2:
+						stallSn.setStallLockStatus(1);
+						break;
+					case 3:
+						stallSn.setStallLockStatus(2);
+						break;
+					case 1:
+						stallSn.setStallLockStatus(1);
+						break;
+					}
+					stallSn.setUltrasonic(lock.getParkingState());
+					stallSn.setModel(lock.getModel());
+					stallSn.setVersion(lock.getVersion());
+				}else {
+					stallSn.setBattery(stallLock.getBattery());
+					stallSn.setModel(stallLock.getModel());
+					stallSn.setVersion(stallLock.getVersion());
+					stallSn.setStallLockStatus(stall.getLockStatus());
+					stallSn.setUltrasonic(2);
+				}
 			}
 		}
-		if(stall != null) {
-			stallSn.setInstallStatus((short)1);
-			ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
-			stallSn.setPreName(detail.getName());
-			stallSn.setStallName(stall.getStallName());
-		}
+		
 		return stallSn;
 	}
 
 	@Override
 	public ResSignalHistory lockSignalHistory(HttpServletRequest request, String sn) {
+		if(sn.contains("0000")) {
+			sn = sn.substring(4).toLowerCase();
+		}
 		return this.lockTools.lockSignalHistory(sn);
 	}
 	

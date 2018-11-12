@@ -43,10 +43,10 @@ public class LockTools {
 	public ResLockInfo lockInfo(String lockSn){
 		String url = lockProperties.getLinkemoreLockUrl() + lockProperties.getLockInfo();
 		long millis = new Date().getTime();
-		String sign = Sign.getSign(lockSn, millis);
+		String sign = Sign.getSign(lockSn, millis,lockProperties);
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("sign", sign);
-		parameters.put("appId", Sign.appId);
+		parameters.put("appId", lockProperties.getAppId());
 		parameters.put("timestamp", millis+"");
 		parameters.put("serialNumber", lockSn);
 		log.info(JsonUtil.toJson(parameters));
@@ -75,14 +75,13 @@ public class LockTools {
 //		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLockSignalHistory();
 		String url = "http://open-api.linkmoreparking.cn/api/v1/lock/lock-signal-history";
 		long millis = new Date().getTime();
-		String sign = Sign.getSign(sn, millis);
+		String sign = Sign.getSign(sn, millis,lockProperties);
 		Map<String,Object> parameters = new HashMap<>();
 		parameters.put("sign", sign);
-		parameters.put("appId", Sign.appId);
+		parameters.put("appId", lockProperties.getAppId());
 		parameters.put("timestamp", millis+"");
 		parameters.put("serialNumber", sn);
 		String resData = HttpUtil.sendJson(url, JsonUtil.toJson(parameters));
-
 		Object object = getData(resData);
 		System.out.println(resData);
 		ResSignalHistory signal = new ResSignalHistory();
@@ -105,12 +104,9 @@ public class LockTools {
 }
 
 class Sign{
-	private static String appSecret = "1e2e90b4f56d58352bfb6119190535d7";
-	public static String appId = "1d46bc15df4c4b6a9a5710183da916c1";
-	
-	public static String getSign(String lockSn , Long time) {
-		StringBuilder sb = new StringBuilder(appSecret);
-		sb.append("appId=").append(appId).append("&");
+	public static String getSign(String lockSn , Long time, LockProperties lockProperties) {
+		StringBuilder sb = new StringBuilder(lockProperties.getAppSecret());
+		sb.append("appId=").append(lockProperties.getAppId()).append("&");
 		sb.append("serialNumber=").append(lockSn).append("&");
 		sb.append("timestamp=").append(time);
 		return md5En(sb.toString().toLowerCase());

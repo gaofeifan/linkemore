@@ -146,6 +146,7 @@
 	    	and status = #{status}
 	    </if>
 	</where>
+	order by stall_name
   </select>
 
   <select id="findListByArea" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
