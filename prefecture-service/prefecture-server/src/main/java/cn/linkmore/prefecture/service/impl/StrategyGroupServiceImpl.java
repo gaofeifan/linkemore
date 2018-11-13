@@ -352,7 +352,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	public Long existsStall( Map<String, Object> map) {
 
 		Map<String, Object> param=new HashMap<String, Object>();
-		param.put("preId", map.get("prefectureId"));
+		param.put("prefectureId", map.get("prefectureId"));
 		param.put("startName", map.get("stallName"));
 		param.put("endName", map.get("stallName"));
 		List<ResStall> findListByArea = stallClusterMapper.findListByArea(param);

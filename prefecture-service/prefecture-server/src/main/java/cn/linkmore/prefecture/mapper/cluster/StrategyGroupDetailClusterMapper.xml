@@ -30,11 +30,19 @@
  </select>
  
  <select id="findPreGroupDetailList" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select d.id,d.stall_id,d.stall_name,d.strategy_group_id,v.lock_sn from v_strategy_group g 
-		left join v_strategy_group_detail d on g.id = d.strategy_group_id 
-		left join v_stall v on d.stall_id = v.id 
-		where g.prefecture_id =	#{preId,jdbcType=BIGINT}
-		order by d.stall_name asc
+		SELECT
+			d.id,
+			d.stall_id,
+			d.stall_name,
+			d.strategy_group_id,
+			v.lock_sn
+		FROM
+			v_strategy_group_detail d
+		LEFT JOIN v_stall v ON d.stall_id = v.id
+		WHERE
+			v.pre_id = #{preId,jdbcType=BIGINT}
+		ORDER BY
+			d.stall_name ASC
  </select>
  
 </mapper>
