@@ -143,7 +143,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 					}
 				}
 			}else {
-				chargePrice=-1D;
+				chargePrice=0D;
 			}
 			resultMap.put("chargePrice", chargePrice);			
 			

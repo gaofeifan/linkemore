@@ -43,6 +43,9 @@
 	<include refid="Base_Column_List" />
     from v_strategy_group
     where status=2
+    <if test="prefectureId != null">
+       and prefecture_id = #{prefectureId,jdbcType=BIGINT}
+    </if>
     <if test="createUserId != null">
        and create_user_id = #{createUserId,jdbcType=BIGINT}
     </if>
