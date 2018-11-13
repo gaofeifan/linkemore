@@ -2,6 +2,7 @@ package cn.linkmore.prefecture.config;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
+import cn.linkmore.prefecture.controller.staff.response.ResSignalHistoryList;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
@@ -34,6 +36,8 @@ public class LockTools {
 	private static Logger log = LoggerFactory.getLogger(LockTools.class);
 	@Autowired
 	private LockProperties lockProperties;
+	
+	private static final String[] numbers = {"一","二","三","四","五","六","七","八","九","十"};
 	
 	/**
 	 * @Description  根据锁编号查询
@@ -85,16 +89,24 @@ public class LockTools {
 		Object object = getData(resData);
 		System.out.println(resData);
 		ResSignalHistory signal = new ResSignalHistory();
+		ResSignalHistoryList signallist = null;
+		List<ResSignalHistoryList> signallists = new ArrayList<>();
 		if(object != null) {
 			Map<String,Object> map = (Map<String,Object>)object;
 			List<Object> list = (List<Object>) map.get("data");
 			if(list != null && list.size() != 0) {
-				Map<String,Object> values =(Map<String,Object>) list.get(0);
-				if(values != null) {
-					signal.setName(values.get("name").toString());
-					List<Object> objs = (List<Object>) values.get("values");
-					signal.setValues(objs);
+				for (int i = 0; i < list.size(); i++) {
+					signallist = new ResSignalHistoryList();
+					Map<String,Object> values =(Map<String,Object>) list.get(i);
+					if(values != null) {
+						signallist.setCode(values.get("name").toString());
+						List<Object> objs = (List<Object>) values.get("values");
+						signallist.setValues(objs);
+						signallist.setName("网关"+numbers[i]);
+						signallists.add(signallist);
+					}
 				}
+				signal.setList(signallists);
 			}
 			signal.setXalas((List<Object>)map.get("xalas"));
 		}

@@ -1346,7 +1346,7 @@ public class StallServiceImpl implements StallService {
 	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn) {
 		ResStaffStallSn stallSn = new ResStaffStallSn();
 		if(sn.contains("0000")) {
-			sn = sn.substring(4).toLowerCase();
+			sn = sn.substring(4).toUpperCase();
 		}
 		Stall stall = this.stallClusterMapper.findByLockSn(sn);
 		if(stall == null) {
@@ -1360,6 +1360,8 @@ public class StallServiceImpl implements StallService {
 				stallSn.setInstallStatus((short)1);
 				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
 				stallSn.setPreName(detail.getName());
+				stallSn.setPreId(detail.getId());
+				stallSn.setCityId(detail.getCityId());
 				stallSn.setStallName(stall.getStallName());
 				stallSn.setBindStatus(true);
 				ResLockInfo lock = this.lockTools.lockInfo(sn);
@@ -1399,7 +1401,7 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public ResSignalHistory lockSignalHistory(HttpServletRequest request, String sn) {
 		if(sn.contains("0000")) {
-			sn = sn.substring(4).toLowerCase();
+			sn = sn.substring(4).toUpperCase();
 		}
 		return this.lockTools.lockSignalHistory(sn);
 	}

@@ -35,6 +35,12 @@ public class ResStaffStallSn {
 	
 	@ApiModelProperty(value="车区名称")
 	private String preName;
+
+	@ApiModelProperty(value="车区Id")
+	private Long preId;
+
+	@ApiModelProperty(value="城市Id")
+	private Long cityId;
 	
 	@ApiModelProperty(value="车位状态 状态:1，空闲；2，使用中；4，下线  ")
 	private Short stallStatus;
@@ -143,9 +149,27 @@ public class ResStaffStallSn {
 	}
 
 	public String getSerialNumber() {
-		return "0000"+stallSn.toUpperCase();
+		return "0000"+stallSn.toLowerCase();
 	}
 
-	
+	public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
+
+	public Long getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(Long cityId) {
+		this.cityId = cityId;
+	}
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
 	
 }
