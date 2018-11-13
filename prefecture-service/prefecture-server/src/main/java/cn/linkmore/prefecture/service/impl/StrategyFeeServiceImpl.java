@@ -82,7 +82,8 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 
 		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyStallList(stallId);
 		List<StrategyStall> listStrategyStallRequest=new ArrayList<StrategyStall>();
-		 Map<String, Object> resultMap=new HashMap<String, Object>();
+		Map<String, Object> resultMap=new HashMap<String, Object>();
+		double chargePrice=0D;
 		if (CollectionUtils.isNotEmpty(listStrategyStall)) {
 			if (listStrategyStall.get(0).getDatetype()==1) {
 				//按日期段
@@ -123,7 +124,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 				}
 			}
 
-			double chargePrice=0D;
+			
 			if(CollectionUtils.isNotEmpty(listStrategyStallRequest)) {
 				//System.out.println(listStrategyStallRequest.size());
 				for(StrategyStall strategyStall:listStrategyStallRequest) {
@@ -145,9 +146,9 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 			}else {
 				chargePrice=0D;
 			}
-			resultMap.put("chargePrice", chargePrice);			
-			
+			//resultMap.put("chargePrice", chargePrice);
 		}
+		resultMap.put("chargePrice", chargePrice);
 		return resultMap;
 	}
 	
