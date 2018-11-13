@@ -17,6 +17,10 @@ public class ResPrefectureStrategyNew {
 	 */
     private Long prefectureId;
     /**
+     * 车区名称
+     */
+    private String prefectureName;
+    /**
      * 车区策略名称
      */
     private String name;
@@ -163,6 +167,14 @@ public class ResPrefectureStrategyNew {
 
 	public void setLockTime(List<ResPrefectureLockTime> lockTime) {
 		this.lockTime = lockTime;
+	}
+
+	public String getPrefectureName() {
+		return prefectureName;
+	}
+
+	public void setPrefectureName(String prefectureName) {
+		this.prefectureName = prefectureName;
 	}
 
 

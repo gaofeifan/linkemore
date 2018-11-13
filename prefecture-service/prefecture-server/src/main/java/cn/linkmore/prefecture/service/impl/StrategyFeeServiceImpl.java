@@ -143,7 +143,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 					}
 				}
 			}else {
-				chargePrice=-1D;
+				chargePrice=0D;
 			}
 			resultMap.put("chargePrice", chargePrice);			
 			
@@ -271,14 +271,14 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		}
 		return true;
 	}
-	
+
 	private long myTimeDiff(String beginTime,String endTime) {
 	    LocalDateTime d_beginTime = LocalDateTime.parse("2018-01-01 "+beginTime, dtf);
 	    LocalDateTime d_endTime = LocalDateTime.parse("2018-01-01 "+endTime, dtf);
 	   // System.out.printf("beginTime:%s,endTime:%s,diff=%s\n","2018-01-01 "+beginTime,"2018-01-01 "+endTime,Duration.between(beginDate, endDate).getSeconds());
 		return Duration.between(d_beginTime, d_endTime).getSeconds();
 	}
-	
+
 	private long myDateDiff(String beginDate,String endDate) {
 		LocalDate d_beginDate = LocalDate.parse(beginDate);
 		LocalDate d_endDate = LocalDate.parse(endDate);
@@ -292,11 +292,35 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		return ChronoUnit.SECONDS.between(d_beginDate, d_endDate);
 	}
 	
-	
+	/**
+	 * 根据groupid和当前时间查出对应的策略
+	 */
 	@Override
 	public Map<String, Object> info(Map<String, Object> param) {
-		long strategyGroupId=Long.parseLong(String.valueOf(param.get("strategyGroupId")));
-		String nowDateTime=String.valueOf(param.get("nowDateTime"));
+		//long strategyGroupId=Long.parseLong(String.valueOf(param.get("strategyGroupId")));
+		//String searchDateTime=String.valueOf(param.get("searchDateTime"));
+		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyFeeList(param);
+		if(CollectionUtils.isNotEmpty(listStrategyStall) && listStrategyStall.size()>0) {
+			String parkCode=null;
+			if(listStrategyStall.get(0).getDatetype()==1) {
+				//按日期
+				parkCode=listStrategyStall.get(0).getParkCode();
+			}else {
+				//按星期
+				int week=getWeek(String.valueOf(param.get("searchDateTime")));
+				for(StrategyStall strategyStall:listStrategyStall) {
+					if( week>=Integer.parseInt(strategyStall.getBeginDate()) &&  week<=Integer.parseInt(strategyStall.getEndDate()) ) {
+						parkCode=strategyStall.getParkCode();
+						break;
+					}
+				}
+			}
+			//调用接口
+			if(StringUtils.isNotEmpty(parkCode)) {
+				
+			}
+			
+		}
 		
 		
 		return null;

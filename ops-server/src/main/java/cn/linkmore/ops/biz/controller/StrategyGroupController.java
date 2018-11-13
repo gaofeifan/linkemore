@@ -251,7 +251,7 @@ public class StrategyGroupController extends BaseController{
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStrategyGroup> findList(@RequestParam Map<String, Object> map) {
-		map.put("createUserId", getPerson().getId());
+		//map.put("createUserId", getPerson().getId());
 		return this.strategyGroupService.findList(map);
 	}
 	

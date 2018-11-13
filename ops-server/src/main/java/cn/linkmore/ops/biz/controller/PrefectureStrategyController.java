@@ -61,10 +61,8 @@ public class PrefectureStrategyController extends BaseController{
 			reqPrefectureStrategy.setCreateTime(new Date());
 			reqPrefectureStrategy.setUpdateTime(new Date());
 			reqPrefectureStrategy.setStatus((byte)1);
-
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
-
+			
+			ResPerson person = getPerson();
 			reqPrefectureStrategy.setCreateUserId(person.getId());
 			reqPrefectureStrategy.setCreateUserName(person.getUsername());
 			reqPrefectureStrategy.setUpdateUserId(person.getId());
@@ -106,8 +104,7 @@ public class PrefectureStrategyController extends BaseController{
 		ViewMsg msg = null;
 		try {
 			
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+			ResPerson person = getPerson();
 			
 			reqPrefectureStrategy.setUpdateUserId(person.getId());
 			reqPrefectureStrategy.setUpdateUserName(person.getUsername());			
@@ -145,8 +142,7 @@ public class PrefectureStrategyController extends BaseController{
 	public ViewMsg statusStart( @RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+			ResPerson person = getPerson();
 			
 			Map<String, Object> map=new HashMap<String, Object>();
 			map.put("status", 2);
@@ -175,8 +171,7 @@ public class PrefectureStrategyController extends BaseController{
 	public ViewMsg statusStop(@RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+			ResPerson person = getPerson();
 			Map<String, Object> map=new HashMap<String, Object>();
 			map.put("status", 1);
 			map.put("updateTime", sdf.format(new Date()));

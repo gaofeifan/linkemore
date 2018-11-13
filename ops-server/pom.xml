@@ -75,6 +75,12 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+   <dependency>
+    	<groupId>org.codehaus.jettison</groupId>
+    	<artifactId>jettison</artifactId>
+  	    <version>1.3.3</version>
+	</dependency>
+		
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>security-client</artifactId>
