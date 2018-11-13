@@ -403,6 +403,7 @@ public class UserServiceImpl implements UserService {
 			account.setOrderPaymentAmount(0.00d);
 			account.setCreateTime(new Date());
 			accountMasterMapper.insert(account);
+			couponClient.paySend(user.getId(), 8);
 		} else if (user.getStatus().equals("2")) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {
@@ -503,6 +504,7 @@ public class UserServiceImpl implements UserService {
 			accountMasterMapper.insertSelective(account);
 			db.setUserId(u.getId());
 			this.userAppfansMasterMapper.updateByIdSelective(db);
+			couponClient.paySend(user.getId(), 8);
 		}  else if(user.getStatus().equals("2")){
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {
