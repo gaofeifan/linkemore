@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.PrefectureStrategy">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="prefecture_id" jdbcType="BIGINT" property="prefectureId" />
+    <result column="prefecture_name" jdbcType="VARCHAR" property="prefectureName" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="detail" jdbcType="VARCHAR" property="detail" />
     <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
@@ -27,13 +28,16 @@
 
   <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
   	select 
-	<include refid="Base_Column_List" />
-    from v_prefecture_strategy
+	ps.id, ps.prefecture_id,pr.name as prefecture_name, ps.name, ps.detail, ps.create_user_id, ps.create_user_name, ps.create_time, ps.update_user_id, 
+    ps.update_user_name, ps.update_time, ps.status
+    
+    from v_prefecture_strategy ps
+    inner join v_prefecture pr on pr.id=ps.prefecture_id
     where 1 = 1
     <if test="createUserId != null">
-       and create_user_id = #{createUserId,jdbcType=BIGINT}
+       and ps.create_user_id = #{createUserId,jdbcType=BIGINT}
     </if>
-    order by update_time DESC
+    order by ps.update_time DESC
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
