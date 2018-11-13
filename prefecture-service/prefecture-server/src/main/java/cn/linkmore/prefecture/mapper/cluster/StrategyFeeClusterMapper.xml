@@ -35,5 +35,20 @@
 	where sgd.stall_id = #{id,jdbcType=BIGINT}
   </select>
 
+ <select id="findStrategyFeeList"  parameterType="java.util.HashMap" resultMap="StrategyStallResultMap">
+	select psg.strategy_group_id,sd.datetype,sd.start_date,sd.stop_date,sdd.begin_date,sdd.end_date, psg.park_code from v_prefecture_strategy_group psg
+	inner join v_strategy_group_detail  sgd on psg.strategy_group_id=sgd.strategy_group_id
+	inner join v_strategy_date_detail sdd on sdd.strategy_date_id=psg.strategy_date_id
+	inner join v_strategy_date sd on sdd.strategy_date_id=sd.id
+	where 	psg.strategy_group_id= #{strategGroupId,jdbcType=BIGINT} 
+	and ( #{searchDateTime,jdbcType=VARCHAR} between  begin_date and end_date 
+		or #{searchDateTime,jdbcType=VARCHAR} between  start_date and stop_date 
+	)
+	
+  </select>
+
+
+
+
 
 </mapper>
