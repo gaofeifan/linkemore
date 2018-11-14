@@ -51,6 +51,9 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 	@Value("${strategyfee.url.fee}")
 	private String strategyFeeURL;//="http://192.168.1.76:8086/charge/api/reckon_charge_price";
 	
+	@Value("${strategyfee.url.detail}")
+	private String strategyDetailURL;//="http://192.168.1.76:8086/charge/api/reckon_charge_price";
+	
 	@Value("${strategyfee.fee-code}")
 	private String strategyFeeCode;//="987656";
 	
@@ -301,6 +304,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		//long strategyGroupId=Long.parseLong(String.valueOf(param.get("strategyGroupId")));
 		//String searchDateTime=String.valueOf(param.get("searchDateTime"));
 		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyFeeList(param);
+		Map<String, Object> resultMap=new HashMap<String, Object>();
 		if(CollectionUtils.isNotEmpty(listStrategyStall) && listStrategyStall.size()>0) {
 			String parkCode=null;
 			if(listStrategyStall.get(0).getDatetype()==1) {
@@ -318,13 +322,27 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 			}
 			//调用接口
 			if(StringUtils.isNotEmpty(parkCode)) {
-				
+				Map<String, String> headers=new HashMap<String, String>();
+				headers.put("Content-Type", "application/json; charset=utf-8");
+				Map<String,String> mapBody=new TreeMap<String, String>();
+				mapBody.put("code", strategyFeeCode);
+				mapBody.put("timestamp",String.valueOf(new Date().getTime()));
+				mapBody.put("parkCode", parkCode);
+				mapBody.put("sign", "324");
+				JSONObject json = JSONObject.fromObject(mapBody);
+				try {
+					HttpResponse r=HttpUtils.doPost(strategyDetailURL, "", "", headers, null, json.toString());
+					//return EntityUtils.toString(r.getEntity(),"UTF-8");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
 			}
 			
 		}
 		
 		
-		return null;
+		return resultMap;
 	}
 	
 }
