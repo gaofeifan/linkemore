@@ -304,7 +304,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		//long strategyGroupId=Long.parseLong(String.valueOf(param.get("strategyGroupId")));
 		//String searchDateTime=String.valueOf(param.get("searchDateTime"));
 		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyFeeList(param);
-		Map<String, Object> resultMap=new HashMap<String, Object>();
+		//Map<String, Object> resultMap=new HashMap<String, Object>();
 		if(CollectionUtils.isNotEmpty(listStrategyStall) && listStrategyStall.size()>0) {
 			String parkCode=null;
 			if(listStrategyStall.get(0).getDatetype()==1) {
@@ -336,7 +336,6 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return null;
 			}
 		}
 		return null;

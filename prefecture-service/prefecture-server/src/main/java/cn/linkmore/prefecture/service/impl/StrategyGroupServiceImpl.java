@@ -261,6 +261,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 				tree.setCode("" +i);
 				tree.setmId("" +i);
 				tree.setOpen(true);
+				tree.setClick(true);
 				tree.setChildren(new ArrayList<Tree>());
 				
 				int index = findAreaNode(listAreaNode, findAreaList.get(i).getAreaName());
@@ -290,12 +291,29 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 		root.setOpen(true);
 		root.setmId("0");
 		root.setChildren(listAreaNode);
-
+		
+		moveNullNodeToRoot(root);
 		return root;
 	}
-
+	
 	/**
-	 * 按名称查找分区节点,反回下list下标
+	 * 将areaName=null的节点移动到根节点下
+	 * @param root
+	 */
+	private void moveNullNodeToRoot(Tree root) {
+		for(Tree areaNode : root.getChildren()) {
+			if(areaNode.getName()==null) {
+				for(Tree areaBlockNode : areaNode.getChildren()) {
+					root.getChildren().add(areaBlockNode);
+				}
+				root.getChildren().remove(areaNode);
+			}
+		}
+		
+		
+	}
+	/**
+	 * 按名称查找分区节点,返回list下标
 	 * @param listAreaNode
 	 * @param areaName
 	 * @return
