@@ -301,15 +301,19 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	 * @param root
 	 */
 	private void moveNullNodeToRoot(Tree root) {
-		for(Tree areaNode : root.getChildren()) {
-			if(areaNode.getName()==null) {
-				for(Tree areaBlockNode : areaNode.getChildren()) {
-					root.getChildren().add(areaBlockNode);
+		if (CollectionUtils.isNotEmpty(root.getChildren())) {
+			for(Tree areaNode : root.getChildren()) {
+				if(areaNode.getName()==null) {
+					if (CollectionUtils.isNotEmpty(areaNode.getChildren())) {
+						for(Tree areaBlockNode : areaNode.getChildren()) {
+							root.getChildren().add(areaBlockNode);
+						}
+					}
+					root.getChildren().remove(areaNode);
+					break;
 				}
-				root.getChildren().remove(areaNode);
 			}
 		}
-		
 		
 	}
 	/**
