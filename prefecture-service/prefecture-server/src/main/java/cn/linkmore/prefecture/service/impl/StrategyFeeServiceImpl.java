@@ -300,7 +300,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 	 * 根据groupid和当前时间查出对应的策略
 	 */
 	@Override
-	public Map<String, Object> info(Map<String, Object> param) {
+	public String info(Map<String, Object> param) {
 		//long strategyGroupId=Long.parseLong(String.valueOf(param.get("strategyGroupId")));
 		//String searchDateTime=String.valueOf(param.get("searchDateTime"));
 		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyFeeList(param);
@@ -332,17 +332,14 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 				JSONObject json = JSONObject.fromObject(mapBody);
 				try {
 					HttpResponse r=HttpUtils.doPost(strategyDetailURL, "", "", headers, null, json.toString());
-					//return EntityUtils.toString(r.getEntity(),"UTF-8");
+					return EntityUtils.toString(r.getEntity(),"UTF-8");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				return null;
 			}
-			
 		}
-		
-		
-		return resultMap;
+		return null;
 	}
 	
 }
