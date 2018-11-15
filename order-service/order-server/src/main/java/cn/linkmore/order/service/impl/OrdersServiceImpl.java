@@ -90,6 +90,7 @@ import cn.linkmore.prefecture.client.EntBrandUserClient;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
+import cn.linkmore.prefecture.client.StrategyFeeClient;
 import cn.linkmore.prefecture.request.ReqStrategy;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -170,6 +171,9 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Autowired
 	private EntBrandUserClient entBrandUserClient;
+	
+	@Autowired
+	private StrategyFeeClient strategyFeeClient;
 
 	public boolean checkCarFree(String carno) {
 		boolean flag = true;
@@ -1006,6 +1010,7 @@ public class OrdersServiceImpl implements OrdersService {
 		if (orders == null) {
 			return null;
 		}
+		/*
 		ReqStrategy rs = new ReqStrategy();
 		rs.setBeginTime(orders.getCreateTime().getTime());
 		rs.setStrategyId(orders.getStrategyId());
@@ -1020,7 +1025,27 @@ public class OrdersServiceImpl implements OrdersService {
 			if (object != null) {
 				orders.setTotalAmount(new BigDecimal(object.toString()));
 			}
+		}*/
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Map<String, Object> param = new HashMap<String,Object>();
+		param.put("stallId", orders.getStallId());
+		param.put("plateNo", orders.getPlateNo());
+		param.put("startTime", sdf.format(orders.getCreateTime()));
+		if (orders.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
+			param.put("endTime", sdf.format(orders.getStatusTime()));
+		} else {
+			param.put("endTime", sdf.format(new Date()));
 		}
+		Map<String, Object> map = this.strategyFeeClient.amount(param);
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout param:{}  map:{}", JSON.toJSON(param), JSON.toJSON(map));
+		if (map != null) {
+			Object object = map.get("chargePrice");
+			if (object != null) {
+				orders.setTotalAmount(new BigDecimal(object.toString()));
+			}
+		}
+		
 		ResOrder ro = null;
 		if (orders != null && (orders.getStatus() == OrderStatus.UNPAID.value
 				|| orders.getStatus() == OrderStatus.SUSPENDED.value)) {
@@ -1033,7 +1058,6 @@ public class OrdersServiceImpl implements OrdersService {
 				ro.setPrefectureAddress(pre.getAddress());
 				ro.setGuideImage(pre.getRouteGuidance());
 				ro.setGuideRemark(pre.getRouteDescription());
-				// ro.setPrefectureName(pre.getName());
 			}
 			ResStallEntity stall = this.stallClient.findById(ro.getStallId());
 			if (stall != null) {
