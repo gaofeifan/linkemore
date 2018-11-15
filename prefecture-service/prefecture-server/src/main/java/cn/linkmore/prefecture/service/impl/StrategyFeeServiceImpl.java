@@ -51,6 +51,9 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 	@Value("${strategyfee.url.fee}")
 	private String strategyFeeURL;//="http://192.168.1.76:8086/charge/api/reckon_charge_price";
 	
+	@Value("${strategyfee.url.detail}")
+	private String strategyDetailURL;//="http://192.168.1.76:8086/charge/api/reckon_charge_price";
+	
 	@Value("${strategyfee.fee-code}")
 	private String strategyFeeCode;//="987656";
 	
@@ -82,7 +85,8 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 
 		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyStallList(stallId);
 		List<StrategyStall> listStrategyStallRequest=new ArrayList<StrategyStall>();
-		 Map<String, Object> resultMap=new HashMap<String, Object>();
+		Map<String, Object> resultMap=new HashMap<String, Object>();
+		double chargePrice=0D;
 		if (CollectionUtils.isNotEmpty(listStrategyStall)) {
 			if (listStrategyStall.get(0).getDatetype()==1) {
 				//按日期段
@@ -123,7 +127,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 				}
 			}
 
-			double chargePrice=0D;
+			
 			if(CollectionUtils.isNotEmpty(listStrategyStallRequest)) {
 				//System.out.println(listStrategyStallRequest.size());
 				for(StrategyStall strategyStall:listStrategyStallRequest) {
@@ -145,9 +149,9 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 			}else {
 				chargePrice=0D;
 			}
-			resultMap.put("chargePrice", chargePrice);			
-			
+			//resultMap.put("chargePrice", chargePrice);
 		}
+		resultMap.put("chargePrice", chargePrice);
 		return resultMap;
 	}
 	
@@ -296,10 +300,11 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 	 * 根据groupid和当前时间查出对应的策略
 	 */
 	@Override
-	public Map<String, Object> info(Map<String, Object> param) {
+	public String info(Map<String, Object> param) {
 		//long strategyGroupId=Long.parseLong(String.valueOf(param.get("strategyGroupId")));
 		//String searchDateTime=String.valueOf(param.get("searchDateTime"));
 		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyFeeList(param);
+		//Map<String, Object> resultMap=new HashMap<String, Object>();
 		if(CollectionUtils.isNotEmpty(listStrategyStall) && listStrategyStall.size()>0) {
 			String parkCode=null;
 			if(listStrategyStall.get(0).getDatetype()==1) {
@@ -317,12 +322,22 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 			}
 			//调用接口
 			if(StringUtils.isNotEmpty(parkCode)) {
-				
+				Map<String, String> headers=new HashMap<String, String>();
+				headers.put("Content-Type", "application/json; charset=utf-8");
+				Map<String,String> mapBody=new TreeMap<String, String>();
+				mapBody.put("code", strategyFeeCode);
+				mapBody.put("timestamp",String.valueOf(new Date().getTime()));
+				mapBody.put("parkCode", parkCode);
+				mapBody.put("sign", "324");
+				JSONObject json = JSONObject.fromObject(mapBody);
+				try {
+					HttpResponse r=HttpUtils.doPost(strategyDetailURL, "", "", headers, null, json.toString());
+					return EntityUtils.toString(r.getEntity(),"UTF-8");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-			
 		}
-		
-		
 		return null;
 	}
 	

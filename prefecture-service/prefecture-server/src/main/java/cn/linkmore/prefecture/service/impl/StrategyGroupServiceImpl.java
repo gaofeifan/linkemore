@@ -261,6 +261,7 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 				tree.setCode("" +i);
 				tree.setmId("" +i);
 				tree.setOpen(true);
+				tree.setClick(true);
 				tree.setChildren(new ArrayList<Tree>());
 				
 				int index = findAreaNode(listAreaNode, findAreaList.get(i).getAreaName());
@@ -290,12 +291,45 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 		root.setOpen(true);
 		root.setmId("0");
 		root.setChildren(listAreaNode);
-
+		repalceNullAreaNameToDfault(root);
+		//moveNullNodeToRoot(root);
 		return root;
 	}
-
 	/**
-	 * 按名称查找分区节点,反回下list下标
+	 * 将areaName=null的节点名称改为默认
+	 * @param root
+	 */
+	private void repalceNullAreaNameToDfault(Tree root) {
+		if (CollectionUtils.isNotEmpty(root.getChildren())) {
+			for(Tree areaNode : root.getChildren()) {
+				if(areaNode.getName()==null) {
+					areaNode.setName("默认");
+				}
+			}
+		}
+	}
+	/**
+	 * 将areaName=null的节点移动到根节点下
+	 * @param root
+	 */
+	private void moveNullNodeToRoot(Tree root) {
+		if (CollectionUtils.isNotEmpty(root.getChildren())) {
+			for(Tree areaNode : root.getChildren()) {
+				if(areaNode.getName()==null) {
+					if (CollectionUtils.isNotEmpty(areaNode.getChildren())) {
+						for(Tree areaBlockNode : areaNode.getChildren()) {
+							root.getChildren().add(areaBlockNode);
+						}
+					}
+					root.getChildren().remove(areaNode);
+					break;
+				}
+			}
+		}
+		
+	}
+	/**
+	 * 按名称查找分区节点,返回list下标
 	 * @param listAreaNode
 	 * @param areaName
 	 * @return

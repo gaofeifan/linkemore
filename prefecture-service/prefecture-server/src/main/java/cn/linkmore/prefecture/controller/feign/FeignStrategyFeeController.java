@@ -41,7 +41,7 @@ public class FeignStrategyFeeController {
 	 */
 	@RequestMapping(value = "/info", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> info(@RequestBody Map<String, Object> param) {
+	public String info(@RequestBody Map<String, Object> param) {
 		return strategyFeeService.info(param);
 	}
 	

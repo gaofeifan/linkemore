@@ -104,5 +104,6 @@ strategyfee:
   url: 
     fee: http://192.168.1.76:8086/charge/api/reckon_charge_price
     list: http://192.168.1.76:8086/charge/api/get_charge_list
+    detail: http://192.168.1.76:8086//charge/api/get_charge_detail
   fee-code: 987656
   fee-secret: 99876505523
