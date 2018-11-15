@@ -291,11 +291,23 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 		root.setOpen(true);
 		root.setmId("0");
 		root.setChildren(listAreaNode);
-		
-		moveNullNodeToRoot(root);
+		repalceNullAreaNameToDfault(root);
+		//moveNullNodeToRoot(root);
 		return root;
 	}
-	
+	/**
+	 * 将areaName=null的节点名称改为默认
+	 * @param root
+	 */
+	private void repalceNullAreaNameToDfault(Tree root) {
+		if (CollectionUtils.isNotEmpty(root.getChildren())) {
+			for(Tree areaNode : root.getChildren()) {
+				if(areaNode.getName()==null) {
+					areaNode.setName("默认");
+				}
+			}
+		}
+	}
 	/**
 	 * 将areaName=null的节点移动到根节点下
 	 * @param root
