@@ -1352,7 +1352,9 @@ public class StallServiceImpl implements StallService {
 		if(stall == null) {
 			return stallSn;
 		}else {
+			stallSn.setStallId(stall.getId());
 			stallSn.setStallSn(sn);
+			stallSn.setStallStatus(stall.getStatus().shortValue());
 			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
 			if(stallLock == null) {
 				return stallSn;
@@ -1401,7 +1403,7 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public ResSignalHistory lockSignalHistory(HttpServletRequest request, String sn) {
 		if(sn.contains("0000")) {
-			sn = sn.substring(4).toUpperCase();
+			sn = sn.substring(4).toUpperCase();	
 		}
 		return this.lockTools.lockSignalHistory(sn);
 	}

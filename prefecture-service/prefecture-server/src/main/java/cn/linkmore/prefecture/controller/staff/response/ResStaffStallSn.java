@@ -6,6 +6,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("车位锁详情数据")
 public class ResStaffStallSn {
 
+	@ApiModelProperty(value="车位id")
+	private Long stallId;
+
 	@ApiModelProperty(value="车位锁编号")
 	private String stallSn;
 	
@@ -171,5 +174,12 @@ public class ResStaffStallSn {
 	public void setSerialNumber(String serialNumber) {
 		this.serialNumber = serialNumber;
 	}
-	
+
+	public Long getStallId() {
+		return stallId;
+	}
+
+	public void setStallId(Long stallId) {
+		this.stallId = stallId;
+	}
 }

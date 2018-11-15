@@ -3,20 +3,19 @@ package cn.linkmore.prefecture.config;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 
-import org.apache.http.client.utils.HttpClientUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import cn.linkmore.bean.exception.BusinessException;
-import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistoryList;
 import cn.linkmore.prefecture.response.ResLockInfo;
@@ -47,16 +46,12 @@ public class LockTools {
 	public ResLockInfo lockInfo(String lockSn){
 		String url = lockProperties.getLinkemoreLockUrl() + lockProperties.getLockInfo();
 		long millis = new Date().getTime();
-		String sign = Sign.getSign(lockSn, millis,lockProperties);
-		Map<String, String> parameters = new HashMap<>();
-		parameters.put("sign", sign);
+		Map<String, Object> parameters = new TreeMap<>();
 		parameters.put("appId", lockProperties.getAppId());
-		parameters.put("timestamp", millis+"");
+		parameters.put("timestamp", millis);
 		parameters.put("serialNumber", lockSn);
 		log.info(JsonUtil.toJson(parameters));
-		String resData = HttpUtil.sendJson(url, JsonUtil.toJson(parameters) );
-		log.info(resData);
-		Object object = getData(resData);
+		Object object = getData(parameters,url);
 		if(object != null) {
 			ResLockInfo info = ObjectUtils.toBean(ResLockInfo.class, (Map<String, Object>)object);
 			return info;
@@ -64,7 +59,12 @@ public class LockTools {
 		return null;
 	}
 
-	private Object getData(String resData) {
+	private Object getData(Map<String,Object> param,String url) {
+		String sign = Sign.getSign(param, lockProperties.getAppSecret());
+		param.put("sign", sign);
+		log.info(JsonUtil.toJson(param));
+		String resData = HttpUtil.sendJson(url, JsonUtil.toJson(param));
+		log.info(JsonUtil.toJson(resData));
 		Map<String,Object> map = JsonUtil.toObject(resData, Map.class);
 		if(map != null) {
 			if(map.get("code").toString().equals("200")) {
@@ -75,19 +75,21 @@ public class LockTools {
 		return null;
 	}
 	
+	/**
+	 * @Description  查询网关信号强度
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
 	public ResSignalHistory lockSignalHistory(String sn) {
 //		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLockSignalHistory();
 		String url = "http://open-api.linkmoreparking.cn/api/v1/lock/lock-signal-history";
 		long millis = new Date().getTime();
-		String sign = Sign.getSign(sn, millis,lockProperties);
-		Map<String,Object> parameters = new HashMap<>();
-		parameters.put("sign", sign);
+		Map<String,Object> parameters = new TreeMap<>();
 		parameters.put("appId", lockProperties.getAppId());
 		parameters.put("timestamp", millis+"");
 		parameters.put("serialNumber", sn);
-		String resData = HttpUtil.sendJson(url, JsonUtil.toJson(parameters));
-		Object object = getData(resData);
-		System.out.println(resData);
+		Object object = getData(parameters,url);
+		System.out.println(object);
 		ResSignalHistory signal = new ResSignalHistory();
 		ResSignalHistoryList signallist = null;
 		List<ResSignalHistoryList> signallists = new ArrayList<>();
@@ -113,22 +115,93 @@ public class LockTools {
 		return signal;
 	}
 	
+	/**
+	 * @Description  升起锁
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public boolean upLock(String sn) {
+		return optionLock(sn, 1);
+	}
+	
+	/**
+	 * @Description  下降锁
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public Boolean downLock(String sn) {
+		return optionLock(sn, 0);
+	}
+	
+	/**
+	 * @return 
+	 * @Description  根据分组编号查询锁列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public List<ResLockInfo> lockListByGroupCode(String groupCode) {
+		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLocklist();
+		long millis = new Date().getTime();
+		Map<String, Object> map = new TreeMap<>();
+		map.put("appId", lockProperties.getAppId());
+		map.put("timestamp", millis);
+		map.put("groupCode", groupCode);
+		Object data = getData(map,url); 
+		List<ResLockInfo> lockInfos = (List<ResLockInfo>)data;
+		return lockInfos;
+	
+	}
+	
+	/**
+	 * @Description  操作锁
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	private Boolean optionLock(String sn,int optionType) {
+//		String url = "http://open-api.linkmoreparking.cn/api/v1/option";
+		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLockoption();
+		long millis = new Date().getTime();
+		Map<String, Object> map = new TreeMap<>();
+		map.put("appId", lockProperties.getAppId());
+		map.put("timestamp", millis);
+		map.put("action", optionType);
+		map.put("serialNumber", sn);
+		Object object = getData(map,url);
+		if(object == null) {
+			return false;
+		}
+		return true;
+	}
+	
 }
 
+
 class Sign{
+	private static Logger log = LoggerFactory.getLogger(Sign.class);
 	public static String getSign(String lockSn , Long time, LockProperties lockProperties) {
-		StringBuilder sb = new StringBuilder(lockProperties.getAppSecret());
-		sb.append("appId=").append(lockProperties.getAppId()).append("&");
-		sb.append("serialNumber=").append(lockSn).append("&");
-		sb.append("timestamp=").append(time);
-		return md5En(sb.toString().toLowerCase());
+		Map<String,Object> map = new TreeMap<String, Object> ();
+		map.put("appId", lockProperties.getAppId());
+		map.put("serialNumber", lockSn);
+		map.put("timestamp", time);
+		return getSign(map, lockProperties.getAppSecret());
+	}
+	public static String getSign(Map<String, Object> map,String appSecret) {
+		StringBuilder sb = new StringBuilder(appSecret);
+		Set<Entry<String,Object>> entrySet = map.entrySet();
+		for (Entry<String, Object> entry : entrySet) {
+			sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+		}
+		log.info(sb.substring(0, sb.length()-1));
+		return md5En(sb.substring(0, sb.length()-1).toLowerCase());
 	}
 	
 	public static String md5En(String str) {
 		try {
 	        MessageDigest md = MessageDigest.getInstance("MD5");
 	        md.update(str.getBytes());
-	        return new BigInteger(1, md.digest()).toString(16);
+	        String string = new BigInteger(1, md.digest()).toString(16);
+	        log.info(string);
+	        return string;
 	    } catch (Exception e) {
 	       e.printStackTrace();
 	       return null;
