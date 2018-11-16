@@ -39,6 +39,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
@@ -100,10 +101,13 @@ public class PrefectureServiceImpl implements PrefectureService {
 	private OrderClient orderClient;
 	
 	@Autowired
-	private RedisService redisService;
+	private LockTools lockTools;
 	
 	@Autowired
-	private LockFactory lockFactory;
+	private RedisService redisService;
+	
+//	@Autowired
+//	private LockFactory lockFactory;
 	
 	@Autowired
 	private StrategyGroupClusterMapper strategyGroupClusterMapper;
@@ -660,7 +664,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 			if(pre.getCategory() == 2) {
 				//共享车位逻辑
-				rm = this.lockFactory.findAvailableLock(pre.getGateway());
+				rm = lockt.findAvailableLock(pre.getGateway());
 				lbs = rm.getDataList();
 				log.info("share pre rm = {}",JsonUtil.toJson(rm));
 				if (rm.getMsgCode() != null && rm.getMsgCode() == 200 && rm.getDataList() != null) {
