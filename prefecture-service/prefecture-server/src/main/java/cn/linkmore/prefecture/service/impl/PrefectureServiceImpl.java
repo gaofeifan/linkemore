@@ -664,7 +664,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 			if(pre.getCategory() == 2) {
 				//共享车位逻辑
-				rm = lockt.findAvailableLock(pre.getGateway());
+				rm = lockTools.findAvailableLock(pre.getGateway());
 				lbs = rm.getDataList();
 				log.info("share pre rm = {}",JsonUtil.toJson(rm));
 				if (rm.getMsgCode() != null && rm.getMsgCode() == 200 && rm.getDataList() != null) {
