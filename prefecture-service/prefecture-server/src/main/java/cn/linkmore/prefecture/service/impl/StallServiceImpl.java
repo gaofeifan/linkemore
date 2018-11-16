@@ -995,6 +995,9 @@ public class StallServiceImpl implements StallService {
 			if (bockBeans != null) {
 				for (LockBean lockBean : bockBeans) {
 					if (lockBean.getLockCode().equals(resStall.getLockSn())) {
+						if(lockBean.getElectricity() <= 30) {
+							ResStaffStallList.setExcStatus(false);
+						}
 						falg = false;
 						switch (lockBean.getLockState()) {
 						case 0:
