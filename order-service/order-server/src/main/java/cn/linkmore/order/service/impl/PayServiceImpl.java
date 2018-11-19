@@ -16,9 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.CouponStatus;
@@ -47,7 +45,6 @@ import cn.linkmore.order.dao.cluster.AccountClusterMapper;
 import cn.linkmore.order.dao.cluster.CompanyTradeRecordClusterMapper;
 import cn.linkmore.order.dao.cluster.OrdersClusterMapper;
 import cn.linkmore.order.dao.cluster.RechargeRecordClusterMapper;
-import cn.linkmore.order.dao.cluster.TradeRecordClusterMapper;
 import cn.linkmore.order.dao.master.AccountHistoryMasterMapper;
 import cn.linkmore.order.dao.master.AccountMasterMapper;
 import cn.linkmore.order.dao.master.CompanyTradeRecordMasterMapper;
@@ -70,7 +67,7 @@ import cn.linkmore.order.service.PayService;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
-import cn.linkmore.prefecture.request.ReqStrategy;
+import cn.linkmore.prefecture.client.StrategyFeeClient;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
@@ -108,20 +105,13 @@ public class PayServiceImpl implements PayService {
 	private BaseConfig baseConfig;
 
 	@Autowired
-	private StallClient stallClient;
-	@Autowired
 	private OrdersClusterMapper ordersClusterMapper;
+	
 	@Autowired
 	private OrdersMasterMapper orderMasterMapper;
 
 	@Autowired
-	private DockingClient dockingClient;
-
-	@Autowired
 	private TradeRecordMasterMapper tradeRecordMasterMapper;
-
-	@Autowired
-	private TradeRecordClusterMapper tradeRecordClusterMapper;
 
 	@Autowired
 	private RechargeRecordMasterMapper rechargeRecordMasterMapper;
@@ -143,11 +133,15 @@ public class PayServiceImpl implements PayService {
 
 	@Autowired
 	private CompanyTradeRecordMasterMapper companyTradeRecordMasterMapper;
+	
 	@Autowired
 	private CompanyTradeRecordClusterMapper companyTradeRecordClusterMapper;
 
 	@Autowired
 	private StrategyBaseClient strategyBaseClient;
+	
+	@Autowired
+	private StrategyFeeClient strategyFeeClient;
 
 	@Autowired
 	private PrefectureClient prefectureClient;
@@ -163,6 +157,7 @@ public class PayServiceImpl implements PayService {
 
 	@Autowired
 	private AppAlipayClient appAlipayClient;
+	
 	@Autowired
 	private AppWechatClient appWechatClient;
 
@@ -177,6 +172,12 @@ public class PayServiceImpl implements PayService {
 
 	@Autowired
 	private UserSocketClient userSocketClient;
+	
+	@Autowired
+	private StallClient stallClient;
+	
+	@Autowired
+	private DockingClient dockingClient;
 
 	@Override
 	public ResPayCheckout checkout(Long orderId, HttpServletRequest request) {
@@ -224,15 +225,33 @@ public class PayServiceImpl implements PayService {
 		if (stall != null) {
 			roc.setStallName(stall.getStallName());
 		}
-		ReqStrategy strategy = new ReqStrategy();
+		
+		/*ReqStrategy strategy = new ReqStrategy();
 		strategy.setBeginTime(roc.getStartTime().getTime());
 		strategy.setEndTime(roc.getEndTime().getTime());
 		strategy.setStrategyId(order.getStrategyId());
 		Map<String, Object> map = this.strategyBaseClient.fee(strategy);
 		String totalStr = map.get("totalAmount").toString();
 		String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
-		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout totalAmount:{}", totalAmountStr);
-		roc.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout totalAmount:{}", totalAmountStr);*/
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Map<String, Object> param = new HashMap<String,Object>();
+		param.put("stallId", stall.getId());
+		param.put("plateNo", order.getPlateNo());
+		param.put("startTime", sdf.format(roc.getStartTime()));
+		param.put("endTime", sdf.format(roc.getEndTime()));
+		Map<String, Object> map = this.strategyFeeClient.amount(param);
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout param:{}  map:{}", JSON.toJSON(param), JSON.toJSON(map));
+		if (map != null) {
+			Object object = map.get("chargePrice");
+			if (object != null) {
+				String totalStr = object.toString();
+				String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
+				log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout totalAmount:{}", totalAmountStr);
+				roc.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
+			}
+		}
 		ResPayCheckout result = null;
 		if (roc != null) {
 			result = new ResPayCheckout();
@@ -320,6 +339,7 @@ public class PayServiceImpl implements PayService {
 		}
 		Orders order = this.ordersClusterMapper.findById(roc.getOrderId());
 		// 调用计费策略
+		/*
 		ReqStrategy reqStrategy = new ReqStrategy();
 		reqStrategy.setBeginTime(order.getCreateTime().getTime());
 		reqStrategy.setStrategyId(order.getStrategyId());
@@ -330,8 +350,29 @@ public class PayServiceImpl implements PayService {
 		Map<String, Object> rm = strategyBaseClient.fee(reqStrategy);
 		log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm order:{} fee:{}",JSON.toJSON(order), JSON.toJSON(rm));
 		String totalStr = rm.get("totalAmount").toString();
-		String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
-		order.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
+		*/
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Map<String, Object> param = new HashMap<String,Object>();
+		param.put("stallId", order.getStallId());
+		param.put("plateNo", order.getPlateNo());
+		param.put("startTime", sdf.format(order.getCreateTime()));
+		if (order.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
+			param.put("endTime", sdf.format(order.getStatusTime()));
+		} else {
+			param.put("endTime", sdf.format(new Date()));
+		}
+		Map<String, Object> map = this.strategyFeeClient.amount(param);
+		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout param:{}  map:{}", JSON.toJSON(param), JSON.toJSON(map));
+		if (map != null) {
+			Object object = map.get("chargePrice");
+			if (object != null) {
+				String totalStr = object.toString();
+				String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
+				log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout totalAmount:{}", totalAmountStr);
+				order.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
+			}
+		}
 		// 总金额
 		Double amount = order.getTotalAmount().doubleValue();
 		Double faceAmount = 0d;

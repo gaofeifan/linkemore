@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StrategyFeeClusterMapper;
 import cn.linkmore.prefecture.entity.StrategyStall;
 import cn.linkmore.prefecture.response.ResStrategyFee;
@@ -151,6 +153,11 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 			}
 			//resultMap.put("chargePrice", chargePrice);
 		}
+
+		if (chargePrice == -1D) {
+			throw new BusinessException(StatusEnum.ORDER_FEE_ERROR);
+		}
+
 		resultMap.put("chargePrice", chargePrice);
 		return resultMap;
 	}
@@ -304,7 +311,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		//long strategyGroupId=Long.parseLong(String.valueOf(param.get("strategyGroupId")));
 		//String searchDateTime=String.valueOf(param.get("searchDateTime"));
 		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyFeeList(param);
-		Map<String, Object> resultMap=new HashMap<String, Object>();
+		//Map<String, Object> resultMap=new HashMap<String, Object>();
 		if(CollectionUtils.isNotEmpty(listStrategyStall) && listStrategyStall.size()>0) {
 			String parkCode=null;
 			if(listStrategyStall.get(0).getDatetype()==1) {
@@ -336,7 +343,6 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return null;
 			}
 		}
 		return null;
