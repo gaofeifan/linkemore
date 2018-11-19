@@ -18,15 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Stopwatch;
-import com.linkmore.lock.bean.LockBean;
-import com.linkmore.lock.factory.LockFactory;
-import com.linkmore.lock.response.ResponseMessage;
-
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
@@ -68,7 +62,6 @@ import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthCityClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
-import cn.linkmore.prefecture.dao.cluster.AdminUserAuthClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.EntRentRecordClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
@@ -133,8 +126,6 @@ public class StallServiceImpl implements StallService {
 	@Autowired
 	private RedisService redisService;
 	@Autowired
-	private LockFactory lockFactory;
-	@Autowired
 	private OrderClient orderClient;
 	@Autowired
 	private EntOrderClient entOrderClient;
@@ -168,8 +159,6 @@ public class StallServiceImpl implements StallService {
 	private AdminAuthStallClusterMapper adminAuthStallClusterMapper;
 	@Autowired
 	private FeignUnusualOrderClient feignUnusualOrderClient;
-	@Autowired
-	private AdminUserAuthClusterMapper adminUserAuthClusterMapper;
 	@Autowired
 	private AdminAuthPreClusterMapper adminAuthPreClusterMapper;
 	@Autowired
@@ -215,8 +204,8 @@ public class StallServiceImpl implements StallService {
 		}
 
 		public void run() {
-			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
-			int code = res.getMsgCode();
+			ResLockMessage res = lockTools.upLockMes(stall.getLockSn());
+			int code = res.getCode();
 			log.info("checkout.....................lock msg:{}", JsonUtil.toJson(res));
 			if (code == 200) {
 				redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
@@ -247,10 +236,10 @@ public class StallServiceImpl implements StallService {
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			log.info("downing.....................stall:{},lockSn:{}", JsonUtil.toJson(stall), stall.getLockSn());
 			long startTime = System.currentTimeMillis();
-			ResponseMessage<LockBean> res = lockFactory.lockDown(stall.getLockSn());
+			ResLockMessage res = lockTools.downLockMes(stall.getLockSn());
 			long endTime = System.currentTimeMillis();
 			log.info("downing.....................{}降锁成功时间:{}秒", stall.getStallName(), (endTime - startTime) / 1000);
-			int code = res.getMsgCode();
+			int code = res.getCode();
 			if (code == 200) {
 				log.info("downing.....................success");
 				stall.setLockStatus(LockStatus.DOWN.status);
@@ -285,9 +274,9 @@ public class StallServiceImpl implements StallService {
 		Stall stall = stallClusterMapper.findById(stallId);
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			log.info("uping.....................name:{},sn:{}", stall.getStallName(), stall.getLockSn());
-			ResponseMessage<LockBean> res = lockFactory.lockUp(stall.getLockSn());
+			ResLockMessage res = lockTools.upLockMes(stall.getLockSn());
 			log.info("uping.....................res:{}", JsonUtil.toJson(res));
-			int code = res.getMsgCode();
+			int code = res.getCode();
 			if (code != 200) {
 				// 此处为升锁操作
 				flag = false;
@@ -477,8 +466,7 @@ public class StallServiceImpl implements StallService {
 			log.info("下线成功，车位：" + stall.getStallName() + " 序列号：{}", sn);
 		} else {
 			try {
-				ResponseMessage<LockBean> res = lockFactory.getLockInfo(sn);
-				LockBean lockBean = res.getData();
+				ResLockInfo lockBean = lockTools.lockInfo(sn);
 				if (lockBean == null) {
 					throw new RuntimeException("车位锁通讯失败");
 				}
@@ -590,9 +578,13 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public Map<String, Object> lockStatus(List<String> parkcodes) {
 		Map<String, Object> map = new HashMap<>();
-		ResponseMessage<LockBean> lb = lockFactory.findAvaiLocks(parkcodes);
-		if (lb != null) {
-			map.put("data", lb);
+		List<ResLockInfo> infos = new ArrayList<>();
+		for (String string : parkcodes) {
+			ResLockInfo resLockInfo = this.lockTools.lockInfo(string);
+			infos.add(resLockInfo);
+		}
+		if (infos.size() == 0) {
+			map.put("data", infos);
 		}
 		return map;
 	}
@@ -607,16 +599,16 @@ public class StallServiceImpl implements StallService {
 				log.info("stall:{}", JsonUtil.toJson(stall));
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					log.info("<<<<<<<<<controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
-					ResponseMessage<LockBean> res = null;
+					ResLockMessage res = null;
 					// 1 降下 2 升起
 					Stopwatch stopwatch = Stopwatch.createStarted();
 					if (reqc.getStatus() == 1) {
-						res = lockFactory.lockDown(stall.getLockSn());
+						res = lockTools.downLockMes(stall.getLockSn());
 					} else if (reqc.getStatus() == 2) {
-						res = lockFactory.lockUp(stall.getLockSn());
+						res = lockTools.upLockMes(stall.getLockSn());
 					}
-					log.info("<<<<<<<<<respose>>>>>>>>>" + res.getMsg() + "<<<code>>>" + res.getMsgCode());
-					int code = res.getMsgCode();
+					log.info("<<<<<<<<<respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+					int code = res.getCode();
 					stopwatch.stop();
 					log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
@@ -671,16 +663,16 @@ public class StallServiceImpl implements StallService {
 				log.info("stall:{}", JsonUtil.toJson(stall));
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					log.info("downing>>>>>> name:{},sn:{}", stall.getStallName(), stall.getLockSn());
-					ResponseMessage<LockBean> res = null;
+					ResLockMessage res = null;
 					// 1 降下 2 升起
 					Stopwatch stopwatch = Stopwatch.createStarted();
 					if (reqc.getStatus() == 1) {
-						res = lockFactory.lockDown(stall.getLockSn());
+						res = lockTools.downLockMes(stall.getLockSn());
 					} else if (reqc.getStatus() == 2) {
-						res = lockFactory.lockUp(stall.getLockSn());
+						res = lockTools.upLockMes(stall.getLockSn());
 					}
-					log.info("res>>>>>>>" + res.getMsg());
-					int code = res.getMsgCode();
+					log.info("res>>>>>>>" + res.getMessage());
+					int code = res.getCode();
 					stopwatch.stop();
 					log.info("usingtime>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
 					sendWYMsg(uid, reqc.getStatus(), code);
@@ -723,13 +715,14 @@ public class StallServiceImpl implements StallService {
 		Stall stall = stallClusterMapper.findById(stallId);
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			ResponseMessage<LockBean> res = lockFactory.getLockInfo(stall.getLockSn());
-			if (res.getData()!=null) {
-				LockBean Lockbean = res.getData();
-				map.put("code", res.getMsgCode());
-				map.put("status", Lockbean.getLockState());
-				map.put("onlineState", Lockbean.getOnlineState());
-				map.put("parkingState", Lockbean.getParkingState());
+			ResLockInfo res = lockTools.lockInfo(stall.getLockSn());
+			if (res != null) {
+				map.put("code", 200);
+				map.put("status", res.getLockState());
+//				map.put("onlineState", res.getOnlineState());
+				map.put("parkingState", res.getParkingState());
+			}else {
+				map.put("code", 400);
 			}
 		}
 		return map;
@@ -941,13 +934,9 @@ public class StallServiceImpl implements StallService {
 		List<Long> stallAuthIds = stallAuthList.stream().map(stall -> stall.getStallId()).collect(Collectors.toList());
 		ResPrefectureDetail detail = this.prefectureService.findById(staffList.getPreId());
 		log.info("【 ResPrefectureDetail 】 " + JsonUtil.toJson(detail));
-		ResponseMessage<LockBean> lock = lockFactory.findAvailableLock(detail.getGateway());
-		List<LockBean> bockBeans = null;
+		List<ResLockInfo> bockBeans = lockTools.lockListByGroupCode(detail.getGateway());
+		log.info("【lockBean list 】 " + JsonUtil.toJson(bockBeans));
 		List<ResEntExcStallStatus> excStallList = feignStallExcStatusClient.findAll();
-		if (lock != null) {
-			bockBeans = lock.getDataList();
-			log.info("【lockBean list 】 " + JsonUtil.toJson(bockBeans));
-		}
 		for (ResStall resStall : stallList) {
 			ResStaffStallList = new ResStaffStallList();
 			if (!stallAuthIds.contains(resStall.getId())) {
@@ -994,7 +983,7 @@ public class StallServiceImpl implements StallService {
 			}
 			boolean falg = true;
 			if (bockBeans != null) {
-				for (LockBean lockBean : bockBeans) {
+				for (ResLockInfo lockBean : bockBeans) {
 					if (lockBean.getLockCode().equals(resStall.getLockSn())) {
 						falg = false;
 						switch (lockBean.getLockState()) {
@@ -1066,15 +1055,15 @@ public class StallServiceImpl implements StallService {
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					log.info("operating············name:{},··········sn:{},··········uid:{}", stall.getStallName(),
 							stall.getLockSn(), uid);
-					ResponseMessage<LockBean> res = null;
+					ResLockMessage res = null;
 					// 1 降下 2 升起
 					if (reqc.getStatus() == 1) {
-						res = lockFactory.lockDown(stall.getLockSn());
+						res = lockTools.downLockMes(stall.getLockSn());
 					} else if (reqc.getStatus() == 2) {
-						res = lockFactory.lockUp(stall.getLockSn());
+						res = lockTools.upLockMes(stall.getLockSn());
 					}
-					log.info(" operating··············" + res.getMsg() + " code·············" + res.getMsgCode());
-					int code = res.getMsgCode();
+					log.info(" operating··············" + res.getMessage() + " code·············" + res.getCode());
+					int code = res.getCode();
 					sendMsgT(uid, reqc.getStatus(), code);
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
@@ -1118,13 +1107,8 @@ public class StallServiceImpl implements StallService {
 		}
 		ResStaffStallDetail detail = new ResStaffStallDetail();
 		Stall stall = this.stallClusterMapper.findById(stallId);
-		ResponseMessage<LockBean> lockInfo = this.lockFactory.getLockInfo(stall.getLockSn());
+		ResLockInfo lockBean = this.lockTools.lockInfo(stall.getLockSn());
 		List<ResBaseDict> baseDict = this.baseDictClient.findList(DOWN_CAUSE);
-
-		LockBean lockBean = null;
-		if (lockInfo != null) {
-			lockBean = lockInfo.getData();
-		}
 		if (lockBean != null) {
 			detail.setBetty(lockBean.getElectricity());
 			detail.setStallId(stall.getId());
