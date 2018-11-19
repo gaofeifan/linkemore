@@ -151,6 +151,11 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 			}
 			//resultMap.put("chargePrice", chargePrice);
 		}
+
+		if (chargePrice == -1D) {
+			throw new RuntimeException("调用接口出错");
+		}
+
 		resultMap.put("chargePrice", chargePrice);
 		return resultMap;
 	}
