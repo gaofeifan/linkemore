@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StrategyFeeClusterMapper;
 import cn.linkmore.prefecture.entity.StrategyStall;
 import cn.linkmore.prefecture.response.ResStrategyFee;
@@ -153,7 +155,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 		}
 
 		if (chargePrice == -1D) {
-			throw new RuntimeException("调用接口出错");
+			throw new BusinessException(StatusEnum.ORDER_FEE_ERROR);
 		}
 
 		resultMap.put("chargePrice", chargePrice);
