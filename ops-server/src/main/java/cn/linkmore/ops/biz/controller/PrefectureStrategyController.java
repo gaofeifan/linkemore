@@ -23,6 +23,8 @@ import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.PrefectureStrategyService;
 import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.request.ReqPrefectureLockTime;
@@ -44,9 +46,13 @@ import cn.linkmore.prefecture.response.ResStrategyFee;
 @RequestMapping("/admin/biz/prefecture_strategy")
 
 public class PrefectureStrategyController extends BaseController{
+	
 	@Autowired
 	private PrefectureStrategyService prefectureStrategyService;
-
+	
+	@Autowired
+	private EnterpriseService enterService;
+	
 	/**
 	 * 新增时段
 	 * @param reqStrategyGroup
@@ -219,7 +225,13 @@ public class PrefectureStrategyController extends BaseController{
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable) {
-		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("property", "id");
+		map.put("value", getPerson().getId());
+		ResEnterprise enter=enterService.find(map);
+		if(enter != null) {
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+		}
 		return this.prefectureStrategyService.findPage(pageable);
 	}
 

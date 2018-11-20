@@ -27,6 +27,8 @@ import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.StrategyDateService;
 import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.request.ReqStrategyDate;
@@ -48,10 +50,10 @@ import cn.linkmore.prefecture.response.ResStrategyDate;
 public class StrategyDateController  extends BaseController{
 	@Autowired
 	private StrategyDateService strategyDateService;
-
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	private ObjectMapper mapper= new ObjectMapper();
+	@Autowired
+	private EnterpriseService enterService;
+
 	/**
 	 * 新增时段
 	 * @param reqStrategyBase
@@ -226,7 +228,14 @@ public class StrategyDateController  extends BaseController{
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable) {
-		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("property", "id");
+		map.put("value", getPerson().getId());
+		ResEnterprise enter=enterService.find(map);
+		if(enter != null) {
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+		}
+		//pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
 		return this.strategyDateService.findPage(pageable);
 	}
 	
@@ -238,7 +247,12 @@ public class StrategyDateController  extends BaseController{
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStrategyDate> findList(@RequestParam Map<String, Object> map){
-		map.put("createUserId", getPerson().getId());
+		map.put("property", "id");
+		map.put("value", getPerson().getId());
+		ResEnterprise enter=enterService.find(map);
+		if(enter != null) {
+			map.put("createUserId",getPerson().getId());
+		}
 		return this.strategyDateService.findList(map);
 	}
 	/**

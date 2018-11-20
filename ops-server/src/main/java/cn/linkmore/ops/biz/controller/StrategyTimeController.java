@@ -23,6 +23,8 @@ import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.StrategyTimeService;
 import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.request.ReqStrategyTime;
@@ -42,9 +44,13 @@ import cn.linkmore.prefecture.response.ResStrategyTime;
 @RequestMapping("/admin/biz/strategy/time")
 
 public class StrategyTimeController extends BaseController{
+	
 	@Autowired
 	private StrategyTimeService strategyTimeService;
-
+	
+	@Autowired
+	private EnterpriseService enterService;
+	
 	/**
 	 * 新增时段
 	 * @param reqStrategyBase
@@ -207,7 +213,13 @@ public class StrategyTimeController extends BaseController{
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable) {
-		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("property", "id");
+		map.put("value", getPerson().getId());
+		ResEnterprise enter=enterService.find(map);
+		if(enter != null) {
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+		}
 		return this.strategyTimeService.findPage(pageable);
 	}
 	
@@ -219,7 +231,12 @@ public class StrategyTimeController extends BaseController{
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStrategyTime> findList(@RequestParam Map<String, Object> map){
-		map.put("createUserId", getPerson().getId());
+		map.put("property", "id");
+		map.put("value", getPerson().getId());
+		ResEnterprise enter=enterService.find(map);
+		if(enter != null) {
+			map.put("createUserId",getPerson().getId());
+		}
 		return this.strategyTimeService.findList(map);
 	}
 	
