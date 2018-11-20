@@ -46,19 +46,21 @@ public class strategyFeeJob {
 		String jsonRes=httpGetFeeList();
 		log.error("strategyFeeListURL={}",strategyFeeListURL);
 		log.error("jsonRes={}",jsonRes);
-		JSONObject obj = JSONObject.fromObject(jsonRes);
-		if(obj !=null) {
-			if(obj.has("code")) {
-				if(StringUtils.equalsIgnoreCase("200", obj.getString("code")) ) {
-					if(obj.has("data")) {
-						JSONArray jsonArray = obj.getJSONArray("data");
-						List<StrategyFee> listStrategyFee = JSONArray.toList(jsonArray, new StrategyFee(), new JsonConfig());
-						if(listStrategyFee.size()>0) {
-							strategyFeeMasterMapper.deleteAll();
-							for(StrategyFee strategyFee:listStrategyFee ) {
-								strategyFee.setStatus((byte) 0);
-								strategyFee.setUpdateTime(new Date());
-								strategyFeeMasterMapper.insert(strategyFee);
+		if(StringUtils.isNotEmpty(jsonRes) ) {
+			JSONObject obj = JSONObject.fromObject(jsonRes);
+			if(obj !=null) {
+				if(obj.has("code")) {
+					if(StringUtils.equalsIgnoreCase("200", obj.getString("code")) ) {
+						if(obj.has("data")) {
+							JSONArray jsonArray = obj.getJSONArray("data");
+							List<StrategyFee> listStrategyFee = JSONArray.toList(jsonArray, new StrategyFee(), new JsonConfig());
+							if(listStrategyFee.size()>0) {
+								strategyFeeMasterMapper.deleteAll();
+								for(StrategyFee strategyFee:listStrategyFee ) {
+									strategyFee.setStatus((byte) 0);
+									strategyFee.setUpdateTime(new Date());
+									strategyFeeMasterMapper.insert(strategyFee);
+								}
 							}
 						}
 					}
