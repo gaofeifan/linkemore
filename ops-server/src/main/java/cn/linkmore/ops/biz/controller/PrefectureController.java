@@ -147,7 +147,13 @@ public class PrefectureController extends BaseController{
 	@ResponseBody
 	public List<ResPreList> findSelectListByUser() {
 		Map<String, Object> map=new HashMap<String, Object>();
-		map.put("createUserId", getPerson().getId());
+		map.put("property", "id");
+		map.put("value", getPerson().getId());
+		//log.error("userid={}",getPerson().getId());
+		ResEnterprise enter=enterService.find(map);
+		if(enter!=null) {
+			map.put("createUserId", getPerson().getId());
+		}
 		return this.preService.findSelectListByUser(map);
 	}
 	

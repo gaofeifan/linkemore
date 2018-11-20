@@ -43,7 +43,7 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 	private StrategyFeeClusterMapper strategyFeeClusterMapper;
 	
 	private ObjectMapper mapper = new ObjectMapper();
-	
+
 	private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	private DateTimeFormatter dtf_date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
