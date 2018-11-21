@@ -148,7 +148,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.linkmore.prefecture.entity.PrefectureStrategy">
     update v_prefecture_strategy
-    set prefecture_id = #{prefectureId,jdbcType=BIGINT},
+    set
       name = #{name,jdbcType=VARCHAR},
       detail = #{detail,jdbcType=VARCHAR},
       update_user_id = #{updateUserId,jdbcType=BIGINT},

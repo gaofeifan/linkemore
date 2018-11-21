@@ -99,11 +99,12 @@ swagger:
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
   base-package: cn.linkmore.prefecture.controller.app
-   
+
 strategyfee: 
   url: 
-    fee: http://192.168.1.76:8086/charge/api/reckon_charge_price
-    list: http://192.168.1.76:8086/charge/api/get_charge_list
-    detail: http://192.168.1.76:8086//charge/api/get_charge_detail
+    base: http://192.168.1.76:8086
+    fee: ${strategyfee.url.base}/charge/api/reckon_charge_price
+    list: ${strategyfee.url.base}/charge/api/get_charge_list
+    detail: ${strategyfee.url.base}/charge/api/get_charge_detail
   fee-code: 987656
   fee-secret: 99876505523
