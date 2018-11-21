@@ -79,11 +79,20 @@ public class TokenFilter extends ZuulFilter {
 			add("/ent/auth/v2.0/login");
 			add("/ent/auth/v2.0/send");  
 			
+			add("/ent/auth/v2.0/send");  
+			
 			add("/staff/auth/send");  
 			add("/staff/auth/login");  
 			add("/staff/vehicle-brands");  
 			add("/staff/auth/check-mobile");  
-			add("/ent/auth/send");  
+			
+			add("/h5/");
+			add("/h5/a");
+			add("/h5/d");
+			add("/h5/t");
+			add("/h5/r");
+			add("/h5/o");
+			add("/h5/g");
 			
 			add("/attach/image_upload"); 
 		}
