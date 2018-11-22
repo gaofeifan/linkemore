@@ -513,6 +513,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			detail.setId(preDetail.getId());
 			detail.setAddress(preDetail.getAddress());
 			detail.setName(preDetail.getName());
+			
 			detail.setLatitude(preDetail.getLatitude().doubleValue());
 			detail.setLongitude(preDetail.getLongitude().doubleValue());
 			Long count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + preDetail.getId());

@@ -266,7 +266,8 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public List<ResStallName> selectStalls(HttpServletRequest request, Long preId, Short type, String name) {
+	public List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectStalls(HttpServletRequest request, Long preId, Short type, String name) {
+		
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser) this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + key);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -276,7 +277,7 @@ public class EntStallServiceImpl implements EntStallService {
 		int size = entStaffAuths.size();
 		List<ResStallName> stallNames = new ArrayList<>();
 		if (size == 0) {
-			return new ArrayList<ResStallName>();
+			return new ArrayList<cn.linkmore.enterprise.controller.ent.response.ResStall>();
 		}
 		// EntStaffAuth entStaffAuth = entStaffAuths.get(0);
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -352,7 +353,7 @@ public class EntStallServiceImpl implements EntStallService {
 				stallList.add(stall);
 			}
 		}
-		ResStallName stallName = null;
+	/*	ResStallName stallName = null;
 		StringBuilder sb = new StringBuilder();
 		int end = 0;
 		stallName = new ResStallName();
@@ -387,8 +388,8 @@ public class EntStallServiceImpl implements EntStallService {
 				stallName.setStallName(stallList.get(i).getStallName());
 				stallNames.add(stallName);
 			}
-		}
-		return stallNames;
+		}*/
+		return stallList;
 	}
 
 	@Override
