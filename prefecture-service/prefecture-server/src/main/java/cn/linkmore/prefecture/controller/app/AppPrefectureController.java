@@ -20,6 +20,7 @@ import cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResStallInfo;
+import cn.linkmore.prefecture.service.BluetoothDataService;
 import cn.linkmore.prefecture.service.PrefectureService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,6 +37,9 @@ import io.swagger.annotations.ApiOperation;
 public class AppPrefectureController {
 	@Autowired
 	private PrefectureService prefectureService;
+	
+	@Autowired
+	private BluetoothDataService bluetoothDataService;
 	
 	@ApiOperation(value = "地图车区列表", notes = "根据城市ID及经伟度得到周边车区列表[因车区数量少，现为全部车区]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/map/list", method = RequestMethod.POST)
@@ -125,6 +129,21 @@ public class AppPrefectureController {
 		return response;
 	} 
 	
+	@ApiOperation(value = "增加数据埋点", notes = "蓝牙降锁增加数据埋点", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/bluetooth", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> bluetooth(@Validated @RequestParam(value="param", required=true) String param, HttpServletRequest request) {
+		ResponseEntity<?> response = null;
+		try {
+			Boolean flag = this.bluetoothDataService.saveData(param, request);
+			response = ResponseEntity.success(flag, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
 	
 	
 }

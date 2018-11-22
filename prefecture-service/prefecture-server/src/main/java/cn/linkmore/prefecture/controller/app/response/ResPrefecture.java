@@ -49,6 +49,17 @@ public class ResPrefecture {
 	
 	@ApiModelProperty(value = "推荐车牌号")
 	private String plateNumber;
+	
+	@ApiModelProperty(value = "营业时长")
+	private String businessTime;
+	
+	public String getBusinessTime() {
+		return businessTime;
+	}
+
+	public void setBusinessTime(String businessTime) {
+		this.businessTime = businessTime;
+	}
 
 	public Long getId() {
 		return id;

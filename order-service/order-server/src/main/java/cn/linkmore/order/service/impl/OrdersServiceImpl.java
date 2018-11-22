@@ -1914,9 +1914,10 @@ public class OrdersServiceImpl implements OrdersService {
 						Map<String, Object> map = new HashMap<>();
 						map.put("lockSn", lockSn);
 						map.put("plate", vm);
-						map.put("preId", prefectureId.toString());
+						map.put("preId", prefectureId);
 						String val = JSON.toJSON(map).toString();
-						this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + val, val,
+						log.info("use the admin assign key {}, val {}", key, val);
+						this.redisService.set(RedisKey.PREFECTURE_BUSY_STALL.key + lockSn, lockSn,
 								ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
 						this.redisService.remove(key, val);
 						assign = true;

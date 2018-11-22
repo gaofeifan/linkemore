@@ -1253,6 +1253,7 @@ public class StallServiceImpl implements StallService {
 				map.put("preId", preId);
 				key = Constants.RedisKey.ORDER_ASSIGN_STALL.key;
 				val = JSON.toJSON(map).toString();
+				log.info("assign plate key:{} ,val:{} ", key , val);
 				this.redisSetOper(0, key, val);
 				// 从空闲锁池中删除
 				key = Constants.RedisKey.PREFECTURE_FREE_STALL.key + preId;
@@ -1310,6 +1311,7 @@ public class StallServiceImpl implements StallService {
 			map.put("preId", preId);
 			key = Constants.RedisKey.ORDER_ASSIGN_STALL.key;
 			val = JSON.toJSON(map).toString();
+			log.info("cancel assign plate key:{} ,val:{} ", key , val);
 			this.redisSetOper(1, key, val);
 			// 归还到空闲锁池
 			key = Constants.RedisKey.PREFECTURE_FREE_STALL.key + preId;

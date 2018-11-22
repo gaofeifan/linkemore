@@ -538,14 +538,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		ResPrefectureDetail preDetail = prefectureClusterMapper.findById(preId);
 		String freeMins = "";
+		String appFreeMins = "";
 		String topFee = "";
-		StringBuffer sb = new StringBuffer();
 		if (preDetail != null) {
 			detail.setId(preDetail.getId());
 			detail.setAddress(preDetail.getAddress());
 			detail.setName(preDetail.getName());
 			detail.setLatitude(preDetail.getLatitude().doubleValue());
 			detail.setLongitude(preDetail.getLongitude().doubleValue());
+			detail.setBusinessTime(preDetail.getBusinessTime());
 			Long count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + preDetail.getId());
 			if (count == null) {
 				count = 0L;
@@ -592,7 +593,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 				for (ResStrategyGroup strategyGroup : strategyGroupList) {
 					group = new ResPrefectureGroup();
 					group.setGroupName(strategyGroup.getName());
-
+					StringBuffer sb = new StringBuffer();
 					Map<String, Object> paramFee = new HashMap<String, Object>();
 					paramFee.put("strategGroupId", strategyGroup.getId());
 					paramFee.put("searchDateTime", sdf.format(new Date()));
@@ -625,21 +626,26 @@ public class PrefectureServiceImpl implements PrefectureService {
 								} else if (chargeUnit == 3) {
 									sb.append(chargeFee + "元/次");
 								}
-								sb.append("\t\r\n");
+								
 								if (criticalUnit == 1) {
-									sb.append(div(mul(chargeFee, chargeHourFree), 60, 1) + "/" + chargeHourFree + "分钟");
-								} else if (criticalUnit == 2) {
-									sb.append(div(mul(chargeFee, chargeHourFree), 60, 1) + "/" + chargeHourFree + "小时");
-								}
-								if (StringUtils.isNotBlank(remark)) {
 									sb.append("\t\r\n");
+									sb.append("每" +chargeHourFree+ "分钟为一个计价单位");
+									//sb.append(div(mul(chargeFee, chargeHourFree), 60, 2) + "/" + chargeHourFree + "分钟");
+								} else if (criticalUnit == 2) {
+									sb.append("\t\r\n");
+									sb.append("每" +chargeHourFree+ "小时为一个计价单位");
+									//sb.append(div(mul(chargeFee, chargeHourFree), 60, 2) + "/" + chargeHourFree + "小时");
+								}
+								sb.append("\t\r\n");
+								if (StringUtils.isNotBlank(remark)) {
 									sb.append(remark);
+									sb.append("\t\r\n");
 								}
 							}
+							sb.deleteCharAt(sb.length() - 3);
 						}
 						log.info("-------------------调用结果{} 免费时长{} 封顶计费{} 描述{}", data, freeMins, topFee, sb.toString());
 					}
-
 					group.setDesc(sb.toString());
 					// group.setDesc(preDetail.getStrategyDescription());
 					group.setGroupId(strategyGroup.getId());
@@ -654,7 +660,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			}
 			detail.setTopFee(topFee);
-			detail.setFreeMins(freeMins);
+			if(StringUtils.isNotBlank(freeMins)) {
+				if(Integer.valueOf(freeMins)>= 60) {
+					appFreeMins = div(Double.valueOf(freeMins), 60D, 2) +"小时";
+				}else {
+					appFreeMins = freeMins +"分钟";
+				}
+			}
+			detail.setFreeMins(appFreeMins);
 			detail.setPreGroupList(preGroup);
 			Long plateId = null;
 			String plateNumber = null;

@@ -37,6 +37,7 @@
     <result column="month_rent" jdbcType="INTEGER" property="monthRent" />
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="business_time" jdbcType="VARCHAR" property="businessTime" />
   </resultMap>
   
   <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.controller.app.response.ResPrefecture">
@@ -51,6 +52,7 @@
   	<result column="address" jdbcType="VARCHAR" property="address" />
   	<result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
   	<result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
+  	<result column="business_time" jdbcType="VARCHAR" property="businessTime" />
   </resultMap>
   
   <resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
@@ -96,7 +98,7 @@
     image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
     route_description, base_dict_id, city_id, order_index, leave_time, charge_price, 
     charge_time, type, enterprise_id, category, limit_status, gateway, 
-    strategy_description, runtime, increase, month_rent, version, create_user_id
+    strategy_description, runtime, increase, month_rent, version, create_user_id, business_time
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -110,7 +112,7 @@
   
   <select id="findPreByStatusAndGPS" resultMap="ResPrefectureMap" parameterType="java.util.Map">
     select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
-  		p.charge_time,p.image_url
+  		p.charge_time,p.image_url, p.business_time
 	from v_prefecture p 
 	where p.status = #{status} and (p.type is null or p.type = 0 )
     and p.category in ('0','2')
@@ -121,7 +123,7 @@
   
   <select id="findPreByStatusAndGPS1" resultMap="ResPrefectureMap" parameterType="java.util.Map">
     select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
-  		p.charge_time,p.image_url
+  		p.charge_time,p.image_url, p.business_time
 	from v_prefecture p
 	where p.status = #{status} 
     and p.category = 1

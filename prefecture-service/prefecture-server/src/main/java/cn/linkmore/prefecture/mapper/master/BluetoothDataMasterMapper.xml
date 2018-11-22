@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.BluetoothDataMasterMapper">
+
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_bluetooth_data
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.BluetoothData" useGeneratedKeys="true" keyProperty="id">
+    insert into t_bluetooth_data (id, user_id, lock_sn, 
+      search, matching, signaling,  connect, send, success, 
+      count, create_time, disconnects, disconnect)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{lockSn,jdbcType=VARCHAR}, 
+      #{search,jdbcType=VARCHAR}, #{matching,jdbcType=VARCHAR}, #{signaling,jdbcType=VARCHAR}, 
+      #{connect,jdbcType=VARCHAR}, #{send,jdbcType=VARCHAR}, #{success,jdbcType=VARCHAR}, 
+      #{count,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{disconnects,jdbcType=VARCHAR},#{disconnect,jdbcType=VARCHAR})
+  </insert>
+  
+</mapper>
