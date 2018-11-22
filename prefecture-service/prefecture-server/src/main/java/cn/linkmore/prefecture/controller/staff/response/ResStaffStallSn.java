@@ -152,7 +152,10 @@ public class ResStaffStallSn {
 	}
 
 	public String getSerialNumber() {
-		return "0000"+stallSn.toLowerCase();
+		if(stallSn != null) {
+			return "0000"+stallSn.toLowerCase();
+		}
+		return null;
 	}
 
 	public Long getPreId() {

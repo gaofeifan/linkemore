@@ -1,13 +1,13 @@
 server:
-  port: 8002 
+  port: 8002
   session:
-    timeout: 60
+    timeout: 60 
 spring:
   application:
     name: prefecture-server
   boot: 
     admin:
-      url: http://192.168.1.128:6002
+      url: http://192.168.1.220:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -17,13 +17,13 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.128:6003/eureka/
+      defaultZone: http://192.168.1.220:6003/eureka/
 feign:
   hystrix:
     enabled: true
  
 master-db:   
-  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+  url: jdbc:mysql://192.168.1.218:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -43,7 +43,7 @@ master-db:
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   
 cluster-db:   
-  url: jdbc:mysql://192.168.1.219:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+  url: jdbc:mysql://192.168.1.219:3306/linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -69,7 +69,7 @@ security:
 redis:
   host: 192.168.1.218
   port: 6379
-  database: 2
+  database: 0
   timeout: 5000
   password: ppyx1234
   pool-max-active: 500
@@ -85,8 +85,11 @@ redis:
   
 lock:
   linkmore-url: http://192.168.1.211:8081
+  #linkmore-new-url: http://47.97.171.147:8082
   linkmore-new-url: http://192.168.1.211:8081
-
+  app-secret: 1e2e90b4f56d58352bfb6119190535d7
+  app-id: 1d46bc15df4c4b6a9a5710183da916c1
+  linkemore-lock-url: http://open-api.linkmoreparking.cn
 logging:
   level:
      cn.linkmore.prefecture.dao : debug
@@ -98,7 +101,9 @@ swagger:
   version: 2.0
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
-  base-package: cn.linkmore.prefecture.controller.app
+  base-package: cn.linkmore.prefecture.controller.app,cn.linkmore.prefecture.controller.staff
+
+
 
 strategyfee: 
   url: 
