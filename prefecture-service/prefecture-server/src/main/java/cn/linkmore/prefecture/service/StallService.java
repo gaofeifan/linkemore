@@ -286,4 +286,11 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	ResSignalHistory lockSignalHistory(HttpServletRequest request, String sn);
+	
+	/**
+	 * 取消绑定
+	 * @param stallId
+	 * @return
+	 */
+	int unBind(List<Long> ids);
 }

@@ -64,7 +64,11 @@ public class StallServiceImpl implements StallService {
 	public int bind(Long id,Long sid) {
 		return this.stallClient.bind(id, sid);
 	}
-
+	
+	@Override
+	public int unBind(List<Long> ids) {
+		return this.stallClient.unBind(ids);
+	}
 
 	@Override
 	public void saveAndBind(Long preId, String stallName, String sn) {

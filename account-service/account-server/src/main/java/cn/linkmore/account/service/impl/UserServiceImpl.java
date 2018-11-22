@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserStaffClusterMapper UserStaffClusterMapper;
-
+	
 	@Override
 	public void updateNickname(String nickname, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
@@ -329,6 +329,13 @@ public class UserServiceImpl implements UserService {
 		List<ResPageUser> list = this.userClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
+	
+	@Override
+	public int delete(List<Long> ids) {
+		accountMasterMapper.deleteByIds(ids);
+		return this.userMasterMapper.deleteByIds(ids);
+	}
+	
 	
 	@Override
 	public List<ResPageUser> export(ViewPageable pageable) {

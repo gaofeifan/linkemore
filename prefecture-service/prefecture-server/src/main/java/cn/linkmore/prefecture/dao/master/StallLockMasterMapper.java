@@ -17,5 +17,7 @@ public interface StallLockMasterMapper {
 
 	int updateBind(StallLock lock);
 
+	int unBind(List<Long> ids);
+	
 	void insertAndGetId(StallLock lock);
 }

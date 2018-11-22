@@ -1,5 +1,7 @@
 package cn.linkmore.account.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.account.entity.Account;
@@ -17,7 +19,12 @@ public interface AccountMasterMapper {
      * @Version  v2.0
      */
     int deleteById(Long id);
-
+    /**
+     * delete
+     * @param ids
+     * @return
+     */
+    int deleteByIds(List<Long> ids);
     /**
      * @Description  
      * @Author   GFF 

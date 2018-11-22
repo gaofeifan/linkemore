@@ -71,6 +71,10 @@ public interface OpsStallClient {
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.POST)
 	@ResponseBody
 	public int bind(@RequestParam("id") Long id, @RequestParam("sid") Long sid);
+	
+	@RequestMapping(value = "/v2.0/unBind", method = RequestMethod.POST)
+	@ResponseBody
+	public int unBind(@RequestBody List<Long> ids);
 
 	@RequestMapping(value = "/v2.0/changed_up", method = RequestMethod.POST)
 	@ResponseBody

@@ -165,6 +165,13 @@ public class UserClientHystrix implements UserClient{
 		log.info("account service List<ResUser> findAll() hystrix");
 		return null;
 	}
+
+
+	@Override
+	public int delete(List<Long> ids) {
+		log.info("account service int delete(List<Long> ids) hystrix");
+		return 0;
+	}
 	
 	
 	
