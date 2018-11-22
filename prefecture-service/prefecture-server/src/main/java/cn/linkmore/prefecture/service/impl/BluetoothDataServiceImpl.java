@@ -87,7 +87,6 @@ public class BluetoothDataServiceImpl implements BluetoothDataService {
 		}
 		String [] array = param.split("/");
 		for(String property : array) {
-			System.out.println("========="+property);
 			if(property.contains("locksn")) {
 				bluetooth.setLockSn(property.split("-")[1]);
 			}
@@ -121,7 +120,7 @@ public class BluetoothDataServiceImpl implements BluetoothDataService {
 		}
 		
 		bluetooth.setCreateTime(new Date());
-		log.info("bluetooth = {}",JSON.toJSON(bluetooth));
+		log.info("........................bluetooth = {}",JSON.toJSON(bluetooth));
 		int integer = this.bluetoothDataMasterMapper.save(bluetooth);
 		if(integer > 0) {
 			flag = true;

@@ -21,7 +21,7 @@ public class BluetoothData {
 
     private String success;
 
-    private Integer count;
+    private Integer count = 0;
 
     private Date createTime;
 
