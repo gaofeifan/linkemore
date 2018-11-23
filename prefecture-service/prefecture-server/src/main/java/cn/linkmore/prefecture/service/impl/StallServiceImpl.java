@@ -416,7 +416,12 @@ public class StallServiceImpl implements StallService {
 		stallLock.setBindTime(now);
 		stallLock.setStallId(stall.getId());
 		stallLock.setPrefectureId(reqLockIntall.getPreId());
-		stallLockMasterMapper.updateBind(stallLock);
+		try {
+			stallLockMasterMapper.updateBind(stallLock);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -1377,6 +1382,9 @@ public class StallServiceImpl implements StallService {
 				break;
 			case 1:
 				stallSn.setStallLockStatus(1);
+				break;
+			default:
+				stallSn.setStallLockStatus(3);
 				break;
 			}
 			stallSn.setUltrasonic(lock.getParkingState());
