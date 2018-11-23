@@ -11,6 +11,9 @@ public class ResPreCity {
 	@ApiModelProperty(value = "城市ID")
 	private Long cityId;
 	
+	@ApiModelProperty(value = "城市名称")
+	private String cityName;
+	
 	@ApiModelProperty(value = "车区列表")
 	private List<ResPrefecture> prefectures;
 
@@ -20,6 +23,14 @@ public class ResPreCity {
 
 	public void setCityId(Long cityId) {
 		this.cityId = cityId;
+	}
+	
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
 	}
 
 	public List<ResPrefecture> getPrefectures() {

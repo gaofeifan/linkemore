@@ -40,6 +40,8 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.common.client.CityClient;
+import cn.linkmore.common.response.ResCity;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
@@ -103,6 +105,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Autowired
 	private OrderClient orderClient;
+	
+	@Autowired
+	private CityClient cityClient;
 
 	@Autowired
 	private RedisService redisService;
@@ -194,20 +199,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return list;
 	}
 
-	/**
-	 * 根据车区id查询所有空闲车位
-	 * 
-	 * @param preId
-	 * @return
-	 */
-	// public Integer getFreeStall(Long preId) {
-	// List<ResStall> stallList = this.stallClusterMapper.findStallsByPreId(preId);
-	// int count = 0;
-	// if(stallList!=null) {
-	// count = stallList.size();
-	// }
-	// return count;
-	// }
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -360,12 +351,22 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<ResPreCity> list(ReqPrefecture rp, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		Map<Long, String> cityMap = new HashMap<Long, String>();
 		paramMap.put("status", 0);
-		// 此处cityId暂时为空，返回所有的车区信息
+		// 此处cityFlag=0，返回所有的车区信息
 		if ("1".equals(rp.getCityFlag())) {
 			paramMap.put("cityId", rp.getCityId());
 		}
+		if(StringUtils.isNotBlank(rp.getPreName())) {
+			paramMap.put("name", '%'+ rp.getPreName()+ '%');
+		}
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
+		List<ResCity> cityList = cityClient.findSelectList();
+		if(CollectionUtils.isNotEmpty(cityList)) {
+			for(ResCity city: cityList) {
+				cityMap.put(city.getId(), city.getCityName());
+			}
+		}
 		Long plateId = null;
 		String plateNumber = null;
 		if (cu != null && cu.getId() != null) {
@@ -421,6 +422,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		for (Long cityId : map.keySet()) {
 			resPreCity = new ResPreCity();
 			resPreCity.setCityId(cityId);
+			resPreCity.setCityName(cityMap.get(cityId));
 			List<ResPrefecture> prefecturelist = map.get(cityId);
 			Collections.sort(prefecturelist, new Comparator<ResPrefecture>() {
 				public int compare(ResPrefecture pre1, ResPrefecture pre2) {
@@ -782,6 +784,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 		}
 		return stallInfo;
+	}
+
+	@Override
+	public List<ResPrefecture> nearList(ReqPrefecture rp, HttpServletRequest request) {
+		
+		return null;
 	}
 
 }

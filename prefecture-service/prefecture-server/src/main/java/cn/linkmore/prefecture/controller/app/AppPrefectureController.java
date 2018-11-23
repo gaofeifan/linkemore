@@ -145,5 +145,20 @@ public class AppPrefectureController {
 		return response;
 	} 
 	
+	@ApiOperation(value = "当前经纬度附近地图车区列表", notes = "根据经伟度得到周边车区列表[因车区数量少，现为全部车区]", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/map/near-list", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<List<cn.linkmore.prefecture.controller.app.response.ResPrefecture>> nearList(@Validated @RequestBody ReqPrefecture rp, HttpServletRequest request) {
+		ResponseEntity<List<cn.linkmore.prefecture.controller.app.response.ResPrefecture>> response = null;
+		try { 
+			List<cn.linkmore.prefecture.controller.app.response.ResPrefecture> list = this.prefectureService.nearList(rp, request);
+			response = ResponseEntity.success(list, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
 	
 }
