@@ -4,11 +4,11 @@ import java.util.List;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.security.request.ReqCheck;
-import cn.linkmore.ops.security.request.ReqPerson;
 import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.security.response.ResPersonRole;
 import cn.linkmore.ops.security.response.ResRole;
 import cn.linkmore.ops.shiro.Principal;
+import cn.linkmore.security.request.ReqPerson;
 
 /**
  * Service接口 -权限模块- 后台用户
@@ -35,7 +35,7 @@ public interface PersonService {
 	 * 保存
 	 * @param person
 	 */
-	Long save(ReqPerson reqPerson);
+	Long save(cn.linkmore.security.request.ReqPerson person);
 
 	/**
 	 * 更新

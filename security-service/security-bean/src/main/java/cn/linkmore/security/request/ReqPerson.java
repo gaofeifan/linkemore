@@ -59,7 +59,7 @@ public class ReqPerson {
     /**
      * 分类0:系统级别,1自定义，2企业用户
      */
-    private Integer type;
+    private Integer type = 1;
 
     public Long getId() {
         return id;

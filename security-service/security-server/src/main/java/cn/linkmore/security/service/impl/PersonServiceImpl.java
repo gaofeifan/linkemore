@@ -6,6 +6,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewFilter;
@@ -51,6 +53,8 @@ public class PersonServiceImpl implements PersonService {
 	
 	@Autowired
 	private PersonRoleClusterMapper personRoleClusterMapper;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public ResPerson findByUsername(String username) {
