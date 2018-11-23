@@ -21,7 +21,7 @@ public class ResStaffStallSn {
 	@ApiModelProperty(value="版本")
 	private String version;
 	
-	@ApiModelProperty(value="车位锁状态 1 升起  2 降下")
+	@ApiModelProperty(value="车位锁状态 1 升起  2 降下 3 未知")
 	private Integer stallLockStatus;
 
 	@ApiModelProperty(value="车位锁离线状态 1离线  2 在线")
