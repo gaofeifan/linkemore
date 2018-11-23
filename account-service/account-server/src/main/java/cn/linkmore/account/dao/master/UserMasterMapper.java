@@ -1,5 +1,6 @@
 package cn.linkmore.account.dao.master;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -20,7 +21,13 @@ public interface UserMasterMapper {
      * @Version  v2.0
      */
     int deleteById(Long id);
-
+    /**
+     * deletebyids
+     * @param ids
+     * @return
+     */
+    int deleteByIds(List<Long> ids);
+    
     /**
      * @Description  
      * @Author   GFF 

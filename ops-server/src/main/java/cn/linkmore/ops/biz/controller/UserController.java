@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,6 +29,8 @@ import com.alibaba.fastjson.JSONArray;
 
 import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.DataException;
+import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.UserService;
@@ -53,7 +56,28 @@ public class UserController {
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
 		return this.userService.findPage(pageable);
 	}
-
+	
+	/**
+	 * 删除
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg delete(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.userService.delete(ids);
+			msg = new ViewMsg("删除成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = new ViewMsg("删除失败", false);
+		}
+		return msg;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/export", method = RequestMethod.POST)
 	public void export(ViewPageable pageable, HttpServletResponse response) {

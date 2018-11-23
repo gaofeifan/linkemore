@@ -204,6 +204,12 @@ public class StallController {
 		return this.stallService.bind(reqStall);
 	}
 
+	@RequestMapping(value = "/v2.0/unBind", method = RequestMethod.POST)
+	@ResponseBody
+	public int unBind(@RequestBody List<Long> ids) {
+		return this.stallService.unBind(ids);
+	}
+
 	@RequestMapping(value = "/v2.0/changed_up", method = RequestMethod.POST)
 	@ResponseBody
 	public int changedUp(@RequestBody List<Long> ids) {

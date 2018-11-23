@@ -466,7 +466,13 @@ public class StallServiceImpl implements StallService {
 		log.info("{}:{}>>{},返回结果{}", "绑定车位锁", "车位(" + stall.getStallName() + "),车位锁(" + sn + ")", "绑定成功", 200);
 		return stallMasterMapper.update(sta);
 	}
-
+	
+	@Override
+	public int unBind(List<Long> ids) {
+		stallLockMasterMapper.unBind(ids);
+		return stallMasterMapper.unBind(ids);
+	}
+	
 	@Override
 	public int updateStatus(ReqStall reqStall) {
 		Date now = new Date();

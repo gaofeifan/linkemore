@@ -180,6 +180,17 @@ public class FeignUserControlle {
 	}
 	
 	/**
+	 * 删除
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public int delete(@RequestBody List<Long> ids) {
+		return this.userService.delete(ids);
+	}
+	
+	/**
 	 * @Description	导出
 	 * @Author   GFF 
 	 * @Version  v2.0
