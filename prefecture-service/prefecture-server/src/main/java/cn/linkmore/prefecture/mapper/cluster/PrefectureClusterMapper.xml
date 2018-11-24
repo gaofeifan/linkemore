@@ -122,6 +122,14 @@
 	<if test="name != null">
 		and p.name like #{name,jdbcType=VARCHAR}
 	</if>
+	
+	<if test="minLat != null">
+		AND (p.latitude BETWEEN #{minLat} AND #{maxLat})
+	</if>
+	
+	<if test="minLng != null">
+		and (p.longitude BETWEEN #{minLng} AND #{maxLng})
+	</if>
   </select>
   
   <select id="findPreByStatusAndGPS1" resultMap="ResPrefectureMap" parameterType="java.util.Map">
@@ -135,6 +143,14 @@
 	</if>
 	<if test="name != null">
 		and p.name like #{name,jdbcType=VARCHAR}
+	</if>
+	
+	<if test="minLat != null">
+		AND (p.latitude BETWEEN #{minLat} AND #{maxLat})
+	</if>
+	
+	<if test="minLng != null">
+		and (p.longitude BETWEEN #{minLng} AND #{maxLng})
 	</if>
   </select>
   

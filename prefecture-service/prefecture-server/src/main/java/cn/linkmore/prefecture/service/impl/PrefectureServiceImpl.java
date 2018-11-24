@@ -75,6 +75,7 @@ import cn.linkmore.prefecture.service.StrategyFeeService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.MapDistance;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
@@ -788,8 +789,73 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Override
 	public List<ResPrefecture> nearList(ReqPrefecture rp, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		Double raidusMile = 5000D;
+		Map<String, Object> paramMap = MapDistance.getAround(Double.valueOf(rp.getLatitude()), Double.valueOf(rp.getLongitude()), raidusMile);
+		log.info("param = {}",JSON.toJSON(paramMap));
+		paramMap.put("status", 0);
+		/*if ("1".equals(rp.getCityFlag())) {
+			paramMap.put("cityId", rp.getCityId());
+		}
+		if(StringUtils.isNotBlank(rp.getPreName())) {
+			paramMap.put("name", '%'+ rp.getPreName()+ '%');
+		}*/
+		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
+		Long plateId = null;
+		String plateNumber = null;
+		if (cu != null && cu.getId() != null) {
+			ResUserOrder ro = this.orderClient.last(cu.getId());
+			List<ResVechicleMark> plates = this.vehicleMarkClient.list(cu.getId());
+			if (ro != null) {
+				Map<String, Long> plateMap = new HashMap<String, Long>();
+				for (ResVechicleMark rvm : plates) {
+					plateMap.put(rvm.getVehMark(), rvm.getId());
+				}
+				plateNumber = ro.getPlateNo();
+				plateId = plateMap.get(plateNumber);
+				if (plateId == null) {
+					plateNumber = null;
+				}
+			}
+			if (plateNumber == null && CollectionUtils.isNotEmpty(plates)) {
+				plateId = plates.get(0).getId();
+				plateNumber = plates.get(0).getVehMark();
+			}
+
+			ResUserStaff us = this.userStaffClient.findById(cu.getId());
+			if (us != null && us.getStatus().intValue() == UserStaffStatus.ON.status) {
+				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
+				if (preList1 != null) {
+					if (preList == null) {
+						preList = preList1;
+					} else {
+						preList.addAll(preList1);
+					}
+				}
+			}
+		}
+		Long count = 0L;
+		for (ResPrefecture prb : preList) {
+			prb.setPlateId(plateId);
+			prb.setPlateNumber(plateNumber);
+			prb.setChargeTime(prb.getChargeTime() + "分钟");
+			prb.setChargePrice(prb.getChargePrice() + "元");
+			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getId());
+			if (count == null) {
+				count = 0L;
+			}
+			prb.setLeisureStall(count.intValue());
+			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()),
+					new Double(rp.getLongitude())));
+		}
 		
-		return null;
+		Collections.sort(preList, new Comparator<ResPrefecture>() {
+			public int compare(ResPrefecture pre1, ResPrefecture pre2) {
+				return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));
+			}
+		});
+		
+		return preList;
 	}
 
 }
