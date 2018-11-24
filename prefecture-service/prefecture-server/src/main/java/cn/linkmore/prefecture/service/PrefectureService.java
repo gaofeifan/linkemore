@@ -149,4 +149,7 @@ public interface PrefectureService {
 
 	List<ResPreList> findSelectListByUser(Map<String, Object> param);
 
+	List<cn.linkmore.prefecture.controller.app.response.ResPrefecture> nearList(ReqPrefecture rp,
+			HttpServletRequest request);
+
 }
