@@ -30,7 +30,7 @@ public class FeignLockController {
 	
 	@RequestMapping(value="/lock-list",method=RequestMethod.GET)
 	@ResponseBody
-	public List<ResLockInfo> lockList(@RequestParam("groupCode") String groupCode) {
+	public List<ResLockInfo> lockList(@RequestParam("groupCode") String groupCode){
 		List<ResLockInfo> list = this.lockTools.lockListByGroupCode(groupCode);
 		return list;
 	}

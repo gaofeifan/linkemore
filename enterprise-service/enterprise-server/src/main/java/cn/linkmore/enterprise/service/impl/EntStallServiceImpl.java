@@ -408,6 +408,7 @@ public class EntStallServiceImpl implements EntStallService {
 		/*
 		 * if(lockBean == null){ return resDetailStall; }
 		 */
+		resDetailStall.setInductionState(lockBean.getInductionState());
 		ResEntOrder resEntOrder = this.orderClient.findOrderByStallId(resStallEntity.getId());
 		if (resStallEntity.getStatus() != 1 && resStallEntity.getStatus() != 4) {
 			if (resEntOrder != null) {
