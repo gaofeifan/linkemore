@@ -87,6 +87,11 @@ public class ResDetailStall {
 	@ApiModelProperty("故障原因名称")
 	private String faultName;
 	
+	/**
+	 *  超声波设备状态   0 异常 1正常 其他值表示未知
+	 */ 
+	private int inductionState;
+	
 	public boolean getOnoffStatus() {
 		return onoffStatus;
 	}
@@ -224,5 +229,13 @@ public class ResDetailStall {
 
 	public void setFaultName(String faultName) {
 		this.faultName = faultName;
+	}
+
+	public int getInductionState() {
+		return inductionState;
+	}
+
+	public void setInductionState(int inductionState) {
+		this.inductionState = inductionState;
 	}
 }

@@ -56,7 +56,7 @@ public class ResStaffStallSn {
 	
 
 	public String getStallSn() {
-		return stallSn;
+		return "0000"+serialNumber.toLowerCase();
 	}
 
 	public void setStallSn(String stallSn) {
@@ -152,7 +152,7 @@ public class ResStaffStallSn {
 	}
 
 	public String getSerialNumber() {
-		return "0000"+stallSn.toLowerCase();
+		return serialNumber;
 	}
 
 	public Long getPreId() {
