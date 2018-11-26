@@ -60,7 +60,7 @@
       leave_time, charge_price, charge_time, 
       type, enterprise_id, category, 
       limit_status,gateway ,strategy_description,
-      runtime, increase, month_rent, version, create_user_id, create_user_name)
+      runtime, increase, month_rent, version, create_user_id, create_user_name, business_time)
     values (#{id,jdbcType=BIGINT}, #{strategyId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR}, #{districtId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=DECIMAL}, #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, 
