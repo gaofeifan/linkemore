@@ -261,33 +261,33 @@ public class PushServiceImpl implements PushService {
 	
 public static void main(String[] args) {
 	
-	JPushClient jSendClient =  new JPushClient("148ba7bd213a23a1e360f499","fdde7a74e91b2b0b82172555",3);
+	JPushClient jSendClient =  new JPushClient("88144b53297be8ef37ab2591","97bf3800e8729ca8f44c396e",3);
 	
 	Builder android = PushPayload.newBuilder();
-	android.setAudience(Audience.alias("u42"));
+	android.setAudience(Audience.alias("u34"));
 	android.setMessage(Message.newBuilder()
-			.addExtra("title", new Date().getTime())
-			.addExtra("content","安卓1")
-			.addExtra("type","安卓2") 
+			.addExtra("title","订单操作" )
+			.addExtra("content","订单已被管理员关闭")
+			.addExtra("type","ORDER_STAFF_CLOSED_NOTICE") 
 			.addExtra("timestamp", new Date().getTime())
-			.addExtra("data","安卓3")
-			.setMsgContent("安卓4").build());
+			.addExtra("data","true")
+			.setMsgContent("订单已被管理员关闭").build());
 	android.setPlatform(Platform.android());
 	android.setOptions(Options.newBuilder().setApnsProduction(false).build());
 	PushPayload androidppl = android.build();
 	try {
-		jSendClient.sendPush(androidppl);
+		//jSendClient.sendPush(androidppl);
 	} catch (Exception e) { }
 	
 	Builder ios = PushPayload.newBuilder();
-	ios.setAudience(Audience.alias("u47"));
+	ios.setAudience(Audience.alias("u2785"));
 	ios.setMessage(Message.newBuilder()
-			.addExtra("title", new Date().getTime())
-			.addExtra("content","苹果1")
-			.addExtra("type","苹果2") 
+			.addExtra("title","订单操作" )
+			.addExtra("content","订单已被管理员关闭")
+			.addExtra("type","ORDER_STAFF_CLOSED_NOTICE") 
 			.addExtra("timestamp", new Date().getTime())
-			.addExtra("data","苹果3")
-			.setMsgContent("苹果4").build());
+			.addExtra("data","true")
+			.setMsgContent("订单已被管理员关闭").build());
 	ios.setPlatform(Platform.ios());
 	ios.setOptions(Options.newBuilder().setApnsProduction(false).build());
 	PushPayload iosppl = ios.build();

@@ -108,6 +108,7 @@ import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
@@ -417,6 +418,14 @@ public class StallServiceImpl implements StallService {
 		stallLock.setStallId(stall.getId());
 		stallLock.setPrefectureId(reqLockIntall.getPreId());
 		stallLockMasterMapper.updateBind(stallLock);
+		//通知锁平台
+		Map<String, String> param = new HashMap<>();
+		param.put("appId", "");
+		param.put("sign", "");
+		param.put("timestamp", String.valueOf(new Date().getTime()));
+		param.put("serialNumber", reqLockIntall.getLockSn());
+		param.put("name", reqLockIntall.getStallName());
+		HttpUtil.sendPost("http://open-api.linkmoreparking.cn/api/v1/lock/config/set-parking-name", param);
 	}
 
 	@Override
