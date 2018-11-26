@@ -34,6 +34,14 @@ public interface StallMasterMapper {
 	 * @return 更新条数
 	 */
 	int update(Stall stall); 
+	
+	/**
+	 * 取消绑定
+	 * @param stallId
+	 * @return
+	 */
+	int unBind(List<Long> ids);
+	
 	/**
 	 * 预约分配车位
 	 * @param stall

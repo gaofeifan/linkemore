@@ -67,7 +67,8 @@ public class EnterpriseClientHystrix implements EnterpriseClient {
 	@Override
 	public ResEnterprise findName(Map<String, Object> param) {
 		log.info("prefecture service ResEnterprise find() hystrix");
-		return null;
+		//return null;
+		return new ResEnterprise();
 	}
 	
 }

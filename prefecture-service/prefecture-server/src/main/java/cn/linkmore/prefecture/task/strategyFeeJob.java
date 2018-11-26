@@ -9,6 +9,8 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,7 +25,7 @@ import net.sf.json.JsonConfig;
 
 @Service
 public class strategyFeeJob {
-	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private StrategyFeeMasterMapper strategyFeeMasterMapper;
 	
@@ -42,18 +44,24 @@ public class strategyFeeJob {
 	public void remoteGetFee() {
 		//System.out.println("remoteGetFee");
 		String jsonRes=httpGetFeeList();
-		JSONObject obj = JSONObject.fromObject(jsonRes);
-		if(obj.has("code")) {
-			if(StringUtils.equalsIgnoreCase("200", obj.getString("code")) ) {
-				if(obj.has("data")) {
-					JSONArray jsonArray = obj.getJSONArray("data");
-					List<StrategyFee> listStrategyFee = JSONArray.toList(jsonArray, new StrategyFee(), new JsonConfig());
-					if(listStrategyFee.size()>0) {
-						strategyFeeMasterMapper.deleteAll();
-						for(StrategyFee strategyFee:listStrategyFee ) {
-							strategyFee.setStatus((byte) 0);
-							strategyFee.setUpdateTime(new Date());
-							strategyFeeMasterMapper.insert(strategyFee);
+		log.error("strategyFeeListURL={}",strategyFeeListURL);
+		log.error("jsonRes={}",jsonRes);
+		if(StringUtils.isNotEmpty(jsonRes) ) {
+			JSONObject obj = JSONObject.fromObject(jsonRes);
+			if(obj !=null) {
+				if(obj.has("code")) {
+					if(StringUtils.equalsIgnoreCase("200", obj.getString("code")) ) {
+						if(obj.has("data")) {
+							JSONArray jsonArray = obj.getJSONArray("data");
+							List<StrategyFee> listStrategyFee = JSONArray.toList(jsonArray, new StrategyFee(), new JsonConfig());
+							if(listStrategyFee.size()>0) {
+								strategyFeeMasterMapper.deleteAll();
+								for(StrategyFee strategyFee:listStrategyFee ) {
+									strategyFee.setStatus((byte) 0);
+									strategyFee.setUpdateTime(new Date());
+									strategyFeeMasterMapper.insert(strategyFee);
+								}
+							}
 						}
 					}
 				}

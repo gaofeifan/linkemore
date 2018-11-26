@@ -58,15 +58,13 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/prefectures/v2.0/map/list");
 			add("/app/prefectures/v2.0/free/list");
 			add("/app/prefectures/v2.0/strategy");
-
-			add("/app/brand-pre/v2.0/map/list");
-			add("/app/brand-pre/v2.0/free/list");
+			add("/app/prefectures/v2.0/bluetooth");
+			add("/app/brand-pre/v2.0/map/list"); 
+			add("/app/brand-pre/v2.0/free/list"); 
 			add("/app/brand-pre/v2.0/strategy");
-
 			add("/app/brands/v2.0/brand-ad");
 			add("/app/brands/v2.0/brand-apply");
 			add("/app/brands/v2.0/brand-pre-ad");
-
 			add("/app/citys/v2.0/list");
 			add("/app/callback/v2.0/wechat-mini/order");
 			add("/app/callback/v2.0/wechat/order");
@@ -84,6 +82,23 @@ public class TokenFilter extends ZuulFilter {
 			add("/ent/auth/send");
 
 			add("/attach/image_upload");
+			add("/ent/auth/v2.0/send");  
+			add("/ent/auth/v2.0/send");  
+			
+			add("/staff/auth/send");  
+			add("/staff/auth/login");  
+			add("/staff/vehicle-brands");  
+			add("/staff/auth/check-mobile");  
+			
+			add("/h5/");
+			add("/h5/a");
+			add("/h5/d");
+			add("/h5/t");
+			add("/h5/r");
+			add("/h5/o");
+			add("/h5/g");
+	
+			add("/attach/image_upload"); 
 		}
 	};
 

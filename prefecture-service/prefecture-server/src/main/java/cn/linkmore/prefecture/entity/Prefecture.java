@@ -156,8 +156,20 @@ public class Prefecture {
     private Long createUserId;
     
     private String createUserName;
+    /**
+     * 营业时长8:00 - 20:00
+     */
+    private String businessTime;
     
-    public Long getCreateUserId() {
+    public String getBusinessTime() {
+		return businessTime;
+	}
+
+	public void setBusinessTime(String businessTime) {
+		this.businessTime = businessTime;
+	}
+
+	public Long getCreateUserId() {
 		return createUserId;
 	}
 

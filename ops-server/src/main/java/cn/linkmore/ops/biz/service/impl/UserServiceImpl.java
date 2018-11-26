@@ -36,6 +36,11 @@ public class UserServiceImpl implements UserService {
 		//List<ResUser> list = client.findAll();
 		return null;//client.findAll();
 	}
+
+	@Override
+	public int delete(List<Long> ids) {
+		return client.delete(ids);
+	}
 	
 	
 	

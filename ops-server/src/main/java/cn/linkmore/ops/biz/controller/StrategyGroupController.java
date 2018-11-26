@@ -1,6 +1,5 @@
 package cn.linkmore.ops.biz.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,16 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.StrategyGroupService;
 import cn.linkmore.prefecture.request.ReqStrategyGroup;
 import cn.linkmore.prefecture.request.ReqStrategyGroupDetail;
@@ -48,7 +46,9 @@ import cn.linkmore.prefecture.response.ResStrategyGroupArea;
 public class StrategyGroupController extends BaseController{
 	@Autowired
 	private StrategyGroupService strategyGroupService;
-
+	
+	@Autowired
+	private EnterpriseService enterService;
 	/**
 	 * 新增
 	 * @param reqStrategyGroup
@@ -241,7 +241,14 @@ public class StrategyGroupController extends BaseController{
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable) {
-		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("property", "id");
+		map.put("value", getPerson().getId());
+		ResEnterprise enter=enterService.find(map);
+		if(enter != null) {
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+		}
 		return this.strategyGroupService.findPage(pageable);
 	}
 
@@ -251,7 +258,13 @@ public class StrategyGroupController extends BaseController{
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStrategyGroup> findList(@RequestParam Map<String, Object> map) {
-		//map.put("createUserId", getPerson().getId());
+		map.put("property", "id");
+		map.put("value", getPerson().getId());
+		ResEnterprise enter=enterService.find(map);
+		if(enter != null) {
+			map.put("createUserId",getPerson().getId());
+		}
+		
 		return this.strategyGroupService.findList(map);
 	}
 	

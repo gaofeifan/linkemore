@@ -150,6 +150,20 @@ public class StallController {
 		return msg;
 	}
 
+	@RequestMapping(value = "/unBind", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg unBind(HttpServletRequest request, @RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.stallService.unBind(ids);
+			msg = new ViewMsg("取消绑定成功", true);
+		} catch (RuntimeException e) {
+			msg = new ViewMsg("取消绑定失败", false);
+		}
+		return msg;
+	}
+	
+	
 	@RequestMapping(value = "/changed_up", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg changedUp(HttpServletRequest request, @RequestBody List<Long> ids) {

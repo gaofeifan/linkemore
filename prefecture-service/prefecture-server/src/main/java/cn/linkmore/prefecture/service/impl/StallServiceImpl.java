@@ -426,6 +426,12 @@ public class StallServiceImpl implements StallService {
 		param.put("serialNumber", reqLockIntall.getLockSn());
 		param.put("name", reqLockIntall.getStallName());
 		HttpUtil.sendPost("http://open-api.linkmoreparking.cn/api/v1/lock/config/set-parking-name", param);
+		try {
+			stallLockMasterMapper.updateBind(stallLock);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -470,7 +476,13 @@ public class StallServiceImpl implements StallService {
 		log.info("{}:{}>>{},返回结果{}", "绑定车位锁", "车位(" + stall.getStallName() + "),车位锁(" + sn + ")", "绑定成功", 200);
 		return stallMasterMapper.update(sta);
 	}
-
+	
+	@Override
+	public int unBind(List<Long> ids) {
+		stallLockMasterMapper.unBind(ids);
+		return stallMasterMapper.unBind(ids);
+	}
+	
 	@Override
 	public int updateStatus(ReqStall reqStall) {
 		Date now = new Date();
@@ -1262,6 +1274,7 @@ public class StallServiceImpl implements StallService {
 				map.put("preId", preId);
 				key = Constants.RedisKey.ORDER_ASSIGN_STALL.key;
 				val = JSON.toJSON(map).toString();
+				log.info("assign plate key:{} ,val:{} ", key , val);
 				this.redisSetOper(0, key, val);
 				// 从空闲锁池中删除
 				key = Constants.RedisKey.PREFECTURE_FREE_STALL.key + preId;
@@ -1319,6 +1332,7 @@ public class StallServiceImpl implements StallService {
 			map.put("preId", preId);
 			key = Constants.RedisKey.ORDER_ASSIGN_STALL.key;
 			val = JSON.toJSON(map).toString();
+			log.info("cancel assign plate key:{} ,val:{} ", key , val);
 			this.redisSetOper(1, key, val);
 			// 归还到空闲锁池
 			key = Constants.RedisKey.PREFECTURE_FREE_STALL.key + preId;
@@ -1360,55 +1374,44 @@ public class StallServiceImpl implements StallService {
 		if(sn.contains("0000")) {
 			sn = sn.substring(4).toUpperCase();
 		}
-		Stall stall = this.stallClusterMapper.findByLockSn(sn);
-		if(stall == null) {
-			return stallSn;
-		}else {
-			stallSn.setStallId(stall.getId());
-			stallSn.setStallSn(sn);
-			stallSn.setStallStatus(stall.getStatus().shortValue());
-			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
-			if(stallLock == null) {
-				return stallSn;
-			}else {
+		ResLockInfo lock = this.lockTools.lockInfo(sn);
+		stallSn.setStallSn(sn);
+		if(lock != null) {
+			stallSn.setBindStatus(true);
+			stallSn.setLockOffLine(2);
+			stallSn.setBattery(lock.getElectricity());
+			switch (lock.getLockState()) {
+			case 0:
+				stallSn.setStallLockStatus(2);
+				break;
+			case 2:
+				stallSn.setStallLockStatus(1);
+				break;
+			case 3:
+				stallSn.setStallLockStatus(2);
+				break;
+			case 1:
+				stallSn.setStallLockStatus(1);
+				break;
+			default:
+				stallSn.setStallLockStatus(3);
+				break;
+			}
+			stallSn.setUltrasonic(lock.getParkingState());
+			stallSn.setModel(lock.getModel());
+			stallSn.setVersion(lock.getVersion());
+			Stall stall = this.stallClusterMapper.findByLockSn(sn);
+			if(stall != null) {
+				stallSn.setStallId(stall.getId());
+				stallSn.setStallStatus(stall.getStatus().shortValue());
 				stallSn.setInstallStatus((short)1);
 				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
 				stallSn.setPreName(detail.getName());
 				stallSn.setPreId(detail.getId());
 				stallSn.setCityId(detail.getCityId());
 				stallSn.setStallName(stall.getStallName());
-				stallSn.setBindStatus(true);
-				ResLockInfo lock = this.lockTools.lockInfo(sn);
-				if(lock != null) {
-					stallSn.setLockOffLine(2);
-					stallSn.setBattery(lock.getElectricity());
-					switch (lock.getLockState()) {
-					case 0:
-						stallSn.setStallLockStatus(2);
-						break;
-					case 2:
-						stallSn.setStallLockStatus(1);
-						break;
-					case 3:
-						stallSn.setStallLockStatus(2);
-						break;
-					case 1:
-						stallSn.setStallLockStatus(1);
-						break;
-					}
-					stallSn.setUltrasonic(lock.getParkingState());
-					stallSn.setModel(lock.getModel());
-					stallSn.setVersion(lock.getVersion());
-				}else {
-					stallSn.setBattery(stallLock.getBattery());
-					stallSn.setModel(stallLock.getModel());
-					stallSn.setVersion(stallLock.getVersion());
-					stallSn.setStallLockStatus(stall.getLockStatus());
-					stallSn.setUltrasonic(2);
-				}
 			}
 		}
-		
 		return stallSn;
 	}
 

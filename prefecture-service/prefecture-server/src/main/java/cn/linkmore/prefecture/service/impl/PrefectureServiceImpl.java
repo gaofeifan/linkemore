@@ -40,6 +40,8 @@ import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.common.client.CityClient;
+import cn.linkmore.common.response.ResCity;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
@@ -73,6 +75,7 @@ import cn.linkmore.prefecture.service.StrategyFeeService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.MapDistance;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
@@ -103,6 +106,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Autowired
 	private OrderClient orderClient;
+	
+	@Autowired
+	private CityClient cityClient;
 
 	@Autowired
 	private RedisService redisService;
@@ -194,20 +200,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return list;
 	}
 
-	/**
-	 * 根据车区id查询所有空闲车位
-	 * 
-	 * @param preId
-	 * @return
-	 */
-	// public Integer getFreeStall(Long preId) {
-	// List<ResStall> stallList = this.stallClusterMapper.findStallsByPreId(preId);
-	// int count = 0;
-	// if(stallList!=null) {
-	// count = stallList.size();
-	// }
-	// return count;
-	// }
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -360,12 +352,22 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<ResPreCity> list(ReqPrefecture rp, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		Map<Long, String> cityMap = new HashMap<Long, String>();
 		paramMap.put("status", 0);
-		// 此处cityId暂时为空，返回所有的车区信息
+		// 此处cityFlag=0，返回所有的车区信息
 		if ("1".equals(rp.getCityFlag())) {
 			paramMap.put("cityId", rp.getCityId());
 		}
+		if(StringUtils.isNotBlank(rp.getPreName())) {
+			paramMap.put("name", '%'+ rp.getPreName()+ '%');
+		}
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
+		List<ResCity> cityList = cityClient.findSelectList();
+		if(CollectionUtils.isNotEmpty(cityList)) {
+			for(ResCity city: cityList) {
+				cityMap.put(city.getId(), city.getCityName());
+			}
+		}
 		Long plateId = null;
 		String plateNumber = null;
 		if (cu != null && cu.getId() != null) {
@@ -421,6 +423,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		for (Long cityId : map.keySet()) {
 			resPreCity = new ResPreCity();
 			resPreCity.setCityId(cityId);
+			resPreCity.setCityName(cityMap.get(cityId));
 			List<ResPrefecture> prefecturelist = map.get(cityId);
 			Collections.sort(prefecturelist, new Comparator<ResPrefecture>() {
 				public int compare(ResPrefecture pre1, ResPrefecture pre2) {
@@ -538,14 +541,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		ResPrefectureDetail preDetail = prefectureClusterMapper.findById(preId);
 		String freeMins = "";
+		String appFreeMins = "";
 		String topFee = "";
-		StringBuffer sb = new StringBuffer();
 		if (preDetail != null) {
 			detail.setId(preDetail.getId());
 			detail.setAddress(preDetail.getAddress());
 			detail.setName(preDetail.getName());
 			detail.setLatitude(preDetail.getLatitude().doubleValue());
 			detail.setLongitude(preDetail.getLongitude().doubleValue());
+			detail.setBusinessTime(preDetail.getBusinessTime());
 			Long count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + preDetail.getId());
 			if (count == null) {
 				count = 0L;
@@ -592,7 +596,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 				for (ResStrategyGroup strategyGroup : strategyGroupList) {
 					group = new ResPrefectureGroup();
 					group.setGroupName(strategyGroup.getName());
-
+					StringBuffer sb = new StringBuffer();
 					Map<String, Object> paramFee = new HashMap<String, Object>();
 					paramFee.put("strategGroupId", strategyGroup.getId());
 					paramFee.put("searchDateTime", sdf.format(new Date()));
@@ -625,21 +629,26 @@ public class PrefectureServiceImpl implements PrefectureService {
 								} else if (chargeUnit == 3) {
 									sb.append(chargeFee + "元/次");
 								}
-								sb.append("\t\r\n");
+								
 								if (criticalUnit == 1) {
-									sb.append(div(mul(chargeFee, chargeHourFree), 60, 1) + "/" + chargeHourFree + "分钟");
-								} else if (criticalUnit == 2) {
-									sb.append(div(mul(chargeFee, chargeHourFree), 60, 1) + "/" + chargeHourFree + "小时");
-								}
-								if (StringUtils.isNotBlank(remark)) {
 									sb.append("\t\r\n");
+									sb.append("每" +chargeHourFree+ "分钟为一个计价单位");
+									//sb.append(div(mul(chargeFee, chargeHourFree), 60, 2) + "/" + chargeHourFree + "分钟");
+								} else if (criticalUnit == 2) {
+									sb.append("\t\r\n");
+									sb.append("每" +chargeHourFree+ "小时为一个计价单位");
+									//sb.append(div(mul(chargeFee, chargeHourFree), 60, 2) + "/" + chargeHourFree + "小时");
+								}
+								sb.append("\t\r\n");
+								if (StringUtils.isNotBlank(remark)) {
 									sb.append(remark);
+									sb.append("\t\r\n");
 								}
 							}
+							sb.deleteCharAt(sb.length() - 3);
 						}
 						log.info("-------------------调用结果{} 免费时长{} 封顶计费{} 描述{}", data, freeMins, topFee, sb.toString());
 					}
-
 					group.setDesc(sb.toString());
 					// group.setDesc(preDetail.getStrategyDescription());
 					group.setGroupId(strategyGroup.getId());
@@ -654,7 +663,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			}
 			detail.setTopFee(topFee);
-			detail.setFreeMins(freeMins);
+			if(StringUtils.isNotBlank(freeMins)) {
+				if(Integer.valueOf(freeMins)>= 60) {
+					appFreeMins = div(Double.valueOf(freeMins), 60D, 2) +"小时";
+				}else {
+					appFreeMins = freeMins +"分钟";
+				}
+			}
+			detail.setFreeMins(appFreeMins);
 			detail.setPreGroupList(preGroup);
 			Long plateId = null;
 			String plateNumber = null;
@@ -769,6 +785,77 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 		}
 		return stallInfo;
+	}
+
+	@Override
+	public List<ResPrefecture> nearList(ReqPrefecture rp, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		Double raidusMile = 5000D;
+		Map<String, Object> paramMap = MapDistance.getAround(Double.valueOf(rp.getLatitude()), Double.valueOf(rp.getLongitude()), raidusMile);
+		log.info("param = {}",JSON.toJSON(paramMap));
+		paramMap.put("status", 0);
+		/*if ("1".equals(rp.getCityFlag())) {
+			paramMap.put("cityId", rp.getCityId());
+		}
+		if(StringUtils.isNotBlank(rp.getPreName())) {
+			paramMap.put("name", '%'+ rp.getPreName()+ '%');
+		}*/
+		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
+		Long plateId = null;
+		String plateNumber = null;
+		if (cu != null && cu.getId() != null) {
+			ResUserOrder ro = this.orderClient.last(cu.getId());
+			List<ResVechicleMark> plates = this.vehicleMarkClient.list(cu.getId());
+			if (ro != null) {
+				Map<String, Long> plateMap = new HashMap<String, Long>();
+				for (ResVechicleMark rvm : plates) {
+					plateMap.put(rvm.getVehMark(), rvm.getId());
+				}
+				plateNumber = ro.getPlateNo();
+				plateId = plateMap.get(plateNumber);
+				if (plateId == null) {
+					plateNumber = null;
+				}
+			}
+			if (plateNumber == null && CollectionUtils.isNotEmpty(plates)) {
+				plateId = plates.get(0).getId();
+				plateNumber = plates.get(0).getVehMark();
+			}
+
+			ResUserStaff us = this.userStaffClient.findById(cu.getId());
+			if (us != null && us.getStatus().intValue() == UserStaffStatus.ON.status) {
+				List<ResPrefecture> preList1 = prefectureClusterMapper.findPreByStatusAndGPS1(paramMap);
+				if (preList1 != null) {
+					if (preList == null) {
+						preList = preList1;
+					} else {
+						preList.addAll(preList1);
+					}
+				}
+			}
+		}
+		Long count = 0L;
+		for (ResPrefecture prb : preList) {
+			prb.setPlateId(plateId);
+			prb.setPlateNumber(plateNumber);
+			prb.setChargeTime(prb.getChargeTime() + "分钟");
+			prb.setChargePrice(prb.getChargePrice() + "元");
+			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getId());
+			if (count == null) {
+				count = 0L;
+			}
+			prb.setLeisureStall(count.intValue());
+			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()),
+					new Double(rp.getLongitude())));
+		}
+		
+		Collections.sort(preList, new Comparator<ResPrefecture>() {
+			public int compare(ResPrefecture pre1, ResPrefecture pre2) {
+				return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));
+			}
+		});
+		
+		return preList;
 	}
 
 }

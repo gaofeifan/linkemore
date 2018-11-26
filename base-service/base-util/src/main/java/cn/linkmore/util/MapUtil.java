@@ -29,7 +29,7 @@ private static double EARTH_RADIUS = 6378.137;
                 * Math.pow(Math.sin(mdifference / 2), 2)));
         distance = distance * EARTH_RADIUS;
         distance = Math.round(distance * 10000) / 10000; 
-        java.text.DecimalFormat   df   =new   java.text.DecimalFormat("#.00");
+        java.text.DecimalFormat   df   =new   java.text.DecimalFormat("#0.00");
         return df.format(distance);
         
     }

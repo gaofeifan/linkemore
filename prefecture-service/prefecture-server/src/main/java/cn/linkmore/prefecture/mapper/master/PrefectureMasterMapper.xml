@@ -38,6 +38,7 @@
     <result column="month_rent" jdbcType="INTEGER" property="monthRent" />
     <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="business_time" jdbcType="VARCHAR" property="businessTime" />
     
   </resultMap>
   
@@ -72,7 +73,7 @@
       #{limitStatus,jdbcType=SMALLINT}, #{gateway,jdbcType=VARCHAR},
       #{strategyDescription,jdbcType=VARCHAR}, #{runtime,jdbcType=INTEGER},
       #{monthRent,jdbcType=INTEGER}, #{increase,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR},
-      #{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR}
+      #{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR},#{businessTime,jdbcType=VARCHAR}
       )
   </insert>
   
@@ -115,7 +116,8 @@
       runtime = #{runtime,jdbcType=INTEGER},
       month_rent = #{monthRent,jdbcType=INTEGER},
       increase = #{increase,jdbcType=VARCHAR},
-      version = #{version,jdbcType=VARCHAR}
+      version = #{version,jdbcType=VARCHAR},
+      business_time = #{businessTime,jdbcType=VARCHAR}
       
     where id = #{id,jdbcType=BIGINT}
   </update>

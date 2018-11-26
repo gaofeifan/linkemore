@@ -109,6 +109,12 @@ public class OpsStallClientHystrix implements OpsStallClient {
 		log.info("prefecture service List<ResStall> findStallList(Map<String, Object> param) hystrix");
 		return null;
 	}
+
+	@Override
+	public int unBind(List<Long> ids) {
+		log.info("prefecture service int unBind(List<Long> ids) hystrix");
+		return 0;
+	}
 	
 	
 }

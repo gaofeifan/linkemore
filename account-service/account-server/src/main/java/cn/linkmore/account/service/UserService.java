@@ -102,7 +102,12 @@ public interface UserService {
 	 * @Version  v2.0
 	 */
 	ViewPage findPage(ViewPageable pageable);
-
+	/**
+	 * 删除
+	 * @param ids
+	 * @return
+	 */
+	int delete(List<Long> ids);
 	/**
 	 * 结账更新单数
 	 * @param id

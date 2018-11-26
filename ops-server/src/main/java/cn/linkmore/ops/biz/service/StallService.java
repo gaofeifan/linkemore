@@ -68,7 +68,14 @@ public interface StallService {
 	 * @param stall
 	 */
 	int bind(Long id, Long sid);
-
+	
+	/**
+	 * 取消绑定车位锁
+	 * @param stallId
+	 * @return
+	 */
+	int unBind(List<Long> ids);
+	
 	/**
 	 * 保存并绑定
 	 */
@@ -90,5 +97,7 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	List<ResStallOps> findList(Map<String, Object> param);
+
+	
 
 }

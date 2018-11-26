@@ -13,10 +13,10 @@ import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.security.request.ReqCheck;
-import cn.linkmore.ops.security.request.ReqPerson;
 import cn.linkmore.ops.security.response.ResPersonRole;
 import cn.linkmore.ops.security.response.ResRole;
 import cn.linkmore.ops.security.service.PersonService;
+import cn.linkmore.security.request.ReqPerson;
 
 /**
  * Controller - 权限模块  - 用户

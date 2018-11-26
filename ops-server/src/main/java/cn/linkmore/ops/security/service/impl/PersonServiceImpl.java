@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.security.request.ReqCheck;
-import cn.linkmore.ops.security.request.ReqPerson;
 import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.security.response.ResPersonRole;
 import cn.linkmore.ops.security.response.ResRole;
@@ -15,6 +14,7 @@ import cn.linkmore.ops.security.service.PersonService;
 import cn.linkmore.ops.shiro.Principal;
 import cn.linkmore.security.client.InterfaceClient;
 import cn.linkmore.security.client.PersonClient;
+import cn.linkmore.security.request.ReqPerson;
 import cn.linkmore.security.response.ResInterface;
 import cn.linkmore.util.ObjectUtils;
 
@@ -40,16 +40,12 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public Long save(ReqPerson reqPerson) {
-		cn.linkmore.security.request.ReqPerson reqPersonSecurity = new cn.linkmore.security.request.ReqPerson();
-		reqPersonSecurity = ObjectUtils.copyObject(reqPerson, reqPersonSecurity);
-		return this.personClient.save(reqPersonSecurity);
+		return this.personClient.save(reqPerson);
 	}
 
 	@Override
 	public int update(ReqPerson reqPerson) {
-		cn.linkmore.security.request.ReqPerson reqPersonSecurity = new cn.linkmore.security.request.ReqPerson();
-		reqPersonSecurity = ObjectUtils.copyObject(reqPerson, reqPersonSecurity);
-		return this.personClient.update(reqPersonSecurity);
+		return this.personClient.update(reqPerson);
 		
 	}
 

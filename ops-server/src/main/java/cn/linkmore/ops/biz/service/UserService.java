@@ -31,5 +31,10 @@ public interface UserService {
 	 * @Version  v2.0
 	 */
 	List<ResUser> findAll();
+	/**
+	 * 删除
+	 * @param ids
+	 */
+	int delete(List<Long> ids);
 
 }
