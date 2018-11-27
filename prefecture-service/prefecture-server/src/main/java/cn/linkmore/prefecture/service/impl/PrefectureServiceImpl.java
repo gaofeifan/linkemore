@@ -542,7 +542,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		ResPrefectureDetail preDetail = prefectureClusterMapper.findById(preId);
 		String freeMins = "";
 		String appFreeMins = "";
-		String topFee = "";
+		String topFee = "0.0";
 		if (preDetail != null) {
 			detail.setId(preDetail.getId());
 			detail.setAddress(preDetail.getAddress());
