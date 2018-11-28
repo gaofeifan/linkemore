@@ -7,24 +7,41 @@ import org.springframework.stereotype.Component;
 @Component
 public class OauthConfig {
 	
-	/*第一次重定向获取code  */
-	private String codeUrl;
-	/*第二次重定向到H5页面  */
-	private String h5Url;
+	/*第一次重定向获取code */
+	private String wxCodeUrl;
 	
-	public String getCodeUrl() {
-		return codeUrl;
+	/*第一次重定向获取code */
+	private String zfbCodeUrl;
+
+	/*第二次重定向到H5页面 */
+	private String h5Url;
+
+	public String getWxCodeUrl() {
+		return wxCodeUrl;
 	}
-	public void setCodeUrl(String codeUrl) {
-		this.codeUrl = codeUrl;
+
+	public void setWxCodeUrl(String wxCodeUrl) {
+		this.wxCodeUrl = wxCodeUrl;
 	}
+
+	public String getZfbCodeUrl() {
+		return zfbCodeUrl;
+	}
+
+	public void setZfbCodeUrl(String zfbCodeUrl) {
+		this.zfbCodeUrl = zfbCodeUrl;
+	}
+
 	public String getH5Url() {
 		return h5Url;
 	}
+
 	public void setH5Url(String h5Url) {
 		this.h5Url = h5Url;
 	}
-
+	
+	
+	
 
 	
 }

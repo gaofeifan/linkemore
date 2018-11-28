@@ -33,8 +33,19 @@ public class ResUnusualOrder {
     private Date createTime;//创建时间
     
     private Short statusHistory;//挂起和关闭状态
+    
+    private String  orderTime; //订单持续时间
+    
 
-    public Short getStatusHistory() {
+    public String getOrderTime() {
+		return orderTime;
+	}
+
+	public void setOrderTime(String orderTime) {
+		this.orderTime = orderTime;
+	}
+
+	public Short getStatusHistory() {
 		return statusHistory;
 	}
 

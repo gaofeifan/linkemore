@@ -28,6 +28,9 @@ public class ResUnusualOd {
 	@ApiModelProperty(value = "订单开始时间")
     private Date orderStartTime;//订单开始时间
 	
+	@ApiModelProperty(value = "订单持续时间(单位/秒)")
+    private String orderTime;//订单持续时间
+	
 	@ApiModelProperty(value = "订单结束时间")
     private Date orderEndTime;//订单结束时间
 	
@@ -54,7 +57,19 @@ public class ResUnusualOd {
 	@ApiModelProperty(value = "挂起和关闭状态")
     private Short statusHistory;//挂起和关闭状态
 
-    public Short getStatusHistory() {
+	
+	
+
+
+	public String getOrderTime() {
+		return orderTime;
+	}
+
+	public void setOrderTime(String orderTime) {
+		this.orderTime = orderTime;
+	}
+
+	public Short getStatusHistory() {
 		return statusHistory;
 	}
 
