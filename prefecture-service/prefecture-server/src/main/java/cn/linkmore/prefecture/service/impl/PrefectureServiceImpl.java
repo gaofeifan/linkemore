@@ -542,7 +542,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		ResPrefectureDetail preDetail = prefectureClusterMapper.findById(preId);
 		String freeMins = "";
 		String appFreeMins = "";
-		String topFee = "";
+		String topFee = "0.0";
 		if (preDetail != null) {
 			detail.setId(preDetail.getId());
 			detail.setAddress(preDetail.getAddress());
@@ -662,7 +662,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 					preGroup.add(group);
 				}
 			}
-			detail.setTopFee(topFee);
+			if(topFee.equals("0.0")) {
+				detail.setTopFee("无");
+			}else {
+				detail.setTopFee((Double.valueOf(topFee)).intValue() + "元");
+			}
 			if(StringUtils.isNotBlank(freeMins)) {
 				if(Integer.valueOf(freeMins)>= 60) {
 					appFreeMins = div(Double.valueOf(freeMins), 60D, 2) +"小时";
