@@ -17,6 +17,7 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
+import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail;
@@ -154,7 +155,7 @@ public class AppPrefectureController {
 	@ApiOperation(value = "当前经纬度附近地图车区列表", notes = "根据经伟度得到周边车区列表[因车区数量少，现为全部车区]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/map/near-list", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<List<cn.linkmore.prefecture.controller.app.response.ResPrefecture>> nearList(@Validated @RequestBody ReqPrefecture rp, HttpServletRequest request) {
+	public ResponseEntity<List<cn.linkmore.prefecture.controller.app.response.ResPrefecture>> nearList(@Validated @RequestBody ReqNearPrefecture rp, HttpServletRequest request) {
 		ResponseEntity<List<cn.linkmore.prefecture.controller.app.response.ResPrefecture>> response = null;
 		try { 
 			List<cn.linkmore.prefecture.controller.app.response.ResPrefecture> list = this.prefectureService.nearList(rp, request);

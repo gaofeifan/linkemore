@@ -45,6 +45,7 @@ import cn.linkmore.common.response.ResCity;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
+import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
@@ -792,18 +793,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 
 	@Override
-	public List<ResPrefecture> nearList(ReqPrefecture rp, HttpServletRequest request) {
+	public List<ResPrefecture> nearList(ReqNearPrefecture rp, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		Double raidusMile = 5000D;
-		Map<String, Object> paramMap = MapDistance.getAround(Double.valueOf(rp.getLatitude()), Double.valueOf(rp.getLongitude()), raidusMile);
+		Double raidusMile = 15000D;
+		Map<String, Object> paramMap = MapDistance.getAround(Double.valueOf(rp.getSearchLatitude()), Double.valueOf(rp.getSearchLongitude()), raidusMile);
 		log.info("param = {}",JSON.toJSON(paramMap));
 		paramMap.put("status", 0);
-		/*if ("1".equals(rp.getCityFlag())) {
-			paramMap.put("cityId", rp.getCityId());
-		}
-		if(StringUtils.isNotBlank(rp.getPreName())) {
-			paramMap.put("name", '%'+ rp.getPreName()+ '%');
-		}*/
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		Long plateId = null;
 		String plateNumber = null;
@@ -849,8 +844,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 				count = 0L;
 			}
 			prb.setLeisureStall(count.intValue());
-			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()),
-					new Double(rp.getLongitude())));
+			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getCurrentLatitude()),
+					new Double(rp.getCurrentLongitude())));
 		}
 		
 		Collections.sort(preList, new Comparator<ResPrefecture>() {
@@ -858,7 +853,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 				return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));
 			}
 		});
-		
 		return preList;
 	}
 
