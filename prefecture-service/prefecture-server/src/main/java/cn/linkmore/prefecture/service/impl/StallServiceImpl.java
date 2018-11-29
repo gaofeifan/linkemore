@@ -42,7 +42,9 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
+import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResBaseDict;
+import cn.linkmore.common.response.ResCity;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 import cn.linkmore.enterprise.response.ResEntStaff;
 import cn.linkmore.notice.client.EntSocketClient;
@@ -185,6 +187,8 @@ public class StallServiceImpl implements StallService {
 	private AdminUserAuthClusterMapper adminUserAuthClusterMapper;
 	@Autowired
 	private AdminAuthPreClusterMapper adminAuthPreClusterMapper;
+	@Autowired
+	private CityClient cityClient;
 	@Autowired
 	private FeignStallExcStatusClient feignStallExcStatusClient;
 	@Autowired
@@ -1447,6 +1451,10 @@ public class StallServiceImpl implements StallService {
 				stallSn.setStallId(stall.getId());
 				stallSn.setStallStatus(stall.getStatus().shortValue());
 				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
+				ResCity resCity = this.cityClient.getById(detail.getCityId());
+				if(resCity != null) {
+					stallSn.setCityName(resCity.getCityName());
+				}
 				stallSn.setPreName(detail.getName());
 				stallSn.setPreId(detail.getId());
 				stallSn.setCityId(detail.getCityId());

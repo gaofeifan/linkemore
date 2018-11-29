@@ -47,6 +47,9 @@ public class ResStaffStallSn {
 
 	@ApiModelProperty(value="城市Id")
 	private Long cityId;
+
+	@ApiModelProperty(value="城市名称")
+	private String cityName;
 	
 	@ApiModelProperty(value="车位状态 状态:1，空闲；2，使用中；4，下线  ")
 	private Short stallStatus;
@@ -195,5 +198,13 @@ public class ResStaffStallSn {
 
 	public void setInductionState(int inductionState) {
 		this.inductionState = inductionState;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
 	}
 }
