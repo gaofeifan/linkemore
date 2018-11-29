@@ -2,6 +2,8 @@ package cn.linkmore.third.trade.wx;
 
 import org.xml.sax.SAXException;
 
+import cn.linkmore.third.trade.ThreadRepertory;
+
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -64,7 +66,7 @@ public class Signature {
         }
         String result = sb.toString();
       
-       result += "key=" + "";
+       result += "key=" + ThreadRepertory.getParm().get("mchKey");
         
         //Util.log("Sign Before MD5:" + result);
         result = MD5.MD5Encode(result).toUpperCase();
