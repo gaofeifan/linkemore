@@ -115,6 +115,7 @@ import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
+import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
@@ -450,6 +451,22 @@ public class StallServiceImpl implements StallService {
 			record.setAuthId(userAuth.get(0).getAuthId());
 			record.setStallId(stall.getId());
 			this.AdminAuthStallMasterMapper.save(record );
+		}
+		stallLock.setPrefectureId(reqLockIntall.getPreId());
+		stallLockMasterMapper.updateBind(stallLock);
+		//通知锁平台
+		Map<String, String> map = new HashMap<>();
+		map.put("appId", "");
+		map.put("sign", "");
+		map.put("timestamp", String.valueOf(new Date().getTime()));
+		map.put("serialNumber", reqLockIntall.getLockSn());
+		map.put("name", reqLockIntall.getStallName());
+		HttpUtil.sendPost("http://open-api.linkmoreparking.cn/api/v1/lock/config/set-parking-name", map);
+		try {
+			stallLockMasterMapper.updateBind(stallLock);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

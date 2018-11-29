@@ -17,7 +17,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.223:6003/eureka/ 
+      defaultZone: http://192.168.1.128:6003/eureka/ 
 feign:
   hystrix:
     enabled: true
@@ -113,9 +113,13 @@ swagger:
   version: 2.0
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
-  base-package: cn.linkmore.order.controller.app
+  base-package: cn.linkmore.order.controller.app,cn.linkmore.order.controller.h5
 
-
+#授权转发
+oauth: 
+  code-url: http://test.linkmoreparking.cn/api/order/h5/a
+  h5-url: http://order.linkmoreparking.cn
+  
 #server:
 #  port: 8005 
 #  session:

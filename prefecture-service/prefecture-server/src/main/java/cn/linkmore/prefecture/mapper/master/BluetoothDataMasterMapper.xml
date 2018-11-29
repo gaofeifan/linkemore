@@ -10,11 +10,13 @@
   <insert id="save" parameterType="cn.linkmore.prefecture.entity.BluetoothData" useGeneratedKeys="true" keyProperty="id">
     insert into t_bluetooth_data (id, user_id, lock_sn, 
       search, matching, signaling,  connect, send, success, 
-      count, create_time, disconnects, disconnect)
+      count, create_time, disconnects, disconnect, pre_id, pre_name, operate_flag)
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{lockSn,jdbcType=VARCHAR}, 
       #{search,jdbcType=VARCHAR}, #{matching,jdbcType=VARCHAR}, #{signaling,jdbcType=VARCHAR}, 
       #{connect,jdbcType=VARCHAR}, #{send,jdbcType=VARCHAR}, #{success,jdbcType=VARCHAR}, 
-      #{count,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{disconnects,jdbcType=VARCHAR},#{disconnect,jdbcType=VARCHAR})
+      #{count,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{disconnects,jdbcType=VARCHAR},
+      #{disconnect,jdbcType=VARCHAR},#{preId,jdbcType=BIGINT}, 
+      #{preName,jdbcType=VARCHAR},#{operateFlag,jdbcType=SMALLINT})
   </insert>
   
 </mapper>

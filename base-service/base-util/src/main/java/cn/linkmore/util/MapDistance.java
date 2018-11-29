@@ -105,7 +105,7 @@ public class MapDistance {
 		return map;
 	}
 
-	public static void mains(String[] args) {
+	public static void main(String[] args) {
 		 System.out.println(getAround(39.92953,116.523869, 13000d));
 	}
 }

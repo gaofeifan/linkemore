@@ -161,7 +161,7 @@ public class FreeStallInit {
 			if(rpg.getNumber()!=null) { 
 				rm = this.lockFactory.findAvailableLock(rpg.getNumber());
 				lbs = rm.getDataList();
-				log.info("rm = {}",JsonUtil.toJson(rm));
+				log.info("gateway = {}, preId= {} rm = {}",rpg.getNumber(), rpg.getPreId(), JsonUtil.toJson(rm));
 				if (rm.getMsgCode() != null && rm.getMsgCode() == 200 && rm.getDataList() != null) {
 					for (LockBean lb : lbs) {
 						if (lb.getLockState().intValue() == LockStatus.UP.status) {

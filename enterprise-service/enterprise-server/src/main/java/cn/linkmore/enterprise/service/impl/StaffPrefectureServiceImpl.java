@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.SmsTemplate;
 import cn.linkmore.bean.common.security.CacheUser;
+import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.staff.request.AssignStallRequestBean;
@@ -48,7 +50,9 @@ import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.task.TaskPool;
+import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
+import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
@@ -89,6 +93,9 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 
 	@Autowired
 	private StrategyBaseClient strategyBaseClient;
+	
+	@Autowired
+	private PushClient pushClient;
 
 	private static final int TIMEOUT = 30 * 1000;
 
@@ -387,10 +394,10 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		ReqSms req = new ReqSms();
 		req.setMobile(order.getUsername());
 		req.setSt(SmsTemplate.ORDER_SUSPEND_NOTICE);
-		tell(neworder, req);
+		tell(neworder, req,1);
 	}
 
-	public void tell(ResUserOrder orders, ReqSms req) {
+	public void tell(ResUserOrder orders, ReqSms req,int Type) {
 		TaskPool.getInstance().task(new Runnable() {
 			@Override
 			public void run() {
@@ -417,6 +424,25 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 				} catch (Exception e) {
 					log.info("send sms erro");
 				}
+				try {
+					//推送给个人版
+					String title = "订单操作";
+					String content = (Type ==1?"订单已被管理员挂起":"订单已被管理员关闭");
+					PushType type = (Type ==1?PushType.ORDER_STAFF_SUSPEND_NOTICE:PushType.ORDER_STAFF_CLOSED_NOTICE);
+					String bool = "true";
+					Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + orders.getUserId().toString());
+					
+					ReqPush rp = new ReqPush();
+					rp.setAlias(orders.getUserId().toString());
+					rp.setTitle(title);
+					rp.setContent(content);
+					rp.setClient(token.getClient());
+					rp.setType(type);
+					rp.setData(bool);
+					pushClient.push(rp);
+				} catch (Exception e) {
+					log.info("push sms erro");
+				}
 			}
 		});
 	}
@@ -428,6 +454,9 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	public void close(OrderOperateRequestBean oorb, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+		
+		user = new CacheUser();
+		user.setId(111l);
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -485,7 +514,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		ResPrefectureDetail pre = prefectureClient.findById(stall.getPreId()); // 查询车区
 		BaseDict baseDict = baseDictMapper.selectByPrimaryKey(pre.getBaseDictId()); // 根据字典id 去查询字典值
 		ResUserOrder neworder = orderClient.findOrderById(oorb.getOrderId()); // 查订单
-		tell(neworder, null);
+		tell(neworder, null,2);
 	}
 
 }

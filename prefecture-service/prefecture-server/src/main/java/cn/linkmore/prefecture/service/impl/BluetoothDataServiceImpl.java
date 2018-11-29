@@ -11,18 +11,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.dao.cluster.BluetoothDataClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.master.BluetoothDataMasterMapper;
 import cn.linkmore.prefecture.entity.BluetoothData;
+import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.response.ResBluetoothData;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.service.BluetoothDataService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
@@ -40,6 +42,12 @@ public class BluetoothDataServiceImpl implements BluetoothDataService {
 	
 	@Autowired
 	private BluetoothDataMasterMapper bluetoothDataMasterMapper;
+	
+	@Autowired
+	private StallClusterMapper stallClusterMapper;
+	
+	@Autowired
+	private PrefectureClusterMapper prefectureClusterMapper;
 	
 	@Autowired
 	private RedisService redisService;
@@ -89,6 +97,12 @@ public class BluetoothDataServiceImpl implements BluetoothDataService {
 		for(String property : array) {
 			if(property.contains("locksn")) {
 				bluetooth.setLockSn(property.split("-")[1]);
+				Stall stall = stallClusterMapper.findByLockSn(bluetooth.getLockSn());
+				if(stall !=null ) {
+					bluetooth.setPreId(stall.getPreId());
+					ResPrefectureDetail pre = prefectureClusterMapper.findById(stall.getPreId());
+					bluetooth.setPreName(pre.getName());
+				}
 			}
 			if(property.contains("search")) {
 				bluetooth.setSearch(property.split("-")[1].trim());
@@ -116,6 +130,9 @@ public class BluetoothDataServiceImpl implements BluetoothDataService {
 			}
 			if(property.contains("disconnects")) {
 				bluetooth.setDisconnects(property.split("-")[1]);
+			}
+			if(property.contains("operate")) {
+				bluetooth.setOperateFlag(Short.valueOf(property.split("-")[1]));
 			}
 		}
 		

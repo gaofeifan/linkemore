@@ -28,6 +28,14 @@ public class BluetoothData {
     private String disconnects;
 
     private String disconnect;
+    
+    private Long preId;
+    
+    private String preName;
+    /**
+     * 操作类型  1 降锁 2升锁
+     */
+    private Short operateFlag = 1;
 
     public Long getId() {
         return id;
@@ -132,4 +140,29 @@ public class BluetoothData {
     public void setDisconnect(String disconnect) {
         this.disconnect = disconnect == null ? null : disconnect.trim();
     }
+
+	public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
+
+	public String getPreName() {
+		return preName;
+	}
+
+	public void setPreName(String preName) {
+		this.preName = preName;
+	}
+
+	public Short getOperateFlag() {
+		return operateFlag;
+	}
+
+	public void setOperateFlag(Short operateFlag) {
+		this.operateFlag = operateFlag;
+	}
+    
 }
