@@ -96,7 +96,7 @@ public class RedirectServiceImpl implements RedirectService {
 			res = h5PayClient.wxopenid(open);
 		}
 		if (paytype == Transaction.ZFB) {
-			
+			res = h5PayClient.aliopenid(open);
 		}
 		if(res!=null) {
 			openId = res.getOpenid();

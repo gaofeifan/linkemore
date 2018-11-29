@@ -1098,12 +1098,12 @@ public class StallServiceImpl implements StallService {
 					}
 					log.info(" operating··············" + res.getMsg() + " code·············" + res.getMsgCode());
 					int code = res.getMsgCode();
-					sendMsgT(uid, reqc.getStatus(), code);
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
 						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
 						stallMasterMapper.lockdown(stall);
 					}
+					sendMsgT(uid, reqc.getStatus(), code);
 				}
 			}
 		});

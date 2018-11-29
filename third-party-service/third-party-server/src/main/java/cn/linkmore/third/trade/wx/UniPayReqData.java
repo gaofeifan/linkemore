@@ -23,13 +23,13 @@ public class UniPayReqData {
 			String body, String timeStart, String timeExpire, String tradeType, String productId, String openid,
 			String appID, String mchID, String key) {
 		SortedMap<String, Object> parameterMap = new TreeMap<String, Object>();
-		parameterMap.put("appid", "");// 公众号ID
-		parameterMap.put("mch_id", "");// 微信支付给的商户号
-		parameterMap.put("key", "");// 微信支付给的key
+		parameterMap.put("appid", appID);// 公众号ID
+		parameterMap.put("mch_id", mchID);// 微信支付给的商户号
+		parameterMap.put("key", key);// 微信支付给的key
 		parameterMap.put("device_info", deviceInfo);// 门店号，指定的售卖机
 		parameterMap.put("nonce_str", PayCommonUtil.getRandomString(32));// 随机字符串
 		//StringUtils.abbreviate(body.replaceAll("[^0-9a-zA-Z\\u4e00-\\u9fa5 ]", ""), 600)
-		parameterMap.put("body", "");// 商品描述
+		parameterMap.put("body", body);// 商品描述
 		// parameterMap.put("detail", detail);// 单品优惠字段(暂未上线)
 		parameterMap.put("attach", attach);// 附加数据，在查询AP和支付通知时能够原样返回
 		parameterMap.put("out_trade_no", outTradeNo);// 商户订单号
@@ -37,10 +37,10 @@ public class UniPayReqData {
 		BigDecimal total = totalAmount.multiply(new BigDecimal(100));
 		java.text.DecimalFormat df = new java.text.DecimalFormat("0");
 		parameterMap.put("total_fee", df.format(total));// 标价金额
-		parameterMap.put("spbill_create_ip", ""); // 终端IP
+		parameterMap.put("spbill_create_ip", "192.168.1.115"); // 终端IP
 		parameterMap.put("time_start", timeStart);
 		parameterMap.put("time_expire", timeExpire);
-		parameterMap.put("notify_url", ""); // 支付成功回调地址
+		parameterMap.put("notify_url", "http://test.linkmoreparking.cn/api/order/h5/o"); // 支付成功回调地址
 		parameterMap.put("trade_type", tradeType == null ? "NATIVE" : tradeType);
 		if (tradeType.equalsIgnoreCase("NATIVE"))
 			parameterMap.put("product_id", productId);// 商品ID
