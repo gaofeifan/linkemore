@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.RentEntStallClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.RentEntStall">
+    <id column="rent_ent_id" jdbcType="BIGINT" property="rentEntId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    rent_ent_id, stall_id, stall_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_ent_stall
+    where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    t_ent_rent_ent_stall 
+	<where>
+    <if test="companyId != null">
+   	AND rent_ent_id = #{companyId}
+    </if>
+    <if test="stallName != null">
+   	AND stall_name like #{stallName}
+    </if>
+	</where>
+    <if test="property==null">  
+    order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    SELECT
+	count(1)
+    FROM
+    t_ent_rent_ent_stall 
+	<where>
+    <if test="companyId != null">
+   	AND rent_ent_id = #{companyId}
+    </if>
+    <if test="stallName != null">
+   	AND stall_name like #{stallName}
+    </if>
+	</where>
+  </select>
+</mapper>

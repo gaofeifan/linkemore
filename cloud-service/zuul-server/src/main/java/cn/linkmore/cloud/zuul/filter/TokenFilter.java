@@ -54,7 +54,8 @@ public class TokenFilter extends ZuulFilter {
 			add("/enterprise/ent/auth/login");
 			add("/enterprise/ent/auth/send");
 			add("/feign/stall/exc/stall-exc-cause");
-
+			
+			add("/app/prefectures/v2.0/map/near-list");
 			add("/app/prefectures/v2.0/map/list");
 			add("/app/prefectures/v2.0/free/list");
 			add("/app/prefectures/v2.0/strategy");

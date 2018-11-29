@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.RentEntClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.RentEnt">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="create_ent_id" jdbcType="BIGINT" property="createEntId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, company_name, start_time, end_time, create_ent_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_ent
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findByEntId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_ent
+    where create_ent_id = #{entId,jdbcType=BIGINT}
+  </select>
+   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    t_ent_rent_ent 
+	<where>
+    <if test="companyName != null">
+   	AND company_name like #{companyName}
+    </if>
+    <if test="createEntId != null">
+   	AND create_ent_id = #{createEntId}
+    </if>
+	</where>
+    <if test="property==null">  
+    order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    SELECT
+    	count(1)
+    FROM
+    t_ent_rent_ent 
+	<where>
+	    <if test="companyName != null">
+	   	AND company_name like #{companyName}
+	    </if>
+	    <if test="createEntId != null">
+	   	AND create_ent_id = #{createEntId}
+	    </if>
+	</where>
+  </select>
+  
+</mapper>

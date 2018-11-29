@@ -235,7 +235,7 @@ public interface StallService {
 	 * @Author   cl
 	 * @Version  v2.0
 	 */
-	public void install(ReqLockIntall reqLockIntall);
+	void install(ReqLockIntall reqLockIntall, HttpServletRequest request);
 	
 	/**
 	 * @Description  查询角色城市

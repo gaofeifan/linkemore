@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.master.EntUserPlateMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.request.EntUserPlate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="plate_no" jdbcType="VARCHAR" property="plateNo" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_ent_user_plate
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.enterprise.request.EntUserPlate">
+    insert into t_ent_user_plate (id, plate_no, pre_id, 
+      create_user_id, create_user_name, create_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{plateNo,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT}, 
+      #{createUserId,jdbcType=BIGINT}, #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.enterprise.request.EntUserPlate">
+    update t_ent_user_plate
+    set plate_no = #{plateNo,jdbcType=VARCHAR},
+      pre_id = #{preId,jdbcType=BIGINT},
+      create_user_id = #{createUserId,jdbcType=BIGINT},
+      create_user_name = #{createUserName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
