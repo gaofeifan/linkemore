@@ -113,7 +113,7 @@ public class StaffStallController {
 	public ResponseEntity<?> installLock(HttpServletRequest request, @Validated @RequestBody ReqLockIntall reqLockIntall) {
 		ResponseEntity<Boolean> response = null;
 		try {
-			this.stallService.install(reqLockIntall);
+			this.stallService.install(reqLockIntall,request);
 			response = ResponseEntity.success(true, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);

@@ -23,6 +23,7 @@
     <result column="type" jdbcType="SMALLINT" property="type" />
     <result column="brand" jdbcType="SMALLINT" property="brand" />
     <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createName" />
     
   </resultMap>
   
@@ -228,9 +229,9 @@
   
   <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
     SELECT
-	*
+	l.*,sl.create_user_name
 	FROM
-		v_stall l
+		v_stall l left join t_biz_stall_lock sl on sl.stall_id = l.id
 	WHERE
 	l.pre_id = #{preId}
     <if test="status!=null">  

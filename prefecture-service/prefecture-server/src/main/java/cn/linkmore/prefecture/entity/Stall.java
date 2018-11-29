@@ -100,7 +100,7 @@ public class Stall {
      */
     private String areaName;
     
-    
+    private String createName;
     
     public String getAreaName() {
 		return areaName;
@@ -269,4 +269,14 @@ public class Stall {
     public void setBindOrderStatus(Short bindOrderStatus) {
         this.bindOrderStatus = bindOrderStatus;
     }
+
+	public String getCreateName() {
+		return createName;
+	}
+
+	public void setCreateName(String createName) {
+		this.createName = createName;
+	}
+    
+    
 }

@@ -57,6 +57,7 @@ import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
 import cn.linkmore.prefecture.config.LockTools;
+import cn.linkmore.prefecture.controller.staff.StaffAdminUserController;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
@@ -72,11 +73,15 @@ import cn.linkmore.prefecture.dao.cluster.AdminUserAuthClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.EntRentRecordClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallLockClusterMapper;
+import cn.linkmore.prefecture.dao.master.AdminAuthCityMasterMapper;
+import cn.linkmore.prefecture.dao.master.AdminAuthPreMasterMapper;
+import cn.linkmore.prefecture.dao.master.AdminAuthStallMasterMapper;
 import cn.linkmore.prefecture.dao.master.EntRentRecordMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallLockMasterMapper;
 import cn.linkmore.prefecture.dao.master.StallMasterMapper;
 import cn.linkmore.prefecture.entity.AdminAuthCity;
 import cn.linkmore.prefecture.entity.AdminAuthPre;
+import cn.linkmore.prefecture.entity.AdminAuthStall;
 import cn.linkmore.prefecture.entity.EntRentRecord;
 import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.entity.StallAssign;
@@ -87,9 +92,11 @@ import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
+import cn.linkmore.prefecture.response.ResAdminUserAuth;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.prefecture.response.ResStaffCity;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallAssign;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -121,6 +128,12 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class StallServiceImpl implements StallService {
+	@Autowired
+	private AdminAuthStallMasterMapper AdminAuthStallMasterMapper;
+	@Autowired
+	private AdminAuthPreMasterMapper adminAuthPreMasterMapper;
+	@Autowired
+	private AdminAuthCityMasterMapper adminAuthCityMasterMapper;
 	@Autowired
 	private LockTools lockTools;
 	@Autowired
@@ -365,8 +378,11 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public void install(ReqLockIntall reqLockIntall) {
+	public void install(ReqLockIntall reqLockIntall,HttpServletRequest request) {
 		
+		CacheUser cu = (CacheUser) this.redisService
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+		ResAdminUser adminUser = adminUserService.find(cu.getId());
 		Date now = new Date();
 	    StallLock stallLock = new StallLock();
 	    Stall stall = new Stall();
@@ -384,6 +400,8 @@ public class StallServiceImpl implements StallService {
 		// 插入锁
 		stallLock.setCreateTime(now);
 		stallLock.setSn(reqLockIntall.getLockSn());
+		stallLock.setCreateUserName(adminUser.getRealname());
+		stallLock.setCreateUserId(adminUser.getId());
 		stallLockMasterMapper.save(stallLock);
 		stallLock = stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
 
@@ -416,11 +434,22 @@ public class StallServiceImpl implements StallService {
 		stallLock.setBindTime(now);
 		stallLock.setStallId(stall.getId());
 		stallLock.setPrefectureId(reqLockIntall.getPreId());
-		try {
-			stallLockMasterMapper.updateBind(stallLock);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		stallLockMasterMapper.updateBind(stallLock);
+		
+		//更新用户权限
+		Map<String, Object> param = new HashMap<>();
+		param.put("userId", cu.getId());
+		List<ResAdminUserAuth> userAuth = this.adminUserAuthClusterMapper.findList(param );
+		if(userAuth == null || userAuth.size() == 0) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
+		param.put("stallId", stall.getId());
+		List<ResAdminAuthStall> list = this.adminAuthStallClusterMapper.findStallList(param);
+		if(list == null || list.size() == 0) {
+			AdminAuthStall record = new AdminAuthStall();
+			record.setAuthId(userAuth.get(0).getAuthId());
+			record.setStallId(stall.getId());
+			this.AdminAuthStallMasterMapper.save(record );
 		}
 	}
 
@@ -1364,6 +1393,7 @@ public class StallServiceImpl implements StallService {
 		if(sn.contains("0000")) {
 			sn = sn.substring(4).toUpperCase();
 		}
+		stallSn.setSerialNumber(sn);
 		ResLockInfo lock = this.lockTools.lockInfo(sn);
 		stallSn.setStallSn(sn);
 		if(lock != null) {
@@ -1388,13 +1418,17 @@ public class StallServiceImpl implements StallService {
 				break;
 			}
 			stallSn.setUltrasonic(lock.getParkingState());
+			stallSn.setInductionState(lock.getInductionState());
 			stallSn.setModel(lock.getModel());
 			stallSn.setVersion(lock.getVersion());
 			Stall stall = this.stallClusterMapper.findByLockSn(sn);
+			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
+			if(stallLock != null){
+				stallSn.setInstallStatus((short)1);
+			}
 			if(stall != null) {
 				stallSn.setStallId(stall.getId());
 				stallSn.setStallStatus(stall.getStatus().shortValue());
-				stallSn.setInstallStatus((short)1);
 				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
 				stallSn.setPreName(detail.getName());
 				stallSn.setPreId(detail.getId());

@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,7 +173,6 @@ public class LockTools {
 		}
 		return true;
 	}
-	
 }
 
 
@@ -192,20 +192,16 @@ class Sign{
 			sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
 		}
 		log.info(sb.substring(0, sb.length()-1));
-		return md5En(sb.substring(0, sb.length()-1).toLowerCase());
+		return MD5.md5En(sb.substring(0, sb.length()-1).toLowerCase());
 	}
-	
-	public static String md5En(String str) {
-		try {
-	        MessageDigest md = MessageDigest.getInstance("MD5");
-	        md.update(str.getBytes());
-	        String string = new BigInteger(1, md.digest()).toString(16);
-	        log.info(string);
-	        return string;
-	    } catch (Exception e) {
-	       e.printStackTrace();
-	       return null;
-	    }
-	}
+}
 
+class MD5{
+	private static Logger log = LoggerFactory.getLogger(MD5.class);
+	public static String md5En(String str) {
+        //加密后的字符串
+        String encodeStr= DigestUtils.md5Hex(str);
+        log.info("MD5加密后的字符串为:encodeStr="+encodeStr);
+        return encodeStr;
+    }
 }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.master.RentEntMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.RentEnt">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="create_ent_id" jdbcType="BIGINT" property="createEntId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, company_name, start_time, end_time, create_ent_id
+  </sql>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_ent_rent_ent
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from t_ent_rent_ent
+    where id  in
+     <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+    	 #{id,jdbcType=BIGINT}
+    </foreach> 
+  </delete>
+  <insert id="insert" parameterType="cn.linkmore.enterprise.entity.RentEnt"  useGeneratedKeys="true" keyProperty="id">
+    insert into t_ent_rent_ent (id, company_name, start_time, 
+      end_time, create_ent_id)
+    values (#{id,jdbcType=BIGINT}, #{companyName,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{createEntId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.enterprise.entity.RentEnt">
+    insert into t_ent_rent_ent
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="createEntId != null">
+        create_ent_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createEntId != null">
+        #{createEntId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.linkmore.enterprise.entity.RentEnt">
+    update t_ent_rent_ent
+    <set>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createEntId != null">
+        create_ent_id = #{createEntId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.linkmore.enterprise.entity.RentEnt">
+    update t_ent_rent_ent
+    set company_name = #{companyName,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      create_ent_id = #{createEntId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

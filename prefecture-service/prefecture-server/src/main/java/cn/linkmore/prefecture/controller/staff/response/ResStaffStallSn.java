@@ -27,8 +27,11 @@ public class ResStaffStallSn {
 	@ApiModelProperty(value="车位锁离线状态 1离线  2 在线")
 	private Integer lockOffLine = 1;
 	
-	@ApiModelProperty(value="超声波 0 无车 1 有车 2其他")
+	@ApiModelProperty(value="超声波 0 无车 1 有车 2其他(未知)")
 	private int ultrasonic;
+	
+	@ApiModelProperty(value="超声波设备状态 0 异常 1正常 其他值表示未知")
+	private int inductionState;
 	
 	@ApiModelProperty(value="电池电量")
 	private int battery;
@@ -184,5 +187,13 @@ public class ResStaffStallSn {
 
 	public void setStallId(Long stallId) {
 		this.stallId = stallId;
+	}
+
+	public int getInductionState() {
+		return inductionState;
+	}
+
+	public void setInductionState(int inductionState) {
+		this.inductionState = inductionState;
 	}
 }
