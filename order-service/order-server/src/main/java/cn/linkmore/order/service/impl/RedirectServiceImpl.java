@@ -1,5 +1,7 @@
 package cn.linkmore.order.service.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,16 +9,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.common.Transaction;
 import cn.linkmore.common.client.PayConfigClient;
 import cn.linkmore.common.request.ReqPayConfig;
 import cn.linkmore.common.response.ResPayConfig;
 import cn.linkmore.order.config.OauthConfig;
+import cn.linkmore.order.controller.h5.request.ReqPayParm;
+import cn.linkmore.order.controller.h5.response.ResPayParm;
 import cn.linkmore.order.entity.AauthConfig;
 import cn.linkmore.order.service.RedirectService;
 import cn.linkmore.third.client.H5PayClient;
+import cn.linkmore.third.request.ReqH5Term;
 import cn.linkmore.third.request.ReqH5Token;
 import cn.linkmore.third.response.ResH5Degree;
+import cn.linkmore.third.response.ResH5Term;
 
 @Service
 public class RedirectServiceImpl implements RedirectService {
@@ -108,6 +117,44 @@ public class RedirectServiceImpl implements RedirectService {
 	public ResH5Degree Openid(ReqH5Token reqH5Token) {
 		ResH5Degree res =h5PayClient.wxopenid(reqH5Token);
 		return res;
+	}
+
+	@Override
+	public ResPayParm wxparm(ReqPayParm reqPayParm) {
+	
+		//查询当前需支付订单
+		String orderId = String.valueOf(new Date().getTime());
+		String detail = "凌猫停车";
+		BigDecimal totalAmount = new BigDecimal(0.01);
+		
+		ReqPayConfig req = new ReqPayConfig();
+		req.setPreId(reqPayParm.getPreId());
+		req.setType(Transaction.WX);
+		ResPayConfig config = payConfigClient.getConfig(req);
+		log.info("config---"+JSON.toJSON(config));
+		//获取支付凭证
+		ReqH5Term reqH5Term = new ReqH5Term();
+		reqH5Term.setAppId(config.getAppId());
+		reqH5Term.setAppSecret(config.getAppSecret());
+		reqH5Term.setDetail(detail);
+		reqH5Term.setMchId(config.getMchId());
+		reqH5Term.setMchKey(config.getMchKey());
+		reqH5Term.setOpenId(reqPayParm.getOpenId());
+		reqH5Term.setOrderId(orderId);
+		reqH5Term.setTotalAmount(totalAmount);
+		//获取支付凭证
+		ResH5Term  term =	h5PayClient.wxpay(reqH5Term);
+		if(term==null) {
+			return null;
+		}
+		log.info("term---"+JSON.toJSON(term));
+		ResPayParm parm = new ResPayParm();
+		parm.setAppId(term.getAppId());
+		parm.setNonceStr(term.getNonceStr());
+		parm.setPack(term.getPack());
+		parm.setPaySign(term.getPaySign());
+		parm.setTimeStamp(term.getTimeStamp());
+		return parm;
 	}
 
 }
