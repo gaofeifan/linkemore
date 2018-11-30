@@ -3,7 +3,7 @@ package cn.linkmore.order.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@ConfigurationProperties(prefix ="oauth")
+//@ConfigurationProperties(prefix ="oauth22")
 @Component
 public class OauthConfig {
 	
@@ -14,6 +14,7 @@ public class OauthConfig {
 	private String zfbCodeUrl;
 
 	/*第二次重定向到H5页面 */
+	
 	private String h5Url;
 
 	public String getWxCodeUrl() {
