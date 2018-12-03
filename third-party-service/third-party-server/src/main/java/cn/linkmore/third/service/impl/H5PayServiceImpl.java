@@ -34,6 +34,8 @@ import cn.linkmore.third.trade.wx.WeChatPay;
 public class H5PayServiceImpl implements H5PayService {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private static final String  api_mch = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
 	@Override
 	public ResH5Degree wxOpenid(ReqH5Token reqH5Token) {
@@ -73,7 +75,7 @@ public class H5PayServiceImpl implements H5PayService {
 					reqH5Term.getOrderId(), reqH5Term.getTotalAmount(), reqH5Term.getOrderId(), timeStart, 
 					timeExpire, "JSAPI", reqH5Term.getOrderId(), reqH5Term.getOpenId(),reqH5Term.getAppId(),reqH5Term.getMchId(),reqH5Term.getMchKey());
 			
-			String response = HttpTool.sendPostUrl("https://api.mch.weixin.qq.com/pay/unifiedorder", requestXml, "UTF-8");
+			String response = HttpTool.sendPostUrl(api_mch, requestXml, "UTF-8");
 			log.info("解析响应>>>" + reqH5Term.getOrderId()+requestXml);
 			Map<String, Object> unioPayResponseMap = PayCommonUtil.getMapFromXML(response);
 			

@@ -10,9 +10,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * User: rizenguo
- * Date: 2014/10/23
- * Time: 14:59
+ * changlei
  */
 public class Util {
 

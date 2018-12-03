@@ -16,9 +16,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * User: rizenguo
- * Date: 2014/11/1
- * Time: 14:06
+ * changlei
  */
 public class XMLParser {
 

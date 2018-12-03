@@ -12,9 +12,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * User: rizenguo
- * Date: 2014/10/29
- * Time: 15:23
+ * changlei
  */
 public class Signature {
     /**

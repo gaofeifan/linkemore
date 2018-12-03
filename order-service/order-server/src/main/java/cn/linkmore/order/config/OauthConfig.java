@@ -15,6 +15,18 @@ public class OauthConfig {
 
 	/*第二次重定向到H5页面 */
 	private String h5Url;
+	
+	private String notifyUrl;
+	
+	
+
+	public String getNotifyUrl() {
+		return notifyUrl;
+	}
+
+	public void setNotifyUrl(String notifyUrl) {
+		this.notifyUrl = notifyUrl;
+	}
 
 	public String getWxCodeUrl() {
 		return wxCodeUrl;

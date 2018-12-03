@@ -75,7 +75,7 @@ public class RedirectServiceImpl implements RedirectService {
 		}
 		// 跳转阿里服务器
 		if (paytype == Transaction.ZFB) {
-			redirect = AuthConfig.getZfbCode(appId, redirect_uri);
+			redirect = AuthConfig.getZfbCode(appId, redirect_uri,preId);
 		}
 		log.info("redirect"+redirect);
 		return redirect;
@@ -87,6 +87,7 @@ public class RedirectServiceImpl implements RedirectService {
 	@Override
 	public String auth(Map<String, String> params) {
 		String code = params.get("code");
+		String auth_code = params.get("auth_code");
 		Long preId = Long.valueOf(params.get("state"));
 		String paytype = params.get("type");
 		String openId = null;
@@ -97,14 +98,15 @@ public class RedirectServiceImpl implements RedirectService {
 		// 获取身份id
 		ReqH5Token open = new ReqH5Token();
 		open.setAppid(config.getAppId());
-		open.setAppsecret(config.getAppSecret());
-		open.setCode(code);
+		open.setAppsecret(config.getAppSecret());		
 		// 跳转网页
 		ResH5Degree res = new ResH5Degree();
 		if (paytype == Transaction.WX) {
+			open.setCode(code);
 			res = h5PayClient.wxopenid(open);
 		}
 		if (paytype == Transaction.ZFB) {
+			open.setCode(auth_code);
 			res = h5PayClient.aliopenid(open);
 		}
 		if(res!=null) {
@@ -134,6 +136,7 @@ public class RedirectServiceImpl implements RedirectService {
 		log.info("config---"+JSON.toJSON(config));
 		//获取支付凭证
 		ReqH5Term reqH5Term = new ReqH5Term();
+		reqH5Term.setNotifyUrl(oauthConfig.getNotifyUrl());
 		reqH5Term.setAppId(config.getAppId());
 		reqH5Term.setAppSecret(config.getAppSecret());
 		reqH5Term.setDetail(detail);
