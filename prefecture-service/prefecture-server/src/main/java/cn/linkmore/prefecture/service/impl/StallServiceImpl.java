@@ -458,18 +458,15 @@ public class StallServiceImpl implements StallService {
 		}
 		stallLock.setPrefectureId(reqLockIntall.getPreId());
 		stallLockMasterMapper.updateBind(stallLock);
-		//通知锁平台
-		Map<String, String> map = new HashMap<>();
-		map.put("appId", "");
-		map.put("sign", "");
-		map.put("timestamp", String.valueOf(new Date().getTime()));
-		map.put("serialNumber", reqLockIntall.getLockSn());
-		map.put("name", reqLockIntall.getStallName());
-		HttpUtil.sendPost("http://open-api.linkmoreparking.cn/api/v1/lock/config/set-parking-name", map);
+		
 		try {
 			stallLockMasterMapper.updateBind(stallLock);
+			//通知锁平台
+			Map<String, Object> map = new HashMap<>();
+			map.put("serialNumber", reqLockIntall.getLockSn());
+			map.put("name", reqLockIntall.getStallName());
+			lockTools.setLockName(map);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -1138,12 +1135,12 @@ public class StallServiceImpl implements StallService {
 					}
 					log.info(" operating··············" + res.getMsg() + " code·············" + res.getMsgCode());
 					int code = res.getMsgCode();
-					sendMsgT(uid, reqc.getStatus(), code);
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
 						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
 						stallMasterMapper.lockdown(stall);
 					}
+					sendMsgT(uid, reqc.getStatus(), code);
 				}
 			}
 		});
