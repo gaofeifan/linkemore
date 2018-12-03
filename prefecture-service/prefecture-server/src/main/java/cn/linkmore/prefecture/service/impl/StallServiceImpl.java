@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -385,8 +386,10 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public void install(ReqLockIntall reqLockIntall,HttpServletRequest request) {
 		
-		CacheUser cu = (CacheUser) this.redisService
+		/*CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+		cu = new CacheUser();
+		cu.setId(51L);
 		ResAdminUser adminUser = adminUserService.find(cu.getId());
 		Date now = new Date();
 	    StallLock stallLock = new StallLock();
@@ -457,14 +460,14 @@ public class StallServiceImpl implements StallService {
 			this.AdminAuthStallMasterMapper.save(record );
 		}
 		stallLock.setPrefectureId(reqLockIntall.getPreId());
-		stallLockMasterMapper.updateBind(stallLock);
+		stallLockMasterMapper.updateBind(stallLock);*/
 		
 		try {
-			stallLockMasterMapper.updateBind(stallLock);
+			//stallLockMasterMapper.updateBind(stallLock);
 			//通知锁平台
-			Map<String, Object> map = new HashMap<>();
-			map.put("serialNumber", reqLockIntall.getLockSn());
-			map.put("name", reqLockIntall.getStallName());
+			Map<String, Object> map = new TreeMap<>();
+			map.put("serialNumber", "CDC589E65550");
+			map.put("name", "测试");
 			lockTools.setLockName(map);
 		} catch (Exception e) {
 			e.printStackTrace();
