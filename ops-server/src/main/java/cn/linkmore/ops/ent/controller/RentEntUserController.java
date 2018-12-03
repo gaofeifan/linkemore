@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqRentEntUser;
+import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.ops.ent.service.RentEntUserService;
 
 @RestController
@@ -44,5 +45,30 @@ public class RentEntUserController {
 	@ResponseBody
 	public void delete(@RequestBody List<Long> ids) {
 		this.rentEntUserService.deleteIds(ids);
+	}
+	
+
+	@RequestMapping(value = "/i-list", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage listI( ViewPageable pageable) {
+		return this.rentEntUserService.findPageI(pageable);
+	}
+	
+	@RequestMapping(value = "/i-add", method = RequestMethod.POST)
+	@ResponseBody
+	public void saveI( ReqRentUser ent) {
+		this.rentEntUserService.saveI(ent);
+	}
+	
+	@RequestMapping(value = "/i-edit", method = RequestMethod.POST)
+	@ResponseBody
+	public void updateI( ReqRentUser ent) {
+		this.rentEntUserService.updateI(ent);
+	}
+	
+	@RequestMapping(value = "/i-ids", method = RequestMethod.POST)
+	@ResponseBody
+	public void deleteI(@RequestBody List<Long> ids) {
+		this.rentEntUserService.deleteIdsI(ids);
 	}
 }

@@ -47,14 +47,28 @@
   <insert id="saveReq" parameterType="cn.linkmore.enterprise.request.ReqRentUser">
     insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
       pre_id, mobile, realname, 
-      plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type
+      plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type,company_id,company_name
       )
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
       #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
       #{plate,jdbcType=VARCHAR}, #{stallId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}
       , #{entName,jdbcType=VARCHAR}, #{preName,jdbcType=VARCHAR}, #{stallName,jdbcType=VARCHAR}
-      ,#{startTime,jdbcType=TIMESTAMP} ,#{endTime,jdbcType=TIMESTAMP},#{type}
+      ,#{startTime,jdbcType=TIMESTAMP} ,#{endTime,jdbcType=TIMESTAMP},#{type},#{companyId},#{companyName}
       )
+      </insert>
+  <insert id="saveBatch" parameterType="java.util.List">
+    insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
+      pre_id, mobile, realname, 
+      plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type,company_id,company_name
+      )
+          <foreach collection="list" item="item" index="index" separator=",">
+    values (#{item.id,jdbcType=BIGINT}, #{item.entId,jdbcType=BIGINT}, #{item.entPreId,jdbcType=BIGINT}, 
+      #{item.preId,jdbcType=BIGINT}, #{item.mobile,jdbcType=VARCHAR}, #{item.realname,jdbcType=VARCHAR}, 
+      #{item.plate,jdbcType=VARCHAR}, #{item.stallId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}
+      , #{item.entName,jdbcType=VARCHAR}, #{item.preName,jdbcType=VARCHAR}, #{item.stallName,jdbcType=VARCHAR}
+      ,#{item.startTime,jdbcType=TIMESTAMP} ,#{item.endTime,jdbcType=TIMESTAMP},#{item.type},#{item.companyId},#{item.companyName}
+      )
+      </foreach>
   </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
     insert into t_ent_rent_user
@@ -95,6 +109,12 @@
        <if test="stallName != null">
         stall_name,
       </if>
+       <if test="companyId != null">
+        company_id,
+      </if>
+       <if test="companyName != null">
+        company_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -133,6 +153,12 @@
       <if test="stallName != null">
         #{stallName,jdbcType=VARCHAR},
       </if>
+      <if test="companyId != null">
+        #{companyId},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
@@ -170,6 +196,12 @@
       </if>
        <if test="preName != null">
         pre_name = #{preName,jdbcType=VARCHAR},
+      </if>
+       <if test="companyId != null">
+        company_id = #{companyId},
+      </if>
+       <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -219,6 +251,12 @@
       <if test="type != null">
         type = #{type},
       </if>
+      <if test="companyId != null">
+        company_id = #{companyId},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -234,6 +272,8 @@
       user_id = #{userId,jdbcType=BIGINT},
        stall_name = #{stallName,jdbcType=VARCHAR},
         pre_name = #{preName,jdbcType=VARCHAR},
+          company_name = #{companyName},
+           company_id = #{companyId},
          ent_name = #{entName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

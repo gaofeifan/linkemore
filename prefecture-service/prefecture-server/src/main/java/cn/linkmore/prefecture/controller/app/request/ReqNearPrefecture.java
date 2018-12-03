@@ -26,6 +26,9 @@ public class ReqNearPrefecture {
 //	@Range(min=3, max=54,message="纬度请确保在中国范围内")
 	@NotBlank(message="当前位置纬度不能为空") 
 	private String currentLatitude;
+	
+	@ApiModelProperty(value = "城市ID", required = false)
+	private Long cityId = 0L;
 
 	public String getSearchLongitude() {
 		return searchLongitude;
@@ -57,5 +60,13 @@ public class ReqNearPrefecture {
 
 	public void setCurrentLatitude(String currentLatitude) {
 		this.currentLatitude = currentLatitude;
+	}
+
+	public Long getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(Long cityId) {
+		this.cityId = cityId;
 	}
 }

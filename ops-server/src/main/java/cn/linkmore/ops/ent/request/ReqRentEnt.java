@@ -17,6 +17,8 @@ public class ReqRentEnt {
     private List<Long> stallIds;
 
     private String stallNames;
+    
+    private List<Long> preIds;
 
 	public Long getId() {
 		return id;
@@ -73,5 +75,12 @@ public class ReqRentEnt {
 	public void setStallNames(String stallNames) {
 		this.stallNames = stallNames;
 	}
-    
+
+	public List<Long> getPreIds() {
+		return preIds;
+	}
+
+	public void setPreIds(List<Long> preIds) {
+		this.preIds = preIds;
+	}
 }

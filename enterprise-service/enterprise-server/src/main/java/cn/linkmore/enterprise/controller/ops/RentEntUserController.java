@@ -14,6 +14,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqRentEnt;
 import cn.linkmore.enterprise.request.ReqRentEntUser;
+import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.enterprise.service.RentEntUserService;
 import cn.linkmore.util.ObjectUtils;
 
@@ -46,5 +47,28 @@ public class RentEntUserController {
 	@ResponseBody
 	public void delete(@RequestBody List<Long> ids) {
 		this.rentEntUserService.deleteIds(ids);
+	}
+	@RequestMapping(value = "/v2.0/i-list", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage listI(@RequestBody ViewPageable pageable) {
+		return this.rentEntUserService.findPageI(pageable);
+	}
+	
+	@RequestMapping(value = "/v2.0/i", method = RequestMethod.POST)
+	@ResponseBody
+	public void saveI(@RequestBody ReqRentUser ent) {
+		this.rentEntUserService.saveI(ent);
+	}
+	
+	@RequestMapping(value = "/v2.0/i", method = RequestMethod.PUT)
+	@ResponseBody
+	public void updateI(@RequestBody ReqRentUser ent) {
+		this.rentEntUserService.updateI(ent);
+	}
+	
+	@RequestMapping(value = "/v2.0/i-ids", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void deleteI(@RequestBody List<Long> ids) {
+		this.rentEntUserService.deleteIdsI(ids);
 	}
 }

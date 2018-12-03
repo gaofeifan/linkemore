@@ -5,9 +5,10 @@
     <id column="rent_ent_id" jdbcType="BIGINT" property="rentEntId" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="plate" jdbcType="VARCHAR" property="plate" />
     <result column="id" jdbcType="BIGINT" property="id" />
-        <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+       <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -19,15 +20,22 @@
     from t_ent_rent_ent_user
     where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
   </select>
+  <select id="findMaxId" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_ent_user
+    order by id desc 
+    limit 0,1
+  </select>
   
    <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     SELECT
-    eu.*, e.end_time
+    eu.*, e.end_time,e.company_name
     FROM
     t_ent_rent_ent_user eu left join t_ent_rent_ent e on eu.rent_ent_id = e.id
 	<where>
     <if test="rentEntId != null">
-   	AND eu.rent_ent_id like #{rentEntId}
+   	AND eu.rent_ent_id = #{rentEntId}
     </if>
     <if test="username != null">
    	AND eu.username like #{username}

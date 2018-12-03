@@ -58,6 +58,11 @@ public class RentEntStallServiceImpl implements RentEntStallService {
 		List<RentEntStall> list = this.rentEntStallClusterMapper.findPage(param);
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
+	@Override
+	public List<RentEntStall> stallListCompany(Long companyid) {
+		List<RentEntStall> list = this.rentEntStallClusterMapper.stallListCompany(companyid);
+		return list; 
+	}
 
 	
 }

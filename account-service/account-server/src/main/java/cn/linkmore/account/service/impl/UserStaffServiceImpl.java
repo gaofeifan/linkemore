@@ -19,6 +19,7 @@ import cn.linkmore.account.request.ReqUserStaff;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.service.UserStaffService;
+import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -50,6 +51,8 @@ public class UserStaffServiceImpl implements UserStaffService {
 			record.setCreateTime(new Date());
 			record.setId(user.getId());
 			this.userStaffMasterMapper.saveReq(record);
+		}else {
+			throw new DataException("对应账号不存在");
 		}
 	}
 

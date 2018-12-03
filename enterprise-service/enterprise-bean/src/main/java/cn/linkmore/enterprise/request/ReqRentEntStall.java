@@ -6,6 +6,10 @@ public class ReqRentEntStall {
     private Long stallId;
 
     private String stallName;
+    
+    private Long preId;
+    
+    private String preName;
 
     public Long getRentEntId() {
         return rentEntId;
@@ -30,4 +34,22 @@ public class ReqRentEntStall {
     public void setStallName(String stallName) {
         this.stallName = stallName == null ? null : stallName.trim();
     }
+
+	public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
+
+	public String getPreName() {
+		return preName;
+	}
+
+	public void setPreName(String preName) {
+		this.preName = preName;
+	}
+    
+    
 }

@@ -969,6 +969,7 @@ public class StallServiceImpl implements StallService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", cu.getId());
 		List<ResAdminAuthStall> stallAuthList = this.adminAuthStallClusterMapper.findStallList(map);
+
 		map.put("preId", staffList.getPreId());
 		map.put("type", 0);
 		if (StringUtils.isNotBlank(staffList.getStallName())) {
@@ -1001,11 +1002,9 @@ public class StallServiceImpl implements StallService {
 		List<Long> stallAuthIds = stallAuthList.stream().map(stall -> stall.getStallId()).collect(Collectors.toList());
 		ResPrefectureDetail detail = this.prefectureService.findById(staffList.getPreId());
 		log.info("【 ResPrefectureDetail 】 " + JsonUtil.toJson(detail));
-		ResponseMessage<LockBean> lock = lockFactory.findAvailableLock(detail.getGateway());
-		List<LockBean> bockBeans = null;
+		List<ResLockInfo> bockBeans = lockTools.lockListByGroupCode(detail.getGateway());
 		List<ResEntExcStallStatus> excStallList = feignStallExcStatusClient.findAll();
-		if (lock != null) {
-			bockBeans = lock.getDataList();
+		if (bockBeans != null) {
 			log.info("【lockBean list 】 " + JsonUtil.toJson(bockBeans));
 		}
 		for (ResStall resStall : stallList) {
@@ -1054,7 +1053,7 @@ public class StallServiceImpl implements StallService {
 			}
 			boolean falg = true;
 			if (bockBeans != null) {
-				for (LockBean lockBean : bockBeans) {
+				for (ResLockInfo lockBean : bockBeans) {
 					if (lockBean.getLockCode().equals(resStall.getLockSn())) {
 						if(lockBean.getElectricity() <= 30) {
 							ResStaffStallList.setExcStatus(false);
@@ -1129,15 +1128,16 @@ public class StallServiceImpl implements StallService {
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					log.info("operating············name:{},··········sn:{},··········uid:{}", stall.getStallName(),
 							stall.getLockSn(), uid);
-					ResponseMessage<LockBean> res = null;
+					Boolean res = null;
 					// 1 降下 2 升起
 					if (reqc.getStatus() == 1) {
-						res = lockFactory.lockDown(stall.getLockSn());
+						res = lockTools.downLock(stall.getLockSn());
 					} else if (reqc.getStatus() == 2) {
-						res = lockFactory.lockUp(stall.getLockSn());
+						res = lockTools.upLock(stall.getLockSn());
 					}
-					log.info(" operating··············" + res.getMsg() + " code·············" + res.getMsgCode());
-					int code = res.getMsgCode();
+					int code = res == false ? 500:200;
+					log.info(" operating··············" + res + " code·············" + code);
+					sendMsgT(uid, reqc.getStatus(), code);
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
 						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
@@ -1181,13 +1181,9 @@ public class StallServiceImpl implements StallService {
 		}
 		ResStaffStallDetail detail = new ResStaffStallDetail();
 		Stall stall = this.stallClusterMapper.findById(stallId);
-		ResponseMessage<LockBean> lockInfo = this.lockFactory.getLockInfo(stall.getLockSn());
+		ResLockInfo lockBean = this.lockTools.lockInfo(stall.getLockSn());
 		List<ResBaseDict> baseDict = this.baseDictClient.findList(DOWN_CAUSE);
 
-		LockBean lockBean = null;
-		if (lockInfo != null) {
-			lockBean = lockInfo.getData();
-		}
 		if (lockBean != null) {
 			detail.setBetty(lockBean.getElectricity());
 			detail.setStallId(stall.getId());

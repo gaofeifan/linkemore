@@ -796,9 +796,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<ResPrefecture> nearList(ReqNearPrefecture rp, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		Double raidusMile = 15000D;
-		Map<String, Object> paramMap = MapDistance.getAround(Double.valueOf(rp.getSearchLatitude()), Double.valueOf(rp.getSearchLongitude()), raidusMile);
-		log.info("param = {}",JSON.toJSON(paramMap));
+		Map<String, Object> paramMap = new HashMap<String,Object>();
+		if(rp.getCityId() == 0L) {
+			paramMap = MapDistance.getAround(Double.valueOf(rp.getSearchLatitude()), Double.valueOf(rp.getSearchLongitude()), raidusMile);
+			log.info("get the around = {}",JSON.toJSON(paramMap));
+		}else {
+			paramMap.put("cityId", rp.getCityId());
+		}
 		paramMap.put("status", 0);
+		log.info("param = {}",JSON.toJSON(paramMap));
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		Long plateId = null;
 		String plateNumber = null;

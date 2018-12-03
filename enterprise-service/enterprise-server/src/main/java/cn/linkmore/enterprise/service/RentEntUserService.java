@@ -8,6 +8,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.entity.RentEntUser;
 import cn.linkmore.enterprise.request.ReqRentEntUser;
+import cn.linkmore.enterprise.request.ReqRentUser;
 /**
  * 企业长租用户
  * @author   GFF
@@ -25,5 +26,13 @@ public interface RentEntUserService {
 	void deleteIds(List<Long> ids);
 
 	ViewPage findPage(ViewPageable pageable);
+
+	void saveI(ReqRentUser ent);
+
+	void updateI(ReqRentUser ent);
+
+	void deleteIdsI(List<Long> ids);
+
+	ViewPage findPageI(ViewPageable pageable);
 
 }

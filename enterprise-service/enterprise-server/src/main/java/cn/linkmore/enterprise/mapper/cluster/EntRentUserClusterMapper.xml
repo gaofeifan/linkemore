@@ -37,9 +37,11 @@
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="type" jdbcType="SMALLINT" property="type" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type
+    id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type,company_id,company_name
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

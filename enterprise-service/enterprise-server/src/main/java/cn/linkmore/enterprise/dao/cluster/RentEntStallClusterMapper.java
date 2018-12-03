@@ -20,4 +20,6 @@ public interface RentEntStallClusterMapper {
 	Integer count(Map<String, Object> param);
 
 	List<RentEntStall> findPage(Map<String, Object> param);
+
+	List<RentEntStall> stallListCompany(Long companyId);
 }

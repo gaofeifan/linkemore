@@ -29,7 +29,7 @@
   
   <select id="findByUsername" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select id,type, username,realname, password, lock_status, lock_time, login_ip, lock_count, login_time, create_time,
-    status
+    status,ent_id
     from t_sec_person
     where username = #{username,jdbcType=BIGINT} limit 0,1
   </select>
