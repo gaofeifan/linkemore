@@ -207,7 +207,13 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	public List<ResEntRentUser> findUsedStall() {
 		return this.entRentUserClusterMapper.findUsedStall();
 	}
-	
+
+
+	@Override
+	public void saveBatch(List<ReqRentUser> rus) {
+		this.entRentUserMasterMapper.saveBatch(rus);
+		
+	}
 	
 
 	

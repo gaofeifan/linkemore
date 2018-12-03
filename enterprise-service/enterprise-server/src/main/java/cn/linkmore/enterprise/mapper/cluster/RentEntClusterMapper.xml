@@ -27,7 +27,7 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM
-    t_ent_rent_ent 
+    t_ent_rent_ent
 	<where>
     <if test="companyName != null">
    	AND company_name like #{companyName}

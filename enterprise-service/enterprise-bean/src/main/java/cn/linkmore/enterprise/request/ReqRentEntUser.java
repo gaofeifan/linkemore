@@ -9,6 +9,8 @@ public class ReqRentEntUser {
 
     private String plate;
     
+    private String entId;
+    
     public Long getRentEntId() {
         return rentEntId;
     }
@@ -41,4 +43,13 @@ public class ReqRentEntUser {
         this.plate = plate == null ? null : plate.trim();
     }
 
+	public String getEntId() {
+		return entId;
+	}
+
+	public void setEntId(String entId) {
+		this.entId = entId;
+	}
+
+    
 }

@@ -91,5 +91,7 @@ public interface EntRentUserService {
 	 * @return
 	 */
 	List<ResEntRentUser> findUsedStall();
+	
+	void saveBatch(List<ReqRentUser> rus);
 
 }

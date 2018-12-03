@@ -21,4 +21,6 @@ public interface RentEntUserClusterMapper {
 
 	List<RentEntUser> findPage(Map<String, Object> param);
 
+	RentEntUser findMaxId();
+
 }

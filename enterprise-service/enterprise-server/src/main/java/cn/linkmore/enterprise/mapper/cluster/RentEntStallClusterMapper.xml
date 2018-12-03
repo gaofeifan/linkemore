@@ -4,10 +4,12 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.RentEntStall">
     <id column="rent_ent_id" jdbcType="BIGINT" property="rentEntId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
   </resultMap>
   <sql id="Base_Column_List">
-    rent_ent_id, stall_id, stall_name
+    rent_ent_id, stall_id, stall_name,pre_id,pre_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -29,13 +31,21 @@
    	AND stall_name like #{stallName}
     </if>
 	</where>
-    <if test="property==null">  
+   <!--  <if test="property==null">  
     order by create_time desc
     </if>
     <if test="property!=null">  
     order by  ${property} ${direction}
-    </if>
+    </if> -->
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="stallListCompany" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    t_ent_rent_ent_stall 
+	where
+   	 rent_ent_id = #{companyId}
   </select>
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
     SELECT

@@ -18,6 +18,8 @@ public class RentEntUser {
     
     private Date endTime;
     
+    private String companyName;
+    
     public Long getRentEntId() {
         return rentEntId;
     }
@@ -73,4 +75,13 @@ public class RentEntUser {
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	
 }

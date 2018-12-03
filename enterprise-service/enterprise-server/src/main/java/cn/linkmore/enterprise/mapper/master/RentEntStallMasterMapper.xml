@@ -4,27 +4,28 @@
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.RentEntStall">
     <id column="rent_ent_id" jdbcType="BIGINT" property="rentEntId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
   </resultMap>
   <sql id="Base_Column_List">
-    rent_ent_id, stall_id, stall_name
+    rent_ent_id, stall_id, stall_name,pre_id,pre_name
   </sql>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_ent_rent_ent_stall
     where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="cn.linkmore.enterprise.entity.RentEntStall">
-    insert into t_ent_rent_ent_stall (rent_ent_id, stall_id, stall_name
+    insert into t_ent_rent_ent_stall (rent_ent_id, stall_id, stall_name,pre_id,pre_name
       )
-    values (#{rentEntId,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}
+    values (#{rentEntId,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR},#{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="saveBatch" parameterType="java.util.List">
-    insert into t_ent_rent_ent_stall (rent_ent_id, stall_id, stall_name
+    insert into t_ent_rent_ent_stall (rent_ent_id, stall_id, stall_name,pre_id,pre_name
       )
     values 
     <foreach collection="list" item="item" index="index" separator=",">
-   	 (#{item.rentEntId,jdbcType=BIGINT}, #{item.stallId,jdbcType=BIGINT}, #{item.stallName,jdbcType=VARCHAR})
+   	 (#{item.rentEntId,jdbcType=BIGINT}, #{item.stallId,jdbcType=BIGINT}, #{item.stallName,jdbcType=VARCHAR}, #{item.preId,jdbcType=BIGINT}, #{item.preName,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <insert id="insertSelective" parameterType="cn.linkmore.enterprise.entity.RentEntStall">
@@ -39,6 +40,12 @@
       <if test="stallName != null">
         stall_name,
       </if>
+       <if test="preId != null">
+        pre_id,
+      </if>
+       <if test="preName != null">
+        pre_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="rentEntId != null">
@@ -49,6 +56,12 @@
       </if>
       <if test="stallName != null">
         #{stallName,jdbcType=VARCHAR},
+      </if>
+       <if test="preId != null">
+        #{preId,jdbcType=BIGINT},
+      </if>
+       <if test="preName != null">
+        #{preName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -61,12 +74,20 @@
       <if test="stallName != null">
         stall_name = #{stallName,jdbcType=VARCHAR},
       </if>
+        <if test="preId != null">
+        pre_id = #{preId,jdbcType=BIGINT},
+      </if>
+      <if test="preName != null">
+        pre_name = #{preName,jdbcType=VARCHAR},
+      </if>
     </set>
     where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.linkmore.enterprise.entity.RentEntStall">
     update t_ent_rent_ent_stall
     set stall_id = #{stallId,jdbcType=BIGINT},
+   		 pre_id = #{preId,jdbcType=BIGINT},
+   		 pre_name = #{preName,jdbcType=VARCHAR},
       stall_name = #{stallName,jdbcType=VARCHAR}
     where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
   </update>

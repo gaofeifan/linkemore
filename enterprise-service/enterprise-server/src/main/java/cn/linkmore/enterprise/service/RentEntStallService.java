@@ -19,4 +19,6 @@ public interface RentEntStallService {
 	void saveBatch(List<ReqRentEntStall> list);
 
 	ViewPage stallListCompany(ViewPageable pageable);
+
+	List<RentEntStall> stallListCompany(Long companyid);
 }

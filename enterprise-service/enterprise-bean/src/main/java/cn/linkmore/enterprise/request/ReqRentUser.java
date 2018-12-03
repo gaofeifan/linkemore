@@ -42,6 +42,10 @@ public class ReqRentUser {
 	private String endDate;
 	
 	private Short type;
+	
+	private Long companyId;
+	
+	private String companyName;
 
 	public Long getEntId() {
 		return entId;
@@ -178,4 +182,22 @@ public class ReqRentUser {
 	public void setType(Short type) {
 		this.type = type;
 	}
+
+	public Long getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	
+	
 }
