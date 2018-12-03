@@ -21,6 +21,8 @@ import cn.linkmore.order.controller.app.request.ReqPayConfirm;
 import cn.linkmore.order.controller.h5.request.ReqSerch;
 import cn.linkmore.order.controller.h5.response.ResSearch;
 import cn.linkmore.order.service.RedirectService;
+import cn.linkmore.third.request.ReqH5Token;
+import cn.linkmore.third.response.ResH5Degree;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import springfox.documentation.annotations.ApiIgnore;
@@ -44,15 +46,23 @@ public class RedirectController {
 
 	@ApiIgnore
 	@RequestMapping(value = "/d", method = RequestMethod.GET) 
-	public String distributed(HttpServletRequest request) throws IOException {
-		return	redirectService.distributed(request);
+	public String distributed(@RequestParam Map<String, String> params,HttpServletRequest request) throws IOException {
+		return	redirectService.distributed(params,request);
 	}
+	
 	@ApiIgnore
 	@RequestMapping(value = "/a", method = RequestMethod.GET) 
 	public String auth(@RequestParam Map<String, String> params) throws IOException {
+		params.put("type","wx");
 		return	redirectService.auth(params);
 	}
 	
+	@ApiIgnore
+	@RequestMapping(value = "/r", method = RequestMethod.GET) 
+	public String aliNotify(@RequestParam Map<String, String> params) throws IOException {
+		params.put("type","zfb");
+		return	redirectService.auth(params);
+	}
 	
 	@ApiOperation(value = "获取订单详情", notes = "获取订单详情", consumes = "application/json")
 	@RequestMapping(value = "/g", method = RequestMethod.POST) 
@@ -65,19 +75,19 @@ public class RedirectController {
 	@ApiIgnore
 	@RequestMapping(value = "/o", method = RequestMethod.POST) 
 	public String order(@RequestParam Map<String, String> params) throws IOException {
-		return	redirectService.auth(params);
+		return	null;
 	}
 	
 	@ApiIgnore
 	@RequestMapping(value = "/t", method = RequestMethod.GET) 
 	public String wxNotify(@RequestParam Map<String, String> params) throws IOException {
-		return	redirectService.auth(params);
+		return	null;
 	}
 	
-	@ApiIgnore
-	@RequestMapping(value = "/r", method = RequestMethod.GET) 
-	public String aliNotify(@RequestParam Map<String, String> params) throws IOException {
-		return	redirectService.auth(params);
+	@RequestMapping(value="/openid",method=RequestMethod.POST)
+	@ResponseBody 
+	public ResH5Degree wxopenid(@RequestBody ReqH5Token reqH5Token) {
+		return redirectService.Openid(reqH5Token);
 	}
 	
 }

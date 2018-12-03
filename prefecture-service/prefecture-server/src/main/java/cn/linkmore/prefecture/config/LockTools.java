@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistoryList;
 import cn.linkmore.prefecture.response.ResLockInfo;
@@ -170,6 +172,20 @@ public class LockTools {
 		}
 		return true;
 	}
+	
+	/**
+	 * @Description  同步锁平台
+	 * @Author   cl 
+	 */
+	public void setLockName(Map<String, Object> map ) {
+		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getSetparkingname();
+		long millis = new Date().getTime();
+		map.put("appId", lockProperties.getAppId());
+		map.put("timestamp", millis);
+		Object object = getData(map,url);
+		log.info("setLockName"+JSON.toJSON(object));
+	}
+	
 }
 
 
@@ -201,4 +217,5 @@ class MD5{
         log.info("MD5加密后的字符串为:encodeStr="+encodeStr);
         return encodeStr;
     }
+
 }

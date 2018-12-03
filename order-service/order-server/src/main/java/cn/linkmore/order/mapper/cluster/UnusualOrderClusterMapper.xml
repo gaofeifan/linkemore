@@ -32,12 +32,13 @@
     <result column="order_operate_time" jdbcType="TIMESTAMP" property="orderOperateTime" />
     <result column="order_mobile" jdbcType="VARCHAR" property="orderMobile" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="order_time" jdbcType="VARCHAR" property="orderTime" />
   </resultMap>
   
   <sql id="Base_Column_List">
     stall_id, stall_name, prefecture_id, order_id, order_no, order_start_time, order_end_time, 
     order_status, lock_down_status, lock_down_time, category, order_operate_time, order_mobile, 
-    create_time
+    create_time,(unix_timestamp(NOW())-unix_timestamp(order_start_time)) as order_time
   </sql>
   
   <select id="selectByCategory" resultMap="BaseResultMap">

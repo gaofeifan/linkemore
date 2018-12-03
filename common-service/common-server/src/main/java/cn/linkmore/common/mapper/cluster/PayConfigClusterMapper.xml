@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.common.dao.cluster.PayConfigClusterMapper">
+
+  <resultMap id="BaseResultMap" type="cn.linkmore.common.response.ResPayConfig">  
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="preId" jdbcType="BIGINT" property="preId" />
+    <result column="appId" jdbcType="VARCHAR" property="appId" />
+    <result column="mchId" jdbcType="VARCHAR" property="mchId" />
+    <result column="appSecret" jdbcType="VARCHAR" property="appSecret" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="mchKey" jdbcType="VARCHAR" property="mchKey" />
+    <result column="priKey" jdbcType="VARCHAR" property="priKey" />
+    <result column="pubKey" jdbcType="VARCHAR" property="pubKey" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, preId, appId,mchId,appSecret,type,mchKey,priKey,pubKey
+  </sql>
+
+  <select id="getConfig" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_prefecture_config
+    where 
+    preId = #{preId,jdbcType=BIGINT} 
+    and
+    type = #{type,jdbcType=VARCHAR} 
+  </select>
+  
+</mapper>
