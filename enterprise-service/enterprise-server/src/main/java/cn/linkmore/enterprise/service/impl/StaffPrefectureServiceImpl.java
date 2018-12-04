@@ -455,8 +455,6 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 		
-		user = new CacheUser();
-		user.setId(111l);
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}

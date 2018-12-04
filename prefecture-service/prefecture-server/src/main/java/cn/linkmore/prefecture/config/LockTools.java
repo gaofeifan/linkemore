@@ -188,9 +188,6 @@ public class LockTools {
 		Object object = getData(map,url);
 	}
 	
-	public static void main(String[] args) {
-		System.out.println( MD5.md5En("1e2e90b4f56d58352bfb6119190535d7appId=1d46bc15df4c4b6a9a5710183da916c1&name=测试&serialNumber=CDC589E65550&sign=75aaa9dd65e844904d5316d361bb7826&timestamp=1543834882503")  );
-	}
 	
 }
 

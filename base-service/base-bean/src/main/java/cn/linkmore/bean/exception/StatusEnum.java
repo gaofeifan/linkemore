@@ -118,7 +118,8 @@ public enum StatusEnum {
 	ORDER_FEE_ERROR(8005082,"计算订单费用异常"),
 	LOCK_SN_EXISTS(8005081,"车位编号不存在"),
 	LOCK_SN_AlREADY_BAND(8005080,"该锁编码已经绑定"),
-	FAIL_STALL_NUM(8005081,"车位不存在");
+	FAIL_STALL_NUM(8005081,"车位不存在"),
+	STALL_NAME_USER(8005090,"车位名称已存在");
 	
 	public int code;
 	public String label;
