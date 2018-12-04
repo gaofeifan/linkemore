@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.RentEntUser;
+import cn.linkmore.enterprise.request.ReqRentEntUser;
 /**
  * 企业长租用户
  * @author   GFF
@@ -22,5 +23,6 @@ public interface RentEntUserClusterMapper {
 	List<RentEntUser> findPage(Map<String, Object> param);
 
 	RentEntUser findMaxId();
-
+	
+	RentEntUser findByPlate(ReqRentEntUser ent);
 }

@@ -39,6 +39,13 @@ public interface StallClusterMapper {
 	 */
 	Stall findByLockSn(String lockSn);
 	/**
+	 * 根据车位锁序列号查询车位信息
+	 * @param lockSn
+	 * @return
+	 */
+	Stall findByLockName(String name);
+	
+	/**
 	 * 根据车位id查询正常状态下车位信息
 	 * @param preId
 	 * @return

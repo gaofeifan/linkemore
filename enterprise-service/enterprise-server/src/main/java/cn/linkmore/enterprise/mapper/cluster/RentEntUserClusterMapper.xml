@@ -75,4 +75,19 @@
     </if>
     </where>
   </select>
+  
+  <select id="findByPlate" parameterType="cn.linkmore.enterprise.request.ReqRentEntUser" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_ent_user
+    where 1 = 1
+    <if test="rentEntId != null">
+    	and rent_ent_id = #{rentEntId,jdbcType=INTEGER}
+    </if>
+    <if test="plate != null">
+    	and plate = #{plate,jdbcType=VARCHAR}
+    </if>
+    limit 1
+  </select>
+  
 </mapper>

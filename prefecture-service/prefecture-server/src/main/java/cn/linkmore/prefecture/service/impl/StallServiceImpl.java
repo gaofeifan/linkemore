@@ -111,6 +111,7 @@ import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallAssignService;
 import cn.linkmore.prefecture.service.StallOperateLogService;
 import cn.linkmore.prefecture.service.StallService;
+import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.task.TaskPool;
 import cn.linkmore.third.client.PushClient;
@@ -140,6 +141,8 @@ public class StallServiceImpl implements StallService {
 	private AdminAuthCityMasterMapper adminAuthCityMasterMapper;
 	@Autowired
 	private LockTools lockTools;
+	@Autowired
+	private RedisLock redisLock;
 	@Autowired
 	private StallAssignService assignService;
 	@Autowired
@@ -219,6 +222,7 @@ public class StallServiceImpl implements StallService {
 			stall.setLockStatus(LockStatus.UP.status);
 			stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
 			stallMasterMapper.cancel(stall);
+			redisService.remove(RedisKey.PREFECTURE_BUSY_STALL.key + stall.getLockSn());
 			redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			flag = true;
 		}
@@ -237,6 +241,7 @@ public class StallServiceImpl implements StallService {
 			int code = res.getMsgCode();
 			log.info("checkout.....................lock msg:{}", JsonUtil.toJson(res));
 			if (code == 200) {
+				redisService.remove(RedisKey.PREFECTURE_BUSY_STALL.key + stall.getLockSn());
 				redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			}
 		}
@@ -388,8 +393,7 @@ public class StallServiceImpl implements StallService {
 		
 		CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
-		cu = new CacheUser();
-		cu.setId(51L);
+
 		ResAdminUser adminUser = adminUserService.find(cu.getId());
 		Date now = new Date();
 	    StallLock stallLock = new StallLock();
@@ -397,9 +401,14 @@ public class StallServiceImpl implements StallService {
 
 	    stallLock =	stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
 		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
+		
+		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
 	    //验证
 		if(stallLock!=null|| stall!=null ) {
 			throw new BusinessException(StatusEnum.LOCK_SN_AlREADY_BAND);
+		}
+		if(stallName!= null) {
+			throw new BusinessException(StatusEnum.STALL_NAME_USER);
 		}
 		
 		 stallLock = new StallLock();
@@ -466,8 +475,8 @@ public class StallServiceImpl implements StallService {
 			stallLockMasterMapper.updateBind(stallLock);
 			//通知锁平台
 			Map<String, Object> map = new TreeMap<>();
-			map.put("serialNumber", "CDC589E65550");
-			map.put("name", "测试");
+			map.put("serialNumber", reqLockIntall.getLockSn());
+			map.put("name", reqLockIntall.getStallName());
 			lockTools.setLockName(map);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1155,6 +1164,7 @@ public class StallServiceImpl implements StallService {
 					}
 					int code = res == false ? 500:200;
 					log.info(" operating··············" + res + " code·············" + code);
+					
 					sendMsgT(uid, reqc.getStatus(), code);
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
@@ -1162,6 +1172,8 @@ public class StallServiceImpl implements StallService {
 						stallMasterMapper.lockdown(stall);
 					}
 					sendMsgT(uid, reqc.getStatus(), code);
+					//解锁
+					redisLock.unlock1(reqc.getRobkey());
 				}
 			}
 		});
