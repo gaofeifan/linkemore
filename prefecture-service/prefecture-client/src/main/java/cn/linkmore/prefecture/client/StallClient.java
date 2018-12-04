@@ -91,6 +91,15 @@ public interface StallClient {
 	public void managerlock(@RequestBody   ReqControlLock  reqc);
 	
 	/**
+	 * 管理版操作锁
+	 * @param stall
+	 * @return 
+	 */
+	@RequestMapping(value = "/v2.0/operatelockSn", method=RequestMethod.POST)
+	@ResponseBody
+	public void managerlockSn(@RequestBody   ReqControlLock  reqc);
+	
+	/**
 	 *物业版操作锁 操作锁
 	 * 
 	 * @param stallId

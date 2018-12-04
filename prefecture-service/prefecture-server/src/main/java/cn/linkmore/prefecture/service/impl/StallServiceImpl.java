@@ -1146,8 +1146,6 @@ public class StallServiceImpl implements StallService {
 					}
 					int code = res == false ? 500:200;
 					log.info(" operating··············" + res + " code·············" + code);
-					
-					sendMsgT(uid, reqc.getStatus(), code);
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
 						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
@@ -1156,6 +1154,34 @@ public class StallServiceImpl implements StallService {
 					sendMsgT(uid, reqc.getStatus(), code);
 					//解锁
 					redisLock.unlock1(reqc.getRobkey());
+				}
+			}
+		});
+	}
+	
+	
+	/**
+	 * 管理版锁操作
+	 */
+	@Override
+	public void operatingsn(ReqControlLock reqc) {
+		TaskPool.getInstance().task(new Runnable() {
+			@Override
+			public void run() {
+				String uid = String.valueOf(redisService.get(reqc.getKey()));
+				
+				if (reqc != null && StringUtils.isNotBlank(reqc.getLockSn())) {
+					log.info("operating··········sn:{},··········uid:{}", reqc.getLockSn(), uid);
+					Boolean res = null;
+					// 1 降下 2 升起
+					if (reqc.getStatus() == 1) {
+						res = lockTools.downLock(reqc.getLockSn());
+					} else if (reqc.getStatus() == 2) {
+						res = lockTools.upLock(reqc.getLockSn());
+					}
+					int code = res == false ? 500:200;
+					log.info(" operating··············" + res + " code·············" + code);
+					sendMsgT(uid, reqc.getStatus(), code);
 				}
 			}
 		});
@@ -1171,7 +1197,7 @@ public class StallServiceImpl implements StallService {
 				String bool = (code == 200 ? "true" : "false");
 				Token token = (Token) redisService.get(RedisKey.STAFF_STAFF_AUTH_TOKEN.key + uid.toString());
 
-				log.info("sendMsgT   send>>>" + uid);
+				log.info("sendMsgT   send>>>" + uid+"--content");
 				ReqPush rp = new ReqPush();
 				rp.setAlias(uid);
 				rp.setTitle(title);
