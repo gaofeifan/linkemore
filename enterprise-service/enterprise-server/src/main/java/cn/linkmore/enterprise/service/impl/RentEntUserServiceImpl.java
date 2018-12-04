@@ -150,6 +150,10 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 		return this.entRentUserService.findList(pageable);
 	}
 	
-	
+	@Override
+	public boolean exists(ReqRentEntUser ent) {
+		RentEntUser rentEntUser = rentEntUserClusterMapper.findByPlate(ent);
+		return rentEntUser != null ? true:false;
+	}
 
 }

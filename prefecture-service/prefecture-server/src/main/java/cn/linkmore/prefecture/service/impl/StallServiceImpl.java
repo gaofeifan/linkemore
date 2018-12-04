@@ -222,6 +222,7 @@ public class StallServiceImpl implements StallService {
 			stall.setLockStatus(LockStatus.UP.status);
 			stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
 			stallMasterMapper.cancel(stall);
+			redisService.remove(RedisKey.PREFECTURE_BUSY_STALL.key + stall.getLockSn());
 			redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			flag = true;
 		}
@@ -240,6 +241,7 @@ public class StallServiceImpl implements StallService {
 			int code = res.getMsgCode();
 			log.info("checkout.....................lock msg:{}", JsonUtil.toJson(res));
 			if (code == 200) {
+				redisService.remove(RedisKey.PREFECTURE_BUSY_STALL.key + stall.getLockSn());
 				redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			}
 		}

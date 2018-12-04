@@ -71,4 +71,11 @@ public class RentEntUserController {
 	public void deleteI(@RequestBody List<Long> ids) {
 		this.rentEntUserService.deleteIdsI(ids);
 	}
+	
+	@RequestMapping(value = "/v2.0/exists", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean exists(@RequestBody ReqRentEntUser ent) {
+		return this.rentEntUserService.exists(ent);
+	}
+	
 }
