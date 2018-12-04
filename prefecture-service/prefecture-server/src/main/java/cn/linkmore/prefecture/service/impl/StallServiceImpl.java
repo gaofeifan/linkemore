@@ -389,8 +389,6 @@ public class StallServiceImpl implements StallService {
 		CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 
-		cu = new CacheUser();
-		cu.setId(1111l);
 		ResAdminUser adminUser = adminUserService.find(cu.getId());
 		Date now = new Date();
 	    StallLock stallLock = new StallLock();
