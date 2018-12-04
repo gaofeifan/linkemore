@@ -206,4 +206,10 @@ public class StallClientHystrix implements StallClient {
 		return 0;
 	}
 
+	@Override
+	public void managerlockSn(ReqControlLock reqc) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

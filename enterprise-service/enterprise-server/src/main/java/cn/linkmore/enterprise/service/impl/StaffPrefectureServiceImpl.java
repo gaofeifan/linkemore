@@ -23,6 +23,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.staff.request.AssignStallRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.OrderOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.SraffReqConStall;
+import cn.linkmore.enterprise.controller.staff.request.SraffReqConStallSn;
 import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
 import cn.linkmore.enterprise.dao.cluster.BaseDictMapper;
@@ -134,6 +135,25 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		stallClient.managerlock(reqc);
 	}
 
+	@Override
+	public void controlSn(SraffReqConStallSn reqOperatStallSn, HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		String userid = user.getId().toString();
+		String reskey = (reqOperatStallSn.getState() == 1 ? RedisKey.MANAGER_STALL_DOWN.key
+				: RedisKey.MANAGER_STALL_UP.key);
+		redisService.set(reskey + userid, userid);
+		ReqControlLock reqc = new ReqControlLock();
+		
+		reqc.setStatus(reqOperatStallSn.getState());
+		reqc.setKey(reskey + userid);
+		reqc.setLockSn(reqOperatStallSn.getLockSn());
+		stallClient.managerlockSn(reqc);
+	}
+	
 	/**
 	 * 释放车位
 	 */
@@ -515,5 +535,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		ResUserOrder neworder = orderClient.findOrderById(oorb.getOrderId()); // 查订单
 		tell(neworder, null,2);
 	}
+
+	
 
 }
