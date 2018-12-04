@@ -82,6 +82,9 @@ public class RentEntUserServiceImpl implements RentEntUserService{
 	public void deleteIdsI(List<Long> ids) {
 		this.opsRentEntUserClient.deleteI(ids);
 	}
-
 	
+	@Override
+	public boolean exists(ReqRentEntUser reqRentEntUser) {
+		return this.opsRentEntUserClient.exists(reqRentEntUser);
+	}
 }

@@ -62,7 +62,12 @@ public class OpsRentEntUserClientHystrix implements OpsRentEntUserClient {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	@Override
+	public boolean exists(ReqRentEntUser ent) {
+		log.info("=======Hystrix==========boolean exists(ReqRentEntUser ent) ");
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 }
