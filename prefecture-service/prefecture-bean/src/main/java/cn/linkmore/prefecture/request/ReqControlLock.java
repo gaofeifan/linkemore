@@ -9,9 +9,20 @@ public class ReqControlLock {
 	private Integer  status;
 	
 	private String key;
+	
+	private String robkey;
 
 	private Short type;
 	
+	
+	public String getRobkey() {
+		return robkey;
+	}
+
+	public void setRobkey(String robkey) {
+		this.robkey = robkey;
+	}
+
 	public Long getStallId() {
 		return stallId;
 	}

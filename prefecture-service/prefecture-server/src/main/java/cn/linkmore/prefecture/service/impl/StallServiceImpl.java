@@ -111,6 +111,7 @@ import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallAssignService;
 import cn.linkmore.prefecture.service.StallOperateLogService;
 import cn.linkmore.prefecture.service.StallService;
+import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.task.TaskPool;
 import cn.linkmore.third.client.PushClient;
@@ -140,6 +141,8 @@ public class StallServiceImpl implements StallService {
 	private AdminAuthCityMasterMapper adminAuthCityMasterMapper;
 	@Autowired
 	private LockTools lockTools;
+	@Autowired
+	private RedisLock redisLock;
 	@Autowired
 	private StallAssignService assignService;
 	@Autowired
@@ -1141,6 +1144,7 @@ public class StallServiceImpl implements StallService {
 					}
 					int code = res == false ? 500:200;
 					log.info(" operating··············" + res + " code·············" + code);
+					
 					sendMsgT(uid, reqc.getStatus(), code);
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
@@ -1148,6 +1152,8 @@ public class StallServiceImpl implements StallService {
 						stallMasterMapper.lockdown(stall);
 					}
 					sendMsgT(uid, reqc.getStatus(), code);
+					//解锁
+					redisLock.unlock1(reqc.getRobkey());
 				}
 			}
 		});

@@ -68,6 +68,22 @@ public class RedisLock {
         }
     }
     
+    /***
+     * 解锁
+     * @param key
+     * @param value
+     * @return
+     */
+    public void unlock1(String key){
+	        try {
+	        	redisTemplate.opsForValue().getOperations().delete(key);
+			} catch (Exception e) {
+				
+			}finally {
+				redisTemplate.delete(key);
+			}
+        } 
+    
 	/**
 	 * 队列放入唯一key 先进先出
 	 * @param key 键

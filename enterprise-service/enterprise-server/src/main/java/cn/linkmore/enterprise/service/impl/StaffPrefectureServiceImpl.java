@@ -130,6 +130,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		reqc.setStallId(reqOperatStall.getStallId());
 		reqc.setStatus(reqOperatStall.getState());
 		reqc.setKey(reskey + userid);
+		reqc.setRobkey(robkey);
 		stallClient.managerlock(reqc);
 	}
 
