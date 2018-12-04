@@ -15,7 +15,7 @@ public class LockProperties {
 	
 	
 	private static final String lockInfo = "/api/v1/lock-info";
-	private static final String lockSignalHistory = "/api/v1/lock/lock­signal­history";
+	private static final String lockSignalHistory = "/api/v1/lock/lock-signal-history";
 	private static final String lockOption = "/api/v1/option";
 	private static final String lockList = "/api/v1/lock-list";
 	private static final String setparkingname = "/api/v1/lock/config/set-parking-name";

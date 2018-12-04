@@ -60,7 +60,9 @@ public class ResStaffStallSn {
 	@ApiModelProperty(value=" 是否绑定 true是 false 否 ")
 	private boolean bindStatus = false;
 	
-
+	@ApiModelProperty(value="1 未绑定 2已绑定")
+	private int bindStata = 1;
+	
 	public String getStallSn() {
 		return stallSn;
 	}
@@ -206,5 +208,13 @@ public class ResStaffStallSn {
 
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
+	}
+
+	public int getBindStata() {
+		return bindStata;
+	}
+
+	public void setBindStata(int bindStata) {
+		this.bindStata = bindStata;
 	}
 }

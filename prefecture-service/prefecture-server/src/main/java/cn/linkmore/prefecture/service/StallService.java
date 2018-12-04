@@ -293,4 +293,11 @@ public interface StallService {
 	 * @return
 	 */
 	int unBind(List<Long> ids);
+	
+	/**
+	 * @Description  管理版使用
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Map<String, Object> watch2(Long stallId);
 }

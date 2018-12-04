@@ -160,6 +160,17 @@ public class FeignStallController {
 		log.info("watch:{} .....................................",stallId);
 	    return	this.stallService.watch(stallId);
 	}
+	/**
+	 * 操作锁--管理版使用
+	 * 
+	 * @param stallId
+	 *            Long
+	 */
+	@RequestMapping(value = "/v2.0/watch2", method = RequestMethod.POST)
+	public Map<String,Object> watch2(@RequestBody Long stallId) {
+		log.info("watch:{} .....................................",stallId);
+		return	this.stallService.watch2(stallId);
+	}
 	
 	/**
 	 * 查询车位锁状态

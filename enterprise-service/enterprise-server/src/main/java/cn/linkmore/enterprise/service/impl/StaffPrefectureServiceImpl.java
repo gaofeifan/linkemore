@@ -275,7 +275,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 
 		Map<String, Object> map = new HashMap<>();
-		map = stallClient.watch(bean.getStallId());
+		map = stallClient.watch2(bean.getStallId());
 		if (map == null || map.isEmpty()) {
 			throw new BusinessException(StatusEnum.STALL_LOCK_OFFLINE);
 		}
