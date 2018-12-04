@@ -786,6 +786,24 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
+	public Map<String, Object> watch2(Long stallId) {
+		log.info("stall:=====================");
+		Map<String, Object> map = new HashMap<>();
+		Stall stall = stallClusterMapper.findById(stallId);
+		log.info("stall:{}", JsonUtil.toJson(stall));
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			ResLockInfo Lockbean = lockTools.lockInfo(stall.getLockSn());
+			if (Lockbean!=null) {
+				map.put("code", 200);
+				map.put("status", Lockbean.getLockState());
+//				map.put("onlineState", Lockbean.getOnlineState());
+				map.put("parkingState", Lockbean.getParkingState());
+			}
+		}
+		return map;
+	}
+	
+	@Override
 	public Map<String, Object> watch(Long stallId) {
 		log.info("stall:=====================");
 		Map<String, Object> map = new HashMap<>();
@@ -1061,31 +1079,31 @@ public class StallServiceImpl implements StallService {
 				ResStaffStallList.setExcStatus(false);
 			}
 			boolean falg = true;
-			if (bockBeans != null) {
-				for (ResLockInfo lockBean : bockBeans) {
-					if (lockBean.getLockCode().equals(resStall.getLockSn())) {
-						if(lockBean.getElectricity() <= 30) {
-							ResStaffStallList.setExcStatus(false);
+				if (bockBeans != null && bockBeans.size() != 0) {
+					for (ResLockInfo lockBean : bockBeans) {
+						if (lockBean.getLockCode().equals(resStall.getLockSn())) {
+							if(lockBean.getElectricity() <= 30) {
+								ResStaffStallList.setExcStatus(false);
+							}
+							falg = false;
+							switch (lockBean.getLockState()) {
+							case 0:
+								ResStaffStallList.setLockStatus(2);
+								break;
+							case 2:
+								ResStaffStallList.setLockStatus(1);
+								break;
+							case 3:
+								ResStaffStallList.setLockStatus(2);
+								break;
+							case 1:
+								ResStaffStallList.setLockStatus(1);
+								break;
+							}
+							break;
 						}
-						falg = false;
-						switch (lockBean.getLockState()) {
-						case 0:
-							ResStaffStallList.setLockStatus(2);
-							break;
-						case 2:
-							ResStaffStallList.setLockStatus(1);
-							break;
-						case 3:
-							ResStaffStallList.setLockStatus(2);
-							break;
-						case 1:
-							ResStaffStallList.setLockStatus(1);
-							break;
-						}
-						break;
 					}
 				}
-			}
 			if (falg) {
 				ResStaffStallList.setLockStatus(resStall.getLockStatus());
 			}
@@ -1280,7 +1298,6 @@ public class StallServiceImpl implements StallService {
 				detail.setExcCode(entExcStall.getExcStatus());
 			}
 		}
-
 		if (detail.getExcCode() != null || detail.getBetty() <= 30) {
 			for (ResBaseDict resBaseDict : baseDict) {
 				if (detail.getExcCode() != null) {
@@ -1452,6 +1469,7 @@ public class StallServiceImpl implements StallService {
 		ResLockInfo lock = this.lockTools.lockInfo(sn);
 		stallSn.setStallSn(sn);
 		if(lock != null) {
+			stallSn.setBindStata(2);
 			stallSn.setBindStatus(true);
 			stallSn.setLockOffLine(2);
 			stallSn.setBattery(lock.getElectricity());
