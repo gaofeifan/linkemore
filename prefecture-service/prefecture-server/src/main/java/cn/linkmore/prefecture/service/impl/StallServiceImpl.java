@@ -953,7 +953,10 @@ public class StallServiceImpl implements StallService {
 			int preFaultTypeStalls = 0;
 			int orderNum = 0;
 			for (Stall stall : stalls) {
-				if (stall.getType() != 0 || !stall.getPreId().equals(resPre.getId())) {
+				if (stall.getType() != 0) {
+					continue;
+				}
+				if(!stall.getPreId().equals(resPre.getId())) {
 					continue;
 				}
 				if (collect.contains(stall.getId())) {
@@ -1213,7 +1216,6 @@ public class StallServiceImpl implements StallService {
 		Stall stall = this.stallClusterMapper.findById(stallId);
 		ResLockInfo lockBean = this.lockTools.lockInfo(stall.getLockSn());
 		List<ResBaseDict> baseDict = this.baseDictClient.findList(DOWN_CAUSE);
-
 		if (lockBean != null) {
 			detail.setBetty(lockBean.getElectricity());
 			detail.setStallId(stall.getId());
