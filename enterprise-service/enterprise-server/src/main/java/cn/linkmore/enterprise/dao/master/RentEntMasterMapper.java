@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.dao.master;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -19,35 +20,27 @@ public interface RentEntMasterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    int deleteByPrimaryKey(Long id);
+    int delete(Long id);
 
     /**
      * @Description  新增
      * @Author   GFF 
      * @Version  v2.0
      */
-    int insert(RentEnt record);
-
-    /**
-     * @Description  新增null处理
-     * @Author   GFF 
-     * @Version  v2.0
-     */
-    int insertSelective(RentEnt record);
+    int save(RentEnt record);
 
     /**
      * @Description  更新
      * @Author   GFF 
      * @Version  v2.0
      */
-    int updateByPrimaryKeySelective(RentEnt record);
-
-    /**
-     * @Description  更新
-     * @Author   GFF 
-     * @Version  v2.0
-     */
-    int updateByPrimaryKey(RentEnt record);
+    int update(RentEnt record);
 
 	void deleteByIds(List<Long> ids);
+	/**
+	 * 更新状态
+	 * @param map
+	 * @return
+	 */
+	int updateStatus(Map<String, Object> map);
 }

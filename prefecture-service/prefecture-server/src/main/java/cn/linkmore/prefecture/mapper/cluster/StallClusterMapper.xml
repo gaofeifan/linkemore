@@ -174,6 +174,7 @@
 	    <if test="startName != null and endName != null"> 
 		and stall_name between #{startName} and #{endName}
 		</if>
+		and type in (0,1)
 		and id not in (select stall_id from v_strategy_group_detail)
 		order by area_name ASC,stall_name ASC
   </select>

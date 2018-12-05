@@ -2,10 +2,7 @@ package cn.linkmore.enterprise.dao.cluster;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
-
-import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.enterprise.entity.RentEnt;
 /**
  * 长租企业
@@ -20,7 +17,7 @@ public interface RentEntClusterMapper {
      * @Author   GFF 
      * @Version  v2.0
      */
-    RentEnt selectByPrimaryKey(Long id);
+    RentEnt findById(Long id);
 
 	/**
 	 * @Description  
@@ -31,6 +28,6 @@ public interface RentEntClusterMapper {
 
 	List<RentEnt> findPage(Map<String, Object> param);
 
-	List<RentEnt> findByEntId(Long entId);
+	List<RentEnt> findByComId(Long comId);
 
 }

@@ -76,8 +76,6 @@ public class LockTools {
 	}
 	
 	
-	
-	
 	/**
 	 * @Description  查询网关信号强度
 	 * @Author   GFF 

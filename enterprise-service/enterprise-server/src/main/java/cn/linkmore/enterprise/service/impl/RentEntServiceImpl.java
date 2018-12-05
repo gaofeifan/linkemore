@@ -4,18 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
-import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.dao.cluster.RentEntClusterMapper;
 import cn.linkmore.enterprise.dao.master.RentEntMasterMapper;
 import cn.linkmore.enterprise.entity.RentEnt;
@@ -35,24 +32,27 @@ public class RentEntServiceImpl implements RentEntService {
 	@Resource
 	private RentEntStallService rentEntStallService;
 	@Override
-	public RentEnt selectByPrimaryKey(Long id) {
-		return this.rentEntClusterMapper.selectByPrimaryKey(id);
+	public RentEnt findById(Long id) {
+		return this.rentEntClusterMapper.findById(id);
 	}
 
 	@Override
 	public void save(ReqRentEnt ent) {
 		RentEnt rentEnt = new RentEnt();
-		this.rentEntMasterMapper.insert(ObjectUtils.copyObject(ent, rentEnt));
+		this.rentEntMasterMapper.save(ObjectUtils.copyObject(ent, rentEnt));
 		List<ReqRentEntStall> list = ent.getStalls();
-		for (ReqRentEntStall reqRentEntStall : list) {
-			reqRentEntStall.setRentEntId(rentEnt.getId());
+		if(CollectionUtils.isNotEmpty(list)) {
+			for (ReqRentEntStall reqRentEntStall : list) {
+				reqRentEntStall.setRentComId(rentEnt.getId());
+			}
+			this.rentEntStallService.saveBatch(list);
 		}
-		this.rentEntStallService.saveBatch(list);
+		
 	}
 	
 	@Override
 	public void update(ReqRentEnt ent) {
-		this.rentEntMasterMapper.updateByPrimaryKey(ObjectUtils.copyObject(ent, new RentEnt()));
+		this.rentEntMasterMapper.update(ObjectUtils.copyObject(ent, new RentEnt()));
 	}
 	
 	@Override
@@ -89,7 +89,7 @@ public class RentEntServiceImpl implements RentEntService {
 
 	@Override
 	public List<Tree> tree(Long entId) {
-		List<RentEnt> list = this.rentEntClusterMapper.findByEntId(entId);
+		List<RentEnt> list = this.rentEntClusterMapper.findByComId(entId);
 		List<Tree> roots = new ArrayList<>();
 		Tree root = null;
 		for (RentEnt dict : list) {
@@ -103,6 +103,11 @@ public class RentEntServiceImpl implements RentEntService {
 			roots.add(root);
 		}
 		return roots;
+	}
+
+	@Override
+	public int updateStatus(Map<String, Object> map) {
+		return rentEntMasterMapper.updateStatus(map);
 	}
 	
 	

@@ -2,30 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.RentEntStallClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.RentEntStall">
-    <id column="rent_ent_id" jdbcType="BIGINT" property="rentEntId" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="rent_com_id" jdbcType="BIGINT" property="rentComId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
-    <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    rent_ent_id, stall_id, stall_name,pre_id,pre_name
+   id, rent_com_id, stall_id, stall_name,pre_id,pre_name,create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_ent_rent_ent_stall
-    where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
+    from t_ent_rent_com_stall
+    where id = #{id,jdbcType=BIGINT}
   </select>
   
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
     FROM
-    t_ent_rent_ent_stall 
+    t_ent_rent_com_stall 
 	<where>
     <if test="companyId != null">
-   	AND rent_ent_id = #{companyId}
+   	AND rent_com_id = #{companyId}
     </if>
     <if test="stallName != null">
    	AND stall_name like #{stallName}
@@ -43,18 +50,18 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM
-    t_ent_rent_ent_stall 
+    t_ent_rent_com_stall 
 	where
-   	 rent_ent_id = #{companyId}
+   	 rent_com_id = #{companyId}
   </select>
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
     SELECT
 	count(1)
     FROM
-    t_ent_rent_ent_stall 
+    t_ent_rent_com_stall 
 	<where>
     <if test="companyId != null">
-   	AND rent_ent_id = #{companyId}
+   	AND rent_com_id = #{companyId}
     </if>
     <if test="stallName != null">
    	AND stall_name like #{stallName}

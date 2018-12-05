@@ -3,18 +3,14 @@ package cn.linkmore.enterprise.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.RentEntStallClusterMapper;
 import cn.linkmore.enterprise.dao.master.RentEntStallMasterMapper;
-import cn.linkmore.enterprise.entity.RentEnt;
 import cn.linkmore.enterprise.entity.RentEntStall;
 import cn.linkmore.enterprise.request.ReqRentEntStall;
 import cn.linkmore.enterprise.service.RentEntStallService;
@@ -29,7 +25,7 @@ public class RentEntStallServiceImpl implements RentEntStallService {
 	
 	@Override
 	public RentEntStall selectByPrimaryKey(Long rentEntId) {
-		return this.rentEntStallClusterMapper.selectByPrimaryKey(rentEntId);
+		return this.rentEntStallClusterMapper.findById(rentEntId);
 	}
 
 	@Override

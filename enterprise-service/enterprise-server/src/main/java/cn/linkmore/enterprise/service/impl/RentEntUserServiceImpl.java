@@ -49,7 +49,7 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	private UserClient userClient;
 	@Override
 	public RentEntUser selectByPrimaryKey(Long rentEntId) {
-		return this.rentEntUserClusterMapper.selectByPrimaryKey(rentEntId);
+		return this.rentEntUserClusterMapper.findById(rentEntId);
 	}
 	
 	@Override
@@ -68,9 +68,9 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			}
 		}
 		this.rentEntUserMasterMapper.insert(entUser);
-		List<RentEntStall> list = this.rentEntStallService.stallListCompany(entUser.getRentEntId());
-		RentEnt rentEnt = this.rentEntService.selectByPrimaryKey(entUser.getRentEntId());
-		ResEnterprise enterprise = this.enterpriseService.findById(rentEnt.getCreateEntId());
+		List<RentEntStall> list = this.rentEntStallService.stallListCompany(entUser.getRentComId());
+		RentEnt rentEnt = this.rentEntService.findById(entUser.getRentComId());
+		ResEnterprise enterprise = this.enterpriseService.findById(rentEnt.getCreateUserId());
 		ReqRentUser record;
 		
 		List<ReqRentUser> rus = new ArrayList<>();
@@ -78,14 +78,14 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			record = new ReqRentUser();
 			record.setEndDate(DateUtils.converter(rentEnt.getEndTime(), null));
 			record.setStartDate(DateUtils.converter(rentEnt.getStartTime(), null));
-			record.setEntId(rentEnt.getCreateEntId());
+			record.setEntId(rentEnt.getCreateUserId());
 			record.setStallId(rentEntStall.getStallId());
 			record.setStallName(rentEntStall.getStallName());
 			record.setPreId(rentEntStall.getPreId());
 			record.setMobile(entUser.getMobile());
 			record.setUserId(entUser.getId());
 			record.setPlate(entUser.getPlate());
-			record.setRealname(entUser.getUsername());
+			record.setRealname(entUser.getUserName());
 			record.setEntName(enterprise.getName());
 			record.setPreName(rentEntStall.getPreName());
 			record.setCompanyId(rentEnt.getId());
@@ -150,7 +150,6 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 		return this.entRentUserService.findList(pageable);
 	}
 	
-	@Override
 	public boolean exists(ReqRentEntUser ent) {
 		RentEntUser rentEntUser = rentEntUserClusterMapper.findByPlate(ent);
 		return rentEntUser != null ? true:false;

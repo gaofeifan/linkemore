@@ -1,9 +1,8 @@
 package cn.linkmore.ops.ent.service;
 
 import java.util.List;
-
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -14,7 +13,7 @@ public interface RentEntService {
 
 	ViewPage findPage(ViewPageable pageable);
 
-	void save(cn.linkmore.ops.ent.request.ReqRentEnt ent);
+	void save(ReqRentEnt ent);
 
 	void update(ReqRentEnt ent);
 
@@ -25,5 +24,7 @@ public interface RentEntService {
 	ViewPage stallListCompany(ViewPageable pageable);
 
 	List<Tree> tree();
+
+	int updateStatus(Map<String, Object> map);
 
 }
