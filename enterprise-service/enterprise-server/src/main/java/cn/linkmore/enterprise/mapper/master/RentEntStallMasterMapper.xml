@@ -2,93 +2,53 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.master.RentEntStallMasterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.RentEntStall">
-    <id column="rent_ent_id" jdbcType="BIGINT" property="rentEntId" />
+  	<id column="id" jdbcType="BIGINT" property="id" />
+    <result column="rent_com_id" jdbcType="BIGINT" property="rentComId" />
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
-    <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    
   </resultMap>
-  <sql id="Base_Column_List">
-    rent_ent_id, stall_id, stall_name,pre_id,pre_name
-  </sql>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_ent_rent_ent_stall
-    where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
+ 
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_ent_rent_com_stall
+    where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.linkmore.enterprise.entity.RentEntStall">
-    insert into t_ent_rent_ent_stall (rent_ent_id, stall_id, stall_name,pre_id,pre_name
-      )
-    values (#{rentEntId,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR},#{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}
-      )
+  <insert id="save" parameterType="cn.linkmore.enterprise.entity.RentEntStall">
+    insert into t_ent_rent_com_stall (id, rent_com_id, stall_id, stall_name,pre_id,pre_name,
+    create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time)
+    values (#{id,jdbcType=BIGINT}, #{rentComId,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, 
+    #{stallName,jdbcType=VARCHAR},#{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR},
+    #{createUserId,jdbcType=BIGINT}, #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+    #{updateUserId,jdbcType=BIGINT}, #{updateUserName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+    )
   </insert>
   <insert id="saveBatch" parameterType="java.util.List">
-    insert into t_ent_rent_ent_stall (rent_ent_id, stall_id, stall_name,pre_id,pre_name
-      )
+    insert into t_ent_rent_com_stall (id, rent_com_id, stall_id, stall_name, pre_id, pre_name,
+    create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time)
     values 
     <foreach collection="list" item="item" index="index" separator=",">
-   	 (#{item.rentEntId,jdbcType=BIGINT}, #{item.stallId,jdbcType=BIGINT}, #{item.stallName,jdbcType=VARCHAR}, #{item.preId,jdbcType=BIGINT}, #{item.preName,jdbcType=VARCHAR})
+   	 (#{item.id,jdbcType=BIGINT},#{item.rentComId,jdbcType=BIGINT},  #{item.stallId,jdbcType=BIGINT}, 
+   	 #{item.stallName,jdbcType=VARCHAR}, #{item.preId,jdbcType=BIGINT}, #{item.preName,jdbcType=VARCHAR},
+   	 #{item.createUserId,jdbcType=BIGINT}, #{item.createUserName,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, 
+     #{item.updateUserId,jdbcType=BIGINT}, #{item.updateUserName,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}
+   	 )
     </foreach>
   </insert>
-  <insert id="insertSelective" parameterType="cn.linkmore.enterprise.entity.RentEntStall">
-    insert into t_ent_rent_ent_stall
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="rentEntId != null">
-        rent_ent_id,
-      </if>
-      <if test="stallId != null">
-        stall_id,
-      </if>
-      <if test="stallName != null">
-        stall_name,
-      </if>
-       <if test="preId != null">
-        pre_id,
-      </if>
-       <if test="preName != null">
-        pre_name,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="rentEntId != null">
-        #{rentEntId,jdbcType=BIGINT},
-      </if>
-      <if test="stallId != null">
-        #{stallId,jdbcType=BIGINT},
-      </if>
-      <if test="stallName != null">
-        #{stallName,jdbcType=VARCHAR},
-      </if>
-       <if test="preId != null">
-        #{preId,jdbcType=BIGINT},
-      </if>
-       <if test="preName != null">
-        #{preName,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.linkmore.enterprise.entity.RentEntStall">
-    update t_ent_rent_ent_stall
-    <set>
-      <if test="stallId != null">
-        stall_id = #{stallId,jdbcType=BIGINT},
-      </if>
-      <if test="stallName != null">
-        stall_name = #{stallName,jdbcType=VARCHAR},
-      </if>
-        <if test="preId != null">
-        pre_id = #{preId,jdbcType=BIGINT},
-      </if>
-      <if test="preName != null">
-        pre_name = #{preName,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="cn.linkmore.enterprise.entity.RentEntStall">
-    update t_ent_rent_ent_stall
+  
+  <update id="update" parameterType="cn.linkmore.enterprise.entity.RentEntStall">
+    update t_ent_rent_com_stall
     set stall_id = #{stallId,jdbcType=BIGINT},
-   		 pre_id = #{preId,jdbcType=BIGINT},
-   		 pre_name = #{preName,jdbcType=VARCHAR},
-      stall_name = #{stallName,jdbcType=VARCHAR}
-    where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
+   		pre_id = #{preId,jdbcType=BIGINT},
+   		pre_name = #{preName,jdbcType=VARCHAR},
+        stall_name = #{stallName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

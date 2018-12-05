@@ -15,7 +15,7 @@ import cn.linkmore.enterprise.entity.RentEntStall;
 @Mapper
 public interface RentEntStallClusterMapper {
 
-    RentEntStall selectByPrimaryKey(Long rentEntId);
+    RentEntStall findById(Long id);
 
 	Integer count(Map<String, Object> param);
 

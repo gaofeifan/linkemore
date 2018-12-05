@@ -2,28 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.RentEntUserClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.RentEntUser">
-    <id column="rent_ent_id" jdbcType="BIGINT" property="rentEntId" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="rent_com_id" jdbcType="BIGINT" property="rentComId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
-    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="plate" jdbcType="VARCHAR" property="plate" />
-    <result column="id" jdbcType="BIGINT" property="id" />
-       <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <!-- 
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+     -->
   </resultMap>
   <sql id="Base_Column_List">
-    rent_ent_id, username, mobile, plate,id
+    id, rent_com_id, user_id, user_name, mobile, plate,create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time, status
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findByComId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_ent_rent_ent_user
-    where rent_ent_id = #{rentEntId,jdbcType=BIGINT}
+    from t_ent_rent_com_user
+    where rent_com_id = #{rentComId,jdbcType=BIGINT}
   </select>
   <select id="findMaxId" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_ent_rent_ent_user
+    from t_ent_rent_com_user
     order by id desc 
     limit 0,1
   </select>
@@ -32,16 +42,16 @@
     SELECT
     eu.*, e.end_time,e.company_name
     FROM
-    t_ent_rent_ent_user eu left join t_ent_rent_ent e on eu.rent_ent_id = e.id
+    t_ent_rent_com_user eu left join t_ent_rent_com e on eu.rent_ent_id = e.id
 	<where>
-    <if test="rentEntId != null">
-   	AND eu.rent_ent_id = #{rentEntId}
+    <if test="rentComId != null">
+   	AND eu.rent_com_id = #{rentComId}
     </if>
-    <if test="username != null">
-   	AND eu.username like #{username}
+    <if test="userName != null">
+   	AND eu.user_name like #{userName}
     </if>
     <if test="plate != null">
-   	AND eu.plate = #{plate}
+   	AND eu.plate like #{plate}
     </if>
     <if test="mobile != null">
    	AND eu.mobile like #{mobile}
@@ -59,16 +69,16 @@
     SELECT
 	count(1)
     FROM
-    t_ent_rent_ent_user 
+    t_ent_rent_com_user 
 	<where>
-    <if test="rentEntId != null">
-   	AND rent_ent_id like #{rentEntId}
+    <if test="rentComId != null">
+   	AND eu.rent_com_id = #{rentComId}
     </if>
-    <if test="username != null">
-   	AND username like #{username}
+    <if test="userName != null">
+   	AND user_name like #{userName}
     </if>
     <if test="plate != null">
-   	AND plate = #{plate}
+   	AND plate like #{plate}
     </if>
     <if test="mobile != null">
    	AND mobile like #{mobile}
@@ -79,10 +89,10 @@
   <select id="findByPlate" parameterType="cn.linkmore.enterprise.request.ReqRentEntUser" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_ent_rent_ent_user
+    from t_ent_rent_com_user
     where 1 = 1
-    <if test="rentEntId != null">
-    	and rent_ent_id = #{rentEntId,jdbcType=INTEGER}
+    <if test="rentComId != null">
+    	and rent_com_id = #{rentComId,jdbcType=INTEGER}
     </if>
     <if test="plate != null">
     	and plate = #{plate,jdbcType=VARCHAR}

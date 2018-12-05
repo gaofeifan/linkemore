@@ -6,34 +6,43 @@
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-    <result column="create_ent_id" jdbcType="BIGINT" property="createEntId" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    
   </resultMap>
   <sql id="Base_Column_List">
-    id, company_name, start_time, end_time, create_ent_id
+    id, company_name, start_time, end_time, create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time, status, pre_id, pre_name
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_ent_rent_ent
+    from t_ent_rent_com
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="findByEntId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findByComId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_ent_rent_ent
-    where create_ent_id = #{entId,jdbcType=BIGINT}
+    from t_ent_rent_com
+    where create_user_id = #{comId,jdbcType=BIGINT}
   </select>
    <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
     FROM
-    t_ent_rent_ent
+    t_ent_rent_com
 	<where>
     <if test="companyName != null">
    	AND company_name like #{companyName}
     </if>
-    <if test="createEntId != null">
-   	AND create_ent_id = #{createEntId}
+    <if test="createUserId != null">
+   	AND create_user_id = #{createUserId}
     </if>
 	</where>
     <if test="property==null">  
@@ -48,13 +57,13 @@
     SELECT
     	count(1)
     FROM
-    t_ent_rent_ent 
+    t_ent_rent_com 
 	<where>
 	    <if test="companyName != null">
 	   	AND company_name like #{companyName}
 	    </if>
-	    <if test="createEntId != null">
-	   	AND create_ent_id = #{createEntId}
+	    <if test="createUserId != null">
+	   	AND create_user_id = #{createUserId}
 	    </if>
 	</where>
   </select>

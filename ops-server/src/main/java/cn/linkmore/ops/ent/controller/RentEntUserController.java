@@ -108,8 +108,8 @@ public class RentEntUserController extends BaseController{
 						ReqRentEntUser rentEntUser=new ReqRentEntUser();
 						rentEntUser.setPlate(cell.get(0));
 						rentEntUser.setMobile(cell.get(1));
-						rentEntUser.setUsername(userName);
-						rentEntUser.setRentEntId(companyId);
+						rentEntUser.setUserName(userName);
+						rentEntUser.setRentComId(companyId);
 						if(!rentEntUserService.exists(rentEntUser)) {
 							System.out.println("excel:plate="+rentEntUser.getPlate());
 							System.out.println("save");

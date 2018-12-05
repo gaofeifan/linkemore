@@ -1,8 +1,7 @@
 package cn.linkmore.enterprise.service;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
+import java.util.Map;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
@@ -21,7 +20,7 @@ public interface RentEntService {
      * @Author   GFF 
      * @Version  v2.0
      */
-    RentEnt selectByPrimaryKey(Long id);
+    RentEnt findById(Long id);
 
 	void save(ReqRentEnt ent);
 
@@ -34,5 +33,7 @@ public interface RentEntService {
 	ViewPage stallListCompany(ViewPageable pageable);
 
 	List<Tree> tree(Long entId);
+
+	int updateStatus(Map<String, Object> map);
 
 }
