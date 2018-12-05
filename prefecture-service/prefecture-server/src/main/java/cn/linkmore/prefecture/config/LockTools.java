@@ -84,8 +84,8 @@ public class LockTools {
 	 * @Version  v2.0
 	 */
 	public ResSignalHistory lockSignalHistory(String sn) {
-//		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLockSignalHistory();
-		String url = "http://open-api.linkmoreparking.cn/api/v1/lock/lock-signal-history";
+		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLockSignalHistory().trim();
+//		String Nurl = "http://open-api.linkmoreparking.cn/api/v1/lock/lock-signal-history";
 		long millis = new Date().getTime();
 		Map<String,Object> parameters = new TreeMap<>();
 		parameters.put("appId", lockProperties.getAppId());
@@ -150,8 +150,24 @@ public class LockTools {
 		map.put("timestamp", millis);
 		map.put("groupCode", groupCode);
 		Object data = getData(map,url); 
-		List<ResLockInfo> lockInfos = (List<ResLockInfo>)data;
-		return lockInfos;
+		List<Map<String,Object>> lockInfos = (List<Map<String, Object>>)data;
+		List<ResLockInfo> resLockInfos = new ArrayList<>();
+		ResLockInfo info = null;
+		for (Map<String,Object> obj : lockInfos) {
+			info = new ResLockInfo();
+			info.setElectricity(Integer.decode(obj.get("electricity").toString()));
+			info.setGatewaySum(Integer.decode(obj.get("gatewaySum").toString()));
+			info.setInductionState(Integer.decode(obj.get("inductionState").toString()));
+			info.setLockCode(obj.get("lockCode").toString());
+			info.setLockState(Integer.decode(obj.get("lockState").toString()));
+			info.setModel(obj.get("model").toString());
+			info.setOptionCount(Integer.decode(obj.get("optionCount").toString()));
+			info.setOptionSuccessCount(Integer.decode(obj.get("optionSuccessCount").toString()));
+			info.setParkingState(Integer.decode(obj.get("parkingState").toString()));
+			info.setVersion(obj.get("version").toString());
+			resLockInfos.add(info);
+		}
+		return resLockInfos;
 	
 	}
 	
@@ -188,7 +204,6 @@ public class LockTools {
 		Object object = getData(map,url);
 	}
 	
-	
 }
 
 
@@ -220,7 +235,4 @@ class MD5{
         log.info("MD5加密后的字符串为:encodeStr="+encodeStr);
         return encodeStr;
     }
-	
-
-
 }

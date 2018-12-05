@@ -24,11 +24,9 @@ public class ReqConStall {
 	@NotNull(message="不能为空")
 	private Long parkingStatus;
 
-
 	public Long getStallId() {
 		return stallId;
 	}
-
 
 	public void setStallId(Long stallId) {
 		this.stallId = stallId;
@@ -39,16 +37,13 @@ public class ReqConStall {
 		return state;
 	}
 
-
 	public void setState(Integer state) {
 		this.state = state;
 	}
 
-
 	public Long getParkingStatus() {
 		return parkingStatus;
 	}
-
 
 	public void setParkingStatus(Long parkingStatus) {
 		this.parkingStatus = parkingStatus;

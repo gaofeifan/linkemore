@@ -6,12 +6,33 @@ public class ReqControlLock {
     
 	private Long stallId;
 	
+	private String lockSn;
+	
 	private Integer  status;
 	
 	private String key;
+	
+	private String robkey;
 
 	private Short type;
 	
+
+	public String getLockSn() {
+		return lockSn;
+	}
+
+	public void setLockSn(String lockSn) {
+		this.lockSn = lockSn;
+	}
+
+	public String getRobkey() {
+		return robkey;
+	}
+
+	public void setRobkey(String robkey) {
+		this.robkey = robkey;
+	}
+
 	public Long getStallId() {
 		return stallId;
 	}

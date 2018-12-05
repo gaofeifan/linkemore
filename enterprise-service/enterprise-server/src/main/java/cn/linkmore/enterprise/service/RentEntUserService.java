@@ -35,4 +35,6 @@ public interface RentEntUserService {
 
 	ViewPage findPageI(ViewPageable pageable);
 
+	boolean exists(ReqRentEntUser ent);
+
 }

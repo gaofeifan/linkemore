@@ -845,7 +845,6 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			downStatus = false;
 		}
-
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("lockDownStatus", downStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
 		param.put("lockDownTime", new Date());
@@ -918,7 +917,6 @@ public class OrdersServiceImpl implements OrdersService {
 				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key + rs.getOrderId().longValue(),
 						SwitchResult.CLOSED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
 			} else {
-
 				Object sn = null;
 				if (order.getBrandId() != null) {
 					sn = redisService.pop(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + order.getBrandId());

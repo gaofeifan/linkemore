@@ -26,6 +26,8 @@ public interface RentEntUserService {
 
 	void saveI(ReqRentUser ent);
 
+	boolean exists(ReqRentEntUser reqRentEntUser);
+
 
 
 }

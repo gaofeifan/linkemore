@@ -111,6 +111,7 @@ import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallAssignService;
 import cn.linkmore.prefecture.service.StallOperateLogService;
 import cn.linkmore.prefecture.service.StallService;
+import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.task.TaskPool;
 import cn.linkmore.third.client.PushClient;
@@ -140,6 +141,8 @@ public class StallServiceImpl implements StallService {
 	private AdminAuthCityMasterMapper adminAuthCityMasterMapper;
 	@Autowired
 	private LockTools lockTools;
+	@Autowired
+	private RedisLock redisLock;
 	@Autowired
 	private StallAssignService assignService;
 	@Autowired
@@ -783,6 +786,24 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
+	public Map<String, Object> watch2(Long stallId) {
+		log.info("stall:=====================");
+		Map<String, Object> map = new HashMap<>();
+		Stall stall = stallClusterMapper.findById(stallId);
+		log.info("stall:{}", JsonUtil.toJson(stall));
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			ResLockInfo Lockbean = lockTools.lockInfo(stall.getLockSn());
+			if (Lockbean!=null) {
+				map.put("code", 200);
+				map.put("status", Lockbean.getLockState());
+//				map.put("onlineState", Lockbean.getOnlineState());
+				map.put("parkingState", Lockbean.getParkingState());
+			}
+		}
+		return map;
+	}
+	
+	@Override
 	public Map<String, Object> watch(Long stallId) {
 		log.info("stall:=====================");
 		Map<String, Object> map = new HashMap<>();
@@ -932,7 +953,10 @@ public class StallServiceImpl implements StallService {
 			int preFaultTypeStalls = 0;
 			int orderNum = 0;
 			for (Stall stall : stalls) {
-				if (stall.getType() != 0 || !stall.getPreId().equals(resPre.getId())) {
+				if (stall.getType() != 0) {
+					continue;
+				}
+				if(!stall.getPreId().equals(resPre.getId())) {
 					continue;
 				}
 				if (collect.contains(stall.getId())) {
@@ -1058,31 +1082,31 @@ public class StallServiceImpl implements StallService {
 				ResStaffStallList.setExcStatus(false);
 			}
 			boolean falg = true;
-			if (bockBeans != null) {
-				for (ResLockInfo lockBean : bockBeans) {
-					if (lockBean.getLockCode().equals(resStall.getLockSn())) {
-						if(lockBean.getElectricity() <= 30) {
-							ResStaffStallList.setExcStatus(false);
+				if (bockBeans != null && bockBeans.size() != 0) {
+					for (ResLockInfo lockBean : bockBeans) {
+						if (lockBean.getLockCode().equals(resStall.getLockSn())) {
+							if(lockBean.getElectricity() <= 30) {
+								ResStaffStallList.setExcStatus(false);
+							}
+							falg = false;
+							switch (lockBean.getLockState()) {
+							case 0:
+								ResStaffStallList.setLockStatus(2);
+								break;
+							case 2:
+								ResStaffStallList.setLockStatus(1);
+								break;
+							case 3:
+								ResStaffStallList.setLockStatus(2);
+								break;
+							case 1:
+								ResStaffStallList.setLockStatus(1);
+								break;
+							}
+							break;
 						}
-						falg = false;
-						switch (lockBean.getLockState()) {
-						case 0:
-							ResStaffStallList.setLockStatus(2);
-							break;
-						case 2:
-							ResStaffStallList.setLockStatus(1);
-							break;
-						case 3:
-							ResStaffStallList.setLockStatus(2);
-							break;
-						case 1:
-							ResStaffStallList.setLockStatus(1);
-							break;
-						}
-						break;
 					}
 				}
-			}
 			if (falg) {
 				ResStaffStallList.setLockStatus(resStall.getLockStatus());
 			}
@@ -1143,12 +1167,41 @@ public class StallServiceImpl implements StallService {
 					}
 					int code = res == false ? 500:200;
 					log.info(" operating··············" + res + " code·············" + code);
-					sendMsgT(uid, reqc.getStatus(), code);
 					if (code == 200) {
 						redisService.remove(reqc.getKey());
 						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
 						stallMasterMapper.lockdown(stall);
 					}
+					sendMsgT(uid, reqc.getStatus(), code);
+					//解锁
+					redisLock.unlock1(reqc.getRobkey());
+				}
+			}
+		});
+	}
+	
+	
+	/**
+	 * 管理版锁操作
+	 */
+	@Override
+	public void operatingsn(ReqControlLock reqc) {
+		TaskPool.getInstance().task(new Runnable() {
+			@Override
+			public void run() {
+				String uid = String.valueOf(redisService.get(reqc.getKey()));
+				
+				if (reqc != null && StringUtils.isNotBlank(reqc.getLockSn())) {
+					log.info("operating··········sn:{},··········uid:{}", reqc.getLockSn(), uid);
+					Boolean res = null;
+					// 1 降下 2 升起
+					if (reqc.getStatus() == 1) {
+						res = lockTools.downLock(reqc.getLockSn());
+					} else if (reqc.getStatus() == 2) {
+						res = lockTools.upLock(reqc.getLockSn());
+					}
+					int code = res == false ? 500:200;
+					log.info(" operating··············" + res + " code·············" + code);
 					sendMsgT(uid, reqc.getStatus(), code);
 				}
 			}
@@ -1165,7 +1218,7 @@ public class StallServiceImpl implements StallService {
 				String bool = (code == 200 ? "true" : "false");
 				Token token = (Token) redisService.get(RedisKey.STAFF_STAFF_AUTH_TOKEN.key + uid.toString());
 
-				log.info("sendMsgT   send>>>" + uid);
+				log.info("sendMsgT   send>>>" + uid+"--content");
 				ReqPush rp = new ReqPush();
 				rp.setAlias(uid);
 				rp.setTitle(title);
@@ -1189,7 +1242,6 @@ public class StallServiceImpl implements StallService {
 		Stall stall = this.stallClusterMapper.findById(stallId);
 		ResLockInfo lockBean = this.lockTools.lockInfo(stall.getLockSn());
 		List<ResBaseDict> baseDict = this.baseDictClient.findList(DOWN_CAUSE);
-
 		if (lockBean != null) {
 			detail.setBetty(lockBean.getElectricity());
 			detail.setStallId(stall.getId());
@@ -1248,7 +1300,6 @@ public class StallServiceImpl implements StallService {
 				detail.setExcCode(entExcStall.getExcStatus());
 			}
 		}
-
 		if (detail.getExcCode() != null || detail.getBetty() <= 30) {
 			for (ResBaseDict resBaseDict : baseDict) {
 				if (detail.getExcCode() != null) {
@@ -1420,6 +1471,7 @@ public class StallServiceImpl implements StallService {
 		ResLockInfo lock = this.lockTools.lockInfo(sn);
 		stallSn.setStallSn(sn);
 		if(lock != null) {
+			stallSn.setBindStata(2);
 			stallSn.setBindStatus(true);
 			stallSn.setLockOffLine(2);
 			stallSn.setBattery(lock.getElectricity());

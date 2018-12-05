@@ -138,6 +138,18 @@ public class FeignStallController {
 	}
 	
 	/**
+	 * 管理版操作锁
+	 * 
+	 * @param LockSn
+	 *            Long
+	 */
+	@RequestMapping(value = "/v2.0/operatelockSn", method = RequestMethod.POST)
+	public void managerlockSn(@RequestBody   ReqControlLock  reqc) {
+		log.info("managerlock:{} .......................................",reqc.getLockSn());
+		this.stallService.operatingsn(reqc);
+	}
+	
+	/**
 	 *物业版操作锁 操作锁
 	 * 
 	 * @param stallId
@@ -159,6 +171,17 @@ public class FeignStallController {
 	public Map<String,Object> watch(@RequestBody Long stallId) {
 		log.info("watch:{} .....................................",stallId);
 	    return	this.stallService.watch(stallId);
+	}
+	/**
+	 * 操作锁--管理版使用
+	 * 
+	 * @param stallId
+	 *            Long
+	 */
+	@RequestMapping(value = "/v2.0/watch2", method = RequestMethod.POST)
+	public Map<String,Object> watch2(@RequestBody Long stallId) {
+		log.info("watch:{} .....................................",stallId);
+		return	this.stallService.watch2(stallId);
 	}
 	
 	/**

@@ -145,7 +145,6 @@ public class UnusualOrderServiceImpl implements UnusualOrderService {
 			stallIds.add(order.getStallId());
 		}
 		log.info("appoint and lockdown exception list {}", JSON.toJSON(stallIds));
-
 		this.unusualOrderMasterMapper.deleteByCategory((short) 4);
 		List<ResOrderOps> list = ordersClusterMapper.unreleaseHangOrders();
 		List<Long> stallList = new ArrayList<Long>();
@@ -183,7 +182,6 @@ public class UnusualOrderServiceImpl implements UnusualOrderService {
 
 	@Override
 	public void updateUnreleaseCompleteOrders() {
-
 		this.unusualOrderMasterMapper.deleteByCategory((short) 2);
 		List<ResOrderOps> list = ordersClusterMapper.unreleaseCompleteOrders();
 		List<Long> stallList = new ArrayList<Long>();

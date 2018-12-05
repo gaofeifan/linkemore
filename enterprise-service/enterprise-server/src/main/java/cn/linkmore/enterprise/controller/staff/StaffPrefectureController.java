@@ -16,6 +16,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.staff.request.OrderOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.SraffReqConStall;
+import cn.linkmore.enterprise.controller.staff.request.SraffReqConStallSn;
 import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
 import cn.linkmore.enterprise.service.StaffPrefectureService;
@@ -47,6 +48,23 @@ public class StaffPrefectureController {
 		ResponseEntity<Boolean> response = null;
 		try {
 			staffPrefectureService.control(reqConStall, request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	
+	@ApiOperation(value = "管理员根据编码操作车位车锁", notes = "管理员根据编码操作车位车锁", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/controlsn", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> controlLockSn(@Validated @RequestBody SraffReqConStallSn reqConStallSn,
+			HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			staffPrefectureService.controlSn(reqConStallSn, request);
 			response = ResponseEntity.success(true, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);

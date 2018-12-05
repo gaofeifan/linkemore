@@ -175,6 +175,13 @@ public interface StallService {
 	void operating (ReqControlLock  reqc);
 	
 	/**
+	 * 管理版控制车位锁
+	 * @param 
+	 * @return
+	 */
+	void operatingsn (ReqControlLock  reqc);
+	
+	/**
 	 * 查看车位锁状态
 	 * @param 
 	 * @return
@@ -293,4 +300,11 @@ public interface StallService {
 	 * @return
 	 */
 	int unBind(List<Long> ids);
+	
+	/**
+	 * @Description  管理版使用
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Map<String, Object> watch2(Long stallId);
 }
