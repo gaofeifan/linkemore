@@ -319,17 +319,17 @@ public class EntStallServiceImpl implements EntStallService {
 				stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
 				stall.setType(resStall.getType());
 				stall.setStallId(resStall.getId());
-				for (LockBean lock : lockBeans) {
-					if (lock.getLockCode().equals(stall.getLockSn())) {
-						if (lock.getLockState().equals(1)) {
-							log.info(lock.getLockCode() + "===" + lock.getLockState());
-							stall.setLockStatus(lock.getLockState());
-						} else {
-							stall.setLockStatus(2);
+				if (lockBeans != null) {
+					for (LockBean lock : lockBeans) {
+						if (lock.getLockCode().equals(stall.getLockSn())) {
+							if (lock.getLockState().equals(1)) {
+								log.info(lock.getLockCode() + "===" + lock.getLockState());
+								stall.setLockStatus(lock.getLockState());
+							} else {
+								stall.setLockStatus(2);
+							}
 						}
 					}
-				}
-				if (lockBeans != null) {
 					for (LockBean lock : lockBeans) {
 						if (lock.getLockCode().equals(stall.getLockSn())) {
 							if (lock.getElectricity() <= 30) {

@@ -126,7 +126,10 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		List<Long> list = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
 		map = new HashMap<>();
 		map.put("stallIds", list);
-		return this.staffOrderClient.findDayIncome(map);
+		if(stalls != null && stalls.size() != 0) {
+			return this.staffOrderClient.findDayIncome(map);
+		}
+		return new BigDecimal(0);
 	}
 
 	@Override
@@ -143,7 +146,10 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		map = new HashMap<>();
 		map.put("stallIds", stallIds);
 		map.put("type", type.getType());
-		return this.staffOrderClient.findAmountReportCount(map);
+		if(stallIds != null && stallIds.size() != 0) {
+			return this.staffOrderClient.findAmountReportCount(map);
+		}
+		return new BigDecimal(0); 
 	}
 
 	@Override
@@ -160,7 +166,10 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		map = new HashMap<>();
 		map.put("stallIds", stallIds);
 		map.put("type", type.getType());
-		return this.staffOrderClient.findCarReportCount(map);
+		if(stallIds != null && stallIds.size() != 0) {
+			return this.staffOrderClient.findCarReportCount(map);
+		}
+		return 0;
 	}
 
 	@Override
@@ -174,11 +183,14 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		map.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(map);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
+		ResAmountReport amountReport = new ResAmountReport();
+		if(stallIds == null || stallIds.size() == 0) {
+			return amountReport;
+		}
 		map = new HashMap<>();
 		map.put("stallIds", stallIds);
 		map.put("type", type.getType());
 		map = this.staffOrderClient.findAmountReportList(map);
-		ResAmountReport amountReport = new ResAmountReport();
 		if(map == null) {
 			return amountReport;
 		}
@@ -216,11 +228,14 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		map.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(map);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
+		ResCarReport carReport = new ResCarReport();
+		if(stallIds == null || stallIds.size() == 0) {
+			return carReport; 
+		}
 		map = new HashMap<>();
 		map.put("stallIds", stallIds);
 		map.put("type", type.getType());
 		map = this.staffOrderClient.findCarReportList(map);
-		ResCarReport carReport = new ResCarReport();
 		if(map == null) {
 			return carReport;
 		}
@@ -258,11 +273,14 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		param.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(param);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
+		List<cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlow> dayTFs = new ArrayList<>();
+		if(stallIds == null || stallIds.size() == 0) {
+			return dayTFs;
+		}
 		param = new HashMap<>();
 		param.put("now", page.getNow());
 		param.put("stallIds", stallIds);
 		List<ResTrafficFlow> flowList = this.staffOrderClient.findCarMonthList(param);
-		List<cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlow> dayTFs = new ArrayList<>();
 		if(flowList == null) {
 			return dayTFs;
 		}
@@ -292,14 +310,17 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		param.put("preIds", Arrays.asList(page.getPreId()));
 		param.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(param);
+		List<cn.linkmore.order.response.ResIncome> oIncomes = this.staffOrderClient.findAmountMonthList(param);
+		List<cn.linkmore.prefecture.controller.staff.response.ResDayIncome> incomes = new ArrayList<>();
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
+		if(stallIds == null || stallIds.size() ==0) {
+			return incomes;
+		}
 		param = new HashMap<>();
 		param.put("now", page.getNow());
 		param.put("stallIds", stallIds);
-		List<cn.linkmore.prefecture.controller.staff.response.ResDayIncome> incomes = new ArrayList<>();
 		cn.linkmore.prefecture.controller.staff.response.ResDayIncome income = null;
 //		List<ResDayIncomes> incomeLists = new ArrayList<>();
-		List<cn.linkmore.order.response.ResIncome> oIncomes = this.staffOrderClient.findAmountMonthList(param);
 		if(oIncomes == null) {
 			return incomes;
 		}
@@ -329,11 +350,14 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		param.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(param);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
+		List<ResAmountDetail> chargeDetail = new ArrayList<>();
+		if(stallIds == null || stallIds.size() == 0) {
+			return chargeDetail;
+		}
 		param = new HashMap<>();
 		param.put("stallIds", stallIds);
 		param.put("pageNo", pageNo);
 		List<cn.linkmore.order.response.ResChargeDetail> list = this.staffOrderClient.findAmountDetail(param);
-		List<ResAmountDetail> chargeDetail = new ArrayList<>();
 		for (cn.linkmore.order.response.ResChargeDetail resChargeDetail : list) {
 			chargeDetail.add(ObjectUtils.copyObject(resChargeDetail, new ResAmountDetail() ));
 		}
