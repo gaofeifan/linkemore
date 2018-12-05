@@ -30,6 +30,7 @@ import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
+import cn.linkmore.bean.common.Constants.ClientSource;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.LockStatus;
 import cn.linkmore.bean.common.Constants.PushType;
@@ -866,17 +867,17 @@ public class StallServiceImpl implements StallService {
 		Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
 		log.info("send>>>" + JsonUtil.toJson(token));
 		if (token != null) {
-			if (token.getClient() == Constants.ClientSource.WXAPP.source) {
-				log.info("..........socket start...............");
-				CacheUser cu = (CacheUser) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + token.getAccessToken());
+			if (token.getClient().intValue() == ClientSource.WXAPP.source) {
+				log.info("=============================socket start===========================");
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("title", title);
 				map.put("type", type);
 				map.put("content", content);
-				map.put("data", token.getAccessToken());
-				map.put("alias", cu.getId());
-				ResEntStaff staff = this.entStaffClient.findById(cu.getId());
-				userSocketClient.push(JsonUtil.toJson(map), staff.getOpenId());
+				map.put("code", bool);
+				CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
+				userSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
+				log.info("openid>>>" + cu.getOpenId());
+				System.out.println(JsonUtil.toJson(map));
 			} else {
 				ReqPush rp = new ReqPush();
 				rp.setAlias(uid);
@@ -1201,6 +1202,9 @@ public class StallServiceImpl implements StallService {
 						res = lockTools.upLock(reqc.getLockSn());
 					}
 					int code = res == false ? 500:200;
+					if (code == 200) {
+						redisService.remove(reqc.getKey());
+					}
 					log.info(" operating··············" + res + " code·············" + code);
 					sendMsgT(uid, reqc.getStatus(), code);
 				}

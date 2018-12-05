@@ -58,6 +58,12 @@ public class UserSocketServer {
 				log.error("websocket IO异常");
 			}
 		}else { 
+			this.openid = openid;
+			this.session = session;
+			webSocketMap.put(openid, this); 
+			addOnlineCount();
+			log.info("new user added！current user count :{}", getOnlineCount());
+			success = true;
 			return;
 		} 
 	}
@@ -72,7 +78,14 @@ public class UserSocketServer {
 	@OnMessage
 	public void onMessage(String message, Session session) {
 		log.info("client socket message:{}", message);
-
+		try {
+			session.getBasicRemote().sendText("收到了");
+			UserSocketServer wss = webSocketMap.get("099");
+			wss.sendMessage("我也收到了 ");
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
 	}
 
 	@OnError
