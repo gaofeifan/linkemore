@@ -1,5 +1,6 @@
 package cn.linkmore.ops.ent.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -91,9 +92,7 @@ public class RentEntUserController extends BaseController{
 			
 			long userId = getPerson().getId();
 			String userName = getPerson().getUsername();
-			//long preId = 0;
-			//System.out.println("prefectureId="+prefectureId);
-			/*
+/*
 			Map<String,Object> map=new HashMap<String,Object>();
 			map.put("createUserId", userId);
 			List<ResPreList> findPreList = preService.findSelectListByUser(map);
@@ -104,32 +103,21 @@ public class RentEntUserController extends BaseController{
 			for (List<String> cell : list) {
 				if (cell != null && cell.size() > 0) {
 					if (StringUtils.isNotBlank(cell.get(0))) {
-						
 						ReqRentEntUser rentEntUser=new ReqRentEntUser();
 						rentEntUser.setPlate(cell.get(0));
 						rentEntUser.setMobile(cell.get(1));
-						rentEntUser.setUsername(userName);
-						rentEntUser.setRentEntId(companyId);
+						rentEntUser.setUserName(userName);
+						rentEntUser.setRentComId(companyId);
+						rentEntUser.setCreateUserId(userId);
+						rentEntUser.setCreateUserName(userName);
+						rentEntUser.setCreateTime(new Date());
+						rentEntUser.setUpdateUserId(userId);
+						rentEntUser.setUpdateUserName(userName);
+						rentEntUser.setUpdateTime(new Date());
+						rentEntUser.setStatus(1);
 						if(!rentEntUserService.exists(rentEntUser)) {
-							System.out.println("excel:plate="+rentEntUser.getPlate());
-							System.out.println("save");
 							rentEntUserService.save(rentEntUser);
 						}
-						
-						
-						/*
-						ReqEntUserPlate reqEntUserPlate=new ReqEntUserPlate();
-						reqEntUserPlate.setPlateNo(cell.get(0));
-						reqEntUserPlate.setCreateUserId(userId);
-						reqEntUserPlate.setCreateUserName(userName);
-						reqEntUserPlate.setPreId(prefectureId);
-						reqEntUserPlate.setCompanyId(companyId);
-						reqEntUserPlate.setCreateTime(new Date());
-						if(!entUserPlateService.exists(reqEntUserPlate)) {
-							entUserPlateService.save(reqEntUserPlate);
-						}
-						*/
-
 					}
 				}
 			}

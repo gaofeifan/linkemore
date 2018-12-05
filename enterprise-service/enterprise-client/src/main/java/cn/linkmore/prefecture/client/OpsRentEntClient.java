@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,11 +22,11 @@ public interface OpsRentEntClient {
 	@ResponseBody
 	public ViewPage list(@RequestBody ViewPageable pageable);
 	
-	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
 	public void save(@RequestBody ReqRentEnt ent);
 	
-	@RequestMapping(value = "/v2.0", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/update", method = RequestMethod.PUT)
 	@ResponseBody
 	public void update(@RequestBody ReqRentEnt ent);
 	
@@ -33,12 +34,21 @@ public interface OpsRentEntClient {
 	@ResponseBody
 	public void delete(@RequestBody List<Long> ids);
 
-	@RequestMapping(value = "/stall-company", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/stall-company", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage stallListCompany(@RequestBody ViewPageable pageable);
 
-	@RequestMapping(value = "/tree", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Tree> tree(@RequestParam("entId") Long entId);
+
+	/**
+	 * 更改状态 开启/关闭
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/update_status", method = RequestMethod.POST)
+	@ResponseBody
+	public int updateStatus(@RequestBody Map<String, Object> map);
 	
 }

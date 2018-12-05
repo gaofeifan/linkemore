@@ -1,10 +1,13 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
@@ -24,7 +27,6 @@ public class OpsRentEntClientHystrix implements OpsRentEntClient {
 	public void save(ReqRentEnt ent) {
 		log.info("=======Hystrix==========void save(ReqRentEnt ent) ");
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -50,6 +52,12 @@ public class OpsRentEntClientHystrix implements OpsRentEntClient {
 	public List<Tree> tree(Long entId) {
 		log.info("=======Hystrix==========Tree tree(Long entId)");
 		return null;
+	}
+
+	@Override
+	public int updateStatus(Map<String, Object> map) {
+		log.info("=======Hystrix==========int updateStatus(map) ={}",JSON.toJSON(map));
+		return 0;
 	}
 
 

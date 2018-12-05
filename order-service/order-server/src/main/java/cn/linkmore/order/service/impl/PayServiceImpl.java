@@ -772,7 +772,7 @@ public class PayServiceImpl implements PayService {
 		 */
 
 		// OrdersDetail od = ordersDetailClusterMapper.findByOrderId(order.getId());
-		if (order.getStatus() == OrderStatus.UNPAID.value) {
+		if (order.getStatus() == OrderStatus.UNPAID.value || order.getStatus() == OrderStatus.SUSPENDED.value) {
 			try {
 				log.info(">>>>>>stall checkout thread preName = {},stallName = {}, mobile= {}",order.getPreName(),order.getStallName(),order.getUsername());
 				new Thread(new StallCheckoutThread(order.getStallId())).start();

@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.controller.ops;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -30,13 +31,13 @@ public class RentEntController {
 		return this.rentEntService.findPage(pageable);
 	}
 	
-	@RequestMapping(value = "/v2.0", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
 	public void save(@RequestBody ReqRentEnt ent) {
 		this.rentEntService.save(ent);
 	}
 	
-	@RequestMapping(value = "/v2.0", method = RequestMethod.PUT)
+	@RequestMapping(value = "/v2.0/update", method = RequestMethod.PUT)
 	@ResponseBody
 	public void update(@RequestBody ReqRentEnt ent) {
 		this.rentEntService.update(ent);
@@ -48,15 +49,26 @@ public class RentEntController {
 		this.rentEntService.delete(ids);
 	}
 	
-	@RequestMapping(value = "/stall-company", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/stall-company", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage stallListCompany(@RequestBody ViewPageable pageable) {
 		return this.rentEntService.stallListCompany(pageable);
 	}
 	
-	@RequestMapping(value = "/tree", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Tree> tree(@RequestParam("entId") Long entId) {
 		return this.rentEntService.tree(entId);
+	}
+	
+	/**
+	 * 更改状态 开启/关闭
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/update_status", method = RequestMethod.POST)
+	@ResponseBody
+	public int updateStatus(@RequestBody Map<String, Object> map) {
+		return this.rentEntService.updateStatus(map);
 	}
 }
