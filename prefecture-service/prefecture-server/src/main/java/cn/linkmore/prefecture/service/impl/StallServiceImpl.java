@@ -875,7 +875,7 @@ public class StallServiceImpl implements StallService {
 				map.put("content", content);
 				map.put("code", bool);
 				CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
-				userSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
+				userSocketClient.push(content, cu.getOpenId());
 				log.info("openid>>>" + cu.getOpenId());
 				System.out.println(JsonUtil.toJson(map));
 			} else {
