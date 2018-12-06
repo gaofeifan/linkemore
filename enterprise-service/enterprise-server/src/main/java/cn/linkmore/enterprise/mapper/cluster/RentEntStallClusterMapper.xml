@@ -38,12 +38,12 @@
    	AND stall_name like #{stallName}
     </if>
 	</where>
-   <!--  <if test="property==null">  
+    <if test="property==null">  
     order by create_time desc
     </if>
     <if test="property!=null">  
     order by  ${property} ${direction}
-    </if> -->
+    </if>
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   <select id="stallListCompany" parameterType="java.lang.Long" resultMap="BaseResultMap">
