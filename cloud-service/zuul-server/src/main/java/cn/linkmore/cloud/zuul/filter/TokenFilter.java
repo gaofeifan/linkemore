@@ -98,6 +98,14 @@ public class TokenFilter extends ZuulFilter {
 			add("/h5/r");
 			add("/h5/o");
 			add("/h5/g");
+			add("/h5/b");
+			add("/h5/c");
+			add("/h5/f");
+			add("/h5/h");
+			add("/h5/m");
+			add("/h5/n");
+			add("/h5/notify");
+			add("/h5/notify.do");
 	
 			add("/attach/image_upload"); 
 		}

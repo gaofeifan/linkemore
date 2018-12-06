@@ -44,6 +44,7 @@ import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
+import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
@@ -93,6 +94,8 @@ public class EntStallServiceImpl implements EntStallService {
 	private static final String DOWN_CAUSE = "cause_down";
 	@Autowired
 	private EnterpriseService enterpriseService;
+	@Autowired
+	private EntRentedRecordMasterMapper rentedRecordMasterMapper;
 	@Autowired
 	private UserClient userClient;
 	@Autowired
@@ -561,6 +564,11 @@ public class EntStallServiceImpl implements EntStallService {
 				}
 				// 1 降下 2 升起
 				stallClient.operLockWY(reqc);
+				if(reqc.getStatus() == 2 ) {
+					Map<String, Object> map = new HashMap<>();
+					map.put("stallId", reqc.getStallId());
+					rentedRecordMasterMapper.updateRentUserStatus(map );
+				}
 			}
 		}).start();
 
