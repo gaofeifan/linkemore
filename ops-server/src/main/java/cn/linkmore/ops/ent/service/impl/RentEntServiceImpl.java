@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
@@ -23,7 +29,6 @@ import cn.linkmore.prefecture.client.OpsPrefectureClient;
 import cn.linkmore.prefecture.client.OpsRentEntClient;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
-import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
@@ -41,6 +46,8 @@ public class RentEntServiceImpl implements RentEntService {
 	
 	@Resource
 	private OpsRentEntClient rentEntClient;
+	
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
@@ -102,6 +109,7 @@ public class RentEntServiceImpl implements RentEntService {
 	@Override
 	public List<ResStall> stallList(HttpServletRequest request) {
 		List<ResStall> list = new ArrayList<ResStall>();
+		List<ResStall> notUsedList = new ArrayList<ResStall>();
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
 		Map<String, Object> param = new HashMap<>();
@@ -111,8 +119,27 @@ public class RentEntServiceImpl implements RentEntService {
 			param.put("preId", preList.get(0).getId());
 			param.put("type", 2);
 			list = this.stallClient.findStallList(param);
+			List<Long> stallIds = rentEntClient.occuyStallList(param);
+			if(CollectionUtils.isNotEmpty(list)) {
+				for(ResStall stall: list) {
+					if(!stallIds.contains(stall.getId())) {
+						notUsedList.add(stall);
+					}
+				}
+			}
+			
+			/*param.put("preId", preList.get(0).getId());
+			param.put("type", 2);
+			List<Long> stallIds = rentEntClient.occuyStallList(param);
+			log.info("------occupy-----stallIds = {}", JSON.toJSON(stallIds));
+			if(CollectionUtils.isNotEmpty(stallIds)) {
+				param.put("list", stallIds);
+			}
+			log.info("-----------params = {}", JSON.toJSON(param));
+			list = this.stallClient.findPreStallList(param);
+			log.info("------un occupy-----stall-list = {}", JSON.toJSON(list));*/
 		}
-		return list;
+		return notUsedList;
 	}
 
 	@Override
@@ -130,5 +157,39 @@ public class RentEntServiceImpl implements RentEntService {
 	@Override
 	public int updateStatus(Map<String, Object> map) {
 		return rentEntClient.updateStatus(map);
+	}
+
+	@Override
+	public void deleteStall(List<Long> ids) {
+		this.rentEntClient.deleteStall(ids);
+	}
+
+	@Override
+	public void saveStall(ReqRentEnt ent) {
+		List<ReqRentEntStall> stalls = new ArrayList<>();
+		ReqRentEntStall reqRentEntStall;
+		List<Long> list = ent.getStallIds();
+		String names = ent.getStallNames();
+		String[] stallNames = names.split(",");
+		ResPrefectureDetail preDetail = this.prefectrueClient.findById(ent.getPreId());
+		if(CollectionUtils.isNotEmpty(list) && preDetail != null) {
+			for (int i = 0; i < list.size(); i++) {
+				reqRentEntStall = new ReqRentEntStall();
+				reqRentEntStall.setRentComId(ent.getId());
+				reqRentEntStall.setStallId(list.get(i));
+				reqRentEntStall.setStallName(stallNames[i]);
+				reqRentEntStall.setPreId(preDetail.getId());
+				reqRentEntStall.setPreName(preDetail.getName());
+				reqRentEntStall.setCreateTime(ent.getCreateTime());
+				reqRentEntStall.setCreateUserId(ent.getCreateUserId());
+				reqRentEntStall.setCreateUserName(ent.getCreateUserName());
+				reqRentEntStall.setUpdateTime(ent.getUpdateTime());
+				reqRentEntStall.setUpdateUserId(ent.getUpdateUserId());
+				reqRentEntStall.setUpdateUserName(ent.getUpdateUserName());
+				stalls.add(reqRentEntStall);
+			}
+		}
+		ent.setStalls(stalls);
+		this.rentEntClient.saveStall(ent);
 	}
 }

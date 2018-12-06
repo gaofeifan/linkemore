@@ -60,5 +60,19 @@ public class OpsRentEntClientHystrix implements OpsRentEntClient {
 		return 0;
 	}
 
+	@Override
+	public void deleteStall(List<Long> ids) {
+		
+	}
+
+	@Override
+	public void saveStall(ReqRentEnt ent) {
+		
+	}
+
+	@Override
+	public List<Long> occuyStallList(Map<String, Object> param) {
+		return null;
+	}
 
 }

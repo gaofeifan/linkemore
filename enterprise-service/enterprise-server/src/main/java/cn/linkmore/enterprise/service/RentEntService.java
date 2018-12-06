@@ -36,4 +36,8 @@ public interface RentEntService {
 
 	int updateStatus(Map<String, Object> map);
 
+	void deleteStall(List<Long> ids);
+
+	void saveStall(ReqRentEnt ent);
+
 }

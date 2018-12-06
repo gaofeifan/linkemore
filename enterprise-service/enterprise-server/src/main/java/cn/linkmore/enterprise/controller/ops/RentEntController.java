@@ -17,6 +17,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqRentEnt;
 import cn.linkmore.enterprise.service.RentEntService;
+import cn.linkmore.enterprise.service.RentEntStallService;
 
 @Controller
 @RequestMapping("/ops/rent-ent")
@@ -24,6 +25,9 @@ public class RentEntController {
 
 	@Resource
 	private RentEntService rentEntService;
+	
+	@Resource
+	private RentEntStallService rentEntStallService;
 	
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
@@ -35,6 +39,12 @@ public class RentEntController {
 	@ResponseBody
 	public void save(@RequestBody ReqRentEnt ent) {
 		this.rentEntService.save(ent);
+	}
+	
+	@RequestMapping(value = "/v2.0/save_stall", method = RequestMethod.POST)
+	@ResponseBody
+	public void saveStall(@RequestBody ReqRentEnt ent) {
+		this.rentEntService.saveStall(ent);
 	}
 	
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.PUT)
@@ -49,10 +59,23 @@ public class RentEntController {
 		this.rentEntService.delete(ids);
 	}
 	
+	@RequestMapping(value = "/v2.0/delete_stall", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void deleteStall(@RequestBody List<Long> ids) {
+		this.rentEntService.deleteStall(ids);
+	}
+	
 	@RequestMapping(value = "/v2.0/stall-company", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage stallListCompany(@RequestBody ViewPageable pageable) {
 		return this.rentEntService.stallListCompany(pageable);
+	}
+	
+	@RequestMapping(value = "/v2.0/occuy-stall-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Long> occuyStallList(@RequestBody Map<String, Object> param){
+		List<Long> list = rentEntStallService.occuyStallList(param);
+		return list;
 	}
 	
 	@RequestMapping(value = "/v2.0/tree", method = RequestMethod.GET)
