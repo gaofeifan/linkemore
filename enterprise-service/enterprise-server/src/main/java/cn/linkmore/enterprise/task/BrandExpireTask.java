@@ -45,7 +45,7 @@ public class BrandExpireTask {
 	@Scheduled(cron = "0 0/5 * * * ?")
 	public void run() {
 		log.info("sync brand pre thread...");
-		init();
+		//init();
 	}
 	
 	public void init() {

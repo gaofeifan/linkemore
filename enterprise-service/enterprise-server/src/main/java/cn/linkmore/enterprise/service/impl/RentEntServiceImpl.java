@@ -14,6 +14,8 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.RentEntClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.RentEntStallClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.RentEntUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.RentEntMasterMapper;
 import cn.linkmore.enterprise.entity.RentEnt;
 import cn.linkmore.enterprise.request.ReqRentEnt;
@@ -31,6 +33,12 @@ public class RentEntServiceImpl implements RentEntService {
 	private RentEntMasterMapper rentEntMasterMapper;
 	@Resource
 	private RentEntStallService rentEntStallService;
+	
+	@Resource
+	private RentEntUserClusterMapper rentEntUserClusterMapper;
+	
+	@Resource
+	private RentEntStallClusterMapper rentEntStallClusterMapper;
 	@Override
 	public RentEnt findById(Long id) {
 		return this.rentEntClusterMapper.findById(id);
@@ -79,6 +87,16 @@ public class RentEntServiceImpl implements RentEntService {
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
 		List<RentEnt> list = this.rentEntClusterMapper.findPage(param);
+		if(CollectionUtils.isNotEmpty(list)) {
+			for(RentEnt rentEnt: list) {
+				param.put("companyId", rentEnt.getId());
+				Integer stallCount = this.rentEntStallClusterMapper.count(param);
+				Integer userCount = this.rentEntUserClusterMapper.count(param);
+				rentEnt.setStallCount(stallCount);
+				rentEnt.setUserCount(userCount);
+			}
+		}
+		
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
