@@ -57,8 +57,10 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 		RentEntUser entUser = ObjectUtils.copyObject(user, new RentEntUser());
 		if(user.getMobile() != null) {
 			Long mobile = userClient.getUserIdByMobile(user.getMobile());
-			entUser.setId(mobile);
+			entUser.setUserId(mobile);
+			//entUser.setUserName(userName);
 		}else {
+			/*
 			RentEntUser u = this.rentEntUserClusterMapper.findMaxId();
 			// 临时判断 需求完善在修改
 			if(u.getId() > 100000000) {
@@ -66,8 +68,10 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			}else {
 				entUser.setId(100000001L);
 			}
+			*/
 		}
 		this.rentEntUserMasterMapper.insert(entUser);
+		/*
 		List<RentEntStall> list = this.rentEntStallService.stallListCompany(entUser.getRentComId());
 		RentEnt rentEnt = this.rentEntService.findById(entUser.getRentComId());
 		ResEnterprise enterprise = this.enterpriseService.findById(rentEnt.getCreateUserId());
@@ -93,7 +97,7 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			rus.add(record);
 		}
 		this.entRentUserService.saveBatch(rus);
-		
+		*/
 		
 	}
 	

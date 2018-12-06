@@ -83,7 +83,7 @@ public class RentEntUserController extends BaseController{
 	@RequestMapping(value = "/importExcel",method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg importExcel(@RequestParam("file") MultipartFile file, 
-								@RequestParam("prefectureId") long prefectureId, 
+								//@RequestParam("prefectureId") long prefectureId, 
 								@RequestParam("companyId") long companyId) {
 		ViewMsg msg = new ViewMsg("导入成功", true);
 		try {
@@ -106,7 +106,7 @@ public class RentEntUserController extends BaseController{
 						ReqRentEntUser rentEntUser=new ReqRentEntUser();
 						rentEntUser.setPlate(cell.get(0));
 						rentEntUser.setMobile(cell.get(1));
-						rentEntUser.setUserName(userName);
+						//rentEntUser.setUserName(userName);
 						rentEntUser.setRentComId(companyId);
 						rentEntUser.setCreateUserId(userId);
 						rentEntUser.setCreateUserName(userName);

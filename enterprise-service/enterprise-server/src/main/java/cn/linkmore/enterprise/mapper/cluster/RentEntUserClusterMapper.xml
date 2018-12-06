@@ -3,6 +3,8 @@
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.RentEntUserClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.RentEntUser">
     <id column="id" jdbcType="BIGINT" property="id" />
+
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="rent_com_id" jdbcType="BIGINT" property="rentComId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
@@ -42,7 +44,7 @@
     SELECT
     eu.*, e.end_time,e.company_name
     FROM
-    t_ent_rent_com_user eu left join t_ent_rent_com e on eu.rent_ent_id = e.id
+    t_ent_rent_com_user eu left join t_ent_rent_com e on eu.rent_com_id = e.id
 	<where>
     <if test="rentComId != null">
    	AND eu.rent_com_id = #{rentComId}
