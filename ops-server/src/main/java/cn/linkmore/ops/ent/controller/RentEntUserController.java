@@ -39,20 +39,63 @@ public class RentEntUserController extends BaseController{
 	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	@ResponseBody
-	public void save( ReqRentEntUser ent) {
-		this.rentEntUserService.save(ent);
+	public ViewMsg save( ReqRentEntUser ent) {
+		ViewMsg msg = null;
+		try {
+			ent.setCreateTime(new Date());
+			ent.setCreateUserId(getPerson().getId());
+			ent.setCreateUserName(getPerson().getUsername());
+			ent.setUpdateTime(new Date());
+			ent.setUpdateUserId(getPerson().getId());
+			ent.setUpdateUserName(getPerson().getUsername());
+			ent.setStatus(1);
+
+			this.rentEntUserService.save(ent);
+			msg = new ViewMsg("保存成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = new ViewMsg("保存失败", false);
+		}
+		return msg;
 	}
 	
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
 	@ResponseBody
-	public void update( ReqRentEntUser ent) {
-		this.rentEntUserService.update(ent);
+	public ViewMsg update( ReqRentEntUser ent) {
+		ViewMsg msg = null;
+		try {
+			ent.setUpdateTime(new Date());
+			ent.setUpdateUserId(getPerson().getId());
+			ent.setUpdateUserName(getPerson().getUsername());
+			this.rentEntUserService.update(ent);
+			msg = new ViewMsg("保存成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = new ViewMsg("保存失败", false);
+		}
+		return msg;
+		
+		
 	}
 	
 	@RequestMapping(value = "/ids", method = RequestMethod.POST)
 	@ResponseBody
-	public void delete(@RequestBody List<Long> ids) {
-		this.rentEntUserService.deleteIds(ids);
+	public ViewMsg delete(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.rentEntUserService.deleteIds(ids);
+			msg = new ViewMsg("删除成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = new ViewMsg("删除失败", false);
+		}
+		return msg;
 	}
 	
 

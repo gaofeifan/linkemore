@@ -74,7 +74,7 @@
     t_ent_rent_com_user 
 	<where>
     <if test="rentComId != null">
-   	AND eu.rent_com_id = #{rentComId}
+   	AND rent_com_id = #{rentComId}
     </if>
     <if test="userName != null">
    	AND user_name like #{userName}
@@ -92,13 +92,14 @@
     select 
     <include refid="Base_Column_List" />
     from t_ent_rent_com_user
-    where 1 = 1
+    <where>
     <if test="rentComId != null">
     	and rent_com_id = #{rentComId,jdbcType=INTEGER}
     </if>
     <if test="plate != null">
     	and plate = #{plate,jdbcType=VARCHAR}
     </if>
+    </where>
     limit 1
   </select>
   
