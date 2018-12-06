@@ -64,7 +64,7 @@ public class RentEntController {
 		return msg;
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST)
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg update(HttpServletRequest request, ReqRentEnt ent) {
 		ViewMsg msg = null;

@@ -49,7 +49,7 @@ public class RentEntServiceImpl implements RentEntService {
 		vf.setProperty("createUserId");
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
-		Long id = person.getEntId();
+		Long id = person.getId();
 		vf.setValue(id);
 		list.add(vf);
 		return this.rentEntClient.list(pageable);
@@ -89,6 +89,8 @@ public class RentEntServiceImpl implements RentEntService {
 
 	@Override
 	public void update(ReqRentEnt ent) {
+		ent.setEndTime(DateUtils.convert(ent.getEndTimeStr(), "yyyy-MM-dd"));
+		ent.setStartTime(DateUtils.convert(ent.getStartTimeStr(), "yyyy-MM-dd"));
 		this.rentEntClient.update(ent);
 	}
 
@@ -107,6 +109,7 @@ public class RentEntServiceImpl implements RentEntService {
 		List<ResPreList> preList = prefectureClient.findSelectListByUser(param);
 		if(CollectionUtils.isNotEmpty(preList)) {
 			param.put("preId", preList.get(0).getId());
+			param.put("type", 2);
 			list = this.stallClient.findStallList(param);
 		}
 		return list;
