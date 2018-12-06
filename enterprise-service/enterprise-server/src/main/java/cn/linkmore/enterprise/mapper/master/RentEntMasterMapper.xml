@@ -46,7 +46,7 @@
       end_time = #{endTime,jdbcType=TIMESTAMP},
       update_user_id = #{updateUserId,jdbcType=BIGINT},
       update_user_name = #{updateUserName,jdbcType=VARCHAR},
-      update_time = #{updateUserName,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

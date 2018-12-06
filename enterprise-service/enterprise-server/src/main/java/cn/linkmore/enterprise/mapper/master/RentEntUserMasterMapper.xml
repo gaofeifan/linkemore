@@ -30,10 +30,10 @@
      </foreach>
   </delete>
   <insert id="insert" parameterType="cn.linkmore.enterprise.entity.RentEntUser">
-    insert into t_ent_rent_com_user (id,rent_com_id, user_id, user_name, mobile, plate,
+    insert into t_ent_rent_com_user (rent_com_id, user_id, user_name, mobile, plate,
     create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time, status
     )
-    values (#{id,jdbcType=BIGINT},#{rentComId,jdbcType=BIGINT},#{userId,jdbcType=BIGINT},  #{userName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+    values (#{rentComId,jdbcType=BIGINT},#{userId,jdbcType=BIGINT},  #{userName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
       #{plate,jdbcType=VARCHAR}, #{createUserId,jdbcType=BIGINT}, #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
     #{updateUserId,jdbcType=BIGINT}, #{updateUserName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},#{status,jdbcType=SMALLINT})
   </insert>

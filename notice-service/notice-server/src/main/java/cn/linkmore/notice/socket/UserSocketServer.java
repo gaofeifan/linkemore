@@ -48,7 +48,7 @@ public class UserSocketServer {
 		if (redisService.exists(RedisKey.USER_WXAPP_AUTH_TOKEN.key + openid)) {  
 			this.openid = openid;
 			this.session = session;
-			webSocketMap.put(openid, this); 
+			webSocketMap.put(openid, this);
 			addOnlineCount();
 			log.info("new user added！current user count :{}", getOnlineCount());
 			success = true;
@@ -58,6 +58,12 @@ public class UserSocketServer {
 				log.error("websocket IO异常");
 			}
 		}else { 
+			this.openid = openid;
+			this.session = session;
+			webSocketMap.put(openid, this); 
+			addOnlineCount();
+			log.info("new user added！current user count :{}", getOnlineCount());
+			success = true;
 			return;
 		} 
 	}
@@ -72,7 +78,6 @@ public class UserSocketServer {
 	@OnMessage
 	public void onMessage(String message, Session session) {
 		log.info("client socket message:{}", message);
-
 	}
 
 	@OnError

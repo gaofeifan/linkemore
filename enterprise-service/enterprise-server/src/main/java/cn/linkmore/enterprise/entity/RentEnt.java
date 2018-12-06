@@ -57,9 +57,32 @@ public class RentEnt {
 	 * 车区名称
 	 */
 	private String preName;
+	/**
+	 * 车位数量
+	 */
+	private Integer stallCount = 0;
+	/**
+	 * 用户数量
+	 */
+	private Integer userCount = 0;
 	
+    public Integer getStallCount() {
+		return stallCount;
+	}
 
-    public Long getId() {
+	public void setStallCount(Integer stallCount) {
+		this.stallCount = stallCount;
+	}
+
+	public Integer getUserCount() {
+		return userCount;
+	}
+
+	public void setUserCount(Integer userCount) {
+		this.userCount = userCount;
+	}
+
+	public Long getId() {
         return id;
     }
 
