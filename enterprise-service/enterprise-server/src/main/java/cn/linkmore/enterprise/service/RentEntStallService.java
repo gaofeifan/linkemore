@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.service;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -14,11 +15,15 @@ import cn.linkmore.enterprise.request.ReqRentEntStall;
  */
 public interface RentEntStallService {
 
-    RentEntStall selectByPrimaryKey(Long rentEntId);
+    RentEntStall findById(Long rentEntId);
 
 	void saveBatch(List<ReqRentEntStall> list);
 
 	ViewPage stallListCompany(ViewPageable pageable);
 
 	List<RentEntStall> stallListCompany(Long companyid);
+	
+	void deleteStall(List<Long> ids);
+
+	List<Long> occuyStallList(Map<String, Object> param);
 }

@@ -54,6 +54,14 @@
 	where
    	 rent_com_id = #{companyId}
   </select>
+  
+  <select id="occuyStallList" parameterType="java.util.HashMap" resultType="java.lang.Long">
+    SELECT stall_id FROM
+    t_ent_rent_com_stall 
+	where pre_id = #{preId}
+  </select>
+  
+  
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
     SELECT
 	count(1)
