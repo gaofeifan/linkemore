@@ -66,7 +66,7 @@ public class RentComUserTask {
 			}
 		}
 		if (CollectionUtils.isNotEmpty(entRentUser)) {
-			log.info("add the new rent com user size {}", entRentUser.size());
+			log.info("add the new rent com user size {},{}",JSON.toJSON(entRentUser), entRentUser.size());
 			entRentUserMasterMapper.saveBatch(entRentUser);
 		}
 
