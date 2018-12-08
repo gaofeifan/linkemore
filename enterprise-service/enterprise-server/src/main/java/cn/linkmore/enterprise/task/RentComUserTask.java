@@ -64,10 +64,10 @@ public class RentComUserTask {
 				rentUser.setType((short) 1);
 				entRentUser.add(rentUser);
 			}
-			if (CollectionUtils.isNotEmpty(rentUserList)) {
-				log.info("add the new rent com user size {}", rentUserList.size());
-				entRentUserMasterMapper.saveBatch(rentUserList);
-			}
+		}
+		if (CollectionUtils.isNotEmpty(entRentUser)) {
+			log.info("add the new rent com user size {}", entRentUser.size());
+			entRentUserMasterMapper.saveBatch(entRentUser);
 		}
 
 	}
