@@ -3,28 +3,24 @@ package cn.linkmore.enterprise.task;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
-import cn.linkmore.enterprise.dao.cluster.EntBrandPreClusterMapper;
-import cn.linkmore.enterprise.dao.cluster.EntBrandStallClusterMapper;
+
 import cn.linkmore.enterprise.dao.cluster.EntRentUserClusterMapper;
-import cn.linkmore.enterprise.dao.master.EntBrandPreMasterMapper;
-import cn.linkmore.enterprise.dao.master.EntBrandStallMasterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
 import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntRentUser;
-import cn.linkmore.enterprise.response.ResBrandPre;
-import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.prefecture.client.StallClient;
 
 
@@ -51,7 +47,7 @@ public class RentComUserTask {
 		log.info("sync rent com user init... ");
 		Map<String,Object> param = new HashMap<String,Object>();
 		List<EntRentUser> rentUserList = entRentUserClusterMapper.findComUserList(param);
-		List<EntOwnerStall> list = entRentUserClusterMapper.findRentComUserList2(param);
+		List<EntOwnerStall> list = entRentUserClusterMapper.findRentComUserList(param);
 		List<EntRentUser> entRentUser = new ArrayList<EntRentUser>();
 		EntRentUser rentUser = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

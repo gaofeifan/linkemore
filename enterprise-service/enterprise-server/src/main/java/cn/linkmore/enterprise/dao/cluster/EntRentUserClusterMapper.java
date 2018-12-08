@@ -76,12 +76,14 @@ public interface EntRentUserClusterMapper {
 	 * @param param
 	 * @return
 	 */
-	List<EntOwnerStall> findRentComUserList2(Map<String, Object> param);
+	List<EntOwnerStall> findRentComUserList(Map<String, Object> param);
 	/**
 	 * 查询公司下长租用户列表
 	 * @param param
 	 * @return
 	 */
 	List<EntRentUser> findComUserList(Map<String, Object> param);
+
+	
 
 }
