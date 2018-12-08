@@ -63,8 +63,6 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			系统中有这个车牌，关联到该用户,有几个用户就加几条记录
 			系统中无这个车牌
 */
-
-
 		if( StringUtils.isNotEmpty(user.getMobile())) {
 			Long mobile = userClient.getUserIdByMobile(user.getMobile());
 			if(mobile != null) {
@@ -107,6 +105,15 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	
 	@Override
 	public void update(ReqRentEntUser user) {
+		if( StringUtils.isNotEmpty(user.getMobile())) {
+			Long mobile = userClient.getUserIdByMobile(user.getMobile());
+			if(mobile != null) {
+				user.setUserId(mobile);
+			}
+
+		}else {
+			
+		}
 		this.rentEntUserMasterMapper.updateByPrimaryKey(ObjectUtils.copyObject(user, new RentEntUser()));
 	}
 	@Override
