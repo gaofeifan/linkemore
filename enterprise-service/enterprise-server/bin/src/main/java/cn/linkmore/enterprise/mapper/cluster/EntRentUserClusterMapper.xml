@@ -120,7 +120,7 @@
    	and company_id is not null
   </select>
   
-  <select id="findRentComUserList2" parameterType="java.util.HashMap"  resultMap="StallResultMap" >
+  <select id="findRentComUserList" parameterType="java.util.HashMap"  resultMap="StallResultMap" >
      SELECT
 		o.pre_id,
 		o.pre_name,
