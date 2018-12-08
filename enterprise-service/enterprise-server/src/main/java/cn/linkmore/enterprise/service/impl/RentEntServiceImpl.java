@@ -90,7 +90,7 @@ public class RentEntServiceImpl implements RentEntService {
 		List<RentEnt> list = this.rentEntClusterMapper.findPage(param);
 		if(CollectionUtils.isNotEmpty(list)) {
 			for(RentEnt rentEnt: list) {
-				param.put("companyId", rentEnt.getId());
+				param.put("rentComId", rentEnt.getId());
 				Integer stallCount = this.rentEntStallClusterMapper.count(param);
 				Integer userCount = this.rentEntUserClusterMapper.count(param);
 				rentEnt.setStallCount(stallCount);
