@@ -757,7 +757,7 @@ public class EntStallServiceImpl implements EntStallService {
 		Integer count = 0;
 		Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + orders.getId());
 		if (o != null) {
-			count = new Integer(o.toString());
+			count = new Integer(o.toString()); 
 		}
 		return count;
 	}

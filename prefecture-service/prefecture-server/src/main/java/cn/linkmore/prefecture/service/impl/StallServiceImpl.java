@@ -120,7 +120,6 @@ import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
-import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
