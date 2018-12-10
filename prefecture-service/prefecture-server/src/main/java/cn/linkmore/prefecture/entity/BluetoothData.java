@@ -36,7 +36,15 @@ public class BluetoothData {
      * 操作类型  1 降锁 2升锁
      */
     private Short operateFlag = 1;
-
+    /**
+     * 手机品牌
+     */
+    private String brand;
+    /**
+     * 备注信息
+     */
+    private String remark;
+    
     public Long getId() {
         return id;
     }
@@ -163,6 +171,22 @@ public class BluetoothData {
 
 	public void setOperateFlag(Short operateFlag) {
 		this.operateFlag = operateFlag;
+	}
+
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
     
 }
