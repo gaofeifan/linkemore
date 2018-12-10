@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -20,12 +22,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.linkmore.lock.bean.LockBean;
-import com.linkmore.lock.factory.LockFactory;
-import com.linkmore.lock.response.ResponseMessage;
+
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -117,7 +118,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Autowired
 	private RedisService redisService;
-
 	@Autowired
 	private StrategyGroupClusterMapper strategyGroupClusterMapper;
 
@@ -549,6 +549,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			detail.setId(preDetail.getId());
 			detail.setAddress(preDetail.getAddress());
 			detail.setName(preDetail.getName());
+			
 			detail.setLatitude(preDetail.getLatitude().doubleValue());
 			detail.setLongitude(preDetail.getLongitude().doubleValue());
 			detail.setBusinessTime(preDetail.getBusinessTime());

@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.task;
 
+import java.lang.management.LockInfo;
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,19 +18,17 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.linkmore.lock.bean.LockBean;
-import com.linkmore.lock.factory.LockFactory;
-import com.linkmore.lock.response.ResponseMessage;
-
 import cn.linkmore.bean.common.Constants.LockStatus;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.StallStatus;
 import cn.linkmore.enterprise.response.ResBrandPreStall;
 import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.prefecture.client.EntBrandPreClient;
+import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.entity.Stall;
+import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResPreGateway;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.JsonUtil;
@@ -48,8 +48,7 @@ public class FreeStallInit {
 	private PrefectureClusterMapper prefectureClusterMapper;
 
 	@Autowired
-	private LockFactory lockFactory;
-
+	private LockTools lockTools;
 	@Autowired
 	private EntBrandPreClient entBrandPreClient; 
 
@@ -65,7 +64,7 @@ public class FreeStallInit {
 	 * @param lbm
 	 * @param list
 	 */
-	private void brand(Map<String, LockBean> lbm, List<Stall> list) {
+	private void brand(Map<String, ResLockInfo> lbm, List<Stall> list) {
 		log.info("brand prefecture free stall init...");
 		Map<Long, Stall> snmap = new HashMap<Long, Stall>();
 		for (Stall s : list) {
@@ -114,7 +113,7 @@ public class FreeStallInit {
 	 * @param lbm
 	 * @param list
 	 */
-	private void common(Map<String, LockBean> lbm, List<Stall> list) {
+	private void common(Map<String, ResLockInfo> lbm, List<Stall> list) {
 		log.info("common prefecture free stall init...");
 		List<Long> preIds = this.prefectureClusterMapper.findPreIdList();
 		Map<Long, Set<Object>> map = new HashMap<Long, Set<Object>>();
@@ -154,17 +153,15 @@ public class FreeStallInit {
 	public void init() {
 		log.info("free stall init... ");
 		List<ResPreGateway> rpgs = this.prefectureClusterMapper.findPreGateList();
-		ResponseMessage<LockBean> rm = null;
-		List<LockBean> lbs = null;
-		Map<String, LockBean> lbm = new HashMap<String, LockBean>();
+		List<ResLockInfo> lbs = null;
+		Map<String, ResLockInfo> lbm = new HashMap<String, ResLockInfo>();
 		for (ResPreGateway rpg : rpgs) {
 			if(rpg.getNumber()!=null) { 
-				rm = this.lockFactory.findAvailableLock(rpg.getNumber());
-				lbs = rm.getDataList();
-				log.info("gateway = {}, preId= {} rm = {}",rpg.getNumber(), rpg.getPreId(), JsonUtil.toJson(rm));
-				if (rm.getMsgCode() != null && rm.getMsgCode() == 200 && rm.getDataList() != null) {
-					for (LockBean lb : lbs) {
-						if (lb.getLockState().intValue() == LockStatus.UP.status) {
+				lbs = this.lockTools.lockListByGroupCode(rpg.getNumber());
+				log.info("gateway = {}, preId= {} rm = {}",rpg.getNumber(), rpg.getPreId(), JsonUtil.toJson(lbs));
+				if (lbs != null && lbs.size() != 0) {
+					for (ResLockInfo lb : lbs) {
+						if (lb.getLockState() == LockStatus.UP.status) {
 							lbm.put(lb.getLockCode(), lb);
 						}
 					}

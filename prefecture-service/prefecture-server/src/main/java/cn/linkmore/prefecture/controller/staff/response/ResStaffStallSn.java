@@ -64,7 +64,7 @@ public class ResStaffStallSn {
 	private int bindStata = 1;
 	
 	public String getStallSn() {
-		return stallSn;
+		return "0000"+serialNumber.toLowerCase();
 	}
 
 	public void setStallSn(String stallSn) {

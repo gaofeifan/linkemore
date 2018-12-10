@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSON;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistoryList;
 import cn.linkmore.prefecture.response.ResLockInfo;
+import cn.linkmore.prefecture.response.ResLockMessage;
 import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -51,14 +52,24 @@ public class LockTools {
 		parameters.put("timestamp", millis);
 		parameters.put("serialNumber", lockSn);
 		log.info(JsonUtil.toJson(parameters));
-		Object object = getData(parameters,url);
-		if(object != null) {
-			ResLockInfo info = ObjectUtils.toBean(ResLockInfo.class, (Map<String, Object>)object);
+		ResLockMessage data = getDataMes(parameters,url);
+		if(data != null && data.getCode() == 200) {
+			@SuppressWarnings("unchecked")
+			ResLockInfo info = ObjectUtils.toBean(ResLockInfo.class, (Map<String, Object>)data.getData());
 			return info;
 		}
 		return null;
 	}
 
+	private ResLockMessage getDataMes(Map<String,Object> param,String url) {
+		String sign = Sign.getSign(param, lockProperties.getAppSecret());
+		param.put("sign", sign);
+		log.info(JsonUtil.toJson(param));
+		String resData = HttpUtil.sendJson(url, JsonUtil.toJson(param));
+		log.info(JsonUtil.toJson(resData));
+		ResLockMessage message = JsonUtil.toObject(resData, ResLockMessage.class);
+		return message;
+	}
 	private Object getData(Map<String,Object> param,String url) {
 		String sign = Sign.getSign(param, lockProperties.getAppSecret());
 		param.put("sign", sign);
@@ -81,6 +92,7 @@ public class LockTools {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
+	@SuppressWarnings("unchecked")
 	public ResSignalHistory lockSignalHistory(String sn) {
 		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLockSignalHistory().trim();
 //		String Nurl = "http://open-api.linkmoreparking.cn/api/v1/lock/lock-signal-history";
@@ -89,13 +101,13 @@ public class LockTools {
 		parameters.put("appId", lockProperties.getAppId());
 		parameters.put("timestamp", millis+"");
 		parameters.put("serialNumber", sn);
-		Object object = getData(parameters,url);
-		System.out.println(object);
+		ResLockMessage lockMessage = getDataMes(parameters,url);
+		log.info(JsonUtil.toJson(lockMessage));
 		ResSignalHistory signal = new ResSignalHistory();
 		ResSignalHistoryList signallist = null;
 		List<ResSignalHistoryList> signallists = new ArrayList<>();
-		if(object != null) {
-			Map<String,Object> map = (Map<String,Object>)object;
+		if(lockMessage != null && lockMessage.getCode() == 200) {
+			Map<String,Object> map = (Map<String,Object>)lockMessage.getData();
 			List<Object> list = (List<Object>) map.get("data");
 			if(list != null && list.size() != 0) {
 				for (int i = 0; i < list.size(); i++) {
@@ -117,21 +129,48 @@ public class LockTools {
 	}
 	
 	/**
-	 * @Description  升起锁
+	 * @Description  升起锁  （只返回为操作成功或失败）
 	 * @Author   GFF 
 	 * @Version  v2.0
+	 * @return true  false
 	 */
 	public boolean upLock(String sn) {
-		return optionLock(sn, 1);
+		ResLockMessage mes = upLockMes(sn);
+		if(mes.getCode() == 200) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
-	 * @Description  下降锁
+	 * @Description  升起锁(返回具体的信息 用于自定义处理)
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public ResLockMessage upLockMes(String sn) {
+		return this.optionLock(sn, 1);
+	}
+	
+	/**
+	 * @Description  下降锁 （只返回为操作成功或失败）
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
 	public Boolean downLock(String sn) {
-		return optionLock(sn, 0);
+		ResLockMessage mes = downLockMes(sn);
+		if(mes.getCode() == 200) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @Description  下降锁 （返回操作的具体信息  用于自定义处理）
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public ResLockMessage downLockMes(String sn) {
+		return this.optionLock(sn, 0);
 	}
 	
 	/**
@@ -140,6 +179,7 @@ public class LockTools {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
+	@SuppressWarnings("unchecked")
 	public List<ResLockInfo> lockListByGroupCode(String groupCode) {
 		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLocklist();
 		long millis = new Date().getTime();
@@ -147,8 +187,9 @@ public class LockTools {
 		map.put("appId", lockProperties.getAppId());
 		map.put("timestamp", millis);
 		map.put("groupCode", groupCode);
-		Object data = getData(map,url); 
-		List<Map<String,Object>> lockInfos = (List<Map<String, Object>>)data;
+		ResLockMessage resLockMessage = getDataMes(map,url);
+		return (List<ResLockInfo>)resLockMessage.getData();
+		/*List<Map<String,Object>> lockInfos = (List<Map<String, Object>>)data;
 		List<ResLockInfo> resLockInfos = new ArrayList<>();
 		ResLockInfo info = null;
 		for (Map<String,Object> obj : lockInfos) {
@@ -165,7 +206,7 @@ public class LockTools {
 			info.setVersion(obj.get("version").toString());
 			resLockInfos.add(info);
 		}
-		return resLockInfos;
+		return resLockInfos;*/
 	
 	}
 	
@@ -174,7 +215,7 @@ public class LockTools {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	private Boolean optionLock(String sn,int optionType) {
+	private ResLockMessage optionLock(String sn,int optionType) {
 //		String url = "http://open-api.linkmoreparking.cn/api/v1/option";
 		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLockoption();
 		long millis = new Date().getTime();
@@ -183,11 +224,7 @@ public class LockTools {
 		map.put("timestamp", millis);
 		map.put("action", optionType);
 		map.put("serialNumber", sn);
-		Object object = getData(map,url);
-		if(object == null) {
-			return false;
-		}
-		return true;
+		return getDataMes(map,url);
 	}
 	
 	/**

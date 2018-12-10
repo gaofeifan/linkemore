@@ -2,6 +2,7 @@ package cn.linkmore.prefecture.controller.feign;
 
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
-import com.linkmore.lock.bean.LockBean;
-import com.linkmore.lock.response.ResponseMessage;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
