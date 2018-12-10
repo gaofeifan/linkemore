@@ -44,6 +44,7 @@ import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
@@ -66,6 +67,7 @@ import cn.linkmore.prefecture.entity.StrategyGroupDetail;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
+import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
@@ -92,6 +94,8 @@ import cn.linkmore.util.TokenUtil;
 public class PrefectureServiceImpl implements PrefectureService {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
+	private LockTools lockTools;
+	@Autowired
 	private StallClusterMapper stallClusterMapper;
 	@Autowired
 	private PrefectureClusterMapper prefectureClusterMapper;
@@ -113,9 +117,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Autowired
 	private RedisService redisService;
-
-	@Autowired
-	private LockFactory lockFactory;
 
 	@Autowired
 	private StrategyGroupClusterMapper strategyGroupClusterMapper;
@@ -717,8 +718,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY); // 当前车牌号已在预约中，请更换车牌号重新预约
 		}
 		boolean assign = false;
-		ResponseMessage<LockBean> rm = null;
-		List<LockBean> lbs = null;
+		List<ResLockInfo> lbs = null;
 		Set<Object> lockSnList = new HashSet<Object>();
 		ResPrefectureDetail pre = this.prefectureClusterMapper.findById(reqBooking.getPrefectureId());
 		if (pre != null && StringUtils.isNotBlank(pre.getGateway())) {
@@ -728,12 +728,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 			if (pre.getCategory() == 2) {
 				// 共享车位逻辑
-				rm = this.lockFactory.findAvailableLock(pre.getGateway());
-				lbs = rm.getDataList();
-				log.info("share pre rm = {}", JsonUtil.toJson(rm));
-				if (rm.getMsgCode() != null && rm.getMsgCode() == 200 && rm.getDataList() != null) {
-					for (LockBean lb : lbs) {
-						if (lb.getLockState().intValue() == LockStatus.DOWN.status && lb.getParkingState() == 0) {
+				lbs = this.lockTools.lockListByGroupCode(pre.getGateway());
+				log.info("share pre rm = {}", JsonUtil.toJson(lbs));
+				if (lbs != null && lbs.size() != 0) {
+					for (ResLockInfo lb : lbs) {
+						if (lb.getLockState() == LockStatus.DOWN.status && lb.getParkingState() == 0) {
 							lockSnList.add(lb.getLockCode());
 						}
 					}
