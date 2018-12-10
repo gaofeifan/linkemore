@@ -55,20 +55,22 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	@Override
 	public void save(ReqRentEntUser user) {
 		RentEntUser entUser = ObjectUtils.copyObject(user, new RentEntUser());
-		if(user.getMobile() != null) {
+/*
+		1 手机号不为空
+			系统中有这个用户 -> 关联车牌
+			系统中无这个用户 -> 新增用户->关联车牌
+		2 手机号为空
+			系统中有这个车牌，关联到该用户,有几个用户就加几条记录
+			系统中无这个车牌
+*/
+		if( StringUtils.isNotEmpty(user.getMobile())) {
 			Long mobile = userClient.getUserIdByMobile(user.getMobile());
-			entUser.setUserId(mobile);
-			//entUser.setUserName(userName);
-		}else {
-			/*
-			RentEntUser u = this.rentEntUserClusterMapper.findMaxId();
-			// 临时判断 需求完善在修改
-			if(u.getId() > 100000000) {
-				entUser.setId(u.getId() + 1);
-			}else {
-				entUser.setId(100000001L);
+			if(mobile != null) {
+				entUser.setUserId(mobile);
 			}
-			*/
+
+		}else {
+			
 		}
 		this.rentEntUserMasterMapper.insert(entUser);
 		/*
@@ -103,6 +105,15 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	
 	@Override
 	public void update(ReqRentEntUser user) {
+		if( StringUtils.isNotEmpty(user.getMobile())) {
+			Long mobile = userClient.getUserIdByMobile(user.getMobile());
+			if(mobile != null) {
+				user.setUserId(mobile);
+			}
+
+		}else {
+			
+		}
 		this.rentEntUserMasterMapper.updateByPrimaryKey(ObjectUtils.copyObject(user, new RentEntUser()));
 	}
 	@Override

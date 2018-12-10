@@ -50,5 +50,17 @@ public interface OpsRentEntClient {
 	@RequestMapping(value = "/v2.0/update_status", method = RequestMethod.POST)
 	@ResponseBody
 	public int updateStatus(@RequestBody Map<String, Object> map);
+
+	@RequestMapping(value = "/v2.0/delete_stall", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void deleteStall(@RequestBody List<Long> ids);
+	
+	@RequestMapping(value = "/v2.0/save_stall", method = RequestMethod.POST)
+	@ResponseBody
+	public void saveStall(@RequestBody ReqRentEnt ent);
+
+	@RequestMapping(value = "/v2.0/occuy-stall-list", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Long> occuyStallList(@RequestBody Map<String, Object> param);
 	
 }

@@ -37,9 +37,10 @@
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="type" jdbcType="SMALLINT" property="type" />
-        <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
   </resultMap>
+  
   <sql id="Base_Column_List">
     id, ent_id, ent_pre_id, pre_id, mobile, realname, plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type,company_id,company_name
   </sql>
@@ -120,6 +121,97 @@
     <include refid="Base_Column_List" />
     from t_ent_rent_user
     where 1 = 1 <![CDATA[ and end_time > now() ]]> and type = 0
+  </select>
+  
+  
+  <select id="findComUserList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_user
+    where 1 = 1 
+    <if test="userId != null">
+   		and user_id = #{userId}
+   	</if>
+    <if test="stallId != null">
+   		and stall_id = #{stallId}
+   	</if>
+   	<if test="preId != null">
+   		and pre_id = #{preId}
+   	</if>
+   	<if test="plate != null">
+   		and plate = #{plate}
+   	</if>
+   	and company_id is not null
+  </select>
+  
+  <select id="findRentComUserList" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
+     SELECT
+		o.pre_id,
+		o.pre_name,
+		o.stall_id,
+		o.stall_name,
+		o.plate,
+		o.mobile,
+		o.user_id,
+		o.id as company_id,
+		o.company_name,
+		o.start_time,
+		o.end_time
+	FROM
+		(
+			(
+				SELECT
+					c.company_name,
+	        c.id,
+					c.start_time,
+					c.end_time,
+					c.pre_id,
+					c.pre_name,
+					cs.stall_id,
+					cs.stall_name,
+					cu.plate,
+					u.mobile,
+					u.id AS user_id
+				FROM
+					t_ent_rent_com c
+				LEFT JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
+				LEFT JOIN t_ent_rent_com_user cu ON c.id = cu.rent_com_id
+				LEFT JOIN v_vehicle_mark_manage m ON cu.plate = m.veh_mark
+				LEFT JOIN t_user u ON u.id = m.veh_user_id
+				WHERE
+					cu.user_id IS NULL
+				AND cu.plate IS NOT NULL
+				AND cs.stall_id IS NOT NULL
+			)
+			UNION 
+				(
+					SELECT
+						c.company_name,
+						c.id,
+						c.start_time,
+						c.end_time,
+						c.pre_id,
+						c.pre_name,
+						cs.stall_id,
+						cs.stall_name,
+						cu.plate,
+						u.mobile,
+						cu.user_id
+					FROM
+						t_ent_rent_com c
+					LEFT JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
+					LEFT JOIN t_ent_rent_com_user cu ON c.id = cu.rent_com_id
+					LEFT JOIN t_user u ON u.id = cu.user_id
+					WHERE
+						cu.user_id IS NOT NULL
+				)
+		) o where 1 = 1 and
+     start_time <![CDATA[ < ]]> NOW()
+     and 
+     end_time <![CDATA[ > ]]>  NOW()
+     <if test="userId != null">
+    		and user_id = #{userId}
+     </if>
   </select>
   
 </mapper>

@@ -14,15 +14,11 @@ import cn.linkmore.enterprise.request.ReqRentEntStall;
  */
 @Mapper
 public interface RentEntStallMasterMapper {
-    int deleteByPrimaryKey(Long rentEntId);
+	void deleteByIds(List<Long> ids);
 
-    int insert(RentEntStall record);
+    int save(RentEntStall record);
 
-    int insertSelective(RentEntStall record);
-
-    int updateByPrimaryKeySelective(RentEntStall record);
-
-    int updateByPrimaryKey(RentEntStall record);
+    int update(RentEntStall record);
 
 	void saveBatch(List<ReqRentEntStall> list);
 }

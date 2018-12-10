@@ -35,6 +35,11 @@ public class EntOwnerStall {
 	
 	private String lockSn;
 	
+	private Long userId;
+	
+	private Long companyId;
+	
+	private String companyName;
 
 	public Long getEntId() {
 		return entId;
@@ -163,8 +168,29 @@ public class EntOwnerStall {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
-	
-	
-	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Long getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
 	
 }

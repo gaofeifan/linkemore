@@ -24,7 +24,7 @@ public class RentEntStallServiceImpl implements RentEntStallService {
 	private RentEntStallMasterMapper rentEntStallMasterMapper;
 	
 	@Override
-	public RentEntStall selectByPrimaryKey(Long rentEntId) {
+	public RentEntStall findById(Long rentEntId) {
 		return this.rentEntStallClusterMapper.findById(rentEntId);
 	}
 
@@ -60,5 +60,15 @@ public class RentEntStallServiceImpl implements RentEntStallService {
 		return list; 
 	}
 
+	@Override
+	public void deleteStall(List<Long> ids) {
+		rentEntStallMasterMapper.deleteByIds(ids);
+	}
+
+	@Override
+	public List<Long> occuyStallList(Map<String, Object> param) {
+		List<Long> list = rentEntStallClusterMapper.occuyStallList(param);
+		return list;
+	}
 	
 }

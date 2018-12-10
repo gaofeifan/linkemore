@@ -17,6 +17,7 @@ import cn.linkmore.enterprise.dao.cluster.RentEntClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.RentEntStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.RentEntUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.RentEntMasterMapper;
+import cn.linkmore.enterprise.dao.master.RentEntStallMasterMapper;
 import cn.linkmore.enterprise.entity.RentEnt;
 import cn.linkmore.enterprise.request.ReqRentEnt;
 import cn.linkmore.enterprise.request.ReqRentEntStall;
@@ -89,7 +90,7 @@ public class RentEntServiceImpl implements RentEntService {
 		List<RentEnt> list = this.rentEntClusterMapper.findPage(param);
 		if(CollectionUtils.isNotEmpty(list)) {
 			for(RentEnt rentEnt: list) {
-				param.put("companyId", rentEnt.getId());
+				param.put("rentComId", rentEnt.getId());
 				Integer stallCount = this.rentEntStallClusterMapper.count(param);
 				Integer userCount = this.rentEntUserClusterMapper.count(param);
 				rentEnt.setStallCount(stallCount);
@@ -127,7 +128,18 @@ public class RentEntServiceImpl implements RentEntService {
 	public int updateStatus(Map<String, Object> map) {
 		return rentEntMasterMapper.updateStatus(map);
 	}
-	
-	
+
+	@Override
+	public void deleteStall(List<Long> ids) {
+		this.rentEntStallService.deleteStall(ids);
+	}
+
+	@Override
+	public void saveStall(ReqRentEnt ent) {
+		List<ReqRentEntStall> list = ent.getStalls();
+		if(CollectionUtils.isNotEmpty(list)) {
+			this.rentEntStallService.saveBatch(list);
+		}
+	}
 	
 }

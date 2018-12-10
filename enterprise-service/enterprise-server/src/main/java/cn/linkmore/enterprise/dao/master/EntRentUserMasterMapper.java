@@ -42,5 +42,6 @@ public interface EntRentUserMasterMapper {
 	 */
 	void updateReq(ReqRentUser user);
 
-	void saveBatch(List<ReqRentUser> rus);
+	void saveBatch(List<EntRentUser> rus);
+
 }

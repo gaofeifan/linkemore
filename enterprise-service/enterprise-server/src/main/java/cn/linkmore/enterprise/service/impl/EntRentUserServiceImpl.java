@@ -211,8 +211,7 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 
 	@Override
 	public void saveBatch(List<ReqRentUser> rus) {
-		this.entRentUserMasterMapper.saveBatch(rus);
-		
+		//this.entRentUserMasterMapper.saveBatch(rus);
 	}
 	
 
