@@ -188,8 +188,7 @@ public class LockTools {
 		map.put("timestamp", millis);
 		map.put("groupCode", groupCode);
 		ResLockMessage resLockMessage = getDataMes(map,url);
-		return (List<ResLockInfo>)resLockMessage.getData();
-		/*List<Map<String,Object>> lockInfos = (List<Map<String, Object>>)data;
+		List<Map<String,Object>> lockInfos = (List<Map<String, Object>>)resLockMessage.getData();
 		List<ResLockInfo> resLockInfos = new ArrayList<>();
 		ResLockInfo info = null;
 		for (Map<String,Object> obj : lockInfos) {
@@ -206,7 +205,7 @@ public class LockTools {
 			info.setVersion(obj.get("version").toString());
 			resLockInfos.add(info);
 		}
-		return resLockInfos;*/
+		return resLockInfos;
 	
 	}
 	
