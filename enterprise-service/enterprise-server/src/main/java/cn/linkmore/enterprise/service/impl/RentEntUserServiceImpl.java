@@ -199,13 +199,19 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	private boolean existRentUser(List<EntRentUser> rentUserList,EntRentUser entRentUser) {
 		if (CollectionUtils.isNotEmpty(rentUserList)) {
 			for (EntRentUser userStall : rentUserList) {
-				if(userStall.getPreId().longValue() == entRentUser.getPreId().longValue()
-						&& userStall.getCompanyId().longValue() == entRentUser.getCompanyId().longValue()
-						&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
-						&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
-						&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
-						) {
-					return true;
+				if(userStall.getPreId() != null &&  entRentUser.getPreId() != null
+					&& userStall.getCompanyId() != null &&  entRentUser.getCompanyId() != null
+					&& userStall.getStallId() != null &&  entRentUser.getStallId() != null
+					&& userStall.getUserId() != null &&  entRentUser.getUserId() != null
+				){			
+					if(userStall.getPreId().longValue() == entRentUser.getPreId().longValue()
+							&& userStall.getCompanyId().longValue() == entRentUser.getCompanyId().longValue()
+							&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
+							&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
+							&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
+							) {
+						return true;
+					}
 				}
 			}
 		}
