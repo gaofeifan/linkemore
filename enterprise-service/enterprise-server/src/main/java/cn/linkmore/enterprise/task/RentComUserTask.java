@@ -34,7 +34,7 @@ public class RentComUserTask {
 	@Resource
 	private StallClient stallClient;
 
-	@Scheduled(cron = "0 0/1 * * * ?")
+	//@Scheduled(cron = "0 0/1 * * * ?")
 	public void run() {
 		log.info("sync rent com user thread...");
 		init();
@@ -82,13 +82,19 @@ public class RentComUserTask {
 	private boolean existRentUser(List<EntRentUser> rentUserList,EntRentUser entRentUser) {
 		if (CollectionUtils.isNotEmpty(rentUserList)) {
 			for (EntRentUser userStall : rentUserList) {
-				if(userStall.getPreId().longValue() == entRentUser.getPreId().longValue()
-						&& userStall.getCompanyId().longValue() == entRentUser.getCompanyId().longValue()
-						&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
-						&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
-						&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
-						) {
-					return true;
+				if(userStall.getPreId() != null &&  entRentUser.getPreId() != null
+					&& userStall.getCompanyId() != null &&  entRentUser.getCompanyId() != null
+					&& userStall.getStallId() != null &&  entRentUser.getStallId() != null
+					&& userStall.getUserId() != null &&  entRentUser.getUserId() != null
+				){			
+					if(userStall.getPreId().longValue() == entRentUser.getPreId().longValue()
+							&& userStall.getCompanyId().longValue() == entRentUser.getCompanyId().longValue()
+							&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
+							&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
+							&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
+							) {
+						return true;
+					}
 				}
 			}
 		}
