@@ -171,4 +171,17 @@ public class RentEntUserController extends BaseController{
 		}
 		return msg;
 	}
+	
+	@RequestMapping(value = "/sync/byCompanyId", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg syncRentStallByCompanyId(@RequestBody Long companyId) {
+		ViewMsg msg = new ViewMsg("同步成功", true);
+		try {
+			rentEntUserService.syncRentStallByCompanyId(companyId);
+		} catch (Exception e) {
+			msg = new ViewMsg("导入失败", false);
+		}
+		return msg;
+	}
+
 }

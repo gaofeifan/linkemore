@@ -7,32 +7,37 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.dao.cluster.EntRentUserClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.RentEntUserClusterMapper;
+import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
 import cn.linkmore.enterprise.dao.master.RentEntUserMasterMapper;
-import cn.linkmore.enterprise.entity.RentEnt;
-import cn.linkmore.enterprise.entity.RentEntStall;
+import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.entity.RentEntUser;
 import cn.linkmore.enterprise.request.ReqRentEntUser;
 import cn.linkmore.enterprise.request.ReqRentUser;
-import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.RentEntService;
 import cn.linkmore.enterprise.service.RentEntStallService;
 import cn.linkmore.enterprise.service.RentEntUserService;
-import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 @Service
 public class RentEntUserServiceImpl implements RentEntUserService {
-
+	private Logger log = LoggerFactory.getLogger(getClass());
+	
 	@Resource
 	private RentEntUserClusterMapper rentEntUserClusterMapper;
 	@Resource
@@ -47,6 +52,12 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	private RentEntService rentEntService;
 	@Resource
 	private UserClient userClient;
+	
+	@Resource
+	private EntRentUserClusterMapper entRentUserClusterMapper;
+	@Resource
+	private EntRentUserMasterMapper entRentUserMasterMapper;
+	
 	@Override
 	public RentEntUser selectByPrimaryKey(Long rentEntId) {
 		return this.rentEntUserClusterMapper.findById(rentEntId);
@@ -55,52 +66,15 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	@Override
 	public void save(ReqRentEntUser user) {
 		RentEntUser entUser = ObjectUtils.copyObject(user, new RentEntUser());
-/*
-		1 手机号不为空
-			系统中有这个用户 -> 关联车牌
-			系统中无这个用户 -> 新增用户->关联车牌
-		2 手机号为空
-			系统中有这个车牌，关联到该用户,有几个用户就加几条记录
-			系统中无这个车牌
-*/
 		if( StringUtils.isNotEmpty(user.getMobile())) {
 			Long mobile = userClient.getUserIdByMobile(user.getMobile());
 			if(mobile != null) {
 				entUser.setUserId(mobile);
 			}
-
 		}else {
 			
 		}
 		this.rentEntUserMasterMapper.insert(entUser);
-		/*
-		List<RentEntStall> list = this.rentEntStallService.stallListCompany(entUser.getRentComId());
-		RentEnt rentEnt = this.rentEntService.findById(entUser.getRentComId());
-		ResEnterprise enterprise = this.enterpriseService.findById(rentEnt.getCreateUserId());
-		ReqRentUser record;
-		
-		List<ReqRentUser> rus = new ArrayList<>();
-		for (RentEntStall rentEntStall : list) {
-			record = new ReqRentUser();
-			record.setEndDate(DateUtils.converter(rentEnt.getEndTime(), null));
-			record.setStartDate(DateUtils.converter(rentEnt.getStartTime(), null));
-			record.setEntId(rentEnt.getCreateUserId());
-			record.setStallId(rentEntStall.getStallId());
-			record.setStallName(rentEntStall.getStallName());
-			record.setPreId(rentEntStall.getPreId());
-			record.setMobile(entUser.getMobile());
-			record.setUserId(entUser.getId());
-			record.setPlate(entUser.getPlate());
-			record.setRealname(entUser.getUserName());
-			record.setEntName(enterprise.getName());
-			record.setPreName(rentEntStall.getPreName());
-			record.setCompanyId(rentEnt.getId());
-			record.setCompanyName(rentEnt.getCompanyName());
-			rus.add(record);
-		}
-		this.entRentUserService.saveBatch(rus);
-		*/
-		
 	}
 	
 	@Override
@@ -110,7 +84,6 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			if(mobile != null) {
 				user.setUserId(mobile);
 			}
-
 		}else {
 			
 		}
@@ -169,5 +142,75 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 		RentEntUser rentEntUser = rentEntUserClusterMapper.findByPlate(ent);
 		return rentEntUser != null ? true:false;
 	}
+	
+	@Override
+	public void syncRentStallByCompanyId(Long companyId) {
+		log.info("sync rent com user byCompanyId:{} ",companyId);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("companyId", companyId);
+		syncRentStall(param);
+	}
 
+	@Override
+	public void syncRentStallByUserId(Long userId) {
+		log.info("sync rent com user byUserId:{} ",userId);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("userId", userId);
+		syncRentStall(param);
+	}
+
+	public void syncRentStall(Map<String, Object> param) {
+
+		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findComUserList(param);
+		List<EntRentUser> newRentUserList = entRentUserClusterMapper.findRentComUserList(param);
+		log.info("sync rent com user old list size={} , new list size={}",oldRentUserList.size(),newRentUserList.size());	
+
+		//新记录增加
+		List<EntRentUser> entRentUser = new ArrayList<EntRentUser>();
+		if (CollectionUtils.isNotEmpty(newRentUserList)) {
+			for (EntRentUser stall : newRentUserList) {
+				if (! existRentUser(oldRentUserList,stall)) {
+					stall.setType((short) 1);
+					entRentUser.add(stall);
+				}
+			}
+		}
+		if (CollectionUtils.isNotEmpty(entRentUser)) {
+			log.info("add the new rent com user size={},data={}", entRentUser.size(),JSON.toJSON(entRentUser));
+			entRentUserMasterMapper.saveBatch(entRentUser);
+		}
+		
+		//不存在的记录删除
+		List<Long> ids=new ArrayList<Long>();
+		if (CollectionUtils.isNotEmpty(oldRentUserList)) {
+			for (EntRentUser stall : oldRentUserList) {
+				if (! existRentUser(newRentUserList,stall)) {
+					ids.add(stall.getId());
+				}
+			}
+		}
+		if (CollectionUtils.isNotEmpty(ids)) {
+			log.info("delete the rent com user size={},data={}", ids.size(),JSON.toJSON(ids) );
+			entRentUserMasterMapper.delete(ids);
+		}
+		log.info("sync rent com user finished.");
+	}
+
+	private boolean existRentUser(List<EntRentUser> rentUserList,EntRentUser entRentUser) {
+		if (CollectionUtils.isNotEmpty(rentUserList)) {
+			for (EntRentUser userStall : rentUserList) {
+				if(userStall.getPreId().longValue() == entRentUser.getPreId().longValue()
+						&& userStall.getCompanyId().longValue() == entRentUser.getCompanyId().longValue()
+						&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
+						&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
+						&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
+						) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	
 }

@@ -78,4 +78,15 @@ public class RentEntUserController {
 		return this.rentEntUserService.exists(ent);
 	}
 	
+	@RequestMapping(value = "/v2.0/sync/byCompanyId", method = RequestMethod.POST)
+	@ResponseBody
+	public void syncRentStallByCompanyId(@RequestBody Long companyId) {
+		this.rentEntUserService.syncRentStallByCompanyId(companyId);
+	}
+	
+	@RequestMapping(value = "/v2.0/sync/byUserId", method = RequestMethod.POST)
+	@ResponseBody
+	public void syncRentStallByUserId(@RequestBody Long userId) {
+		this.rentEntUserService.syncRentStallByUserId(userId);
+	}
 }

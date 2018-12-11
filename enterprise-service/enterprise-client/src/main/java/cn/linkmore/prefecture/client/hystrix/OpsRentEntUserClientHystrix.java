@@ -68,6 +68,16 @@ public class OpsRentEntUserClientHystrix implements OpsRentEntUserClient {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public void syncRentStallByCompanyId(Long companyId) {
+		log.info("=======Hystrix==========void syncRentStallByCompanyId(Long companyId) ");
+	}
+
+	@Override
+	public void syncRentStallByUserId(Long userId) {
+		log.info("=======Hystrix==========void syncRentStallByUserId(Long userId) ");
+	}
 	
 	
 }

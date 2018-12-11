@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,33 +43,56 @@ public class RentComUserTask {
 	public void init() {
 		log.info("sync rent com user init... ");
 		Map<String, Object> param = new HashMap<String, Object>();
-		List<EntRentUser> rentUserList = entRentUserClusterMapper.findComUserList(param);
-		List<EntRentUser> list = entRentUserClusterMapper.findRentComUserList(param);
+		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findComUserList(param);
+		List<EntRentUser> newRentUserList = entRentUserClusterMapper.findRentComUserList(param);
+		log.info("sync rent com user old list size={} , new list size={}",oldRentUserList.size(),newRentUserList.size());	
+		//log.info("sync rent com user list {} , rentUserList size{}", JSON.toJSON(newRentUserList), oldRentUserList.size());
+
+		//新记录增加
 		List<EntRentUser> entRentUser = new ArrayList<EntRentUser>();
-		EntRentUser rentUser = null;
-		log.info("sync rent com user list {} , rentUserList size{}", JSON.toJSON(list), rentUserList.size());
-		if (CollectionUtils.isNotEmpty(list)) {
-			for (EntRentUser stall : list) {
-				rentUser = new EntRentUser();
-				rentUser.setCompanyId(stall.getCompanyId());
-				rentUser.setCompanyName(stall.getCompanyName());
-				rentUser.setPreId(stall.getPreId());
-				rentUser.setPreName(stall.getPreName());
-				rentUser.setStallId(stall.getStallId());
-				rentUser.setStallName(stall.getStallName());
-				rentUser.setMobile(stall.getMobile());
-				rentUser.setPlate(stall.getPlate());
-				rentUser.setStartTime(stall.getStartTime());
-				rentUser.setEndTime(stall.getEndTime());
-				rentUser.setUserId(stall.getUserId());
-				rentUser.setType((short) 1);
-				entRentUser.add(rentUser);
+		if (CollectionUtils.isNotEmpty(newRentUserList)) {
+			for (EntRentUser stall : newRentUserList) {
+				if (! existRentUser(oldRentUserList,stall)) {
+					stall.setType((short) 1);
+					entRentUser.add(stall);
+				}
 			}
 		}
 		if (CollectionUtils.isNotEmpty(entRentUser)) {
-			log.info("add the new rent com user size {},{}",JSON.toJSON(entRentUser), entRentUser.size());
+			log.info("add the new rent com user size={},data={}", entRentUser.size(),JSON.toJSON(entRentUser));
 			entRentUserMasterMapper.saveBatch(entRentUser);
 		}
-
+		
+		//不存在的记录删除
+		List<Long> ids=new ArrayList<Long>();
+		if (CollectionUtils.isNotEmpty(oldRentUserList)) {
+			for (EntRentUser stall : oldRentUserList) {
+				if (! existRentUser(newRentUserList,stall)) {
+					ids.add(stall.getId());
+				}
+			}
+		}
+		if (CollectionUtils.isNotEmpty(ids)) {
+			log.info("delete the rent com user size={},data={}", ids.size(),JSON.toJSON(ids) );
+			entRentUserMasterMapper.delete(ids);
+		}
+		log.info("sync rent com user finished.");
 	}
+	
+	private boolean existRentUser(List<EntRentUser> rentUserList,EntRentUser entRentUser) {
+		if (CollectionUtils.isNotEmpty(rentUserList)) {
+			for (EntRentUser userStall : rentUserList) {
+				if(userStall.getPreId().longValue() == entRentUser.getPreId().longValue()
+						&& userStall.getCompanyId().longValue() == entRentUser.getCompanyId().longValue()
+						&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
+						&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
+						&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
+						) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 }

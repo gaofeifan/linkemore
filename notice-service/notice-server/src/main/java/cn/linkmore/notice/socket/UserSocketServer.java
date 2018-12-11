@@ -58,12 +58,12 @@ public class UserSocketServer {
 				log.error("websocket IO异常");
 			}
 		}else { 
-			this.openid = openid;
+			/*this.openid = openid;
 			this.session = session;
 			webSocketMap.put(openid, this); 
 			addOnlineCount();
 			log.info("new user added！current user count :{}", getOnlineCount());
-			success = true;
+			success = true;*/
 			return;
 		} 
 	}
