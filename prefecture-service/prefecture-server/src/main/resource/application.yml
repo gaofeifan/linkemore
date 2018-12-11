@@ -7,7 +7,7 @@ spring:
     name: prefecture-server
   boot: 
     admin:
-      url: http://192.168.1.220:6002
+      url: http://192.168.1.128:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -17,7 +17,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.220:6003/eureka/
+      defaultZone: http://192.168.1.128:6003/eureka/
 feign:
   hystrix:
     enabled: true
@@ -102,6 +102,7 @@ swagger:
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
   base-package: cn.linkmore.prefecture.controller.app,cn.linkmore.prefecture.controller.staff
+
 
 
 strategyfee: 
