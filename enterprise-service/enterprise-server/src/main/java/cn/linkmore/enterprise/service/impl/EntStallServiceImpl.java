@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
-import com.linkmore.lock.bean.LockBean;
-import com.linkmore.lock.factory.LockFactory;
-import com.linkmore.lock.response.ResponseMessage;
-
+import com.aliyun.oss.common.comm.ResponseMessage;
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -44,6 +41,7 @@ import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffAuthClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntStaffClusterMapper;
+import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
 import cn.linkmore.enterprise.entity.EntAuthPre;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
@@ -61,12 +59,14 @@ import cn.linkmore.order.client.OrderClient;
 import cn.linkmore.order.response.ResEntOrder;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResUserOrder;
+import cn.linkmore.prefecture.client.FeignLockClient;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallBatteryLogClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.client.StallOperateLogClient;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqStallOperateLog;
+import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
@@ -94,6 +94,8 @@ public class EntStallServiceImpl implements EntStallService {
 	@Autowired
 	private EnterpriseService enterpriseService;
 	@Autowired
+	private EntRentedRecordMasterMapper rentedRecordMasterMapper;
+	@Autowired
 	private UserClient userClient;
 	@Autowired
 	private PrefectureClient prefectrueClient;
@@ -113,6 +115,8 @@ public class EntStallServiceImpl implements EntStallService {
 	private EntAuthPreClusterMapper entAuthPreClusterMapper;
 
 	@Autowired
+	private FeignLockClient feignLockClient;
+	@Autowired
 	private EntPrefectureClusterMapper entPrefectureClusterMapper;
 
 	@Autowired
@@ -129,8 +133,6 @@ public class EntStallServiceImpl implements EntStallService {
 
 	@Autowired
 	private OrderClient feignOrderClient;
-	@Autowired
-	private LockFactory lockFactory;
 
 	@Autowired
 	private EntRentUserService entRentUserService;
@@ -144,7 +146,6 @@ public class EntStallServiceImpl implements EntStallService {
 	public List<ResEntStalls> selectEntStalls(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser) this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + key);
-
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("staffId", ru.getId());
 		List<EntStaffAuth> entStaffAuths = entStaffAuthClusterMapper.findList(map);
@@ -152,7 +153,6 @@ public class EntStallServiceImpl implements EntStallService {
 		if (size == 0) {
 			return new ArrayList<ResEntStalls>();
 		}
-
 		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
 		Map<String, Object> param = new HashMap<>();
 		Set<Long> list = entStaffAuths.stream().map(ent -> ent.getAuthId()).collect(Collectors.toSet());
@@ -162,7 +162,6 @@ public class EntStallServiceImpl implements EntStallService {
 		int preSize = entAuthPres.size();
 		EntAuthPre entAuthPre = null;
 		// List<EntRentUser> rentUsers = entRentUserService.findAll();
-
 		List<ResEntStalls> entStallList = new ArrayList<>();
 		ResEntStalls resEntStalls = null;
 		Map<String, Object> params = null;
@@ -270,7 +269,8 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public List<ResStallName> selectStalls(HttpServletRequest request, Long preId, Short type, String name) {
+	public List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectStalls(HttpServletRequest request, Long preId, Short type, String name) {
+		
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser) this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + key);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -280,7 +280,7 @@ public class EntStallServiceImpl implements EntStallService {
 		int size = entStaffAuths.size();
 		List<ResStallName> stallNames = new ArrayList<>();
 		if (size == 0) {
-			return new ArrayList<ResStallName>();
+			return new ArrayList<cn.linkmore.enterprise.controller.ent.response.ResStall>();
 		}
 		// EntStaffAuth entStaffAuth = entStaffAuths.get(0);
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -303,9 +303,9 @@ public class EntStallServiceImpl implements EntStallService {
 			stallExcList = this.stallExcStatusService.findExcStatusList(collect);
 		}
 		ResPrefectureDetail pref = this.prefectrueClient.findById(preId);
-		ResponseMessage<LockBean> locks = lockFactory.findAvailableLock(pref.getGateway());
-
-		List<LockBean> lockBeans = locks.getDataList();
+//		ResponseMessage<LockBean> locks = lockFactory.findAvailableLock(pref.getGateway());
+		List<ResLockInfo> lockBeans = feignLockClient.lockList(pref.getGateway());
+//		List<LockBean> lockBeans = locks.getDataList();
 		// 设置车位对应的车牌号
 		log.debug(JsonUtil.toJson(lockBeans));
 		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
@@ -319,18 +319,18 @@ public class EntStallServiceImpl implements EntStallService {
 				stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
 				stall.setType(resStall.getType());
 				stall.setStallId(resStall.getId());
-				if (lockBeans != null) {
-					for (LockBean lock : lockBeans) {
-						if (lock.getLockCode().equals(stall.getLockSn())) {
-							if (lock.getLockState().equals(1)) {
-								log.info(lock.getLockCode() + "===" + lock.getLockState());
-								stall.setLockStatus(lock.getLockState());
-							} else {
-								stall.setLockStatus(2);
-							}
+				for (ResLockInfo lock : lockBeans) {
+					if (lock.getLockCode().equals(stall.getLockSn())) {
+						if (lock.getLockState() == 1) {
+							log.info(lock.getLockCode() + "===" + lock.getLockState());
+							stall.setLockStatus(lock.getLockState());
+						} else {
+							stall.setLockStatus(2);
 						}
 					}
-					for (LockBean lock : lockBeans) {
+				}
+				if (lockBeans != null) {
+					for (ResLockInfo lock : lockBeans) {
 						if (lock.getLockCode().equals(stall.getLockSn())) {
 							if (lock.getElectricity() <= 30) {
 								stall.setExcStatus(false);
@@ -356,7 +356,7 @@ public class EntStallServiceImpl implements EntStallService {
 				stallList.add(stall);
 			}
 		}
-		ResStallName stallName = null;
+	/*	ResStallName stallName = null;
 		StringBuilder sb = new StringBuilder();
 		int end = 0;
 		stallName = new ResStallName();
@@ -391,8 +391,8 @@ public class EntStallServiceImpl implements EntStallService {
 				stallName.setStallName(stallList.get(i).getStallName());
 				stallNames.add(stallName);
 			}
-		}
-		return stallNames;
+		}*/
+		return stallList;
 	}
 
 	@Override
@@ -404,13 +404,14 @@ public class EntStallServiceImpl implements EntStallService {
 		if (StringUtil.isBlank(resStallEntity.getLockSn())) {
 			return null;
 		}
-		ResponseMessage<LockBean> res = lockFactory.getLockInfo(resStallEntity.getLockSn());
-		LockBean lockBean = res.getData();
+//		ResponseMessage<LockBean> res = lockFactory.getLockInfo(resStallEntity.getLockSn());
+		ResLockInfo lockBean = feignLockClient.lockInfo(resStallEntity.getLockSn());
 		ResDetailStall resDetailStall = new ResDetailStall();
 		resDetailStall.setSlaveCode(resStallEntity.getLockSn());
 		/*
 		 * if(lockBean == null){ return resDetailStall; }
 		 */
+		resDetailStall.setInductionState(lockBean.getInductionState());
 		ResEntOrder resEntOrder = this.orderClient.findOrderByStallId(resStallEntity.getId());
 		if (resStallEntity.getStatus() != 1 && resStallEntity.getStatus() != 4) {
 			if (resEntOrder != null) {
@@ -542,9 +543,6 @@ public class EntStallServiceImpl implements EntStallService {
 			result.put("result", "操作失败");
 			return result;
 		}
-		ResponseMessage<LockBean> res = null;
-		// result.put("result", res.isResult());
-		// result.put("result", res.getMsg());
 
 		redisService.set(STALL_LOCK_OPER_STATUS + stallId, ru.getId());
 		new Thread(new Runnable() {
@@ -561,6 +559,11 @@ public class EntStallServiceImpl implements EntStallService {
 				}
 				// 1 降下 2 升起
 				stallClient.operLockWY(reqc);
+				if(reqc.getStatus() == 2 ) {
+					Map<String, Object> map = new HashMap<>();
+					map.put("stallId", reqc.getStallId());
+					rentedRecordMasterMapper.updateRentUserStatus(map );
+				}
 			}
 		}).start();
 
@@ -749,7 +752,7 @@ public class EntStallServiceImpl implements EntStallService {
 		Integer count = 0;
 		Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + orders.getId());
 		if (o != null) {
-			count = new Integer(o.toString());
+			count = new Integer(o.toString()); 
 		}
 		return count;
 	}

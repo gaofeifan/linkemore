@@ -35,7 +35,11 @@ public interface RentEntMasterMapper {
      * @Version  v2.0
      */
     int update(RentEnt record);
-
+    
+    /**
+     * 批量删除
+     * @param ids
+     */
 	void deleteByIds(List<Long> ids);
 	/**
 	 * 更新状态

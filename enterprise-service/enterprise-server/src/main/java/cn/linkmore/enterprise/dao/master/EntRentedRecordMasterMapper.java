@@ -30,4 +30,6 @@ public interface EntRentedRecordMasterMapper {
 	 */
 	void updateStatus(Map<String, Object> map);
 	
+	void updateRentUserStatus(Map<String, Object> map);
+	
 }

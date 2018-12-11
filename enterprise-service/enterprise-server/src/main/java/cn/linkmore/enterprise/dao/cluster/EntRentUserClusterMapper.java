@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.response.ResEntRentUser;
 /**
@@ -69,5 +70,20 @@ public interface EntRentUserClusterMapper {
 	 * @return
 	 */
 	List<ResEntRentUser> findUsedStall();
+	
+	/**
+	 * 查询企业用户长租车位用户权限
+	 * @param param
+	 * @return
+	 */
+	List<EntRentUser> findRentComUserList(Map<String, Object> param);
+	/**
+	 * 查询公司下长租用户列表
+	 * @param param
+	 * @return
+	 */
+	List<EntRentUser> findComUserList(Map<String, Object> param);
+
+	
 
 }

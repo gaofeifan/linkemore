@@ -4,14 +4,8 @@
 package cn.linkmore.enterprise.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-
-import com.linkmore.lock.bean.AbuttingBean;
-import com.linkmore.lock.bean.LockBean;
-import com.linkmore.lock.factory.LockFactory;
-import com.linkmore.lock.response.ResponseMessage;
 
 /**
  * @author luzhishen
@@ -27,7 +21,7 @@ public class LockSdkConfig {
 	@Value("${sdk.linkmore-new-url}")
 	private String linkmoreNewUrl;
 	
-	@Bean
+	/*@Bean
 	public LockFactory getLockFactory(){
 		LockFactory lockFactory = LockFactory.getInstance();
 		AbuttingBean abuttingBean = new AbuttingBean();
@@ -35,8 +29,8 @@ public class LockSdkConfig {
 		abuttingBean.setLinkmoreNewUrl(linkmoreNewUrl);
 		lockFactory.setAbuttingBean(abuttingBean);
 		return lockFactory;
-	}
-	
+	}*/
+	/*
 	public static void main(String[] args) {
 		LockFactory lockFactory = LockFactory.getInstance();
 		AbuttingBean abuttingBean = new AbuttingBean();
@@ -45,6 +39,6 @@ public class LockSdkConfig {
 		lockFactory.setAbuttingBean(abuttingBean);
 		ResponseMessage<LockBean> rs = lockFactory.lockDown("FCAEE5D0E27E");
 		System.out.println(  rs.getMsg());
-	}
+	}*/
 	
 }

@@ -22,4 +22,6 @@ public interface RentEntStallClusterMapper {
 	List<RentEntStall> findPage(Map<String, Object> param);
 
 	List<RentEntStall> stallListCompany(Long companyId);
+
+	List<Long> occuyStallList(Map<String, Object> param);
 }

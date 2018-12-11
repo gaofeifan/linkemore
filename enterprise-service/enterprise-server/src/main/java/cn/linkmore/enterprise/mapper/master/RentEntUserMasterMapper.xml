@@ -25,24 +25,23 @@
     delete from t_ent_rent_com_user
     where 
     id in
-     <foreach collection="list" item="item" index="index" separator=",">
+     <foreach collection="list"  index="index" item="id" open="(" separator="," close=")" >
      #{id,jdbcType=BIGINT}
      </foreach>
   </delete>
   <insert id="insert" parameterType="cn.linkmore.enterprise.entity.RentEntUser">
-    insert into t_ent_rent_com_user (id,rent_com_id, user_id, user_name, mobile, plate,
+    insert into t_ent_rent_com_user (rent_com_id, user_id, user_name, mobile, plate,
     create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time, status
     )
-    values (#{id,jdbcType=BIGINT},#{rentComId,jdbcType=BIGINT},#{userId,jdbcType=BIGINT},  #{userName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+    values (#{rentComId,jdbcType=BIGINT},#{userId,jdbcType=BIGINT},  #{userName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
       #{plate,jdbcType=VARCHAR}, #{createUserId,jdbcType=BIGINT}, #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
     #{updateUserId,jdbcType=BIGINT}, #{updateUserName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},#{status,jdbcType=SMALLINT})
   </insert>
   
-  <update id="update" parameterType="cn.linkmore.enterprise.entity.RentEntUser">
+  <update id="updateByPrimaryKey" parameterType="cn.linkmore.enterprise.entity.RentEntUser">
     update t_ent_rent_com_user
-    set userName = #{userName,jdbcType=VARCHAR},
+    set user_name = #{userName,jdbcType=VARCHAR},
       mobile = #{mobile,jdbcType=VARCHAR},
-      rent_com_id = #{rentComId,jdbcType=BIGINT},
       plate = #{plate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

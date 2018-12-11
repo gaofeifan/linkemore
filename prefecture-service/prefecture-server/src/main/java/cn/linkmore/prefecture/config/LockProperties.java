@@ -6,13 +6,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "lock")
 public class LockProperties {
-	private String linkmoreUrl;
-	private String linkmoreNewUrl; 
-	private String linkemoreLockUrl;
-	private String appId;
-	private String appSecret;
-	
-	
 	
 	private static final String lockInfo = "/api/v1/lock-info";
 	private static final String lockSignalHistory = "/api/v1/lock/lock-signal-history";
@@ -20,17 +13,21 @@ public class LockProperties {
 	private static final String lockList = "/api/v1/lock-list";
 	private static final String setparkingname = "/api/v1/lock/config/set-parking-name";
 	
-	public String getLinkmoreUrl() {
-		return linkmoreUrl;
+	private String appId;
+	private String appSecret;
+	private String linkemoreLockUrl;
+	
+	public String getAppId() {
+		return appId;
 	}
-	public void setLinkmoreUrl(String linkmoreUrl) {
-		this.linkmoreUrl = linkmoreUrl;
-	} 
-	public String getLinkmoreNewUrl() {
-		return linkmoreNewUrl;
+	public void setAppId(String appId) {
+		this.appId = appId;
 	}
-	public void setLinkmoreNewUrl(String linkmoreNewUrl) {
-		this.linkmoreNewUrl = linkmoreNewUrl;
+	public String getAppSecret() {
+		return appSecret;
+	}
+	public void setAppSecret(String appSecret) {
+		this.appSecret = appSecret;
 	}
 	public String getLinkemoreLockUrl() {
 		return linkemoreLockUrl;
@@ -43,18 +40,6 @@ public class LockProperties {
 	}
 	public String getLockSignalHistory() {
 		return lockSignalHistory;
-	}
-	public String getAppId() {
-		return appId;
-	}
-	public void setAppId(String appId) {
-		this.appId = appId;
-	}
-	public String getAppSecret() {
-		return appSecret;
-	}
-	public void setAppSecret(String appSecret) {
-		this.appSecret = appSecret;
 	}
 	public String getLockoption() {
 		return lockOption;

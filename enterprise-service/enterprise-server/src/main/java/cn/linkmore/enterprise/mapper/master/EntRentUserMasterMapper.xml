@@ -56,18 +56,20 @@
       ,#{startTime,jdbcType=TIMESTAMP} ,#{endTime,jdbcType=TIMESTAMP},#{type},#{companyId},#{companyName}
       )
       </insert>
-  <insert id="saveBatch" parameterType="java.util.List">
-    insert into t_ent_rent_user (id, ent_id, ent_pre_id, 
-      pre_id, mobile, realname, 
-      plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type,company_id,company_name
+  <insert id="saveBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into t_ent_rent_user (id, pre_id, mobile, 
+      plate, stall_id, user_id, 
+      pre_name, stall_name,
+      start_time, end_time,
+      type, company_id, company_name
       )
-          <foreach collection="list" item="item" index="index" separator=",">
-    values (#{item.id,jdbcType=BIGINT}, #{item.entId,jdbcType=BIGINT}, #{item.entPreId,jdbcType=BIGINT}, 
-      #{item.preId,jdbcType=BIGINT}, #{item.mobile,jdbcType=VARCHAR}, #{item.realname,jdbcType=VARCHAR}, 
-      #{item.plate,jdbcType=VARCHAR}, #{item.stallId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}
-      , #{item.entName,jdbcType=VARCHAR}, #{item.preName,jdbcType=VARCHAR}, #{item.stallName,jdbcType=VARCHAR}
-      ,#{item.startTime,jdbcType=TIMESTAMP} ,#{item.endTime,jdbcType=TIMESTAMP},#{item.type},#{item.companyId},#{item.companyName}
-      )
+      values
+      <foreach collection="list" item="item" index="index" separator=",">
+     (#{item.id,jdbcType=BIGINT}, #{item.preId,jdbcType=BIGINT}, #{item.mobile,jdbcType=VARCHAR}, 
+      #{item.plate,jdbcType=VARCHAR}, #{item.stallId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, 
+      #{item.preName,jdbcType=VARCHAR}, #{item.stallName,jdbcType=VARCHAR},
+      #{item.startTime,jdbcType=TIMESTAMP} ,#{item.endTime,jdbcType=TIMESTAMP},
+      #{item.type}, #{item.companyId}, #{item.companyName})
       </foreach>
   </insert>
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntRentUser">

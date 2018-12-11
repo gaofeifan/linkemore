@@ -38,12 +38,12 @@
    	AND stall_name like #{stallName}
     </if>
 	</where>
-   <!--  <if test="property==null">  
+    <if test="property==null">  
     order by create_time desc
     </if>
     <if test="property!=null">  
     order by  ${property} ${direction}
-    </if> -->
+    </if>
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   <select id="stallListCompany" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -54,14 +54,22 @@
 	where
    	 rent_com_id = #{companyId}
   </select>
+  
+  <select id="occuyStallList" parameterType="java.util.HashMap" resultType="java.lang.Long">
+    SELECT stall_id FROM
+    t_ent_rent_com_stall 
+	where pre_id = #{preId}
+  </select>
+  
+  
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
     SELECT
 	count(1)
     FROM
     t_ent_rent_com_stall 
 	<where>
-    <if test="companyId != null">
-   	AND rent_com_id = #{companyId}
+    <if test="rentComId != null">
+   	AND rent_com_id = #{rentComId}
     </if>
     <if test="stallName != null">
    	AND stall_name like #{stallName}

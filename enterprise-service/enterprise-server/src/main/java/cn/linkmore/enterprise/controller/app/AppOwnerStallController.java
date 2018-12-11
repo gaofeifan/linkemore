@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.controller.app;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,11 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.linkmore.lock.bean.LockBean;
-import com.linkmore.lock.factory.LockFactory;
-import com.linkmore.lock.response.ResponseMessage;
+
 import cn.linkmore.bean.common.ResponseEntity;
-import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
@@ -21,7 +19,6 @@ import cn.linkmore.enterprise.controller.app.request.ReqToothAuth;
 import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.service.OwnerStallService;
-import cn.linkmore.redis.RedisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 

@@ -42,7 +42,7 @@ public class BrandExpireTask {
 	@Resource
 	private StallClient stallClient;
 	
-	@Scheduled(cron = "0 0/5 * * * ?")
+	//@Scheduled(cron = "0 0/5 * * * ?")
 	public void run() {
 		log.info("sync brand pre thread...");
 		init();

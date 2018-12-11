@@ -63,8 +63,33 @@ public class RentEntController {
 		}
 		return msg;
 	}
+	
+	@RequestMapping(value = "/save-stall", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg saveStall(ReqRentEnt ent, HttpServletRequest request) {
+		ViewMsg msg = null;
+		try {
+			Subject subject = SecurityUtils.getSubject();
+			ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
+			ent.setCreateTime(new Date());
+			ent.setUpdateTime(new Date());
+			ent.setStatus(1);
+			ent.setCreateUserId(person.getId());
+			ent.setCreateUserName(person.getUsername());
+			ent.setUpdateUserId(person.getId());
+			ent.setUpdateUserName(person.getUsername());
+			this.rentEntService.saveStall(ent);
+			msg = new ViewMsg("保存成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = new ViewMsg("保存失败", false);
+		}
+		return msg;
+	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST)
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg update(HttpServletRequest request, ReqRentEnt ent) {
 		ViewMsg msg = null;
@@ -153,6 +178,27 @@ public class RentEntController {
 		ViewMsg msg = null;
 		try {
 			this.rentEntService.delete(ids);
+			msg = new ViewMsg("删除成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = new ViewMsg("删除失败", false);
+		}
+		return msg;
+	}
+	
+	/**
+	 * 删除
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/delete-stall", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg deleteStall(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.rentEntService.deleteStall(ids);
 			msg = new ViewMsg("删除成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
