@@ -212,7 +212,7 @@
      start_time <![CDATA[ < ]]> NOW()
      and 
      end_time <![CDATA[ > ]]>  NOW()
-     and stall_id is not null
+     and stall_id is not null 
      <if test="companyId != null">
     		and id = #{companyId}
      </if>
