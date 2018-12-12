@@ -213,7 +213,8 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 							&& userStall.getCompanyId().longValue() == entRentUser.getCompanyId().longValue()
 							&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
 							&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
-							&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
+							//TODO
+							/*&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())*/
 							) {
 						return true;
 					}
