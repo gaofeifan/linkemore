@@ -141,6 +141,9 @@
    	<if test="plate != null">
    		and plate = #{plate}
    	</if>
+   	<if test="companyId != null">
+   		and company_id = #{companyId}
+   	</if>
    	and company_id is not null
   </select>
   
@@ -209,6 +212,10 @@
      start_time <![CDATA[ < ]]> NOW()
      and 
      end_time <![CDATA[ > ]]>  NOW()
+     and stall_id is not null    
+     <if test="companyId != null">
+    		and id = #{companyId}
+     </if>
      <if test="userId != null">
     		and user_id = #{userId}
      </if>

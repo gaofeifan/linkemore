@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.client;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,5 +47,9 @@ public interface OpsRentUserClient {
 	@RequestMapping(value = "/used-stall-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResEntRentUser> usedStallList();
+	
+	@RequestMapping(value = "/check-exist", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean checkExist(@RequestBody Map<String,Object> param);
 	
 }

@@ -16,12 +16,23 @@ public class ReqVehicleMark {
 														,lengths= {8,7})
 	private String vehMark;
 	
+	@ApiModelProperty(value="车区id",required=false)
+	private Long preId = 0L;
+	
 	public String getVehMark() {
 		return vehMark;
 	}
 
 	public void setVehMark(String vehMark) {
 		this.vehMark = vehMark;
+	}
+
+	public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
 	}
 }
 

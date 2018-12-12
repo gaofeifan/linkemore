@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
 import cn.linkmore.account.entity.VehicleMarkManage;
-import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 
@@ -40,11 +38,12 @@ public interface VehicleMarkManageService {
 	ResVechicleMark findById(Long id);
 
 	/**
+	 * @return 
 	 * @Description  新增--app
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void save(cn.linkmore.account.controller.app.request.ReqVehicleMark bean, HttpServletRequest request);
+	Boolean save(cn.linkmore.account.controller.app.request.ReqVehicleMark bean, HttpServletRequest request);
 
 	/**
 	 * @Description  删除--app

@@ -65,8 +65,17 @@ public class OpsRentEntUserClientHystrix implements OpsRentEntUserClient {
 	@Override
 	public boolean exists(ReqRentEntUser ent) {
 		log.info("=======Hystrix==========boolean exists(ReqRentEntUser ent) ");
-		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void syncRentStallByCompanyId(Long companyId) {
+		log.info("=======Hystrix==========void syncRentStallByCompanyId(Long companyId) ");
+	}
+
+	@Override
+	public void syncRentStallByUserId(Long userId) {
+		log.info("=======Hystrix==========void syncRentStallByUserId(Long userId) ");
 	}
 	
 	

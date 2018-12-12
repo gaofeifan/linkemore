@@ -1,6 +1,8 @@
 package cn.linkmore.enterprise.controller.ops;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -116,5 +118,10 @@ public class EntRentUserController {
 	@ResponseBody
 	public List<ResEntRentUser> usedStallList() {
 		return this.entRentUserService.findUsedStall();
+	}
+	@RequestMapping(value = "/check-exist", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean checkExist(@RequestBody Map<String,Object> param) {
+		return this.entRentUserService.checkExist(param);
 	}
 }

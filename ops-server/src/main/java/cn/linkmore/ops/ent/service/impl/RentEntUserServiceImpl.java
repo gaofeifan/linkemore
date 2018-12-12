@@ -87,4 +87,15 @@ public class RentEntUserServiceImpl implements RentEntUserService{
 	public boolean exists(ReqRentEntUser reqRentEntUser) {
 		return this.opsRentEntUserClient.exists(reqRentEntUser);
 	}
+
+	@Override
+	public void syncRentStallByCompanyId(Long companyId) {
+		opsRentEntUserClient.syncRentStallByCompanyId(companyId);
+		
+	}
+
+	@Override
+	public void syncRentStallByUserId(Long userId) {
+		opsRentEntUserClient.syncRentStallByUserId(userId);
+	}
 }

@@ -134,6 +134,12 @@ public class BluetoothDataServiceImpl implements BluetoothDataService {
 			if(property.contains("operate")) {
 				bluetooth.setOperateFlag(Short.valueOf(property.split("-")[1]));
 			}
+			if(property.contains("brand")) {
+				bluetooth.setBrand(property.split("-")[1]);
+			}
+			if(property.contains("remark")) {
+				bluetooth.setRemark(property.split("-")[1]);
+			}
 		}
 		
 		bluetooth.setCreateTime(new Date());
@@ -142,6 +148,7 @@ public class BluetoothDataServiceImpl implements BluetoothDataService {
 		if(integer > 0) {
 			flag = true;
 		}
+		log.info("........................insert flag = {}", flag);
 		return flag;
 	}
 }

@@ -4,13 +4,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
 import cn.linkmore.account.entity.VehicleMarkManage;
@@ -23,6 +23,9 @@ import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
+import cn.linkmore.enterprise.request.ReqRentEntUser;
+import cn.linkmore.prefecture.client.OpsRentEntUserClient;
+import cn.linkmore.prefecture.client.OpsRentUserClient;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
@@ -33,7 +36,7 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
-
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private RedisService redisService;
 	@Resource
@@ -42,16 +45,22 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	private VehicleMarkManageMasterMapper vehicleMarkManageMasterMapper;
 	@Resource
 	private UserService userService;
+	@Resource
+	private OpsRentEntUserClient opsRentEntUserClient;
+	@Resource
+	private OpsRentUserClient opsRentUserClient;
+	
 	@Override
 	public List<VehicleMarkManage> findByUserId(Long userId) {
 		return this.vehicleMarkManageClusterMapper.findByUserId(userId);
 	}
 
 	@Override
-	@Transactional
-	public void save(cn.linkmore.account.controller.app.request.ReqVehicleMark bean, HttpServletRequest request) {
+	//@Transactional
+	public Boolean save(cn.linkmore.account.controller.app.request.ReqVehicleMark bean, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		Boolean existFalg = false;
 		ReqVehicleMark mark = ObjectUtils.copyObject(bean,new ReqVehicleMark());
 		mark.setUserId(user.getId());
 		List<VehicleMarkManage> list = this.findByUserId(user.getId());
@@ -66,11 +75,27 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				manage.setVehMark(bean.getVehMark());
 				manage.setCreateTime(new Date());
 				manage.setUpdateTime(new Date());
-				vehicleMarkManageMasterMapper.insertSelective(manage);
-				return;
+				int num = vehicleMarkManageMasterMapper.insertSelective(manage);
+				if(num > 0) {
+					ReqRentEntUser ent = new ReqRentEntUser();
+					ent.setPlate(bean.getVehMark());
+					if(opsRentEntUserClient.exists(ent)) {
+						opsRentEntUserClient.syncRentStallByUserId(user.getId());
+						if(bean.getPreId().intValue() != 0L) {
+							Map<String,Object> param = new HashMap<String,Object>();
+							param.put("userId", user.getId());
+							param.put("plate", bean.getVehMark());
+							param.put("preId", bean.getPreId());
+							existFalg = opsRentUserClient.checkExist(param);
+							logger.info("===existFlag = {}", existFalg);
+						}
+					}
+				}
 			}
+		}else {
+			throw new BusinessException(StatusEnum.ACCOUNT_PLATE_LIMIT);
 		}
-		throw new BusinessException(StatusEnum.ACCOUNT_PLATE_LIMIT);
+		return existFalg;
 	}
 
 	@Override

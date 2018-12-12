@@ -56,5 +56,11 @@ public interface OpsRentEntUserClient {
 	@ResponseBody
 	public boolean exists(@RequestBody ReqRentEntUser ent);
 
+	@RequestMapping(value = "/v2.0/sync/byCompanyId", method = RequestMethod.POST)
+	@ResponseBody
+	public void syncRentStallByCompanyId(@RequestBody Long companyId);
 
+	@RequestMapping(value = "/v2.0/sync/byUserId", method = RequestMethod.POST)
+	@ResponseBody
+	public void syncRentStallByUserId(@RequestBody Long userId);
 }

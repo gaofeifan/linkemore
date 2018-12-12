@@ -44,4 +44,6 @@ public interface EntRentUserMasterMapper {
 
 	void saveBatch(List<EntRentUser> rus);
 
+	void deleteBatch(List<Long> ids);
+
 }
