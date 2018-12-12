@@ -158,7 +158,12 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 		param.put("userId", userId);
 		syncRentStall(param);
 	}
-
+	
+	@Override
+	public void syncRentStall() {
+		syncRentStall(new HashMap<String, Object>());
+	}
+	
 	public void syncRentStall(Map<String, Object> param) {
 
 		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findComUserList(param);
@@ -195,7 +200,7 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 		}
 		log.info("sync rent com user finished.");
 	}
-
+	
 	private boolean existRentUser(List<EntRentUser> rentUserList,EntRentUser entRentUser) {
 		if (CollectionUtils.isNotEmpty(rentUserList)) {
 			for (EntRentUser userStall : rentUserList) {
@@ -217,6 +222,69 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 		}
 		return false;
 	}
-
 	
+	@Override
+	public void syncRentPersonalUserStall() {
+		syncRentPersonalUserStall(new HashMap<String, Object>());
+	}
+	public void syncRentPersonalUserStall(Map<String, Object> param) {
+		
+		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findPersonalUserList(param);
+		List<EntRentUser> newRentUserList = entRentUserClusterMapper.findRentPersonalUserList(param);
+		log.info("sync rent Personal user old list size={} , new list size={}",oldRentUserList.size(),newRentUserList.size());
+
+		//新记录增加
+		List<EntRentUser> entRentUser = new ArrayList<EntRentUser>();
+		if (CollectionUtils.isNotEmpty(newRentUserList)) {
+			for (EntRentUser stall : newRentUserList) {
+				EntRentUser oldStall=existRentPersonalUser(oldRentUserList,stall);
+				if(oldStall != null) {
+					if(oldStall.getUserId() != null) {
+						//insert
+						if (!oldStall.getUserId().equals(stall.getUserId())) {
+							stall.setType((short) 0);
+							entRentUser.add(stall);
+						}
+					}else {
+						//update
+						stall.setId(oldStall.getId());
+						entRentUserMasterMapper.updateByIdSelective(stall);
+					}
+				}
+			}
+		}
+		if (CollectionUtils.isNotEmpty(entRentUser)) {
+			log.info("add the new rent com user size={},data={}", entRentUser.size(),JSON.toJSON(entRentUser));
+			entRentUserMasterMapper.saveBatch(entRentUser);
+		}
+		
+	}
+
+	/**
+	 * 判断是否存在 
+	 * @param rentUserList
+	 * @param entRentUser
+	 * @return
+	 */
+	private EntRentUser existRentPersonalUser(List<EntRentUser> rentUserList,EntRentUser entRentUser) {
+		if (CollectionUtils.isNotEmpty(rentUserList)) {
+			for (EntRentUser userStall : rentUserList) {
+				if(userStall.getPreId() != null &&  entRentUser.getPreId() != null
+					//&& userStall.getCompanyId() != null &&  entRentUser.getCompanyId() != null
+					&& userStall.getStallId() != null &&  entRentUser.getStallId() != null
+					//&& userStall.getUserId() != null &&  entRentUser.getUserId() != null
+				){
+					if(userStall.getPreId().longValue() == entRentUser.getPreId().longValue()
+							&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
+							//&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
+							&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
+							) {
+						return userStall;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 }

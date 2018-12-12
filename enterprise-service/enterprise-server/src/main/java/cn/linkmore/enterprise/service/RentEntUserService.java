@@ -38,6 +38,10 @@ public interface RentEntUserService {
 	boolean exists(ReqRentEntUser ent);
 
 	/**
+	 * 作业处理企业长租车位
+	 */
+	void syncRentStall();
+	/**
 	 * 同步长租车位表-根据公司ID
 	 */
 	void syncRentStallByCompanyId(Long companyId);
@@ -45,5 +49,10 @@ public interface RentEntUserService {
 	 * 同步长租车位表-根据用户ID
 	 */
 	void syncRentStallByUserId(Long userId);
+
+	/**
+	 * 处理个人长租车位
+	 */
+	void syncRentPersonalUserStall();
 
 }
