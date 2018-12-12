@@ -37,4 +37,6 @@ public interface RentEntUserService {
 	 */
 	void syncRentStallByUserId(Long userId);
 
+	void syncRentPersonalUserStallByPlate(String plate);
+
 }

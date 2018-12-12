@@ -213,8 +213,7 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 							&& userStall.getCompanyId().longValue() == entRentUser.getCompanyId().longValue()
 							&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
 							&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
-							//TODO
-							/*&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())*/
+							&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
 							) {
 						return true;
 					}
@@ -222,6 +221,14 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public void syncRentPersonalUserStallByPlate(String plate) {
+		log.info("sync rent Personal user plate:{} ",plate);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("plate", plate);
+		syncRentPersonalUserStall(param);
 	}
 	
 	@Override
@@ -255,7 +262,7 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			}
 		}
 		if (CollectionUtils.isNotEmpty(entRentUser)) {
-			log.info("add the new rent com user size={},data={}", entRentUser.size(),JSON.toJSON(entRentUser));
+			log.info("add the new rent Personal user size={},data={}", entRentUser.size(),JSON.toJSON(entRentUser));
 			entRentUserMasterMapper.saveBatch(entRentUser);
 		}
 		

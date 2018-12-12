@@ -38,21 +38,26 @@ public interface RentEntUserService {
 	boolean exists(ReqRentEntUser ent);
 
 	/**
-	 * 作业处理企业长租车位
+	 * 处理企业长租车位-所有
 	 */
 	void syncRentStall();
 	/**
-	 * 同步长租车位表-根据公司ID
+	 * 同步公司长租车位表-根据公司ID
 	 */
 	void syncRentStallByCompanyId(Long companyId);
 	/**
-	 * 同步长租车位表-根据用户ID
+	 * 同步公司长租车位表-根据用户ID
 	 */
 	void syncRentStallByUserId(Long userId);
 
 	/**
-	 * 处理个人长租车位
+	 * 同步个人长租车位-所有
 	 */
 	void syncRentPersonalUserStall();
+	/**
+	 * 同步个人长租车位-根据车牌号
+	 * @param plate
+	 */
+	void syncRentPersonalUserStallByPlate(String plate);
 
 }
