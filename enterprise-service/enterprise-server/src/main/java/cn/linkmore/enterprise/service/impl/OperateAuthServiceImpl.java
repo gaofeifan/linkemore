@@ -90,7 +90,7 @@ public class OperateAuthServiceImpl implements OperateAuthService {
 		}
 		List<Long> ids = preList.stream().map(p -> p.getPreId()).collect(Collectors.toList());
 		map.put("preIds", ids);
-		map.put("category", 2);
+//		map.put("category", 2);
 		List<ResPre> byIds = this.prefectureClient.findPreByIds(map );
 		if(byIds == null) {
 			return roots;
