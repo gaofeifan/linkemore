@@ -19,6 +19,7 @@ import cn.linkmore.account.controller.app.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.VehicleMarkManageService;
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.Api;
@@ -49,13 +50,16 @@ public class AppVehicleMarkController{
 	@ApiOperation(value="新增",notes="车牌号必填,车牌号规则校验", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	public ResponseEntity<?> create( @RequestBody @Validated ReqVehicleMark bean,HttpServletRequest request) {
+		ResponseEntity<?> response = null;
 		try {
-			this.vehicleMarkManageService.save(bean,request);
-			return ResponseEntity.success(null, request);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code,e.getMessage(), request);
+			Boolean flag = this.vehicleMarkManageService.save(bean,request);
+			response = ResponseEntity.success(flag, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
+		return response;
 	}
 	
 	/**

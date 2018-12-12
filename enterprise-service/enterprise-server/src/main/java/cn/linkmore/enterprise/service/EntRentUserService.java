@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.service;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -93,5 +94,7 @@ public interface EntRentUserService {
 	List<ResEntRentUser> findUsedStall();
 	
 	void saveBatch(List<ReqRentUser> rus);
+	
+	Boolean checkExist(Map<String, Object> param);
 
 }

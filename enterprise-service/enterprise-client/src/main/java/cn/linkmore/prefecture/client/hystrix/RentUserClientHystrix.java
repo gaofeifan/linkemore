@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,11 @@ public class RentUserClientHystrix implements OpsRentUserClient {
 	public List<ResEntRentUser> usedStallList() {
 		log.info("enterprise service List<ResEntRentUser> usedStallList() hystrix");
 		return null;
+	}
+
+	@Override
+	public Boolean checkExist(Map<String, Object> param) {
+		log.info("enterprise service List<ResEntRentUser> checkExist() hystrix");		return null;
 	}
 	
 }

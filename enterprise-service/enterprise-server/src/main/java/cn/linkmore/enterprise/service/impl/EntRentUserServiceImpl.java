@@ -7,11 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.bean.view.ViewFilter;
@@ -214,7 +217,21 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		//this.entRentUserMasterMapper.saveBatch(rus);
 	}
 	
-
-	
+	/**
+	 * 根据车区id和用户id查询该用户是否拥有长租车位权限
+	 * @param param
+	 * @return
+	 */
+	public Boolean checkExist(Map<String,Object> param){
+		logger.info("param = {}",JSON.toJSON(param));
+		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findComUserList(param);
+		logger.info("oldRentUserList = {}",JSON.toJSON(oldRentUserList));
+		Boolean flag = false;
+		if(CollectionUtils.isNotEmpty(oldRentUserList)) {
+			flag = true;
+		}
+		logger.info("flag = {}",JSON.toJSON(flag));
+		return flag;
+	}
 	
 }
