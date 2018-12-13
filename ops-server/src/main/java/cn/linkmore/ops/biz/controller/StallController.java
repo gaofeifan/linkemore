@@ -231,6 +231,7 @@ public class StallController {
 		map.put("preId", pid);
 		map.put("type", 2);
 		List<ResStall> list = this.opsStallClient.findStallList(map);
+		/*
 		List<ResStall> notUsedList = new ArrayList<ResStall>();
 		List<ResEntRentUser> rentUserList = opsRentUserClient.usedStallList();
 		List<Long> usedStallId = new ArrayList<Long>();
@@ -247,7 +248,10 @@ public class StallController {
 			}
 		}
 		log.info("param = {}, result = {}",JSON.toJSON(map),JSON.toJSON(notUsedList));
+		
 		return notUsedList;
+		*/
+		return list;
 	}
 	
 
