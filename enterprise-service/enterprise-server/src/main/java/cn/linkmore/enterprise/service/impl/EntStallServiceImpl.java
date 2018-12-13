@@ -213,10 +213,10 @@ public class EntStallServiceImpl implements EntStallService {
 					continue;
 				}
 				// 临停使用 || 临停
-				if (resStall.getType() == 1 && resStall.getStatus() == StallStatus.USED.status) {
+				if (resStall.getType() == 0 && resStall.getStatus() == StallStatus.USED.status) {
 					preTempUseTypeStalls++;
 				}
-				if (resStall.getType() == 1) {
+				if (resStall.getType() == 0) {
 					preTempTypeStalls++;
 				}
 				// 长租使用||长租
@@ -257,7 +257,7 @@ public class EntStallServiceImpl implements EntStallService {
 			rentStalls.setPreUseTypeStalls(preRentUseTypeStalls);
 			typeSum.put("rent", rentStalls);
 			ResEntTypeStalls tempStalls = new ResEntTypeStalls();
-			tempStalls.setType((short) 1);
+			tempStalls.setType((short) 0);
 			tempStalls.setTypeName("临停车位");
 			tempStalls.setPreTypeStalls(preTempTypeStalls);
 			tempStalls.setPreUseTypeStalls(preTempUseTypeStalls);
@@ -411,7 +411,6 @@ public class EntStallServiceImpl implements EntStallService {
 		/*
 		 * if(lockBean == null){ return resDetailStall; }
 		 */
-		resDetailStall.setInductionState(lockBean.getInductionState());
 		ResEntOrder resEntOrder = this.orderClient.findOrderByStallId(resStallEntity.getId());
 		if (resStallEntity.getStatus() != 1 && resStallEntity.getStatus() != 4) {
 			if (resEntOrder != null) {
@@ -463,7 +462,7 @@ public class EntStallServiceImpl implements EntStallService {
 					resDetailStall.setDownTime(record.getDownTime());
 				}
 			}
-		} else if (resStallEntity.getType() != null && resStallEntity.getType() == 1) {
+		} else if (resStallEntity.getType() != null && resStallEntity.getType() == 0) {
 			if (resStallEntity.getStatus() == 2) {
 				resDetailStall.setDownTime(resEntOrder.getLockDownTime());
 				resDetailStall.setOrderNo(resEntOrder.getOrderNo());
@@ -507,6 +506,7 @@ public class EntStallServiceImpl implements EntStallService {
 		 */
 
 		if (lockBean != null) {
+			resDetailStall.setInductionState(lockBean.getInductionState());
 			resDetailStall.setBetty(lockBean.getElectricity());
 			resDetailStall.setStatus(lockBean.getLockState());
 			if (lockBean.getElectricity() <= 30) {
