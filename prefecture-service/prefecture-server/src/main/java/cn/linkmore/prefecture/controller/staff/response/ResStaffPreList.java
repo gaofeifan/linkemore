@@ -1,5 +1,8 @@
 package cn.linkmore.prefecture.controller.staff.response;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -21,11 +24,15 @@ public class ResStaffPreList {
 	@ApiModelProperty(value = "车位使用总数")
 	private int preUseTypeStalls;
 	
+	@ApiModelProperty(value = "车区车位类型使用总数")
+	private Map<String,ResEntTypeStalls> typeStalls = new HashMap<>();
+	
 	@ApiModelProperty(value = "车位空闲总数")
 	private int preLeisureTypeStalls;
 
 	@ApiModelProperty(value = "车位故障总数")
 	private int preFaultTypeStalls;
+	
 
 	public String getPreName() {
 		return preName;
@@ -82,7 +89,12 @@ public class ResStaffPreList {
 	public void setPreFaultTypeStalls(int preFaultTypeStalls) {
 		this.preFaultTypeStalls = preFaultTypeStalls;
 	}
-	
-	
-	
+
+	public Map<String, ResEntTypeStalls> getTypeStalls() {
+		return typeStalls;
+	}
+
+	public void setTypeStalls(Map<String, ResEntTypeStalls> typeStalls) {
+		this.typeStalls = typeStalls;
+	}
 }

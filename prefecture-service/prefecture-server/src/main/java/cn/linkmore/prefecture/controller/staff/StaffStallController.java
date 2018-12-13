@@ -58,6 +58,7 @@ public class StaffStallController {
 	
 	@RequestMapping(value="/stall-detail",method=RequestMethod.GET)
 	@ResponseBody
+	
 	@ApiOperation(value = "车位详情", notes = "车位详情", consumes = "application/json")
 	public ResponseEntity<ResStaffStallDetail> findStaffStallDetails(HttpServletRequest request,  @ApiParam("车位id") @NotNull(message="车位id不能为空") @RequestParam("stallId") Long stallId) {
 		ResStaffStallDetail detail = this.stallService.findStaffStallDetails(request,stallId);

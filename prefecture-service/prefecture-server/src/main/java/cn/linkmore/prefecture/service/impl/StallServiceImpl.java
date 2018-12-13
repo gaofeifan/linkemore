@@ -44,6 +44,7 @@ import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
+import cn.linkmore.enterprise.response.ResEntRentedRecord;
 import cn.linkmore.enterprise.response.ResEntStaff;
 import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.notice.client.UserSocketClient;
@@ -60,6 +61,7 @@ import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResEntTypeStalls;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
@@ -429,6 +431,7 @@ public class StallServiceImpl implements StallService {
 		stall.setLockId(stallLock.getId());
 		stall.setLockStatus(0);
 		stall.setLockBattery(0);
+		stall.setType((short)0);
 		stall.setAreaName(reqLockIntall.getAreaName());
 		stall.setStallLocal(reqLockIntall.getStallName());
 		// 插入车位
@@ -948,6 +951,7 @@ public class StallServiceImpl implements StallService {
 		map = new HashMap<>();
 		List<ResUnusualOrder> unusualOrders = feignUnusualOrderClient.findList(map);
 		ResStaffPreList preList = null;
+		ResEntTypeStalls entType = null;
 		for (ResPre resPre : pre) {
 			preList = new ResStaffPreList();
 			int preTypeStalls = 0;
@@ -955,6 +959,17 @@ public class StallServiceImpl implements StallService {
 			int preLeisureTypeStalls = 0;
 			int preFaultTypeStalls = 0;
 			int orderNum = 0;
+			
+			int preTempUseTypeStalls = 0;
+			int preTempTypeStalls = 0;
+			
+			int preRentUseTypeStalls = 0;
+			int preRentTypeStalls = 0;
+			
+			int preVipUseTypeStalls = 0;
+			int preVipTypeStalls = 0;
+			
+			
 			for (Stall stall : stalls) {
 				if (stall.getType() != 0) {
 					continue;
@@ -964,12 +979,27 @@ public class StallServiceImpl implements StallService {
 				}
 				if (collect.contains(stall.getId())) {
 					preTypeStalls++;
-					if (stall.getStatus() == 2) {
+					switch (stall.getStatus() ) {
+					case 2:
 						preUseTypeStalls++;
-					} else if (stall.getStatus() == 1) {
+						break;
+					case 1:
 						preLeisureTypeStalls++;
-					} else if (stall.getStatus() == 4) {
+						break;
+					case 4:
 						preFaultTypeStalls++;
+						break;
+					}
+					if(stall.getType() == 0) {
+						preTempTypeStalls++;
+						preTempUseTypeStalls += stall.getStatus() == 2 ? 1 : 0;
+					}else if (stall.getType() == 2) {
+						preRentTypeStalls++;
+						preRentUseTypeStalls += stall.getStatus() == 2 ? 1 : 0; 
+						
+					}else if(stall.getType() == 3) {
+						preVipTypeStalls++;
+						preVipUseTypeStalls += stall.getStatus() == 2 ? 1 : 0;
 					}
 				}
 			}
@@ -987,6 +1017,25 @@ public class StallServiceImpl implements StallService {
 			preList.setUnusualOrder(orderNum);
 			preList.setPreTypeStalls(preTypeStalls);
 			preList.setPreUseTypeStalls(preUseTypeStalls);
+			//	临停
+			entType = new ResEntTypeStalls();
+			entType.setType((short)0);
+			entType.setTypeName("临停");
+			entType.setPreTypeStalls(preTempTypeStalls);
+			entType.setPreUseTypeStalls(preTempUseTypeStalls);
+			preList.getTypeStalls().put("temp", entType);
+			// 固定
+			entType = new ResEntTypeStalls();
+			entType.setTypeName("固定");
+			entType.setPreTypeStalls(preRentTypeStalls);
+			entType.setPreUseTypeStalls(preRentUseTypeStalls);
+			preList.getTypeStalls().put("rent", entType);
+			//vip
+			entType = new ResEntTypeStalls();
+			entType.setTypeName("VIP");
+			entType.setPreTypeStalls(preVipTypeStalls);
+			entType.setPreUseTypeStalls(preVipUseTypeStalls);
+			preList.getTypeStalls().put("vip", entType);
 			resPres.add(preList);
 		}
 		return resPres;
@@ -1002,9 +1051,8 @@ public class StallServiceImpl implements StallService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", cu.getId());
 		List<ResAdminAuthStall> stallAuthList = this.adminAuthStallClusterMapper.findStallList(map);
-
 		map.put("preId", staffList.getPreId());
-		map.put("type", 0);
+		map.put("type", staffList.getType());
 		if (StringUtils.isNotBlank(staffList.getStallName())) {
 			map.put("stallNameLike", "%" + staffList.getStallName() + "%");
 		}
@@ -1029,29 +1077,100 @@ public class StallServiceImpl implements StallService {
 		List<ResStall> stallList = this.stallClusterMapper.findPreStallList(map);
 		log.info("【 ResStall list 】 " + JsonUtil.toJson(stallList));
 		List<ResStaffStallList> staffStallLists = new ArrayList<>();
-		ResStaffStallList ResStaffStallList;
-		List<ResOrderPlate> plates = this.entOrderClient.findPlateByPreId(staffList.getPreId());
-		log.info("【 ResOrderPlate 】 " + JsonUtil.toJson(plates));
 		List<Long> stallAuthIds = stallAuthList.stream().map(stall -> stall.getStallId()).collect(Collectors.toList());
 		ResPrefectureDetail detail = this.prefectureService.findById(staffList.getPreId());
 		log.info("【 ResPrefectureDetail 】 " + JsonUtil.toJson(detail));
 		List<ResLockInfo> bockBeans = lockTools.lockListByGroupCode(detail.getGateway());
 		log.info("【lockBean list 】 " + JsonUtil.toJson(bockBeans));
 		List<ResEntExcStallStatus> excStallList = feignStallExcStatusClient.findAll();
+//			staffStallLists = getStaffTempStall(stallList,staffList.getPreId(),bockBeans, stallAuthIds,excStallList);
+		List<ResOrderPlate> plates = this.entOrderClient.findPlateByPreId(staffList.getPreId());
+		ResStaffStallList resStaffStallList = null;
+		log.info("【 ResOrderPlate 】 " + JsonUtil.toJson(plates));
 		for (ResStall resStall : stallList) {
-			ResStaffStallList = new ResStaffStallList();
 			if (!stallAuthIds.contains(resStall.getId())) {
 				continue;
 			}
+			resStaffStallList = new ResStaffStallList();
+			if(resStall.getType() == 0) {
+				if (resStall.getStatus() == 2) {
+					for (ResOrderPlate resOrderPlate : plates) {
+						if (resOrderPlate.getStallId().equals(resStall.getId())) {
+							resStaffStallList.setPlateNo(resOrderPlate.getPlateNo());
+						}
+					}
+				} else if (resStall.getStatus() == 1) {
+					// 指定车位锁
+					int assignStatus = 1;
+					String lockSn = resStall.getLockSn();
+					Set<Object> set = redisService.members(Constants.RedisKey.ORDER_ASSIGN_STALL.key);
+					log.info("指定锁池个数: {}", set.size());
+					log.info("指定锁池: {}", set.toString());
+					for (Object obj : set) {
+						JSONObject json = JSON.parseObject(obj.toString());
+						String sn = json.get("lockSn").toString();
+						Long pid = Long.parseLong(json.get("preId").toString());
+						if (pid.longValue() == staffList.getPreId().longValue() && lockSn.equals(sn)) {
+							assignStatus = 0;
+							resStaffStallList.setPlateNo(json.get("plate").toString());
+							break;
+						}
+					}
+					resStaffStallList.setAssignStatus(assignStatus);
+				}
+			}else if(resStall.getType() == 2) {
+			}
+			resStaffStallList = getStaffStall(bockBeans,resStaffStallList,resStall,excStallList);
+			staffStallLists.add(resStaffStallList);
+		}
+		return staffStallLists;
+	}
+	/**
+	 * @param excStallList 
+	 * @param stallAuthIds 
+	 * @param preId 
+	 * @Description  查询管理版固定车位
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	private List<ResStaffStallList> getStaffRentStall(List<ResStall> stallList, Long preId, List<ResLockInfo> bockBeans, List<Long> stallAuthIds, List<ResEntExcStallStatus> excStallList) {
+		List<ResStaffStallList> staffStallLists = new ArrayList<>();
+		ResStaffStallList resStaffStallList = null;
+		for (ResStall resStall : stallList) {
+			if (!stallAuthIds.contains(resStall.getId())) {
+				continue;
+			}
+			resStaffStallList = new ResStaffStallList();
+			resStaffStallList = getStaffStall(bockBeans, resStaffStallList, resStall, excStallList);
+			staffStallLists.add(resStaffStallList);
+		}
+		return staffStallLists;
+	}
+
+	/**
+	 * @param bockBeans 
+	 * @param stallAuthIds 
+	 * @param excStallList 
+	 * @Description  查询管理版临停车位
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	private List<ResStaffStallList> getStaffTempStall(List<ResStall> stallList, Long preId, List<ResLockInfo> bockBeans, List<Long> stallAuthIds, List<ResEntExcStallStatus> excStallList) {
+		List<ResStaffStallList> staffStallLists = new ArrayList<>();
+		List<ResOrderPlate> plates = this.entOrderClient.findPlateByPreId(preId);
+		ResStaffStallList resStaffStallList = null;
+		log.info("【 ResOrderPlate 】 " + JsonUtil.toJson(plates));
+		for (ResStall resStall : stallList) {
+			if (!stallAuthIds.contains(resStall.getId())) {
+				continue;
+			}
+			resStaffStallList = new ResStaffStallList();
 			if (resStall.getStatus() == 2) {
-				// List<String> list = ObjectUtils.findFieldVlaue(plates, "plateNo", new
-				// String[]{"stallId"}, new Object[]{resStall.getId()});
 				for (ResOrderPlate resOrderPlate : plates) {
 					if (resOrderPlate.getStallId().equals(resStall.getId())) {
-						ResStaffStallList.setPlateNo(resOrderPlate.getPlateNo());
+						resStaffStallList.setPlateNo(resOrderPlate.getPlateNo());
 					}
 				}
-
 			} else if (resStall.getStatus() == 1) {
 				// 指定车位锁
 				int assignStatus = 1;
@@ -1059,64 +1178,77 @@ public class StallServiceImpl implements StallService {
 				Set<Object> set = redisService.members(Constants.RedisKey.ORDER_ASSIGN_STALL.key);
 				log.info("指定锁池个数: {}", set.size());
 				log.info("指定锁池: {}", set.toString());
-				Long preId = resStall.getPreId();
 				for (Object obj : set) {
 					JSONObject json = JSON.parseObject(obj.toString());
 					String sn = json.get("lockSn").toString();
 					Long pid = Long.parseLong(json.get("preId").toString());
 					if (pid.longValue() == preId.longValue() && lockSn.equals(sn)) {
 						assignStatus = 0;
-						ResStaffStallList.setPlateNo(json.get("plate").toString());
+						resStaffStallList.setPlateNo(json.get("plate").toString());
 						break;
 					}
 				}
-				ResStaffStallList.setAssignStatus(assignStatus);
+				resStaffStallList.setAssignStatus(assignStatus);
 			}
+			resStaffStallList = getStaffStall(bockBeans,resStaffStallList,resStall,excStallList);
+			staffStallLists.add(resStaffStallList);
+		}
+		return staffStallLists;
+	}
+
+	private ResStaffStallList getStaffStall(List<ResLockInfo> bockBeans, ResStaffStallList resStaffStallList, ResStall resStall, List<ResEntExcStallStatus> excStallList) {
+		resStaffStallList = getStaffStallExc(resStaffStallList,resStall,excStallList);
+		resStaffStallList = getStaffLockStatus(bockBeans,resStaffStallList,resStall.getLockSn());
+		resStaffStallList.setLockStatus(resStaffStallList.getLockStatus() != null ? resStaffStallList.getLockStatus() : resStall.getLockStatus());
+		resStaffStallList.setStatus(resStall.getStatus());
+		resStaffStallList.setStallId(resStall.getId());
+		resStaffStallList.setStallName(resStall.getStallName());
+		return resStaffStallList;
+	}
+	
+	private ResStaffStallList getStaffLockStatus(List<ResLockInfo> bockBeans, ResStaffStallList resStaffStallList ,String lockSn) {
+		if (bockBeans != null && bockBeans.size() != 0) {
+			for (ResLockInfo lockBean : bockBeans) {
+				if (lockBean.getLockCode().equals(lockSn)) {
+					if(lockBean.getElectricity() <= 30) {
+						resStaffStallList.setExcStatus(false);
+					} 
+					switch (lockBean.getLockState()) {
+					case 0:
+						resStaffStallList.setLockStatus(2);
+						break;
+					case 2:
+						resStaffStallList.setLockStatus(1);
+						break;
+					case 3:
+						resStaffStallList.setLockStatus(2);
+						break;
+					case 1:
+						resStaffStallList.setLockStatus(1);
+						break;
+					}
+				}
+			}
+		}
+		return resStaffStallList;
+	}
+
+	private ResStaffStallList getStaffStallExc(ResStaffStallList resStaffStallList, ResStall resStall, List<ResEntExcStallStatus> excStallList) {
+		if(resStall != null) {
 			if (resStall.getStatus() != 4) {
 				for (ResEntExcStallStatus resEntExcStallStatus : excStallList) {
 					if (resEntExcStallStatus.getStallId().equals(resStall.getId())) {
-						ResStaffStallList.setExcStatus(false);
+						resStaffStallList.setExcStatus(false);
 					}
 				}
 			}
 			if (resStall.getBindOrderStatus() != null && resStall.getBindOrderStatus() != 0) {
-				ResStaffStallList.setExcStatus(false);
+				resStaffStallList.setExcStatus(false);
 			}
-			boolean falg = true;
-				if (bockBeans != null && bockBeans.size() != 0) {
-					for (ResLockInfo lockBean : bockBeans) {
-						if (lockBean.getLockCode().equals(resStall.getLockSn())) {
-							if(lockBean.getElectricity() <= 30) {
-								ResStaffStallList.setExcStatus(false);
-							}
-							falg = false;
-							switch (lockBean.getLockState()) {
-							case 0:
-								ResStaffStallList.setLockStatus(2);
-								break;
-							case 2:
-								ResStaffStallList.setLockStatus(1);
-								break;
-							case 3:
-								ResStaffStallList.setLockStatus(2);
-								break;
-							case 1:
-								ResStaffStallList.setLockStatus(1);
-								break;
-							}
-						}
-					}
-				}
-			if (falg) {
-				ResStaffStallList.setLockStatus(resStall.getLockStatus());
-			}
-			ResStaffStallList.setStatus(resStall.getStatus());
-			ResStaffStallList.setStallId(resStall.getId());
-			ResStaffStallList.setStallName(resStall.getStallName());
-			staffStallLists.add(ResStaffStallList);
 		}
-		return staffStallLists;
+		return resStaffStallList;
 	}
+
 
 	@Override
 	public Boolean checkStaffCityAuth(Long userId, Long cityId) {
@@ -1269,39 +1401,6 @@ public class StallServiceImpl implements StallService {
 		detail.setStallName(stall.getStallName());
 		detail.setLockSn(stall.getLockSn());
 		detail.setStatus(stall.getStatus());
-		if (stall.getStatus() == 4) {
-			ResStallOperateLog stallOperateLog = this.stallOperateLogService.findByStallId(stallId);
-			if (stallOperateLog != null) {
-				detail.setFaultId(stallOperateLog.getRemarkId());
-				detail.setFaultName(stallOperateLog.getRemark());
-			}
-		} else {
-			if (stall.getStatus() == 2) {
-				ResUserOrder resUserOrder = this.entOrderClient.findStallLatest(stallId);
-				log.info("【resUserOrder】==" + JsonUtil.toJson(resUserOrder));
-				detail.setStartTime(resUserOrder.getBeginTime());
-				detail.setDownTime(resUserOrder.getLockDownTime());
-				detail.setOrderNo(resUserOrder.getOrderNo());
-				detail.setMobile(resUserOrder.getUsername());
-				detail.setOrderStatus(resUserOrder.getStatus().shortValue());
-				String date = DateUtils.getDurationDetail(new Date(), resUserOrder.getBeginTime());
-				detail.setStartDate(date);
-				detail.setOrderId(resUserOrder.getId());
-				if (resUserOrder.getOrderNo().contains("WX")) {
-					detail.setOrderType("微信");
-				} else if (resUserOrder.getOrderNo().contains("YL")) {
-					detail.setOrderType("银联");
-				} else {
-					detail.setOrderType("APP");
-				}
-				detail.setPlate(resUserOrder.getPlateNo());
-			}
-			detail.setOnoffStatus(true);
-			ResEntExcStallStatus entExcStall = feignStallExcStatusClient.findByStallId(stallId);
-			if (entExcStall != null) {
-				detail.setExcCode(entExcStall.getExcStatus());
-			}
-		}
 		if (detail.getExcCode() != null || detail.getBetty() <= 30) {
 			for (ResBaseDict resBaseDict : baseDict) {
 				if (detail.getExcCode() != null) {
@@ -1317,6 +1416,44 @@ public class StallServiceImpl implements StallService {
 				}
 			}
 		}
+		if (stall.getStatus() == 4) {
+			ResStallOperateLog stallOperateLog = this.stallOperateLogService.findByStallId(stallId);
+			if (stallOperateLog != null) {
+				detail.setFaultId(stallOperateLog.getRemarkId());
+				detail.setFaultName(stallOperateLog.getRemark());
+			}
+		} else {
+			if (stall.getStatus() == 2) {
+				if(stall.getType() == 0) {
+					ResUserOrder resUserOrder = this.entOrderClient.findStallLatest(stallId);
+					log.info("【resUserOrder】==" + JsonUtil.toJson(resUserOrder));
+					detail.setStartTime(resUserOrder.getBeginTime());
+					detail.setDownTime(resUserOrder.getLockDownTime());
+					detail.setOrderNo(resUserOrder.getOrderNo());
+					detail.setMobile(resUserOrder.getUsername());
+					detail.setOrderStatus(resUserOrder.getStatus().shortValue());
+					String date = DateUtils.getDurationDetail(new Date(), resUserOrder.getBeginTime());
+					detail.setStartDate(date);
+					detail.setOrderId(resUserOrder.getId());
+					if (resUserOrder.getOrderNo().contains("WX")) {
+						detail.setOrderType("微信");
+					} else if (resUserOrder.getOrderNo().contains("YL")) {
+						detail.setOrderType("银联");
+					} else {
+						detail.setOrderType("APP");
+					}
+					detail.setPlate(resUserOrder.getPlateNo());
+				}else if(stall.getType() == 2) {
+					
+				}
+			}
+			detail.setOnoffStatus(true);
+			ResEntExcStallStatus entExcStall = feignStallExcStatusClient.findByStallId(stallId);
+			if (entExcStall != null) {
+				detail.setExcCode(entExcStall.getExcStatus());
+			}
+		}
+	
 		if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 1) {
 			detail.setResetStatus(false);
 			detail.setExcCode(0L);

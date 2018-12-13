@@ -17,8 +17,11 @@ public class ReqStaffStallList {
 	@ApiModelProperty(value="车位名称模糊查询(非必填 )",required=false)
 	private String stallName;
 	
-	@ApiModelProperty(value="车位类型(预留字段 非必填) 0 空闲 1使用 2故障",required=false)
+	@ApiModelProperty(value="车位类型状态(预留字段 非必填) 0 空闲 1使用 2故障",required=false)
 	private Integer status;
+
+	@ApiModelProperty(value="车位类型(0自营/临停,2固定,3VIP（预留类型）)",required=true)
+	private Integer type;
 
 	public Long getPreId() {
 		return preId;
@@ -44,4 +47,11 @@ public class ReqStaffStallList {
 		this.status = status;
 	}
 
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 }

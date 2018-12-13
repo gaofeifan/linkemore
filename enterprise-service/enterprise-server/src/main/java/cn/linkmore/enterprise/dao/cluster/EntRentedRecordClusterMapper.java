@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntRentedRecord;
+import cn.linkmore.enterprise.response.ResEntRentedRecord;
 import cn.linkmore.enterprise.response.ResEnterprise;
 /**
  * 长租用户会用记录--读
@@ -56,5 +57,6 @@ public interface EntRentedRecordClusterMapper {
 	 * @Version  v2.0
 	 */
 	EntRentedRecord findByStallId(Long id);
+	List<ResEntRentedRecord> findLastPlateNumberByPreId(Long preId);
 
 }
