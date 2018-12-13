@@ -17,11 +17,12 @@ public class RentComUserTask {
 	@Resource
 	private RentEntUserService rentEntUserService;
 
-	@Scheduled(cron = "0 0/1 * * * ?")
+	//@Scheduled(cron = "0 0/1 * * * ?")
+	@Scheduled(cron = "0 0 1 * * ?")	//每天凌晨1点触发
 	public void run() {
 		log.info("sync rent com user thread...");
-		//rentEntUserService.syncRentStall();
-		rentEntUserService.syncRentPersonalUserStall();
+		rentEntUserService.syncRentStall();
+		//rentEntUserService.syncRentPersonalUserStall();
 	}
 
 	
