@@ -20,8 +20,8 @@ public class RentComUserTask {
 	@Scheduled(cron = "0 0/1 * * * ?")
 	public void run() {
 		log.info("sync rent com user thread...");
-		rentEntUserService.syncRentStall();
-		
+		//rentEntUserService.syncRentStall();
+		rentEntUserService.syncRentPersonalUserStall();
 	}
 
 	

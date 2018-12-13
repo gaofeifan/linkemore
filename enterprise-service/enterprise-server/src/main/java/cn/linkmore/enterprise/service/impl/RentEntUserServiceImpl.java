@@ -257,7 +257,11 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 						//update
 						stall.setId(oldStall.getId());
 						entRentUserMasterMapper.updateByIdSelective(stall);
+						oldStall.setUserId(stall.getUserId());
 					}
+				}else {
+					stall.setType((short) 0);
+					entRentUser.add(stall);
 				}
 			}
 		}
@@ -275,24 +279,28 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	 * @return
 	 */
 	private EntRentUser existRentPersonalUser(List<EntRentUser> rentUserList,EntRentUser entRentUser) {
+		EntRentUser retEntRentUser=null;
 		if (CollectionUtils.isNotEmpty(rentUserList)) {
 			for (EntRentUser userStall : rentUserList) {
 				if(userStall.getPreId() != null &&  entRentUser.getPreId() != null
-					//&& userStall.getCompanyId() != null &&  entRentUser.getCompanyId() != null
 					&& userStall.getStallId() != null &&  entRentUser.getStallId() != null
 					//&& userStall.getUserId() != null &&  entRentUser.getUserId() != null
 				){
 					if(userStall.getPreId().longValue() == entRentUser.getPreId().longValue()
 							&& userStall.getStallId().longValue() == entRentUser.getStallId().longValue()
-							//&& userStall.getUserId().longValue() == entRentUser.getUserId().longValue()
 							&& StringUtils.equalsIgnoreCase(userStall.getPlate(), entRentUser.getPlate())
 							) {
-						return userStall;
+						
+						if (userStall.getUserId() != null && userStall.getUserId().longValue() == entRentUser.getUserId().longValue()) {
+							return userStall;
+						}else {
+							retEntRentUser=userStall;
+						}
 					}
 				}
 			}
 		}
-		return null;
+		return retEntRentUser;
 	}
 
 }
