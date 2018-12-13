@@ -198,6 +198,9 @@ public class EntStallServiceImpl implements EntStallService {
 			int preTempUseTypeStalls = 0;
 
 			Map<String, ResEntTypeStalls> typeSum = new HashMap<>();
+			if(stalls == null) {
+				return entStallList;
+			}
 			for (int j = 0; j < stalls.size(); j++) {
 				ResStall resStall = stalls.get(j);
 				if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
