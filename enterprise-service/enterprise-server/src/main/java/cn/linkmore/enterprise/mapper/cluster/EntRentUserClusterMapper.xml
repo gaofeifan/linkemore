@@ -228,13 +228,13 @@
 		o.pre_name,
 		o.stall_id,
 		o.stall_name,
-		o.plate,
 		o.mobile,
 		o.user_id,
 		o.id as company_id,
 		o.company_name,
 		o.start_time,
-		o.end_time
+		o.end_time,
+		max(o.plate) as plate
 	FROM
 		(
 			(
@@ -273,6 +273,17 @@
      <if test="userId != null">
     		and user_id = #{userId}
      </if>
+     group by 
+     	o.pre_id,
+		o.pre_name,
+		o.stall_id,
+		o.stall_name,
+		o.mobile,
+		o.user_id,
+		company_id,
+		o.company_name,
+		o.start_time,
+		o.end_time
   </select>
    
   
