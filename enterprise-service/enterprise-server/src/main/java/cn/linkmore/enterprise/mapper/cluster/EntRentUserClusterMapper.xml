@@ -72,7 +72,8 @@
     select t.*,v.status from
     t_ent_rent_user t left join v_stall v on t.stall_id = v.id 
     where  1 = 1
-    and t.type =0 
+    <!-- 展示所有数据 -->
+    <!-- and t.type =0  -->
    	<if test="preName != null">
    		and pre_name like #{preName,jdbcType=VARCHAR}
    	</if>
@@ -148,80 +149,7 @@
    	and company_id is not null
   </select>
   
-  <select id="findRentComUserList1" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
-     SELECT
-		o.pre_id,
-		o.pre_name,
-		o.stall_id,
-		o.stall_name,
-		o.plate,
-		o.mobile,
-		o.user_id,
-		o.id as company_id,
-		o.company_name,
-		o.start_time,
-		o.end_time
-	FROM
-		(
-			(
-				SELECT
-					c.company_name,
-	        c.id,
-					c.start_time,
-					c.end_time,
-					c.pre_id,
-					c.pre_name,
-					cs.stall_id,
-					cs.stall_name,
-					cu.plate,
-					u.mobile,
-					u.id AS user_id
-				FROM
-					t_ent_rent_com c
-				LEFT JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
-				LEFT JOIN t_ent_rent_com_user cu ON c.id = cu.rent_com_id
-				LEFT JOIN v_vehicle_mark_manage m ON cu.plate = m.veh_mark
-				LEFT JOIN t_user u ON u.id = m.veh_user_id
-				WHERE
-					cu.user_id IS NULL
-				AND cu.plate IS NOT NULL
-				AND cs.stall_id IS NOT NULL
-			)
-			UNION 
-				(
-					SELECT
-						c.company_name,
-						c.id,
-						c.start_time,
-						c.end_time,
-						c.pre_id,
-						c.pre_name,
-						cs.stall_id,
-						cs.stall_name,
-						cu.plate,
-						u.mobile,
-						cu.user_id
-					FROM
-						t_ent_rent_com c
-					LEFT JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
-					LEFT JOIN t_ent_rent_com_user cu ON c.id = cu.rent_com_id
-					LEFT JOIN t_user u ON u.id = cu.user_id
-					WHERE
-						cu.user_id IS NOT NULL
-				)
-		) o where 1 = 1 and
-     start_time <![CDATA[ < ]]> NOW()
-     and 
-     end_time <![CDATA[ > ]]>  NOW()
-     and stall_id is not null    
-     <if test="companyId != null">
-    		and id = #{companyId}
-     </if>
-     <if test="userId != null">
-    		and user_id = #{userId}
-     </if>
-  </select>
- 
+  
    <select id="findRentComUserList" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
      SELECT
 		o.pre_id,
@@ -237,31 +165,29 @@
 		max(o.plate) as plate
 	FROM
 		(
-			(
-				SELECT
-					c.company_name,
-	        		c.id,
-					c.start_time,
-					c.end_time,
-					c.pre_id,
-					c.pre_name,
-					cs.stall_id,
-					cs.stall_name,
-					cu.plate,
-					u.mobile,
-					u.id AS user_id
-				FROM
-					t_ent_rent_com c
-				LEFT JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
-				LEFT JOIN t_ent_rent_com_user cu ON c.id = cu.rent_com_id
-				LEFT JOIN v_vehicle_mark_manage m ON cu.plate = m.veh_mark
-				LEFT JOIN t_user u ON u.id = m.veh_user_id
-				WHERE
-				u.id IS NOT NULL
-				AND cu.plate IS NOT NULL
-				AND cs.stall_id IS NOT NULL
-			)
-			
+			SELECT
+				c.company_name,
+        		c.id,
+				c.start_time,
+				c.end_time,
+				c.pre_id,
+				c.pre_name,
+				cs.stall_id,
+				cs.stall_name,
+				cu.plate,
+				u.mobile,
+				u.id AS user_id
+			FROM
+				t_ent_rent_com c
+			LEFT JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
+			LEFT JOIN t_ent_rent_com_user cu ON c.id = cu.rent_com_id
+			LEFT JOIN v_vehicle_mark_manage m ON cu.plate = m.veh_mark
+			LEFT JOIN t_user u ON u.id = m.veh_user_id
+			WHERE
+			u.id IS NOT NULL
+			AND cu.plate IS NOT NULL
+			AND cs.stall_id IS NOT NULL
+			AND c.status = 2
 		) o where 1 = 1 and
      start_time <![CDATA[ < ]]> NOW()
      and 

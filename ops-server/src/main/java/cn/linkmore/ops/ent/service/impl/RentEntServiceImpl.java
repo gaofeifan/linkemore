@@ -127,17 +127,6 @@ public class RentEntServiceImpl implements RentEntService {
 					}
 				}
 			}
-			
-			/*param.put("preId", preList.get(0).getId());
-			param.put("type", 2);
-			List<Long> stallIds = rentEntClient.occuyStallList(param);
-			log.info("------occupy-----stallIds = {}", JSON.toJSON(stallIds));
-			if(CollectionUtils.isNotEmpty(stallIds)) {
-				param.put("list", stallIds);
-			}
-			log.info("-----------params = {}", JSON.toJSON(param));
-			list = this.stallClient.findPreStallList(param);
-			log.info("------un occupy-----stall-list = {}", JSON.toJSON(list));*/
 		}
 		return notUsedList;
 	}

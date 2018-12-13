@@ -80,6 +80,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 					ReqRentEntUser ent = new ReqRentEntUser();
 					ent.setPlate(bean.getVehMark());
 					if(opsRentEntUserClient.exists(ent)) {
+						opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
 						opsRentEntUserClient.syncRentStallByUserId(user.getId());
 						if(bean.getPreId() != null && bean.getPreId().intValue() != 0L) {
 							Map<String,Object> param = new HashMap<String,Object>();
