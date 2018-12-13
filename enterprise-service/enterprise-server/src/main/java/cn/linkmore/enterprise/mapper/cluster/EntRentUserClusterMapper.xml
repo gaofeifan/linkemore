@@ -240,7 +240,7 @@
 			(
 				SELECT
 					c.company_name,
-	        c.id,
+	        		c.id,
 					c.start_time,
 					c.end_time,
 					c.pre_id,
@@ -257,7 +257,7 @@
 				LEFT JOIN v_vehicle_mark_manage m ON cu.plate = m.veh_mark
 				LEFT JOIN t_user u ON u.id = m.veh_user_id
 				WHERE
-					cu.user_id IS NULL
+				u.id IS NOT NULL
 				AND cu.plate IS NOT NULL
 				AND cs.stall_id IS NOT NULL
 			)
