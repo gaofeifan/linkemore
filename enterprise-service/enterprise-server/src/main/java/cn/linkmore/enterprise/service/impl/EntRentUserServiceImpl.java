@@ -168,9 +168,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	@Override
 	public void save(ReqRentUser user) {
 		Long userId = userClient.getUserIdByMobile(user.getMobile());
+		/*
 		if(userId != null) {
 			user.setUserId(userId);
 		}
+		*/
 		user.setStartTime(DateUtils.convert(user.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
 		user.setEndTime(DateUtils.convert(user.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
 		this.entRentUserMasterMapper.saveReq(user);
@@ -181,9 +183,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	@Override
 	public void update(ReqRentUser user) {
 		Long userId = userClient.getUserIdByMobile(user.getMobile());
+		/*
 		if(userId != null) {
 			user.setUserId(userId);
 		}
+		*/
 		user.setStartTime(DateUtils.convert(user.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
 		user.setEndTime(DateUtils.convert(user.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
 		this.entRentUserMasterMapper.updateReq(user);
