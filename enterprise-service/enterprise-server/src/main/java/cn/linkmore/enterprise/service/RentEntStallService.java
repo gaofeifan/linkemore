@@ -26,4 +26,6 @@ public interface RentEntStallService {
 	void deleteStall(List<Long> ids);
 
 	List<Long> occuyStallList(Map<String, Object> param);
+
+	void deleteByCompanyIds(List<Long> ids);
 }

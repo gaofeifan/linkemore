@@ -221,4 +221,41 @@
      </if>
   </select>
   
+  
+   <select id="findPersonalUserList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_user
+    where 1 = 1 
+   	<if test="preId != null">
+   		and pre_id = #{preId}
+   	</if>
+   	<if test="stallId != null">
+   		and stall_id = #{stallId}
+   	</if>
+   	<if test="plate != null">
+   		and plate = #{plate}
+   	</if>
+  	and type = 0
+  	
+  </select>
+  
+  <select id="findRentPersonalUserList" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
+  
+	select distinct ru.pre_id,ru.pre_name,ru.stall_id,ru.stall_name,vm.veh_user_id as user_id ,tu.username as real_name,ru.plate,ru.start_time,ru.end_time 
+	from v_vehicle_mark_manage vm 
+	inner join t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =0 
+	inner join t_user tu on tu.id = vm.veh_user_id
+	where ru.type =0
+
+	 <if test="userId != null">
+	 	and tu.id = #{userId}
+	 </if>
+	 <if test="plate != null">
+	 	and ru.plate = #{plate}
+	 </if>
+	 
+  </select>
+  
+  
 </mapper>

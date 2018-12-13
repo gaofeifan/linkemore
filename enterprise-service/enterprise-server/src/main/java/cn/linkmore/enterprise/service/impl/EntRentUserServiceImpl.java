@@ -27,12 +27,12 @@ import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
-import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntRentUserService;
+import cn.linkmore.enterprise.service.RentEntUserService;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.StringUtil;
@@ -62,8 +62,9 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	
 	@Autowired
 	private UserClient userClient;
-
 	
+	@Autowired
+	private RentEntUserService rentEntUserService;
 	@Override
 	public int saveEntRentUser(Long entId, Long entPreId, Long stallId, String mobile, String realname, String plate) {
 		
@@ -173,6 +174,8 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		user.setStartTime(DateUtils.convert(user.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
 		user.setEndTime(DateUtils.convert(user.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
 		this.entRentUserMasterMapper.saveReq(user);
+		rentEntUserService.syncRentPersonalUserStallByPlate(user.getPlate());
+		
 	}
 
 	@Override
@@ -184,7 +187,7 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		user.setStartTime(DateUtils.convert(user.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
 		user.setEndTime(DateUtils.convert(user.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
 		this.entRentUserMasterMapper.updateReq(user);
-		
+		rentEntUserService.syncRentPersonalUserStallByPlate(user.getPlate());
 	}
 
 	@Override

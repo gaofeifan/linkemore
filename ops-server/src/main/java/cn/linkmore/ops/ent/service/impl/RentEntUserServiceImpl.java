@@ -98,4 +98,9 @@ public class RentEntUserServiceImpl implements RentEntUserService{
 	public void syncRentStallByUserId(Long userId) {
 		opsRentEntUserClient.syncRentStallByUserId(userId);
 	}
+
+	@Override
+	public void syncRentPersonalUserStallByPlate(String plate) {
+		opsRentEntUserClient.syncRentPersonalUserStallByPlate(plate);
+	}
 }

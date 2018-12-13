@@ -64,7 +64,12 @@ public class RentEntStallServiceImpl implements RentEntStallService {
 	public void deleteStall(List<Long> ids) {
 		rentEntStallMasterMapper.deleteByIds(ids);
 	}
-
+	
+	@Override
+	public void deleteByCompanyIds(List<Long> ids) {
+		rentEntStallMasterMapper.deleteByCompanyIds(ids);
+	}
+	
 	@Override
 	public List<Long> occuyStallList(Map<String, Object> param) {
 		List<Long> list = rentEntStallClusterMapper.occuyStallList(param);

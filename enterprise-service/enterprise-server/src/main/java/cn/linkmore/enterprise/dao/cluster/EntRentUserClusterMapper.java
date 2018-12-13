@@ -84,6 +84,16 @@ public interface EntRentUserClusterMapper {
 	 */
 	List<EntRentUser> findComUserList(Map<String, Object> param);
 
-	
-
+	/**
+	 * 查询个人长租车位用户列表
+	 * @param param
+	 * @return
+	 */
+	List<EntRentUser> findPersonalUserList(Map<String, Object> param);
+	/**
+	 * 查询个人长租车位用户应有权限
+	 * @param param
+	 * @return
+	 */
+	List<EntRentUser> findRentPersonalUserList(Map<String, Object> param);
 }

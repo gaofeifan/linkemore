@@ -77,6 +77,11 @@ public class OpsRentEntUserClientHystrix implements OpsRentEntUserClient {
 	public void syncRentStallByUserId(Long userId) {
 		log.info("=======Hystrix==========void syncRentStallByUserId(Long userId) ");
 	}
+
+	@Override
+	public void syncRentPersonalUserStallByPlate(String plate) {
+		log.info("=======Hystrix==========void syncRentPersonalUserStallByPlate(String plate) ");
+	}
 	
 	
 }

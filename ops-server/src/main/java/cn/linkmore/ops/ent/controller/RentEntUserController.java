@@ -183,5 +183,16 @@ public class RentEntUserController extends BaseController{
 		}
 		return msg;
 	}
-
+	
+	@RequestMapping(value = "/sync/personal/byPlate", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg syncRentPersonalUserStallByPlate(@RequestBody String plate) {
+		ViewMsg msg = new ViewMsg("同步成功", true);
+		try {
+			rentEntUserService.syncRentPersonalUserStallByPlate(plate);
+		} catch (Exception e) {
+			msg = new ViewMsg("导入失败", false);
+		}
+		return msg;
+	}
 }
