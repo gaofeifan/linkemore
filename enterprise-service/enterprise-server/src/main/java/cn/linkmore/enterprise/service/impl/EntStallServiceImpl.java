@@ -200,18 +200,18 @@ public class EntStallServiceImpl implements EntStallService {
 			Map<String, ResEntTypeStalls> typeSum = new HashMap<>();
 			for (int j = 0; j < stalls.size(); j++) {
 				ResStall resStall = stalls.get(j);
-				if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
+	/*			if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
 					continue;
-				}
+				}*/
 				if (resStall.getStatus() == StallStatus.USED.status) {
 					preUseStalls++;
 				}
 			}
 			for (int j = 0; j < stalls.size(); j++) {
 				ResStall resStall = stalls.get(j);
-				if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
+				/*if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
 					continue;
-				}
+				}*/
 				// 临停使用 || 临停
 				if (resStall.getType() == 0 && resStall.getStatus() == StallStatus.USED.status) {
 					preTempUseTypeStalls++;
