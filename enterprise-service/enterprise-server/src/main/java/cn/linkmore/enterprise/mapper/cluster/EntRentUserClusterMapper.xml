@@ -263,17 +263,19 @@
 			)
 			UNION 
 				(
-					select 	company_name,
-						company_id as id,
-						start_time,
-						end_time,
-						pre_id,
-						pre_name,
-						stall_id,
-						stall_name,
-						plate,
-						mobile,
-						user_id from t_ent_rent_user where type =1
+					select 	distinct company_name,
+						tu.company_id as id,
+						tu.start_time,
+						tu.end_time,
+						tu.pre_id,
+						tu.pre_name,
+						tu.stall_id,
+						tu.stall_name,
+						tu.plate,
+						tu.mobile,
+						tu.user_id from t_ent_rent_user tu
+						inner join t_ent_rent_com_user cu on tu.plate=cu.plate
+					  where tu.type =1
 				)
 		) o where 1 = 1 and
      start_time <![CDATA[ < ]]> NOW()
