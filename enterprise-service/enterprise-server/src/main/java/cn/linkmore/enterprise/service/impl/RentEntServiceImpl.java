@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -17,7 +19,7 @@ import cn.linkmore.enterprise.dao.cluster.RentEntClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.RentEntStallClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.RentEntUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.RentEntMasterMapper;
-import cn.linkmore.enterprise.dao.master.RentEntStallMasterMapper;
+import cn.linkmore.enterprise.dao.master.RentEntUserMasterMapper;
 import cn.linkmore.enterprise.entity.RentEnt;
 import cn.linkmore.enterprise.request.ReqRentEnt;
 import cn.linkmore.enterprise.request.ReqRentEntStall;
@@ -37,6 +39,9 @@ public class RentEntServiceImpl implements RentEntService {
 	
 	@Resource
 	private RentEntUserClusterMapper rentEntUserClusterMapper;
+	
+	@Resource
+	private RentEntUserMasterMapper rentEntUserMasterMapper;
 	
 	@Resource
 	private RentEntStallClusterMapper rentEntStallClusterMapper;
@@ -67,6 +72,8 @@ public class RentEntServiceImpl implements RentEntService {
 	@Override
 	public void delete(List<Long> ids) {
 		this.rentEntMasterMapper.deleteByIds(ids);
+		this.rentEntStallService.deleteByCompanyIds(ids);
+		this.rentEntUserMasterMapper.deleteByCompanyIds(ids);
 	}
 	
 	@Override

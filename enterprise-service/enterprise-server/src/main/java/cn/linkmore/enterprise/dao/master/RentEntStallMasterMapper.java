@@ -21,4 +21,6 @@ public interface RentEntStallMasterMapper {
     int update(RentEntStall record);
 
 	void saveBatch(List<ReqRentEntStall> list);
+	
+	void deleteByCompanyIds(List<Long> ids);
 }
