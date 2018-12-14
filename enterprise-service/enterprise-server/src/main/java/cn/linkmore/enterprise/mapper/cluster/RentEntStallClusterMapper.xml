@@ -59,6 +59,8 @@
     SELECT stall_id FROM
     t_ent_rent_com_stall 
 	where pre_id = #{preId}
+	union select stall_id from t_ent_rent_user 
+	where type = 0 and pre_id= #{preId}
   </select>
   
   
