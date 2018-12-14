@@ -144,13 +144,16 @@
    	<if test="preId != null">
    		and pre_id = #{preId}
    	</if>
-   	<!-- <if test="plate != null">
+   	<if test="plate != null">
    		and plate = #{plate}
-   	</if> -->
+   	</if>
    	<if test="companyId != null">
    		and company_id = #{companyId}
    	</if>
-   	and company_id is not null
+   	<if test="type != null">
+   		and type = #{type}
+   	</if>
+   	
   </select>
   
    <select id="findRentComUserList" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
@@ -192,6 +195,22 @@
 				AND c.status = '2'
 				AND cu.plate IS NOT NULL
 				AND cs.stall_id IS NOT NULL
+			) UNION 
+			(
+				SELECT distinct 
+					tu.company_name,
+					tu.company_id,
+					tu.start_time,
+					tu.end_time,
+					tu.pre_id,
+					tu.pre_name,
+					tu.stall_id,
+					tu.stall_name,
+					tu.plate,
+					tu.mobile,
+					tu.user_id
+				  FROM t_ent_rent_user tu 
+				  INNER JOIN t_ent_rent_com_user cu on tu.plate=cu.plate
 			)
 			
 		) o where 1 = 1 and
