@@ -165,7 +165,7 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	}
 	
 	public void syncRentStall(Map<String, Object> param) {
-
+		param.put("type", 1);
 		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findComUserList(param);
 		List<EntRentUser> newRentUserList = entRentUserClusterMapper.findRentComUserList(param);
 		log.info("sync rent com user old list size={} , new list size={}",oldRentUserList.size(),newRentUserList.size());	
