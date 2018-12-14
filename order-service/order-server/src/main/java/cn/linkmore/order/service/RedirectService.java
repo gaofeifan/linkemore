@@ -5,7 +5,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.order.controller.h5.request.ReqPayParm;
+import cn.linkmore.order.controller.h5.request.ReqSerch;
 import cn.linkmore.order.controller.h5.response.ResPayParm;
+import cn.linkmore.order.controller.h5.response.ResSearch;
 import cn.linkmore.third.request.ReqH5Token;
 import cn.linkmore.third.response.ResH5Degree;
 
@@ -18,5 +20,9 @@ public interface RedirectService {
 	ResH5Degree	 Openid(ReqH5Token reqH5Token);
 	
 	ResPayParm  wxparm(ReqPayParm reqPayParm);
+	
+	ResSearch getOrder(ReqSerch reqSerch);
+	
+	void wxNotify(Map<String, String> params);
 	
 }

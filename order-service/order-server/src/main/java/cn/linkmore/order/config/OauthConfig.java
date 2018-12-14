@@ -18,7 +18,23 @@ public class OauthConfig {
 	
 	private String notifyUrl;
 	
-	
+    private  String  parkOrder;
+    
+    
+
+	/**
+	 * @return the parkOrder
+	 */
+	public String getParkOrder() {
+		return parkOrder;
+	}
+
+	/**
+	 * @param parkOrder the parkOrder to set
+	 */
+	public void setParkOrder(String parkOrder) {
+		this.parkOrder = parkOrder;
+	}
 
 	public String getNotifyUrl() {
 		return notifyUrl;

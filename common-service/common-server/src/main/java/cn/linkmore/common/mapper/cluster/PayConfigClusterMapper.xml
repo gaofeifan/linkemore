@@ -14,6 +14,16 @@
     <result column="pubKey" jdbcType="VARCHAR" property="pubKey" />
   </resultMap>
   
+  <resultMap id="OrderResultMap" type="cn.linkmore.common.response.ResFinshOrder">  
+    <result column="orderNo" jdbcType="VARCHAR" property="orderNo" />
+    <result column="parkName" jdbcType="VARCHAR" property="parkName" />
+    <result column="entranceTime" jdbcType="TIMESTAMP" property="entranceTime" />
+    <result column="finishTime" jdbcType="TIMESTAMP" property="finishTime" />
+    <result column="plateNo" jdbcType="VARCHAR" property="plateNo" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+  </resultMap>
+ 
+  
   <sql id="Base_Column_List">
     id, preId, appId,mchId,appSecret,type,mchKey,priKey,pubKey
   </sql>
@@ -27,5 +37,14 @@
     and
     type = #{type,jdbcType=VARCHAR} 
   </select>
+  
+   <select id="getOrder" parameterType="java.util.HashMap" resultMap="OrderResultMap">
+    select 
+    orderNo,parkName,entranceTime,finishTime,plateNo,amount
+    from o_code_order
+    where 
+    orderNo = #{orderNo,jdbcType=VARCHAR} 
+  </select>
+  
   
 </mapper>

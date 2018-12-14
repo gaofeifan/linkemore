@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.controller.app.request.ReqPayConfirm;
 import cn.linkmore.order.controller.h5.request.ReqPayParm;
 import cn.linkmore.order.controller.h5.request.ReqSerch;
@@ -49,11 +51,20 @@ public class AcceptController {
 	@ApiOperation(value = "获取订单详情", notes = "获取订单详情", consumes = "application/json")
 	@RequestMapping(value = "/g", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<ResSearch> serch(@RequestBody ReqSerch reqSerch, HttpServletRequest request)
+	public ResponseEntity<?> serch(@RequestBody ReqSerch reqSerch, HttpServletRequest request)
 			throws IOException {
 		log.info("获取订单详情");
-		ResSearch res = new ResSearch();
-		return ResponseEntity.success(res, request);
+		ResponseEntity<ResSearch> response = null;
+		try {
+			ResSearch res =	redirectService.getOrder(reqSerch);
+			response = ResponseEntity.success(res, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			e.getMessage();
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 
 	@ApiOperation(value = "二维码入口（Oath2授权获取openid）", notes = "Oath2授权获取openid", consumes = "application/json")
@@ -82,9 +93,9 @@ public class AcceptController {
 	
 	@ApiIgnore
 	@RequestMapping(value = "/r", method = RequestMethod.GET)
-	public String wxNotify(@RequestParam Map<String, String> params) throws IOException {
+	public void wxNotify(@RequestParam Map<String, String> params) throws IOException {
 		log.info("wx通知");
-		return null;
+		redirectService.wxNotify(params);
 	}
 
 	@ApiOperation(value = "jsapi参数集", notes = "jsapi参数集", consumes = "application/json")
