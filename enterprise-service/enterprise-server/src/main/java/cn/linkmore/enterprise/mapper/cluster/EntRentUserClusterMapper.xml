@@ -72,7 +72,6 @@
     select t.*,v.status from
     t_ent_rent_user t left join v_stall v on t.stall_id = v.id 
     where  1 = 1
-    and t.type =0 
    	<if test="preName != null">
    		and pre_name like #{preName,jdbcType=VARCHAR}
    	</if>
