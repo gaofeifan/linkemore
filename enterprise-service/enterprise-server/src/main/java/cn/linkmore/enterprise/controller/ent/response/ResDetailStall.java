@@ -92,6 +92,13 @@ public class ResDetailStall {
 	 */ 
 	private int inductionState;
 	
+	/**
+	 * 车位状态 状态:1，空闲；2，使用中；3,预下线；4，下线  5 故障
+	 */
+	@ApiModelProperty(value="车位状态 状态:1，空闲；2，使用中；3,预下线；4，下线  5 故障")
+	private Integer stallStatus;
+	
+	
 	public boolean getOnoffStatus() {
 		return onoffStatus;
 	}
@@ -237,5 +244,13 @@ public class ResDetailStall {
 
 	public void setInductionState(int inductionState) {
 		this.inductionState = inductionState;
+	}
+
+	public Integer getStallStatus() {
+		return stallStatus;
+	}
+
+	public void setStallStatus(Integer stallStatus) {
+		this.stallStatus = stallStatus;
 	}
 }

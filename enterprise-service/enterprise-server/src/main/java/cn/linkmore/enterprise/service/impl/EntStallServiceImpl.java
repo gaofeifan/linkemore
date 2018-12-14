@@ -408,6 +408,7 @@ public class EntStallServiceImpl implements EntStallService {
 		ResLockInfo lockBean = feignLockClient.lockInfo(resStallEntity.getLockSn());
 		ResDetailStall resDetailStall = new ResDetailStall();
 		resDetailStall.setSlaveCode(resStallEntity.getLockSn());
+		resDetailStall.setStallStatus(resStallEntity.getStatus());
 		/*
 		 * if(lockBean == null){ return resDetailStall; }
 		 */
