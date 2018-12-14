@@ -61,4 +61,9 @@
        #{id}
     </foreach> 
   </update>
+  
+  <update id="updateOverdueStatus">
+  	update t_ent_rent_com set status=3 where end_time <![CDATA[ < ]]> NOW()
+  </update>
+  
 </mapper>

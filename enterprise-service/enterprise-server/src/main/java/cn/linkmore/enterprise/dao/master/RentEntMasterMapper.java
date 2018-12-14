@@ -47,4 +47,8 @@ public interface RentEntMasterMapper {
 	 * @return
 	 */
 	int updateStatus(Map<String, Object> map);
+	/**
+	 * 更新过期状态
+	 */
+	void updateOverdueStatus();
 }

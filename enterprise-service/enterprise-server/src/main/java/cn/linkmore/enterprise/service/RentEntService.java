@@ -40,4 +40,6 @@ public interface RentEntService {
 
 	void saveStall(ReqRentEnt ent);
 
+	void updateOverdueStatus();
+
 }

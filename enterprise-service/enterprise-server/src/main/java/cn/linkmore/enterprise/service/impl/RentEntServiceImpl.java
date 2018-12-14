@@ -149,4 +149,10 @@ public class RentEntServiceImpl implements RentEntService {
 		}
 	}
 	
+	@Override
+	public void updateOverdueStatus() {
+		System.out.println("updateOverdueStatus");
+		rentEntMasterMapper.updateOverdueStatus();
+	}
+	
 }
