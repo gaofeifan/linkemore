@@ -70,6 +70,7 @@
 	     end_time <![CDATA[ > ]]>  NOW()
 	     and
 	     user_id =#{0} 
+	     and (a.company_id is null or a.company_id in(select id from t_ent_rent_com t where status=2))
 	group by 
 		a.pre_id,
 		a.stall_id ,
