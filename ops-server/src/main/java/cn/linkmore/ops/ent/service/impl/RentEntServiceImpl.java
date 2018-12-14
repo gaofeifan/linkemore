@@ -13,6 +13,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -23,6 +24,8 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqRentEnt;
 import cn.linkmore.enterprise.request.ReqRentEntStall;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.ent.service.RentEntService;
 import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.client.OpsPrefectureClient;
@@ -47,10 +50,31 @@ public class RentEntServiceImpl implements RentEntService {
 	@Resource
 	private OpsRentEntClient rentEntClient;
 	
+	@Autowired
+	private EnterpriseService enterService;
+	
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
+		
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+		
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("property", "id");
+		map.put("value", person.getId());
+		ResEnterprise enter=enterService.find(map);
+		if(enter != null) {
+			List<ViewFilter> list = pageable.getFilters();
+			ViewFilter vf = new ViewFilter();
+			vf.setProperty("createUserId");
+			vf.setValue(person.getId());
+			list.add(vf);
+			//pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
+		}
+		/*
+		
 		List<ViewFilter> list = pageable.getFilters();
 		ViewFilter vf = new ViewFilter();
 		vf.setProperty("createUserId");
@@ -59,6 +83,7 @@ public class RentEntServiceImpl implements RentEntService {
 		Long id = person.getId();
 		vf.setValue(id);
 		list.add(vf);
+		*/
 		return this.rentEntClient.list(pageable);
 	}
 
