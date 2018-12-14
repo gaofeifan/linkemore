@@ -94,7 +94,17 @@ public interface EntRentUserService {
 	List<ResEntRentUser> findUsedStall();
 	
 	void saveBatch(List<ReqRentUser> rus);
-	
+	/**
+	 * 判断企业长租用户是否存在导入车牌
+	 * @param param
+	 * @return
+	 */
 	Boolean checkExist(Map<String, Object> param);
+	/**
+	 * 判断个人长租用户是否存在导入车牌
+	 * @param param
+	 * @return
+	 */
+	Boolean exists(Map<String, Object> param);
 
 }

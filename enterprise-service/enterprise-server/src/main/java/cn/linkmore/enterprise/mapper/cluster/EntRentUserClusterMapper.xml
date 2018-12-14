@@ -72,6 +72,9 @@
     select t.*,v.status from
     t_ent_rent_user t left join v_stall v on t.stall_id = v.id 
     where  1 = 1
+    <if test="type != null">
+   		and t.type = #{type,jdbcType=SMALLINT}
+   	</if>
    	<if test="preName != null">
    		and pre_name like #{preName,jdbcType=VARCHAR}
    	</if>
@@ -94,6 +97,9 @@
   </select>
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
    select count(1) from t_ent_rent_user where  1 = 1
+    <if test="type != null">
+   		and type = #{type,jdbcType=SMALLINT}
+   	</if>
     <if test="preName != null">
    		and pre_name like #{preName,jdbcType=VARCHAR}
    	</if>
@@ -144,28 +150,31 @@
    	<if test="companyId != null">
    		and company_id = #{companyId}
    	</if>
-   	and company_id is not null
+   	<if test="type != null">
+   		and type = #{type}
+   	</if>
+   	
   </select>
   
-  <select id="findRentComUserList" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
+   <select id="findRentComUserList" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
      SELECT
 		o.pre_id,
 		o.pre_name,
 		o.stall_id,
 		o.stall_name,
-		o.plate,
 		o.mobile,
 		o.user_id,
 		o.id as company_id,
 		o.company_name,
 		o.start_time,
-		o.end_time
+		o.end_time,
+		max(o.plate) as plate
 	FROM
 		(
 			(
 				SELECT
 					c.company_name,
-	        c.id,
+	        		c.id,
 					c.start_time,
 					c.end_time,
 					c.pre_id,
@@ -182,32 +191,29 @@
 				LEFT JOIN v_vehicle_mark_manage m ON cu.plate = m.veh_mark
 				LEFT JOIN t_user u ON u.id = m.veh_user_id
 				WHERE
-					cu.user_id IS NULL
+				u.id IS NOT NULL
+				AND c.status = '2'
 				AND cu.plate IS NOT NULL
 				AND cs.stall_id IS NOT NULL
+			) UNION 
+			(
+				SELECT distinct 
+					tu.company_name,
+					tu.company_id,
+					tu.start_time,
+					tu.end_time,
+					tu.pre_id,
+					tu.pre_name,
+					tu.stall_id,
+					tu.stall_name,
+					tu.plate,
+					tu.mobile,
+					tu.user_id
+				  FROM t_ent_rent_user tu 
+				  INNER JOIN t_ent_rent_com_user cu on tu.plate=cu.plate
+				  WHERE tu.stall_id in (SELECT stall_id FROM t_ent_rent_com_stall )
 			)
-			UNION 
-				(
-					SELECT
-						c.company_name,
-						c.id,
-						c.start_time,
-						c.end_time,
-						c.pre_id,
-						c.pre_name,
-						cs.stall_id,
-						cs.stall_name,
-						cu.plate,
-						u.mobile,
-						cu.user_id
-					FROM
-						t_ent_rent_com c
-					LEFT JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
-					LEFT JOIN t_ent_rent_com_user cu ON c.id = cu.rent_com_id
-					LEFT JOIN t_user u ON u.id = cu.user_id
-					WHERE
-						cu.user_id IS NOT NULL
-				)
+			
 		) o where 1 = 1 and
      start_time <![CDATA[ < ]]> NOW()
      and 
@@ -219,8 +225,19 @@
      <if test="userId != null">
     		and user_id = #{userId}
      </if>
+     group by 
+     	o.pre_id,
+		o.pre_name,
+		o.stall_id,
+		o.stall_name,
+		o.mobile,
+		o.user_id,
+		company_id,
+		o.company_name,
+		o.start_time,
+		o.end_time
   </select>
-  
+   
   
    <select id="findPersonalUserList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     select 
@@ -241,20 +258,35 @@
   </select>
   
   <select id="findRentPersonalUserList" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
-  
-	select distinct ru.pre_id,ru.pre_name,ru.stall_id,ru.stall_name,vm.veh_user_id as user_id ,tu.username as real_name,ru.plate,ru.start_time,ru.end_time 
+
+	select distinct ru.pre_id,
+		ru.pre_name,
+		ru.stall_id,
+		ru.stall_name,
+		vm.veh_user_id as user_id ,
+		tu.username as real_name,
+		ru.start_time,
+		ru.end_time,
+		max(ru.plate) as plate
 	from v_vehicle_mark_manage vm 
 	inner join t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =0 
 	inner join t_user tu on tu.id = vm.veh_user_id
 	where ru.type =0
-
-	 <if test="userId != null">
-	 	and tu.id = #{userId}
-	 </if>
-	 <if test="plate != null">
-	 	and ru.plate = #{plate}
-	 </if>
-	 
+	<if test="userId != null">
+		and tu.id = #{userId}
+	</if>
+	<if test="plate != null">
+		and ru.plate = #{plate}
+	</if>
+	group by 
+		ru.pre_id,
+		ru.pre_name,
+		ru.stall_id,
+		ru.stall_name,
+		vm.veh_user_id ,
+		tu.username ,
+		ru.start_time,
+		ru.end_time 
   </select>
   
   

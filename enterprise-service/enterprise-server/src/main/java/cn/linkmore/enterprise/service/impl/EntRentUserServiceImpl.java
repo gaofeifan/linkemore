@@ -168,9 +168,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	@Override
 	public void save(ReqRentUser user) {
 		Long userId = userClient.getUserIdByMobile(user.getMobile());
+		/*
 		if(userId != null) {
 			user.setUserId(userId);
 		}
+		*/
 		user.setStartTime(DateUtils.convert(user.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
 		user.setEndTime(DateUtils.convert(user.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
 		this.entRentUserMasterMapper.saveReq(user);
@@ -181,9 +183,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	@Override
 	public void update(ReqRentUser user) {
 		Long userId = userClient.getUserIdByMobile(user.getMobile());
+		/*
 		if(userId != null) {
 			user.setUserId(userId);
 		}
+		*/
 		user.setStartTime(DateUtils.convert(user.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
 		user.setEndTime(DateUtils.convert(user.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
 		this.entRentUserMasterMapper.updateReq(user);
@@ -226,14 +230,28 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	 * @return
 	 */
 	public Boolean checkExist(Map<String,Object> param){
-		logger.info("param = {}",JSON.toJSON(param));
+		logger.info("company param = {}",JSON.toJSON(param));
 		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findComUserList(param);
-		logger.info("oldRentUserList = {}",JSON.toJSON(oldRentUserList));
+		logger.info("company oldRentUserList = {}",JSON.toJSON(oldRentUserList));
 		Boolean flag = false;
 		if(CollectionUtils.isNotEmpty(oldRentUserList)) {
 			flag = true;
 		}
-		logger.info("flag = {}",JSON.toJSON(flag));
+		logger.info("company flag = {}",JSON.toJSON(flag));
+		return flag;
+	}
+
+	@Override
+	public Boolean exists(Map<String, Object> param) {
+		param.put("type", 0);
+		logger.info("presonal param = {}",JSON.toJSON(param));
+		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findComUserList(param);
+		logger.info("presonal add record = {}",JSON.toJSON(oldRentUserList));
+		Boolean flag = false;
+		if(CollectionUtils.isNotEmpty(oldRentUserList)) {
+			flag = true;
+		}
+		logger.info("presonal flag = {}",JSON.toJSON(flag));
 		return flag;
 	}
 	

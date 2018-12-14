@@ -124,4 +124,10 @@ public class EntRentUserController {
 	public Boolean checkExist(@RequestBody Map<String,Object> param) {
 		return this.entRentUserService.checkExist(param);
 	}
+	
+	@RequestMapping(value = "/exists", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean exists(@RequestBody Map<String,Object> param) {
+		return this.entRentUserService.exists(param);
+	}
 }
