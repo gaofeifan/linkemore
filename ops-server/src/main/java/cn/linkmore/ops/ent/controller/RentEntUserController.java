@@ -143,6 +143,7 @@ public class RentEntUserController extends BaseController{
 				preId=findPreList.get(0).getId();
 			}
 */
+			int count=0;
 			for (List<String> cell : list) {
 				if (cell != null && cell.size() > 0) {
 					if (StringUtils.isNotBlank(cell.get(0))) {
@@ -160,10 +161,12 @@ public class RentEntUserController extends BaseController{
 						rentEntUser.setStatus(1);
 						if(!rentEntUserService.exists(rentEntUser)) {
 							rentEntUserService.save(rentEntUser);
+							count++;
 						}
 					}
 				}
 			}
+			msg = new ViewMsg(String.format("导入成功！</br>一共导入%s个车牌</br>其中成功导入:%s个车牌",(list !=null?list.size():0) ,count), true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
