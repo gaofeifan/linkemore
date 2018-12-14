@@ -233,5 +233,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		logger.info("flag = {}",JSON.toJSON(flag));
 		return flag;
 	}
+
+	@Override
+	public List<ResEntRentUser> findResAll(Map<String, Object> param) {
+		return this.entRentUserClusterMapper.findResAll(param);
+	}
+	
 	
 }

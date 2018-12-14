@@ -84,6 +84,8 @@ public interface EntRentUserClusterMapper {
 	 */
 	List<EntRentUser> findComUserList(Map<String, Object> param);
 
+	List<ResEntRentUser> findResAll(Map<String, Object> param);
+
 	
 
 }

@@ -10,6 +10,8 @@ import cn.linkmore.prefecture.response.ResStallLock;
 public interface StallLockClusterMapper {
 
     ResStallLock findById(Long id);
+   
+    StallLock findByStallId(Long id);
 
     StallLock findBySn(String sn);
     

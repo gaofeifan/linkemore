@@ -44,8 +44,10 @@ import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
+import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
 import cn.linkmore.enterprise.response.ResEntStaff;
+import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.notice.client.UserSocketClient;
 import cn.linkmore.order.client.EntOrderClient;
@@ -56,7 +58,9 @@ import cn.linkmore.order.response.ResUnusualOrder;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
+import cn.linkmore.prefecture.client.FeignEnterpriseClient;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
+import cn.linkmore.prefecture.client.OpsRentUserClient;
 import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
@@ -135,6 +139,8 @@ public class StallServiceImpl implements StallService {
 	@Autowired
 	private AdminAuthPreMasterMapper adminAuthPreMasterMapper;
 	@Autowired
+	private OpsRentUserClient opsRentUserClient;
+	@Autowired
 	private AdminAuthCityMasterMapper adminAuthCityMasterMapper;
 	@Autowired
 	private LockTools lockTools;
@@ -180,6 +186,8 @@ public class StallServiceImpl implements StallService {
 	private AdminUserService adminUserService;
 	@Autowired
 	private PrefectureService prefectureService;
+	@Autowired
+	private FeignEnterpriseClient enterpriseClient;
 	@Autowired
 	private AdminAuthStallClusterMapper adminAuthStallClusterMapper;
 	@Autowired
@@ -398,14 +406,46 @@ public class StallServiceImpl implements StallService {
 		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
 		
 		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
+		//	安装数据存
+		if(stallLock != null && StringUtils.isNotBlank(stallLock.getSn())) {
+			//判断根据车位编号查询的车位为下线状态
+			if(stall.getStatus() != 4) {
+				throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
+			}
+			// 如果新安装的车位编号与车位名称与原来的不相同
+			if(!stall.getStallName().equals(reqLockIntall.getStallName())) {
+				if(stallName.getStatus() != 4) {
+					// 判断根据车位名称车位状态也为下线状态
+					throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
+				}
+				// 更新根据车位名称查询的车位编号为新安装的车位编号
+				stallName.setLockSn(reqLockIntall.getLockSn());
+				this.stallMasterMapper.update(stallName);
+				// 更新原来车位编号的车位将车位编号设置为null
+				stall.setLockSn(null);
+				this.stallMasterMapper.update(stall);
+				// 判断原来车位在安装表里面是否存在
+				StallLock lock = this.stallLockClusterMapper.findByStallId(stall.getId());
+				if(lock != null && StringUtils.isNotBlank(lock.getSn())) {
+					//将原来锁编号对应的关系抹除
+					lock.setSn(null);
+					this.stallLockMasterMapper.update(lock);
+				}
+				// 更新更改后的车位锁关系
+				stallLock.setSn(reqLockIntall.getLockSn());
+				stallLock.setStallId(stallName.getId());
+				stallLock.setPrefectureId(stallName.getPreId());
+				this.stallLockMasterMapper.update(stallLock);
+			}
+		}
 	    //验证
-		if(stallLock!=null|| stall!=null ) {
-			throw new BusinessException(StatusEnum.LOCK_SN_AlREADY_BAND);
-		}
-		if(stallName!= null) {
-			throw new BusinessException(StatusEnum.STALL_NAME_USER);
-		}
-		
+//		if(stallLock!=null|| stall!=null ) {
+//			throw new BusinessException(StatusEnum.LOCK_SN_AlREADY_BAND);
+//		}
+//		if(stallName!= null) {
+//			throw new BusinessException(StatusEnum.STALL_NAME_USER);
+//		}
+//		
 		 stallLock = new StallLock();
 	     stall = new Stall();
 		
@@ -1276,7 +1316,7 @@ public class StallServiceImpl implements StallService {
 		List<ResAdminAuthStall> list = this.adminAuthStallClusterMapper.findStallList(map);
 		return list != null && list.size() != 0 ? true : false;
 	}
-
+ 
 	/**
 	 * 管理版锁操作
 	 */
@@ -1443,8 +1483,68 @@ public class StallServiceImpl implements StallService {
 						detail.setOrderType("APP");
 					}
 					detail.setPlate(resUserOrder.getPlateNo());
-				}else if(stall.getType() == 2) {
+					if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 1) {
+						detail.setResetStatus(false);
+						detail.setExcCode(0L);
+						detail.setExcName("订单挂起未释放");
+					}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
+						detail.setOrderStatus((short)7);
+					}
+					// 指定车位锁
+					int assignStatus = 1;
+					String lockSn = stall.getLockSn();
+					Set<Object> set = redisService.members(Constants.RedisKey.ORDER_ASSIGN_STALL.key);
+					log.info("指定锁池个数: {}", set.size());
+					log.info("指定锁池: {}", set.toString());
+					Long preId = stall.getPreId();
+					for (Object obj : set) {
+						JSONObject json = JSON.parseObject(obj.toString());
+						String sn = json.get("lockSn").toString();
+						Long pid = Long.parseLong(json.get("preId").toString());
+						if (pid.longValue() == preId.longValue() && lockSn.equals(sn)) {
+							assignStatus = 0;
+							detail.setAssignPlate(json.get("plate").toString());
+							break;
+						}
+					}
+					detail.setAssignStatus(assignStatus);
 					
+				}else if(stall.getType() == 2) {
+					Map<String,Object> map = new HashMap<String, Object>();
+					map.put("validTime", 1);
+					List<ResEntRentUser> rentUsers = opsRentUserClient.findAll(map);
+					List<String> paltes = new ArrayList<>();
+					StringBuilder sb = new StringBuilder();
+					ResEntRentUser rentUser = null;
+					for (ResEntRentUser entRentUser : rentUsers) {
+						if (entRentUser.getStallId().equals(stall.getId())) {
+							if (new Date().getTime() >= entRentUser.getEndTime().getTime()) {
+								continue;
+							}
+							 rentUser = entRentUser;
+							if (!paltes.contains(entRentUser.getPlate())) {
+								sb.append(entRentUser.getPlate()).append("/");
+								paltes.add(entRentUser.getPlate());
+							}
+						}
+					}
+					detail.setPlate(sb.length() != 0 ? sb.substring(0, sb.length() - 1) : null);
+					if (rentUser != null) {
+						if (rentUser.getType() != null && rentUser.getType() == 1) {
+							ResEnterprise enterprise = this.enterpriseClient.findById(rentUser.getEntId());
+							if (enterprise != null) {
+								detail.setMobile(enterprise.getTellphone());
+							}
+						} else {
+							detail.setMobile(rentUser.getMobile());
+						}
+					}
+					if (stall.getStatus() == 2) {
+						ResEntRentedRecord record = this.entRentedRecordClient.findLastPlateNumber(stall.getId());
+						if (record != null && record.getDownTime() != null) {
+							detail.setDownTime(record.getDownTime());
+						}
+					}
 				}
 			}
 			detail.setOnoffStatus(true);
@@ -1453,32 +1553,6 @@ public class StallServiceImpl implements StallService {
 				detail.setExcCode(entExcStall.getExcStatus());
 			}
 		}
-	
-		if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 1) {
-			detail.setResetStatus(false);
-			detail.setExcCode(0L);
-			detail.setExcName("订单挂起未释放");
-		}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
-			detail.setOrderStatus((short)7);
-		}
-		// 指定车位锁
-		int assignStatus = 1;
-		String lockSn = stall.getLockSn();
-		Set<Object> set = redisService.members(Constants.RedisKey.ORDER_ASSIGN_STALL.key);
-		log.info("指定锁池个数: {}", set.size());
-		log.info("指定锁池: {}", set.toString());
-		Long preId = stall.getPreId();
-		for (Object obj : set) {
-			JSONObject json = JSON.parseObject(obj.toString());
-			String sn = json.get("lockSn").toString();
-			Long pid = Long.parseLong(json.get("preId").toString());
-			if (pid.longValue() == preId.longValue() && lockSn.equals(sn)) {
-				assignStatus = 0;
-				detail.setAssignPlate(json.get("plate").toString());
-				break;
-			}
-		}
-		detail.setAssignStatus(assignStatus);
 		return detail;
 	}
 

@@ -146,6 +146,33 @@
    	</if>
    	and company_id is not null
   </select>
+  <select id="findResAll" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_user
+    where 1 = 1 
+    <if test="userId != null">
+   		and user_id = #{userId}
+   	</if>
+    <if test="stallId != null">
+   		and stall_id = #{stallId}
+   	</if>
+   	<if test="preId != null">
+   		and pre_id = #{preId}
+   	</if>
+   	<if test="plate != null">
+   		and plate = #{plate}
+   	</if>
+   	<if test="companyId != null">
+   		and company_id = #{companyId}
+   	</if>
+   	<if test="validTime == 1">
+   		and end_time >= now()
+   	</if>
+   	<if test="validTime == 2">
+   		and now() > end_time 
+   	</if>
+  </select>
   
   <select id="findRentComUserList" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
      SELECT

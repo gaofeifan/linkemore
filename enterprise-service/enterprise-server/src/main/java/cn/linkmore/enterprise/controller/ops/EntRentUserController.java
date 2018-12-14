@@ -16,6 +16,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.ent.request.ReqAddEntRentUser;
 import cn.linkmore.enterprise.controller.ent.request.ReqUpdateEntRentUser;
+import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.enterprise.response.ResEntRentUser;
@@ -123,5 +124,10 @@ public class EntRentUserController {
 	@ResponseBody
 	public Boolean checkExist(@RequestBody Map<String,Object> param) {
 		return this.entRentUserService.checkExist(param);
+	}
+	@RequestMapping(value = "/all", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResEntRentUser> findAll(@RequestBody Map<String,Object> param) {
+		return this.entRentUserService.findResAll(param);
 	}
 }

@@ -96,5 +96,7 @@ public interface EntRentUserService {
 	void saveBatch(List<ReqRentUser> rus);
 	
 	Boolean checkExist(Map<String, Object> param);
+	
+	List<ResEntRentUser> findResAll(Map<String, Object> param);
 
 }

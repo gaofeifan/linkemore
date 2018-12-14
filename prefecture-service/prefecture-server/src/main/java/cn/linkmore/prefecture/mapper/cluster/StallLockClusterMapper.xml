@@ -33,6 +33,12 @@
     from t_biz_stall_lock
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findByStallId" parameterType="java.lang.Long" resultMap="BaseResultMap2">
+    select 
+    <include refid="Base_Column_List" />
+    from t_biz_stall_lock
+    where stall_id = #{stallId,jdbcType=BIGINT}
+  </select>
   
    <select id="findBySn" parameterType="java.lang.String" resultMap="BaseResultMap2">
     select 
