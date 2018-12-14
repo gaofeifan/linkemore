@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
 import cn.linkmore.account.entity.VehicleMarkManage;
-import cn.linkmore.account.request.ReqVehMarkIdAndUserId;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.UserService;
@@ -77,17 +75,19 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				manage.setUpdateTime(new Date());
 				int num = vehicleMarkManageMasterMapper.insertSelective(manage);
 				if(num > 0) {
+					Map<String,Object> presonParam = new HashMap<String,Object>();
+					presonParam.put("plate", bean.getVehMark());
 					ReqRentEntUser ent = new ReqRentEntUser();
 					ent.setPlate(bean.getVehMark());
-					if(opsRentEntUserClient.exists(ent)) {
+					if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
 						opsRentEntUserClient.syncRentStallByUserId(user.getId());
+						opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
 						if(bean.getPreId() != null && bean.getPreId().intValue() != 0L) {
 							Map<String,Object> param = new HashMap<String,Object>();
 							param.put("userId", user.getId());
-							param.put("plate", bean.getVehMark());
 							param.put("preId", bean.getPreId());
 							existFalg = opsRentUserClient.checkExist(param);
-							logger.info("===existFlag = {}", existFalg);
+							logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
 						}
 					}
 				}

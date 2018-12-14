@@ -52,4 +52,8 @@ public interface OpsRentUserClient {
 	@ResponseBody
 	public Boolean checkExist(@RequestBody Map<String,Object> param);
 	
+	@RequestMapping(value = "/exists", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean exists(@RequestBody Map<String,Object> param);
+	
 }
