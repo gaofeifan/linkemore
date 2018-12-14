@@ -311,20 +311,35 @@
   </select>
   
   <select id="findRentPersonalUserList" parameterType="java.util.HashMap"  resultMap="BaseResultMap" >
-  
-	select distinct ru.pre_id,ru.pre_name,ru.stall_id,ru.stall_name,vm.veh_user_id as user_id ,tu.username as real_name,ru.plate,ru.start_time,ru.end_time 
+
+	select distinct ru.pre_id,
+		ru.pre_name,
+		ru.stall_id,
+		ru.stall_name,
+		vm.veh_user_id as user_id ,
+		tu.username as real_name,
+		ru.start_time,
+		ru.end_time,
+		max(ru.plate) as plate
 	from v_vehicle_mark_manage vm 
 	inner join t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =0 
 	inner join t_user tu on tu.id = vm.veh_user_id
 	where ru.type =0
-
-	 <if test="userId != null">
-	 	and tu.id = #{userId}
-	 </if>
-	 <if test="plate != null">
-	 	and ru.plate = #{plate}
-	 </if>
-	 
+	<if test="userId != null">
+		and tu.id = #{userId}
+	</if>
+	<if test="plate != null">
+		and ru.plate = #{plate}
+	</if>
+	group by 
+		ru.pre_id,
+		ru.pre_name,
+		ru.stall_id,
+		ru.stall_name,
+		vm.veh_user_id ,
+		tu.username ,
+		ru.start_time,
+		ru.end_time 
   </select>
   
   
