@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,10 +121,10 @@ public class PersonServiceImpl implements PersonService {
 	}
 	
 	@Override
-	public void updatePassword(ResPerson person){
-			Person p = new Person();
-			p = ObjectUtils.copyObject(person, p);
-			this.personMasterMapper.update(p);
+	public void updateEntPassword(ReqPerson person){
+		Person p = new Person();
+		p = ObjectUtils.copyObject(person, p);
+		this.personMasterMapper.updatePassword(p);
 	}
 	
 	@Override

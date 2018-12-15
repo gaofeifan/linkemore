@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.view.Tree;
@@ -16,10 +15,9 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqOperateAuth;
 import cn.linkmore.enterprise.request.ReqOperateBind;
-import cn.linkmore.ops.ent.request.ReqBindStaffAuth;
 import cn.linkmore.ops.ent.service.OperateService;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.client.OpsOperateAuthClient;
+import cn.linkmore.security.response.ResPerson;
 @Service
 public class OperateServiceImpl implements OperateService {
 	@Resource

@@ -1,11 +1,8 @@
 package cn.linkmore.ops.biz.controller;
 
-
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
@@ -13,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
@@ -21,9 +17,9 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.ops.biz.response.ResPrefecture;
 import cn.linkmore.ops.biz.service.ApplicationGroupService;
-import cn.linkmore.ops.security.request.ReqPerson;
 import cn.linkmore.prefecture.request.ReqApplicationGroup;
 import cn.linkmore.prefecture.response.ResPrefectureGroup;
+import cn.linkmore.security.request.ReqPerson;
 
 
 @Controller

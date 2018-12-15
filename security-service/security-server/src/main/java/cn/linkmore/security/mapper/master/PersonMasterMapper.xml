@@ -77,9 +77,5 @@
       lock_count = 0
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <!-- <update id="updatePassword" parameterType="cn.linkmore.security.request.ReqPerson" >
-    update t_sec_person
-    set  password = #{password,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update> -->
+  
 </mapper>

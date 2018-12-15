@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +29,6 @@ import cn.linkmore.security.request.ReqPerson;
 import cn.linkmore.security.response.ResRole;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
-import cn.linkmore.util.PasswordUtil;
 
 @Service
 @Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackForClassName = "RuntimeExcpeiton")
@@ -82,12 +80,6 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 	public List<ResEnterprise> findList(Map<String, Object> param) {
 		List<ResEnterprise> list = this.enterpriseClusterMapper.findList(param);
 		return list;
-	}
-
-	@Override
-	public void setPassword(ReqPerson person) {
-		person.setPassword(PasswordUtil.encode(person.getPassword()));
-//		this.personClient.updatePassword(person);
 	}
 
 	@Override

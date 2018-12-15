@@ -44,21 +44,6 @@ public class EnterpriseController {
 		return this.enterpriseService.update(record);
 	}
 
-	@RequestMapping(value = "/set_password", method = RequestMethod.POST)
-	@ResponseBody
-	public ViewMsg setPassword(ReqPerson person) {
-		ViewMsg msg = null;
-		try {
-			this.enterpriseService.setPassword(person);
-			msg = new ViewMsg("保存成功", true);
-		} catch (DataException e) {
-			msg = new ViewMsg(e.getMessage(), false);
-		} catch (Exception e) {
-			msg = new ViewMsg("保存失败", false);
-		}
-		return msg;
-	}
-
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestParam("id") Long id) {

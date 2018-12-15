@@ -1,9 +1,7 @@
 package cn.linkmore.ops.account.controller;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,12 +19,8 @@ import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.request.ReqStaffAppVersion;
-import cn.linkmore.enterprise.request.ReqAddEntPreture;
-import cn.linkmore.enterprise.response.ResEntPrefecture;
 import cn.linkmore.ops.account.service.StaffAppVersionService;
-import cn.linkmore.ops.ent.request.ReqAppVersion;
-import cn.linkmore.ops.ent.service.AppVersionService;
-import cn.linkmore.ops.security.response.ResPerson;
+import cn.linkmore.security.response.ResPerson;
 
 @RequestMapping(value="/admin/staff/version")
 @Controller

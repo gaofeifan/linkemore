@@ -1,7 +1,6 @@
 package cn.linkmore.ops.biz.controller;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEnterpriseDeal;
 import cn.linkmore.enterprise.response.ResEnterpriseDeal;
 import cn.linkmore.ops.biz.service.EnterpriseDealService;
-import cn.linkmore.ops.security.response.ResPerson;
+import cn.linkmore.security.response.ResPerson;
 
 /**
  * @Description  企业合同
