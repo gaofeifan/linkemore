@@ -143,12 +143,11 @@ public class BluetoothDataServiceImpl implements BluetoothDataService {
 		}
 		
 		bluetooth.setCreateTime(new Date());
-		log.info("........................bluetooth = {}",JSON.toJSON(bluetooth));
 		int integer = this.bluetoothDataMasterMapper.save(bluetooth);
 		if(integer > 0) {
 			flag = true;
 		}
-		log.info("........................insert flag = {}", flag);
+		log.info("...........bluetooth = {}.............insert flag = {}",JSON.toJSON(bluetooth), flag);
 		return flag;
 	}
 }
