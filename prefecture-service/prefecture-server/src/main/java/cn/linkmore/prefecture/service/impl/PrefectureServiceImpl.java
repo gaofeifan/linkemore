@@ -558,17 +558,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 				count = 0L;
 			}
 			detail.setLeisureStall(count.intValue());
-			/*StrategyBase strategyBase = strategyBaseClusterMapper.findById(preDetail.getStrategyId());
-			if (strategyBase != null) {
-				freeMins = strategyBase.getFreeMins().toString();
-				if (strategyBase.getType() == 4) {
-					Double topFee1 = strategyBase.getTopDaily() / strategyBase.getTimelyLong()
-							* strategyBase.getBasePrice().doubleValue();
-					detail.setTopFee(topFee1.toString());
-				} else {
-					detail.setTopFee("无");
-				}
-			}*/
 			List<ResPrefectureGroup> preGroup = new ArrayList<ResPrefectureGroup>();
 			ResPrefectureGroup group = null;
 			Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + preId);

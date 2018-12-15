@@ -26,11 +26,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.dao.cluster.StrategyFeeClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.StrategyGroupDetailClusterMapper;
+import cn.linkmore.prefecture.entity.StrategyGroupDetail;
 import cn.linkmore.prefecture.entity.StrategyStall;
 import cn.linkmore.prefecture.response.ResStrategyFee;
 import cn.linkmore.prefecture.service.StrategyFeeService;
@@ -42,7 +44,8 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 	@Autowired
 	private StrategyFeeClusterMapper strategyFeeClusterMapper;
 	
-	private ObjectMapper mapper = new ObjectMapper();
+	@Autowired
+	private StrategyGroupDetailClusterMapper groupDetailClusterMapper;
 
 	private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	private DateTimeFormatter dtf_date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -346,6 +349,59 @@ public class StrategyFeeServiceImpl implements StrategyFeeService {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public int freeMins(Map<String, Object> param) {
+		int freeMins = 0;
+		StrategyGroupDetail groupDetail = groupDetailClusterMapper.findByStallId(Long.valueOf(String.valueOf(param.get("stallId"))));
+		param.put("strategGroupId", groupDetail.getStrategyGroupId());
+		param.put("searchDateTime", sdf.format(new Date()));
+		List<StrategyStall> listStrategyStall = strategyFeeClusterMapper.findStrategyFeeList(param);
+		log.info("freeMins-----------------param:{},list:{}",JSON.toJSON(param),JSON.toJSON(listStrategyStall));
+		if(CollectionUtils.isNotEmpty(listStrategyStall) && listStrategyStall.size()>0) {
+			String jsonStr = "";
+			String parkCode=null;
+			if(listStrategyStall.get(0).getDatetype()==1) {
+				//按日期
+				parkCode=listStrategyStall.get(0).getParkCode();
+			}else {
+				//按星期
+				int week=getWeek(String.valueOf(param.get("searchDateTime")));
+				for(StrategyStall strategyStall:listStrategyStall) {
+					if( week>=Integer.parseInt(strategyStall.getBeginDate()) &&  week<=Integer.parseInt(strategyStall.getEndDate()) ) {
+						parkCode=strategyStall.getParkCode();
+						break;
+					}
+				}
+			}
+			//调用接口
+			if(StringUtils.isNotEmpty(parkCode)) {
+				Map<String, String> headers=new HashMap<String, String>();
+				headers.put("Content-Type", "application/json; charset=utf-8");
+				Map<String,String> mapBody=new TreeMap<String, String>();
+				mapBody.put("code", strategyFeeCode);
+				mapBody.put("timestamp",String.valueOf(new Date().getTime()));
+				mapBody.put("parkCode", parkCode);
+				mapBody.put("sign", "324");
+				JSONObject json = JSONObject.fromObject(mapBody);
+				try {
+					HttpResponse r=HttpUtils.doPost(strategyDetailURL, "", "", headers, null, json.toString());
+					jsonStr = EntityUtils.toString(r.getEntity(),"UTF-8");
+					if (StringUtils.isNotEmpty(jsonStr)) {
+						JSONObject data = JSONObject.fromObject(jsonStr);
+						if (data.getInt("code") == 200) {
+							JSONObject detailObj = JSONObject.fromObject(data.getString("detail"));
+							freeMins = detailObj.getInt("free");
+						}
+						log.info("---------cancel order----------调用结果{} 免费时长{}", data, freeMins);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return freeMins;
 	}
 	
 }

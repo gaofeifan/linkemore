@@ -188,7 +188,6 @@ public class PayServiceImpl implements PayService {
 			log.error("confirm order.status {}" + order.getStatus());
 			throw new BusinessException(StatusEnum.ORDER_CHECK_EXPIRE);
 		}
-		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout order:{}", JsonUtil.toJson(order));
 		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout orderId:{},userId:{}", orderId, cu.getId());
 		if (order == null || order.getUserId().longValue() != cu.getId().longValue()) {
 			return null;

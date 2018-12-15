@@ -1075,8 +1075,10 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			long beginTime = orders.getBeginTime().getTime();
 			long now = new Date().getTime();
-			if(orders.getStrategyId() != null) {
-				int freeMins = strategyBaseClient.findById(orders.getStrategyId()).getFreeMins();
+			if(orders.getStallId() != null) {
+				Map<String,Object> feeParam = new HashMap<String,Object>();
+				feeParam.put("stallId", orders.getStallId());
+				int freeMins = strategyFeeClient.freeMins(feeParam);
 				ro.setFreeMins(freeMins);
 				log.info("now {}, beginTime {}, freeMin{}", now, beginTime , freeMins * 60 * 1000);
 				if(now >= beginTime + freeMins * 60 * 1000){
@@ -1745,8 +1747,17 @@ public class OrdersServiceImpl implements OrdersService {
 				}
 				long beginTime = order.getBeginTime().getTime();
 				long now = new Date().getTime();
-				if(order.getStrategyId() != null) {
+				/*if(order.getStrategyId() != null) {
 					int freeMins = strategyBaseClient.findById(order.getStrategyId()).getFreeMins();
+					log.info(">>>>>>>>>>>>>>>>>>>>>>>>>cancel freeMins = {}", freeMins);
+					if(now - beginTime > freeMins * 60 * 1000){
+						throw new BusinessException(StatusEnum.ORDER_CANCEL_TIMEOUT);
+					}
+				}*/
+				if(order.getStallId() != null) {
+					Map<String,Object> feeParam = new HashMap<String,Object>();
+					feeParam.put("stallId", order.getStallId());
+					int freeMins = strategyFeeClient.freeMins(feeParam);
 					log.info(">>>>>>>>>>>>>>>>>>>>>>>>>cancel freeMins = {}", freeMins);
 					if(now - beginTime > freeMins * 60 * 1000){
 						throw new BusinessException(StatusEnum.ORDER_CANCEL_TIMEOUT);

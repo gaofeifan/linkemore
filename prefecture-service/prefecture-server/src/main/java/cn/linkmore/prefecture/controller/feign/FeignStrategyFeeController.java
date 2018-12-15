@@ -45,4 +45,15 @@ public class FeignStrategyFeeController {
 		return strategyFeeService.info(param);
 	}
 	
+	/**
+	 * 获取免费时长
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value = "/free-mins", method=RequestMethod.POST)
+	@ResponseBody
+	public int freeMins(@RequestBody Map<String, Object> param) {
+		return strategyFeeService.freeMins(param);
+	}
+	
 }
