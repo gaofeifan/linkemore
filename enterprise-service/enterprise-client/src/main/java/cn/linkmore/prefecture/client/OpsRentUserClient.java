@@ -52,5 +52,10 @@ public interface OpsRentUserClient {
 	@RequestMapping(value = "/check-exist", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean checkExist(@RequestBody Map<String,Object> param);
+
+		@RequestMapping(value = "/all", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResEntRentUser> findAll(@RequestBody Map<String,Object> param);
+
 	
 }
