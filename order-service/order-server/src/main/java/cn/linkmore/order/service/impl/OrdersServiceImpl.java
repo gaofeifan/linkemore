@@ -356,7 +356,7 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 		Map<String, Object> map = this.strategyFeeClient.amount(param);
 		if (map != null) {
-			Object object = map.get("totalAmount");
+			Object object = map.get("chargePrice");
 			if (object != null) {
 				orders.setTotalAmount(new BigDecimal(object.toString()));
 			}
