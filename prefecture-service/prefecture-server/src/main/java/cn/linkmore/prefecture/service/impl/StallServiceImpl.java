@@ -799,13 +799,13 @@ public class StallServiceImpl implements StallService {
 						}
 						stallMasterMapper.lockdown(stall);
 						if (reqc.getStatus() == 1) {
-							downLock(reqc.getStallId(), 1);
+							downLock(reqc.getStallId(), 1,reqc.getType());
 							redisService.remove(reqc.getKey());
 						}
 
 					} else {
 						if (reqc.getStatus() == 1) {
-							downLock(reqc.getStallId(), 0);
+							downLock(reqc.getStallId(), 0,reqc.getType());
 						}
 					}
 				}
@@ -877,14 +877,20 @@ public class StallServiceImpl implements StallService {
 		}).start();
 	}
 
-	public void downLock(Long stallId, int status) {
-		// ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
-		// Map<String,Object> param = new HashMap<>();
-		// param.put( "lockDownStatus",status);
-		// param.put("lockDownTime", new Date());
-		// param.put("orderId", latest.getId());
-		this.entRentedRecordClient.updateDownTime(stallId);
-		// this.entOrderClient.updateLockStatus(param);
+	public void downLock(Long stallId, int status,int type) {
+
+		switch (type) {
+		case 0:
+			ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
+			Map<String,Object> param = new HashMap<>();
+			param.put( "lockDownStatus",status);
+			param.put("lockDownTime", new Date());
+			param.put("orderId", latest.getId());
+			break;
+		case 2:
+			this.entRentedRecordClient.updateDownTime(stallId);
+			break;
+		}
 	}
 
 	private void send(String uid, Integer lockstatus, int code) {
@@ -962,7 +968,7 @@ public class StallServiceImpl implements StallService {
 		List<Long> list = pres.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
 		map.put("preIds", list);
 		map.put("cityId", cityId);
-		map.put("categorys", Arrays.asList(0, 1));
+//		map.put("categorys", Arrays.asList(0, 1));
 		List<ResPre> pre = this.prefectureService.findPreByIds(map);
 		List<ResStaffPreList> resPres = new ArrayList<>();
 		if (pre == null || pre.size() == 0) {
@@ -994,12 +1000,12 @@ public class StallServiceImpl implements StallService {
 			
 			
 			for (Stall stall : stalls) {
-				if (stall.getType() != 0) {
+				/*if (stall.getType() != 0) {
 					continue;
 				}
 				if(!stall.getPreId().equals(resPre.getId())) {
 					continue;
-				}
+				}*/
 				if (collect.contains(stall.getId())) {
 					preTypeStalls++;
 					switch (stall.getStatus() ) {
@@ -1323,19 +1329,41 @@ public class StallServiceImpl implements StallService {
 					int code = res == false ? 500:200;
 					log.info(" operating··············" + res + " code·············" + code);
 					if (code == 200) {
-						redisService.remove(reqc.getKey());
-						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
+						if(stall.getType() == 1) {
+							redisService.remove(reqc.getKey());
+							stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
+							stallMasterMapper.lockdown(stall);
+						}else if(stall.getType() == 2) {
+							if(reqc.getStatus() == 1) {
+								stall.setLockStatus(2);
+								if (stall.getStatus() != 4) {
+									stall.setStatus(2);
+								}
+							} else if (reqc.getStatus() == 2) {
+								if (stall.getStatus() != 4) {
+									stall.setStatus(1);
+								}
+								stall.setLockStatus(1);
+							}
+						}
 						stallMasterMapper.lockdown(stall);
-					}
-					if(reqc.getType() == 2) {
-						
+						if (reqc.getStatus() == 1) {
+							downLock(reqc.getStallId(), 1,reqc.getType());
+						}
+
+					} else {
+						if (reqc.getStatus() == 1) {
+							downLock(reqc.getStallId(), 0,reqc.getType());
+						}
 					}
 					sendMsgT(uid, reqc.getStatus(), code);
+				}
 					//解锁
 					redisLock.unlock1(reqc.getRobkey());
 				}
-			}
-		});
+		
+			});
+		
 	}
 	
 	/**

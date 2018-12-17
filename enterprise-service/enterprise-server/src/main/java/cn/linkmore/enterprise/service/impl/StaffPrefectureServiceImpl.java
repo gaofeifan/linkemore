@@ -141,7 +141,6 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 			map.put("stallId", reqc.getStallId());
 			rentedRecordMasterMapper.updateRentUserStatus(map );
 		}
-		
 	}
 
 	@Override
