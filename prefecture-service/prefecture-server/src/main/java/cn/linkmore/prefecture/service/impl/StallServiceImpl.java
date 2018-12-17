@@ -936,7 +936,7 @@ public class StallServiceImpl implements StallService {
 		List<Long> list = pres.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
 		map.put("preIds", list);
 		map.put("cityId", cityId);
-		map.put("categorys", Arrays.asList(0, 1));
+//		map.put("categorys", Arrays.asList(0, 1));
 		List<ResPre> pre = this.prefectureService.findPreByIds(map);
 		List<ResStaffPreList> resPres = new ArrayList<>();
 		if (pre == null || pre.size() == 0) {
