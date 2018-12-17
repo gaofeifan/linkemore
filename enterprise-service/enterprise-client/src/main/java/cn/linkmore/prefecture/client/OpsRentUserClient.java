@@ -44,6 +44,7 @@ public interface OpsRentUserClient {
 	@ResponseBody
 	public Boolean check(@RequestBody ReqCheck reqCheck);
 	
+	
 	@RequestMapping(value = "/used-stall-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResEntRentUser> usedStallList();
