@@ -20,4 +20,6 @@ public interface StallLockMasterMapper {
 	int unBind(List<Long> ids);
 	
 	void insertAndGetId(StallLock lock);
+
+	void deleteByStallId(Long stallId);
 }

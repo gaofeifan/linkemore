@@ -28,6 +28,7 @@ import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
 import cn.linkmore.enterprise.dao.cluster.BaseDictMapper;
 import cn.linkmore.enterprise.dao.cluster.StaffPrefectureClusterMapper;
+import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
 import cn.linkmore.enterprise.dao.master.StaffPrefectureMasterMapper;
 import cn.linkmore.enterprise.entity.BaseDict;
 import cn.linkmore.enterprise.entity.StallOperateLog;
@@ -67,7 +68,8 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 
 	@Autowired
 	private RedisLock redisLock;
-
+	@Autowired
+	private EntRentedRecordMasterMapper rentedRecordMasterMapper;
 	@Autowired
 	private RedisService redisService;
 
@@ -132,7 +134,14 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		reqc.setStatus(reqOperatStall.getState());
 		reqc.setKey(reskey + userid);
 		reqc.setRobkey(robkey);
+		reqc.setType(stall.getType());
 		stallClient.managerlock(reqc);
+		if(stall.getType() == 2 && reqOperatStall.getState() == 2) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("stallId", reqc.getStallId());
+			rentedRecordMasterMapper.updateRentUserStatus(map );
+		}
+		
 	}
 
 	@Override

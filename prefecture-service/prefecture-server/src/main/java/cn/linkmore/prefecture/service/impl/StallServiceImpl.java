@@ -407,7 +407,7 @@ public class StallServiceImpl implements StallService {
 		
 		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
 		//	安装数据存
-		if(stallLock != null && StringUtils.isNotBlank(stallLock.getSn())) {
+		if(stallLock != null) {
 			//判断根据车位编号查询的车位为下线状态
 			if(stall.getStatus() != 4) {
 				throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
@@ -422,22 +422,16 @@ public class StallServiceImpl implements StallService {
 				stallName.setLockSn(reqLockIntall.getLockSn());
 				this.stallMasterMapper.update(stallName);
 				// 更新原来车位编号的车位将车位编号设置为null
-				stall.setLockSn(null);
-				this.stallMasterMapper.update(stall);
+				this.stallMasterMapper.delete(stall.getId());
 				// 判断原来车位在安装表里面是否存在
-				StallLock lock = this.stallLockClusterMapper.findByStallId(stall.getId());
-				if(lock != null && StringUtils.isNotBlank(lock.getSn())) {
-					//将原来锁编号对应的关系抹除
-					lock.setSn(null);
-					this.stallLockMasterMapper.update(lock);
-				}
+				this.stallLockMasterMapper.deleteByStallId(stall.getId());
 				// 更新更改后的车位锁关系
 				stallLock.setSn(reqLockIntall.getLockSn());
 				stallLock.setStallId(stallName.getId());
 				stallLock.setPrefectureId(stallName.getPreId());
 				this.stallLockMasterMapper.update(stallLock);
 			}
-		}
+		}else {
 	    //验证
 //		if(stallLock!=null|| stall!=null ) {
 //			throw new BusinessException(StatusEnum.LOCK_SN_AlREADY_BAND);
@@ -506,23 +500,12 @@ public class StallServiceImpl implements StallService {
 		}
 		stallLock.setPrefectureId(reqLockIntall.getPreId());
 		stallLockMasterMapper.updateBind(stallLock);
-		
-		try {
-			stallLockMasterMapper.updateBind(stallLock);
-			//通知锁平台
-			Map<String, Object> map = new TreeMap<>();
-			map.put("serialNumber", reqLockIntall.getLockSn());
-			map.put("name", reqLockIntall.getStallName());
-			lockTools.setLockName(map);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			stallLockMasterMapper.updateBind(stallLock);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	}
+		//通知锁平台
+		Map<String, Object> map = new TreeMap<>();
+		map.put("serialNumber", reqLockIntall.getLockSn());
+		map.put("name", reqLockIntall.getStallName());
+		lockTools.setLockName(map);
 	}
 
 	@Override
@@ -1343,6 +1326,9 @@ public class StallServiceImpl implements StallService {
 						redisService.remove(reqc.getKey());
 						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
 						stallMasterMapper.lockdown(stall);
+					}
+					if(reqc.getType() == 2) {
+						
 					}
 					sendMsgT(uid, reqc.getStatus(), code);
 					//解锁

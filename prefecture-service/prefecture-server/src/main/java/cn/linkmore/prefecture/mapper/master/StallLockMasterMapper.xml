@@ -16,6 +16,10 @@
     delete from t_biz_stall_lock
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteByStallId" parameterType="java.lang.Long">
+    delete from t_biz_stall_lock
+    where stall_id = #{stallId,jdbcType=BIGINT}
+  </delete>
   
   <update id="update" parameterType="cn.linkmore.prefecture.entity.StallLock">
     update t_biz_stall_lock
