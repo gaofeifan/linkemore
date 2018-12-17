@@ -178,9 +178,9 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 			if(tree==null) {
 				continue;
 			}
-			if(!(pre.getCategory() == 1 || pre.getCategory() == 0)) {
+		/*	if(!(pre.getCategory() == 1 || pre.getCategory() == 0)) {
 				continue;
-			}
+			}*/
 			child = new Tree();
 			child.setIsParent(false);
 			child.setId("pre"+pre.getId().toString());
