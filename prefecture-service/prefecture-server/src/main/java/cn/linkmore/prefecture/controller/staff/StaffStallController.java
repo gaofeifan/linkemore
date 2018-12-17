@@ -22,6 +22,7 @@ import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuth;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
@@ -122,6 +123,20 @@ public class StaffStallController {
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
+	}
+	
+	@ApiOperation(value = "获取最新人员的权限", notes = "获取最新人员的权限")
+	@RequestMapping(value = "/find-new-auth", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResStaffNewAuth>> findNewAuth(HttpServletRequest request,  @ApiParam(value="城市id 非必填默认查询人员所有的权限",required=false) @RequestParam("cityId") Long cityId) {
+		try {
+			
+			return ResponseEntity.success(this.stallService.findNewAuth(cityId,request), request);
+		} catch (BusinessException e) {
+			return ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
 	}
 
 }

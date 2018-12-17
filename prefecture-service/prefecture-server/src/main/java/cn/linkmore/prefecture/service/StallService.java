@@ -11,6 +11,8 @@ import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuth;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuthPre;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
@@ -307,4 +309,6 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	Map<String, Object> watch2(Long stallId);
+	
+	List<ResStaffNewAuth> findNewAuth(Long cityId, HttpServletRequest request);
 }

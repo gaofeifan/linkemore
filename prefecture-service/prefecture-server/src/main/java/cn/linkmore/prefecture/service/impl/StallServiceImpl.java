@@ -67,6 +67,8 @@ import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResEntTypeStalls;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuth;
+import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuthPre;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
@@ -95,6 +97,7 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResAdminAuthPre;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.prefecture.response.ResAdminUserAuth;
@@ -102,6 +105,7 @@ import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockMessage;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.prefecture.response.ResStaffCity;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallAssign;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -136,6 +140,7 @@ import cn.linkmore.util.TokenUtil;
 public class StallServiceImpl implements StallService {
 	@Autowired
 	private AdminAuthStallMasterMapper AdminAuthStallMasterMapper;
+	
 	@Autowired
 	private AdminAuthPreMasterMapper adminAuthPreMasterMapper;
 	@Autowired
@@ -1056,12 +1061,14 @@ public class StallServiceImpl implements StallService {
 			// 固定
 			entType = new ResEntTypeStalls();
 			entType.setTypeName("固定");
+			entType.setType((short)2);
 			entType.setPreTypeStalls(preRentTypeStalls);
 			entType.setPreUseTypeStalls(preRentUseTypeStalls);
 			preList.getTypeStalls().put("rent", entType);
 			//vip
 			entType = new ResEntTypeStalls();
 			entType.setTypeName("VIP");
+			entType.setType((short)3);
 			entType.setPreTypeStalls(preVipTypeStalls);
 			entType.setPreUseTypeStalls(preVipUseTypeStalls);
 			preList.getTypeStalls().put("vip", entType);
@@ -1222,7 +1229,7 @@ public class StallServiceImpl implements StallService {
 			resStaffStallList = getStaffStall(bockBeans,resStaffStallList,resStall,excStallList);
 			staffStallLists.add(resStaffStallList);
 		}
-		return staffStallLists;
+		return staffStallLists; 
 	}
 
 	private ResStaffStallList getStaffStall(List<ResLockInfo> bockBeans, ResStaffStallList resStaffStallList, ResStall resStall, List<ResEntExcStallStatus> excStallList) {
@@ -1233,7 +1240,7 @@ public class StallServiceImpl implements StallService {
 		resStaffStallList.setStallId(resStall.getId());
 		resStaffStallList.setStallName(resStall.getStallName());
 		return resStaffStallList;
-	}
+	} 
 	
 	private ResStaffStallList getStaffLockStatus(List<ResLockInfo> bockBeans, ResStaffStallList resStaffStallList ,String lockSn) {
 		if (bockBeans != null && bockBeans.size() != 0) {
@@ -1752,6 +1759,59 @@ public class StallServiceImpl implements StallService {
 		}
 		return this.lockTools.lockSignalHistory(sn);
 	}
+
+	@Override
+	public List<ResStaffNewAuth> findNewAuth(Long cityId, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService
+				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
+		List<ResStaffCity> list = adminAuthCityClusterMapper.findStaffCitysByAdminId(cu.getId());
+		List<ResCity> selectList = this.cityClient.findSelectList();
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", cu.getId());
+		List<ResAdminAuthPre> findListRes = this.adminAuthPreClusterMapper.findListRes(map );
+		List<ResPre> pres  = null;
+		if(findListRes != null) {
+			List<Long> collect = findListRes.stream().map(p -> p.getPreId()).collect(Collectors.toList());
+			map.put("preIds", collect);
+			if(cityId != null) {
+				map.put("cityId", cityId);
+			}
+			pres = this.prefectureService.findPreByIds(map);
+		}
+		ResStaffNewAuth auth = null;
+		ResStaffNewAuthPre pre = null;
+		List<ResStaffNewAuth> auths = new ArrayList<>();
+		for (ResStaffCity resStaffCity : list) {
+			if(cityId != null && resStaffCity.getCityId() != cityId) {
+				continue;
+			}
+			for (ResCity resCity : selectList) {
+				if(resStaffCity.getCityId() == resCity.getId()) {
+					auth = new ResStaffNewAuth();
+					auth.setCityId(resCity.getId());
+					auth.setCityName(resCity.getCityName());
+					for (ResAdminAuthPre resAdminAuthPre : findListRes) {
+						if(pres != null && resAdminAuthPre.getCityId() == resCity.getId()) {
+							for (ResPre resPre : pres) {
+								if(resPre.getId() == resAdminAuthPre.getPreId()) {
+									pre = new ResStaffNewAuthPre();
+									pre.setPreId(resPre.getId());
+									pre.setPreName(resPre.getName());
+									auth.getPres().add(pre);
+									break;
+								}
+							}
+						}
+					}
+					auths.add(auth);
+					break;
+				}
+			}
+		}
+	
+		return auths;
+	}
+	
 	
 	
 	
