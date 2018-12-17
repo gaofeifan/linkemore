@@ -12,6 +12,10 @@ public interface StrategyFeeService {
 	Map<String, Object> amount(Map<String, Object> param);
 
 	String info(Map<String, Object> param);
-
-	
+	/**
+	 * 查看当前车区分组的免费时长
+	 * @param param
+	 * @return
+	 */
+	int freeMins(Map<String, Object> param);
 }

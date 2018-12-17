@@ -8,6 +8,8 @@ public interface StrategyGroupDetailClusterMapper {
 
     StrategyGroupDetail selectByPrimaryKey(Long id);
     
+    StrategyGroupDetail findByStallId(Long stallId);
+    
     List<StrategyGroupDetail> findList(Long strategyGroupId);
     
 	List<StrategyGroupDetail> findPreGroupDetailList(Long preId);

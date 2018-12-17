@@ -59,14 +59,6 @@ public interface EnterpriseService {
 	 * @return
 	 */
 	Integer check(ReqCheck reqCheck);
-
-	/**
-	 * 修改账号密码
-	 * 
-	 * @param person
-	 */
-	void setPassword(ReqPerson person);
-
 	
 	/**
 	 * @Description  通过所属行业查询区域

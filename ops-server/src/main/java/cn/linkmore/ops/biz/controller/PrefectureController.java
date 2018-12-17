@@ -14,10 +14,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.imageio.stream.FileImageInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -30,9 +32,10 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSONArray;
+
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
@@ -43,7 +46,6 @@ import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.PrefectureService;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.utils.ExcelUtil;
 import cn.linkmore.ops.utils.QrCodeGenerateUtil;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -53,6 +55,7 @@ import cn.linkmore.prefecture.response.ResFeeStrategy;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.security.response.ResPerson;
 
 /**
  * 

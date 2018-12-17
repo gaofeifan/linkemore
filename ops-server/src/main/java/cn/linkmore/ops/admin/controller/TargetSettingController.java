@@ -1,7 +1,9 @@
 package cn.linkmore.ops.admin.controller;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
@@ -18,7 +21,7 @@ import cn.linkmore.ops.admin.request.ReqCheck;
 import cn.linkmore.ops.admin.request.ReqTargetSetting;
 import cn.linkmore.ops.admin.response.ResPreList;
 import cn.linkmore.ops.admin.service.TargetSettingService;
-import cn.linkmore.ops.security.response.ResPerson;
+import cn.linkmore.security.response.ResPerson;
 /**
  * Controller - 车区目标设置
  * @author liwenlong

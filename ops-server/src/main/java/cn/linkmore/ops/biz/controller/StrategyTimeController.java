@@ -26,10 +26,10 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.StrategyTimeService;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.request.ReqStrategyTime;
 import cn.linkmore.prefecture.request.ReqStrategyTimeDetail;
 import cn.linkmore.prefecture.response.ResStrategyTime;
+import cn.linkmore.security.response.ResPerson;
 
 
 /**

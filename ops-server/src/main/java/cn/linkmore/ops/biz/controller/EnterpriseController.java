@@ -17,7 +17,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEnterprise;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EnterpriseService;
-import cn.linkmore.ops.security.request.ReqPerson;
+import cn.linkmore.security.request.ReqPerson;
 /**
  * 企业
  * @author   GFF

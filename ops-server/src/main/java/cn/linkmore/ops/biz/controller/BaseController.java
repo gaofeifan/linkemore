@@ -6,9 +6,9 @@ import org.apache.shiro.SecurityUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cn.linkmore.ops.security.response.ResPerson;
+
+import cn.linkmore.security.response.ResPerson;
 
 
 public abstract class BaseController {

@@ -88,19 +88,14 @@ public class PersonClientHystrix implements PersonClient {
 	}
 
 	@Override
-	public void updatePassword(ReqPerson person, String oldPassword, String password) {
-		log.info("person updatePassword");
-	}
-
-	@Override
 	public ResPerson findById(Long id) {
 		log.info("person findById");
 		return null;
 	}
 
 	@Override
-	public void updatePassword(ReqPerson person) {
-		log.info("person updatePassword");
+	public void updateEntPassword(ReqPerson person) {
+		log.info("person updateEntPassword");
 	}
 
 }

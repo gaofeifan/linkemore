@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.security.request.ReqCheck;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.security.response.ResPersonRole;
 import cn.linkmore.ops.security.response.ResRole;
 import cn.linkmore.ops.security.service.PersonService;
@@ -16,6 +15,7 @@ import cn.linkmore.security.client.InterfaceClient;
 import cn.linkmore.security.client.PersonClient;
 import cn.linkmore.security.request.ReqPerson;
 import cn.linkmore.security.response.ResInterface;
+import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.util.ObjectUtils;
 
 /**
@@ -63,12 +63,8 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public ResPerson findByUsername(String username) {
-		ResPerson resPerson = null;
-		cn.linkmore.security.response.ResPerson person = this.personClient.findByUsername(username);
-		if(person != null) {
-			resPerson = ObjectUtils.copyObject(person, new ResPerson());
-		}
-		return resPerson;
+		ResPerson person = this.personClient.findByUsername(username);
+		return person;
 	}
 
 	@Override
@@ -122,11 +118,4 @@ public class PersonServiceImpl implements PersonService {
 		this.personClient.bind(id, ids);
 	}
 
-	@Override
-	public void updatePassword(ResPerson resPerson, String oldPassword, String password) {
-		cn.linkmore.security.request.ReqPerson person = new cn.linkmore.security.request.ReqPerson();
-		person = ObjectUtils.copyObject(resPerson, person);
-		this.personClient.updatePassword(person, oldPassword, password);
-	}
-	
 }

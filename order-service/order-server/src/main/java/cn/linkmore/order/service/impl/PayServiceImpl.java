@@ -66,7 +66,6 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.PayService;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
-import cn.linkmore.prefecture.client.StrategyBaseClient;
 import cn.linkmore.prefecture.client.StrategyFeeClient;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -136,9 +135,6 @@ public class PayServiceImpl implements PayService {
 	
 	@Autowired
 	private CompanyTradeRecordClusterMapper companyTradeRecordClusterMapper;
-
-	@Autowired
-	private StrategyBaseClient strategyBaseClient;
 	
 	@Autowired
 	private StrategyFeeClient strategyFeeClient;
@@ -188,7 +184,6 @@ public class PayServiceImpl implements PayService {
 			log.error("confirm order.status {}" + order.getStatus());
 			throw new BusinessException(StatusEnum.ORDER_CHECK_EXPIRE);
 		}
-		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout order:{}", JsonUtil.toJson(order));
 		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout orderId:{},userId:{}", orderId, cu.getId());
 		if (order == null || order.getUserId().longValue() != cu.getId().longValue()) {
 			return null;
@@ -330,7 +325,7 @@ public class PayServiceImpl implements PayService {
 		ResCoupon coupon = null;
 		if (roc.getCouponId() != null) {
 			coupon = this.couponClient.get(roc.getCouponId());
-			log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm coupon:{}", JsonUtil.toJson(coupon));
+			log.info("..........confirm coupon:{}", JsonUtil.toJson(coupon));
 			if (coupon != null && coupon.getStatus() != CouponStatus.FREE.status) {
 				coupon = null;
 			} else if (coupon != null && coupon.getUserId().longValue() != cu.getId().longValue()) {
@@ -363,13 +358,13 @@ public class PayServiceImpl implements PayService {
 			param.put("endTime", sdf.format(new Date()));
 		}
 		Map<String, Object> map = this.strategyFeeClient.amount(param);
-		log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout param:{}  map:{}", JSON.toJSON(param), JSON.toJSON(map));
+		log.info("..........checkout param:{}  map:{}", JSON.toJSON(param), JSON.toJSON(map));
 		if (map != null) {
 			Object object = map.get("chargePrice");
 			if (object != null) {
 				String totalStr = object.toString();
 				String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
-				log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout totalAmount:{}", totalAmountStr);
+				log.info("..........checkout totalAmount:{}", totalAmountStr);
 				order.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
 			}
 		}
@@ -395,7 +390,7 @@ public class PayServiceImpl implements PayService {
 		} else {
 			orderPayType = OrderPayType.ACCOUNT.type;
 		}
-		log.info(">>>>>>>>>>>>>>>>>>>>>>>>orderPayType:{}", orderPayType);
+		log.info(".......... order pay type:{}", orderPayType);
 		order.setActualAmount(new BigDecimal(amount - (null == coupon ? 0.00 : faceAmount)));
 		if (null != coupon) {
 			order.setCouponId(coupon.getId());
@@ -429,7 +424,7 @@ public class PayServiceImpl implements PayService {
 			confirm.setAmount(new BigDecimal(0.0D));
 			confirm.setNumber(null);
 			confirm.setPayType((short) (orderPayType - OrderPayType.ACCOUNT.type));
-			log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm order actualAmount <= 0 confirm:{}",JSON.toJSON(confirm));
+			log.info("..........confirm order actualAmount <= 0 confirm:{}",JSON.toJSON(confirm));
 			return getConfirmResult(confirm);
 		}
 
@@ -438,7 +433,7 @@ public class PayServiceImpl implements PayService {
 			account = initAccount(order.getUserId());
 		}
 		if (roc.getPayType() == TradePayType.ACCOUNT.type) {
-			log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm account pay = 0");
+			log.info("..........confirm account pay = 0");
 			Double usableAmount = account.getAmount().doubleValue();
 			if ((order.getActualAmount().doubleValue() <= usableAmount)) {
 				// 调起结账接口

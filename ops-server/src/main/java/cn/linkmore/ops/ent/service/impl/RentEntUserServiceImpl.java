@@ -17,9 +17,9 @@ import cn.linkmore.enterprise.request.ReqRentEntUser;
 import cn.linkmore.enterprise.request.ReqRentUser;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.ent.service.RentEntUserService;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.client.EnterpriseClient;
 import cn.linkmore.prefecture.client.OpsRentEntUserClient;
+import cn.linkmore.security.response.ResPerson;
 @Service
 public class RentEntUserServiceImpl implements RentEntUserService{
 

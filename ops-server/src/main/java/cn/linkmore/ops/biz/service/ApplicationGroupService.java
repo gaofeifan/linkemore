@@ -6,9 +6,9 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.ops.biz.response.ResPrefecture;
-import cn.linkmore.ops.security.request.ReqPerson;
 import cn.linkmore.prefecture.request.ReqApplicationGroup;
 import cn.linkmore.prefecture.response.ResPrefectureGroup;
+import cn.linkmore.security.request.ReqPerson;
 
 public interface ApplicationGroupService {
 

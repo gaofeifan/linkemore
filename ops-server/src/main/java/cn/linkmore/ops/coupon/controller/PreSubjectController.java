@@ -21,7 +21,7 @@ import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqPreSubject;
 import cn.linkmore.coupon.response.ResBizSubjectBean;
 import cn.linkmore.ops.coupon.service.PreSubjectService;
-import cn.linkmore.ops.security.response.ResPerson;
+import cn.linkmore.security.response.ResPerson;
 
 @Controller
 @RequestMapping("/admin/coupon_pre_subject")
