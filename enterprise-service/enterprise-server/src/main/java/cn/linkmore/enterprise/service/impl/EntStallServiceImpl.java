@@ -213,7 +213,7 @@ public class EntStallServiceImpl implements EntStallService {
 					continue;
 				}*/
 				// 临停使用 || 临停
-				if (resStall.getType() == 1 && resStall.getStatus() == StallStatus.USED.status) {
+				if (resStall.getType() == 0 && resStall.getStatus() == StallStatus.USED.status) {
 					preTempUseTypeStalls++;
 				}
 				if (resStall.getType() == 1) {

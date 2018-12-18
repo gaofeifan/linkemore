@@ -22,11 +22,12 @@ public class EntRenedRecordServiceImpl implements EntRenedRecordService {
 	@Override
 	public void updateDownTime(Long stallId) {
 		EntRentedRecord id = entRentedRecordClusterMapper.findByStallId(stallId);
-		Map<String,Object> map = new HashMap<>();
-		map.put("id", id.getId());
-		map.put("date", new Date());
-		entRentedRecordMasterMapper.updateDownTime(map);
-			
+		if(id != null) {
+			Map<String,Object> map = new HashMap<>();
+			map.put("id", id.getId());
+			map.put("date", new Date());
+			entRentedRecordMasterMapper.updateDownTime(map);
+		}
 	}
 
 	
