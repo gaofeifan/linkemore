@@ -88,8 +88,9 @@ public class ResDetailStall {
 	private String faultName;
 	
 	/**
-	 *  超声波设备状态   0 异常 1正常 其他值表示未知
+	 *  车位状态   0 上方无车 1 上方有车 ，其他值 表示未知
 	 */ 
+	@ApiModelProperty(" 车位状态   0 上方无车 1 上方有车 ，其他值 表示未知")
 	private int inductionState;
 	
 	/**
