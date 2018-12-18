@@ -209,14 +209,14 @@ public class EntStallServiceImpl implements EntStallService {
 			}
 			for (int j = 0; j < stalls.size(); j++) {
 				ResStall resStall = stalls.get(j);
-				/*if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
+				if (!stallListByIds.contains(resStall.getId())) {
 					continue;
-				}*/
+				}
 				// 临停使用 || 临停
 				if (resStall.getType() == 0 && resStall.getStatus() == StallStatus.USED.status) {
 					preTempUseTypeStalls++;
 				}
-				if (resStall.getType() == 1) {
+				if (resStall.getType() == 0) {
 					preTempTypeStalls++;
 				}
 				// 长租使用||长租
@@ -334,9 +334,9 @@ public class EntStallServiceImpl implements EntStallService {
 			}
 			for (int j = 0; j < stalls.size(); j++) {
 				ResStall resStall = stalls.get(j);
-				/*if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
+				if (!stallListByIds.contains(resStall.getId())) {
 					continue;
-				}*/
+				}
 				// 临停使用 || 临停
 				if (resStall.getType() == 0 && resStall.getStatus() == StallStatus.USED.status) {
 					preTempUseTypeStalls++;
@@ -724,7 +724,7 @@ public class EntStallServiceImpl implements EntStallService {
 		 */
 
 		if (lockBean != null) {
-			resDetailStall.setInductionState(lockBean.getInductionState());
+			resDetailStall.setInductionState(lockBean.getParkingState());
 			resDetailStall.setBetty(lockBean.getElectricity());
 			resDetailStall.setStatus(lockBean.getLockState());
 			if (lockBean.getElectricity() <= 30) {

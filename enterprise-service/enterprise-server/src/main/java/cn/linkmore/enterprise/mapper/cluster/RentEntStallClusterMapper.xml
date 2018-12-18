@@ -60,7 +60,7 @@
     t_ent_rent_com_stall 
 	where pre_id = #{preId}
 	union select stall_id from t_ent_rent_user 
-	where status =1 and type = 0 and pre_id= #{preId}
+	where type = 0 and pre_id= #{preId}
   </select>
   
   
