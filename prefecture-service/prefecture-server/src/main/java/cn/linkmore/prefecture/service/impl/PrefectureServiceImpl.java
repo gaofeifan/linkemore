@@ -607,11 +607,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 								String beginTime = jsonObj.getString("beginTime");
 								String endTime = jsonObj.getString("endTime");
 								Double chargeFee = jsonObj.getBigDecimal("chargeFee").doubleValue();
-								int chargeHourFree = jsonObj.getInteger("chargeHourFree");
+								int chargeHourFree = 0;
+								if(jsonObj.getString("chargeHourFree") != null) {
+									chargeHourFree = jsonObj.getInteger("chargeHourFree");
+								}
+								
 								int criticalUnit = jsonObj.getInteger("criticalUnit");
 								int chargeUnit = jsonObj.getInteger("chargeUnit");
 								String remark = jsonObj.getString("remark");
-
+								log.info("charge hour free = {} remark ={}", chargeHourFree, remark);
 								sb.append(beginTime + "-" + endTime + " ");
 								if (chargeUnit == 1) {
 									sb.append(chargeFee + "元/分");
