@@ -200,9 +200,9 @@ public class EntStallServiceImpl implements EntStallService {
 			Map<String, ResEntTypeStalls> typeSum = new HashMap<>();
 			for (int j = 0; j < stalls.size(); j++) {
 				ResStall resStall = stalls.get(j);
-	/*			if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
+				if (!stallListByIds.contains(resStall.getId())) {
 					continue;
-				}*/
+				}
 				if (resStall.getStatus() == StallStatus.USED.status) {
 					preUseStalls++;
 				}
@@ -325,9 +325,9 @@ public class EntStallServiceImpl implements EntStallService {
 			Map<String, ResEntTypeStalls> typeSum = new HashMap<>();
 			for (int j = 0; j < stalls.size(); j++) {
 				ResStall resStall = stalls.get(j);
-				/*			if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
+				if (!stallListByIds.contains(resStall.getId()) ) {
 					continue;
-				}*/
+				}
 				if (resStall.getStatus() == StallStatus.USED.status) {
 					preUseStalls++;
 				}
