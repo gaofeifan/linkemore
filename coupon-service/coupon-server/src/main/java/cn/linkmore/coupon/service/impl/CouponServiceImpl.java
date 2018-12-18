@@ -462,7 +462,7 @@ public class CouponServiceImpl implements CouponService {
 		Map<String, Object> costMap = this.strategyFeeClient.amount(param);
 		Double totalAmount = 0d;
 		if(costMap != null) {
-			String totalAmountStr = costMap.get("totalAmount").toString();
+			String totalAmountStr = costMap.get("chargePrice").toString();
 			totalAmount = Double.valueOf(totalAmountStr);
 		}
 		/*ReqStrategy strategy = new ReqStrategy();

@@ -356,7 +356,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		Map<String, Object> res = this.strategyFeeClient.amount(param);
 		Double totalAmount = 0d;
 		if(res != null) {
-			String totalStr = res.get("totalAmount").toString();
+			String totalStr = res.get("chargePrice").toString();
 			String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
 			totalAmount = Double.valueOf(totalAmountStr);
 		}
