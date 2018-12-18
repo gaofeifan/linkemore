@@ -216,7 +216,7 @@ public class EntStallServiceImpl implements EntStallService {
 				if (resStall.getType() == 0 && resStall.getStatus() == StallStatus.USED.status) {
 					preTempUseTypeStalls++;
 				}
-				if (resStall.getType() == 1) {
+				if (resStall.getType() == 0) {
 					preTempTypeStalls++;
 				}
 				// 长租使用||长租
