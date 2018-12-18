@@ -213,10 +213,10 @@ public class EntStallServiceImpl implements EntStallService {
 					continue;
 				}*/
 				// 临停使用 || 临停
-				if (resStall.getType() == 0 && resStall.getStatus() == StallStatus.USED.status) {
+				if (resStall.getType() == 1 && resStall.getStatus() == StallStatus.USED.status) {
 					preTempUseTypeStalls++;
 				}
-				if (resStall.getType() == 0) {
+				if (resStall.getType() == 1) {
 					preTempTypeStalls++;
 				}
 				// 长租使用||长租
@@ -257,6 +257,131 @@ public class EntStallServiceImpl implements EntStallService {
 			rentStalls.setPreUseTypeStalls(preRentUseTypeStalls);
 			typeSum.put("rent", rentStalls);
 			ResEntTypeStalls tempStalls = new ResEntTypeStalls();
+			tempStalls.setType((short) 1);
+			tempStalls.setTypeName("临停车位");
+			tempStalls.setPreTypeStalls(preTempTypeStalls);
+			tempStalls.setPreUseTypeStalls(preTempUseTypeStalls);
+			typeSum.put("temp", tempStalls);
+			resEntStalls.setTypeStalls(typeSum);
+			entStallList.add(resEntStalls);
+		}
+		return entStallList;
+	}
+	@Override
+	public List<ResEntStalls> selectEntStallsNew(HttpServletRequest request) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser) this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + key);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("staffId", ru.getId());
+		List<EntStaffAuth> entStaffAuths = entStaffAuthClusterMapper.findList(map);
+		int size = entStaffAuths.size();
+		if (size == 0) {
+			return new ArrayList<ResEntStalls>();
+		}
+		EntStaffAuth entStaffAuth = entStaffAuths.get(0);
+		Map<String, Object> param = new HashMap<>();
+		Set<Long> list = entStaffAuths.stream().map(ent -> ent.getAuthId()).collect(Collectors.toSet());
+		param.put("authIds", new ArrayList<>(list));
+		// param.put("authId", entStaffAuth.getAuthId());
+		List<EntAuthPre> entAuthPres = entAuthPreClusterMapper.findList(param);
+		int preSize = entAuthPres.size();
+		EntAuthPre entAuthPre = null;
+		// List<EntRentUser> rentUsers = entRentUserService.findAll();
+		List<ResEntStalls> entStallList = new ArrayList<>();
+		ResEntStalls resEntStalls = null;
+		Map<String, Object> params = null;
+		List<ResStall> stalls = null;
+		EntPrefecture entPrefeture = null;
+		// Set<Long> collect = entAuthPres.stream().map(ent ->
+		// ent.getAuthId()).collect(Collectors.toSet());
+		map.put("authIds", new ArrayList<>(list));
+		List<Long> stallListByIds = this.entAuthStallClusterMapper.findStallListByIds(map);
+		for (int i = 0; i < preSize; i++) {
+			entAuthPre = entAuthPres.get(i);
+			if (entAuthPre == null) {
+				continue;
+			}
+			entPrefeture = entPrefectureClusterMapper.findByPreId(entAuthPre.getPreId());
+			if (entPrefeture == null) {
+				continue;
+			}
+			resEntStalls = new ResEntStalls();
+			resEntStalls.setPreId(entAuthPre.getPreId());
+			resEntStalls.setPreName(entPrefeture.getPreName());
+			
+			params = new HashMap<String, Object>();
+			params.put("preId", entAuthPre.getPreId());
+			stalls = stallClient.findStallList(params);
+			// param.put("authId", entAuthPre.getAuthId());
+			int preStalls = 0;
+			int preUseStalls = 0;
+			int preVipTypeStalls = 0;
+			int preVipUseTypeStalls = 0;
+			int preRentTypeStalls = 0;
+			int preRentUseTypeStalls = 0;
+			int preTempTypeStalls = 0;
+			int preTempUseTypeStalls = 0;
+			
+			Map<String, ResEntTypeStalls> typeSum = new HashMap<>();
+			for (int j = 0; j < stalls.size(); j++) {
+				ResStall resStall = stalls.get(j);
+				/*			if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
+					continue;
+				}*/
+				if (resStall.getStatus() == StallStatus.USED.status) {
+					preUseStalls++;
+				}
+			}
+			for (int j = 0; j < stalls.size(); j++) {
+				ResStall resStall = stalls.get(j);
+				/*if (!stallListByIds.contains(resStall.getId()) || resStall.getType() == 0) {
+					continue;
+				}*/
+				// 临停使用 || 临停
+				if (resStall.getType() == 0 && resStall.getStatus() == StallStatus.USED.status) {
+					preTempUseTypeStalls++;
+				}
+				if (resStall.getType() == 0) {
+					preTempTypeStalls++;
+				}
+				// 长租使用||长租
+				if (resStall.getType() == 2 && resStall.getStatus() == StallStatus.USED.status) {
+					preRentUseTypeStalls++;
+				}
+				if (resStall.getType() == 2) {
+					preRentTypeStalls++;
+				}
+				preStalls++;
+				/*
+				 * StringBuilder sb = new StringBuilder(); for (EntRentUser rentUser :
+				 * rentUsers) { if(rentUser.getStallId().equals(resStall.getId())) {
+				 * sb.append(rentUser.getPlate()).append("/"); } }
+				 */
+				// vip使用 ||vip
+				if (resStall.getType() == 3 && resStall.getStatus() == StallStatus.USED.status) {
+					preVipUseTypeStalls++;
+				}
+				if (resStall.getType() == 3) {
+					preVipTypeStalls++;
+				}
+			}
+			
+			resEntStalls.setPreStalls(preStalls);
+			resEntStalls.setPreUseStalls(preUseStalls);
+			
+			ResEntTypeStalls vipStalls = new ResEntTypeStalls();
+			vipStalls.setType((short) 3);
+			vipStalls.setTypeName("vip车位");
+			vipStalls.setPreTypeStalls(preVipTypeStalls);
+			vipStalls.setPreUseTypeStalls(preVipUseTypeStalls);
+			typeSum.put("vip", vipStalls);
+			ResEntTypeStalls rentStalls = new ResEntTypeStalls();
+			rentStalls.setType((short) 2);
+			rentStalls.setTypeName("长租车位");
+			rentStalls.setPreTypeStalls(preRentTypeStalls);
+			rentStalls.setPreUseTypeStalls(preRentUseTypeStalls);
+			typeSum.put("rent", rentStalls);
+			ResEntTypeStalls tempStalls = new ResEntTypeStalls();
 			tempStalls.setType((short) 0);
 			tempStalls.setTypeName("临停车位");
 			tempStalls.setPreTypeStalls(preTempTypeStalls);
@@ -269,8 +394,7 @@ public class EntStallServiceImpl implements EntStallService {
 	}
 
 	@Override
-	public List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectStalls(HttpServletRequest request, Long preId, Short type, String name) {
-		
+	public List<ResStallName> selectStalls(HttpServletRequest request, Long preId, Short type, String name) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser) this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + key);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -279,6 +403,135 @@ public class EntStallServiceImpl implements EntStallService {
 		List<EntStaffAuth> entStaffAuths = entStaffAuthClusterMapper.findList(map);
 		int size = entStaffAuths.size();
 		List<ResStallName> stallNames = new ArrayList<>();
+		if (size == 0) {
+			return new ArrayList<ResStallName>();
+		}
+		// EntStaffAuth entStaffAuth = entStaffAuths.get(0);
+		Map<String, Object> param = new HashMap<String, Object>();
+		List<Long> list = entStaffAuths.stream().map(ent -> ent.getAuthId()).collect(Collectors.toList());
+		param.put("authIds", list);
+		// param.put("authId", entStaffAuth.getAuthId());
+		// List<Long> stallIds= entAuthStallClusterMapper.findStallList(param);
+		List<Long> stallIds = entAuthStallClusterMapper.findStallListByIds(param);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("type", type);
+		params.put("list", stallIds);
+		params.put("stallName", name);
+		log.info("-----------params = {}", JSON.toJSON(params));
+		List<ResStall> stalls = this.stallClient.findPreStallList(params); // 根据stallid 集合查询车位
+		log.info("-----------stall-list = {}", JSON.toJSON(stalls));
+		List<ResOrderPlate> orders = orderClient.findPlateByPreId(preId);
+		List<Long> collect = stalls.stream().map(stall -> stall.getId()).collect(Collectors.toList());
+		List<StallExcStatus> stallExcList = null;
+		if (collect != null && collect.size() > 0) {
+			stallExcList = this.stallExcStatusService.findExcStatusList(collect);
+		}
+		ResPrefectureDetail pref = this.prefectrueClient.findById(preId);
+//		ResponseMessage<LockBean> locks = lockFactory.findAvailableLock(pref.getGateway());
+		List<ResLockInfo> lockBeans = feignLockClient.lockList(pref.getGateway());
+//		List<LockBean> lockBeans = locks.getDataList();
+		// 设置车位对应的车牌号
+		log.debug(JsonUtil.toJson(lockBeans));
+		List<cn.linkmore.enterprise.controller.ent.response.ResStall> stallList = new ArrayList<>();
+		cn.linkmore.enterprise.controller.ent.response.ResStall stall = null;
+		// lockFactory.
+		for (ResStall resStall : stalls) {
+			if (orders == null) {
+				break;
+			}
+			if (resStall.getPreId().equals(preId)) {
+				stall = ObjectUtils.copyObject(resStall, new cn.linkmore.enterprise.controller.ent.response.ResStall());
+				stall.setType(resStall.getType() == 0 ? 1 :resStall.getType());
+				stall.setStallId(resStall.getId());
+				for (ResLockInfo lock : lockBeans) {
+					if (lock.getLockCode().equals(stall.getLockSn())) {
+						if (lock.getLockState() == 1) {
+							log.info(lock.getLockCode() + "===" + lock.getLockState());
+							stall.setLockStatus(lock.getLockState());
+						} else {
+							stall.setLockStatus(2);
+						}
+					}
+				}
+				if (lockBeans != null) {
+					for (ResLockInfo lock : lockBeans) {
+						if (lock.getLockCode().equals(stall.getLockSn())) {
+							if (lock.getElectricity() <= 30) {
+								stall.setExcStatus(false);
+							}
+						}
+					}
+				}
+				if (resStall.getType() != 2) {
+					for (ResOrderPlate orderPlate : orders) {
+						if (resStall.getId().equals(orderPlate.getStallId())) {
+							stall.setPlateNo(orderPlate.getPlateNo());
+							break;
+						}
+					}
+				}
+				// 设置车位锁异常状态
+				for (StallExcStatus stallExcStatus : stallExcList) {
+					if (stallExcStatus.getStallId().equals(resStall.getId())) {
+						stall.setExcStatus(false);
+						break;
+					}
+				}
+				stallList.add(stall);
+			}
+		}
+		ResStallName stallName = null;
+		StringBuilder sb = new StringBuilder();
+		int end = 0;
+		stallName = new ResStallName();
+		stallName.setId("0");
+		cn.linkmore.enterprise.controller.ent.response.ResStall resStall = null;
+		for (int i = 0; i < stallList.size(); i++) {
+			resStall = stallList.get(i);
+			resStall.setpId(stallName.getId());
+			stallName.getStalls().add(resStall);
+			if (i == end) {
+				sb.append(stallList.get(i).getStallName()).append("-");
+				end += 5;
+				if (i > 1 && (i + 1) == stallList.size()) {
+					// sb.append(stallList.get(i).getStallName());
+					stallName.setStallName(stallList.get(i).getStallName());
+					stallNames.add(stallName);
+				}
+			} else if (i == (end - 1)) {
+				sb.append(stallList.get(i).getStallName());
+				stallName.setStallName(sb.toString());
+				Integer id = Integer.parseInt(stallName.getId());
+				sb = new StringBuilder();
+				stallNames.add(stallName);
+				stallName = new ResStallName();
+				stallName.setId(id + 1 + "");
+			} else if (i == stallList.size() - 1) {
+				sb.append(stallList.get(i).getStallName());
+				stallName.setStallName(sb.toString());
+				stallNames.add(stallName);
+			}
+			if (stallList.size() == 1) {
+				stallName.setStallName(stallList.get(i).getStallName());
+				stallNames.add(stallName);
+			}
+		}
+		return stallNames;
+	}
+
+	
+	
+	@Override
+	public List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectEntStallsNew(HttpServletRequest request,
+			Long preId, Short type, String name) {
+
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser) this.redisService.get(RedisKey.STAFF_ENT_AUTH_USER.key + key);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("staffId", ru.getId());
+		map.put("status", 1);
+		List<EntStaffAuth> entStaffAuths = entStaffAuthClusterMapper.findList(map);
+		int size = entStaffAuths.size();
 		if (size == 0) {
 			return new ArrayList<cn.linkmore.enterprise.controller.ent.response.ResStall>();
 		}
@@ -356,42 +609,6 @@ public class EntStallServiceImpl implements EntStallService {
 				stallList.add(stall);
 			}
 		}
-	/*	ResStallName stallName = null;
-		StringBuilder sb = new StringBuilder();
-		int end = 0;
-		stallName = new ResStallName();
-		stallName.setId("0");
-		cn.linkmore.enterprise.controller.ent.response.ResStall resStall = null;
-		for (int i = 0; i < stallList.size(); i++) {
-			resStall = stallList.get(i);
-			resStall.setpId(stallName.getId());
-			stallName.getStalls().add(resStall);
-			if (i == end) {
-				sb.append(stallList.get(i).getStallName()).append("-");
-				end += 5;
-				if (i > 1 && (i + 1) == stallList.size()) {
-					// sb.append(stallList.get(i).getStallName());
-					stallName.setStallName(stallList.get(i).getStallName());
-					stallNames.add(stallName);
-				}
-			} else if (i == (end - 1)) {
-				sb.append(stallList.get(i).getStallName());
-				stallName.setStallName(sb.toString());
-				Integer id = Integer.parseInt(stallName.getId());
-				sb = new StringBuilder();
-				stallNames.add(stallName);
-				stallName = new ResStallName();
-				stallName.setId(id + 1 + "");
-			} else if (i == stallList.size() - 1) {
-				sb.append(stallList.get(i).getStallName());
-				stallName.setStallName(sb.toString());
-				stallNames.add(stallName);
-			}
-			if (stallList.size() == 1) {
-				stallName.setStallName(stallList.get(i).getStallName());
-				stallNames.add(stallName);
-			}
-		}*/
 		return stallList;
 	}
 
