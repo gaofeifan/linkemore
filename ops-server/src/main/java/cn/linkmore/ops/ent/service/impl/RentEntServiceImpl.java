@@ -141,6 +141,7 @@ public class RentEntServiceImpl implements RentEntService {
 		if(CollectionUtils.isNotEmpty(preList)) {
 			param.put("preId", preList.get(0).getId());
 			param.put("type", 2);
+			param.put("status", 1);
 			list = this.stallClient.findStallList(param);
 			List<Long> stallIds = rentEntClient.occuyStallList(param);
 			if(CollectionUtils.isNotEmpty(list)) {
