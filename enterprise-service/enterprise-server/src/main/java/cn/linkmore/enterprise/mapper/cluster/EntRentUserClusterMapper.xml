@@ -129,6 +129,31 @@
     where 1 = 1 <![CDATA[ and end_time > now() ]]> and type = 0
   </select>
   
+  <select id="findCompanyUserList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_user
+    where 1 = 1 
+    <if test="userId != null">
+   		and user_id = #{userId}
+   	</if>
+    <if test="stallId != null">
+   		and stall_id = #{stallId}
+   	</if>
+   	<if test="preId != null">
+   		and pre_id = #{preId}
+   	</if>
+   	<if test="plate != null">
+   		and plate = #{plate}
+   	</if>
+   	<if test="companyId != null">
+   		and company_id = #{companyId}
+   	</if>
+   	<if test="type != null">
+   		and type = #{type}
+   	</if>
+   	and company_id is not null
+  </select>
   
   <select id="findComUserList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
     select 
