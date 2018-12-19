@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.common.client.PayConfigClient;
 import cn.linkmore.common.request.ReqFinshOrder;
 import cn.linkmore.common.request.ReqPayConfig;
+import cn.linkmore.common.request.ReqPayRecord;
 import cn.linkmore.common.response.ResFinshOrder;
 import cn.linkmore.common.response.ResPayConfig;
 
@@ -27,6 +28,12 @@ public class PayConfigClientHystrix implements PayConfigClient{
 	public List<ResFinshOrder> getOrder(ReqFinshOrder reqFinshOrder) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setOrder(ReqPayRecord reqPayRecord) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

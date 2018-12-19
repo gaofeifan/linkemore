@@ -66,7 +66,7 @@ public class H5PayController {
 	 */
 	@RequestMapping(value = "/alipay", method = RequestMethod.POST)
 	@ResponseBody
-	public ResH5Term alipay(@RequestBody ReqH5Term reqH5Term) {
+	public String alipay(@RequestBody ReqH5Term reqH5Term) {
 		log.info("alipay");
 		return h5TransactionService.alipay(reqH5Term);
 	}

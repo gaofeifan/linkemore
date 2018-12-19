@@ -1,5 +1,7 @@
 package cn.linkmore.order.service.impl;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,19 +12,21 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.bean.common.Transaction;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.common.client.PayConfigClient;
 import cn.linkmore.common.request.ReqFinshOrder;
 import cn.linkmore.common.request.ReqPayConfig;
+import cn.linkmore.common.request.ReqPayRecord;
 import cn.linkmore.common.response.ResFinshOrder;
 import cn.linkmore.common.response.ResPayConfig;
 import cn.linkmore.order.config.OauthConfig;
@@ -34,6 +38,7 @@ import cn.linkmore.order.controller.h5.response.ResSearch;
 import cn.linkmore.order.entity.AauthConfig;
 import cn.linkmore.order.service.RedirectService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.task.TaskPool;
 import cn.linkmore.third.client.H5PayClient;
 import cn.linkmore.third.request.ReqH5Term;
 import cn.linkmore.third.request.ReqH5Token;
@@ -41,6 +46,7 @@ import cn.linkmore.third.response.ResH5Degree;
 import cn.linkmore.third.response.ResH5Term;
 import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.XMLUtil;
 
 @Service
 public class RedirectServiceImpl implements RedirectService {
@@ -58,6 +64,7 @@ public class RedirectServiceImpl implements RedirectService {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ResSearch getOrder(ReqSerch reqSerch) {
 		// 查询当前所需支付订单
@@ -119,13 +126,13 @@ public class RedirectServiceImpl implements RedirectService {
 			res.setMoney(totalmoney);
 			res.setPayrecords(payrecords);
 			//放入所需支付订单
-			paymsg.put("totalmoney",totalmoney);
+			paymsg.put("totalmoney",0.01);
 			paymsg.put("orderNo",data.get("orderNo"));
 			paymsg.put("entranceTime",data.get("entranceTime"));
 			paymsg.put("plateNumber",data.get("plateNumber"));
 			paymsg.put("parkName",data.get("parkName"));
-	
-			redisService.set("payuser:"+reqSerch.getOpenid(), paymsg, 60000);
+			paymsg.put("orderId",orderId+data.get("orderNo").toString().substring(7));
+			redisService.set("payuser:"+reqSerch.getOpenid(), paymsg, 600000);
 			return res;
 		}
 		BigDecimal alreadyPay = new BigDecimal(0);
@@ -153,13 +160,13 @@ public class RedirectServiceImpl implements RedirectService {
 			res.setMoney(totalmoney);
 			res.setPayrecords(payrecords);
 			//放入所需支付订单
-			paymsg.put("totalmoney",totalmoney);
+			paymsg.put("totalmoney",0.01);
 			paymsg.put("orderNo",data.get("orderNo"));
 			paymsg.put("entranceTime",data.get("entranceTime"));
 			paymsg.put("plateNumber",data.get("plateNumber"));
 			paymsg.put("parkName",data.get("parkName"));
-	
-			redisService.set("payuser:"+reqSerch.getOpenid(), paymsg, 60000);
+			paymsg.put("orderId",orderId+data.get("orderNo").toString().substring(0,7));
+			redisService.set("payuser:"+reqSerch.getOpenid(), paymsg, 600000);
 		}
 		return res;
 	}
@@ -221,20 +228,23 @@ public class RedirectServiceImpl implements RedirectService {
 		// 获取身份id
 		ReqH5Token open = new ReqH5Token();
 		open.setAppid(config.getAppId());
-		open.setAppsecret(config.getAppSecret());
 		// 跳转网页
 		ResH5Degree res = new ResH5Degree();
 		if (paytype == Transaction.WX) {
 			open.setCode(code);
+			open.setAppsecret(config.getAppSecret());
 			res = h5PayClient.wxopenid(open);
 		}
 		if (paytype == Transaction.ZFB) {
 			open.setCode(auth_code);
+			open.setPrivateKey(config.getPriKey());
+			open.setPublicKey(config.getPubKey());
 			res = h5PayClient.aliopenid(open);
 		}
 		if (res != null) {
 			openId = res.getOpenid();
 		}
+		log.info("openId" + openId);
 		return AuthConfig.h5Index(preId, openId, paytype);
 	}
 
@@ -243,7 +253,9 @@ public class RedirectServiceImpl implements RedirectService {
 		ResH5Degree res = h5PayClient.wxopenid(reqH5Token);
 		return res;
 	}
-
+	
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public ResPayParm wxparm(ReqPayParm reqPayParm) {
 		// 查询当前需支付订单
@@ -251,9 +263,9 @@ public class RedirectServiceImpl implements RedirectService {
 		if(paymsg.isEmpty()||paymsg==null) {
 			throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
 		}
-		String orderId =String.valueOf(paymsg.get("orderNo"));
+		String orderId =String.valueOf(paymsg.get("orderId"));
 		String detail = "凌猫停车";
-		BigDecimal totalAmount = new BigDecimal(paymsg.get("totalAmount").toString());
+		BigDecimal totalAmount = new BigDecimal(paymsg.get("totalmoney").toString());
 		int a = totalAmount.compareTo(new BigDecimal(0) );
 		//不足支付标准
         if(a!=1) {
@@ -290,13 +302,122 @@ public class RedirectServiceImpl implements RedirectService {
 		return parm;
 	}
 
+	@SuppressWarnings({ "unused", "unchecked" })
 	@Override
-	public void wxNotify(Map<String, String> params) {
+	public void wxNotify(String payResult,HttpServletResponse response) {
 		//接受微信消息
-		
-		//通知闸机
-		
-		//插入订单
+		Map<String,String> wxPayedResult = new HashMap<>();
+		try {
+			wxPayedResult =XMLUtil.doXMLParse(payResult);
+		} catch (JDOMException e1 ) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		StringBuffer result = new StringBuffer();
+		String code ,msg = null;
+		if(wxPayedResult.get("return_code").toString().equalsIgnoreCase("SUCCESS")) {
+			code = "<![CDATA[SUCCESS]]>";
+			msg = "<![CDATA[OK]]>";
+			String openid = wxPayedResult.get("openid").toString();
+			Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:"+openid);
+			if(paymsg ==null) {
+				makeRes(code,msg,response);
+				return;
+			}
+			this.redisService.remove("payuser:"+openid);
+			String orderId =String.valueOf(paymsg.get("orderNo"));
+			BigDecimal totalAmount = new BigDecimal(paymsg.get("totalmoney").toString());
+			try {
+				TaskPool.getInstance().task(new Runnable() {
+					@Override
+					public void run() {
+						//通知闸机
+						Map<String, Object> parameters = new HashMap<>();
+						parameters.put("orderNo", orderId);
+						parameters.put("amount", totalAmount);
+						HttpUtil.sendJson(oauthConfig.getParkOrder(), JsonUtil.toJson(parameters));
+					}
+				});
+			} catch (Exception e) {
+				
+			}try {
+				TaskPool.getInstance().task(new Runnable() {
+					@Override
+					public void run() {
+						//插入订单
+						ReqPayRecord	reqPayRecord = new ReqPayRecord();
+						reqPayRecord.setAmount(totalAmount);
+						reqPayRecord.setEntranceTime(new Date());
+						reqPayRecord.setFinishTime(new Date());
+						reqPayRecord.setOpenid(openid);
+						reqPayRecord.setOrderNo(null);
+						reqPayRecord.setParkName(null);
+						reqPayRecord.setPayId(orderId);
+						reqPayRecord.setType(1);				
+						payConfigClient.setOrder(reqPayRecord);
+					}
+				});
+			} catch (Exception e) {
+				
+			}
+		}else {
+			code = "<![CDATA[FAIL]]>";
+			msg = "<![CDATA[ERROR]]>";
+		}		
+		makeRes(code,msg,response);
 	}
+	
+	/**
+     * 回调返回值
+     * @param code return_code 请参照微信API中的格式
+     * @param msg return_msg 请参照微信API中的格式
+     * @param response HttpServletResponse 只有用这种方法微信那边才认可为合法回应
+     */
+    private void makeRes(String code , String msg, HttpServletResponse response){
+        try {
+            response.reset();
+            PrintWriter printWriter = response.getWriter();
+            printWriter.write("<xml><return_code>"+code+"</return_code><return_msg>"+msg+"</return_msg></xml>");
+            printWriter.flush();
+            printWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String aliparm(ReqPayParm reqPayParm) {
+				// 查询当前需支付订单
+				Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:"+reqPayParm.getOpenId());
+				if(paymsg.isEmpty()||paymsg==null) {
+					throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
+				}
+				String orderId =String.valueOf(paymsg.get("orderId"));
+				String detail = "凌猫停车";
+				BigDecimal totalAmount = new BigDecimal(paymsg.get("totalmoney").toString());
+				int a = totalAmount.compareTo(new BigDecimal(0) );
+				//不足支付标准
+		        if(a!=1) {
+		        	throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
+		        }
+				ReqPayConfig req = new ReqPayConfig();
+				req.setPreId(reqPayParm.getPreId());
+				req.setType(Transaction.ZFB);
+				ResPayConfig config = payConfigClient.getConfig(req);
+				log.info("config---" + JSON.toJSON(config));
+				//获取
+				
+				
+				
+				
+				
+				
+				
+				
+		return null;
+	}
+
 
 }

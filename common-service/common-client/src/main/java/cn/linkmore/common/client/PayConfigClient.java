@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.common.client.hystrix.PayConfigClientHystrix;
 import cn.linkmore.common.request.ReqFinshOrder;
 import cn.linkmore.common.request.ReqPayConfig;
+import cn.linkmore.common.request.ReqPayRecord;
 import cn.linkmore.common.response.ResFinshOrder;
 import cn.linkmore.common.response.ResPayConfig;
 import cn.linkmore.feign.FeignConfiguration;
@@ -35,5 +36,12 @@ public interface PayConfigClient {
 	@RequestMapping(value="/getOrder",method=RequestMethod.POST)
 	@ResponseBody 
 	public List<ResFinshOrder> getOrder(@RequestBody ReqFinshOrder reqFinshOrder);
+	
+	/**
+	 *  插入支付订单
+	 */
+	@RequestMapping(value="/setOrder",method=RequestMethod.POST)
+	@ResponseBody 
+	public void setOrder(@RequestBody ReqPayRecord reqPayRecord);
 	
 }

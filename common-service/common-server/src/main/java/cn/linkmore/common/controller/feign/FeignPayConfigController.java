@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.common.request.ReqFinshOrder;
 import cn.linkmore.common.request.ReqPayConfig;
+import cn.linkmore.common.request.ReqPayRecord;
 import cn.linkmore.common.response.ResFinshOrder;
 import cn.linkmore.common.response.ResPayConfig;
 import cn.linkmore.common.service.PayConfigService;
@@ -43,6 +44,15 @@ public class FeignPayConfigController {
 	@ResponseBody 
 	public List<ResFinshOrder> getOrder(@RequestBody ReqFinshOrder reqFinshOrder) {
 		return payConfigService.getOrder(reqFinshOrder);
+	}
+	
+	/**
+	 *  插入支付订单
+	 */
+	@RequestMapping(value="/setOrder",method=RequestMethod.POST)
+	@ResponseBody 
+	public void setOrder(@RequestBody ReqPayRecord reqPayRecord) {
+		 payConfigService.setOrder(reqPayRecord);
 	}
 	
 	

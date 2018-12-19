@@ -3,6 +3,7 @@ package cn.linkmore.order.service;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import cn.linkmore.order.controller.h5.request.ReqPayParm;
 import cn.linkmore.order.controller.h5.request.ReqSerch;
@@ -23,6 +24,8 @@ public interface RedirectService {
 	
 	ResSearch getOrder(ReqSerch reqSerch);
 	
-	void wxNotify(Map<String, String> params);
+	void wxNotify(String payResult,HttpServletResponse response);
+	
+	String aliparm(ReqPayParm reqPayParm);
 	
 }

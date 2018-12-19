@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.third.pay.wxmini.HttpTool;
 import cn.linkmore.third.request.ReqH5Term;
 import cn.linkmore.third.request.ReqH5Token;
@@ -29,6 +28,9 @@ import cn.linkmore.third.trade.ThreadRepertory;
 import cn.linkmore.third.trade.wx.PayCommonUtil;
 import cn.linkmore.third.trade.wx.UniPayReqData;
 import cn.linkmore.third.trade.wx.WeChatPay;
+import cn.linkmore.third.trade.zfb.AliMobilePay;
+import cn.linkmore.third.trade.zfb.AlipayConfig;
+import cn.linkmore.third.trade.zfb.AlipaySubmit;
 
 @Service
 public class H5PayServiceImpl implements H5PayService {
@@ -51,8 +53,15 @@ public class H5PayServiceImpl implements H5PayService {
 
 	@Override
 	public ResH5Degree aliOpenid(ReqH5Token reqH5Token) {
-		// TODO Auto-generated method stub
-		return null;
+		String appId = reqH5Token.getAppid();
+		String code = reqH5Token.getCode();
+		String privateKey = reqH5Token.getPrivateKey();
+	    String  publicKey = reqH5Token.getPublicKey();
+		String openid = AliMobilePay.oauth2GetOpenid(appId, code, privateKey, publicKey);
+		ResH5Degree res = new ResH5Degree();
+		res.setOpenid(openid);
+		log.info("aliOpenid>>>>>>"+openid );
+		return res;
 	}
 
 	@Override
@@ -118,9 +127,24 @@ public class H5PayServiceImpl implements H5PayService {
 	}
 
 	@Override
-	public ResH5Term alipay(ReqH5Term reqH5Term) {
-		// TODO Auto-generated method stub
-		return null;
+	public String alipay(ReqH5Term reqH5Term) {
+		//把请求参数打包成数组
+		Map<String, String> sParas = new HashMap<String, String>();
+		sParas.put("service", AlipayConfig.service);
+        sParas.put("partner", AlipayConfig.partner(reqH5Term.getMchId()));
+        sParas.put("seller_id",  AlipayConfig.partner(reqH5Term.getMchId()));
+        sParas.put("_input_charset", AlipayConfig.input_charset);
+		sParas.put("payment_type", AlipayConfig.payment_type);
+		sParas.put("notify_url", AlipayConfig.notify_url);
+		String retURI = "";//支付成功后的返回页面
+		sParas.put("return_url", retURI);
+		sParas.put("out_trade_no", reqH5Term.getOrderId());
+		String subject = String.format("%s/%s","凌猫停车","扫码支付");
+		sParas.put("subject", subject);
+		sParas.put("total_fee", reqH5Term.getTotalAmount().toString());
+		String requestURI = AlipaySubmit.buildRequest(sParas,"get",reqH5Term.getMchKey());
+		log.info("requestParam->" + requestURI);
+		return requestURI;
 	}
 
 }

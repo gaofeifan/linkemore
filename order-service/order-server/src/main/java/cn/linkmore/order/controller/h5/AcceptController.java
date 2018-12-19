@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,24 +93,25 @@ public class AcceptController {
 	}
 	
 	@ApiIgnore
-	@RequestMapping(value = "/r", method = RequestMethod.GET)
-	public void wxNotify(@RequestParam Map<String, String> params) throws IOException {
+	@ResponseBody
+	@RequestMapping(value = "/r", method = RequestMethod.POST)
+	public void wxNotify(@RequestBody String payResult,HttpServletResponse response) throws IOException {
 		log.info("wx通知");
-		redirectService.wxNotify(params);
+		redirectService.wxNotify(payResult,response);
 	}
 
-	@ApiOperation(value = "jsapi参数集", notes = "jsapi参数集", consumes = "application/json")
+	@ApiOperation(value = "表单参数集", notes = "jsapi参数集", consumes = "application/json")
 	@RequestMapping(value = "/t", method = RequestMethod.POST)
 	@ResponseBody
-	public String aliparm(@RequestParam Map<String, String> params) throws IOException {
+	public String aliparm(@RequestBody ReqPayParm reqPayParm) throws IOException {
 		log.info("获取jsapi参数集");
-		return null;
+		return redirectService.aliparm(reqPayParm);
 	}
 
 	@ApiIgnore
 	@RequestMapping(value = "/h", method = RequestMethod.GET)
 	public String aliauth(@RequestParam Map<String, String> params) throws IOException {
-		log.info("转发到微信页面");
+		log.info("转发到支付宝");
 		params.put("type", "zfb");
 		return redirectService.auth(params);
 	}
