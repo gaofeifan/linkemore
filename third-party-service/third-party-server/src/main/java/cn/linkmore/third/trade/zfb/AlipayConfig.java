@@ -19,7 +19,7 @@ public class AlipayConfig {
 		public static String notify_url = "/alipay/notify.do";
 		
 		// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问,内网的话必须同一网段，如192.168.1.21
-		public static String return_url =  "/alipay/return/%s/%s/%s";
+		public static String return_url =  "http://test.linkmoreparking.cn/api/order/h5/f";
 		
 		public static String sign_type = "MD5";
 		

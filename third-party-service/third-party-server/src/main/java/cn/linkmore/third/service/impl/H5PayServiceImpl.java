@@ -135,15 +135,13 @@ public class H5PayServiceImpl implements H5PayService {
         sParas.put("seller_id",  AlipayConfig.partner(reqH5Term.getMchId()));
         sParas.put("_input_charset", AlipayConfig.input_charset);
 		sParas.put("payment_type", AlipayConfig.payment_type);
-		sParas.put("notify_url", AlipayConfig.notify_url);
-		String retURI = "";//支付成功后的返回页面
-		sParas.put("return_url", retURI);
+		sParas.put("notify_url", reqH5Term.getNotifyUrl());
+		sParas.put("return_url", AlipayConfig.return_url);
 		sParas.put("out_trade_no", reqH5Term.getOrderId());
-		String subject = String.format("%s/%s","凌猫停车","扫码支付");
-		sParas.put("subject", subject);
+		sParas.put("subject", reqH5Term.getOpenId());
 		sParas.put("total_fee", reqH5Term.getTotalAmount().toString());
 		String requestURI = AlipaySubmit.buildRequest(sParas,"get",reqH5Term.getMchKey());
-		log.info("requestParam->" + requestURI);
+		log.info("requestURI->" + requestURI);
 		return requestURI;
 	}
 

@@ -28,4 +28,8 @@ public interface H5PayClient {
 	@ResponseBody
 	public ResH5Term wxpay(@RequestBody ReqH5Term reqH5Term);
 	
+	@RequestMapping(value = "/alipay", method = RequestMethod.POST)
+	@ResponseBody
+	public String alipay(@RequestBody ReqH5Term reqH5Term);
+	
 }

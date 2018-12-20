@@ -20,7 +20,23 @@ public class OauthConfig {
 	
     private  String  parkOrder;
     
+    private String sendUrl;
     
+    
+
+	/**
+	 * @return the sendUrl
+	 */
+	public String getSendUrl() {
+		return sendUrl;
+	}
+
+	/**
+	 * @param sendUrl the sendUrl to set
+	 */
+	public void setSendUrl(String sendUrl) {
+		this.sendUrl = sendUrl;
+	}
 
 	/**
 	 * @return the parkOrder

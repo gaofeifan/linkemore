@@ -100,13 +100,13 @@ public class RedirectServiceImpl implements RedirectService {
 		Date now = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		long useTime = 0l;
-		long entrance  = 0l;
+		long entrance = 0l;
 		String orderId = null;
 		Map<String, Object> paymsg = new HashMap<>();
 		try {
 			Date entranceTime1 = sdf.parse(entranceTime);
 			entrance = entranceTime1.getTime();
-			useTime = now.getTime() -entrance;
+			useTime = now.getTime() - entrance;
 			orderId = String.valueOf(now.getTime());
 		} catch (ParseException e1) {
 			e1.printStackTrace();
@@ -121,18 +121,18 @@ public class RedirectServiceImpl implements RedirectService {
 		BigDecimal totalmoney = new BigDecimal(0);
 		// 无过往订单
 		if (list.isEmpty() && list.size() == 0) {
-			totalmoney =  	new BigDecimal(data.get("amount").toString());
+			totalmoney = new BigDecimal(data.get("amount").toString());
 			res.setUseTime(useTime);
 			res.setMoney(totalmoney);
 			res.setPayrecords(payrecords);
-			//放入所需支付订单
-			paymsg.put("totalmoney",0.01);
-			paymsg.put("orderNo",data.get("orderNo"));
-			paymsg.put("entranceTime",data.get("entranceTime"));
-			paymsg.put("plateNumber",data.get("plateNumber"));
-			paymsg.put("parkName",data.get("parkName"));
-			paymsg.put("orderId",orderId+data.get("orderNo").toString().substring(7));
-			redisService.set("payuser:"+reqSerch.getOpenid(), paymsg, 600000);
+			// 放入所需支付订单
+			paymsg.put("totalmoney", 0.01);
+			paymsg.put("orderNo", data.get("orderNo"));
+			paymsg.put("entranceTime", data.get("entranceTime"));
+			paymsg.put("plateNumber", data.get("plateNumber"));
+			paymsg.put("parkName", data.get("parkName"));
+			paymsg.put("orderId", orderId + data.get("orderNo").toString().substring(7));
+			redisService.set("payuser:" + reqSerch.getOpenid(), paymsg, 600000);
 			return res;
 		}
 		BigDecimal alreadyPay = new BigDecimal(0);
@@ -159,14 +159,14 @@ public class RedirectServiceImpl implements RedirectService {
 			res.setUseTime(staytime);
 			res.setMoney(totalmoney);
 			res.setPayrecords(payrecords);
-			//放入所需支付订单
-			paymsg.put("totalmoney",0.01);
-			paymsg.put("orderNo",data.get("orderNo"));
-			paymsg.put("entranceTime",data.get("entranceTime"));
-			paymsg.put("plateNumber",data.get("plateNumber"));
-			paymsg.put("parkName",data.get("parkName"));
-			paymsg.put("orderId",orderId+data.get("orderNo").toString().substring(0,7));
-			redisService.set("payuser:"+reqSerch.getOpenid(), paymsg, 600000);
+			// 放入所需支付订单
+			paymsg.put("totalmoney", 0.01);
+			paymsg.put("orderNo", data.get("orderNo"));
+			paymsg.put("entranceTime", data.get("entranceTime"));
+			paymsg.put("plateNumber", data.get("plateNumber"));
+			paymsg.put("parkName", data.get("parkName"));
+			paymsg.put("orderId", orderId + data.get("orderNo").toString().substring(0, 7));
+			redisService.set("payuser:" + reqSerch.getOpenid(), paymsg, 600000);
 		}
 		return res;
 	}
@@ -207,7 +207,7 @@ public class RedirectServiceImpl implements RedirectService {
 		if (paytype == Transaction.ZFB) {
 			redirect = AuthConfig.getZfbCode(appId, redirect_uri, preId);
 		}
-		log.info("redirect" + redirect);
+		log.info("redirect----" + redirect);
 		return redirect;
 	}
 
@@ -244,7 +244,7 @@ public class RedirectServiceImpl implements RedirectService {
 		if (res != null) {
 			openId = res.getOpenid();
 		}
-		log.info("openId" + openId);
+		log.info("openId---" + openId);
 		return AuthConfig.h5Index(preId, openId, paytype);
 	}
 
@@ -253,24 +253,23 @@ public class RedirectServiceImpl implements RedirectService {
 		ResH5Degree res = h5PayClient.wxopenid(reqH5Token);
 		return res;
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public ResPayParm wxparm(ReqPayParm reqPayParm) {
 		// 查询当前需支付订单
-		Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:"+reqPayParm.getOpenId());
-		if(paymsg.isEmpty()||paymsg==null) {
+		Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:" + reqPayParm.getOpenId());
+		if (paymsg.isEmpty() || paymsg == null) {
 			throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
 		}
-		String orderId =String.valueOf(paymsg.get("orderId"));
+		String orderId = String.valueOf(paymsg.get("orderId"));
 		String detail = "凌猫停车";
 		BigDecimal totalAmount = new BigDecimal(paymsg.get("totalmoney").toString());
-		int a = totalAmount.compareTo(new BigDecimal(0) );
-		//不足支付标准
-        if(a!=1) {
-        	throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
-        }
+		int a = totalAmount.compareTo(new BigDecimal(0));
+		// 不足支付标准
+		if (a != 1) {
+			throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
+		}
 		ReqPayConfig req = new ReqPayConfig();
 		req.setPreId(reqPayParm.getPreId());
 		req.setType(Transaction.WX);
@@ -304,35 +303,35 @@ public class RedirectServiceImpl implements RedirectService {
 
 	@SuppressWarnings({ "unused", "unchecked" })
 	@Override
-	public void wxNotify(String payResult,HttpServletResponse response) {
-		//接受微信消息
-		Map<String,String> wxPayedResult = new HashMap<>();
+	public void wxNotify(String payResult, HttpServletResponse response) {
+		// 接受微信消息
+		Map<String, String> wxPayedResult = new HashMap<>();
 		try {
-			wxPayedResult =XMLUtil.doXMLParse(payResult);
-		} catch (JDOMException e1 ) {
+			wxPayedResult = XMLUtil.doXMLParse(payResult);
+		} catch (JDOMException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		StringBuffer result = new StringBuffer();
-		String code ,msg = null;
-		if(wxPayedResult.get("return_code").toString().equalsIgnoreCase("SUCCESS")) {
+		String code, msg = null;
+		if (wxPayedResult.get("return_code").toString().equalsIgnoreCase("SUCCESS")) {
 			code = "<![CDATA[SUCCESS]]>";
 			msg = "<![CDATA[OK]]>";
 			String openid = wxPayedResult.get("openid").toString();
-			Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:"+openid);
-			if(paymsg ==null) {
-				makeRes(code,msg,response);
+			Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:" + openid);
+			if (paymsg == null) {
+				makeRes(code, msg, response);
 				return;
 			}
-			this.redisService.remove("payuser:"+openid);
-			String orderId =String.valueOf(paymsg.get("orderNo"));
+			this.redisService.remove("payuser:" + openid);
+			String orderId = String.valueOf(paymsg.get("orderNo"));
 			BigDecimal totalAmount = new BigDecimal(paymsg.get("totalmoney").toString());
 			try {
 				TaskPool.getInstance().task(new Runnable() {
 					@Override
 					public void run() {
-						//通知闸机
+						// 通知闸机
 						Map<String, Object> parameters = new HashMap<>();
 						parameters.put("orderNo", orderId);
 						parameters.put("amount", totalAmount);
@@ -340,13 +339,14 @@ public class RedirectServiceImpl implements RedirectService {
 					}
 				});
 			} catch (Exception e) {
-				
-			}try {
+
+			}
+			try {
 				TaskPool.getInstance().task(new Runnable() {
 					@Override
 					public void run() {
-						//插入订单
-						ReqPayRecord	reqPayRecord = new ReqPayRecord();
+						// 插入订单
+						ReqPayRecord reqPayRecord = new ReqPayRecord();
 						reqPayRecord.setAmount(totalAmount);
 						reqPayRecord.setEntranceTime(new Date());
 						reqPayRecord.setFinishTime(new Date());
@@ -354,70 +354,161 @@ public class RedirectServiceImpl implements RedirectService {
 						reqPayRecord.setOrderNo(null);
 						reqPayRecord.setParkName(null);
 						reqPayRecord.setPayId(orderId);
-						reqPayRecord.setType(1);				
+						reqPayRecord.setType(1);
 						payConfigClient.setOrder(reqPayRecord);
 					}
 				});
 			} catch (Exception e) {
-				
+
 			}
-		}else {
+		} else {
 			code = "<![CDATA[FAIL]]>";
 			msg = "<![CDATA[ERROR]]>";
-		}		
-		makeRes(code,msg,response);
+		}
+		makeRes(code, msg, response);
 	}
-	
+
 	/**
-     * 回调返回值
-     * @param code return_code 请参照微信API中的格式
-     * @param msg return_msg 请参照微信API中的格式
-     * @param response HttpServletResponse 只有用这种方法微信那边才认可为合法回应
-     */
-    private void makeRes(String code , String msg, HttpServletResponse response){
-        try {
-            response.reset();
-            PrintWriter printWriter = response.getWriter();
-            printWriter.write("<xml><return_code>"+code+"</return_code><return_msg>"+msg+"</return_msg></xml>");
-            printWriter.flush();
-            printWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	 * 回调返回值
+	 * 
+	 * @param code
+	 *            return_code 请参照微信API中的格式
+	 * @param msg
+	 *            return_msg 请参照微信API中的格式
+	 * @param response
+	 *            HttpServletResponse 只有用这种方法微信那边才认可为合法回应
+	 */
+	private void makeRes(String code, String msg, HttpServletResponse response) {
+		try {
+			response.reset();
+			PrintWriter printWriter = response.getWriter();
+			printWriter.write("<xml><return_code>" + code + "</return_code><return_msg>" + msg + "</return_msg></xml>");
+			printWriter.flush();
+			printWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public String aliparm(ReqPayParm reqPayParm) {
-				// 查询当前需支付订单
-				Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:"+reqPayParm.getOpenId());
-				if(paymsg.isEmpty()||paymsg==null) {
-					throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
-				}
-				String orderId =String.valueOf(paymsg.get("orderId"));
-				String detail = "凌猫停车";
-				BigDecimal totalAmount = new BigDecimal(paymsg.get("totalmoney").toString());
-				int a = totalAmount.compareTo(new BigDecimal(0) );
-				//不足支付标准
-		        if(a!=1) {
-		        	throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
-		        }
-				ReqPayConfig req = new ReqPayConfig();
-				req.setPreId(reqPayParm.getPreId());
-				req.setType(Transaction.ZFB);
-				ResPayConfig config = payConfigClient.getConfig(req);
-				log.info("config---" + JSON.toJSON(config));
-				//获取
-				
-				
-				
-				
-				
-				
-				
-				
-		return null;
+		// 查询当前需支付订单
+		Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:" + reqPayParm.getOpenId());
+		if (paymsg.isEmpty() || paymsg == null) {
+			throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
+		}
+		String orderId = String.valueOf(paymsg.get("orderId"));
+		BigDecimal totalAmount = new BigDecimal(paymsg.get("totalmoney").toString());
+		int a = totalAmount.compareTo(new BigDecimal(0));
+		// 不足支付标准
+		if (a != 1) {
+			throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
+		}
+		ReqPayConfig req = new ReqPayConfig();
+		req.setPreId(reqPayParm.getPreId());
+		req.setType(Transaction.ZFB);
+		ResPayConfig config = payConfigClient.getConfig(req);
+		log.info("config---" + JSON.toJSON(config));
+		// 获取支付凭证
+		ReqH5Term reqH5Term = new ReqH5Term();
+		reqH5Term.setNotifyUrl(oauthConfig.getSendUrl());
+		reqH5Term.setAppId(config.getAppId());
+		reqH5Term.setMchId(config.getMchId());
+		reqH5Term.setMchKey(config.getMchKey());
+		reqH5Term.setOpenId(reqPayParm.getOpenId());
+		reqH5Term.setOrderId(orderId);
+		reqH5Term.setTotalAmount(totalAmount);
+		String parmUrl = h5PayClient.alipay(reqH5Term);
+		log.info("parmUrl---" + parmUrl);
+		return parmUrl;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public void aliNotify(Map<String, Object> params, HttpServletResponse response) {
+		log.info("notify->" + params);
+		if (!params.get("trade_status").equals("TRADE_SUCCESS")) {
+			return;
+		}
+		String openid = String.valueOf(params.get("subject"));
+		Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:" + openid);
+		if (paymsg == null) {
+			try {
+				response.getWriter().println("success");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		String orderId = String.valueOf(paymsg.get("orderId"));
+		String orderNo = String.valueOf(paymsg.get("orderNo"));
+		if (!params.get("out_trade_no").toString().equals(orderId)) {
+			return;
+		}
+		this.redisService.remove("payuser:" + openid);
+		BigDecimal totalAmount = new BigDecimal(paymsg.get("totalmoney").toString());
+		try {
+			TaskPool.getInstance().task(new Runnable() {
+				@Override
+				public void run() {
+					// 通知闸机
+					Map<String, Object> parameters = new HashMap<>();
+					parameters.put("orderNo", orderNo);
+					parameters.put("amount", totalAmount);
+					HttpUtil.sendJson(oauthConfig.getParkOrder(), JsonUtil.toJson(parameters));
+				}
+			});
+		} catch (Exception e) {
+
+		}
+		try {
+			TaskPool.getInstance().task(new Runnable() {
+				@Override
+				public void run() {
+					// 插入订单
+					ReqPayRecord reqPayRecord = new ReqPayRecord();
+					reqPayRecord.setAmount(totalAmount);
+					reqPayRecord.setEntranceTime(new Date());
+					reqPayRecord.setFinishTime(new Date());
+					reqPayRecord.setOpenid(openid);
+					reqPayRecord.setOrderNo(null);
+					reqPayRecord.setParkName(null);
+					reqPayRecord.setPayId(orderId);
+					reqPayRecord.setType(1);
+					payConfigClient.setOrder(reqPayRecord);
+				}
+			});
+		} catch (Exception e) {
+
+		}
+		try {
+			response.getWriter().println("success");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 回调返回值
+	 * 
+	 * @param code
+	 *            return_code 请参照微信API中的格式
+	 * @param msg
+	 *            return_msg 请参照微信API中的格式
+	 * @param response
+	 *            HttpServletResponse 只有用这种方法微信那边才认可为合法回应
+	 */
+	private void amakeRes(HttpServletResponse response) {
+		try {
+			response.reset();
+			PrintWriter printWriter = response.getWriter();
+			printWriter.write("success");
+			printWriter.flush();
+			printWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

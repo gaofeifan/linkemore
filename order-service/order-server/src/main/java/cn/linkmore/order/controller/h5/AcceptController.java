@@ -109,7 +109,7 @@ public class AcceptController {
 	}
 
 	@ApiIgnore
-	@RequestMapping(value = "/h", method = RequestMethod.GET)
+	@RequestMapping(value = "/b", method = RequestMethod.GET)
 	public String aliauth(@RequestParam Map<String, String> params) throws IOException {
 		log.info("转发到支付宝");
 		params.put("type", "zfb");
@@ -117,10 +117,18 @@ public class AcceptController {
 	}
 
 	@ApiIgnore
-	@RequestMapping(value = "/y", method = RequestMethod.GET)
-	public String aliNotify(@RequestParam Map<String, String> params) throws IOException {
+	@RequestMapping(value = "/m", method = RequestMethod.POST)
+	public void aliNotify(@RequestParam Map<String, Object> params,HttpServletResponse response) throws IOException {
 		log.info("ali通知");
-		return null;
+	     redirectService.aliNotify(params, response);
+	}
+	
+	@ApiIgnore
+	@RequestMapping(value = "/f", method = RequestMethod.GET)
+	public String returnIndex()  {
+		log.info("转发到支付宝成功页面");
+		String retURI = "redirect:http://deal.linkmoreparking.cn/#/paysuccess";//支付成功后的返回页面
+		return retURI;
 	}
 
 }

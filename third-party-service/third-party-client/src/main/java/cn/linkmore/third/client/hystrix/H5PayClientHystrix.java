@@ -32,4 +32,10 @@ public class H5PayClientHystrix implements H5PayClient{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String alipay(ReqH5Term reqH5Term) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -14,7 +14,7 @@ public class AauthConfig {
 	//https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2017070507648078&scope=auth_base&redirect_uri=https://api.pabeitech.cn/pay/alipayAsyncCallBack
 	/*"redirect:http://order.linkmoreparking.cn/?&preid=%s&openid=%s&type=%s";*/
 	/*"redirect:http://deal.linkmoreparking.cn/?&preid=%s&openid=%s&type=%s";*/
-	private static final String H5_INDEX ="redirect:http://deal.linkmoreparking.cn/?&preid=%s&openid=%s&type=%s";
+	private static final String H5_INDEX ="redirect:http://deal.linkmoreparking.cn?preid=%s&openid=%s&type=%s";
 	
 	public String getWxCode(String appId, String redirect_uri,Long preId) {
 		return String.format(WX_OAUTH_CODE, appId, redirect_uri,preId);

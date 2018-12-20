@@ -26,6 +26,8 @@ public interface RedirectService {
 	
 	void wxNotify(String payResult,HttpServletResponse response);
 	
+	void aliNotify(Map<String, Object> params,HttpServletResponse response);
+	
 	String aliparm(ReqPayParm reqPayParm);
 	
 }

@@ -118,11 +118,11 @@ swagger:
 #授权转发
 oauth: 
   wx-code-url: http://test.linkmoreparking.cn/api/order/h5/a
-  zfb-code-url: http://test.linkmoreparking.cn/api/order/h5/t
+  zfb-code-url: http://test.linkmoreparking.cn/api/order/h5/b
   h5-url: http://order.linkmoreparking.cn
   park-order : http://192.168.1.133:8086/api/gate-car-info
   notify-url: http://test.linkmoreparking.cn/api/order/h5/r
-  
+  send-url: http://test.linkmoreparking.cn/api/order/h5/m
 #server:
 #  port: 8005 
 #  session:
