@@ -1,8 +1,10 @@
 package cn.linkmore.ops.coupon.controller;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewMsg;
@@ -20,7 +23,7 @@ import cn.linkmore.coupon.request.ReqCheck;
 import cn.linkmore.coupon.request.ReqTemplate;
 import cn.linkmore.coupon.response.ResTemplate;
 import cn.linkmore.ops.coupon.service.TemplateEnService;
-import cn.linkmore.ops.security.response.ResPerson;
+import cn.linkmore.security.response.ResPerson;
 
 @Controller
 @RequestMapping("/admin/coupon_enterprise")

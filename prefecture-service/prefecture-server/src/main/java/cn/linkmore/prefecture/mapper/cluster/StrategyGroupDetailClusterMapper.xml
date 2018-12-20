@@ -45,4 +45,11 @@
 			d.stall_name ASC
  </select>
  
+ <select id="findByStallId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_strategy_group_detail
+    where stall_id = #{stallId,jdbcType=BIGINT}
+  </select>
+ 
 </mapper>

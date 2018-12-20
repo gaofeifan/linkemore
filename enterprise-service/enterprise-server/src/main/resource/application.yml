@@ -7,7 +7,7 @@ spring:
     name: enterprise-server
   boot: 
     admin:
-      url: http://192.168.1.220:6002
+      url: http://192.168.1.223:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -85,7 +85,7 @@ security:
 redis:
   host: 192.168.1.218
   port: 6379
-  database: 0
+  database: 2
   timeout: 5000
   password: ppyx1234
   pool-max-active: 500
@@ -112,7 +112,3 @@ swagger:
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
   base-package: cn.linkmore.enterprise.controller.app,cn.linkmore.enterprise.controller.ent,cn.linkmore.enterprise.controller.staff
-  
-sdk:
-  linkmore-url: http://192.168.1.211:8081
-  linkmore-new-url: http://192.168.1.211:8081

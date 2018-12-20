@@ -12,15 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.security.request.ReqCheck;
 import cn.linkmore.ops.security.request.ReqMenu;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.security.service.MenuService;
 import cn.linkmore.security.client.MenuClient;
 import cn.linkmore.security.response.ResMenu;
+import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.util.ObjectUtils;
 
 /**

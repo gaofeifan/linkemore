@@ -13,17 +13,12 @@ import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.ops.biz.response.ResPrefecture;
 import cn.linkmore.ops.biz.service.ApplicationGroupService;
-import cn.linkmore.ops.security.request.ReqPerson;
-/**
- * @author   GFF
- * @Date     2018年6月23日
- * @Version  v2.0
- */
 import cn.linkmore.prefecture.client.ApplicationGroupClient;
 import cn.linkmore.prefecture.client.OpsPrefectureClient;
 import cn.linkmore.prefecture.request.ReqApplicationGroup;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.response.ResPrefectureGroup;
+import cn.linkmore.security.request.ReqPerson;
 @Service
 public class ApplicationGroupServiceImpl implements ApplicationGroupService{
 

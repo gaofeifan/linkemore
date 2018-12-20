@@ -21,7 +21,7 @@ public class ReqPreStall {
 	@ApiModelProperty("车区ID")
 	@NotNull(message="车区不能为空")
 	private Long preId;
-	@ApiModelProperty("车位类型")
+	@ApiModelProperty("车位类型 0临停 2 固定 3 vip")
 	@NotNull(message="类型不能为空")
 	private Short type;
 	@ApiModelProperty("车位名称 (非必填默认查询所有)")

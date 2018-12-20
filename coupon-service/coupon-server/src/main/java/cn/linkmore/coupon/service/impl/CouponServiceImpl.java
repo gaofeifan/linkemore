@@ -8,8 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -17,7 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants;
@@ -59,8 +63,7 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.EntBrandAdClient;
 import cn.linkmore.prefecture.client.FeignEnterpriseClient;
 import cn.linkmore.prefecture.client.PrefectureClient;
-import cn.linkmore.prefecture.client.StrategyBaseClient;
-import cn.linkmore.prefecture.request.ReqStrategy;
+import cn.linkmore.prefecture.client.StrategyFeeClient;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.SmsClient;
@@ -95,8 +98,8 @@ public class CouponServiceImpl implements CouponService {
 	private PrefectureClient prefectureClient;
 
 	@Autowired
-	private StrategyBaseClient strategyBaseClient;
-
+	private StrategyFeeClient strategyFeeClient;
+	
 	@Autowired
 	private RedisService redisService;
 
@@ -449,18 +452,25 @@ public class CouponServiceImpl implements CouponService {
 		if (orders.getStatus().intValue() == Constants.OrderStatus.SUSPENDED.value) {
 			stopDate = orders.getEndTime();
 		}
-		ReqStrategy strategy = new ReqStrategy();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Map<String, Object> param = new HashMap<String,Object>();
+		param.put("stallId", orders.getId());
+		param.put("plateNo", orders.getPlateNo());
+		param.put("startTime", sdf.format(orders.getCreateTime()));
+		param.put("endTime", sdf.format(stopDate));
+		Map<String, Object> costMap = this.strategyFeeClient.amount(param);
+		Double totalAmount = 0d;
+		if(costMap != null) {
+			String totalAmountStr = costMap.get("chargePrice").toString();
+			totalAmount = Double.valueOf(totalAmountStr);
+		}
+		/*ReqStrategy strategy = new ReqStrategy();
 		strategy.setBeginTime(orders.getCreateTime().getTime());
 		strategy.setEndTime(stopDate.getTime());
 		strategy.setStrategyId(orders.getStrategyId());
-		Map<String, Object> costMap = this.strategyBaseClient.fee(strategy);
-		String totalAmountStr = costMap.get("totalAmount").toString();
-		Double totalAmount = 0d;
-		try {
-			totalAmount = Double.valueOf(totalAmountStr);
-		} catch (Exception e) {
-
-		}
+		Map<String, Object> costMap = this.strategyBaseClient.fee(strategy);*/
+		
 		if (ucrbsMap.size() > 0) {
 			list.removeAll(parseCondition(ucrbsMap, orders.getPreId()));
 		}

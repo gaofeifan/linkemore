@@ -29,4 +29,6 @@ public interface RentEntUserMasterMapper {
     int updateByPrimaryKey(RentEntUser record);
 
 	void deleteIds(List<Long> ids);
+	
+	void deleteByCompanyIds(List<Long> ids);
 }

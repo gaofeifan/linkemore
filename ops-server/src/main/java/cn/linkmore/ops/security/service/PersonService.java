@@ -4,11 +4,11 @@ import java.util.List;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.security.request.ReqCheck;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.security.response.ResPersonRole;
 import cn.linkmore.ops.security.response.ResRole;
 import cn.linkmore.ops.shiro.Principal;
 import cn.linkmore.security.request.ReqPerson;
+import cn.linkmore.security.response.ResPerson;
 
 /**
  * Service接口 -权限模块- 后台用户
@@ -99,9 +99,5 @@ public interface PersonService {
 	 * @param ids
 	 */
 	void bind(Long id,String ids);
-
-
-
-	void updatePassword(ResPerson person, String oldPassword, String password);
-
+	
 }

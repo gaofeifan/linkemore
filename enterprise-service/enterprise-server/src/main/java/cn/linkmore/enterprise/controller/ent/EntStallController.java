@@ -55,16 +55,41 @@ public class EntStallController {
 		return ResponseEntity.success(list, request);
 	}
 	
+	@ApiOperation(value = "查询企业下停车场信息（新版）", notes = "查询企业下停车场信息（新版）", consumes = "application/json")
+	@RequestMapping(value = "/select-pre-stalls-new",method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResEntStalls>> selectEntStallsNew(HttpServletRequest request){
+		List<ResEntStalls> list = null;
+		list = entStallService.selectEntStallsNew(request);
+		return ResponseEntity.success(list, request);
+	}
+	
 	@ApiOperation(value = "查询停车场车位列表", notes = "查询停车场车位列表", consumes = "application/json")
 	@RequestMapping(value = "/select-stalls",method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<List<ResStall>> selectEntStalls(@RequestBody @Validated ReqPreStall reqPreStall ,HttpServletRequest request){
+	public ResponseEntity<List<ResStallName>> selectEntStalls(@RequestBody @Validated ReqPreStall reqPreStall ,HttpServletRequest request){
+		List<ResStallName> list = null;
+		if(reqPreStall == null){
+			list = new ArrayList<>();
+			return ResponseEntity.success(list, request);
+		}
+		if(reqPreStall.getType() == 1) {
+			reqPreStall.setType((short)0);
+		}
+		List<ResStallName> stalls = entStallService.selectStalls(request,reqPreStall.getPreId(),reqPreStall.getType(),reqPreStall.getStallName());
+		return ResponseEntity.success(stalls, request);
+	}
+	
+	@ApiOperation(value = "查询停车场车位列表", notes = "查询停车场车位列表", consumes = "application/json")
+	@RequestMapping(value = "/select-stalls-new",method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<List<ResStall>> selectEntStallsNew(@RequestBody @Validated ReqPreStall reqPreStall ,HttpServletRequest request){
 		List<ResStall> list = null;
 		if(reqPreStall == null){
 			list = new ArrayList<>();
 			return ResponseEntity.success(list, request);
 		}
-		list = entStallService.selectStalls(request,reqPreStall.getPreId(),reqPreStall.getType(),reqPreStall.getStallName());
+		list = entStallService.selectEntStallsNew(request,reqPreStall.getPreId(),reqPreStall.getType(),reqPreStall.getStallName());
 		return ResponseEntity.success(list, request);
 	}
 	

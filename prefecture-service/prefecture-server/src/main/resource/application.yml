@@ -69,7 +69,7 @@ security:
 redis:
   host: 192.168.1.218
   port: 6379
-  database: 0
+  database: 3
   timeout: 5000
   password: ppyx1234
   pool-max-active: 500
@@ -84,9 +84,6 @@ redis:
   channel: prefecture
   
 lock:
-  linkmore-url: http://192.168.1.211:8081
-  #linkmore-new-url: http://47.97.171.147:8082
-  linkmore-new-url: http://192.168.1.211:8081
   app-secret: 1e2e90b4f56d58352bfb6119190535d7
   app-id: 1d46bc15df4c4b6a9a5710183da916c1
   linkemore-lock-url: http://open-api.linkmoreparking.cn
@@ -102,8 +99,6 @@ swagger:
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
   base-package: cn.linkmore.prefecture.controller.app,cn.linkmore.prefecture.controller.staff
-
-
 
 strategyfee: 
   url: 

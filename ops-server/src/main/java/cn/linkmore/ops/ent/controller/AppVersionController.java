@@ -20,7 +20,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.ent.request.ReqAppVersion;
 import cn.linkmore.ops.ent.service.AppVersionService;
-import cn.linkmore.ops.security.response.ResPerson;
+import cn.linkmore.security.response.ResPerson;
 
 @RequestMapping(value="/admin/ent/version")
 @Controller
@@ -40,7 +40,6 @@ public class AppVersionController {
 	public ViewMsg save(ReqAppVersion auth,HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
-			
 			Subject subject = SecurityUtils.getSubject();
 			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
 			auth.setCreateTime(new Date());

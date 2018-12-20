@@ -62,6 +62,7 @@ public class LocateServiceImpl implements LocateService {
 			res.setAdcode(info.get("adcode").toString());
 			res.setName(info.get("name").toString()); 
 		} catch (Exception e) {
+			log.info("exception = {}", e.getMessage());
 			log.info("tencent map locate failure key:{}",key);
 		}
 		return res;

@@ -5,15 +5,14 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResStallName;
-import cn.linkmore.enterprise.entity.EntAuthStall;
-import cn.linkmore.prefecture.response.ResStall;
-import cn.linkmore.prefecture.response.ResStallBatteryLog;
 /**
  * @author luzhishen
  * @Date 2018年7月20日
@@ -29,6 +28,13 @@ public interface EntStallService {
 	 * @Version v1.0
 	 */
 	List<ResEntStalls> selectEntStalls(HttpServletRequest request);
+	
+	/**
+	 * @Description  通过员工ID查询车场信息
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResEntStalls> selectEntStallsNew(HttpServletRequest request);
 
 	/**
 	 * @Description  根据员工查询可操作车位
@@ -43,7 +49,7 @@ public interface EntStallService {
 	 * @Date 2018年7月21日
 	 * @Version v1.0
 	 */
-	List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectStalls(HttpServletRequest request,Long preId, Short type, String string);
+	List<ResStallName> selectStalls(HttpServletRequest request,Long preId, Short type, String string);
 
 	/**
 	 * 查询车位详细信息
@@ -108,6 +114,10 @@ public interface EntStallService {
 	 * @Version  v2.0
 	 */
 	Integer downResult(HttpServletRequest request);
+
+	List<cn.linkmore.enterprise.controller.ent.response.ResStall> selectEntStallsNew(HttpServletRequest request,
+			Long preId, Short type, String stallName);
+
 
 
 

@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +24,12 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.PrefectureStrategyService;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.request.ReqPrefectureLockTime;
 import cn.linkmore.prefecture.request.ReqPrefectureStrategy;
 import cn.linkmore.prefecture.request.ReqPrefectureStrategyGroup;
 import cn.linkmore.prefecture.response.ResPrefectureStrategyNew;
 import cn.linkmore.prefecture.response.ResStrategyFee;
+import cn.linkmore.security.response.ResPerson;
 
 
 /**

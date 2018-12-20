@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.security.response.ResAuthElement;
 import cn.linkmore.security.response.ResMenu;
+import cn.linkmore.security.response.ResPerson;
 import io.swagger.annotations.Api;
 
 /**

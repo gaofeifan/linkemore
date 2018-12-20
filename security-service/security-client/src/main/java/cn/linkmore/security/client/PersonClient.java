@@ -72,15 +72,11 @@ public interface PersonClient {
 	@ResponseBody
 	public List<String> findAuthList(ReqPrincipal principal);
 	
-	@RequestMapping(value = "/v2.0/update_password", method = RequestMethod.POST)
-	@ResponseBody
-	void updatePassword(@RequestBody ReqPerson person, @RequestParam("oldPassword") String oldPassword,@RequestParam("password") String password);
-	
 	@RequestMapping(value = "/v2.0/id", method = RequestMethod.GET)
 	@ResponseBody
 	public ResPerson findById(@RequestParam("id") Long id);
 
-	@RequestMapping(value = "/v2.0/password", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/update-ent-password", method = RequestMethod.POST)
 	@ResponseBody
-	public void updatePassword(@RequestBody ReqPerson person);
+	public void updateEntPassword(@RequestBody ReqPerson person);
 }

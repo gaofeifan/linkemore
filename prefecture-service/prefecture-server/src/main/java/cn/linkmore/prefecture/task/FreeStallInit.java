@@ -1,21 +1,17 @@
 package cn.linkmore.prefecture.task;
 
-import java.lang.management.LockInfo;
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import cn.linkmore.bean.common.Constants.LockStatus;
@@ -157,7 +153,7 @@ public class FreeStallInit {
 		Map<String, ResLockInfo> lbm = new HashMap<String, ResLockInfo>();
 		for (ResPreGateway rpg : rpgs) {
 			if(rpg.getNumber()!=null) { 
-				lbs = this.lockTools.lockListByGroupCode(rpg.getNumber());
+				lbs = this.lockTools.lockListByGroupCode(rpg.getNumber().trim());
 				log.info("gateway = {}, preId= {} rm = {}",rpg.getNumber(), rpg.getPreId(), JsonUtil.toJson(lbs));
 				if (lbs != null && lbs.size() != 0) {
 					for (ResLockInfo lb : lbs) {

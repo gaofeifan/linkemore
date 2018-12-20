@@ -5,13 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSONObject;
 
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -20,16 +20,13 @@ import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.common.security.Token;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.enterprise.controller.staff.request.AssignStallRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.OrderOperateRequestBean;
 import cn.linkmore.enterprise.controller.staff.request.SraffReqConStall;
 import cn.linkmore.enterprise.controller.staff.request.SraffReqConStallSn;
 import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
 import cn.linkmore.enterprise.dao.cluster.BaseDictMapper;
-import cn.linkmore.enterprise.dao.cluster.StaffPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
-import cn.linkmore.enterprise.dao.master.StaffPrefectureMasterMapper;
 import cn.linkmore.enterprise.entity.BaseDict;
 import cn.linkmore.enterprise.entity.StallOperateLog;
 import cn.linkmore.enterprise.service.StaffPrefectureService;
@@ -41,11 +38,10 @@ import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallBatteryLogClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.client.StallOperateLogClient;
-import cn.linkmore.prefecture.client.StrategyBaseClient;
+import cn.linkmore.prefecture.client.StrategyFeeClient;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.request.ReqStallOperateLog;
-import cn.linkmore.prefecture.request.ReqStrategy;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallBatteryLog;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -79,6 +75,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Autowired
 	private SmsClient smsClient;
 
+	
 	@Autowired
 	private PrefectureClient prefectureClient;
 
@@ -95,7 +92,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	private StallBatteryLogClient stallBatteryLogClient;
 
 	@Autowired
-	private StrategyBaseClient strategyBaseClient;
+	private StrategyFeeClient strategyFeeClient;
 	
 	@Autowired
 	private PushClient pushClient;
@@ -355,18 +352,27 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 
 		// 计算金额
-		ReqStrategy reqStrategy = new ReqStrategy();
+		/*ReqStrategy reqStrategy = new ReqStrategy();
 		reqStrategy.setBeginTime(order.getBeginTime().getTime());
 		reqStrategy.setEndTime(order.getEndTime().getTime());
 		reqStrategy.setStrategyId(order.getStrategyId());
-		Map<String, Object> res = strategyBaseClient.fee(reqStrategy);
-
-		String totalStr = res.get("totalAmount").toString();
-		String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
-		Double totalAmount = Double.valueOf(totalAmountStr);
+		Map<String, Object> res = strategyBaseClient.fee(reqStrategy);*/
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Map<String, Object> param = new HashMap<String,Object>();
+		param.put("stallId", order.getId());
+		param.put("plateNo", order.getPlateNo());
+		param.put("startTime", sdf.format(order.getCreateTime()));
+		param.put("endTime", sdf.format(new Date()));
+		Map<String, Object> res = this.strategyFeeClient.amount(param);
+		Double totalAmount = 0d;
+		if(res != null) {
+			String totalStr = res.get("chargePrice").toString();
+			String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
+			totalAmount = Double.valueOf(totalAmountStr);
+		}
 
 		Date d = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		// 关闭订单
 		Map<String, Object> map = new HashMap<>();
 		map.put("endTime", sdf.format(d));

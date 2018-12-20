@@ -2,26 +2,19 @@ package cn.linkmore.ops.biz.service.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterprise;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EnterpriseService;
-import cn.linkmore.ops.security.request.ReqPerson;
-/**
- * @author   GFF
- * @Date     2018年6月25日
- * @Version  v2.0
- */
 import cn.linkmore.prefecture.client.EnterpriseClient;
 import cn.linkmore.security.client.PersonClient;
+import cn.linkmore.security.request.ReqPerson;
 import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.PasswordUtil;
 @Service
 public class EnterpriseServiceImpl implements EnterpriseService {
 
@@ -77,11 +70,8 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 
 	@Override
 	public void setPassword(ReqPerson person) {
-//		this.enterpriseClient.setPassword(person);
-		cn.linkmore.security.request.ReqPerson obj = new cn.linkmore.security.request.ReqPerson();
-		obj.setPassword(person.getPassword());
-		obj.setId(person.getId());
-		this.personClient.updatePassword(obj);
+		person.setPassword(PasswordUtil.encode(person.getPassword()));
+		this.personClient.updateEntPassword(person);
 	}
 
 	@Override

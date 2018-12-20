@@ -20,12 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.fastjson.JSON;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.ops.security.service.MenuService;
 import cn.linkmore.ops.security.service.PageElementService;
 import cn.linkmore.ops.security.service.PersonService;
 import cn.linkmore.security.request.ReqPerson;
 import cn.linkmore.security.response.ResAuthElement;
+import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.PasswordUtil;
 
@@ -58,7 +58,6 @@ public class AuthenticationRealm extends AuthorizingRealm {
 		String username = authenticationToken.getUsername();
 		String password = new String(authenticationToken.getPassword()); 
 		String ip = authenticationToken.getHost();
-		log.info("username {} password {}", username , password); 
 		if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
 			ResPerson person = this.personService.findByUsername(username); 
 			if (person == null) {

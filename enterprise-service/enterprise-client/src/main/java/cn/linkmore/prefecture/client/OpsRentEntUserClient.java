@@ -63,4 +63,8 @@ public interface OpsRentEntUserClient {
 	@RequestMapping(value = "/v2.0/sync/byUserId", method = RequestMethod.POST)
 	@ResponseBody
 	public void syncRentStallByUserId(@RequestBody Long userId);
+	
+	@RequestMapping(value = "/v2.0/sync/personal/byPlate", method = RequestMethod.POST)
+	@ResponseBody
+	public void syncRentPersonalUserStallByPlate(@RequestBody String plate);
 }

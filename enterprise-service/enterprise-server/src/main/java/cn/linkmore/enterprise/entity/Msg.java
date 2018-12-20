@@ -44,9 +44,7 @@ public enum Msg {
 	STALL_OPERATE_ASSIGN(331,"指定车位失败"),
 	STALL_OPERATE_ASSIGN_DELETE(332,"删除指定车位失败"),
 	
-	CUSTOMER_SUBMIT_ERR(330,"信息保存失败")
-	
-	;
+	CUSTOMER_SUBMIT_ERR(330,"信息保存失败");
 	public int code;
 	public String label;
 

@@ -1,6 +1,5 @@
 package cn.linkmore.ops.biz.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -21,19 +19,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.bean.view.Tree;
-import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.biz.service.StallLockService;
 import cn.linkmore.ops.biz.service.StallService;
-import cn.linkmore.ops.security.response.ResPerson;
 import cn.linkmore.prefecture.client.OpsRentUserClient;
 import cn.linkmore.prefecture.client.OpsStallClient;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -41,6 +34,7 @@ import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
+import cn.linkmore.security.response.ResPerson;
 
 @Controller
 @RequestMapping("/admin/biz/stall")
@@ -231,6 +225,7 @@ public class StallController {
 		map.put("preId", pid);
 		map.put("type", 2);
 		List<ResStall> list = this.opsStallClient.findStallList(map);
+		/*
 		List<ResStall> notUsedList = new ArrayList<ResStall>();
 		List<ResEntRentUser> rentUserList = opsRentUserClient.usedStallList();
 		List<Long> usedStallId = new ArrayList<Long>();
@@ -247,7 +242,10 @@ public class StallController {
 			}
 		}
 		log.info("param = {}, result = {}",JSON.toJSON(map),JSON.toJSON(notUsedList));
+		
 		return notUsedList;
+		*/
+		return list;
 	}
 	
 

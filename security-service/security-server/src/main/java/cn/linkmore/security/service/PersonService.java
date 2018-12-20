@@ -96,9 +96,7 @@ public interface PersonService {
 	 * @param ids
 	 */
 	void bind(Long id,String[] ids);
-
-
-
-	void updatePassword(ResPerson person);
+	
+	void updateEntPassword(ReqPerson person);
 
 }

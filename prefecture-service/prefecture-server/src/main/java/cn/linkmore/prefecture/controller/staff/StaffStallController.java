@@ -138,5 +138,4 @@ public class StaffStallController {
 			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 	}
-
 }

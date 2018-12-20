@@ -9,15 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import cn.linkmore.bean.exception.DataException;
-import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEnterprise;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EnterpriseService;
-import cn.linkmore.security.request.ReqPerson;
 
 /**
  * 
@@ -42,21 +39,6 @@ public class EnterpriseController {
 	@ResponseBody
 	public int update(@RequestBody ReqEnterprise record) {
 		return this.enterpriseService.update(record);
-	}
-
-	@RequestMapping(value = "/set_password", method = RequestMethod.POST)
-	@ResponseBody
-	public ViewMsg setPassword(ReqPerson person) {
-		ViewMsg msg = null;
-		try {
-			this.enterpriseService.setPassword(person);
-			msg = new ViewMsg("保存成功", true);
-		} catch (DataException e) {
-			msg = new ViewMsg(e.getMessage(), false);
-		} catch (Exception e) {
-			msg = new ViewMsg("保存失败", false);
-		}
-		return msg;
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)

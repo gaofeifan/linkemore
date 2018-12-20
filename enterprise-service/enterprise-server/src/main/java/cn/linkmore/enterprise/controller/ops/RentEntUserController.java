@@ -89,4 +89,11 @@ public class RentEntUserController {
 	public void syncRentStallByUserId(@RequestBody Long userId) {
 		this.rentEntUserService.syncRentStallByUserId(userId);
 	}
+	
+	@RequestMapping(value = "/v2.0/sync/personal/byPlate", method = RequestMethod.POST)
+	@ResponseBody
+	public void syncRentPersonalUserStallByPlate(@RequestBody String plate) {
+		this.rentEntUserService.syncRentPersonalUserStallByPlate(plate);
+	}
+	
 }

@@ -1,7 +1,6 @@
 package cn.linkmore.account.controller.staff;
 
 import javax.annotation.Resource;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -23,7 +22,6 @@ import cn.linkmore.bean.common.ResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.val;
 
 /**
  * 用户认证

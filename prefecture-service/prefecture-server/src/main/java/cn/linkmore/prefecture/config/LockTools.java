@@ -7,15 +7,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistoryList;
 import cn.linkmore.prefecture.response.ResLockInfo;
@@ -95,7 +91,6 @@ public class LockTools {
 	@SuppressWarnings("unchecked")
 	public ResSignalHistory lockSignalHistory(String sn) {
 		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLockSignalHistory().trim();
-//		String Nurl = "http://open-api.linkmoreparking.cn/api/v1/lock/lock-signal-history";
 		long millis = new Date().getTime();
 		Map<String,Object> parameters = new TreeMap<>();
 		parameters.put("appId", lockProperties.getAppId());

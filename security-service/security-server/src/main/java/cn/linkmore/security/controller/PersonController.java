@@ -105,11 +105,12 @@ public class PersonController {
 		String[] array = ids.split(",");
 		this.personService.bind(id,array);
 	}
+
 	
-	@RequestMapping(value = "/v2.0/update_password", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/update-ent-password", method = RequestMethod.POST)
 	@ResponseBody
-	public void updatePassword(@RequestBody ResPerson resPerson){
-		this.personService.updatePassword(resPerson);
+	public void updateEntPassword(@RequestBody ReqPerson person) {
+		this.personService.updateEntPassword(person);
 	}
 	
 	@RequestMapping(value = "/v2.0/id", method = RequestMethod.GET)

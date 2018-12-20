@@ -88,10 +88,17 @@ public class ResDetailStall {
 	private String faultName;
 	
 	/**
-	 *  超声波设备状态   0 异常 1正常 其他值表示未知
+	 *  车位状态   0 上方无车 1 上方有车 ，其他值 表示未知
 	 */ 
-	@ApiModelProperty("超声波设备状态   0 异常 1正常 其他值表示未知")
+	@ApiModelProperty(" 车位状态   0 上方无车 1 上方有车 ，其他值 表示未知")
 	private int inductionState;
+	
+	/**
+	 * 车位状态 状态:1，空闲；2，使用中；3,预下线；4，下线  5 故障
+	 */
+	@ApiModelProperty(value="车位状态 状态:1，空闲；2，使用中；3,预下线；4，下线  5 故障")
+	private Integer stallStatus;
+	
 	
 	public boolean getOnoffStatus() {
 		return onoffStatus;
@@ -238,5 +245,13 @@ public class ResDetailStall {
 
 	public void setInductionState(int inductionState) {
 		this.inductionState = inductionState;
+	}
+
+	public Integer getStallStatus() {
+		return stallStatus;
+	}
+
+	public void setStallStatus(Integer stallStatus) {
+		this.stallStatus = stallStatus;
 	}
 }

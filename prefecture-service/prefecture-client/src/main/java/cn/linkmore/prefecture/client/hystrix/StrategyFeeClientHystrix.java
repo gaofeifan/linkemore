@@ -20,7 +20,10 @@ public class StrategyFeeClientHystrix implements StrategyFeeClient {
 		log.info("amount param = {}",JSON.toJSON(param));
 		return null;
 	}
-
-	
+	@Override
+	public int freeMins(Map<String, Object> param) {
+		log.info("freeMins param = {}",JSON.toJSON(param));
+		return 0;
+	}
 
 }
