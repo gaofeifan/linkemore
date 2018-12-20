@@ -1469,9 +1469,8 @@ public class StallServiceImpl implements StallService {
 		if(sn.contains("0000")) {
 			sn = sn.substring(4).toUpperCase();
 		}
-		stallSn.setSerialNumber(sn);
-		ResLockInfo lock = this.lockTools.lockInfo(sn);
 		stallSn.setStallSn(sn);
+		ResLockInfo lock = this.lockTools.lockInfo(sn);
 		if(lock != null) {
 			stallSn.setBindStata(2);
 			stallSn.setBindStatus(true);
@@ -1500,10 +1499,10 @@ public class StallServiceImpl implements StallService {
 			stallSn.setVersion(lock.getVersion());
 			Stall stall = this.stallClusterMapper.findByLockSn(sn);
 			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
-			if(stallLock != null){
+			if(stallLock != null && stallLock.getStallId() != null){
 				stallSn.setInstallStatus((short)1);
 			}
-			if(stall != null) {
+			if(stall != null && stallLock.getStallId() != null) {
 				stallSn.setStallId(stall.getId());
 				stallSn.setStallStatus(stall.getStatus().shortValue());
 				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
