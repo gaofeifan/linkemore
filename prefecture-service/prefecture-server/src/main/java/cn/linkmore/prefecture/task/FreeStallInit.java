@@ -153,7 +153,7 @@ public class FreeStallInit {
 		Map<String, ResLockInfo> lbm = new HashMap<String, ResLockInfo>();
 		for (ResPreGateway rpg : rpgs) {
 			if(rpg.getNumber()!=null) { 
-				lbs = this.lockTools.lockListByGroupCode(rpg.getNumber());
+				lbs = this.lockTools.lockListByGroupCode(rpg.getNumber().trim());
 				log.info("gateway = {}, preId= {} rm = {}",rpg.getNumber(), rpg.getPreId(), JsonUtil.toJson(lbs));
 				if (lbs != null && lbs.size() != 0) {
 					for (ResLockInfo lb : lbs) {
