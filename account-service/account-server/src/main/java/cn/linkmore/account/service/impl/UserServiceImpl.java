@@ -675,6 +675,7 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_CHANGE_MOBILE);
 		} 
 		ResUser user = this.userClusterMapper.findByMobile(rmb.getMobile());
+		log.info("...........bindMobile old ru = {}, new mobile = {}, user ={} ",JSON.toJSON(ru), rmb.getMobile(), JSON.toJSON(user));
 		if(ru.getMobile().length() > 11 && user != null) {
 			UserAppfans appfans = this.userAppfansClusterMapper.findById(ru.getMobile());
 			this.userAppfansMasterMapper.updateFansUserId(user.getId());
