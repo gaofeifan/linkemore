@@ -1,5 +1,6 @@
 package cn.linkmore.ops.ent.controller;
 
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
+import cn.linkmore.ops.biz.controller.BaseController;
 import cn.linkmore.ops.ent.service.RentUserService;
 
 /**
@@ -24,7 +26,7 @@ import cn.linkmore.ops.ent.service.RentUserService;
  */
 @Controller
 @RequestMapping("/admin/ent/rent")
-public class RentUserController {
+public class RentUserController extends BaseController {
 
 	@Resource
 	private RentUserService rentUserService;
@@ -37,10 +39,16 @@ public class RentUserController {
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg save(ReqRentUser auth) {
+	public ViewMsg save(ReqRentUser user) {
 		ViewMsg msg = null;
 		try {
-			this.rentUserService.save(auth);
+			user.setCreateTime(new Date());
+			user.setCreateUserId(getPerson().getId());
+			user.setCreateUserName(getPerson().getUsername());
+			user.setUpdateTime(new Date());
+			user.setUpdateUserId(getPerson().getId());
+			user.setUpdateUserName(getPerson().getUsername());
+			this.rentUserService.save(user);
 			msg = new ViewMsg("保存成功", true);
 		} catch (BusinessException e) {
 			msg = new ViewMsg(e.getMessage(), false);
@@ -51,10 +59,13 @@ public class RentUserController {
 	}
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg update( ReqRentUser auth) {
+	public ViewMsg update( ReqRentUser user) {
 		ViewMsg msg = null;
 		try {
-			this.rentUserService.update(auth);
+			user.setUpdateTime(new Date());
+			user.setUpdateUserId(getPerson().getId());
+			user.setUpdateUserName(getPerson().getUsername());
+			this.rentUserService.update(user); 
 			msg = new ViewMsg("更新成功", true);
 		} catch (BusinessException e) {
 			msg = new ViewMsg(e.getMessage(), false);
