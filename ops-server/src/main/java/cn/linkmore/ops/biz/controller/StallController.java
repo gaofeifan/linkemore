@@ -177,10 +177,10 @@ public class StallController {
 
 	@RequestMapping(value = "/changed_down", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg changedDown(HttpServletRequest request, Long id) {
+	public ViewMsg changedDown(HttpServletRequest request, @RequestBody List<Long> ids) {
 		ViewMsg msg = null;
 		try {
-			this.stallService.changedDown(id);
+			this.stallService.changedDown(ids);
 			msg = new ViewMsg("下线成功", true);
 		} catch (RuntimeException e) {
 			msg = new ViewMsg(e.getMessage(), false);

@@ -87,9 +87,9 @@ public interface StallService {
 	void changedUp(List<Long> ids);
 	/**
 	 * 下线
-	 * @param id
+	 * @param ids
 	 */
-	void changedDown(Long id);
+	void changedDown(List<Long> ids);
 
 	/**
 	 * @Description  

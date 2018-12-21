@@ -82,7 +82,7 @@ public interface OpsStallClient {
 
 	@RequestMapping(value = "/v2.0/changed_down", method = RequestMethod.POST)
 	@ResponseBody
-	public int changedDown(@RequestParam("id") Long id);
+	public int changedDown(@RequestBody List<Long> ids);
 	
 	@RequestMapping(value = "/v2.0/save_bind", method = RequestMethod.POST)
 	@ResponseBody

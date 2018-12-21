@@ -6,6 +6,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -80,12 +83,6 @@ public class OpsStallClientHystrix implements OpsStallClient {
 		return 0;
 	}
 
-	@Override
-	public int changedDown(Long id) {
-		log.info("prefecture service stall changedDown() hystrix");
-		return 0;
-	}
-
 
 	@Override
 	public void saveAndBind(Long preId, String stallName, String sn) {
@@ -113,6 +110,12 @@ public class OpsStallClientHystrix implements OpsStallClient {
 	@Override
 	public int unBind(List<Long> ids) {
 		log.info("prefecture service int unBind(List<Long> ids) hystrix");
+		return 0;
+	}
+
+	@Override
+	public int changedDown(List<Long> ids) {
+		log.info("prefecture service stall changedDown() hystrix ids={}",JSON.toJSON(ids));
 		return 0;
 	}
 	

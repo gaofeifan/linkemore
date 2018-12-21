@@ -81,8 +81,8 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public void changedDown(Long id) {
-		this.stallClient.changedDown(id);
+	public void changedDown(List<Long> ids) {
+		this.stallClient.changedDown(ids);
 	}
 
 	@Override
