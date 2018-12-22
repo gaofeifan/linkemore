@@ -69,8 +69,8 @@
       #{item.preName,jdbcType=VARCHAR}, #{item.stallName,jdbcType=VARCHAR},
       #{item.startTime,jdbcType=TIMESTAMP} ,#{item.endTime,jdbcType=TIMESTAMP},
       #{item.type}, #{item.companyId}, #{item.companyName},
-      #{createUserId,jdbcType=BIGINT}, #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateUserId,jdbcType=BIGINT}, #{updateUserName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
+      #{item.createUserId,jdbcType=BIGINT}, #{item.createUserName,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, 
+      #{item.updateUserId,jdbcType=BIGINT}, #{item.updateUserName,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP})
       </foreach>
   </insert>
   
