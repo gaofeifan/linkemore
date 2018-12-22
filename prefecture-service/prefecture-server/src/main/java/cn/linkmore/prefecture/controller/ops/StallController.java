@@ -235,7 +235,7 @@ public class StallController {
 					stall.setStatus(4);
 					ReqStall reqStall = new ReqStall();
 					reqStall = ObjectUtils.copyObject(stall, reqStall);
-					return this.stallService.updateStatus(reqStall);
+				    this.stallService.updateStatus(reqStall);
 				}
 			}
 		}
