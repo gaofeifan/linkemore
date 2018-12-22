@@ -6,7 +6,9 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.EntRentedRecord;
+import cn.linkmore.enterprise.request.ReqRentedRecord;
 import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.enterprise.response.ResRentedRecord;
 /**
  * 长租用户会用记录--读
  * @author   GFF
@@ -56,5 +58,7 @@ public interface EntRentedRecordClusterMapper {
 	 * @Version  v2.0
 	 */
 	EntRentedRecord findByStallId(Long id);
+	
+	List<ResRentedRecord> exportList(ReqRentedRecord bean);
 
 }

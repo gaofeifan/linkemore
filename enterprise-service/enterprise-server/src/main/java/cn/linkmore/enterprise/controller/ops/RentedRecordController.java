@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.controller.ops;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqRentedRecord;
+import cn.linkmore.enterprise.response.ResRentedRecord;
 import cn.linkmore.enterprise.service.RentedRecordService;
 
 /**
@@ -29,5 +33,11 @@ public class RentedRecordController {
 	@ResponseBody
 	public ViewPage findList(@RequestBody ViewPageable pageable) {
 		return this.rentedRecordService.findList(pageable);
+	}
+	
+	@RequestMapping(value = "/export", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResRentedRecord> exportList(@RequestBody ReqRentedRecord bean){
+		return this.rentedRecordService.exportList(bean);
 	}
 }

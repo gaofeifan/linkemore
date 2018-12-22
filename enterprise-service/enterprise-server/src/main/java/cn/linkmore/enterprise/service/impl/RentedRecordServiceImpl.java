@@ -13,7 +13,9 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
+import cn.linkmore.enterprise.request.ReqRentedRecord;
 import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.enterprise.response.ResRentedRecord;
 import cn.linkmore.enterprise.service.RentedRecordService;
 import cn.linkmore.util.DomainUtil;
 /**
@@ -49,6 +51,12 @@ public class RentedRecordServiceImpl implements RentedRecordService {
 		param.put("pageSize", pageable.getPageSize());
 		List<ResEnterprise> list = this.entRentedRecordClusterMapper.findPage(param);
 		return new ViewPage(count, pageable.getPageSize(), list);
+	}
+
+	@Override
+	public List<ResRentedRecord> exportList(ReqRentedRecord bean) {
+		List<ResRentedRecord> list = this.entRentedRecordClusterMapper.exportList(bean);
+		return list;
 	}
 
 	
