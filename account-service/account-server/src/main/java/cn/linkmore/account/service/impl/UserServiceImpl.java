@@ -1031,7 +1031,7 @@ public class UserServiceImpl implements UserService {
 				}else {
 					this.redisService.remove(RedisKey.USER_APP_USER_CODE.key+rmb.getMobile());
 				}
-			} 
+			}
 		} 
 		return this.bindWechatMobile(rmb.getMobile(), request);
 	}

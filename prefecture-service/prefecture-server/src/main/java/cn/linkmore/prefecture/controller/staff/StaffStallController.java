@@ -128,9 +128,8 @@ public class StaffStallController {
 	@ApiOperation(value = "获取最新人员的权限", notes = "获取最新人员的权限")
 	@RequestMapping(value = "/find-new-auth", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<ResStaffNewAuth>> findNewAuth(HttpServletRequest request,  @ApiParam(value="城市id 非必填默认查询人员所有的权限",required=false) @RequestParam("cityId") Long cityId) {
+	public ResponseEntity<List<ResStaffNewAuth>> findNewAuth(HttpServletRequest request,  @ApiParam(value="城市id 非必填默认查询人员所有的权限",required=false) @RequestParam(value = "cityId",required= false) Long cityId) {
 		try {
-			
 			return ResponseEntity.success(this.stallService.findNewAuth(cityId,request), request);
 		} catch (BusinessException e) {
 			return ResponseEntity.fail(e.getStatusEnum(), request);

@@ -1790,9 +1790,9 @@ public class StallServiceImpl implements StallService {
 					auth.setCityId(resCity.getId());
 					auth.setCityName(resCity.getCityName());
 					for (ResAdminAuthPre resAdminAuthPre : findListRes) {
-						if(pres != null && resAdminAuthPre.getCityId() == resCity.getId()) {
+						if(pres != null) {
 							for (ResPre resPre : pres) {
-								if(resPre.getId() == resAdminAuthPre.getPreId()) {
+								if(resPre.getId() == resAdminAuthPre.getPreId() && resPre.getCityId() == resCity.getId()) {
 									pre = new ResStaffNewAuthPre();
 									pre.setPreId(resPre.getId());
 									pre.setPreName(resPre.getName());

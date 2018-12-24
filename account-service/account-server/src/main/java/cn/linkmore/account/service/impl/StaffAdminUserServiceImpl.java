@@ -268,6 +268,4 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		this.staffAppfansService.insertSelective(staffAppfans);
 		return session.getOpenid();
 	}
-	
-
 }
