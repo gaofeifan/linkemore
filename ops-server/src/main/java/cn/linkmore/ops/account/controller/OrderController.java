@@ -86,7 +86,17 @@ public class OrderController extends BaseController{
 	@RequestMapping(value = "/prefecture_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPrefectureDetail> prefectureList(HttpServletRequest request){
-		return this.prefectureService.findList(new HashMap<String,Object>());
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", "id");
+		param.put("value", person.getId());
+		ResEnterprise enter = enterService.find(param);
+		Map<String,Object> paramSearch = new HashMap<String,Object>();
+		if(enter != null ) {
+			paramSearch.put("createUserId", person.getId());
+		}
+		return this.prefectureService.findList(paramSearch);
 	} 
 	 
 	@RequestMapping(value = "/stall_list", method = RequestMethod.POST)

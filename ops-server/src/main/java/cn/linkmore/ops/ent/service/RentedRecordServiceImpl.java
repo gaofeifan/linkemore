@@ -1,5 +1,7 @@
 package cn.linkmore.ops.ent.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -7,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqRentedRecord;
+import cn.linkmore.enterprise.response.ResRentedRecord;
 import cn.linkmore.prefecture.client.OpsRentedRecordClient;
 
 /**
@@ -24,5 +28,10 @@ public class RentedRecordServiceImpl implements RentedRecordService {
 	@Override
 	public ViewPage findList(HttpServletRequest request, ViewPageable pageable) {
 		return this.rentedRecordClient.findList(pageable);
+	}
+
+	@Override
+	public List<ResRentedRecord> exportList(ReqRentedRecord bean) {
+	    return this.rentedRecordClient.exportList(bean);
 	}
 }

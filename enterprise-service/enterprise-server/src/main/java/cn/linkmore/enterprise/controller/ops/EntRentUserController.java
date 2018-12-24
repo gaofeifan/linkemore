@@ -29,6 +29,7 @@ import io.swagger.annotations.ApiOperation;
  * @author luzhishen
  * @Date 2018年7月20日
  * @Version v1.0
+ * @table t_ent_rent_user
  */
 
 @Api(tags = "rent",description="企业rent用户", produces = "application/json")

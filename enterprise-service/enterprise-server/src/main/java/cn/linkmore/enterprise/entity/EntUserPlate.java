@@ -2,12 +2,12 @@ package cn.linkmore.enterprise.entity;
 
 import java.util.Date;
 
-public class ReqEntUserPlate {
+public class EntUserPlate {
     private Long id;
 
     private String plateNo;
 
-    private Long preId;
+    private String mobile;
 
     private Long createUserId;
 
@@ -31,15 +31,15 @@ public class ReqEntUserPlate {
         this.plateNo = plateNo == null ? null : plateNo.trim();
     }
 
-    public Long getPreId() {
-        return preId;
-    }
+    public String getMobile() {
+		return mobile;
+	}
 
-    public void setPreId(Long preId) {
-        this.preId = preId;
-    }
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
 
-    public Long getCreateUserId() {
+	public Long getCreateUserId() {
         return createUserId;
     }
 

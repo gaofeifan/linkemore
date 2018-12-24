@@ -40,7 +40,81 @@ public class EntRentUser {
     
     private String companyName;
     
-    public Long getId() {
+    /**
+     * 创建用户Id
+     */
+    private Long createUserId;
+    /**
+     * 创建用户名称
+     */
+    private String createUserName;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+    
+    /**
+     * 更新用户Id
+     */
+    private Long updateUserId;
+    /**
+     * 更新用户名称
+     */
+    private String updateUserName;
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+    
+    public Long getCreateUserId() {
+		return createUserId;
+	}
+
+	public void setCreateUserId(Long createUserId) {
+		this.createUserId = createUserId;
+	}
+
+	public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Long getUpdateUserId() {
+		return updateUserId;
+	}
+
+	public void setUpdateUserId(Long updateUserId) {
+		this.updateUserId = updateUserId;
+	}
+
+	public String getUpdateUserName() {
+		return updateUserName;
+	}
+
+	public void setUpdateUserName(String updateUserName) {
+		this.updateUserName = updateUserName;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Long getId() {
         return id;
     }
 

@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,6 +177,10 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			for (EntRentUser stall : newRentUserList) {
 				if (! existRentUser(oldRentUserList,stall)) {
 					stall.setType((short) 1);
+					stall.setCreateTime(new Date());
+					stall.setUpdateTime(new Date());
+					stall.setUpdateUserId(stall.getCreateUserId());
+					stall.setUpdateUserName(stall.getCreateUserName());
 					entRentUser.add(stall);
 				}
 			}

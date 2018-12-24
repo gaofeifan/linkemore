@@ -227,14 +227,16 @@ public class StallController {
 
 	@RequestMapping(value = "/v2.0/changed_down", method = RequestMethod.POST)
 	@ResponseBody
-	public int changedDown(@RequestParam("id") Long id) {
-		ResStallEntity stall = this.stallService.findById(id);
-		if (stall != null) {
-			if (stall.getBindOrderStatus() != null || stall.getBindOrderStatus() == 0) {
-				stall.setStatus(4);
-				ReqStall reqStall = new ReqStall();
-				reqStall = ObjectUtils.copyObject(stall, reqStall);
-				return this.stallService.updateStatus(reqStall);
+	public int changedDown(@RequestBody List<Long> ids) {
+		for (Long id : ids) {
+			ResStallEntity stall = this.stallService.findById(id);
+			if (stall != null) {
+				if (stall.getBindOrderStatus() != null || stall.getBindOrderStatus() == 0) {
+					stall.setStatus(4);
+					ReqStall reqStall = new ReqStall();
+					reqStall = ObjectUtils.copyObject(stall, reqStall);
+				    this.stallService.updateStatus(reqStall);
+				}
 			}
 		}
 		return 0;
