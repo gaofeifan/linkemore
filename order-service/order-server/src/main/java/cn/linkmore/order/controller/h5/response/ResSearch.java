@@ -20,18 +20,18 @@ public class ResSearch {
 	@ApiModelProperty(value = "金额")
 	BigDecimal money;
 	@ApiModelProperty(value = "支付记录")
-	List<PayRecord>  payrecords;
+	PayRecord  payrecords;
 	
 	/**
 	 * @return the payrecords
 	 */
-	public List<PayRecord> getPayrecords() {
+	public PayRecord getPayrecords() {
 		return payrecords;
 	}
 	/**
 	 * @param payrecords the payrecords to set
 	 */
-	public void setPayrecords(List<PayRecord> payrecords) {
+	public void setPayrecords(PayRecord payrecords) {
 		this.payrecords = payrecords;
 	}
 	public String getPlate() {

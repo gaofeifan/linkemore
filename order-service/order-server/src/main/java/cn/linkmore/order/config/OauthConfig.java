@@ -22,7 +22,22 @@ public class OauthConfig {
     
     private String sendUrl;
     
+    private String orderCheckout;
+  
     
+	/**
+	 * @return the orderCheckout
+	 */
+	public String getOrderCheckout() {
+		return orderCheckout;
+	}
+
+	/**
+	 * @param orderCheckout the orderCheckout to set
+	 */
+	public void setOrderCheckout(String orderCheckout) {
+		this.orderCheckout = orderCheckout;
+	}
 
 	/**
 	 * @return the sendUrl

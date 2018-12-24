@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class ResPayParm {
 	
 	@ApiModelProperty(value = "timeStamp时间戳")
-	private Long timeStamp;
+	private String timeStamp;
 	@ApiModelProperty(value = "package包id")
 	private String pack;
 	@ApiModelProperty(value = "nonceStr随机串 ")
@@ -17,10 +17,10 @@ public class ResPayParm {
 	@ApiModelProperty(value = "appId公众号名称")
 	private String appId;
 	
-	public Long getTimeStamp() {
+	public String getTimeStamp() {
 		return timeStamp;
 	}
-	public void setTimeStamp(Long timeStamp) {
+	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 	public String getPack() {

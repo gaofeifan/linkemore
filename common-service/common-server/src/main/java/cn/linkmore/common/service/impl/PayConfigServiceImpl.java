@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.common.dao.cluster.PayConfigClusterMapper;
+import cn.linkmore.common.dao.master.PayConfigMasterMapper;
 import cn.linkmore.common.request.ReqFinshOrder;
 import cn.linkmore.common.request.ReqPayConfig;
 import cn.linkmore.common.request.ReqPayRecord;
@@ -21,6 +22,9 @@ public class PayConfigServiceImpl implements PayConfigService{
 	
 	@Autowired
 	PayConfigClusterMapper  payConfigClusterMapper;
+	
+	@Autowired
+	PayConfigMasterMapper  PayConfigMasterMapper;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -36,7 +40,7 @@ public class PayConfigServiceImpl implements PayConfigService{
 
 	@Override
 	public void setOrder(ReqPayRecord reqPayRecord) {
-		System.out.println(11);
+		 PayConfigMasterMapper.setOrderRecord(reqPayRecord);
 	}
 	
 	

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.common.dao.master.PayConfigMasterMapper">
+
+<insert id="setOrderRecord" parameterType="cn.linkmore.common.request.ReqPayRecord">
+    insert into o_code_order 
+    ( orderNo, payId,parkName,entranceTime,finishTime,amount,openId,plateNo,payType)
+    values 
+    (
+     #{orderNo,jdbcType=VARCHAR}, 
+     #{payId,jdbcType=VARCHAR},
+     #{parkName,jdbcType=VARCHAR}, 
+     #{entranceTime,jdbcType=TIMESTAMP},
+     #{finishTime,jdbcType=TIMESTAMP},
+     #{amount,jdbcType=DECIMAL},
+     #{openid,jdbcType=VARCHAR},
+     #{plateNo,jdbcType=VARCHAR},
+     #{type,jdbcType=INTEGER}
+     )
+  </insert>  
+  
+</mapper>

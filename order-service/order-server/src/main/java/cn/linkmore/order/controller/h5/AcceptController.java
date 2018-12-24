@@ -87,9 +87,19 @@ public class AcceptController {
 	@ApiOperation(value = "jsapi参数集", notes = "jsapi参数集", consumes = "application/json")
 	@RequestMapping(value = "/o", method = RequestMethod.POST)
 	@ResponseBody
-	public ResPayParm wxparm(@RequestBody ReqPayParm reqPayParm) throws IOException {
-		log.info("获取jsapi参数集");
-		return redirectService.wxparm(reqPayParm);
+	public ResponseEntity<ResPayParm> wxparm(@RequestBody ReqPayParm reqPayParm,HttpServletRequest request) throws IOException {
+		log.info("获取jsapi参数集");		
+		ResponseEntity<ResPayParm> response = null;
+		try {
+			ResPayParm res =	redirectService.wxparm(reqPayParm);
+			response = ResponseEntity.success(res, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			e.getMessage();
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 	
 	@ApiIgnore
@@ -103,9 +113,19 @@ public class AcceptController {
 	@ApiOperation(value = "表单参数集", notes = "jsapi参数集", consumes = "application/json")
 	@RequestMapping(value = "/t", method = RequestMethod.POST)
 	@ResponseBody
-	public String aliparm(@RequestBody ReqPayParm reqPayParm) throws IOException {
+	public ResponseEntity<?> aliparm(@RequestBody ReqPayParm reqPayParm,HttpServletRequest request) throws IOException {
 		log.info("获取jsapi参数集");
-		return redirectService.aliparm(reqPayParm);
+		ResponseEntity<String> response = null;
+		try {
+			String res =	redirectService.aliparm(reqPayParm);
+			response = ResponseEntity.success(res, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			e.getMessage();
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 
 	@ApiIgnore
@@ -127,7 +147,7 @@ public class AcceptController {
 	@RequestMapping(value = "/f", method = RequestMethod.GET)
 	public String returnIndex()  {
 		log.info("转发到支付宝成功页面");
-		String retURI = "redirect:http://deal.linkmoreparking.cn/#/paysuccess";//支付成功后的返回页面
+		String retURI = "redirect:http://order.linkmoreparking.cn/#/paysuccess";//支付成功后的返回页面
 		return retURI;
 	}
 

@@ -7,17 +7,24 @@ import io.swagger.annotations.ApiModelProperty;
 public class ReqPayParm {
 	
 	@ApiModelProperty(value = "用户身份")
-	private String openId;
+	private String openid;
 	@ApiModelProperty(value = "车牌")
 	private String plate;
 	@ApiModelProperty(value = "车场id")
 	private Long preId;
 	
-	public String getOpenId() {
-		return openId;
+
+	/**
+	 * @return the openid
+	 */
+	public String getOpenid() {
+		return openid;
 	}
-	public void setOpenId(String openId) {
-		this.openId = openId;
+	/**
+	 * @param openid the openid to set
+	 */
+	public void setOpenid(String openid) {
+		this.openid = openid;
 	}
 	public String getPlate() {
 		return plate;

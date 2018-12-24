@@ -117,21 +117,22 @@ public class RedirectServiceImpl implements RedirectService {
 		res.setLocation(data.get("parkName").toString());
 		res.setPlate(data.get("plateNumber").toString());
 
-		List<PayRecord> payrecords = new ArrayList<>();
+		PayRecord payrecords = new PayRecord();
 		BigDecimal totalmoney = new BigDecimal(0);
 		// 无过往订单
 		if (list.isEmpty() && list.size() == 0) {
 			totalmoney = new BigDecimal(data.get("amount").toString());
 			res.setUseTime(useTime);
 			res.setMoney(totalmoney);
-			res.setPayrecords(payrecords);
+			//res.setPayrecords(payrecords);
 			// 放入所需支付订单
+			paymsg.put("amount", data.get("amount"));
 			paymsg.put("totalmoney", 0.01);
 			paymsg.put("orderNo", data.get("orderNo"));
 			paymsg.put("entranceTime", data.get("entranceTime"));
 			paymsg.put("plateNumber", data.get("plateNumber"));
 			paymsg.put("parkName", data.get("parkName"));
-			paymsg.put("orderId", orderId + data.get("orderNo").toString().substring(7));
+			paymsg.put("orderId", orderId + String.valueOf(data.get("orderNo")).substring(1, 7));
 			redisService.set("payuser:" + reqSerch.getOpenid(), paymsg, 600000);
 			return res;
 		}
@@ -139,13 +140,14 @@ public class RedirectServiceImpl implements RedirectService {
 		// 整理过往记录及已支付款额
 		for (ResFinshOrder resFinshOrder : list) {
 			alreadyPay = alreadyPay.add(resFinshOrder.getAmount());
-			PayRecord payrecord = new PayRecord();
-			payrecord.setFinishTime(resFinshOrder.getFinishTime());
-			payrecord.setMoney(resFinshOrder.getAmount());
-			payrecords.add(payrecord);
 		}
+		payrecords.setMoney(alreadyPay);
+		
 		ResFinshOrder resFinshOrder = list.get(list.size() - 1);
 		Date r = resFinshOrder.getFinishTime();
+		
+		payrecords.setFinishTime(r);
+		
 		long staytime = now.getTime() - r.getTime();
 		// 未超时
 		if (staytime < Long.valueOf(String.valueOf(data.get("freeTime")))) {
@@ -161,11 +163,12 @@ public class RedirectServiceImpl implements RedirectService {
 			res.setPayrecords(payrecords);
 			// 放入所需支付订单
 			paymsg.put("totalmoney", 0.01);
+			paymsg.put("amount", data.get("amount"));
 			paymsg.put("orderNo", data.get("orderNo"));
 			paymsg.put("entranceTime", data.get("entranceTime"));
 			paymsg.put("plateNumber", data.get("plateNumber"));
 			paymsg.put("parkName", data.get("parkName"));
-			paymsg.put("orderId", orderId + data.get("orderNo").toString().substring(0, 7));
+			paymsg.put("orderId", orderId + String.valueOf(data.get("orderNo")).substring(1, 7));
 			redisService.set("payuser:" + reqSerch.getOpenid(), paymsg, 600000);
 		}
 		return res;
@@ -257,9 +260,10 @@ public class RedirectServiceImpl implements RedirectService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ResPayParm wxparm(ReqPayParm reqPayParm) {
-		// 查询当前需支付订单
-		Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:" + reqPayParm.getOpenId());
-		if (paymsg.isEmpty() || paymsg == null) {
+		// 查询当前需支付订单		
+		Map<String, Object> paymsg = new HashMap<>();
+		 paymsg = (Map<String, Object>) redisService.get("payuser:" + reqPayParm.getOpenid());
+		if ( paymsg == null) {
 			throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
 		}
 		String orderId = String.valueOf(paymsg.get("orderId"));
@@ -283,13 +287,13 @@ public class RedirectServiceImpl implements RedirectService {
 		reqH5Term.setDetail(detail);
 		reqH5Term.setMchId(config.getMchId());
 		reqH5Term.setMchKey(config.getMchKey());
-		reqH5Term.setOpenId(reqPayParm.getOpenId());
+		reqH5Term.setOpenId(reqPayParm.getOpenid());
 		reqH5Term.setOrderId(orderId);
 		reqH5Term.setTotalAmount(totalAmount);
 		// 获取支付凭证
 		ResH5Term term = h5PayClient.wxpay(reqH5Term);
 		if (term == null) {
-			return null;
+			throw new BusinessException(StatusEnum.WX_PAY_NO_PARM);
 		}
 		log.info("term---" + JSON.toJSON(term));
 		ResPayParm parm = new ResPayParm();
@@ -297,7 +301,7 @@ public class RedirectServiceImpl implements RedirectService {
 		parm.setNonceStr(term.getNonceStr());
 		parm.setPack(term.getPack());
 		parm.setPaySign(term.getPaySign());
-		parm.setTimeStamp(term.getTimeStamp());
+		parm.setTimeStamp(String.valueOf(term.getTimeStamp()));
 		return parm;
 	}
 
@@ -325,7 +329,8 @@ public class RedirectServiceImpl implements RedirectService {
 				return;
 			}
 			this.redisService.remove("payuser:" + openid);
-			String orderId = String.valueOf(paymsg.get("orderNo"));
+			String orderNo = String.valueOf(paymsg.get("orderNo"));
+			String orderId = String.valueOf(paymsg.get("orderId"));
 			BigDecimal totalAmount = new BigDecimal(paymsg.get("totalmoney").toString());
 			try {
 				TaskPool.getInstance().task(new Runnable() {
@@ -333,13 +338,14 @@ public class RedirectServiceImpl implements RedirectService {
 					public void run() {
 						// 通知闸机
 						Map<String, Object> parameters = new HashMap<>();
-						parameters.put("orderNo", orderId);
-						parameters.put("amount", totalAmount);
-						HttpUtil.sendJson(oauthConfig.getParkOrder(), JsonUtil.toJson(parameters));
+						parameters.put("orderNo", orderNo);
+						parameters.put("amount", paymsg.get("totalmoney"));
+						String res =	HttpUtil.sendJson(oauthConfig.getOrderCheckout(), JsonUtil.toJson(parameters));
+						log.info("通知闸机---" + res);
 					}
 				});
 			} catch (Exception e) {
-
+				e.printStackTrace();
 			}
 			try {
 				TaskPool.getInstance().task(new Runnable() {
@@ -351,15 +357,17 @@ public class RedirectServiceImpl implements RedirectService {
 						reqPayRecord.setEntranceTime(new Date());
 						reqPayRecord.setFinishTime(new Date());
 						reqPayRecord.setOpenid(openid);
-						reqPayRecord.setOrderNo(null);
-						reqPayRecord.setParkName(null);
+						reqPayRecord.setOrderNo(String.valueOf(paymsg.get("orderNo")));
+						reqPayRecord.setParkName(paymsg.get("parkName").toString());
 						reqPayRecord.setPayId(orderId);
 						reqPayRecord.setType(1);
+						reqPayRecord.setPlateNo(paymsg.get("plateNumber").toString());
 						payConfigClient.setOrder(reqPayRecord);
+						log.info("插入微信订单---" + JSON.toJSON(reqPayRecord));
 					}
 				});
 			} catch (Exception e) {
-
+				e.printStackTrace();
 			}
 		} else {
 			code = "<![CDATA[FAIL]]>";
@@ -368,6 +376,7 @@ public class RedirectServiceImpl implements RedirectService {
 		makeRes(code, msg, response);
 	}
 
+	
 	/**
 	 * 回调返回值
 	 * 
@@ -394,8 +403,9 @@ public class RedirectServiceImpl implements RedirectService {
 	@Override
 	public String aliparm(ReqPayParm reqPayParm) {
 		// 查询当前需支付订单
-		Map<String, Object> paymsg = (Map<String, Object>) redisService.get("payuser:" + reqPayParm.getOpenId());
-		if (paymsg.isEmpty() || paymsg == null) {
+		Map<String, Object> paymsg = new HashMap<>();
+		paymsg = (Map<String, Object>) redisService.get("payuser:" + reqPayParm.getOpenid());
+		if ( paymsg == null) {
 			throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
 		}
 		String orderId = String.valueOf(paymsg.get("orderId"));
@@ -416,7 +426,7 @@ public class RedirectServiceImpl implements RedirectService {
 		reqH5Term.setAppId(config.getAppId());
 		reqH5Term.setMchId(config.getMchId());
 		reqH5Term.setMchKey(config.getMchKey());
-		reqH5Term.setOpenId(reqPayParm.getOpenId());
+		reqH5Term.setOpenId(reqPayParm.getOpenid());
 		reqH5Term.setOrderId(orderId);
 		reqH5Term.setTotalAmount(totalAmount);
 		String parmUrl = h5PayClient.alipay(reqH5Term);
@@ -456,11 +466,12 @@ public class RedirectServiceImpl implements RedirectService {
 					Map<String, Object> parameters = new HashMap<>();
 					parameters.put("orderNo", orderNo);
 					parameters.put("amount", totalAmount);
-					HttpUtil.sendJson(oauthConfig.getParkOrder(), JsonUtil.toJson(parameters));
+					String res =	HttpUtil.sendJson(oauthConfig.getOrderCheckout(), JsonUtil.toJson(parameters));
+					log.info("通知闸机---" + res);
 				}
 			});
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		try {
 			TaskPool.getInstance().task(new Runnable() {
@@ -472,15 +483,17 @@ public class RedirectServiceImpl implements RedirectService {
 					reqPayRecord.setEntranceTime(new Date());
 					reqPayRecord.setFinishTime(new Date());
 					reqPayRecord.setOpenid(openid);
-					reqPayRecord.setOrderNo(null);
-					reqPayRecord.setParkName(null);
+					reqPayRecord.setOrderNo(orderNo);
+					reqPayRecord.setParkName(paymsg.get("parkName").toString());
 					reqPayRecord.setPayId(orderId);
-					reqPayRecord.setType(1);
+					reqPayRecord.setType(2);
+					reqPayRecord.setPlateNo(paymsg.get("plateNumber").toString());
 					payConfigClient.setOrder(reqPayRecord);
+					log.info("插入阿里订单---" + JSON.toJSON(reqPayRecord));
 				}
 			});
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		try {
 			response.getWriter().println("success");
@@ -489,26 +502,5 @@ public class RedirectServiceImpl implements RedirectService {
 		}
 	}
 
-	/**
-	 * 回调返回值
-	 * 
-	 * @param code
-	 *            return_code 请参照微信API中的格式
-	 * @param msg
-	 *            return_msg 请参照微信API中的格式
-	 * @param response
-	 *            HttpServletResponse 只有用这种方法微信那边才认可为合法回应
-	 */
-	private void amakeRes(HttpServletResponse response) {
-		try {
-			response.reset();
-			PrintWriter printWriter = response.getWriter();
-			printWriter.write("success");
-			printWriter.flush();
-			printWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 }

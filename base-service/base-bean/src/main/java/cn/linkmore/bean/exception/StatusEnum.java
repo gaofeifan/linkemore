@@ -122,7 +122,7 @@ public enum StatusEnum {
 	
 	PARK_CODE_NO_ORDER(8005082,"未查询到订单"),
 	PARK_CODE_FINISH_(8005083,"订单已完成结算"),
-	PARK_CODE_NO_ORDER2(8005084,"未查询到订单"),
+	WX_PAY_NO_PARM(8005084,"发起订单失败"),
 	PARK_CODE_NO_ORDER3(8005085,"未查询到订单"),
 	PARK_CODE_NO_ORDER4(8005086,"未查询到订单");
 	
