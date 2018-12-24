@@ -1,7 +1,8 @@
 package cn.linkmore.prefecture.controller.staff.response;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+@ApiModel("类型")
 public class ResEntTypeStalls {
 	
 	@ApiModelProperty(value = "类型 0临停 2 固定")
