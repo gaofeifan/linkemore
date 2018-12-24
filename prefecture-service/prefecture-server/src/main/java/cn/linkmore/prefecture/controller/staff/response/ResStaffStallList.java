@@ -8,6 +8,9 @@ public class ResStaffStallList {
 	@ApiModelProperty(value="车位id")
 	private Long stallId;
 	
+	@ApiModelProperty(value="车位类型0 临停 2固定 3VIP(预留类型)")
+	private Integer type;
+	
 	@ApiModelProperty(value="车位名称")
 	private String stallName;
 	
@@ -84,4 +87,13 @@ public class ResStaffStallList {
 	public void setAssignStatus(int assignStatus) {
 		this.assignStatus = assignStatus;
 	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+	
 }
