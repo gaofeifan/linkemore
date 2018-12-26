@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="cn.linkmore.account.dao.cluster.UserGroupInputClusterMapper">
+	<resultMap id="BaseResultMap"
+		type="cn.linkmore.account.entity.UserGroupInput">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="user_group_id" jdbcType="BIGINT"	property="userGroupId" />
+		<result column="user_name" jdbcType="VARCHAR"	property="userName" />
+		<result column="mobile" jdbcType="VARCHAR" property="mobile" />
+		<result column="plate" jdbcType="VARCHAR" property="plate" />
+		<result column="input_type" jdbcType="TINYINT"	property="inputType" />
+	    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+	    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+	    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+	    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+	    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_group_id, user_name, mobile, plate, input_type, 
+		create_user_id,create_user_name,create_time,
+		update_user_id,update_user_name,update_time
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_group_input
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="findPage" parameterType="java.util.HashMap"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		t_user_group_input
+		<where>
+			<if test="userGroupId != null">
+				AND user_group_id = #{userGroupId,jdbcType=BIGINT}
+			</if>
+			<if test="inputType != null">
+				AND input_type = #{inputType,jdbcType=BIGINT}
+			</if>
+			<if test="userName != null">
+				AND user_name like #{userName,jdbcType=VARCHAR}
+			</if>
+			<if test="mobile != null">
+				AND mobile like #{mobile,jdbcType=VARCHAR}
+			</if>
+			<if test="plate != null">
+				AND plate like #{plate,jdbcType=VARCHAR}
+			</if>
+		</where>
+		<if test="property==null">
+			order by update_time desc
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
+		limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+
+	<select id="count" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT
+		count(1)
+		FROM
+		t_user_group_input
+		<where>
+			<if test="userGroupId != null">
+				AND user_group_id = #{userGroupId,jdbcType=BIGINT}
+			</if>
+			<if test="inputType != null">
+				AND input_type = #{inputType,jdbcType=BIGINT}
+			</if>
+			<if test="userName != null">
+				AND user_name like #{userName,jdbcType=VARCHAR}
+			</if>
+			<if test="mobile != null">
+				AND mobile like #{mobile,jdbcType=VARCHAR}
+			</if>
+			<if test="plate != null">
+				AND plate like #{plate,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+
+	<select id="findList" parameterType="java.util.HashMap"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		t_user_group_input
+		<where>
+			<if test="userGroupId != null">
+				AND user_group_id = #{userGroupId,jdbcType=BIGINT}
+			</if>
+			<if test="plate != null">
+				AND plate = #{plate,jdbcType=VARCHAR}
+			</if>
+			<if test="userId != null">
+				AND plate in (select veh_mark from v_vehicle_mark_manage where veh_user_id=#{userId,jdbcType=BIGINT})
+			</if>
+		</where>
+	</select>
+
+
+	<select id="findByPlate" parameterType="cn.linkmore.account.request.ReqUserGroupInput" resultMap="BaseResultMap">
+		SELECT 
+    	<include refid="Base_Column_List" />
+    	FROM t_user_group_input
+    	<where>
+    	<if test="userGroupId != null">
+	    	AND user_group_id = #{userGroupId,jdbcType=BIGINT}
+	    </if>
+	    <if test="mobile != null">
+	    	AND mobile = #{mobile,jdbcType=VARCHAR}
+	    </if>
+	    <if test="plate != null">
+	    	AND plate = #{plate,jdbcType=VARCHAR}
+	    </if>
+	    </where>
+	    LIMIT 1
+	</select>
+
+</mapper>

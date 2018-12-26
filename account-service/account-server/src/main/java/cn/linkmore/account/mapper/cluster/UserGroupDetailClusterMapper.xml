@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="cn.linkmore.account.dao.cluster.UserGroupDetailClusterMapper">
+
+	<resultMap id="BaseResultMap"
+		type="cn.linkmore.account.entity.UserGroupDetail">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="user_group_id" jdbcType="BIGINT"	property="userGroupId" />
+		<result column="user_id" jdbcType="BIGINT" property="userId" />
+		<result column="create_user_id" jdbcType="BIGINT"	property="createUserId" />
+		<result column="create_time" jdbcType="TIMESTAMP"	property="createTime" />
+	</resultMap>
+	<resultMap id="ListUserMap"
+		type="cn.linkmore.account.response.ResGroupUser">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="nickName" property="nickName" />
+		<result column="mobile" property="mobile" />
+		<result column="cityName" property="cityName" />
+		<result column="orderCount" property="orderCount" />
+		<result column="loginTime" property="loginTime" />
+		<result column="ordersTime" property="ordersTime" />
+		<result column="userStatus" property="userStatus" />
+		<result column="plateNo" property="plateNo" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_group_id, user_id, create_user_id, create_time
+	</sql>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_user_group_detail
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="findPage" parameterType="java.util.HashMap"
+		resultMap="ListUserMap">
+		SELECT
+		ug.id as id ,u.realname,u.id as userId,u.nickname nickName,u.mobile,cy.city_name cityName,u.order_count
+		orderCount,u.last_login_time loginTime,o.create_time
+		ordersTime,u.status userStatus,o.plate_no plateNO,ug.create_time as joinTime
+		FROM
+		t_user u
+		LEFT JOIN (
+		SELECT
+		c.*
+		FROM
+		o_orders c,
+		(
+		SELECT
+		a.user_id uid,
+		max(a.create_time) maxtime
+		FROM
+		o_orders a
+		GROUP BY
+		uid
+		) b
+		WHERE
+		c.user_id = b.uid
+		AND c.create_time = b.maxtime
+		) o ON u.id = o.user_id
+		LEFT JOIN v_prefecture p ON o.pre_id = p.id
+		LEFT JOIN t_city cy ON p.city_id = cy.id
+		INNER JOIN t_user_group_detail ug on ug.user_id=u.id
+		where u.user_type = 1
+		<if test="userGroupId != null">
+			and ug.user_group_id = #{userGroupId}
+		</if>
+		<if test="ordersCount!=null">
+			and u.order_count = #{ordersCount}
+		</if>
+		<if test="nature ==1 ">
+			and u.app_register_time is not null and u.wechat_bind_time is not null
+		</if>
+		<if test="nature ==2 ">
+			and u.status = 4
+		</if>
+
+		<if test="nickname!=null">
+			and nickname like #{nickname,jdbcType=VARCHAR}
+		</if>
+		<if test="mobile!=null">
+			and mobile = #{mobile,jdbcType=VARCHAR}
+		</if>
+		<if test="status!=null">
+			and status = #{status,jdbcType=VARCHAR}
+		</if>
+		<if test="plateNo!=null">
+			and o.plate_no= #{plateNo,jdbcType=VARCHAR}
+		</if>
+		<if test="property==null">
+			order by u.create_time desc
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
+		limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+
+	<select id="count" resultType="java.lang.Integer"
+		parameterType="java.util.HashMap">
+		SELECT count(1)
+		FROM
+		t_user u
+		LEFT JOIN (
+		SELECT
+		c.*
+		FROM
+		o_orders c,
+		(
+		SELECT
+		a.user_id uid,
+		max(a.create_time) maxtime
+		FROM
+		o_orders a
+		GROUP BY
+		uid
+		) b
+		WHERE
+		c.user_id = b.uid
+		AND c.create_time = b.maxtime
+		) o ON u.id = o.user_id
+		LEFT JOIN v_prefecture p ON o.pre_id = p.id
+		LEFT JOIN t_city cy ON p.city_id = cy.id
+		INNER JOIN t_user_group_detail ug on ug.user_id=u.id
+		where u.user_type = 1
+		<if test="userGroupId != null">
+			and ug.user_group_id = #{userGroupId}
+		</if>
+		<if test="ordersCount!=null">
+			and u.order_count = #{ordersCount}
+		</if>
+		<if test="nature ==1 ">
+			and u.app_register_time is not null and u.wechat_bind_time is not null
+		</if>
+		<if test="nature ==2 ">
+			and u.status = 4
+		</if>
+		<if test="nickname!=null">
+			and nickname like #{nickname,jdbcType=VARCHAR}
+		</if>
+		<if test="mobile!=null">
+			and mobile = #{mobile,jdbcType=VARCHAR}
+		</if>
+		<if test="status!=null">
+			and status = #{status,jdbcType=VARCHAR}
+		</if>
+		<if test="plateNo!=null">
+			and o.plate_no= #{plateNo,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+
+	<select id="pageUserByNotInUserGroup" parameterType="java.util.HashMap"
+		resultMap="ListUserMap">
+		SELECT
+		u.realname,u.id as id,u.nickname nickName,u.mobile,cy.city_name cityName,u.order_count
+		orderCount,u.last_login_time loginTime,o.create_time
+		ordersTime,u.status userStatus,o.plate_no plateNO
+		FROM
+		t_user u
+		LEFT JOIN (
+		SELECT
+		c.*
+		FROM
+		o_orders c,
+		(
+		SELECT
+		a.user_id uid,
+		max(a.create_time) maxtime
+		FROM
+		o_orders a
+		GROUP BY
+		uid
+		) b
+		WHERE
+		c.user_id = b.uid
+		AND c.create_time = b.maxtime
+		) o ON u.id = o.user_id
+		LEFT JOIN v_prefecture p ON o.pre_id = p.id
+		LEFT JOIN t_city cy ON p.city_id = cy.id
+		where u.user_type = 1
+		
+		<if test="notInGroupId !=null">
+			and u.id not in (select user_id from t_user_group_detail where user_group_id = #{notInGroupId,jdbcType=BIGINT} )
+		</if>
+		<if test="ordersCount!=null">
+			and u.order_count = #{ordersCount}
+		</if>
+		<if test="nature ==1 ">
+			and u.app_register_time is not null and u.wechat_bind_time is not null
+		</if>
+		<if test="nature ==2 ">
+			and u.status = 4
+		</if>
+		<if test="nickname!=null">
+			and nickname like #{nickname,jdbcType=VARCHAR}
+		</if>
+		<if test="mobile!=null">
+			and mobile = #{mobile,jdbcType=VARCHAR}
+		</if>
+		<if test="status!=null">
+			and status = #{status,jdbcType=VARCHAR}
+		</if>
+		<if test="plateNo!=null">
+			and o.plate_no= #{plateNo,jdbcType=VARCHAR}
+		</if>
+		<if test="property==null">
+			order by u.create_time desc
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
+		limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+		
+	<select id="pageUserByNotInUserGroupCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT
+		 count(*)
+		FROM
+		t_user u
+		LEFT JOIN (
+		SELECT
+		c.*
+		FROM
+		o_orders c,
+		(
+		SELECT
+		a.user_id uid,
+		max(a.create_time) maxtime
+		FROM
+		o_orders a
+		GROUP BY
+		uid
+		) b
+		WHERE
+		c.user_id = b.uid
+		AND c.create_time = b.maxtime
+		) o ON u.id = o.user_id
+		LEFT JOIN v_prefecture p ON o.pre_id = p.id
+		LEFT JOIN t_city cy ON p.city_id = cy.id
+		where u.user_type = 1
+		<if test="notInGroupId !=null">
+			and u.id not in (select user_id from t_user_group_detail where user_group_id = #{notInGroupId,jdbcType=BIGINT} )
+		</if>
+		<if test="ordersCount!=null">
+			and u.order_count = #{ordersCount}
+		</if>
+		<if test="nature ==1 ">
+			and u.app_register_time is not null and u.wechat_bind_time is not null
+		</if>
+		<if test="nature ==2 ">
+			and u.status = 4
+		</if>
+		<if test="nickname!=null">
+			and nickname like #{nickname,jdbcType=VARCHAR}
+		</if>
+		<if test="mobile!=null">
+			and mobile = #{mobile,jdbcType=VARCHAR}
+		</if>
+		<if test="status!=null">
+			and status = #{status,jdbcType=VARCHAR}
+		</if>
+		<if test="plateNo!=null">
+			and o.plate_no= #{plateNo,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	
+	
+	<select id="findList" parameterType="java.util.HashMap"
+			resultMap="BaseResultMap">
+		SELECT 
+			gd.id, gd.user_group_id, gd.user_id, gd.create_user_id, gd.create_time
+		FROM t_user_group_detail gd
+		inner join t_user_group_v2 g on g.id=gd.user_group_id and g.group_type=1
+		<where>
+			<if test="userGroupId != null">
+				AND user_group_id = #{userGroupId,jdbcType=BIGINT}
+			</if>
+			<if test="userId != null">
+				AND user_id = #{userId,jdbcType=BIGINT}
+			</if>
+			<if test="plate != null">
+				AND user_id in (select veh_user_id from v_vehicle_mark_manage where veh_mark= #{plate,jdbcType=VARCHAR} )
+			</if>
+		</where>
+	</select>
+	
+	<select id="findSyncList" parameterType="java.util.HashMap"
+			resultMap="BaseResultMap">
+		select 
+		user_group_id,
+		user_id
+		from (
+		select gi.user_group_id,vm.veh_user_id as user_id from t_user_group_input gi
+		inner join t_user_group_v2 g on g.id=gi.user_group_id and g.group_type=1
+		inner join v_vehicle_mark_manage vm on vm.veh_mark=gi.plate 
+		<if test="userGroupId != null">
+			AND gi.user_group_id = #{userGroupId,jdbcType=BIGINT}
+		</if>
+		<if test="userId != null">
+			AND vm.veh_user_id = #{userId,jdbcType=BIGINT}
+		</if>
+		<if test="plate != null">
+			AND vm.veh_mark = #{plate,jdbcType=VARCHAR}
+		</if>
+		union
+		select gi.user_group_id,tu.id as user_id from t_user_group_input gi
+		inner join t_user_group_v2 g on g.id=gi.user_group_id and g.group_type=1
+		inner join t_user tu on tu.username=gi.mobile
+		<if test="userGroupId != null">
+			AND gi.user_group_id = #{userGroupId,jdbcType=BIGINT}
+		</if>
+		<if test="userId != null">
+			AND gi.user_id = #{userId,jdbcType=BIGINT}
+		</if>
+		<if test="plate != null">
+			gi.plate = #{plate,jdbcType=VARCHAR}
+		</if>
+		
+		) as t
+		
+	</select>
+	
+</mapper>
