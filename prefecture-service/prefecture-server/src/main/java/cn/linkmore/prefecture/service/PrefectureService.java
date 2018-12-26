@@ -9,6 +9,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
@@ -152,5 +153,9 @@ public interface PrefectureService {
 
 	List<cn.linkmore.prefecture.controller.app.response.ResPrefecture> nearList(ReqNearPrefecture rp,
 			HttpServletRequest request);
+
+	ResGroupStrategy findGroupStrategy(Long groupId);
+
+	Boolean checkPlate(Long plateId);
 
 }
