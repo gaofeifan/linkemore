@@ -411,6 +411,11 @@ public class StallServiceImpl implements StallService {
 		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
 		
 		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
+		if(stallName != null) {
+			if(!checkStaffStallAuth(cu.getId(), stallName.getId())) {
+				throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+			}
+		}
 		//	安装数据存
 		if(stallLock != null) {
 			//判断根据车位编号查询的车位为下线状态
@@ -1008,9 +1013,10 @@ public class StallServiceImpl implements StallService {
 				/*if (stall.getType() != 0) {
 					continue;
 				}
+				*/
 				if(!stall.getPreId().equals(resPre.getId())) {
 					continue;
-				}*/
+				}
 				if (collect.contains(stall.getId())) {
 					preTypeStalls++;
 					switch (stall.getStatus() ) {
@@ -1157,6 +1163,7 @@ public class StallServiceImpl implements StallService {
 			}else if(resStall.getType() == 2) {
 			}
 			resStaffStallList = getStaffStall(bockBeans,resStaffStallList,resStall,excStallList);
+			resStaffStallList.setType(staffList.getType());
 			staffStallLists.add(resStaffStallList);
 		}
 		return staffStallLists;
