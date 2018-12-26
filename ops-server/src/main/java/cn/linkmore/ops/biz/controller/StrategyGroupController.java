@@ -1,12 +1,24 @@
 package cn.linkmore.ops.biz.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.stream.FileImageInputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +36,12 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.service.EnterpriseService;
+import cn.linkmore.ops.biz.service.PrefectureService;
 import cn.linkmore.ops.biz.service.StrategyGroupService;
+import cn.linkmore.ops.utils.QrCodeGenerateUtil;
 import cn.linkmore.prefecture.request.ReqStrategyGroup;
 import cn.linkmore.prefecture.request.ReqStrategyGroupDetail;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStrategyGroup;
 import cn.linkmore.prefecture.response.ResStrategyGroupArea;
@@ -44,11 +59,17 @@ import cn.linkmore.prefecture.response.ResStrategyGroupArea;
 @RequestMapping("/admin/biz/strategy/group")
 
 public class StrategyGroupController extends BaseController{
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private StrategyGroupService strategyGroupService;
 	
 	@Autowired
 	private EnterpriseService enterService;
+	
+	@Autowired
+	private PrefectureService preService;
+    
 	/**
 	 * 新增
 	 * @param reqStrategyGroup
@@ -317,6 +338,74 @@ public class StrategyGroupController extends BaseController{
 	public List<ResStall> findAreaStall(@RequestParam Map<String, Object> param) {
 		param.put("createUserId", getPerson().getId());
 		return this.strategyGroupService.findAreaStall(param);
+	}
+	
+	/**
+	 * 下载二维码
+	 */
+	@RequestMapping(value = "/download", method = RequestMethod.POST)
+	public void download(Long id,  HttpServletRequest request, HttpServletResponse response) {
+		FileImageInputStream bis = null;
+		BufferedOutputStream bos = null;
+		ServletOutputStream out = null;
+		try {
+			ResStrategyGroup group = this.strategyGroupService.selectByPrimaryKey(id);
+			ResPrefectureDetail pre = preService.findById(group.getPrefectureId());
+			String content = request.getHeader("Origin") + "/mini?cityId="+pre.getCityId().toString() + "&prefectureId=" + pre.getId() + "&groupId=" + id.toString();
+			log.info("down ...........{}",content);
+			//String rootPathText = "/data/qrc"; //服务器路径
+			String rootPathText = "C:\\test\\"; // 本机测试路径
+			String realPath = rootPathText + File.separatorChar;// 临时文件夹
+			// 创建文件路径保证互不影响
+			File file = new File(realPath);
+			if (!file.exists()) {
+				file.mkdir();
+			}
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+			String dateNowStr = sdf.format(new Date());
+			String filePath = realPath + dateNowStr + ".png";
+			try {
+				QrCodeGenerateUtil.createZxing(filePath, content, 900, "png");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			String fileName = URLEncoder.encode(group.getName() + dateNowStr + ".png", "UTF-8");
+			response.setContentType("multipart/form-data");// 指明response的返回对象是文件流
+			response.setHeader("Content-Disposition", "attachment;filename=" + fileName);// 设置在下载框默认显示的文件名
+			response.setCharacterEncoding("UTF-8");
+			out = response.getOutputStream();
+			bos = new BufferedOutputStream(out);
+			bis = new FileImageInputStream(new File(filePath));
+			byte[] buffer = new byte[1];
+			while (bis.read(buffer) != -1) {
+				bos.write(buffer);
+			}
+			bos.flush();
+			out.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bis != null) {
+				try {
+					bis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+				}
+			}
+			if (bos != null) {
+				try {
+					bos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	
