@@ -2,7 +2,6 @@ package cn.linkmore.prefecture.controller.app;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
@@ -80,6 +80,22 @@ public class AppPrefectureController {
 		return response;
 	} 
 	
+	@ApiOperation(value = "车区分组计费详情", notes = "根据车区分组ID查看分组计费策略详情", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/group_strategy", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<ResGroupStrategy> findGroupStrategyById(@Validated @RequestParam(value="groupId", required=true) Long groupId, HttpServletRequest request) {
+		ResponseEntity<ResGroupStrategy> response = null;
+		try { 
+			ResGroupStrategy strategy = this.prefectureService.findGroupStrategy(groupId);
+			response = ResponseEntity.success(strategy, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
+	
 	@ApiOperation(value = "车区详情", notes = "根据车区ID查看车区详情", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.GET)
 	@ResponseBody
@@ -119,6 +135,22 @@ public class AppPrefectureController {
 		}
 		return response;
 	}
+	
+	@ApiOperation(value = "当前车牌是否可预约", notes = "检查当前车牌是否可预约车位", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/check-plate", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> checkPlate(@Validated @RequestParam(value="plateId", required=true) Long plateId, HttpServletRequest request) {
+		ResponseEntity<?> response = null;
+		try { 
+			Boolean flag = this.prefectureService.checkPlate(plateId);
+			response = ResponseEntity.success(flag, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
 	
 	@ApiOperation(value = "空闲车位列表详情", notes = "根据车区ID查看空闲车位列表", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/stall-list", method = RequestMethod.POST)
