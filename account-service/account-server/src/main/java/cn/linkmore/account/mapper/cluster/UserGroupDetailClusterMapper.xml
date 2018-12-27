@@ -310,7 +310,7 @@
 		union
 		select gi.user_group_id,tu.id as user_id from t_user_group_input gi
 		inner join t_user_group_v2 g on g.id=gi.user_group_id and g.group_type=1
-		inner join t_user tu on tu.username=gi.mobile
+		inner join t_user tu on tu.username=gi.mobile and gi.mobile != ''
 		<if test="userGroupId != null">
 			AND gi.user_group_id = #{userGroupId,jdbcType=BIGINT}
 		</if>
