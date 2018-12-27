@@ -34,11 +34,17 @@ public class ResGroupStrategy {
 	@ApiModelProperty(value = "当前计费")
 	private String currentFee;
 	
-	@ApiModelProperty(value = "车场数据")
+	@ApiModelProperty(value = "推荐车牌ID")
+	private Long plateId;
+	
+	@ApiModelProperty(value = "推荐车牌号")
+	private String plateNumber;
+	
+	/*@ApiModelProperty(value = "车场数据")
 	private String parkingData;
 	
 	@ApiModelProperty(value = "车位列表")
-	private List<ResStall> stalls;
+	private List<ResStall> stalls;*/
 	
 	@ApiModelProperty(value = "车场数据Map")
 	private List<Map<String,Object>> parkingDataMap;
@@ -115,22 +121,6 @@ public class ResGroupStrategy {
 		this.currentFee = currentFee;
 	}
 
-	public String getParkingData() {
-		return parkingData;
-	}
-
-	public void setParkingData(String parkingData) {
-		this.parkingData = parkingData;
-	}
-
-	public List<ResStall> getStalls() {
-		return stalls;
-	}
-
-	public void setStalls(List<ResStall> stalls) {
-		this.stalls = stalls;
-	}
-
 	public List<Map<String, Object>> getParkingDataMap() {
 		return parkingDataMap;
 	}
@@ -138,5 +128,20 @@ public class ResGroupStrategy {
 	public void setParkingDataMap(List<Map<String, Object>> parkingDataMap) {
 		this.parkingDataMap = parkingDataMap;
 	}
-	
+
+	public Long getPlateId() {
+		return plateId;
+	}
+
+	public void setPlateId(Long plateId) {
+		this.plateId = plateId;
+	}
+
+	public String getPlateNumber() {
+		return plateNumber;
+	}
+
+	public void setPlateNumber(String plateNumber) {
+		this.plateNumber = plateNumber;
+	}
  }

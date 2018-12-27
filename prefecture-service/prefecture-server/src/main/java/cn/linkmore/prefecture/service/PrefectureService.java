@@ -154,7 +154,7 @@ public interface PrefectureService {
 	List<cn.linkmore.prefecture.controller.app.response.ResPrefecture> nearList(ReqNearPrefecture rp,
 			HttpServletRequest request);
 
-	ResGroupStrategy findGroupStrategy(Long groupId);
+	ResGroupStrategy findGroupStrategy(Long groupId, HttpServletRequest request);
 
 	Boolean checkPlate(Long plateId);
 

@@ -864,7 +864,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 
 	@Override
-	public ResGroupStrategy findGroupStrategy(Long groupId) {
+	public ResGroupStrategy findGroupStrategy(Long groupId,HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		ResGroupStrategy groupStrategy = null;
 		ResStrategyGroup group = strategyGroupClusterMapper.selectByPrimaryKey(groupId);
 		if(group != null) {
@@ -929,7 +930,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 							sb.append("\t\r\n");
 						}
 					}
-					sb.deleteCharAt(sb.length() - 3);
 				}
 				log.info("..........pre detail 调用结果{} 免费时长{} 封顶计费{} 描述{}", data, freeMins, topFee, sb.toString());
 			}
@@ -947,11 +947,35 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 			groupStrategy.setFreeMins(appFreeMins);
 			groupStrategy.setBusinessTime("00:00 - 24:00");
-			groupStrategy.setDesc(sb.toString());
+			if(sb.length() > 3) {
+				groupStrategy.setDesc(sb.toString().substring(0, sb.length()-3));
+			}
 			groupStrategy.setGroupId(groupId);
 			groupStrategy.setGroupName(group.getName());
-			
-			
+			//获取上次使用车牌
+			if (cu != null && cu.getId() != null) {
+				Long plateId = null;
+				String plateNumber = null;
+				ResUserOrder ro = this.orderClient.last(cu.getId());
+				List<ResVechicleMark> plates = this.vehicleMarkClient.list(cu.getId());
+				if (ro != null) {
+					Map<String, Long> plateMap = new HashMap<String, Long>();
+					for (ResVechicleMark rvm : plates) {
+						plateMap.put(rvm.getVehMark(), rvm.getId());
+					}
+					plateNumber = ro.getPlateNo();
+					plateId = plateMap.get(plateNumber);
+					if (plateId == null) {
+						plateNumber = null;
+					}
+				}
+				if (plateNumber == null && CollectionUtils.isNotEmpty(plates)) {
+					plateId = plates.get(0).getId();
+					plateNumber = plates.get(0).getVehMark();
+				}
+				groupStrategy.setPlateId(plateId);
+				groupStrategy.setPlateNumber(plateNumber);
+			}
 			//根据分组id查询下面所有车位列表信息
 			List<StrategyGroupDetail> groupDetailList = strategyGroupDetailClusterMapper.findList(groupId);
 			List<Long> stallIds = new ArrayList<Long>();
@@ -996,8 +1020,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 					}
 				}
 				log.info(".........parking data map = {}", JSON.toJSON(mapList));
-				groupStrategy.setStalls(stallList);
-				groupStrategy.setParkingData(JSON.toJSONString(mapList));
+				//groupStrategy.setStalls(stallList);
+				//groupStrategy.setParkingData(JSON.toJSONString(mapList));
 				groupStrategy.setParkingDataMap(mapList);
 			}
 		}

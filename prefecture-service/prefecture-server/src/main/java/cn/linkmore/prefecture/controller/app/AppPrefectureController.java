@@ -86,7 +86,7 @@ public class AppPrefectureController {
 	public ResponseEntity<ResGroupStrategy> findGroupStrategyById(@Validated @RequestParam(value="groupId", required=true) Long groupId, HttpServletRequest request) {
 		ResponseEntity<ResGroupStrategy> response = null;
 		try { 
-			ResGroupStrategy strategy = this.prefectureService.findGroupStrategy(groupId);
+			ResGroupStrategy strategy = this.prefectureService.findGroupStrategy(groupId, request);
 			response = ResponseEntity.success(strategy, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
