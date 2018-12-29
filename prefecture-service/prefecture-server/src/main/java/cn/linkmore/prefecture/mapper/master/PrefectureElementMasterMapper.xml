@@ -10,6 +10,8 @@
     <result column="ele_y" jdbcType="VARCHAR" property="eleY" />
     <result column="ele_status" jdbcType="SMALLINT" property="eleStatus" />
     <result column="ele_pre_id" jdbcType="BIGINT" property="elePreId" />
+    <result column="ele_width" jdbcType="INTEGER" property="eleWidth" />
+    <result column="ele_height" jdbcType="INTEGER" property="eleHeight" />
   </resultMap>
   
   <delete id="delete" parameterType="java.lang.Long">
@@ -18,11 +20,11 @@
   </delete>
   <insert id="save" parameterType="cn.linkmore.prefecture.entity.PrefectureElement">
     insert into v_prefecture_element (id, ele_type, ele_name, 
-      ele_src, ele_x, ele_y, 
-      ele_status, ele_pre_id)
+      ele_src, ele_x, ele_y, ele_status, ele_pre_id, ele_width, ele_height)
     values (#{id,jdbcType=BIGINT}, #{eleType,jdbcType=VARCHAR}, #{eleName,jdbcType=VARCHAR}, 
       #{eleSrc,jdbcType=VARCHAR}, #{eleX,jdbcType=VARCHAR}, #{eleY,jdbcType=VARCHAR}, 
-      #{eleStatus,jdbcType=SMALLINT}, #{elePreId,jdbcType=BIGINT})
+      #{eleStatus,jdbcType=SMALLINT}, #{elePreId,jdbcType=BIGINT},
+      #{eleWidth,jdbcType=INTEGER},#{eleHeight,jdbcType=INTEGER})
   </insert>
   
   <update id="update" parameterType="cn.linkmore.prefecture.entity.PrefectureElement">
@@ -32,7 +34,9 @@
       ele_src = #{eleSrc,jdbcType=VARCHAR},
       ele_x = #{eleX,jdbcType=VARCHAR},
       ele_y = #{eleY,jdbcType=VARCHAR},
-      ele_status = #{eleStatus,jdbcType=SMALLINT}
+      ele_status = #{eleStatus,jdbcType=SMALLINT},
+      ele_width = #{eleWidth,jdbcType=INTEGER},
+      ele_height = #{eleHeight,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

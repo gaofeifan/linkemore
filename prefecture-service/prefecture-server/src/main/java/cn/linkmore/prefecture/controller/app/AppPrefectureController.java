@@ -142,7 +142,7 @@ public class AppPrefectureController {
 	public ResponseEntity<?> checkPlate(@Validated @RequestParam(value="plateId", required=true) Long plateId, HttpServletRequest request) {
 		ResponseEntity<?> response = null;
 		try { 
-			Boolean flag = this.prefectureService.checkPlate(plateId);
+			Boolean flag = this.prefectureService.checkPlate(plateId, request);
 			response = ResponseEntity.success(flag, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);

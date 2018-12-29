@@ -16,6 +16,10 @@ public class PrefectureElement {
     private Short eleStatus;
 
     private Long elePreId;
+    
+    private Integer eleWidth;
+    
+    private Integer eleHeight;
 
     public Long getId() {
         return id;
@@ -80,4 +84,21 @@ public class PrefectureElement {
     public void setElePreId(Long elePreId) {
         this.elePreId = elePreId;
     }
+
+	public Integer getEleWidth() {
+		return eleWidth;
+	}
+
+	public void setEleWidth(Integer eleWidth) {
+		this.eleWidth = eleWidth;
+	}
+
+	public Integer getEleHeight() {
+		return eleHeight;
+	}
+
+	public void setEleHeight(Integer eleHeight) {
+		this.eleHeight = eleHeight;
+	}
+    
 }

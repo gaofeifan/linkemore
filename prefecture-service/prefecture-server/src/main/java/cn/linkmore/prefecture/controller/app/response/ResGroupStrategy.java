@@ -46,7 +46,7 @@ public class ResGroupStrategy {
 	@ApiModelProperty(value = "车位列表")
 	private List<ResStall> stalls;*/
 	
-	@ApiModelProperty(value = "车场数据Map")
+	@ApiModelProperty(value = "车场数据Map其中status=1表示空闲 2表示占用 4表示下线")
 	private List<Map<String,Object>> parkingDataMap;
 	
 	public Long getPreId() {

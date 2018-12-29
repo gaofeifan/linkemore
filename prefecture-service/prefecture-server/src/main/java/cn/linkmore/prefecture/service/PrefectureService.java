@@ -156,6 +156,6 @@ public interface PrefectureService {
 
 	ResGroupStrategy findGroupStrategy(Long groupId, HttpServletRequest request);
 
-	Boolean checkPlate(Long plateId);
+	Boolean checkPlate(Long plateId, HttpServletRequest request);
 
 }

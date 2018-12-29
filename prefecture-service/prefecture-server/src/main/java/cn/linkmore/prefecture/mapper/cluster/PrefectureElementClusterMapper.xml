@@ -10,9 +10,11 @@
     <result column="ele_y" jdbcType="VARCHAR" property="eleY" />
     <result column="ele_status" jdbcType="SMALLINT" property="eleStatus" />
     <result column="ele_pre_id" jdbcType="BIGINT" property="elePreId" />
+    <result column="ele_width" jdbcType="INTEGER" property="eleWidth" />
+    <result column="ele_height" jdbcType="INTEGER" property="eleHeight" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ele_type, ele_name, ele_src, ele_x, ele_y, ele_status, ele_pre_id
+    id, ele_type, ele_name, ele_src, ele_x, ele_y, ele_status, ele_pre_id, ele_width, ele_height
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

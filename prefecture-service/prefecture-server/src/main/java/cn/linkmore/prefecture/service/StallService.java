@@ -311,4 +311,8 @@ public interface StallService {
 	Map<String, Object> watch2(Long stallId);
 	
 	List<ResStaffNewAuth> findNewAuth(Long cityId, HttpServletRequest request);
+	
+	boolean control(Long stallId, HttpServletRequest request);
+	
+	void watchDownResult(Long stallId, HttpServletRequest request);
 }

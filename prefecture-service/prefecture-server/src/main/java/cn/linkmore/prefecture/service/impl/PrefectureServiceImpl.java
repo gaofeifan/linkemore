@@ -33,6 +33,9 @@ import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.LockStatus;
+import cn.linkmore.bean.common.Constants.OperateStatus;
+import cn.linkmore.bean.common.Constants.OrderFailureReason;
+import cn.linkmore.bean.common.Constants.OrderStatus;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -868,7 +871,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		ResGroupStrategy groupStrategy = null;
 		ResStrategyGroup group = strategyGroupClusterMapper.selectByPrimaryKey(groupId);
+		Set<Object> lockSnList = null;
 		if(group != null) {
+			lockSnList = this.redisService
+					.members(RedisKey.PREFECTURE_FREE_STALL.key + group.getPrefectureId());
 			groupStrategy = new ResGroupStrategy();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String freeMins = "";
@@ -994,10 +1000,14 @@ public class PrefectureServiceImpl implements PrefectureService {
 				for (cn.linkmore.prefecture.response.ResStall stall : groupStallList) {
 					resStall = new ResStall();
 					resStall.setStallId(stall.getId());
+					if(lockSnList.contains(stall.getLockSn())) {
+						//空闲车位锁
+						stall.setStatus(1);
+					}
 					resStall.setLockSn(stall.getLockSn());
 					resStall.setStallName(stall.getStallName());
 					stallList.add(resStall);
-					statuMap.put(stall.getStallName(), stall.getStatus());
+					statuMap.put(stall.getStallName(), stall);
 				}
 				
 				List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
@@ -1007,8 +1017,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 					for(PrefectureElement ele: eleList) {
 						paramMap = new HashMap<String,Object>();
 						if(StringUtils.isNotBlank(ele.getEleName())) {
+							cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
 							paramMap.put("name", ele.getEleName());
-							paramMap.put("status", statuMap.get(ele.getEleName()));
+							//此处需要根据车位锁实际状态优化
+							paramMap.put("status", stall.getStatus());
+							paramMap.put("stallId", stall.getId());
 						}
 						if(StringUtils.isNotBlank(ele.getEleSrc())) {
 							paramMap.put("src", ele.getEleSrc());
@@ -1016,12 +1029,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 						paramMap.put("type", ele.getEleType());
 						paramMap.put("x", ele.getEleX());
 						paramMap.put("y", ele.getEleY());
+						paramMap.put("width", ele.getEleWidth());
+						paramMap.put("height", ele.getEleHeight());
 						mapList.add(paramMap);
 					}
 				}
 				log.info(".........parking data map = {}", JSON.toJSON(mapList));
-				//groupStrategy.setStalls(stallList);
-				//groupStrategy.setParkingData(JSON.toJSONString(mapList));
 				groupStrategy.setParkingDataMap(mapList);
 			}
 		}
@@ -1039,17 +1052,31 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 
 	@Override
-	public Boolean checkPlate(Long plateId) {
+	public Boolean checkPlate(Long plateId, HttpServletRequest request) {
 		Boolean flag = false;
-		ResVechicleMark vehicleMark = vehicleMarkClient.findById(plateId);
-		if (vehicleMark == null) {
-			throw new BusinessException(StatusEnum.VALID_EXCEPTION);
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if(cu != null && cu.getId() != null) {
+			ResUserOrder ruo = this.orderClient.last(cu.getId());
+			log.info("..........checkPlate ruo = {}",JSON.toJSON(ruo));
+			if(ruo != null && (ruo.getStatus().intValue() == OrderStatus.UNPAID.value
+					|| ruo.getStatus().intValue() == OrderStatus.SUSPENDED.value)) {
+				throw new BusinessException(StatusEnum.ORDER_UNPAY_ORDER);
+			}
+			ResVechicleMark vehicleMark = vehicleMarkClient.findById(plateId);
+			log.info("..........checkPlate vehicle mark = {}", JSON.toJSON(vehicleMark));
+			if (vehicleMark == null) {
+				throw new BusinessException(StatusEnum.VALID_EXCEPTION);
+			}
+			if (vehicleMark.getUserId().longValue() != cu.getId().longValue()) {
+				throw new BusinessException(StatusEnum.VALID_EXCEPTION);
+			}
+			if (!this.checkCarFree(vehicleMark.getVehMark())) {
+				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY); // 当前车牌号已在预约中，请更换车牌号重新预约
+			}
+			flag = true;
+		}else {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
-		log.info(".........stall list  vehicle mark = {}", JSON.toJSON(vehicleMark));
-		if (!this.checkCarFree(vehicleMark.getVehMark())) {
-			throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY); // 当前车牌号已在预约中，请更换车牌号重新预约
-		}
-		flag = true;
 		return flag;
 	}
 
