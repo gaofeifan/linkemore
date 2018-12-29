@@ -47,6 +47,22 @@ public class AppStallController {
 		}
 		 return response;
 	}
+	
+	@ApiOperation(value = "扫码降锁下单后操作车位锁", notes = "扫码降锁下单后操作车位锁", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/down-control", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> downLock(@Validated @RequestParam(value="stallId", required=true) Long stallId ,HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		 try {
+			 boolean flag = stallService.controlLock(stallId, request);
+			 response = ResponseEntity.success(flag, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
+	}
 
 	@ApiOperation(value = "查看操作结果", notes = "查看操作结果", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/watch", method = RequestMethod.GET)

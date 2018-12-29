@@ -1948,5 +1948,45 @@ public class StallServiceImpl implements StallService {
 			throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
 		}
 	}
+
+	@Override
+	public boolean controlLock(Long stallId, HttpServletRequest request) {
+		boolean flag = false;
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		Stall stall = stallClusterMapper.findById(stallId);
+		log.info("stall:{}", JsonUtil.toJson(stall));
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("<<<<<<<<<order controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			ResLockMessage res = null;
+			// 1 降下
+			Stopwatch stopwatch = Stopwatch.createStarted();
+			res = lockTools.downLockMes(stall.getLockSn());
+			if (res != null) {
+				log.info("<<<<<<<<<order respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+				int code = res.getCode();
+				stopwatch.stop();
+				log.info("<<<<<<<<<order using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+				if (code == 200) {
+					flag = true;
+					// 去掉空闲车位
+					this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+					stall.setLockStatus(2);
+					stall.setStatus(2);
+					stallMasterMapper.lockdown(stall);
+				} else if (code == 500) {
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+				} else {
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+				}
+			}
+		}else {
+			throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+		}
+		log.info("<<<<<<<<<order control result flag>>>>>>>>> = {}", flag);
+	    return flag;
+	}
 	
 }
