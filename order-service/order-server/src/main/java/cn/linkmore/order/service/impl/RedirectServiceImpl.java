@@ -127,7 +127,7 @@ public class RedirectServiceImpl implements RedirectService {
 			//res.setPayrecords(payrecords);
 			// 放入所需支付订单
 			paymsg.put("amount", data.get("amount"));
-			paymsg.put("totalmoney", 0.01);
+			paymsg.put("totalmoney", totalmoney);
 			paymsg.put("orderNo", data.get("orderNo"));
 			paymsg.put("entranceTime", data.get("entranceTime"));
 			paymsg.put("plateNumber", data.get("plateNumber"));
@@ -162,7 +162,7 @@ public class RedirectServiceImpl implements RedirectService {
 			res.setMoney(totalmoney);
 			res.setPayrecords(payrecords);
 			// 放入所需支付订单
-			paymsg.put("totalmoney", 0.01);
+			paymsg.put("totalmoney",totalmoney);
 			paymsg.put("amount", data.get("amount"));
 			paymsg.put("orderNo", data.get("orderNo"));
 			paymsg.put("entranceTime", data.get("entranceTime"));
@@ -173,6 +173,33 @@ public class RedirectServiceImpl implements RedirectService {
 		}
 		return res;
 	}
+	
+	
+	@Override
+	public Boolean serchPlate(ReqSerch reqSerch) {
+				// 查询当前所需支付订单
+				Map<String, Object> parameters = new HashMap<>();
+				parameters.put("plateNo", reqSerch.getPlate());
+				parameters.put("parkCode", reqSerch.getPreId());
+				String response = HttpUtil.sendJson(oauthConfig.getParkOrder(), JsonUtil.toJson(parameters));
+				Map<String, Object> order = new HashMap<>();
+				order = JsonUtil.toObject(response, order.getClass());
+				// 查不到订单
+				if (order.isEmpty()) {
+					throw new BusinessException(StatusEnum.PARK_CODE_NO_ORDER);
+				}
+				Integer code = Integer.valueOf(String.valueOf(order.get("code")));
+				// 已经离场
+				if (code == 500) {
+					throw new BusinessException(StatusEnum.PARK_CODE_FINISH_);
+				}
+				// 出错
+				if (code != 200) {
+					throw new BusinessException(StatusEnum.SERVER_EXCEPTION);
+				}
+		return true;
+	}
+
 
 	/**
 	 * 识别客户端并获取code
@@ -289,7 +316,7 @@ public class RedirectServiceImpl implements RedirectService {
 		reqH5Term.setMchKey(config.getMchKey());
 		reqH5Term.setOpenId(reqPayParm.getOpenid());
 		reqH5Term.setOrderId(orderId);
-		reqH5Term.setTotalAmount(totalAmount);
+		reqH5Term.setTotalAmount(new BigDecimal(0.01));
 		// 获取支付凭证
 		ResH5Term term = h5PayClient.wxpay(reqH5Term);
 		if (term == null) {
@@ -428,7 +455,7 @@ public class RedirectServiceImpl implements RedirectService {
 		reqH5Term.setMchKey(config.getMchKey());
 		reqH5Term.setOpenId(reqPayParm.getOpenid());
 		reqH5Term.setOrderId(orderId);
-		reqH5Term.setTotalAmount(totalAmount);
+		reqH5Term.setTotalAmount(new BigDecimal("0.01"));
 		String parmUrl = h5PayClient.alipay(reqH5Term);
 		log.info("parmUrl---" + parmUrl);
 		return parmUrl;
@@ -502,5 +529,6 @@ public class RedirectServiceImpl implements RedirectService {
 		}
 	}
 
+	
 
 }

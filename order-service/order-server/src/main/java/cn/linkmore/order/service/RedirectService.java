@@ -30,4 +30,6 @@ public interface RedirectService {
 	
 	String aliparm(ReqPayParm reqPayParm);
 	
+    Boolean	serchPlate(ReqSerch reqSerch);
+	
 }

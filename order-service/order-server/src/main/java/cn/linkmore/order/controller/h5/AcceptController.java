@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.netflix.infix.lang.infix.antlr.EventFilterParser.boolean_expr_return;
+
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -58,6 +60,25 @@ public class AcceptController {
 		ResponseEntity<ResSearch> response = null;
 		try {
 			ResSearch res =	redirectService.getOrder(reqSerch);
+			response = ResponseEntity.success(res, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			e.getMessage();
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	
+	@ApiOperation(value = "是否有订单", notes = "是否有订单", consumes = "application/json")
+	@RequestMapping(value = "/n", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> serchPlate(@RequestBody ReqSerch reqSerch, HttpServletRequest request)
+			throws IOException {
+		log.info("获取订单详情");
+		ResponseEntity<Boolean> response = null;
+		try {
+			Boolean res =	redirectService.serchPlate(reqSerch);
 			response = ResponseEntity.success(res, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);

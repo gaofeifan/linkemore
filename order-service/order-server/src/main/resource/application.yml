@@ -115,7 +115,7 @@ swagger:
   contact: 凌猫停车 
   base-package: cn.linkmore.order.controller.app,cn.linkmore.order.controller.h5,cn.linkmore.order.controller.staff
 
-#授权转发
+#授权转发192.168.1.133:8086
 oauth: 
   wx-code-url: http://test.linkmoreparking.cn/api/order/h5/a
   zfb-code-url: http://test.linkmoreparking.cn/api/order/h5/b
