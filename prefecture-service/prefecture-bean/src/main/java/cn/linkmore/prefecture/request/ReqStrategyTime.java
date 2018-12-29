@@ -16,8 +16,10 @@ public class ReqStrategyTime {
 	 * 简介
 	 */
 	private String detail;
-
-
+	/**
+	 * 是否为共用  =1 是, !=1否
+	 */
+	private Byte isPublic;
 	/**
 	 * 新建用户id
 	 */
@@ -72,6 +74,13 @@ public class ReqStrategyTime {
 	}
 	public void setDetail(String detail) {
 		this.detail = detail;
+	}
+	
+	public Byte getIsPublic() {
+		return isPublic;
+	}
+	public void setIsPublic(Byte isPublic) {
+		this.isPublic = isPublic;
 	}
 	public Long getCreateUserId() {
 		return createUserId;

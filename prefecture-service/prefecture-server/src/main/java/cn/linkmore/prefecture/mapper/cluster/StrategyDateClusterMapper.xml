@@ -6,6 +6,7 @@
 		<id column="id" jdbcType="BIGINT" property="id" />
 		<result column="name" jdbcType="VARCHAR" property="name" />
 		<result column="detail" jdbcType="VARCHAR" property="detail" />
+		<result column="is_public" jdbcType="INTEGER" property="isPublic" />
 		<result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
 		<result column="create_user_name" jdbcType="VARCHAR"	property="createUserName" />
 		<result column="create_time" jdbcType="TIMESTAMP"	property="createTime" />
@@ -18,7 +19,7 @@
 		<result column="status" jdbcType="TINYINT" property="status" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, name, detail, 
+		id, name, detail, is_public,
 		create_user_id, create_user_name, create_time,
 		update_user_id,	update_user_name, update_time, 
 		start_date, stop_date, datetype, status
@@ -55,10 +56,11 @@
 		select
 		<include refid="Base_Column_List" />
 		from v_strategy_date
-		where status = 2
+		where ( is_public = 1 and status = 2 ) or (status = 2
 	    <if test="createUserId != null">
 	       and create_user_id = #{createUserId,jdbcType=BIGINT}
 	    </if>
+	    )
 		order by update_time DESC
 	</select>
 </mapper>

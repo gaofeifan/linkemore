@@ -315,10 +315,10 @@
 			AND gi.user_group_id = #{userGroupId,jdbcType=BIGINT}
 		</if>
 		<if test="userId != null">
-			AND gi.user_id = #{userId,jdbcType=BIGINT}
+			AND tu.id = #{userId,jdbcType=BIGINT}
 		</if>
 		<if test="plate != null">
-			gi.plate = #{plate,jdbcType=VARCHAR}
+			AND gi.plate = #{plate,jdbcType=VARCHAR}
 		</if>
 		
 		) as t

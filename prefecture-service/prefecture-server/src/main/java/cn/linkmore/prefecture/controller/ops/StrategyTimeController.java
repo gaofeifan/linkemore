@@ -78,6 +78,16 @@ public class StrategyTimeController {
 		return this.strategyTimeService.updateStatus(map);
 	}
 
+	/**
+	 * 设置是否共用
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/update_public", method = RequestMethod.POST)
+	@ResponseBody
+	public int updatePublic(@RequestBody Map<String, Object> map) {
+		return this.strategyTimeService.updatePublic(map);
+	}
 	
 	/**
 	 * 列表-分页

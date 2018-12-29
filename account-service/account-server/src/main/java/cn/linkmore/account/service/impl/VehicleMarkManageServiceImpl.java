@@ -4,17 +4,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
 import cn.linkmore.account.entity.VehicleMarkManage;
 import cn.linkmore.account.request.ReqVehicleMark;
 import cn.linkmore.account.response.ResVechicleMark;
+import cn.linkmore.account.service.UserGroupInputService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.account.service.VehicleMarkManageService;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -47,7 +55,8 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	private OpsRentEntUserClient opsRentEntUserClient;
 	@Resource
 	private OpsRentUserClient opsRentUserClient;
-	
+	@Resource
+	private UserGroupInputService userGroupInputService;
 	@Override
 	public List<VehicleMarkManage> findByUserId(Long userId) {
 		return this.vehicleMarkManageClusterMapper.findByUserId(userId);
@@ -90,6 +99,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 							logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
 						}
 					}
+					userGroupInputService.syncByUserIdAndPlate(user.getId(), bean.getVehMark());
 				}
 			}
 		}else {
@@ -105,13 +115,37 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 		for (ResVechicleMark resVechicleMark : list) {
 			if(resVechicleMark.getId().equals(id)) {
 				this.vehicleMarkManageMasterMapper.deleteById(id);
+				String key = TokenUtil.getKey(request);
+				CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+				//userGroupInputService.syncByUserId(user.getId());
+				threadPools.execute(new SyncData(user.getId()));
 				return;
 			}
 		}
 		throw new RuntimeException("该账户下没有此车牌号");
 	}
+
 	
+	private BlockingQueue<Runnable> bqueue = new LinkedBlockingQueue<Runnable>(1000);
+	private ThreadPoolExecutor threadPools = new ThreadPoolExecutor(2,10, 1, TimeUnit.MINUTES,
+			bqueue, new ThreadPoolExecutor.CallerRunsPolicy());
 	
+	class SyncData implements Runnable {
+		private Long userId;
+		public SyncData(Long userId) {
+			this.userId=userId;
+		}
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			userGroupInputService.syncByUserId(this.userId);
+		}
+		
+	}
 
 /*
 	@Override
@@ -175,7 +209,9 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 			mark.setVehUserId(vechicle.getUserId().toString());
 			mark.setUpdateTime(new Date());
 			mark.setVehMark(bean.getNewpl());
-			return vehicleMarkManageMasterMapper.updateById(mark);
+			int count=vehicleMarkManageMasterMapper.updateById(mark);
+			userGroupInputService.syncByUserIdAndPlate(bean.getUserId(), bean.getNewpl());
+			return count;
 		}
 		return 0;
 	}

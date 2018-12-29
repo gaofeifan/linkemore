@@ -11,7 +11,11 @@ public class ReqStrategyDate {
     private String name;
 
     private String detail;
-
+	/**
+	 * 是否为共用  =1 是, !=1 否
+	 */
+	private Byte isPublic;
+	
     private Long createUserId;
 
     private String createUserName;
@@ -68,7 +72,15 @@ public class ReqStrategyDate {
         this.detail = detail == null ? null : detail.trim();
     }
 
-    public Long getCreateUserId() {
+    public Byte getIsPublic() {
+		return isPublic;
+	}
+
+	public void setIsPublic(Byte isPublic) {
+		this.isPublic = isPublic;
+	}
+
+	public Long getCreateUserId() {
         return createUserId;
     }
 

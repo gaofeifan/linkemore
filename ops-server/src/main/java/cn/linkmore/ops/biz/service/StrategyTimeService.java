@@ -26,9 +26,13 @@ public interface StrategyTimeService {
 	
 	int updateStatus(Map<String, Object> map);
 	
+	int updatePublic(Map<String, Object> map);
+	
 	int delete(List<Long> ids);
 
 	ResStrategyTime selectByPrimaryKey(Long id);
+
+	
 
 	//Boolean check(ReqCheck reqCheck);
 

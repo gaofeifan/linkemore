@@ -17,6 +17,11 @@ public class StrategyTime {
 	private String detail;
 	
 	/**
+	 * 是否为共用  =1 是, !=1 否
+	 */
+	private Byte isPublic;
+	 
+	/**
 	 * 新建用户id
 	 */
 	private Long createUserId;
@@ -64,6 +69,12 @@ public class StrategyTime {
 		this.detail = detail;
 	}
 
+	public Byte getIsPublic() {
+		return isPublic;
+	}
+	public void setIsPublic(Byte isPublic) {
+		this.isPublic = isPublic;
+	}
 	public Long getCreateUserId() {
 		return createUserId;
 	}

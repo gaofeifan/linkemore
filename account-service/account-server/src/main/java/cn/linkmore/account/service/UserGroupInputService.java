@@ -38,8 +38,11 @@ public interface UserGroupInputService {
 	boolean syncByUserGroupId(Long userGroupId);
 	boolean syncByPlate(String plant);
 	boolean syncByUserId(Long userId);
-
+	boolean syncByUserIdAndPlate(Long userId, String plate);
+	
 	ViewPage pageUserByNotInUserGroup(ViewPageable pageable);
+
+	
 
 	
 

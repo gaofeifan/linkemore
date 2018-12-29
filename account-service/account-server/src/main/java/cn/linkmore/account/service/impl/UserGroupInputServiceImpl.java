@@ -160,9 +160,9 @@ public class UserGroupInputServiceImpl implements UserGroupInputService {
 	}
 
 	@Override
-	public boolean syncByPlate(String plant) {
+	public boolean syncByPlate(String plate) {
 		Map<String,Object> param=new HashMap<String,Object>();
-		param.put("plant", plant);
+		param.put("plate", plate);
 		return sync(param);
 	}
 
@@ -170,6 +170,14 @@ public class UserGroupInputServiceImpl implements UserGroupInputService {
 	public boolean syncByUserId(Long userId) {
 		Map<String,Object> param=new HashMap<String,Object>();
 		param.put("userId", userId);
+		return sync(param);
+	}
+	
+	@Override
+	public boolean syncByUserIdAndPlate(Long userId,String plate) {
+		Map<String,Object> param=new HashMap<String,Object>();
+		param.put("userId", userId);
+		param.put("plate", plate);
 		return sync(param);
 	}
 	
@@ -198,10 +206,11 @@ public class UserGroupInputServiceImpl implements UserGroupInputService {
 					}
 				}
 			}
-	
+		}
 			List<UserGroupDetail> listUserDetail = userGroupDetailClusterMapper.findList(param);
 			List<UserGroupDetail> listSyncDetail = userGroupDetailClusterMapper.findSyncList(param);
-	
+			log.info("sync user group old list size={} , new list size={}",listUserDetail.size(),listSyncDetail.size());
+			
 			//删除
 			if (CollectionUtils.isNotEmpty(listUserDetail)) {
 				List <Long> ids =new ArrayList<Long>();
@@ -214,7 +223,7 @@ public class UserGroupInputServiceImpl implements UserGroupInputService {
 					userGroupDetailMasterMapper.deleteByIds(ids);
 				}
 			}
-	
+
 			//新增
 			if (CollectionUtils.isNotEmpty(listSyncDetail)) {
 				for(UserGroupDetail userGroupDetail : listSyncDetail) {
@@ -226,7 +235,7 @@ public class UserGroupInputServiceImpl implements UserGroupInputService {
 				}
 			}
 		
-		}
+		
 		return true;
 	}
 	

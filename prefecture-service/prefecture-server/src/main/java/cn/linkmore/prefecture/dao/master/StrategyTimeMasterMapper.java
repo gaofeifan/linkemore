@@ -15,5 +15,7 @@ public interface StrategyTimeMasterMapper {
 	int delete(List<Long> ids);
 
 	int updateStatus(Map<String, Object> map);
+
+	int updatePublic(Map<String, Object> map);
 	
 }

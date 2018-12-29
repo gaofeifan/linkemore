@@ -52,4 +52,10 @@ public class StrategyDateServiceImpl implements StrategyDateService {
 	public ResStrategyDate selectByPrimaryKey(Long id) {
 		return opsStrategyDateClient.selectByPrimaryKey(id);
 	}
+
+	@Override
+	public int updatePublic(Map<String, Object> map) {
+		return opsStrategyDateClient.updatePublic(map);
+		
+	}
 }

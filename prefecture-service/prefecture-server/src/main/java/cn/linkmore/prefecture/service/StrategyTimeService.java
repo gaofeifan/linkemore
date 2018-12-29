@@ -35,7 +35,14 @@ public interface StrategyTimeService {
 	 * @return
 	 */
 	int updateStatus(Map<String, Object> map);
-
+	
+	/**
+	 * 设置是否为共用
+	 * @param map
+	 * @return
+	 */
+	int updatePublic(Map<String, Object> map);
+	
 	/**
 	 * 分页列表
 	 * @param pageable

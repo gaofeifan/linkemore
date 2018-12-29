@@ -53,4 +53,9 @@ public class StrategyTimeServiceImpl implements StrategyTimeService {
 	public ResStrategyTime selectByPrimaryKey(Long id) {
 		return opsStrategyTimeClient.selectByPrimaryKey(id);
 	}
+
+	@Override
+	public int updatePublic(Map<String, Object> map) {
+		return opsStrategyTimeClient.updatePublic(map);
+	}
 }
