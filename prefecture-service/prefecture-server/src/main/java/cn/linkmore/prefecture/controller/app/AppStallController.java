@@ -41,7 +41,7 @@ public class AppStallController {
 			 boolean flag = stallService.control(stallId, request);
 			 response = ResponseEntity.success(flag, request);
 		}  catch (BusinessException e) {
-			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+			response = ResponseEntity.fail(e.getStatusEnum(),  request);
 		} catch (Exception e) { 
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
@@ -49,19 +49,19 @@ public class AppStallController {
 	}
 
 	@ApiOperation(value = "查看操作结果", notes = "查看操作结果", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/watch", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/watch", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Boolean> watch(@Validated @RequestParam(value="stallId", required=true) Long stallId,
 			HttpServletRequest request) {
 		ResponseEntity<Boolean> response = null;
 		 try {
 			 stallService.watchDownResult(stallId,request);
-			 response  =	 ResponseEntity.success(true, request);
-		}  catch (BusinessException e) {
+			 response = ResponseEntity.success(true, request);
+		 } catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
-		} catch (Exception e) { 
+		 } catch (Exception e) { 
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
+		 }
 		 return response;
 	}
 }

@@ -1000,7 +1000,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 				for (cn.linkmore.prefecture.response.ResStall stall : groupStallList) {
 					resStall = new ResStall();
 					resStall.setStallId(stall.getId());
-					if(lockSnList.contains(stall.getLockSn())) {
+					if(lockSnList.contains(stall.getLockSn()) && stall.getStatus() == 1) {
 						//空闲车位锁
 						stall.setStatus(1);
 					}

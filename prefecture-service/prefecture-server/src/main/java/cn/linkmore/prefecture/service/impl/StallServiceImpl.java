@@ -1825,51 +1825,62 @@ public class StallServiceImpl implements StallService {
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
-		// 争抢
-		String robkey = RedisKey.ROB_STALL_ISHAVE.key + stallId;
-		Boolean have = true;
-		try {
-			have = this.redisLock.getLock(robkey, user.getId());
-			log.info("用户=======>" + user.getId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
-		} catch (Exception e) {
-			
-		}
-		if (!have) {
-			throw new BusinessException(StatusEnum.STALL_HIVING_DO);
-		}
-		// 放入缓存
-		String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
-		this.redisService.set(rediskey, user.getId(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
-		log.info("用户>>>" + user.getId() + "缓存>>>" + rediskey);
-		log.info("用户>>>" + user.getId() + "调用>>>" + stallId);
-
-		String uid = String.valueOf(redisService.get(rediskey));
 		Stall stall = stallClusterMapper.findById(stallId);
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			log.info("<<<<<<<<<controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
-			ResLockMessage res = null;
-			// 1 降下 2 升起
-			Stopwatch stopwatch = Stopwatch.createStarted();
-			res = lockTools.downLockMes(stall.getLockSn());
-			log.info("<<<<<<<<<respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
-			int code = res.getCode();
-			stopwatch.stop();
-			log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
-			
-			sendMsg(uid, 1, code);
-			if (code == 200) {
-				flag = true;
-				//去掉空闲车位
-				redisService.remove(rediskey);
-				this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
-				stall.setLockStatus(2);
-				stall.setStatus(2);
-				stallMasterMapper.lockdown(stall);
+			Set<Object> lockSnList =  this.redisService
+					.members(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId());
+			if(lockSnList.contains(stall.getLockSn()) && stall.getStatus() == 1) {
+				// 争抢
+				String robkey = RedisKey.ROB_STALL_ISHAVE.key + stallId;
+				Boolean have = true;
+				try {
+					have = this.redisLock.getLock(robkey, user.getId());
+					log.info("用户=======>" + user.getId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
+				} catch (Exception e) {
+					log.info("用户争抢锁异常信息{}",e.getMessage());
+				}
+				if (!have) {
+					throw new BusinessException(StatusEnum.STALL_HIVING_DO);
+				}
+				// 放入缓存
+				String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
+				this.redisService.set(rediskey, user.getId(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+				log.info("用户>>>" + user.getId() + "缓存>>>" + rediskey);
+				log.info("用户>>>" + user.getId() + "调用>>>" + stallId);
+				log.info("<<<<<<<<<controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+				ResLockMessage res = null;
+				// 1 降下
+				Stopwatch stopwatch = Stopwatch.createStarted();
+				res = lockTools.downLockMes(stall.getLockSn());
+				if(res != null) {
+					log.info("<<<<<<<<<respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+					int code = res.getCode();
+					stopwatch.stop();
+					log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+					if (code == 200) {
+						flag = true;
+						//去掉空闲车位
+						redisService.remove(rediskey);
+						this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+						stall.setLockStatus(2);
+						stall.setStatus(2);
+						stallMasterMapper.lockdown(stall);
+					}else if(code == 500){
+						redisService.remove(rediskey);
+						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+					}else {
+						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+					}
+				}
+				redisService.remove(robkey);
+			}else {
+				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
 			}
-			redisService.remove(robkey);
+		}else {
+			throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
 		}
-		log.info("control result flag = {}", flag);
+		log.info("<<<<<<<<<control result flag>>>>>>>>> = {}", flag);
 	    return flag;
 	}
 	
