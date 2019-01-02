@@ -10,19 +10,15 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Stopwatch;
-
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.ClientSource;
@@ -1825,6 +1821,7 @@ public class StallServiceImpl implements StallService {
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
+		
 		Stall stall = stallClusterMapper.findById(stallId);
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
@@ -1869,7 +1866,9 @@ public class StallServiceImpl implements StallService {
 					}else if(code == 500){
 						redisService.remove(rediskey);
 						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
-					}else {
+					}/* else if (code == 400){
+						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_DROP);
+					} */else {
 						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
 					}
 				}
@@ -1882,39 +1881,6 @@ public class StallServiceImpl implements StallService {
 		}
 		log.info("<<<<<<<<<control result flag>>>>>>>>> = {}", flag);
 	    return flag;
-	}
-	
-	public void downLock(ReqControlLock reqc) { // 控制锁下降
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				String uid = String.valueOf(redisService.get(reqc.getKey()));
-				Stall stall = stallClusterMapper.findById(reqc.getStallId());
-				log.info("stall:{}", JsonUtil.toJson(stall));
-				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-					log.info("<<<<<<<<<controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
-					ResLockMessage res = null;
-					// 1 降下 2 升起
-					Stopwatch stopwatch = Stopwatch.createStarted();
-					if (reqc.getStatus() == 1) {
-						res = lockTools.downLockMes(stall.getLockSn());
-					} 
-					log.info("<<<<<<<<<respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
-					int code = res.getCode();
-					stopwatch.stop();
-					log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
-					sendMsg(uid, reqc.getStatus(), code);
-					String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqc.getStallId();
-					if (code == 200) {
-						redisService.remove(reqc.getKey());
-						stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
-						stall.setStatus(reqc.getStatus() == 1 ? 2 : 1);
-						stallMasterMapper.lockdown(stall);
-					} 
-					redisService.remove(robkey);
-				}
-			}
-		}).start();
 	}
 
 	@Override
@@ -1952,10 +1918,13 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean controlLock(Long stallId, HttpServletRequest request) {
 		boolean flag = false;
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		/*CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
-		}
+		}*/
+
+		CacheUser user = new CacheUser();
+		user.setId(2743L);
 		Stall stall = stallClusterMapper.findById(stallId);
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
@@ -1978,7 +1947,9 @@ public class StallServiceImpl implements StallService {
 					stallMasterMapper.lockdown(stall);
 				} else if (code == 500) {
 					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
-				} else {
+				} /*else if (code == 400){
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_DROP);
+				}*/ else{
 					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
 				}
 			}
@@ -1987,6 +1958,34 @@ public class StallServiceImpl implements StallService {
 		}
 		log.info("<<<<<<<<<order control result flag>>>>>>>>> = {}", flag);
 	    return flag;
+	}
+
+	@Override
+	public boolean verify(Long stallId, HttpServletRequest request) {
+		boolean flag = false;
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		Stall stall = stallClusterMapper.findById(stallId);
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("<<<<<<<<<bluetooth verify>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			// 0 降下
+			Stopwatch stopwatch = Stopwatch.createStarted();
+			ResLockInfo lock = lockTools.lockInfo(stall.getLockSn());
+			if(lock == null) {
+				//锁掉线,未找到车位锁
+				return true;
+			}
+			if(lock.getLockState() == 0) {
+				flag = true;
+			}
+			stopwatch.stop();
+			log.info("<<<<<<<<<bluetooth verify using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+		}else {
+			throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+		}
+		return flag;
 	}
 	
 }

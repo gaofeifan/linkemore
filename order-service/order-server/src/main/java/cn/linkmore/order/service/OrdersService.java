@@ -266,5 +266,7 @@ public interface OrdersService {
 	void savelog(ResOrderOperateLog resOrderOperateLog);
 
 	void cancel(Long orderId, HttpServletRequest request);
+
+	ResOrder downAppoint(ReqStallBooking rsb, HttpServletRequest request);
 		
 }

@@ -40,11 +40,11 @@ public class ResGroupStrategy {
 	@ApiModelProperty(value = "推荐车牌号")
 	private String plateNumber;
 	
-	/*@ApiModelProperty(value = "车场数据")
-	private String parkingData;
+	@ApiModelProperty(value = "车区网格横格数量")
+	private Integer gridX;
 	
-	@ApiModelProperty(value = "车位列表")
-	private List<ResStall> stalls;*/
+	@ApiModelProperty(value = "车区网格纵格数量")
+	private Integer gridY;
 	
 	@ApiModelProperty(value = "车场数据Map其中status=1表示空闲 2表示占用 4表示下线")
 	private List<Map<String,Object>> parkingDataMap;
@@ -143,5 +143,21 @@ public class ResGroupStrategy {
 
 	public void setPlateNumber(String plateNumber) {
 		this.plateNumber = plateNumber;
+	}
+
+	public Integer getGridX() {
+		return gridX;
+	}
+
+	public void setGridX(Integer gridX) {
+		this.gridX = gridX;
+	}
+
+	public Integer getGridY() {
+		return gridY;
+	}
+
+	public void setGridY(Integer gridY) {
+		this.gridY = gridY;
 	}
  }

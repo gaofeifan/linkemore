@@ -322,4 +322,11 @@ public interface StallService {
 	 * @return
 	 */
 	boolean controlLock(Long stallId, HttpServletRequest request);
+	/**
+	 * 蓝牙降锁成功后验证
+	 * @param stallId
+	 * @param request
+	 * @return
+	 */
+	boolean verify(Long stallId, HttpServletRequest request);
 }

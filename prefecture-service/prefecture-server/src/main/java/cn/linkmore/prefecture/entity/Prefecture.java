@@ -161,6 +161,31 @@ public class Prefecture {
      */
     private String businessTime;
     
+    /**
+     * 网格横坐标
+     */
+    private Integer gridX;
+    /**
+     * 网格纵坐标
+     */
+    private Integer gridY;
+    
+    public Integer getGridX() {
+		return gridX;
+	}
+
+	public void setGridX(Integer gridX) {
+		this.gridX = gridX;
+	}
+
+	public Integer getGridY() {
+		return gridY;
+	}
+
+	public void setGridY(Integer gridY) {
+		this.gridY = gridY;
+	}
+    
     public String getBusinessTime() {
 		return businessTime;
 	}

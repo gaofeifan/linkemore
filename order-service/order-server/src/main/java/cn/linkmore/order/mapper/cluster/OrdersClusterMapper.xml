@@ -95,6 +95,7 @@
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="brand_id" jdbcType="BIGINT" property="brandId" />
     <result column="stall_type" jdbcType="SMALLINT" property="stallType" />
+    <result column="order_source" jdbcType="SMALLINT" property="orderSource" />
   </resultMap>
    <resultMap id="OpsResultMap" type="cn.linkmore.order.response.ResOrderOps">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -133,7 +134,8 @@
     id, user_id, pre_id,pre_name, stall_id, stall_name,order_no, pay_type, total_amount, actual_amount, status, 
     begin_time, username, end_time, plate_no,
     create_time, update_time, dock_id, status_history, user_type, status_time, lock_down_time, 
-    lock_down_status,switch_status,switch_time,strategy_id,pay_time,coupon_amount,coupon_id,trade_id,stall_type,ent_id,brand_id
+    lock_down_status,switch_status,switch_time,strategy_id,pay_time,coupon_amount,coupon_id,trade_id,
+    stall_type,ent_id,brand_id,order_source
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

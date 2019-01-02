@@ -8,6 +8,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
@@ -64,6 +66,7 @@ import cn.linkmore.order.response.ResOrderConfirm;
 import cn.linkmore.order.response.ResOrderWeixin;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.PayService;
+import cn.linkmore.prefecture.client.OpsEntUserPlateClient;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.client.StrategyFeeClient;
@@ -174,6 +177,9 @@ public class PayServiceImpl implements PayService {
 	
 	@Autowired
 	private DockingClient dockingClient;
+	
+	@Resource
+	private OpsEntUserPlateClient userPlateClient; 
 
 	@Override
 	public ResPayCheckout checkout(Long orderId, HttpServletRequest request) {
@@ -245,6 +251,10 @@ public class PayServiceImpl implements PayService {
 				String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
 				log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout totalAmount:{}", totalAmountStr);
 				roc.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
+				boolean flag = userPlateClient.exists(order.getPlateNo());
+				if(flag) {
+					order.setActualAmount(new BigDecimal(0.00));
+				}
 			}
 		}
 		ResPayCheckout result = null;
@@ -405,8 +415,13 @@ public class PayServiceImpl implements PayService {
 			endTime = order.getStatusTime();
 		}
 		//TODO 9.14号过后需要删除
-		String plateNo = baseConfig.getFreePlate();
+		/*String plateNo = baseConfig.getFreePlate();
 		if (plateNo != null && plateNo.contains(order.getPlateNo())) {
+			order.setActualAmount(new BigDecimal(0.00));
+		}*/
+		
+		boolean flag = userPlateClient.exists(order.getPlateNo());
+		if(flag) {
 			order.setActualAmount(new BigDecimal(0.00));
 		}
 

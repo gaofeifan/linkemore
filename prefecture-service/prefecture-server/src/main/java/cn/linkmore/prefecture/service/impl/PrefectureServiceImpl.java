@@ -871,11 +871,18 @@ public class PrefectureServiceImpl implements PrefectureService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		ResGroupStrategy groupStrategy = null;
 		ResStrategyGroup group = strategyGroupClusterMapper.selectByPrimaryKey(groupId);
+		
 		Set<Object> lockSnList = null;
+		int count = 0;
 		if(group != null) {
 			lockSnList = this.redisService
 					.members(RedisKey.PREFECTURE_FREE_STALL.key + group.getPrefectureId());
+			ResPrefectureDetail preDetail = prefectureClusterMapper.findById(group.getPrefectureId());
 			groupStrategy = new ResGroupStrategy();
+			if(preDetail.getGridX() !=null ) {
+				groupStrategy.setGridX(preDetail.getGridX());
+				groupStrategy.setGridY(preDetail.getGridY());
+			}
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String freeMins = "";
 			String appFreeMins = "";
@@ -1022,6 +1029,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 							//此处需要根据车位锁实际状态优化
 							paramMap.put("status", stall.getStatus());
 							paramMap.put("stallId", stall.getId());
+							paramMap.put("index", count);
+							paramMap.put("lockSn", stall.getLockSn());
 						}
 						if(StringUtils.isNotBlank(ele.getEleSrc())) {
 							paramMap.put("src", ele.getEleSrc());
@@ -1032,6 +1041,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 						paramMap.put("width", ele.getEleWidth());
 						paramMap.put("height", ele.getEleHeight());
 						mapList.add(paramMap);
+						count ++;
 					}
 				}
 				log.info(".........parking data map = {}", JSON.toJSON(mapList));
