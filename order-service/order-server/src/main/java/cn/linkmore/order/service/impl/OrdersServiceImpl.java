@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -86,6 +88,7 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.EntBrandPreClient;
 import cn.linkmore.prefecture.client.EntBrandUserClient;
+import cn.linkmore.prefecture.client.OpsEntUserPlateClient;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
@@ -169,6 +172,9 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	@Autowired
 	private StrategyFeeClient strategyFeeClient;
+	
+	@Resource
+	private OpsEntUserPlateClient userPlateClient; 
 
 	public boolean checkCarFree(String carno) {
 		boolean flag = true;
@@ -1073,6 +1079,10 @@ public class OrdersServiceImpl implements OrdersService {
 			Object object = map.get("chargePrice");
 			if (object != null) {
 				orders.setTotalAmount(new BigDecimal(object.toString()));
+				boolean flag = userPlateClient.exists(orders.getPlateNo());
+				if(flag) {
+					orders.setActualAmount(new BigDecimal(0.00));
+				}
 			}
 		}
 		

@@ -38,6 +38,8 @@
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
     <result column="business_time" jdbcType="VARCHAR" property="businessTime" />
+    <result column="grid_x" jdbcType="INTEGER" property="gridX" />
+    <result column="grid_y" jdbcType="INTEGER" property="gridY" />
   </resultMap>
   
   <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.controller.app.response.ResPrefecture">
