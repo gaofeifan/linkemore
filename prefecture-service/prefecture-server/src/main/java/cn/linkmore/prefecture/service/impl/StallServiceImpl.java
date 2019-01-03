@@ -1108,7 +1108,7 @@ public class StallServiceImpl implements StallService {
 			case 1:
 				status = 2;
 				break;
-			case 2:
+			case 2: 
 				status = 4;
 				break;
 			default:
@@ -1518,25 +1518,6 @@ public class StallServiceImpl implements StallService {
 					}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
 						detail.setOrderStatus((short)7);
 					}
-					// 指定车位锁
-					int assignStatus = 1;
-					String lockSn = stall.getLockSn();
-					Set<Object> set = redisService.members(Constants.RedisKey.ORDER_ASSIGN_STALL.key);
-					log.info("指定锁池个数: {}", set.size());
-					log.info("指定锁池: {}", set.toString());
-					Long preId = stall.getPreId();
-					for (Object obj : set) {
-						JSONObject json = JSON.parseObject(obj.toString());
-						String sn = json.get("lockSn").toString();
-						Long pid = Long.parseLong(json.get("preId").toString());
-						if (pid.longValue() == preId.longValue() && lockSn.equals(sn)) {
-							assignStatus = 0;
-							detail.setAssignPlate(json.get("plate").toString());
-							break;
-						}
-					}
-					detail.setAssignStatus(assignStatus);
-					
 				}else if(stall.getType() == 2) {
 					Map<String,Object> map = new HashMap<String, Object>();
 					map.put("validTime", 1);
@@ -1575,6 +1556,24 @@ public class StallServiceImpl implements StallService {
 					}
 				}
 			}
+			// 指定车位锁
+			int assignStatus = 1;
+			String lockSn = stall.getLockSn();
+			Set<Object> set = redisService.members(Constants.RedisKey.ORDER_ASSIGN_STALL.key);
+			log.info("指定锁池个数: {}", set.size());
+			log.info("指定锁池: {}", set.toString());
+			Long preId = stall.getPreId();
+			for (Object obj : set) {
+				JSONObject json = JSON.parseObject(obj.toString());
+				String sn = json.get("lockSn").toString();
+				Long pid = Long.parseLong(json.get("preId").toString());
+				if (pid.longValue() == preId.longValue() && lockSn.equals(sn)) {
+					assignStatus = 0;
+					detail.setAssignPlate(json.get("plate").toString());
+					break;
+				}
+			}
+			detail.setAssignStatus(assignStatus);
 			detail.setOnoffStatus(true);
 			ResEntExcStallStatus entExcStall = feignStallExcStatusClient.findByStallId(stallId);
 			if (entExcStall != null) {

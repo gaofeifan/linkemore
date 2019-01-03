@@ -14,7 +14,7 @@
   </resultMap>
    <resultMap id="ResponseResultMap" type="cn.linkmore.account.response.ResReceive">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="share_id" jdbcType="BIGINT" property="shareId" />
+    <result column="share_id" jdbcType="BIGINT"  property="shareId" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="type" jdbcType="INTEGER" property="type" />

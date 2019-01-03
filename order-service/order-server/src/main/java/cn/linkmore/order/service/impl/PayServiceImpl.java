@@ -3,11 +3,17 @@ package cn.linkmore.order.service.impl;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
@@ -71,6 +77,7 @@ import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.AppAlipayClient;
+import cn.linkmore.third.client.AppLoongPayClient;
 import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.ApplePayClient;
 import cn.linkmore.third.client.DockingClient;
@@ -79,10 +86,12 @@ import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqAppWechatOrder;
 import cn.linkmore.third.request.ReqApplePay;
+import cn.linkmore.third.request.ReqLongPay;
 import cn.linkmore.third.request.ReqOrder;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqWechatMiniOrder;
 import cn.linkmore.third.response.ResAppWechatOrder;
+import cn.linkmore.third.response.ResLoongPay;
 import cn.linkmore.third.response.ResWechatMiniOrder;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
@@ -103,6 +112,9 @@ public class PayServiceImpl implements PayService {
 	@Autowired
 	private BaseConfig baseConfig;
 
+	@Autowired
+	private AppLoongPayClient appLoongPayClient;
+	
 	@Autowired
 	private OrdersClusterMapper ordersClusterMapper;
 	
@@ -175,6 +187,9 @@ public class PayServiceImpl implements PayService {
 	@Autowired
 	private DockingClient dockingClient;
 
+	
+	private static final List<String> loongpay = Arrays.asList("USRMSG","ACCDATE","INSTALLNUM","ERRMSG","USRINFO");
+	
 	@Override
 	public ResPayCheckout checkout(Long orderId, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
@@ -569,7 +584,20 @@ public class PayServiceImpl implements PayService {
 				wxMini.setType(mini.getType());
 				res.setWeixinMini(wxMini);
 				return res;
-			} else {
+			} else if(roc.getPayType() == TradePayType.LOONG.type) {
+				ReqLongPay longpay = new ReqLongPay();
+				longpay.setAmount(rechargeRecord.getPaymentAmount());
+				longpay.setOrderId(roc.getOrderId());
+				longpay.setUserId(cu.getId());
+				ResLoongPay resLoongpay = appLoongPayClient.order(longpay);
+				ResPayConfirm res = new ResPayConfirm();
+				res.setPayType((short)TradePayType.LOONG.type);
+				res.setNumber(rechargeRecord.getCode());
+				res.setAmount(rechargeRecord.getPaymentAmount().doubleValue());
+				res.setResLoongPay(new cn.linkmore.order.controller.app.response.ResLoongPay(resLoongpay.getSign(), resLoongpay.getThirdAppInfo()));
+				return res;
+				
+			}else {
 				throw new BusinessException(StatusEnum.ORDER_UNKNOW_PAY);
 			}
 
@@ -1085,9 +1113,48 @@ public class PayServiceImpl implements PayService {
 		String CURCODE = request.getParameter("CURCODE");
 		String REMARK1 = request.getParameter("REMARK1");
 		String REMARK2 = request.getParameter("REMARK2");
+		String ACC_TYPE = request.getParameter("ACC_TYPE");
 		String SUCCESS = request.getParameter("SUCCESS");
-		String sign = request.getParameter("Sign");
-		
+		String TYPE = request.getParameter("TYPE");
+		String REFERER = request.getParameter("REFERER");
+		String CLIENTIP = request.getParameter("CLIENTIP");
+		String ACCDATE = request.getParameter("ACCDATE");
+		String USRMSG = request.getParameter("USRMSG");
+		String INSTALLNUM = request.getParameter("INSTALLNUM");
+		String ERRMSG = request.getParameter("ERRMSG");
+		String USRINFO = request.getParameter("USRINFO");
+		String DISCOUNT = request.getParameter("DISCOUNT");
+		String SIGN = request.getParameter("SIGN");
+		Map<String, String> map = new HashMap<>();
+		map.put("POSTID", POSTID);
+		map.put("BRANCHID", BRANCHID);	
+		map.put("ORDERID", ORDERID);	
+		map.put("PAYMENT", PAYMENT);	
+		map.put("CURCODE", CURCODE);	
+		map.put("REMARK1", REMARK1);	
+		map.put("REMARK2", REMARK2);	
+		map.put("ACC_TYPE", ACC_TYPE);	
+		map.put("SUCCESS", SUCCESS);	
+		map.put("TYPE", TYPE);	
+		map.put("REFERER", REFERER);	
+		map.put("CLIENTIP", CLIENTIP);	
+		map.put("ACCDATE", ACCDATE);	
+		map.put("USRMSG", USRMSG);	
+		map.put("INSTALLNUM", INSTALLNUM);	
+		map.put("ERRMSG", ERRMSG);	
+		map.put("USRINFO", USRINFO);	
+		map.put("DISCOUNT", DISCOUNT);	
+//		map.put("SIGN", SIGN);	
+		Set<Entry<String,String>> entrySet = map.entrySet();
+		StringBuilder sb = new StringBuilder();
+		for (Entry<String, String> entry : entrySet) {
+			if(loongpay.contains(entry.getKey())) {
+				if(StringUtils.isBlank(entry.getKey())) {
+					continue;
+				}
+				sb.append("&");
+			}
+		}
 		
 	}
 

@@ -6,10 +6,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import cn.linkmore.third.config.AppLongPayConfig;
-import cn.linkmore.third.pay.JianHanglong.JianHangLong;
+import cn.linkmore.third.config.AppLoongPayConfig;
+import cn.linkmore.third.pay.loong.JianHangLong;
 import cn.linkmore.third.request.ReqLongPay;
-import cn.linkmore.third.service.AppLongPayService;
+import cn.linkmore.third.response.ResLoongPay;
+import cn.linkmore.third.service.AppLoongPayService;
 
 /**
  * 龙支付接口实现
@@ -18,14 +19,13 @@ import cn.linkmore.third.service.AppLongPayService;
  * @Version  v2.0
  */
 @Service
-public class AppLongPayServiceImpl implements AppLongPayService {
+public class AppLoongPayServiceImpl implements AppLoongPayService {
 
 	@Resource
-	private AppLongPayConfig config;
+	private AppLoongPayConfig config;
 	@Override
-	public String order(ReqLongPay longPay) {
-		JianHangLong.create(longPay, config);
-		return null;
+	public ResLoongPay order(ReqLongPay longPay) {
+		return JianHangLong.create(longPay, config);
 	}
 	@Override
 	public boolean callbackMsg(Map<String, Object> map) {

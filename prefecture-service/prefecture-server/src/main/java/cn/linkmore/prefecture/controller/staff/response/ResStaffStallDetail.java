@@ -65,7 +65,7 @@ public class ResStaffStallDetail {
 	@ApiModelProperty("订单类型")
 	private String orderType;
 	@ApiModelProperty(value = "是否被指定 0已经指定，1未指定")
-	private int assignStatus;
+	private int assignStatus = 1;
 	@ApiModelProperty(value = "指定的车牌号")
 	private String assignPlate;
 	@ApiModelProperty(value = "订单状态 状态：1，未支付；2，已支付；3，已完成；4，已取消 5 退款，6挂起订单，7关闭订单")

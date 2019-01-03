@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqLongPay;
-import cn.linkmore.third.service.AppLongPayService;
+import cn.linkmore.third.response.ResLoongPay;
+import cn.linkmore.third.service.AppLoongPayService;
 
 /**
  * 建行龙支付
@@ -21,15 +22,15 @@ import cn.linkmore.third.service.AppLongPayService;
  * @Version  v2.0
  */
 @RestController
-@RequestMapping("/feign/long-pay")
-public class AppLongPayController {
+@RequestMapping("/feign/loong-pay")
+public class ApploongPayController {
 
 	@Resource
-	private AppLongPayService appLongPayService;
+	private AppLoongPayService appLongPayService;
 	
 	@RequestMapping(value = "/v2.0/order", method = RequestMethod.POST) 
 	@ResponseBody
-	public String order(@RequestBody ReqLongPay longPay) {
+	public ResLoongPay order(@RequestBody ReqLongPay longPay) {
 		return this.appLongPayService.order(longPay);
 	}
 	

@@ -3,6 +3,7 @@ package cn.linkmore.third.service;
 import java.util.Map;
 
 import cn.linkmore.third.request.ReqLongPay;
+import cn.linkmore.third.response.ResLoongPay;
 
 /**
  * 建行龙支付接口
@@ -10,14 +11,14 @@ import cn.linkmore.third.request.ReqLongPay;
  * @Date     2018年10月17日
  * @Version  v2.0
  */
-public interface AppLongPayService {
+public interface AppLoongPayService {
 
 	/** 下单
 	 * @Description  
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	String order(ReqLongPay longPay);
+	ResLoongPay order(ReqLongPay longPay);
 
 	/**
 	 * @Description  通知消息

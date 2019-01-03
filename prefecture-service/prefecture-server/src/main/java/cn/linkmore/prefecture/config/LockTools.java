@@ -109,10 +109,11 @@ public class LockTools {
 					signallist = new ResSignalHistoryList();
 					Map<String,Object> values =(Map<String,Object>) list.get(i);
 					if(values != null) {
-						signallist.setCode(values.get("name").toString());
+						String name = values.get("name").toString();
+						signallist.setCode(name);
 						List<Object> objs = (List<Object>) values.get("values");
 						signallist.setValues(objs);
-						signallist.setName("网关"+numbers[i]);
+						signallist.setName(name != null && name.length() >=4 ? name.substring(name.length() - 4) : null );
 						signallists.add(signallist);
 					}
 				}

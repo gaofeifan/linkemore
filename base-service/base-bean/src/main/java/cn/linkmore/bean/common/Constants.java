@@ -41,7 +41,7 @@ public class Constants {
 		UNION(5),
 		HUAWEI(6),
 		XIAOMI(7),
-		LONG(8);
+		LOONG(8);
 		public int type;
 		private TradePayType(int type) {
 			this.type = type;

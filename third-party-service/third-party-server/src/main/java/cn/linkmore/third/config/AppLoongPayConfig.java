@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
  * @Date     2018年10月17日
  * @Version  v2.0
  */
-@ConfigurationProperties(prefix = "app-wechat")
+@ConfigurationProperties(prefix = "loong-pay")
 @Component
-public class AppLongPayConfig {
+public class AppLoongPayConfig {
 	
 	private String merchantId;
 	
@@ -21,6 +21,8 @@ public class AppLongPayConfig {
 	
 	private String url;
 
+	private String pubKey;
+	
 	public String getMerchantId() {
 		return merchantId;
 	}
@@ -52,4 +54,14 @@ public class AppLongPayConfig {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
+	public String getPubKey() {
+		return pubKey;
+	}
+
+	public void setPubKey(String pubKey) {
+		this.pubKey = pubKey;
+	}
+	
+	
 }

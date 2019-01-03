@@ -33,6 +33,12 @@
     	<if test="system == 1">
     		or system is null
     	</if>
+    </if>
+    <if test="appVersion != null">
+    	AND app_version like CONCAT('%','${appVersion}','%')
+    </if> 
+    <if test="startTime != null">
+    	AND DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(startTime,'%Y-%m-%d')
     </if> 
     <if test="property!=null">  
     order by  ${property} ${direction}
@@ -45,8 +51,17 @@
 	FROM
 		t_app_unusual_log log
 	INNER JOIN t_app_unusual_log_content content ON log.id = content.log_id
-    <if test="system != null">  
-    and system = #{system,jdbcType=INTEGER}
+  	<if test="system != null">  
+    	and system = #{system,jdbcType=INTEGER}
+    	<if test="system == 1">
+    		or system is null
+    	</if>
+    </if>
+    <if test="appVersion != null">
+    	AND app_version like CONCAT('%','${appVersion}','%')
+    </if> 
+    <if test="startTime != null">
+    	AND DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(startTime,'%Y-%m-%d')
     </if> 
   </select>
 </mapper>
