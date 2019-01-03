@@ -1152,7 +1152,11 @@ public class PayServiceImpl implements PayService {
 				if(StringUtils.isBlank(entry.getKey())) {
 					continue;
 				}
-				sb.append("&");
+				sb.append("&").
+				   append(entry.getKey()).
+				   append("=").
+				   append(entry.getValue());
+				
 			}
 		}
 		
