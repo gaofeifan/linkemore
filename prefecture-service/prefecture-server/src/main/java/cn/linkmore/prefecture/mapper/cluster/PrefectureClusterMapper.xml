@@ -93,8 +93,8 @@
     <result column="type" property="type" jdbcType="SMALLINT" />
     <result column="version" property="version" jdbcType="VARCHAR" />
     <result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
-    <result column="grid_x" property="gridX" jdbcType="INTEGER" />
-    <result column="grid_y" property="gridY" jdbcType="INTEGER" />
+    <!-- <result column="grid_x" property="gridX" jdbcType="INTEGER" />
+    <result column="grid_y" property="gridY" jdbcType="INTEGER" /> -->
  </resultMap>
   
   <sql id="Base_Column_List">
@@ -264,7 +264,7 @@
   <select id="findPage" resultMap="ResPreExcelMap"   parameterType="java.util.HashMap" >
   	select p.id,p.name,p.date_contract,p.valid_time,p.order_index,p.status,p.type,COUNT(stall.id) stall_total,
 	s.name strategy_name,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit,
-	p.category, p.version, p.create_user_name, p.grid_x, p.grid_y
+	p.category, p.version, p.create_user_name
 	from v_prefecture p 
 	LEFT JOIN v_stall stall on p.id=stall.pre_id 
 	LEFT JOIN v_strategy_base s on p.strategy_id = s.id

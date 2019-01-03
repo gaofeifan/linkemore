@@ -1972,18 +1972,29 @@ public class StallServiceImpl implements StallService {
 			log.info("<<<<<<<<<bluetooth verify>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
 			// 0 降下
 			Stopwatch stopwatch = Stopwatch.createStarted();
-			ResLockInfo lock = lockTools.lockInfo(stall.getLockSn());
-			if(lock == null) {
-				//锁掉线,未找到车位锁
-				return true;
+			ResLockInfo lockInfo = lockTools.lockInfo(stall.getLockSn());
+			log.info("<<<<<<<<<bluetooth verify>>>>>>>>>>>>lockInfo:{}",JSON.toJSON(lockInfo));
+			if(lockInfo != null && lockInfo.getLockState() != 0) {
+				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
 			}
-			if(lock.getLockState() == 0) {
+			if(lockInfo == null) {
+				//锁掉线,未找到车位锁
 				flag = true;
+			}else {
+				if(lockInfo.getLockState() == 0) {
+					flag = true;
+				}
 			}
 			stopwatch.stop();
 			log.info("<<<<<<<<<bluetooth verify using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
 		}else {
 			throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+		}
+		if(flag) {
+			this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+			stall.setLockStatus(2);
+			stall.setStatus(2);
+			stallMasterMapper.lockdown(stall);
 		}
 		return flag;
 	}

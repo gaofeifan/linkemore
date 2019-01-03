@@ -359,11 +359,11 @@ public class OrdersServiceImpl implements OrdersService {
 				stall = this.stallClient.findById(stallId);
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					lockSn = stall.getLockSn();
-					ResLockInfo lockInfo = lockClient.lockInfo(lockSn);
+					/*ResLockInfo lockInfo = lockClient.lockInfo(lockSn);
 					//车位锁状态不是降下，此时下单失败
 					if(lockInfo != null && lockInfo.getLockState() != 0) {
 						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
-					}
+					}*/
 					if(!downFlag) {
 						log.info(".................2  order-stall-lockSn,{}", lockSn);
 						if(pre != null  && pre.getCategory() == 2) {
@@ -2217,10 +2217,11 @@ public class OrdersServiceImpl implements OrdersService {
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			String lockSn = stall.getLockSn();
 			ResLockInfo lockInfo = lockClient.lockInfo(lockSn);
+			log.info("down appoint lockInfo :{}",JSON.toJSON(lockInfo));
 			//车位锁状态不是降下，此时下单失败
-			if(lockInfo != null && lockInfo.getLockState() != 0) {
+			/*if(lockInfo != null && lockInfo.getLockState() != 0) {
 				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
-			}else{
+			}else{*/
 				// if (lockInfo != null && lockInfo.getLockState() == 0) 
 				boolean flag = downAppointOrder(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu, true);
 				log.info("...........downAppoint 下单状态{}", flag == true ? "成功" : "失败");
@@ -2279,7 +2280,7 @@ public class OrdersServiceImpl implements OrdersService {
 					}
 				}
 			}
-		}
+		/*}*/
 		return ro;
 	}
 	
