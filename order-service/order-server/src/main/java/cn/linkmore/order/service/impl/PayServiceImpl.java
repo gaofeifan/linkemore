@@ -253,7 +253,7 @@ public class PayServiceImpl implements PayService {
 				roc.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
 				boolean flag = userPlateClient.exists(order.getPlateNo());
 				if(flag) {
-					order.setActualAmount(new BigDecimal(0.00));
+					roc.setTotalAmount(new BigDecimal(0.00));
 				}
 			}
 		}

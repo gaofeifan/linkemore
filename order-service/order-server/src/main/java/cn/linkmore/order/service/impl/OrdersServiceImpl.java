@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -21,8 +22,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResVechicleMark;
@@ -88,11 +91,12 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
 import cn.linkmore.prefecture.client.EntBrandPreClient;
 import cn.linkmore.prefecture.client.EntBrandUserClient;
+import cn.linkmore.prefecture.client.FeignLockClient;
 import cn.linkmore.prefecture.client.OpsEntUserPlateClient;
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
-import cn.linkmore.prefecture.client.StrategyBaseClient;
 import cn.linkmore.prefecture.client.StrategyFeeClient;
+import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisService;
@@ -174,7 +178,11 @@ public class OrdersServiceImpl implements OrdersService {
 	private StrategyFeeClient strategyFeeClient;
 	
 	@Resource
-	private OpsEntUserPlateClient userPlateClient; 
+	private OpsEntUserPlateClient userPlateClient;
+	
+	@Resource
+	private FeignLockClient lockClient;
+	
 
 	public boolean checkCarFree(String carno) {
 		boolean flag = true;
@@ -351,6 +359,11 @@ public class OrdersServiceImpl implements OrdersService {
 				stall = this.stallClient.findById(stallId);
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					lockSn = stall.getLockSn();
+					ResLockInfo lockInfo = lockClient.lockInfo(lockSn);
+					//车位锁状态不是降下，此时下单失败
+					if(lockInfo != null && lockInfo.getLockState() != 0) {
+						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+					}
 					if(!downFlag) {
 						log.info(".................2  order-stall-lockSn,{}", lockSn);
 						if(pre != null  && pre.getCategory() == 2) {
@@ -1080,8 +1093,9 @@ public class OrdersServiceImpl implements OrdersService {
 			if (object != null) {
 				orders.setTotalAmount(new BigDecimal(object.toString()));
 				boolean flag = userPlateClient.exists(orders.getPlateNo());
+				log.info("..........current order free plate :{}, flag :{}", orders.getPlateNo(), flag);
 				if(flag) {
-					orders.setActualAmount(new BigDecimal(0.00));
+					orders.setTotalAmount(new BigDecimal(0.00));
 				}
 			}
 		}
@@ -2199,61 +2213,71 @@ public class OrdersServiceImpl implements OrdersService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		log.info("down appoint request param :{} cu:{}", JsonUtil.toJson(rsb), JsonUtil.toJson(cu));
 		log.info("choose stall order thread starting");
-		boolean flag = downAppointOrder(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu, true);
-		log.info("...........downAppoint 下单状态{}", flag == true ? "成功" : "失败");
-		if(flag) {
-			ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); // 查找最新
-			if (orders == null) {
-				return null;
-			}
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Map<String, Object> param = new HashMap<String,Object>();
-			param.put("stallId", orders.getStallId());
-			param.put("plateNo", orders.getPlateNo());
-			param.put("startTime", sdf.format(orders.getCreateTime()));
-			if (orders.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
-				param.put("endTime", sdf.format(orders.getStatusTime()));
-			} else {
-				param.put("endTime", sdf.format(new Date()));
-			}
-			log.info("..........current order request param:{}", JSON.toJSON(param));
-			Map<String, Object> map = this.strategyFeeClient.amount(param);
-			log.info("..........current order response result map:{}", JSON.toJSON(map));
-			if (map != null) {
-				Object object = map.get("chargePrice");
-				if (object != null) {
-					orders.setTotalAmount(new BigDecimal(object.toString()));
+		ResStallEntity stall = this.stallClient.findById(rsb.getStallId());
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			String lockSn = stall.getLockSn();
+			ResLockInfo lockInfo = lockClient.lockInfo(lockSn);
+			//车位锁状态不是降下，此时下单失败
+			if(lockInfo != null && lockInfo.getLockState() != 0) {
+				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+			}else{
+				// if (lockInfo != null && lockInfo.getLockState() == 0) 
+				boolean flag = downAppointOrder(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu, true);
+				log.info("...........downAppoint 下单状态{}", flag == true ? "成功" : "失败");
+				if(flag) {
+					ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); // 查找最新
+					if (orders == null) {
+						return null;
+					}
+					
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Map<String, Object> param = new HashMap<String,Object>();
+					param.put("stallId", orders.getStallId());
+					param.put("plateNo", orders.getPlateNo());
+					param.put("startTime", sdf.format(orders.getCreateTime()));
+					if (orders.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
+						param.put("endTime", sdf.format(orders.getStatusTime()));
+					} else {
+						param.put("endTime", sdf.format(new Date()));
+					}
+					log.info("..........current order request param:{}", JSON.toJSON(param));
+					Map<String, Object> map = this.strategyFeeClient.amount(param);
+					log.info("..........current order response result map:{}", JSON.toJSON(map));
+					if (map != null) {
+						Object object = map.get("chargePrice");
+						if (object != null) {
+							orders.setTotalAmount(new BigDecimal(object.toString()));
+						}
+					}
+					
+					if (orders != null && orders.getStatus() == OrderStatus.UNPAID.value) {
+						ro = new ResOrder();
+						ro.copy(orders);
+						ResPrefectureDetail pre = this.prefectureClient.findById(orders.getPreId());
+						if (pre != null) {
+							ro.setPreLongitude(pre.getLongitude());
+							ro.setPreLatitude(pre.getLatitude());
+							ro.setPrefectureAddress(pre.getAddress());
+							ro.setGuideImage(pre.getRouteGuidance());
+							ro.setGuideRemark(pre.getRouteDescription());
+						}
+						if (stall != null) {
+							ro.setStallName(stall.getStallName());
+							ro.setBluetooth(stall.getLockSn());
+						}
+						
+						if(orders.getStallId() != null) {
+							Map<String,Object> feeParam = new HashMap<String,Object>();
+							feeParam.put("stallId", orders.getStallId());
+							int freeMins = strategyFeeClient.freeMins(feeParam);
+							ro.setFreeMins(freeMins);
+							log.info("..........current order free mins {}", freeMins);
+							ro.setCancelFlag((short)2);
+							ro.setRemainMins(0);
+						}
+						ro.setOrderSource((short)2);
+					}
 				}
-			}
-			
-			if (orders != null && orders.getStatus() == OrderStatus.UNPAID.value) {
-				ro = new ResOrder();
-				ro.copy(orders);
-				ResPrefectureDetail pre = this.prefectureClient.findById(orders.getPreId());
-				if (pre != null) {
-					ro.setPreLongitude(pre.getLongitude());
-					ro.setPreLatitude(pre.getLatitude());
-					ro.setPrefectureAddress(pre.getAddress());
-					ro.setGuideImage(pre.getRouteGuidance());
-					ro.setGuideRemark(pre.getRouteDescription());
-				}
-				ResStallEntity stall = this.stallClient.findById(ro.getStallId());
-				if (stall != null) {
-					ro.setStallName(stall.getStallName());
-					ro.setBluetooth(stall.getLockSn());
-				}
-				
-				if(orders.getStallId() != null) {
-					Map<String,Object> feeParam = new HashMap<String,Object>();
-					feeParam.put("stallId", orders.getStallId());
-					int freeMins = strategyFeeClient.freeMins(feeParam);
-					ro.setFreeMins(freeMins);
-					log.info("..........current order free mins {}", freeMins);
-					ro.setCancelFlag((short)2);
-					ro.setRemainMins(0);
-				}
-				ro.setOrderSource((short)2);
 			}
 		}
 		return ro;
