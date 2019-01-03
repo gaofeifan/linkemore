@@ -311,4 +311,22 @@ public interface StallService {
 	Map<String, Object> watch2(Long stallId);
 	
 	List<ResStaffNewAuth> findNewAuth(Long cityId, HttpServletRequest request);
+	
+	boolean control(Long stallId, HttpServletRequest request);
+	
+	void watchDownResult(Long stallId, HttpServletRequest request);
+	/**
+	 * 下单成功后降锁
+	 * @param stallId
+	 * @param request
+	 * @return
+	 */
+	boolean controlLock(Long stallId, HttpServletRequest request);
+	/**
+	 * 蓝牙降锁成功后验证
+	 * @param stallId
+	 * @param request
+	 * @return
+	 */
+	boolean verify(Long stallId, HttpServletRequest request);
 }

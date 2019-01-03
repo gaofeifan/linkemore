@@ -133,6 +133,11 @@ public class ResUserOrder {
      * 车位类型 分类0自营，1临停，2长租，3VIP
      */
     private Short stallType;
+    
+    /**
+     * 订单类型 分类1 预约 2扫码
+     */
+    private Short orderSource ;
 
     public Short getStallType() {
 		return stallType;
@@ -396,6 +401,13 @@ public class ResUserOrder {
 
 	public void setBrandId(Long brandId) {
 		this.brandId = brandId;
+	}
+
+	public Short getOrderSource() {
+		return orderSource;
+	}
+
+	public void setOrderSource(Short orderSource) {
+		this.orderSource = orderSource;
 	}  
-	
 }

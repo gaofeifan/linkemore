@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.PrefectureElementMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.PrefectureElement">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ele_type" jdbcType="VARCHAR" property="eleType" />
+    <result column="ele_name" jdbcType="VARCHAR" property="eleName" />
+    <result column="ele_src" jdbcType="VARCHAR" property="eleSrc" />
+    <result column="ele_x" jdbcType="VARCHAR" property="eleX" />
+    <result column="ele_y" jdbcType="VARCHAR" property="eleY" />
+    <result column="ele_status" jdbcType="SMALLINT" property="eleStatus" />
+    <result column="ele_pre_id" jdbcType="BIGINT" property="elePreId" />
+    <result column="ele_width" jdbcType="INTEGER" property="eleWidth" />
+    <result column="ele_height" jdbcType="INTEGER" property="eleHeight" />
+  </resultMap>
+  
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from v_prefecture_element
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <delete id="deleteBatch" parameterType="java.util.List">
+    delete from v_prefecture_element
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </delete>
+  
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.PrefectureElement">
+    insert into v_prefecture_element (id, ele_type, ele_name, 
+      ele_src, ele_x, ele_y, ele_status, ele_pre_id, ele_width, ele_height)
+    values (#{id,jdbcType=BIGINT}, #{eleType,jdbcType=VARCHAR}, #{eleName,jdbcType=VARCHAR}, 
+      #{eleSrc,jdbcType=VARCHAR}, #{eleX,jdbcType=VARCHAR}, #{eleY,jdbcType=VARCHAR}, 
+      #{eleStatus,jdbcType=SMALLINT}, #{elePreId,jdbcType=BIGINT},
+      #{eleWidth,jdbcType=INTEGER},#{eleHeight,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="update" parameterType="cn.linkmore.prefecture.entity.PrefectureElement">
+    update v_prefecture_element
+    set ele_type = #{eleType,jdbcType=VARCHAR},
+      ele_name = #{eleName,jdbcType=VARCHAR},
+      ele_src = #{eleSrc,jdbcType=VARCHAR},
+      ele_x = #{eleX,jdbcType=VARCHAR},
+      ele_y = #{eleY,jdbcType=VARCHAR},
+      ele_status = #{eleStatus,jdbcType=SMALLINT},
+      ele_width = #{eleWidth,jdbcType=INTEGER},
+      ele_height = #{eleHeight,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

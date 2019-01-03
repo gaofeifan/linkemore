@@ -30,6 +30,8 @@ public interface StrategyDateService {
 
 	ResStrategyDate selectByPrimaryKey(Long id);
 
+	int updatePublic(Map<String, Object> map);
+
 	//Boolean check(ReqCheck reqCheck);
 
 }

@@ -19,4 +19,6 @@ public interface StrategyDateMasterMapper {
     int updateByPrimaryKey(StrategyDate record);
     
     int updateStatus(Map<String, Object> map);
+    
+    int updatePublic(Map<String, Object> map);
 }

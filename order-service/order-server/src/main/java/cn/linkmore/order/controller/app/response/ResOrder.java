@@ -67,6 +67,8 @@ public class ResOrder {
 	private int freeMins;
 	@ApiModelProperty(value = "剩余时长")
 	private int remainMins;
+	@ApiModelProperty(value = "订单类型[1普通订单,2扫码降锁订单]")
+	private Short orderSource = 1;
 	public Long getId() {
 		return id;
 	}
@@ -244,6 +246,7 @@ public class ResOrder {
 		this.setStallName(ruo.getStallName());
 		this.setPrefectureName(ruo.getPreName());  
 		this.setTotalAmount(ruo.getTotalAmount());
+		this.setOrderSource(ruo.getOrderSource());
 	}
 	public String getBluetooth() {
 		return bluetooth;
@@ -269,4 +272,11 @@ public class ResOrder {
 	public void setRemainMins(int remainMins) {
 		this.remainMins = remainMins;
 	}
+	public Short getOrderSource() {
+		return orderSource;
+	}
+	public void setOrderSource(Short orderSource) {
+		this.orderSource = orderSource;
+	}
+	
 }

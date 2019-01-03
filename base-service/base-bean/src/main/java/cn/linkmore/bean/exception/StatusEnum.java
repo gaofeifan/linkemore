@@ -118,7 +118,14 @@ public enum StatusEnum {
 	LOCK_SN_EXISTS(8005081,"车位编号不存在"),
 	LOCK_SN_AlREADY_BAND(8005080,"该锁编码已经绑定"),
 	FAIL_STALL_NUM(8005081,"车位不存在"),
-	STALL_NAME_USER(8005090,"车位名称已存在");
+	STALL_NAME_USER(8005090,"车位名称已存在"),
+	DOWN_LOCK_FAIL_RETRY(8005091,"通讯失败,再降一次"),
+	DOWN_LOCK_FAIL_CHANGE(8005092,"降锁失败,请使用其他车位"),
+	DOWN_LOCK_FAIL_CHECK(8005093,"该车位不可用请选择其他车位"),
+	DOWN_LOCK_FAIL_DROP(8005094,"网关掉线,未找到车位锁"),
+	
+	
+	;
 	
 	public int code;
 	public String label;

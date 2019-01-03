@@ -62,4 +62,10 @@ public class OpsStrategyDateClientHystrix implements OpsStrategyDateClient {
 		log.info("prefecture service strategy getByPrimarkey() hystrix");
 		return new ResStrategyDate();
 	}
+
+	@Override
+	public int updatePublic(Map<String, Object> map) {
+		log.info("prefecture service updatePublic(Map<String, Object> map) hystrix");
+		return 0;
+	}
 }

@@ -188,5 +188,10 @@ public class StrategyDateServiceImpl implements StrategyDateService {
 		return this.strategyDateClusterMapper.findList(param);
 	}
 
+	@Override
+	public int updatePublic(Map<String, Object> map) {
+		return this.strategyDateMasterMapper.updatePublic(map);
+	}
+
 
 }

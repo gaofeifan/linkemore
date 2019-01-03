@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.PrefectureElementClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.PrefectureElement">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ele_type" jdbcType="VARCHAR" property="eleType" />
+    <result column="ele_name" jdbcType="VARCHAR" property="eleName" />
+    <result column="ele_src" jdbcType="VARCHAR" property="eleSrc" />
+    <result column="ele_x" jdbcType="VARCHAR" property="eleX" />
+    <result column="ele_y" jdbcType="VARCHAR" property="eleY" />
+    <result column="ele_status" jdbcType="SMALLINT" property="eleStatus" />
+    <result column="ele_pre_id" jdbcType="BIGINT" property="elePreId" />
+    <result column="ele_width" jdbcType="INTEGER" property="eleWidth" />
+    <result column="ele_height" jdbcType="INTEGER" property="eleHeight" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ele_type, ele_name, ele_src, ele_x, ele_y, ele_status, ele_pre_id, ele_width, ele_height
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_prefecture_element
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findByPreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_prefecture_element
+    where ele_pre_id = #{preId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT count(1) FROM v_prefecture_element l
+	WHERE 1 = 1 and l.ele_pre_id = #{preId}
+    <if test="eleName != null">  
+    	and l.ele_name like #{eleName}
+    </if>
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT l.* FROM v_prefecture_element l 
+	WHERE 1 = 1 and l.ele_pre_id = #{preId}
+    <if test="eleName != null">  
+    	and l.ele_name like #{eleName}
+    </if>
+    <if test="property==null">  
+     	order by l.ele_name desc
+    </if>
+    <if test="property!=null">  
+   		order by  l.${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+</mapper>

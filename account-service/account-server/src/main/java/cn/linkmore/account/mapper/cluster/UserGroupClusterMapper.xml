@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.UserGroupClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.UserGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="group_type" jdbcType="TINYINT" property="groupType" />
+    <result column="search_json" jdbcType="VARCHAR" property="searchJson" />
+    <result column="user_count" jdbcType="BIGINT" property="userCount" />
+    <result column="input_count" jdbcType="BIGINT" property="inputCount" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, content, group_type, search_json, create_user_id, create_user_name, create_time, 
+    update_user_id, update_user_name, update_time, 
+    (select count(1) from t_user_group_detail gd inner join t_user tu on tu.id=gd.user_id where gd.user_group_id= ug.id) as user_count,
+    (select count(1) from t_user_group_input  where user_group_id= ug.id) as input_count,
+    status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_group_v2 ug
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    	<include refid="Base_Column_List" />
+    FROM
+    t_user_group_v2 ug
+	<where>
+	<if test="groupType != null">
+   	AND group_type = #{groupType,jdbcType=TINYINT}
+    </if>
+    <if test="name != null">
+   	AND name like #{name,jdbcType=VARCHAR}
+    </if>
+	</where>
+    <if test="property==null">  
+    order by update_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    SELECT
+	count(1)
+    FROM
+    t_user_group_v2 
+	<where>
+	<if test="groupType != null">
+   	AND group_type = #{groupType,jdbcType=TINYINT}
+    </if>
+    <if test="name != null">
+   	AND name like #{name,jdbcType=VARCHAR}
+    </if>
+	</where>
+  </select>
+  
+ <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    SELECT
+    	<include refid="Base_Column_List" />
+    FROM
+    t_user_group_v2 ug
+	<where>
+	<if test="groupType != null">
+   	AND group_type = #{groupType,jdbcType=TINYINT}
+    </if>
+    <if test="name != null">
+   	AND name like #{name,jdbcType=VARCHAR}
+    </if>
+	</where>
+    <if test="property==null">  
+    order by update_time desc
+    </if>
+    <if test="property!=null">
+    order by  ${property} ${direction}
+    </if>
+
+  </select>
+
+
+
+</mapper>

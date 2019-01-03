@@ -161,6 +161,31 @@ public class ResPrefectureDetail {
      */
     private String businessTime;
     
+    /**
+     * 网格横坐标
+     */
+    private Integer gridX = 9;
+    /**
+     * 网格纵坐标
+     */
+    private Integer gridY = 12;
+    
+    public Integer getGridX() {
+		return gridX;
+	}
+
+	public void setGridX(Integer gridX) {
+		this.gridX = gridX;
+	}
+
+	public Integer getGridY() {
+		return gridY;
+	}
+
+	public void setGridY(Integer gridY) {
+		this.gridY = gridY;
+	}
+    
     public String getBusinessTime() {
 		return businessTime;
 	}

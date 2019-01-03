@@ -134,4 +134,9 @@ public class StrategyTimeServiceImpl implements StrategyTimeService {
 
 	}
 
+	@Override
+	public int updatePublic(Map<String, Object> map) {
+		return strategyTimeMasterMapper.updatePublic(map);
+	}
+
 }

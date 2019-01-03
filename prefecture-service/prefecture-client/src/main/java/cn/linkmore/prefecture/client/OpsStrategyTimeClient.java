@@ -91,4 +91,13 @@ public interface OpsStrategyTimeClient {
 	@ResponseBody
 	public ResStrategyTime selectByPrimaryKey(Long id);
 
+	/**
+	 * 设置是否共用
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/update_public", method = RequestMethod.POST)
+	@ResponseBody
+	public int updatePublic(Map<String, Object> map);
+
 }

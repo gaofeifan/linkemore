@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +33,9 @@ import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.common.Constants.LockStatus;
+import cn.linkmore.bean.common.Constants.OperateStatus;
+import cn.linkmore.bean.common.Constants.OrderFailureReason;
+import cn.linkmore.bean.common.Constants.OrderStatus;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.UserStaffStatus;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -49,6 +53,7 @@ import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureGroup;
@@ -57,12 +62,14 @@ import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResStall;
 import cn.linkmore.prefecture.controller.app.response.ResStallInfo;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.PrefectureElementClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyGroupClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyGroupDetailClusterMapper;
 import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.Prefecture;
+import cn.linkmore.prefecture.entity.PrefectureElement;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.entity.StrategyGroupDetail;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -126,6 +133,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Autowired
 	private StrategyFeeService strategyFeeService;
+	
+	@Autowired
+	private PrefectureElementClusterMapper prefectureElementClusterMapper;
+	
+	private static final String formatStr = "HH:mm";
+	private static SimpleDateFormat sdf=new SimpleDateFormat(formatStr);
 
 	@Override
 	public ResPrefectureDetail findById(Long preId) {
@@ -851,6 +864,230 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 		});
 		return preList;
+	}
+
+	@Override
+	public ResGroupStrategy findGroupStrategy(Long groupId,HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		ResGroupStrategy groupStrategy = null;
+		ResStrategyGroup group = strategyGroupClusterMapper.selectByPrimaryKey(groupId);
+		
+		Set<Object> lockSnList = null;
+		int count = 0;
+		if(group != null) {
+			lockSnList = this.redisService
+					.members(RedisKey.PREFECTURE_FREE_STALL.key + group.getPrefectureId());
+			ResPrefectureDetail preDetail = prefectureClusterMapper.findById(group.getPrefectureId());
+			groupStrategy = new ResGroupStrategy();
+			if(preDetail.getGridX() !=null ) {
+				groupStrategy.setGridX(preDetail.getGridX());
+				groupStrategy.setGridY(preDetail.getGridY());
+			}
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String freeMins = "";
+			String appFreeMins = "";
+			String topFee = "0.0";
+			StringBuffer sb = new StringBuffer();
+			Map<String, Object> paramFee = new HashMap<String, Object>();
+			paramFee.put("strategGroupId", groupId);
+			paramFee.put("searchDateTime", sdf.format(new Date()));
+			String json = strategyFeeService.info(paramFee);
+			log.info("..........group strategy param fee{},json{}", JSON.toJSON(paramFee), json);
+			if (json != null) {
+				JSONObject data = JSONObject.parseObject(json);
+				if (data.getInteger("code") == 200) {
+					JSONObject detailObj = JSONObject.parseObject(data.getString("detail"));
+					freeMins = String.valueOf(detailObj.getInteger("free"));
+					topFee = String.valueOf(detailObj.getBigDecimal("limitPrice"));
+					JSONArray array = detailObj.getJSONArray("data");
+					for (int i = 0; i < array.size(); i++) {
+						String fee = "";
+						
+						String obj = array.getString(i);
+						log.info("..........group strategy obj{}", obj);
+						JSONObject jsonObj = JSONObject.parseObject(obj);
+						String beginTime = jsonObj.getString("beginTime");
+						String endTime = jsonObj.getString("endTime");
+						Double chargeFee = jsonObj.getBigDecimal("chargeFee").doubleValue();
+						int chargeHourFree = 0;
+						if(jsonObj.getString("chargeHourFree") != null) {
+							chargeHourFree = jsonObj.getInteger("chargeHourFree");
+						}
+						
+						int chargeUnit = jsonObj.getInteger("chargeUnit");
+						String remark = jsonObj.getString("remark");
+						log.info("charge hour free = {} remark ={}", chargeHourFree, remark);
+						sb.append(beginTime + "-" + endTime + " ");
+						
+						if (chargeUnit == 1) {
+							fee = chargeFee + "元/分";
+						} else if (chargeUnit == 2) {
+							fee = chargeFee + "元/时";
+						} else if (chargeUnit == 3) {
+							fee = chargeFee + "元/次";
+						}
+						sb.append(fee);
+						try {
+							log.info("begin = {}, end = {}, now = {}", beginTime, endTime, getCurrentTime());
+							if(isInZone(getLong(beginTime),getLong(endTime),getCurrentTime())){
+								groupStrategy.setCurrentTimePeriod(beginTime + "-" + endTime);
+								groupStrategy.setCurrentFee(fee);
+							}
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+						
+						sb.append("\t\r\n");
+						if (StringUtils.isNotBlank(remark)) {
+							sb.append(remark);
+							sb.append("\t\r\n");
+						}
+					}
+				}
+				log.info("..........pre detail 调用结果{} 免费时长{} 封顶计费{} 描述{}", data, freeMins, topFee, sb.toString());
+			}
+			if(topFee.equals("0.0")) {
+				groupStrategy.setTopFee("无");
+			}else {
+				groupStrategy.setTopFee((Double.valueOf(topFee)).intValue() + "元");
+			}
+			if(StringUtils.isNotBlank(freeMins)) {
+				if(Integer.valueOf(freeMins)>= 60) {
+					appFreeMins = div(Double.valueOf(freeMins), 60D, 2) +"小时";
+				}else {
+					appFreeMins = freeMins +"分钟";
+				}
+			}
+			groupStrategy.setFreeMins(appFreeMins);
+			groupStrategy.setBusinessTime("00:00 - 24:00");
+			if(sb.length() > 3) {
+				groupStrategy.setDesc(sb.toString().substring(0, sb.length()-3));
+			}
+			groupStrategy.setGroupId(groupId);
+			groupStrategy.setGroupName(group.getName());
+			//获取上次使用车牌
+			if (cu != null && cu.getId() != null) {
+				Long plateId = null;
+				String plateNumber = null;
+				ResUserOrder ro = this.orderClient.last(cu.getId());
+				List<ResVechicleMark> plates = this.vehicleMarkClient.list(cu.getId());
+				if (ro != null) {
+					Map<String, Long> plateMap = new HashMap<String, Long>();
+					for (ResVechicleMark rvm : plates) {
+						plateMap.put(rvm.getVehMark(), rvm.getId());
+					}
+					plateNumber = ro.getPlateNo();
+					plateId = plateMap.get(plateNumber);
+					if (plateId == null) {
+						plateNumber = null;
+					}
+				}
+				if (plateNumber == null && CollectionUtils.isNotEmpty(plates)) {
+					plateId = plates.get(0).getId();
+					plateNumber = plates.get(0).getVehMark();
+				}
+				groupStrategy.setPlateId(plateId);
+				groupStrategy.setPlateNumber(plateNumber);
+			}
+			//根据分组id查询下面所有车位列表信息
+			List<StrategyGroupDetail> groupDetailList = strategyGroupDetailClusterMapper.findList(groupId);
+			List<Long> stallIds = new ArrayList<Long>();
+			if(CollectionUtils.isNotEmpty(groupDetailList)) {
+				Map<String, Object> params = new HashMap<String, Object>();
+				for (StrategyGroupDetail detail : groupDetailList) {
+					stallIds.add(detail.getStallId());
+				}
+				params.put("list", stallIds);
+				params.put("type", 0);
+				List<ResStall> stallList = new ArrayList<ResStall>();
+				ResStall resStall = null;
+				List<cn.linkmore.prefecture.response.ResStall> groupStallList = stallClusterMapper.findPreStallList(params);
+				log.info(".........stall list pre group id = {} groupStallList = {}", groupId, JSON.toJSON(groupStallList));
+				Map<String,Object> statuMap = new HashMap<String,Object>();
+				for (cn.linkmore.prefecture.response.ResStall stall : groupStallList) {
+					resStall = new ResStall();
+					resStall.setStallId(stall.getId());
+					if(lockSnList.contains(stall.getLockSn()) && stall.getStatus() == 1) {
+						//空闲车位锁
+						stall.setStatus(1);
+					}
+					resStall.setLockSn(stall.getLockSn());
+					resStall.setStallName(stall.getStallName());
+					stallList.add(resStall);
+					statuMap.put(stall.getStallName(), stall);
+				}
+				
+				List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
+				List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
+				Map<String,Object> paramMap = null;
+				if(CollectionUtils.isNotEmpty(eleList)) {
+					for(PrefectureElement ele: eleList) {
+						paramMap = new HashMap<String,Object>();
+						if(StringUtils.isNotBlank(ele.getEleName())) {
+							cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
+							paramMap.put("name", ele.getEleName());
+							//此处需要根据车位锁实际状态优化
+							paramMap.put("status", stall.getStatus());
+							paramMap.put("stallId", stall.getId());
+							paramMap.put("index", count);
+							paramMap.put("lockSn", stall.getLockSn());
+						}
+						if(StringUtils.isNotBlank(ele.getEleSrc())) {
+							paramMap.put("src", ele.getEleSrc());
+						}
+						paramMap.put("type", ele.getEleType());
+						paramMap.put("x", ele.getEleX());
+						paramMap.put("y", ele.getEleY());
+						paramMap.put("width", ele.getEleWidth());
+						paramMap.put("height", ele.getEleHeight());
+						mapList.add(paramMap);
+						count ++;
+					}
+				}
+				log.info(".........parking data map = {}", JSON.toJSON(mapList));
+				groupStrategy.setParkingDataMap(mapList);
+			}
+		}
+		return groupStrategy;
+	}
+	
+	private static boolean isInZone(long timeStart,long timeEnd,long nowTime) throws ParseException {
+		return timeStart <= nowTime && nowTime <= timeEnd;
+	}
+	private static long getLong(String timeStr) throws ParseException {
+		return sdf.parse(timeStr).getTime();
+	}
+	private static long getCurrentTime() throws ParseException {
+		return getLong(sdf.format(new Date()));
+	}
+
+	@Override
+	public Boolean checkPlate(Long plateId, HttpServletRequest request) {
+		Boolean flag = false;
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if(cu != null && cu.getId() != null) {
+			ResUserOrder ruo = this.orderClient.last(cu.getId());
+			log.info("..........checkPlate ruo = {}",JSON.toJSON(ruo));
+			if(ruo != null && (ruo.getStatus().intValue() == OrderStatus.UNPAID.value
+					|| ruo.getStatus().intValue() == OrderStatus.SUSPENDED.value)) {
+				throw new BusinessException(StatusEnum.ORDER_UNPAY_ORDER);
+			}
+			ResVechicleMark vehicleMark = vehicleMarkClient.findById(plateId);
+			log.info("..........checkPlate vehicle mark = {}", JSON.toJSON(vehicleMark));
+			if (vehicleMark == null) {
+				throw new BusinessException(StatusEnum.VALID_EXCEPTION);
+			}
+			if (vehicleMark.getUserId().longValue() != cu.getId().longValue()) {
+				throw new BusinessException(StatusEnum.VALID_EXCEPTION);
+			}
+			if (!this.checkCarFree(vehicleMark.getVehMark())) {
+				throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY); // 当前车牌号已在预约中，请更换车牌号重新预约
+			}
+			flag = true;
+		}else {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		return flag;
 	}
 
 }

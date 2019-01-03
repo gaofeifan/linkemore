@@ -38,6 +38,8 @@
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
     <result column="business_time" jdbcType="VARCHAR" property="businessTime" />
+    <result column="grid_x" jdbcType="INTEGER" property="gridX" />
+    <result column="grid_y" jdbcType="INTEGER" property="gridY" />
   </resultMap>
   
   <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.controller.app.response.ResPrefecture">
@@ -91,6 +93,8 @@
     <result column="type" property="type" jdbcType="SMALLINT" />
     <result column="version" property="version" jdbcType="VARCHAR" />
     <result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+    <!-- <result column="grid_x" property="gridX" jdbcType="INTEGER" />
+    <result column="grid_y" property="gridY" jdbcType="INTEGER" /> -->
  </resultMap>
   
   <sql id="Base_Column_List">
@@ -98,7 +102,8 @@
     image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
     route_description, base_dict_id, city_id, order_index, leave_time, charge_price, 
     charge_time, type, enterprise_id, category, limit_status, gateway, 
-    strategy_description, runtime, increase, month_rent, version, create_user_id, business_time
+    strategy_description, runtime, increase, month_rent, version, create_user_id, business_time,
+    grid_x, grid_y
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

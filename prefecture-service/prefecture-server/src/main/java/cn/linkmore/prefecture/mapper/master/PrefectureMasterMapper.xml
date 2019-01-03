@@ -60,7 +60,8 @@
       leave_time, charge_price, charge_time, 
       type, enterprise_id, category, 
       limit_status,gateway ,strategy_description,
-      runtime, increase, month_rent, version, create_user_id, create_user_name, business_time)
+      runtime, increase, month_rent, version, create_user_id, 
+      create_user_name, business_time, grid_x, grid_y)
     values (#{id,jdbcType=BIGINT}, #{strategyId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR}, #{districtId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=DECIMAL}, #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, 
@@ -73,7 +74,8 @@
       #{limitStatus,jdbcType=SMALLINT}, #{gateway,jdbcType=VARCHAR},
       #{strategyDescription,jdbcType=VARCHAR}, #{runtime,jdbcType=INTEGER},
       #{monthRent,jdbcType=INTEGER}, #{increase,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR},
-      #{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR},#{businessTime,jdbcType=VARCHAR}
+      #{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR},#{businessTime,jdbcType=VARCHAR},
+      #{gridX,jdbcType=INTEGER}, #{gridY,jdbcType=INTEGER}
       )
   </insert>
   
@@ -117,8 +119,9 @@
       month_rent = #{monthRent,jdbcType=INTEGER},
       increase = #{increase,jdbcType=VARCHAR},
       version = #{version,jdbcType=VARCHAR},
-      business_time = #{businessTime,jdbcType=VARCHAR}
-      
+      business_time = #{businessTime,jdbcType=VARCHAR},
+      grid_x = #{gridX,jdbcType=INTEGER},
+      grid_y = #{gridY,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

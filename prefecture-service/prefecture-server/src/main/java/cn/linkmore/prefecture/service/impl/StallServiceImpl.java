@@ -1,7 +1,6 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,19 +10,15 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Stopwatch;
-
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.ClientSource;
@@ -127,6 +122,7 @@ import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
+import cn.linkmore.util.StringUtil;
 import cn.linkmore.util.TokenUtil;
 
 /**
@@ -919,7 +915,7 @@ public class StallServiceImpl implements StallService {
 				map.put("content", content);
 				map.put("code", bool);
 				CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
-				userSocketClient.push(content, cu.getOpenId());
+				//userSocketClient.push(content, cu.getOpenId());
 				log.info("openid>>>" + cu.getOpenId());
 				System.out.println(JsonUtil.toJson(map));
 			} else {
@@ -1816,8 +1812,190 @@ public class StallServiceImpl implements StallService {
 	
 		return auths;
 	}
-	
-	
-	
+
+	@Override
+	public boolean control(Long stallId, HttpServletRequest request) {
+		boolean flag = false;
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		
+		Stall stall = stallClusterMapper.findById(stallId);
+		log.info("stall:{}", JsonUtil.toJson(stall));
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			Set<Object> lockSnList =  this.redisService
+					.members(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId());
+			if(lockSnList.contains(stall.getLockSn()) && stall.getStatus() == 1) {
+				// 争抢
+				String robkey = RedisKey.ROB_STALL_ISHAVE.key + stallId;
+				Boolean have = true;
+				try {
+					have = this.redisLock.getLock(robkey, user.getId());
+					log.info("用户=======>" + user.getId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
+				} catch (Exception e) {
+					log.info("用户争抢锁异常信息{}",e.getMessage());
+				}
+				if (!have) {
+					throw new BusinessException(StatusEnum.STALL_HIVING_DO);
+				}
+				// 放入缓存
+				String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
+				this.redisService.set(rediskey, user.getId(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+				log.info("用户>>>" + user.getId() + "缓存>>>" + rediskey);
+				log.info("用户>>>" + user.getId() + "调用>>>" + stallId);
+				log.info("<<<<<<<<<controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+				ResLockMessage res = null;
+				// 1 降下
+				Stopwatch stopwatch = Stopwatch.createStarted();
+				res = lockTools.downLockMes(stall.getLockSn());
+				if(res != null) {
+					log.info("<<<<<<<<<respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+					int code = res.getCode();
+					stopwatch.stop();
+					log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+					if (code == 200) {
+						flag = true;
+						//去掉空闲车位
+						redisService.remove(rediskey);
+						this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+						/*stall.setLockStatus(2);
+						stall.setStatus(2);
+						stallMasterMapper.lockdown(stall);*/
+					}else if(code == 500){
+						redisService.remove(rediskey);
+						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+					}/* else if (code == 400){
+						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_DROP);
+					} */else {
+						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+					}
+				}
+				redisService.remove(robkey);
+			}else {
+				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+			}
+		}else {
+			throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+		}
+		log.info("<<<<<<<<<control result flag>>>>>>>>> = {}", flag);
+	    return flag;
+	}
+
+	@Override
+	public void watchDownResult(Long stallId, HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		
+		String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
+		String val = String.valueOf(this.redisService.get(rediskey));
+		Map<String, Object> map = new HashMap<>();
+		map = watch(stallId);
+		Boolean control = true;
+		Boolean blue = true;
+		if (map != null && !map.isEmpty()) {
+			if ("200".equals(String.valueOf(map.get("code")))
+					&& map.get("status").equals(Constants.LockStatus.DOWN.status)) {
+				blue = true;
+			} else {
+				blue = false;
+			}
+		}
+		if (StringUtil.isNotBlank(val)) {
+			if (val.equals(String.valueOf(user.getId()))) {
+				control = false;
+			}
+		}
+		log.info("用户>>>" + user.getId() + ">>>" + rediskey);
+		if (!control && !blue) {
+			throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
+		}
+	}
+
+	@Override
+	public boolean controlLock(Long stallId, HttpServletRequest request) {
+		boolean flag = false;
+		/*CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}*/
+
+		CacheUser user = new CacheUser();
+		user.setId(2743L);
+		Stall stall = stallClusterMapper.findById(stallId);
+		log.info("stall:{}", JsonUtil.toJson(stall));
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("<<<<<<<<<order controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			ResLockMessage res = null;
+			// 1 降下
+			Stopwatch stopwatch = Stopwatch.createStarted();
+			res = lockTools.downLockMes(stall.getLockSn());
+			if (res != null) {
+				log.info("<<<<<<<<<order respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+				int code = res.getCode();
+				stopwatch.stop();
+				log.info("<<<<<<<<<order using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+				if (code == 200) {
+					flag = true;
+					// 去掉空闲车位
+					this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+					/*stall.setLockStatus(2);
+					stall.setStatus(2);
+					stallMasterMapper.lockdown(stall);*/
+				} else if (code == 500) {
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+				} /*else if (code == 400){
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_DROP);
+				}*/ else{
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+				}
+			}
+		}else {
+			throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+		}
+		log.info("<<<<<<<<<order control result flag>>>>>>>>> = {}", flag);
+	    return flag;
+	}
+
+	@Override
+	public boolean verify(Long stallId, HttpServletRequest request) {
+		boolean flag = false;
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		Stall stall = stallClusterMapper.findById(stallId);
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("<<<<<<<<<bluetooth verify>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			// 0 降下
+			Stopwatch stopwatch = Stopwatch.createStarted();
+			ResLockInfo lockInfo = lockTools.lockInfo(stall.getLockSn());
+			log.info("<<<<<<<<<bluetooth verify>>>>>>>>>>>>lockInfo:{}",JSON.toJSON(lockInfo));
+			if(lockInfo != null && lockInfo.getLockState() != 0) {
+				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+			}
+			if(lockInfo == null) {
+				//锁掉线,未找到车位锁
+				flag = true;
+			}else {
+				if(lockInfo.getLockState() == 0) {
+					flag = true;
+				}
+			}
+			stopwatch.stop();
+			log.info("<<<<<<<<<bluetooth verify using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+		}else {
+			throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+		}
+		if(flag) {
+			this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+			stall.setLockStatus(2);
+			stall.setStatus(2);
+			stallMasterMapper.lockdown(stall);
+		}
+		return flag;
+	}
 	
 }

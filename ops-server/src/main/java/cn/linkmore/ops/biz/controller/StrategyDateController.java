@@ -191,6 +191,65 @@ public class StrategyDateController  extends BaseController{
 		}
 		return msg;
 	}
+
+	
+	/**
+	 * 共用配置 开启
+	 * @param reqStrategyBase
+	 * @return
+	 */
+	@RequestMapping(value = "/public/open", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg publicOpen( @RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			Subject subject = SecurityUtils.getSubject();
+			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+			
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("isPublic", 1);
+			map.put("updateTime",sdf.format(new Date()) );
+			map.put("updateUserId", person.getId());
+			map.put("updateUserName", person.getUsername());
+			map.put("ids", ids);
+			this.strategyDateService.updatePublic(map);
+			msg = new ViewMsg("修改成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("修改失败", false);
+		}
+		return msg;
+	}
+	/**
+	 * 共用配置 关闭
+	 * @param reqStrategyBase
+	 * @return
+	 */
+	@RequestMapping(value = "/public/close", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg publicClose( @RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			Subject subject = SecurityUtils.getSubject();
+			ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
+			
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("isPublic", 0);
+			map.put("updateTime",sdf.format(new Date()) );
+			map.put("updateUserId", person.getId());
+			map.put("updateUserName", person.getUsername());
+			map.put("ids", ids);
+			this.strategyDateService.updatePublic(map);
+			msg = new ViewMsg("修改成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			msg = new ViewMsg("修改失败", false);
+		}
+		return msg;
+	}
+
 	
 	
 	/**

@@ -63,6 +63,22 @@ public class AppOrderController {
 		return ResponseEntity.success(null, request);
 	}
 	
+	@ApiOperation(value = "降下地锁预约下单", notes = "车区ID不能为空", consumes = "application/json")
+	@RequestMapping(value = "/v2.2/create", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResOrder> downAppoint(@RequestBody ReqStallBooking rsb, HttpServletRequest request) {
+		ResponseEntity<ResOrder> response = null;
+		try { 
+			ResOrder order = this.ordersService.downAppoint(rsb, request);
+			response = ResponseEntity.success(order, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	
 	
 	@ApiOperation(value = "品牌预约下单", notes = "品牌预约下单", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/brand-create", method = RequestMethod.POST)

@@ -62,4 +62,10 @@ public class OpsStrategyTimeClientHystrix implements OpsStrategyTimeClient {
 		log.info("prefecture service strategy ResStrategyTime hystrix");
 		return new ResStrategyTime();
 	}
+
+	@Override
+	public int updatePublic(Map<String, Object> map) {
+		log.info("prefecture service updatePublic(Map<String, Object> map) hystrix");
+		return 0;
+	}
 }
