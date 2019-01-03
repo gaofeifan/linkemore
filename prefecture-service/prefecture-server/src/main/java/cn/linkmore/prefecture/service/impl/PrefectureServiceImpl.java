@@ -1024,13 +1024,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 					for(PrefectureElement ele: eleList) {
 						paramMap = new HashMap<String,Object>();
 						if(StringUtils.isNotBlank(ele.getEleName())) {
-							cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
-							paramMap.put("name", ele.getEleName());
-							//此处需要根据车位锁实际状态优化
-							paramMap.put("status", stall.getStatus());
-							paramMap.put("stallId", stall.getId());
-							paramMap.put("index", count);
-							paramMap.put("lockSn", stall.getLockSn());
+							if(statuMap.get(ele.getEleName()) != null) {
+								cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
+								paramMap.put("name", ele.getEleName());
+								//此处需要根据车位锁实际状态优化
+								paramMap.put("status", stall.getStatus());
+								paramMap.put("stallId", stall.getId());
+								paramMap.put("index", count);
+								paramMap.put("lockSn", stall.getLockSn());
+							}
 						}
 						if(StringUtils.isNotBlank(ele.getEleSrc())) {
 							paramMap.put("src", ele.getEleSrc());
