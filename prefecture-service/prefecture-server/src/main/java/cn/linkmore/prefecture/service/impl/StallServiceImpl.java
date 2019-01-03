@@ -1860,9 +1860,9 @@ public class StallServiceImpl implements StallService {
 						//去掉空闲车位
 						redisService.remove(rediskey);
 						this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
-						stall.setLockStatus(2);
+						/*stall.setLockStatus(2);
 						stall.setStatus(2);
-						stallMasterMapper.lockdown(stall);
+						stallMasterMapper.lockdown(stall);*/
 					}else if(code == 500){
 						redisService.remove(rediskey);
 						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
@@ -1942,9 +1942,9 @@ public class StallServiceImpl implements StallService {
 					flag = true;
 					// 去掉空闲车位
 					this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
-					stall.setLockStatus(2);
+					/*stall.setLockStatus(2);
 					stall.setStatus(2);
-					stallMasterMapper.lockdown(stall);
+					stallMasterMapper.lockdown(stall);*/
 				} else if (code == 500) {
 					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
 				} /*else if (code == 400){

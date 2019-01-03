@@ -28,4 +28,28 @@
     from v_prefecture_element
     where ele_pre_id = #{preId,jdbcType=BIGINT}
   </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT count(1) FROM v_prefecture_element l
+	WHERE 1 = 1 and l.ele_pre_id = #{preId}
+    <if test="eleName != null">  
+    	and l.ele_name like #{eleName}
+    </if>
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT l.* FROM v_prefecture_element l 
+	WHERE 1 = 1 and l.ele_pre_id = #{preId}
+    <if test="eleName != null">  
+    	and l.ele_name like #{eleName}
+    </if>
+    <if test="property==null">  
+     	order by l.ele_name desc
+    </if>
+    <if test="property!=null">  
+   		order by  l.${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
 </mapper>
