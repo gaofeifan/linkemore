@@ -2,8 +2,10 @@ package cn.linkmore.ops.ent.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,12 +23,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.DataException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqEntUserPlate;
 import cn.linkmore.ops.biz.controller.BaseController;
 import cn.linkmore.ops.ent.service.EntUserPlateService;
+import cn.linkmore.prefecture.client.OpsPrefectureClient;
+import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.util.ExcelRead;
 
@@ -42,6 +47,9 @@ public class EntUserPlateController extends BaseController {
 
 	@Resource
 	private EntUserPlateService userPlateService;
+	
+	@Resource
+	private OpsPrefectureClient prefectureClient;
 	
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
@@ -59,8 +67,25 @@ public class EntUserPlateController extends BaseController {
 			plate.setCreateTime(new Date());
 			plate.setCreateUserId(person.getId());
 			plate.setCreateUserName(person.getUsername());
-			this.userPlateService.save(plate);
-			msg = new ViewMsg("保存成功", true);
+			
+			Map<String, Object> param = new HashMap<>();
+			param.put("createUserId", person.getId());
+			List<ResPrefectureDetail> preList = prefectureClient.findList(param);
+			if(CollectionUtils.isNotEmpty(preList)) {
+				plate.setPreId(preList.get(0).getId());
+			}else {
+				throw new BusinessException(StatusEnum.PREFECTURE_NOT_EXIST);
+			}
+			Map<String,Object> checkParam = new HashMap<String,Object>();
+			checkParam.put("preId", plate.getPreId());
+			checkParam.put("plateNo", plate.getPlateNo());
+			//this.userPlateService.save(userPlate);
+			if(!userPlateService.exists(checkParam)) {
+				this.userPlateService.save(plate);
+				msg = new ViewMsg("保存成功", true);
+			}else {
+				msg = new ViewMsg("当前车牌已存在", false);
+			}
 		} catch (BusinessException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
@@ -101,7 +126,20 @@ public class EntUserPlateController extends BaseController {
 	@ResponseBody
 	public ViewMsg importExcel(@RequestParam("file") MultipartFile file) {
 		ViewMsg msg = new ViewMsg("导入成功", true);
+		Map<String, Object> checkParam = null;
+		Long preId = null;
 		try {
+			Subject subject = SecurityUtils.getSubject();
+			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+			Map<String, Object> param = new HashMap<>();
+			param.put("createUserId", person.getId());
+			List<ResPrefectureDetail> preList = prefectureClient.findList(param);
+			if(CollectionUtils.isNotEmpty(preList)) {
+				preId = preList.get(0).getId();
+			}else {
+				throw new BusinessException(StatusEnum.PREFECTURE_NOT_EXIST);
+			}
+			
 			ExcelRead er = new ExcelRead();
 			List<List<String>> list = er.readExcel(file);
 			long userId = getPerson().getId();
@@ -120,8 +158,12 @@ public class EntUserPlateController extends BaseController {
 							userPlate.setCreateUserId(userId);
 							userPlate.setCreateUserName(userName);
 							userPlate.setCreateTime(new Date());
+							userPlate.setPreId(preId);
+							checkParam = new HashMap<String,Object>();
+							checkParam.put("preId", userPlate.getPreId());
+							checkParam.put("plateNo", userPlate.getPlateNo());
 							//this.userPlateService.save(userPlate);
-							if(!userPlateService.exists(userPlate.getPlateNo())) {
+							if(!userPlateService.exists(checkParam)) {
 								plateList.add(userPlate);
 								count++;
 							}
@@ -135,6 +177,8 @@ public class EntUserPlateController extends BaseController {
 			}
 			msg = new ViewMsg(String.format("导入成功！</br>一共导入%s个车牌</br>其中成功导入:%s个车牌",(list !=null?list.size():0) ,count), true);
 		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (BusinessException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
 			msg = new ViewMsg("导入失败", false);

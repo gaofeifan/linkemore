@@ -124,6 +124,8 @@ public enum StatusEnum {
 	DOWN_LOCK_FAIL_CHECK(8005093,"该车位不可用请选择其他车位"),
 	DOWN_LOCK_FAIL_DROP(8005094,"网关掉线,未找到车位锁"),
 	
+	PREFECTURE_NOT_EXIST(8005095,"企业账户下不存在车区"),
+	
 	
 	;
 	

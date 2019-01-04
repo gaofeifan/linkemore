@@ -1092,7 +1092,10 @@ public class OrdersServiceImpl implements OrdersService {
 			Object object = map.get("chargePrice");
 			if (object != null) {
 				orders.setTotalAmount(new BigDecimal(object.toString()));
-				boolean flag = userPlateClient.exists(orders.getPlateNo());
+				Map<String,Object> checkParam = new HashMap<String,Object>();
+				checkParam.put("plateNo", orders.getPlateNo());
+				checkParam.put("preId", orders.getPreId());
+				boolean flag = userPlateClient.exists(checkParam);
 				log.info("..........current order free plate :{}, flag :{}", orders.getPlateNo(), flag);
 				if(flag) {
 					orders.setTotalAmount(new BigDecimal(0.00));

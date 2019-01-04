@@ -15,6 +15,6 @@ public interface EntUserPlateClusterMapper {
 
 	List<EntUserPlate> findPage(Map<String, Object> param);
 
-	int exists(String plateNo);
+	int exists(Map<String, Object> checkParam);
 
 }

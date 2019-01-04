@@ -265,7 +265,10 @@ public class PayServiceImpl implements PayService {
 				String totalAmountStr = new java.text.DecimalFormat("0.00").format(Double.valueOf(totalStr));
 				log.info(">>>>>>>>>>>>>>>>>>>>>>>>checkout totalAmount:{}", totalAmountStr);
 				roc.setTotalAmount(new BigDecimal(Double.valueOf(totalAmountStr)));
-				boolean flag = userPlateClient.exists(order.getPlateNo());
+				Map<String,Object> checkParam = new HashMap<String,Object>();
+				checkParam.put("plateNo", order.getPlateNo());
+				checkParam.put("preId", order.getPreId());
+				boolean flag = userPlateClient.exists(checkParam);
 				if(flag) {
 					roc.setTotalAmount(new BigDecimal(0.00));
 				}
@@ -433,8 +436,10 @@ public class PayServiceImpl implements PayService {
 		if (plateNo != null && plateNo.contains(order.getPlateNo())) {
 			order.setActualAmount(new BigDecimal(0.00));
 		}*/
-		
-		boolean flag = userPlateClient.exists(order.getPlateNo());
+		Map<String,Object> checkParam = new HashMap<String,Object>();
+		checkParam.put("plateNo", order.getPlateNo());
+		checkParam.put("preId", order.getPreId());
+		boolean flag = userPlateClient.exists(checkParam);
 		if(flag) {
 			order.setActualAmount(new BigDecimal(0.00));
 		}

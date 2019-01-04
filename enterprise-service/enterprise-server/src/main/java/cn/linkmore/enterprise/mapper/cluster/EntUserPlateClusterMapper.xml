@@ -8,9 +8,10 @@
     <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, plate_no, mobile, create_user_id, create_user_name, create_time
+    id, plate_no, mobile, create_user_id, create_user_name, create_time, pre_id
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -30,6 +31,9 @@
     	</if>
     	<if test="plateNo != null">
     		and plate_no like #{plateNo}
+    	</if>
+    	<if test="createUserId != null">
+    		and create_user_id = #{createUserId}
     	</if>
     	<if test="property==null">
 			order by id desc
@@ -52,12 +56,20 @@
     	<if test="plateNo != null">
     		and plate_no like #{plateNo}
     	</if>
+    	<if test="createUserId != null">
+    		and create_user_id = #{createUserId}
+    	</if>
   </select>
   
-  <select id="exists" parameterType="java.lang.String" resultType="java.lang.Integer">
+  <select id="exists" parameterType="java.util.HashMap" resultType="java.lang.Integer">
     select  count(1) from t_ent_user_plate
-	where  1 = 1 and plate_no = #{plateNo}
+	where  1 = 1 
+	<if test="plateNo != null">
+   		and plate_no = #{plateNo}
+   	</if>
+   	<if test="preId != null">
+   		and pre_id = #{preId}
+   	</if>
   </select>
-  
   
 </mapper>
