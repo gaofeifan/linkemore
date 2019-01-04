@@ -1002,28 +1002,35 @@ public class PrefectureServiceImpl implements PrefectureService {
 				List<ResStall> stallList = new ArrayList<ResStall>();
 				ResStall resStall = null;
 				List<cn.linkmore.prefecture.response.ResStall> groupStallList = stallClusterMapper.findPreStallList(params);
-				log.info(".........stall list pre group id = {} groupStallList = {}", groupId, JSON.toJSON(groupStallList));
+				log.info(".........stall list pre group id = {} freeLockSnList = {} groupStallList = {}", groupId, JSON.toJSON(lockSnList), JSON.toJSON(groupStallList));
 				Map<String,Object> statuMap = new HashMap<String,Object>();
 				for (cn.linkmore.prefecture.response.ResStall stall : groupStallList) {
 					resStall = new ResStall();
 					resStall.setStallId(stall.getId());
-					if(lockSnList.contains(stall.getLockSn()) && stall.getStatus() == 1) {
-						//空闲车位锁
-						stall.setStatus(1);
+					if(stall.getStatus() == 1) {
+						if(lockSnList.contains(stall.getLockSn())) {
+							//空闲车位锁
+							stall.setStatus(1);
+						}else {
+							stall.setStatus(2);
+						}
 					}
 					resStall.setLockSn(stall.getLockSn());
 					resStall.setStallName(stall.getStallName());
 					stallList.add(resStall);
 					statuMap.put(stall.getStallName(), stall);
 				}
+				log.info("statuMap : {}",JSON.toJSON(statuMap));
 				
 				List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
+				log.info("eleList = {}",JSON.toJSON(eleList));
 				List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
 				Map<String,Object> paramMap = null;
 				if(CollectionUtils.isNotEmpty(eleList)) {
 					for(PrefectureElement ele: eleList) {
 						paramMap = new HashMap<String,Object>();
 						if(StringUtils.isNotBlank(ele.getEleName())) {
+							log.info("elename :{} real exist :{}",ele.getEleName(), statuMap.get(ele.getEleName()));
 							if(statuMap.get(ele.getEleName()) != null) {
 								cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
 								paramMap.put("name", ele.getEleName());
@@ -1032,6 +1039,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 								paramMap.put("stallId", stall.getId());
 								paramMap.put("index", count);
 								paramMap.put("lockSn", stall.getLockSn());
+							}else {
+								paramMap.put("name", ele.getEleName());
+								paramMap.put("status", 4);
+								paramMap.put("index", count);
+								paramMap.put("stallId", 0L);
+								paramMap.put("lockSn", "");
 							}
 						}
 						if(StringUtils.isNotBlank(ele.getEleSrc())) {
