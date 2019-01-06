@@ -1170,10 +1170,9 @@ public class PayServiceImpl implements PayService {
 				   append(entry.getKey()).
 				   append("=").
 				   append(entry.getValue());
-				
 			}
 		}
-		
+		System.out.println(JsonUtil.toJson(map));
 	}
 
 	@Override

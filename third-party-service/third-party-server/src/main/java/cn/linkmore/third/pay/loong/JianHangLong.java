@@ -79,7 +79,6 @@ public class JianHangLong {
 		return loongPay;
 	}
 
-	
 
 	public static void callbackMsg(Map<String, Object> map) {
 		

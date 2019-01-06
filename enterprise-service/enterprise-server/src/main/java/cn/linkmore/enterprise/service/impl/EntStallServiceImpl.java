@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
-import com.aliyun.oss.common.comm.ResponseMessage;
+
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -653,18 +653,6 @@ public class EntStallServiceImpl implements EntStallService {
 					}
 				}
 			}
-			/*
-			 * EntRentedRecord record =
-			 * this.rentedRecordClusterMapper.findByStallId(resStallEntity.getId());
-			 * if(record == null) { EntRentUser entRentUser =
-			 * this.entRentUserService.findByStallId(resStallEntity.getId()); if(entRentUser
-			 * != null) { resDetailStall.setMobile(entRentUser.getMobile()); } }else {
-			 * ResUser resUser = userClient.findById(record.getUserId()); if(resUser !=
-			 * null) { resDetailStall.setMobile(resUser.getMobile()); } }
-			 */
-			// this.entAuthStallClusterMapper.findByStall(resStallEntity.getId());
-			// this.enterpriseService.findById(ent)
-			// resDetailStall.setMobile(record.get);
 			resDetailStall.setPlate(sb.length() != 0 ? sb.substring(0, sb.length() - 1) : null);
 			EntRentUser entRentUser = this.entRentUserService.findByStallId(resStallEntity.getId());
 			if (entRentUser != null && new Date().getTime() <= entRentUser.getEndTime().getTime()) {
@@ -693,7 +681,6 @@ public class EntStallServiceImpl implements EntStallService {
 				resDetailStall.setStartDate(duration);
 			}
 		}
-
 		if (ResDetailStall.DOWN_STATUS.equals(resStallEntity.getStatus())) {
 			ResStallOperateLog operLog = this.stallOperateLogClient.findByStallId(resDetailStall.getStallId());
 			if (operLog.getOperation().equals(2)) {
