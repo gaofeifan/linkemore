@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.service;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -38,7 +39,7 @@ public interface EntUserPlateService {
 	 */
 	void delete(List<Long> ids);
 
-	int exists(String plateNo);
+	int exists(Map<String, Object> checkParam);
 
 	int saveBatch(List<ReqEntUserPlate> plateList);
 	

@@ -1,10 +1,11 @@
 package cn.linkmore.ops.ent.service;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
-import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqEntUserPlate;
 
 /**
@@ -43,7 +44,7 @@ public interface EntUserPlateService {
 	 */
 	void delete(List<Long> ids);
 
-	boolean exists(String plateNo);
+	boolean exists(Map<String, Object> checkParam);
 
 	int saveBatch(List<ReqEntUserPlate> plateList);
 

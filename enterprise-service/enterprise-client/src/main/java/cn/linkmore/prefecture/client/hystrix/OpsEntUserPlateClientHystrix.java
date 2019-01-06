@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -37,15 +38,15 @@ public class OpsEntUserPlateClientHystrix  implements OpsEntUserPlateClient{
 	}
 
 	@Override
-	public boolean exists(String plateNo) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public int saveBatch(List<ReqEntUserPlate> plateList) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public boolean exists(Map<String, Object> checkParam) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

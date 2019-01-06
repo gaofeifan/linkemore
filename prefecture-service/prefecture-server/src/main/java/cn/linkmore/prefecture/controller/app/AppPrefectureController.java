@@ -91,6 +91,7 @@ public class AppPrefectureController {
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
+			log.info("exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;

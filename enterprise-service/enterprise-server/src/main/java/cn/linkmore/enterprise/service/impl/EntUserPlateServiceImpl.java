@@ -74,13 +74,13 @@ public class EntUserPlateServiceImpl implements EntUserPlateService {
 	}
 
 	@Override
-	public int exists(String plateNo) {
-		return this.entUserPlateClusterMapper.exists(plateNo);
+	public int saveBatch(List<ReqEntUserPlate> plateList) {
+		return this.entUserPlateMasterMapper.saveBatch(plateList);
 	}
 
 	@Override
-	public int saveBatch(List<ReqEntUserPlate> plateList) {
-		return this.entUserPlateMasterMapper.saveBatch(plateList);
+	public int exists(Map<String, Object> checkParam) {
+		return this.entUserPlateClusterMapper.exists(checkParam);
 	}
 	
 }

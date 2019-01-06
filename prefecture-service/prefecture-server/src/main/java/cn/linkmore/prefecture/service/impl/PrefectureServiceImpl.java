@@ -533,12 +533,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return stallInfo;
 	}
 
-	public static double mul(double value1, double value2) {
-		BigDecimal b1 = new BigDecimal(Double.valueOf(value1));
-		BigDecimal b2 = new BigDecimal(Double.valueOf(value2));
-		return b1.multiply(b2).doubleValue();
-	}
-
 	public static double div(double v1, double v2, int scale) {
 		if (scale < 0) {
 			throw new IllegalArgumentException("The scale must be a positive integer or zero");
@@ -609,55 +603,48 @@ public class PrefectureServiceImpl implements PrefectureService {
 					if (json != null) {
 						JSONObject data = JSONObject.parseObject(json);
 						if (data.getInteger("code") == 200) {
-							JSONObject detailObj = JSONObject.parseObject(data.getString("detail"));
-							freeMins = String.valueOf(detailObj.getInteger("free"));
-							topFee = String.valueOf(detailObj.getBigDecimal("limitPrice"));
-							JSONArray array = detailObj.getJSONArray("data");
-							for (int i = 0; i < array.size(); i++) {
-								String obj = array.getString(i);
-								log.info("..........pre detail obj{}", obj);
-								JSONObject jsonObj = JSONObject.parseObject(obj);
-								String beginTime = jsonObj.getString("beginTime");
-								String endTime = jsonObj.getString("endTime");
-								Double chargeFee = jsonObj.getBigDecimal("chargeFee").doubleValue();
-								int chargeHourFree = 0;
-								if(jsonObj.getString("chargeHourFree") != null) {
-									chargeHourFree = jsonObj.getInteger("chargeHourFree");
-								}
-								
-								int criticalUnit = jsonObj.getInteger("criticalUnit");
-								int chargeUnit = jsonObj.getInteger("chargeUnit");
-								String remark = jsonObj.getString("remark");
-								log.info("charge hour free = {} remark ={}", chargeHourFree, remark);
-								sb.append(beginTime + "-" + endTime + " ");
-								if (chargeUnit == 1) {
-									sb.append(chargeFee + "元/分");
-								} else if (chargeUnit == 2) {
-									sb.append(chargeFee + "元/时");
-								} else if (chargeUnit == 3) {
-									sb.append(chargeFee + "元/次");
-								}
-								
-								if (criticalUnit == 1) {
+							if(data.getString("detail") != null) {
+								JSONObject detailObj = JSONObject.parseObject(data.getString("detail"));
+								freeMins = String.valueOf(detailObj.getInteger("free"));
+								topFee = String.valueOf(detailObj.getBigDecimal("limitPrice"));
+								JSONArray array = detailObj.getJSONArray("data");
+								for (int i = 0; i < array.size(); i++) {
+									String obj = array.getString(i);
+									log.info("..........pre detail obj{}", obj);
+									JSONObject jsonObj = JSONObject.parseObject(obj);
+									String beginTime = jsonObj.getString("beginTime");
+									String endTime = jsonObj.getString("endTime");
+									Double chargeFee = jsonObj.getBigDecimal("chargeFee").doubleValue();
+									int chargeHourFree = 0;
+									if(jsonObj.getString("chargeHourFree") != null) {
+										chargeHourFree = jsonObj.getInteger("chargeHourFree");
+									}
+									
+									int chargeUnit = jsonObj.getInteger("chargeUnit");
+									String remark = jsonObj.getString("remark");
+									log.info("charge hour free = {} remark ={}", chargeHourFree, remark);
+									sb.append(beginTime + "-" + endTime + " ");
+									if (chargeUnit == 1) {
+										sb.append(chargeFee + "元/分");
+									} else if (chargeUnit == 2) {
+										sb.append(chargeFee + "元/时");
+									} else if (chargeUnit == 3) {
+										sb.append(chargeFee + "元/次");
+									}
+									
 									sb.append("\t\r\n");
-									sb.append("每" +chargeHourFree+ "分钟为一个计价单位");
-									//sb.append(div(mul(chargeFee, chargeHourFree), 60, 2) + "/" + chargeHourFree + "分钟");
-								} else if (criticalUnit == 2) {
-									sb.append("\t\r\n");
-									sb.append("每" +chargeHourFree+ "小时为一个计价单位");
-									//sb.append(div(mul(chargeFee, chargeHourFree), 60, 2) + "/" + chargeHourFree + "小时");
-								}
-								sb.append("\t\r\n");
-								if (StringUtils.isNotBlank(remark)) {
-									sb.append(remark);
-									sb.append("\t\r\n");
+									if (StringUtils.isNotBlank(remark)) {
+										sb.append(remark);
+										sb.append("\t\r\n");
+									}
 								}
 							}
-							sb.deleteCharAt(sb.length() - 3);
 						}
 						log.info("..........pre detail 调用结果{} 免费时长{} 封顶计费{} 描述{}", data, freeMins, topFee, sb.toString());
 					}
-					group.setDesc(sb.toString());
+					if(sb.length() > 3) {
+						group.setDesc(sb.toString().substring(0, sb.length()-3));
+					}
 					group.setGroupId(strategyGroup.getId());
 					group.setPreId(preDetail.getId());
 					if (map.get(strategyGroup.getId()) == null) {
@@ -896,51 +883,53 @@ public class PrefectureServiceImpl implements PrefectureService {
 			if (json != null) {
 				JSONObject data = JSONObject.parseObject(json);
 				if (data.getInteger("code") == 200) {
-					JSONObject detailObj = JSONObject.parseObject(data.getString("detail"));
-					freeMins = String.valueOf(detailObj.getInteger("free"));
-					topFee = String.valueOf(detailObj.getBigDecimal("limitPrice"));
-					JSONArray array = detailObj.getJSONArray("data");
-					for (int i = 0; i < array.size(); i++) {
-						String fee = "";
-						
-						String obj = array.getString(i);
-						log.info("..........group strategy obj{}", obj);
-						JSONObject jsonObj = JSONObject.parseObject(obj);
-						String beginTime = jsonObj.getString("beginTime");
-						String endTime = jsonObj.getString("endTime");
-						Double chargeFee = jsonObj.getBigDecimal("chargeFee").doubleValue();
-						int chargeHourFree = 0;
-						if(jsonObj.getString("chargeHourFree") != null) {
-							chargeHourFree = jsonObj.getInteger("chargeHourFree");
-						}
-						
-						int chargeUnit = jsonObj.getInteger("chargeUnit");
-						String remark = jsonObj.getString("remark");
-						log.info("charge hour free = {} remark ={}", chargeHourFree, remark);
-						sb.append(beginTime + "-" + endTime + " ");
-						
-						if (chargeUnit == 1) {
-							fee = chargeFee + "元/分";
-						} else if (chargeUnit == 2) {
-							fee = chargeFee + "元/时";
-						} else if (chargeUnit == 3) {
-							fee = chargeFee + "元/次";
-						}
-						sb.append(fee);
-						try {
-							log.info("begin = {}, end = {}, now = {}", beginTime, endTime, getCurrentTime());
-							if(isInZone(getLong(beginTime),getLong(endTime),getCurrentTime())){
-								groupStrategy.setCurrentTimePeriod(beginTime + "-" + endTime);
-								groupStrategy.setCurrentFee(fee);
+					if(data.getString("detail")!= null) {
+						JSONObject detailObj = JSONObject.parseObject(data.getString("detail"));
+						freeMins = String.valueOf(detailObj.getInteger("free"));
+						topFee = String.valueOf(detailObj.getBigDecimal("limitPrice"));
+						JSONArray array = detailObj.getJSONArray("data");
+						for (int i = 0; i < array.size(); i++) {
+							String fee = "";
+							
+							String obj = array.getString(i);
+							log.info("..........group strategy obj{}", obj);
+							JSONObject jsonObj = JSONObject.parseObject(obj);
+							String beginTime = jsonObj.getString("beginTime");
+							String endTime = jsonObj.getString("endTime");
+							Double chargeFee = jsonObj.getBigDecimal("chargeFee").doubleValue();
+							int chargeHourFree = 0;
+							if(jsonObj.getString("chargeHourFree") != null) {
+								chargeHourFree = jsonObj.getInteger("chargeHourFree");
 							}
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-						
-						sb.append("\t\r\n");
-						if (StringUtils.isNotBlank(remark)) {
-							sb.append(remark);
+							
+							int chargeUnit = jsonObj.getInteger("chargeUnit");
+							String remark = jsonObj.getString("remark");
+							log.info("charge hour free = {} remark ={}", chargeHourFree, remark);
+							sb.append(beginTime + "-" + endTime + " ");
+							
+							if (chargeUnit == 1) {
+								fee = chargeFee + "元/分";
+							} else if (chargeUnit == 2) {
+								fee = chargeFee + "元/时";
+							} else if (chargeUnit == 3) {
+								fee = chargeFee + "元/次";
+							}
+							sb.append(fee);
+							try {
+								log.info("begin = {}, end = {}, now = {}", beginTime, endTime, getCurrentTime());
+								if(isInZone(getLong(beginTime),getLong(endTime),getCurrentTime())){
+									groupStrategy.setCurrentTimePeriod(beginTime + "-" + endTime);
+									groupStrategy.setCurrentFee(fee);
+								}
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+							
 							sb.append("\t\r\n");
+							if (StringUtils.isNotBlank(remark)) {
+								sb.append(remark);
+								sb.append("\t\r\n");
+							}
 						}
 					}
 				}
@@ -1002,38 +991,54 @@ public class PrefectureServiceImpl implements PrefectureService {
 				List<ResStall> stallList = new ArrayList<ResStall>();
 				ResStall resStall = null;
 				List<cn.linkmore.prefecture.response.ResStall> groupStallList = stallClusterMapper.findPreStallList(params);
-				log.info(".........stall list pre group id = {} groupStallList = {}", groupId, JSON.toJSON(groupStallList));
+				log.info(".........stall list pre group id = {} freeLockSnList = {} groupStallList = {}", groupId, JSON.toJSON(lockSnList), JSON.toJSON(groupStallList));
 				Map<String,Object> statuMap = new HashMap<String,Object>();
 				for (cn.linkmore.prefecture.response.ResStall stall : groupStallList) {
 					resStall = new ResStall();
 					resStall.setStallId(stall.getId());
-					if(lockSnList.contains(stall.getLockSn()) && stall.getStatus() == 1) {
-						//空闲车位锁
-						stall.setStatus(1);
+					if(stall.getStatus() == 1) {
+						if(lockSnList.contains(stall.getLockSn())) {
+							//空闲车位锁
+							stall.setStatus(1);
+						}else {
+							stall.setStatus(2);
+						}
 					}
 					resStall.setLockSn(stall.getLockSn());
 					resStall.setStallName(stall.getStallName());
 					stallList.add(resStall);
 					statuMap.put(stall.getStallName(), stall);
 				}
+				log.info("statuMap : {}",JSON.toJSON(statuMap));
 				
 				List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
+				log.info("eleList = {}",JSON.toJSON(eleList));
 				List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
 				Map<String,Object> paramMap = null;
 				if(CollectionUtils.isNotEmpty(eleList)) {
 					for(PrefectureElement ele: eleList) {
 						paramMap = new HashMap<String,Object>();
-						if(StringUtils.isNotBlank(ele.getEleName())) {
-							cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
-							paramMap.put("name", ele.getEleName());
-							//此处需要根据车位锁实际状态优化
-							paramMap.put("status", stall.getStatus());
-							paramMap.put("stallId", stall.getId());
-							paramMap.put("index", count);
-							paramMap.put("lockSn", stall.getLockSn());
-						}
-						if(StringUtils.isNotBlank(ele.getEleSrc())) {
-							paramMap.put("src", ele.getEleSrc());
+						if("button".equals(ele.getEleType())) {
+							log.info("elename :{} real exist :{}",ele.getEleName(), statuMap.get(ele.getEleName()));
+							if(statuMap.get(ele.getEleName()) != null) {
+								cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
+								paramMap.put("name", ele.getEleName());
+								//此处需要根据车位锁实际状态优化
+								paramMap.put("status", stall.getStatus());
+								paramMap.put("stallId", stall.getId());
+								paramMap.put("index", count);
+								paramMap.put("lockSn", stall.getLockSn());
+							}else {
+								paramMap.put("name", ele.getEleName());
+								paramMap.put("status", 4);
+								paramMap.put("index", count);
+								paramMap.put("stallId", 0L);
+								paramMap.put("lockSn", "");
+							}
+						}else  if("img".equals(ele.getEleType())){
+							if(StringUtils.isNotBlank(ele.getEleSrc())) {
+								paramMap.put("src", ele.getEleSrc());
+							}
 						}
 						paramMap.put("type", ele.getEleType());
 						paramMap.put("x", ele.getEleX());

@@ -1859,12 +1859,19 @@ public class StallServiceImpl implements StallService {
 						//去掉空闲车位
 						redisService.remove(rediskey);
 						this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+						this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId());
 						/*stall.setLockStatus(2);
 						stall.setStatus(2);
 						stallMasterMapper.lockdown(stall);*/
 					}else if(code == 500){
 						redisService.remove(rediskey);
-						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+						if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId())) {
+							throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+						} else {
+							this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId(), 1,
+									ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+							throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+						}
 					}/* else if (code == 400){
 						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_DROP);
 					} */else {
@@ -1917,13 +1924,11 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean controlLock(Long stallId, HttpServletRequest request) {
 		boolean flag = false;
-		/*CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
-		}*/
+		}
 
-		CacheUser user = new CacheUser();
-		user.setId(2743L);
 		Stall stall = stallClusterMapper.findById(stallId);
 		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
@@ -1974,7 +1979,14 @@ public class StallServiceImpl implements StallService {
 			ResLockInfo lockInfo = lockTools.lockInfo(stall.getLockSn());
 			log.info("<<<<<<<<<bluetooth verify>>>>>>>>>>>>lockInfo:{}",JSON.toJSON(lockInfo));
 			if(lockInfo != null && lockInfo.getLockState() != 0) {
-				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+				
+				if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId())) {
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+				} else {
+					this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId(), 1,
+							ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+				}
 			}
 			if(lockInfo == null) {
 				//锁掉线,未找到车位锁
@@ -1991,9 +2003,10 @@ public class StallServiceImpl implements StallService {
 		}
 		if(flag) {
 			this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
-			stall.setLockStatus(2);
+			this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId());
+			/*stall.setLockStatus(2);
 			stall.setStatus(2);
-			stallMasterMapper.lockdown(stall);
+			stallMasterMapper.lockdown(stall);*/
 		}
 		return flag;
 	}

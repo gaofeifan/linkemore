@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +44,7 @@ public interface OpsEntUserPlateClient {
 
 	@RequestMapping(value = "/v2.0/exists", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean exists(@RequestBody String plateNo);
+	public boolean exists(@RequestBody Map<String, Object> checkParam);
 
 	@RequestMapping(value = "/v2.0/save-batch", method = RequestMethod.POST)
 	@ResponseBody

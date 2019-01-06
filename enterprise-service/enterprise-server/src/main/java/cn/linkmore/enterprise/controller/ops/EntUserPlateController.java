@@ -1,6 +1,7 @@
 package cn.linkmore.enterprise.controller.ops;
 
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,9 +52,9 @@ public class EntUserPlateController {
 	
 	@RequestMapping(value = "/v2.0/exists", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean exists(@RequestBody String plateNo) {
+	public boolean exists(@RequestBody Map<String,Object> checkParam) {
 		boolean flag = false;
-		int num = entUserPlateService.exists(plateNo);
+		int num = entUserPlateService.exists(checkParam);
 		if(num > 0) {
 			flag = true;
 		}
