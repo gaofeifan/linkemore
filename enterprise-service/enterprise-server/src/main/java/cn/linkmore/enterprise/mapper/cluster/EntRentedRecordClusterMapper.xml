@@ -113,7 +113,7 @@
 	</select>
 	
 	<select id="exportList" parameterType="cn.linkmore.enterprise.request.ReqRentedRecord" resultMap="ExcelResultMap">
-		select t.plate_no,t.down_time,t.leave_time,t.stall_name, t.pre_name,u.username,t.`status` from t_ent_rented_record t left join t_user u on t.user_id= u.id
+		select t.plate_no,t.down_time,t.leave_time,t.stall_name, t.pre_name,u.username as mobile,t.`status` from t_ent_rented_record t left join t_user u on t.user_id= u.id
  		where 1 = 1
 		<if test="preName != null">
 			AND pre_name like #{preName}
