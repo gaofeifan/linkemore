@@ -62,6 +62,11 @@ public class AppLoongPayConfig {
 	public void setPubKey(String pubKey) {
 		this.pubKey = pubKey;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "AppLoongPayConfig [merchantId=" + merchantId + ", posId=" + posId + ", branchId=" + branchId + ", url="
+				+ url + ", pubKey=" + pubKey + "]";
+	}
 	
 }

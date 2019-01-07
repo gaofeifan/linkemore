@@ -12,6 +12,7 @@ import cn.linkmore.third.client.hystrix.AppAlipayClientHystrix;
 import cn.linkmore.third.client.hystrix.AppLoongPayClientHystrix;
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqLongPay;
+import cn.linkmore.third.request.ReqLoongPayVerifySign;
 import cn.linkmore.third.response.ResLoongPay;
 /**
  * @author   GFF
@@ -29,4 +30,8 @@ public interface AppLoongPayClient {
 	@ResponseBody
 	public ResLoongPay order(@RequestBody ReqLongPay alipay);
 	
+	
+	@RequestMapping(value="/v3.0/verify-sigature",method=RequestMethod.POST)
+	@ResponseBody
+	public boolean verifySigature(@RequestBody ReqLoongPayVerifySign sign);
 }

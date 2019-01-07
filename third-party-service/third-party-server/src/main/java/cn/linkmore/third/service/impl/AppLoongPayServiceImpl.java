@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.third.config.AppLoongPayConfig;
 import cn.linkmore.third.pay.loong.JianHangLong;
 import cn.linkmore.third.request.ReqLongPay;
+import cn.linkmore.third.request.ReqLoongPayVerifySign;
 import cn.linkmore.third.response.ResLoongPay;
 import cn.linkmore.third.service.AppLoongPayService;
 
@@ -32,6 +33,12 @@ public class AppLoongPayServiceImpl implements AppLoongPayService {
 		JianHangLong.callbackMsg(map);
 		return false;
 	}
+	@Override
+	public boolean verifySigature(ReqLoongPayVerifySign verifySign) {
+		verifySign.setPub(config.getPubKey());
+		return JianHangLong.verifySigature(verifySign);
+	}
 
+	
 	
 }

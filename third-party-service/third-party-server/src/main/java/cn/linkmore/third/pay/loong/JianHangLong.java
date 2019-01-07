@@ -2,23 +2,20 @@ package cn.linkmore.third.pay.loong;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import CCBSign.RSASig;
 import cn.linkmore.third.config.AppLoongPayConfig;
 import cn.linkmore.third.request.ReqLongPay;
+import cn.linkmore.third.request.ReqLoongPayVerifySign;
 import cn.linkmore.third.response.ResLoongPay;
-import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
 /**
  * 建行龙支付
@@ -35,6 +32,7 @@ public class JianHangLong {
 	private static final String[] sortParam = new String[] {
 			"MERCHANTID","POSID","BRANCHID","ORDERID","PAYMENT","CURCODE","REMARK1","REMARK2","TXCODE","MAC","TYPE","GATEWAY","CLIENTIP","REGINFO","PROINFO","REFERER"};;
 	
+
 	public static ResLoongPay create(ReqLongPay pay,AppLoongPayConfig config) {
 		log.info("ReqLongPay====="+JsonUtil.toJson(pay));
 		log.info("AppLongPayConfig====="+JsonUtil.toJson(config));
@@ -45,7 +43,7 @@ public class JianHangLong {
 			  append("POSID=").append(config.getPosId()).append("&").
 			  append("BRANCHID=").append(config.getBranchId()).append("&").
 			  append("ORDERID=").append(pay.getOrderId()).append("&").
-			  append("PAYMENT=").append(pay.getAmount()).append("&").
+			  append("PAYMENT=").append(pay.getAmount().doubleValue()).append("&").
 			  append("CURCODE=").append("01").append("&").
 			  append("TXCODE=").append(520100).append("&").
 			  append("REMARK1=").append("").append("&").
@@ -126,8 +124,8 @@ public class JianHangLong {
 		bean.setPubKey("30819d300d06092a864886f70d010101050003818b0030818702818100a121d79346cc2f116e55630f38f620fe8e599595a749c7335a2c8518fc541ae2ffa4862a1425574cff5fb001b64f7a74731ef156cb75029b3d0593634daa3ac3fe59e1b11dec0bd7b3b3257e44d4313be40540c9eed343ad6136c89d8c571d04299b2c2d2bf83a9d28c37dc77a731886fd868f7153b3bc1e361390364f4f0f77020113");
 		bean.setUrl("https://ibsbjstar.ccb.com.cn/CCBIS/ccbMain");
 		ReqLongPay pay = new ReqLongPay();
-		pay.setAmount(new BigDecimal(1));
-		pay.setOrderId(182937L);
+		pay.setAmount(new BigDecimal(0.01));
+		pay.setOrderId("sdfsdfsdfsd");
 		pay.setUserId(77255L);
 		ResLoongPay resLoongPay = create(pay , bean);
 		System.out.println(JsonUtil.toJson(resLoongPay));
@@ -136,6 +134,12 @@ public class JianHangLong {
 
 	public static void callbackMsg(Map<String, Object> map) {
 		
+	}
+	
+	public static boolean verifySigature(ReqLoongPayVerifySign verifySign) {
+		log.info(JsonUtil.toJson(verifySign));
+		RSASig sig = RSASigSingle.getInstance(verifySign.getPub());
+		return sig.verifySigature(verifySign.getSign(), verifySign.getSrt());
 	}
 }
 class MD5{
