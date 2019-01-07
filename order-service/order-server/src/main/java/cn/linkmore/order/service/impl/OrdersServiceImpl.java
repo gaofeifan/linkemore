@@ -259,22 +259,6 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 	}
 	
-	class DownStallThread extends Thread {
-		private ReqStallBooking rsb;
-		private CacheUser cu;
-
-		public DownStallThread(ReqStallBooking rsb, CacheUser cu) {
-			this.rsb = rsb;
-			this.cu = cu;
-		}
-
-		public void run() {
-			log.info("choose stall order thread starting");
-			downAppointOrder(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu, true);
-		}
-
-	}
-	
 	class UplockThread extends Thread {
 		private Long stallId;
 
@@ -359,11 +343,6 @@ public class OrdersServiceImpl implements OrdersService {
 				stall = this.stallClient.findById(stallId);
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					lockSn = stall.getLockSn();
-					/*ResLockInfo lockInfo = lockClient.lockInfo(lockSn);
-					//车位锁状态不是降下，此时下单失败
-					if(lockInfo != null && lockInfo.getLockState() != 0) {
-						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
-					}*/
 					if(!downFlag) {
 						log.info(".................2  order-stall-lockSn,{}", lockSn);
 						if(pre != null  && pre.getCategory() == 2) {
@@ -458,23 +437,21 @@ public class OrdersServiceImpl implements OrdersService {
 			stall = this.stallClient.findByLock(lockSn.trim());
 			log.info("order-stall:{}", JsonUtil.toJson(stall));
 			//降锁下单直接过滤
-			if(!downFlag) {
-				if (stall == null || stall.getStatus().intValue() != StallStatus.FREE.status) {
-					resetRedis = false;
-					bookingStatus = (short) OperateStatus.FAILURE.status;
-					failureReason = (short) OrderFailureReason.STALL_EXCEPTION.value;
-					log.info("{} create order error with {}", cu.getMobile(), JsonUtil.toJson(stall));
-					throw new BusinessException(StatusEnum.ORDER_REASON_STALL_EXCEPTION);
-				}
-				ResUserOrder latest = this.ordersClusterMapper.findStallLatest(stall.getId());
-				if (latest != null && latest.getStatus().intValue() == 1) {
-					bookingStatus = (short) OperateStatus.FAILURE.status;
-					failureReason = (short) OrderFailureReason.STALL_ORDERED.value;
-					resetRedis = false;
-					log.info("{} create order error latest order {} is unpaid with stall  ", cu.getMobile(),
-							JsonUtil.toJson(latest), JsonUtil.toJson(stall));
-					throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
-				}
+			if (stall == null || stall.getStatus().intValue() != StallStatus.FREE.status) {
+				resetRedis = false;
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.STALL_EXCEPTION.value;
+				log.info("{} create order error with {}", cu.getMobile(), JsonUtil.toJson(stall));
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_EXCEPTION);
+			}
+			ResUserOrder latest = this.ordersClusterMapper.findStallLatest(stall.getId());
+			if (latest != null && latest.getStatus().intValue() == 1) {
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.STALL_ORDERED.value;
+				resetRedis = false;
+				log.info("{} create order error latest order {} is unpaid with stall  ", cu.getMobile(),
+						JsonUtil.toJson(latest), JsonUtil.toJson(stall));
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
 			}
 			log.info("{} create order with{}", cu.getMobile(), JsonUtil.toJson(stall));
 			o = new Orders(); // 插入订单
@@ -2215,75 +2192,69 @@ public class OrdersServiceImpl implements OrdersService {
 		ResOrder ro = null;
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		log.info("down appoint request param :{} cu:{}", JsonUtil.toJson(rsb), JsonUtil.toJson(cu));
-		log.info("choose stall order thread starting");
 		ResStallEntity stall = this.stallClient.findById(rsb.getStallId());
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			String lockSn = stall.getLockSn();
 			ResLockInfo lockInfo = lockClient.lockInfo(lockSn);
 			log.info("down appoint lockInfo :{}",JSON.toJSON(lockInfo));
-			//车位锁状态不是降下，此时下单失败
-			/*if(lockInfo != null && lockInfo.getLockState() != 0) {
-				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
-			}else{*/
-				// if (lockInfo != null && lockInfo.getLockState() == 0) 
-				boolean flag = downAppointOrder(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu, true);
-				log.info("...........downAppoint 下单状态{}", flag == true ? "成功" : "失败");
-				if(flag) {
-					ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); // 查找最新
-					if (orders == null) {
-						return null;
-					}
-					
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					Map<String, Object> param = new HashMap<String,Object>();
-					param.put("stallId", orders.getStallId());
-					param.put("plateNo", orders.getPlateNo());
-					param.put("startTime", sdf.format(orders.getCreateTime()));
-					if (orders.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
-						param.put("endTime", sdf.format(orders.getStatusTime()));
-					} else {
-						param.put("endTime", sdf.format(new Date()));
-					}
-					log.info("..........current order request param:{}", JSON.toJSON(param));
-					Map<String, Object> map = this.strategyFeeClient.amount(param);
-					log.info("..........current order response result map:{}", JSON.toJSON(map));
-					if (map != null) {
-						Object object = map.get("chargePrice");
-						if (object != null) {
-							orders.setTotalAmount(new BigDecimal(object.toString()));
-						}
-					}
-					
-					if (orders != null && orders.getStatus() == OrderStatus.UNPAID.value) {
-						ro = new ResOrder();
-						ro.copy(orders);
-						ResPrefectureDetail pre = this.prefectureClient.findById(orders.getPreId());
-						if (pre != null) {
-							ro.setPreLongitude(pre.getLongitude());
-							ro.setPreLatitude(pre.getLatitude());
-							ro.setPrefectureAddress(pre.getAddress());
-							ro.setGuideImage(pre.getRouteGuidance());
-							ro.setGuideRemark(pre.getRouteDescription());
-						}
-						if (stall != null) {
-							ro.setStallName(stall.getStallName());
-							ro.setBluetooth(stall.getLockSn());
-						}
-						
-						if(orders.getStallId() != null) {
-							Map<String,Object> feeParam = new HashMap<String,Object>();
-							feeParam.put("stallId", orders.getStallId());
-							int freeMins = strategyFeeClient.freeMins(feeParam);
-							ro.setFreeMins(freeMins);
-							log.info("..........current order free mins {}", freeMins);
-							ro.setCancelFlag((short)2);
-							ro.setRemainMins(0);
-						}
-						ro.setOrderSource((short)2);
+			
+			boolean flag = downAppointOrder(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu, true);
+			log.info("...........downAppoint 下单状态{}", flag == true ? "成功" : "失败");
+			if(flag) {
+				ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); // 查找最新
+				if (orders == null) {
+					return null;
+				}
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Map<String, Object> param = new HashMap<String,Object>();
+				param.put("stallId", orders.getStallId());
+				param.put("plateNo", orders.getPlateNo());
+				param.put("startTime", sdf.format(orders.getCreateTime()));
+				if (orders.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
+					param.put("endTime", sdf.format(orders.getStatusTime()));
+				} else {
+					param.put("endTime", sdf.format(new Date()));
+				}
+				log.info("..........current order request param:{}", JSON.toJSON(param));
+				Map<String, Object> map = this.strategyFeeClient.amount(param);
+				log.info("..........current order response result map:{}", JSON.toJSON(map));
+				if (map != null) {
+					Object object = map.get("chargePrice");
+					if (object != null) {
+						orders.setTotalAmount(new BigDecimal(object.toString()));
 					}
 				}
+				
+				if (orders != null && orders.getStatus() == OrderStatus.UNPAID.value) {
+					ro = new ResOrder();
+					ro.copy(orders);
+					ResPrefectureDetail pre = this.prefectureClient.findById(orders.getPreId());
+					if (pre != null) {
+						ro.setPreLongitude(pre.getLongitude());
+						ro.setPreLatitude(pre.getLatitude());
+						ro.setPrefectureAddress(pre.getAddress());
+						ro.setGuideImage(pre.getRouteGuidance());
+						ro.setGuideRemark(pre.getRouteDescription());
+					}
+					if (stall != null) {
+						ro.setStallName(stall.getStallName());
+						ro.setBluetooth(stall.getLockSn());
+					}
+					
+					if(orders.getStallId() != null) {
+						Map<String,Object> feeParam = new HashMap<String,Object>();
+						feeParam.put("stallId", orders.getStallId());
+						int freeMins = strategyFeeClient.freeMins(feeParam);
+						ro.setFreeMins(freeMins);
+						log.info("..........current order free mins {}", freeMins);
+						ro.setCancelFlag((short)2);
+						ro.setRemainMins(0);
+					}
+					ro.setOrderSource((short)2);
+				}
 			}
-		/*}*/
+		}
 		return ro;
 	}
 	

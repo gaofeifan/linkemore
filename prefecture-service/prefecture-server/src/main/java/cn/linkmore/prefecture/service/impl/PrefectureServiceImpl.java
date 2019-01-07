@@ -858,7 +858,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		ResGroupStrategy groupStrategy = null;
 		ResStrategyGroup group = strategyGroupClusterMapper.selectByPrimaryKey(groupId);
-		
+		List<String> descList = new ArrayList<String>();
 		Set<Object> lockSnList = null;
 		int count = 0;
 		if(group != null) {
@@ -890,7 +890,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 						JSONArray array = detailObj.getJSONArray("data");
 						for (int i = 0; i < array.size(); i++) {
 							String fee = "";
-							
 							String obj = array.getString(i);
 							log.info("..........group strategy obj{}", obj);
 							JSONObject jsonObj = JSONObject.parseObject(obj);
@@ -906,7 +905,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 							String remark = jsonObj.getString("remark");
 							log.info("charge hour free = {} remark ={}", chargeHourFree, remark);
 							sb.append(beginTime + "-" + endTime + " ");
-							
 							if (chargeUnit == 1) {
 								fee = chargeFee + "元/分";
 							} else if (chargeUnit == 2) {
@@ -915,6 +913,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 								fee = chargeFee + "元/次";
 							}
 							sb.append(fee);
+							descList.add(beginTime + "-" + endTime + " "+ fee);
 							try {
 								log.info("begin = {}, end = {}, now = {}", beginTime, endTime, getCurrentTime());
 								if(isInZone(getLong(beginTime),getLong(endTime),getCurrentTime())){
@@ -952,6 +951,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			if(sb.length() > 3) {
 				groupStrategy.setDesc(sb.toString().substring(0, sb.length()-3));
 			}
+			groupStrategy.setDescList(descList);
 			groupStrategy.setGroupId(groupId);
 			groupStrategy.setGroupName(group.getName());
 			//获取上次使用车牌
