@@ -1057,7 +1057,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	private static boolean isInZone(long timeStart,long timeEnd,long nowTime) throws ParseException {
-		return timeStart <= nowTime && nowTime <= timeEnd;
+		Boolean flag = false;
+		if(timeStart < timeEnd) {
+			return timeStart <= nowTime && nowTime <= timeEnd;
+		}else if(timeStart > timeEnd){
+			if(nowTime > timeStart || nowTime < timeEnd ) {
+				flag = true;
+			}
+		}
+		return flag;
 	}
 	private static long getLong(String timeStr) throws ParseException {
 		return sdf.parse(timeStr).getTime();
