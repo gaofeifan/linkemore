@@ -1837,7 +1837,7 @@ public class StallServiceImpl implements StallService {
 					log.info("用户争抢锁异常信息{}",e.getMessage());
 				}
 				if (!have) {
-					throw new BusinessException(StatusEnum.STALL_HIVING_DO);
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
 				}
 				// 放入缓存
 				String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
