@@ -59,8 +59,16 @@ public class AppOrderController {
 	@RequestMapping(value = "/v2.1/create", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> appoint(@RequestBody ReqStallBooking rsb, HttpServletRequest request) {
-		this.ordersService.appoint(rsb, request);
-		return ResponseEntity.success(null, request);
+		ResponseEntity<?> response = null;
+		try { 
+			this.ordersService.appoint(rsb, request);
+			return ResponseEntity.success(null, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
 	}
 	
 	@ApiOperation(value = "降下地锁预约下单", notes = "车区ID不能为空", consumes = "application/json")

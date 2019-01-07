@@ -99,6 +99,7 @@ import cn.linkmore.prefecture.client.StrategyFeeClient;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallEntity;
+import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
@@ -182,6 +183,9 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	@Resource
 	private FeignLockClient lockClient;
+	
+	@Autowired
+	private RedisLock redisLock;
 	
 
 	public boolean checkCarFree(String carno) {
@@ -1691,6 +1695,20 @@ public class OrdersServiceImpl implements OrdersService {
 	public void appoint(ReqStallBooking rsb, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		log.info("choose stall request param :{} cu:{}", JsonUtil.toJson(rsb), JsonUtil.toJson(cu));
+		if(cu != null) {
+			// 争抢
+			String robkey = RedisKey.ROB_STALL_ISHAVE.key + rsb.getStallId();
+			Boolean have = true;
+			try {
+				have = this.redisLock.getLock(robkey, cu.getId());
+				log.info("用户=======>" + cu.getId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
+			} catch (Exception e) {
+				log.info("用户争抢锁异常信息{}",e.getMessage());
+			}
+			if (!have) {
+				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+			}
+		}
 		Thread thread = new StallOrderThread(rsb, cu);
 		thread.start();
 	}
@@ -2169,6 +2187,8 @@ public class OrdersServiceImpl implements OrdersService {
 					log.info(".................6  cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId,
 							JSON.toJSON(STALL_ID_SET));
 				}
+				String robkey = RedisKey.ROB_STALL_ISHAVE.key + stallId;
+				this.redisService.remove(robkey);
 			}
 			Thread thread = new BookingThread(prefectureId, cu.getId(), bookingStatus, failureReason);
 			thread.start();
@@ -2181,6 +2201,7 @@ public class OrdersServiceImpl implements OrdersService {
 				content = "订单预约成功";
 				status = true;
 			}
+			
 			thread = new PushThread(cu.getId().toString(), "车位预约通知", content, PushType.ORDER_CREATE_NOTICE, status);
 			thread.start();
 		}
