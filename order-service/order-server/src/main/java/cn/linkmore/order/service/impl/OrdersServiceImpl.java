@@ -1707,10 +1707,11 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			if (!have) {
 				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+			}else {
+				Thread thread = new StallOrderThread(rsb, cu);
+				thread.start();
 			}
 		}
-		Thread thread = new StallOrderThread(rsb, cu);
-		thread.start();
 	}
 
 	@Override
