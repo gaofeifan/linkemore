@@ -21,6 +21,11 @@ public class ResLoongPay {
 	public void setThirdAppInfo(String thirdAppInfo) {
 		this.thirdAppInfo = thirdAppInfo;
 	}
+
+	@Override
+	public String toString() {
+		return "ResLoongPay [sign=" + sign + ", thirdAppInfo=" + thirdAppInfo + "]";
+	}
 	
 	
 }
