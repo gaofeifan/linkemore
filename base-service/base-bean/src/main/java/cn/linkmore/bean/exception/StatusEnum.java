@@ -121,7 +121,7 @@ public enum StatusEnum {
 	STALL_NAME_USER(8005090,"车位名称已存在"),
 	DOWN_LOCK_FAIL_RETRY(8005091,"通讯失败,再降一次"),
 	DOWN_LOCK_FAIL_CHANGE(8005092,"降锁失败,请使用其他车位"),
-	DOWN_LOCK_FAIL_CHECK(8005093,"该车位不可用请选择其他车位"),
+	DOWN_LOCK_FAIL_CHECK(8005093,"当前车位不可用,请选择其他车位"),
 	DOWN_LOCK_FAIL_DROP(8005094,"网关掉线,未找到车位锁"),
 	
 	PREFECTURE_NOT_EXIST(8005095,"企业账户下不存在车区"),

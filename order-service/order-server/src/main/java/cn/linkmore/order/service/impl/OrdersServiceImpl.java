@@ -617,7 +617,7 @@ public class OrdersServiceImpl implements OrdersService {
 			thread.start();
 			String content = "订单预约失败";
 			if (stallId != null) {
-				content = "当前车位已被占用，请选择其他车位";
+				content = "当前车位已被占用,请选择其他车位";
 			}
 			
 			if (bookingStatus == OperateStatus.SUCCESS.status) {
@@ -2194,7 +2194,7 @@ public class OrdersServiceImpl implements OrdersService {
 			thread.start();
 			String content = "订单预约失败";
 			if (stallId != null) {
-				content = "当前车位已被占用，请选择其他车位";
+				content = "当前车位已被占用,请选择其他车位";
 			}
 			Boolean status = false;
 			if (bookingStatus == OperateStatus.SUCCESS.status) {
