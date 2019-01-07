@@ -255,10 +255,8 @@ public class RedirectServiceImpl implements RedirectService {
 		req.setPreId(preId);
 		req.setType(paytype);
 		ResPayConfig config = payConfigClient.getConfig(req);
-		// 获取身份id
 		ReqH5Token open = new ReqH5Token();
 		open.setAppid(config.getAppId());
-		// 跳转网页
 		ResH5Degree res = new ResH5Degree();
 		if (paytype == Transaction.WX) {
 			open.setCode(code);
@@ -316,7 +314,7 @@ public class RedirectServiceImpl implements RedirectService {
 		reqH5Term.setMchKey(config.getMchKey());
 		reqH5Term.setOpenId(reqPayParm.getOpenid());
 		reqH5Term.setOrderId(orderId);
-		reqH5Term.setTotalAmount(new BigDecimal(0.01));
+		reqH5Term.setTotalAmount(totalAmount);
 		// 获取支付凭证
 		ResH5Term term = h5PayClient.wxpay(reqH5Term);
 		if (term == null) {
@@ -378,10 +376,18 @@ public class RedirectServiceImpl implements RedirectService {
 				TaskPool.getInstance().task(new Runnable() {
 					@Override
 					public void run() {
+						String entranceTime = paymsg.get("entranceTime").toString();
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+						Date entranceTime1 = null;
+							try {
+								 entranceTime1 = sdf.parse(entranceTime);
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
 						// 插入订单
 						ReqPayRecord reqPayRecord = new ReqPayRecord();
 						reqPayRecord.setAmount(totalAmount);
-						reqPayRecord.setEntranceTime(new Date());
+						reqPayRecord.setEntranceTime(entranceTime1);
 						reqPayRecord.setFinishTime(new Date());
 						reqPayRecord.setOpenid(openid);
 						reqPayRecord.setOrderNo(String.valueOf(paymsg.get("orderNo")));
@@ -455,7 +461,7 @@ public class RedirectServiceImpl implements RedirectService {
 		reqH5Term.setMchKey(config.getMchKey());
 		reqH5Term.setOpenId(reqPayParm.getOpenid());
 		reqH5Term.setOrderId(orderId);
-		reqH5Term.setTotalAmount(new BigDecimal("0.01"));
+		reqH5Term.setTotalAmount(totalAmount);
 		String parmUrl = h5PayClient.alipay(reqH5Term);
 		log.info("parmUrl---" + parmUrl);
 		return parmUrl;
@@ -504,10 +510,18 @@ public class RedirectServiceImpl implements RedirectService {
 			TaskPool.getInstance().task(new Runnable() {
 				@Override
 				public void run() {
+					String entranceTime = paymsg.get("entranceTime").toString();
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+					Date entranceTime1 = null;
+						try {
+							 entranceTime1 = sdf.parse(entranceTime);
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
 					// 插入订单
 					ReqPayRecord reqPayRecord = new ReqPayRecord();
 					reqPayRecord.setAmount(totalAmount);
-					reqPayRecord.setEntranceTime(new Date());
+					reqPayRecord.setEntranceTime(entranceTime1);
 					reqPayRecord.setFinishTime(new Date());
 					reqPayRecord.setOpenid(openid);
 					reqPayRecord.setOrderNo(orderNo);
