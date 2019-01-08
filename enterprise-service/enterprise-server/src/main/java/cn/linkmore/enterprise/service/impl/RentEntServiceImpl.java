@@ -98,6 +98,7 @@ public class RentEntServiceImpl implements RentEntService {
 		if(CollectionUtils.isNotEmpty(list)) {
 			for(RentEnt rentEnt: list) {
 				param.put("rentComId", rentEnt.getId());
+				param.put("companyId", rentEnt.getId());
 				Integer stallCount = this.rentEntStallClusterMapper.count(param);
 				Integer userCount = this.rentEntUserClusterMapper.count(param);
 				rentEnt.setStallCount(stallCount);
