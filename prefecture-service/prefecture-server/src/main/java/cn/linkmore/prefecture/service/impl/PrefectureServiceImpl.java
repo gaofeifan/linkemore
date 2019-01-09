@@ -1012,14 +1012,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 				log.info("statuMap : {}",JSON.toJSON(statuMap));
 				
 				List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
-				log.info("eleList = {}",JSON.toJSON(eleList));
 				List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
 				Map<String,Object> paramMap = null;
 				if(CollectionUtils.isNotEmpty(eleList)) {
 					for(PrefectureElement ele: eleList) {
 						paramMap = new HashMap<String,Object>();
 						if("button".equals(ele.getEleType())) {
-							log.info("elename :{} real exist :{}",ele.getEleName(), statuMap.get(ele.getEleName()));
 							if(statuMap.get(ele.getEleName()) != null) {
 								cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
 								paramMap.put("name", ele.getEleName());
