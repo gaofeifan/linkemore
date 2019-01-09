@@ -947,7 +947,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			}
 			groupStrategy.setFreeMins(appFreeMins);
-			groupStrategy.setBusinessTime("00:00 - 24:00");
+			if(preDetail.getBusinessTime()!=null) {
+				groupStrategy.setBusinessTime(preDetail.getBusinessTime());
+			}else {
+				groupStrategy.setBusinessTime("00:00 - 24:00");
+			}
 			if(sb.length() > 3) {
 				groupStrategy.setDesc(sb.toString().substring(0, sb.length()-3));
 			}
@@ -1012,14 +1016,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 				log.info("statuMap : {}",JSON.toJSON(statuMap));
 				
 				List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
-				log.info("eleList = {}",JSON.toJSON(eleList));
 				List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
 				Map<String,Object> paramMap = null;
 				if(CollectionUtils.isNotEmpty(eleList)) {
 					for(PrefectureElement ele: eleList) {
 						paramMap = new HashMap<String,Object>();
 						if("button".equals(ele.getEleType())) {
-							log.info("elename :{} real exist :{}",ele.getEleName(), statuMap.get(ele.getEleName()));
 							if(statuMap.get(ele.getEleName()) != null) {
 								cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
 								paramMap.put("name", ele.getEleName());
@@ -1057,7 +1059,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	private static boolean isInZone(long timeStart,long timeEnd,long nowTime) throws ParseException {
-		return timeStart <= nowTime && nowTime <= timeEnd;
+		Boolean flag = false;
+		if(timeStart < timeEnd) {
+			return timeStart <= nowTime && nowTime <= timeEnd;
+		}else if(timeStart > timeEnd){
+			if(nowTime > timeStart || nowTime < timeEnd ) {
+				flag = true;
+			}
+		}
+		return flag;
 	}
 	private static long getLong(String timeStr) throws ParseException {
 		return sdf.parse(timeStr).getTime();

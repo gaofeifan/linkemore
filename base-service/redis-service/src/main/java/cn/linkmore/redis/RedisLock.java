@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -27,6 +29,8 @@ public class RedisLock {
 	private RedisTemplate redisTemplate;
 	
 	private static final long LOCK_TIMEOUT = 60 * 1000;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	/***
      * 加锁
@@ -93,15 +97,14 @@ public class RedisLock {
 	public boolean  getLock(String key,Object newValue) {
 		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
 		Boolean isOk = operations.setIfAbsent(key, newValue.toString());
-
-		System.out.println("isOk："+isOk+"--key："+key+"--newValue："+newValue);
+		log.info("......getLock isOk:{},key:{},newValue:{}",isOk,key,newValue);
         if(isOk) {
         	redisTemplate.expire(key, LOCK_TIMEOUT, TimeUnit.MILLISECONDS);
            // 获得锁
            return true;
         }else {
         	String alreadyValue =(String)operations.get(key);
-        	System.out.println("alreadyValue："+alreadyValue);
+        	log.info("......getLock alreadyValue:{}",alreadyValue);
         	if(alreadyValue.equals(String.valueOf(newValue ))) {
         		redisTemplate.expire(key, LOCK_TIMEOUT, TimeUnit.MILLISECONDS);
         		return true;
