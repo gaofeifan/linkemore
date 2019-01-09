@@ -1978,8 +1978,7 @@ public class StallServiceImpl implements StallService {
 			Stopwatch stopwatch = Stopwatch.createStarted();
 			ResLockInfo lockInfo = lockTools.lockInfo(stall.getLockSn());
 			log.info("<<<<<<<<<bluetooth verify>>>>>>>>>>>>lockInfo:{}",JSON.toJSON(lockInfo));
-			if(lockInfo != null && lockInfo.getLockState() != 0) {
-				
+			if(lockInfo != null && lockInfo.getLockState() == 1) {
 				if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId())) {
 					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
 				} else {
