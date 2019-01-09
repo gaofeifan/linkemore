@@ -947,7 +947,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			}
 			groupStrategy.setFreeMins(appFreeMins);
-			groupStrategy.setBusinessTime("00:00 - 24:00");
+			if(preDetail.getBusinessTime()!=null) {
+				groupStrategy.setBusinessTime(preDetail.getBusinessTime());
+			}else {
+				groupStrategy.setBusinessTime("00:00 - 24:00");
+			}
 			if(sb.length() > 3) {
 				groupStrategy.setDesc(sb.toString().substring(0, sb.length()-3));
 			}
