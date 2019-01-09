@@ -981,7 +981,6 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {
 			log.info("mobile exist..................");
-			//throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
 			/*user.setLastLoginTime(new Date());
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("id", user.getId());
@@ -989,13 +988,14 @@ public class UserServiceImpl implements UserService {
 			param.put("updateTime", new Date());
 			this.userMasterMapper.updateLoginTime(param);*/
 
-			user.setLastLoginTime(new Date());
+			/*user.setLastLoginTime(new Date());
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("id", user.getId());
 			param.put("lastLoginTime", new Date());
 			param.put("updateTime", new Date());
 			this.userMasterMapper.updateLoginTime(param);
-			this.updateFansStatus((short)0, user.getId());
+			this.updateFansStatus((short)0, user.getId());*/
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
 		}
 		CacheUser cu = this.getCacheUser(request);
 		UserInfo ui = this.userInfoClusterMapper.find(cu.getOpenId());
