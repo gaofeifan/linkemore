@@ -52,14 +52,14 @@ public class JianHangLong {
 			  append("CLIENTIP=").append("").append("&").
 			  append("REGINFO=").append("").append("&").
 			  append("PROINFO=").append("").append("&").
-			  append("REFERER=").append("").
+			  append("REFERER=").append("").append("&").
 			  append("THIRDAPPINFO=").append(thirdAppInfo);
 //		map.put("THIRDAPPINFO", thirdAppInfo);//客户端标识
 //		map.put("TIMEOUT", "");//订单超时时间
 		String en = MD5.md5En(param.toString());
 		log.info("龙支付mac 【"+param.toString()+"】");
 		log.info("龙支付mac 【"+en+"】");
-		String url = param.insert(0, config.getUrl()+"?").append("&").append("MAC=").append(en).toString().replaceAll(pub, "");
+		String url = param.append("&").append("MAC=").append(en).toString().replaceAll(pub, "");
 		log.info("龙支付pay 【"+url+"】");
 		ResLoongPay loongPay = new ResLoongPay();
 		loongPay.setThirdAppInfo(thirdAppInfo);
