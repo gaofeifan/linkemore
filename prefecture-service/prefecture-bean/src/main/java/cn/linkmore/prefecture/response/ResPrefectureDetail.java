@@ -164,11 +164,49 @@ public class ResPrefectureDetail {
     /**
      * 网格横坐标
      */
-    private Integer gridX = 9;
+    private Integer gridX = 11;
     /**
      * 网格纵坐标
      */
-    private Integer gridY = 12;
+    private Integer gridY = 21;
+    
+    /**
+     * 区域地面、地下
+     */
+    private String region;
+    /**
+     * 地下层级B2-B5
+     */
+    private String underLayer;
+    /**
+     * 总车位数
+     */
+    private Integer totalStallNum;
+    
+    
+    public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public String getUnderLayer() {
+		return underLayer;
+	}
+
+	public void setUnderLayer(String underLayer) {
+		this.underLayer = underLayer;
+	}
+
+	public Integer getTotalStallNum() {
+		return totalStallNum;
+	}
+
+	public void setTotalStallNum(Integer totalStallNum) {
+		this.totalStallNum = totalStallNum;
+	}
     
     public Integer getGridX() {
 		return gridX;
