@@ -16,6 +16,65 @@ public class OauthConfig {
 	/*第二次重定向到H5页面 */
 	
 	private String h5Url;
+	
+	private String notifyUrl;
+	
+    private  String  parkOrder;
+    
+    private String sendUrl;
+    
+    private String orderCheckout;
+  
+    
+	/**
+	 * @return the orderCheckout
+	 */
+	public String getOrderCheckout() {
+		return orderCheckout;
+	}
+
+	/**
+	 * @param orderCheckout the orderCheckout to set
+	 */
+	public void setOrderCheckout(String orderCheckout) {
+		this.orderCheckout = orderCheckout;
+	}
+
+	/**
+	 * @return the sendUrl
+	 */
+	public String getSendUrl() {
+		return sendUrl;
+	}
+
+	/**
+	 * @param sendUrl the sendUrl to set
+	 */
+	public void setSendUrl(String sendUrl) {
+		this.sendUrl = sendUrl;
+	}
+
+	/**
+	 * @return the parkOrder
+	 */
+	public String getParkOrder() {
+		return parkOrder;
+	}
+
+	/**
+	 * @param parkOrder the parkOrder to set
+	 */
+	public void setParkOrder(String parkOrder) {
+		this.parkOrder = parkOrder;
+	}
+
+	public String getNotifyUrl() {
+		return notifyUrl;
+	}
+
+	public void setNotifyUrl(String notifyUrl) {
+		this.notifyUrl = notifyUrl;
+	}
 
 	public String getWxCodeUrl() {
 		return wxCodeUrl;
