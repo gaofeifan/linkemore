@@ -22,4 +22,6 @@ public interface StallLockMasterMapper {
 	void insertAndGetId(StallLock lock);
 
 	void deleteByStallId(Long stallId);
+
+	void deleteByLockSn(String lockSn);
 }

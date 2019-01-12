@@ -70,8 +70,8 @@
     FROM
     t_ent_rent_com_stall 
 	<where>
-    <if test="rentComId != null">
-   	AND rent_com_id = #{rentComId}
+    <if test="companyId != null">
+   	AND rent_com_id = #{companyId}
     </if>
     <if test="stallName != null">
    	AND stall_name like #{stallName}

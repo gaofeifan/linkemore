@@ -89,6 +89,7 @@ import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqAppWechatOrder;
 import cn.linkmore.third.request.ReqApplePay;
 import cn.linkmore.third.request.ReqLongPay;
+import cn.linkmore.third.request.ReqLoongPayVerifySign;
 import cn.linkmore.third.request.ReqOrder;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqWechatMiniOrder;
@@ -606,7 +607,7 @@ public class PayServiceImpl implements PayService {
 			} else if(roc.getPayType() == TradePayType.LOONG.type) {
 				ReqLongPay longpay = new ReqLongPay();
 				longpay.setAmount(rechargeRecord.getPaymentAmount());
-				longpay.setOrderId(roc.getOrderId());
+				longpay.setOrderId(rechargeRecord.getCode());
 				longpay.setUserId(cu.getId());
 				ResLoongPay resLoongpay = appLoongPayClient.order(longpay);
 				ResPayConfirm res = new ResPayConfirm();
@@ -1125,7 +1126,7 @@ public class PayServiceImpl implements PayService {
 
 	@Override
 	public void appleLongOrderNotice(HttpServletResponse response, HttpServletRequest request) {
-		String POSTID = request.getParameter("POSTID");
+		String POSTID = request.getParameter("POSID");
 		String BRANCHID = request.getParameter("BRANCHID");
 		String ORDERID = request.getParameter("ORDERID");
 		String PAYMENT = request.getParameter("PAYMENT");
@@ -1144,38 +1145,48 @@ public class PayServiceImpl implements PayService {
 		String USRINFO = request.getParameter("USRINFO");
 		String DISCOUNT = request.getParameter("DISCOUNT");
 		String SIGN = request.getParameter("SIGN");
-		Map<String, String> map = new HashMap<>();
-		map.put("POSTID", POSTID);
-		map.put("BRANCHID", BRANCHID);	
-		map.put("ORDERID", ORDERID);	
-		map.put("PAYMENT", PAYMENT);	
-		map.put("CURCODE", CURCODE);	
-		map.put("REMARK1", REMARK1);	
-		map.put("REMARK2", REMARK2);	
-		map.put("ACC_TYPE", ACC_TYPE);	
-		map.put("SUCCESS", SUCCESS);	
-		map.put("TYPE", TYPE);	
-		map.put("REFERER", REFERER);	
-		map.put("CLIENTIP", CLIENTIP);	
-		map.put("ACCDATE", ACCDATE);	
-		map.put("USRMSG", USRMSG);	
-		map.put("INSTALLNUM", INSTALLNUM);	
-		map.put("ERRMSG", ERRMSG);	
-		map.put("USRINFO", USRINFO);	
-		map.put("DISCOUNT", DISCOUNT);	
-//		map.put("SIGN", SIGN);	
-		Set<Entry<String,String>> entrySet = map.entrySet();
-		StringBuilder sb = new StringBuilder();
-		for (Entry<String, String> entry : entrySet) {
-			if(loongpay.contains(entry.getKey())) {
-				if(StringUtils.isBlank(entry.getKey())) {
-					continue;
-				}
-				sb.append("&").
-				   append(entry.getKey()).
-				   append("=").
-				   append(entry.getValue());
-				
+		StringBuilder result = new StringBuilder();
+		result.append("POSID=").append(POSTID).append("&").
+		append("BRANCHID=").append(BRANCHID).append("&").
+		append("ORDERID=").append(ORDERID).append("&").
+		append("PAYMENT=").append(PAYMENT).append("&").
+		append("CURCODE=").append(CURCODE).append("&").
+		append("REMARK1=").append(REMARK1).append("&").
+		append("REMARK2=").append(REMARK2).append("&").
+		append("ACC_TYPE=").append(ACC_TYPE).append("&").
+		append("SUCCESS=").append(SUCCESS).append("&").
+		append("TYPE=").append(TYPE).append("&").
+		append("REFERER=").append(REFERER).append("&").
+		append("CLIENTIP=").append(CLIENTIP);
+		if(StringUtils.isNotBlank(ACCDATE)) {
+			result.append("&").append("ACCDATE=").append(ACCDATE);
+		}
+		if(StringUtils.isNotBlank(USRMSG)) {
+			result.append("&").append("USRMSG=").append(USRMSG);
+		}
+		if(StringUtils.isNotBlank(INSTALLNUM)) {
+			result.append("&").append("INSTALLNUM=").append(INSTALLNUM);
+		}
+		if(StringUtils.isNotBlank(ERRMSG)) {
+			result.append("&").append("ERRMSG=").append(ERRMSG);
+		}
+		if(StringUtils.isNotBlank(USRINFO)) {
+			result.append("&").append("USRINFO=").append(USRINFO);
+		}
+		if(StringUtils.isNotBlank(DISCOUNT)){
+			result.append("&").append("DISCOUNT=").append(DISCOUNT);
+		}
+		ReqLoongPayVerifySign sign = new ReqLoongPayVerifySign();
+		sign.setSign(SIGN);
+		sign.setSrt(result.toString());
+		log.info("【龙支付回调】"+JsonUtil.toJson(sign));
+		if(SUCCESS.equals("Y")) {
+			boolean b = appLoongPayClient.verifySigature(sign);
+			log.info("【龙支付回调校验】"+JsonUtil.toJson(b));
+			if(b) {
+				RechargeRecord rr = this.rechargeRecordClusterMapper.findByNumber(ORDERID);
+				Orders orders = ordersClusterMapper.findById(rr.getOrderId());
+				this.checkOutOrder(orders, rr, null);
 			}
 		}
 		

@@ -99,6 +99,7 @@ import cn.linkmore.prefecture.client.StrategyFeeClient;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStallEntity;
+import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
@@ -183,6 +184,9 @@ public class OrdersServiceImpl implements OrdersService {
 	@Resource
 	private FeignLockClient lockClient;
 	
+	@Autowired
+	private RedisLock redisLock;
+	
 
 	public boolean checkCarFree(String carno) {
 		boolean flag = true;
@@ -257,22 +261,6 @@ public class OrdersServiceImpl implements OrdersService {
 			log.info("choose stall order thread starting");
 			order(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu);
 		}
-	}
-	
-	class DownStallThread extends Thread {
-		private ReqStallBooking rsb;
-		private CacheUser cu;
-
-		public DownStallThread(ReqStallBooking rsb, CacheUser cu) {
-			this.rsb = rsb;
-			this.cu = cu;
-		}
-
-		public void run() {
-			log.info("choose stall order thread starting");
-			downAppointOrder(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu, true);
-		}
-
 	}
 	
 	class UplockThread extends Thread {
@@ -359,11 +347,6 @@ public class OrdersServiceImpl implements OrdersService {
 				stall = this.stallClient.findById(stallId);
 				if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 					lockSn = stall.getLockSn();
-					/*ResLockInfo lockInfo = lockClient.lockInfo(lockSn);
-					//车位锁状态不是降下，此时下单失败
-					if(lockInfo != null && lockInfo.getLockState() != 0) {
-						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
-					}*/
 					if(!downFlag) {
 						log.info(".................2  order-stall-lockSn,{}", lockSn);
 						if(pre != null  && pre.getCategory() == 2) {
@@ -458,23 +441,21 @@ public class OrdersServiceImpl implements OrdersService {
 			stall = this.stallClient.findByLock(lockSn.trim());
 			log.info("order-stall:{}", JsonUtil.toJson(stall));
 			//降锁下单直接过滤
-			if(!downFlag) {
-				if (stall == null || stall.getStatus().intValue() != StallStatus.FREE.status) {
-					resetRedis = false;
-					bookingStatus = (short) OperateStatus.FAILURE.status;
-					failureReason = (short) OrderFailureReason.STALL_EXCEPTION.value;
-					log.info("{} create order error with {}", cu.getMobile(), JsonUtil.toJson(stall));
-					throw new BusinessException(StatusEnum.ORDER_REASON_STALL_EXCEPTION);
-				}
-				ResUserOrder latest = this.ordersClusterMapper.findStallLatest(stall.getId());
-				if (latest != null && latest.getStatus().intValue() == 1) {
-					bookingStatus = (short) OperateStatus.FAILURE.status;
-					failureReason = (short) OrderFailureReason.STALL_ORDERED.value;
-					resetRedis = false;
-					log.info("{} create order error latest order {} is unpaid with stall  ", cu.getMobile(),
-							JsonUtil.toJson(latest), JsonUtil.toJson(stall));
-					throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
-				}
+			if (stall == null || stall.getStatus().intValue() != StallStatus.FREE.status) {
+				resetRedis = false;
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.STALL_EXCEPTION.value;
+				log.info("{} create order error with {}", cu.getMobile(), JsonUtil.toJson(stall));
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_EXCEPTION);
+			}
+			ResUserOrder latest = this.ordersClusterMapper.findStallLatest(stall.getId());
+			if (latest != null && latest.getStatus().intValue() == 1) {
+				bookingStatus = (short) OperateStatus.FAILURE.status;
+				failureReason = (short) OrderFailureReason.STALL_ORDERED.value;
+				resetRedis = false;
+				log.info("{} create order error latest order {} is unpaid with stall  ", cu.getMobile(),
+						JsonUtil.toJson(latest), JsonUtil.toJson(stall));
+				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_ORDERED);
 			}
 			log.info("{} create order with{}", cu.getMobile(), JsonUtil.toJson(stall));
 			o = new Orders(); // 插入订单
@@ -636,7 +617,7 @@ public class OrdersServiceImpl implements OrdersService {
 			thread.start();
 			String content = "订单预约失败";
 			if (stallId != null) {
-				content = "当前车位已被占用，请选择其他车位";
+				content = "当前车位已被占用,请选择其他车位";
 			}
 			
 			if (bookingStatus == OperateStatus.SUCCESS.status) {
@@ -1714,8 +1695,23 @@ public class OrdersServiceImpl implements OrdersService {
 	public void appoint(ReqStallBooking rsb, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		log.info("choose stall request param :{} cu:{}", JsonUtil.toJson(rsb), JsonUtil.toJson(cu));
-		Thread thread = new StallOrderThread(rsb, cu);
-		thread.start();
+		if(cu != null) {
+			// 争抢
+			String robkey = RedisKey.ROB_STALL_ISHAVE.key + rsb.getStallId();
+			Boolean have = true;
+			try {
+				have = this.redisLock.getLock(robkey, cu.getId());
+				log.info("用户=======>" + cu.getId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
+			} catch (Exception e) {
+				log.info("用户争抢锁异常信息{}",e.getMessage());
+			}
+			if (!have) {
+				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+			}else {
+				Thread thread = new StallOrderThread(rsb, cu);
+				thread.start();
+			}
+		}
 	}
 
 	@Override
@@ -2192,18 +2188,21 @@ public class OrdersServiceImpl implements OrdersService {
 					log.info(".................6  cu = {}, stallId = {},STALL_ID_SET = {}", cu.getId(), stallId,
 							JSON.toJSON(STALL_ID_SET));
 				}
+				String robkey = RedisKey.ROB_STALL_ISHAVE.key + stallId;
+				this.redisService.remove(robkey);
 			}
 			Thread thread = new BookingThread(prefectureId, cu.getId(), bookingStatus, failureReason);
 			thread.start();
 			String content = "订单预约失败";
 			if (stallId != null) {
-				content = "当前车位已被占用，请选择其他车位";
+				content = "当前车位已被占用,请选择其他车位";
 			}
 			Boolean status = false;
 			if (bookingStatus == OperateStatus.SUCCESS.status) {
 				content = "订单预约成功";
 				status = true;
 			}
+			
 			thread = new PushThread(cu.getId().toString(), "车位预约通知", content, PushType.ORDER_CREATE_NOTICE, status);
 			thread.start();
 		}
@@ -2215,75 +2214,69 @@ public class OrdersServiceImpl implements OrdersService {
 		ResOrder ro = null;
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		log.info("down appoint request param :{} cu:{}", JsonUtil.toJson(rsb), JsonUtil.toJson(cu));
-		log.info("choose stall order thread starting");
 		ResStallEntity stall = this.stallClient.findById(rsb.getStallId());
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			String lockSn = stall.getLockSn();
 			ResLockInfo lockInfo = lockClient.lockInfo(lockSn);
 			log.info("down appoint lockInfo :{}",JSON.toJSON(lockInfo));
-			//车位锁状态不是降下，此时下单失败
-			/*if(lockInfo != null && lockInfo.getLockState() != 0) {
-				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
-			}else{*/
-				// if (lockInfo != null && lockInfo.getLockState() == 0) 
-				boolean flag = downAppointOrder(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu, true);
-				log.info("...........downAppoint 下单状态{}", flag == true ? "成功" : "失败");
-				if(flag) {
-					ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); // 查找最新
-					if (orders == null) {
-						return null;
-					}
-					
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					Map<String, Object> param = new HashMap<String,Object>();
-					param.put("stallId", orders.getStallId());
-					param.put("plateNo", orders.getPlateNo());
-					param.put("startTime", sdf.format(orders.getCreateTime()));
-					if (orders.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
-						param.put("endTime", sdf.format(orders.getStatusTime()));
-					} else {
-						param.put("endTime", sdf.format(new Date()));
-					}
-					log.info("..........current order request param:{}", JSON.toJSON(param));
-					Map<String, Object> map = this.strategyFeeClient.amount(param);
-					log.info("..........current order response result map:{}", JSON.toJSON(map));
-					if (map != null) {
-						Object object = map.get("chargePrice");
-						if (object != null) {
-							orders.setTotalAmount(new BigDecimal(object.toString()));
-						}
-					}
-					
-					if (orders != null && orders.getStatus() == OrderStatus.UNPAID.value) {
-						ro = new ResOrder();
-						ro.copy(orders);
-						ResPrefectureDetail pre = this.prefectureClient.findById(orders.getPreId());
-						if (pre != null) {
-							ro.setPreLongitude(pre.getLongitude());
-							ro.setPreLatitude(pre.getLatitude());
-							ro.setPrefectureAddress(pre.getAddress());
-							ro.setGuideImage(pre.getRouteGuidance());
-							ro.setGuideRemark(pre.getRouteDescription());
-						}
-						if (stall != null) {
-							ro.setStallName(stall.getStallName());
-							ro.setBluetooth(stall.getLockSn());
-						}
-						
-						if(orders.getStallId() != null) {
-							Map<String,Object> feeParam = new HashMap<String,Object>();
-							feeParam.put("stallId", orders.getStallId());
-							int freeMins = strategyFeeClient.freeMins(feeParam);
-							ro.setFreeMins(freeMins);
-							log.info("..........current order free mins {}", freeMins);
-							ro.setCancelFlag((short)2);
-							ro.setRemainMins(0);
-						}
-						ro.setOrderSource((short)2);
+			
+			boolean flag = downAppointOrder(rsb.getPrefectureId(), rsb.getPlateId(), null, rsb.getStallId(), rsb.getOrderSource(), cu, true);
+			log.info("...........downAppoint 下单状态{}", flag == true ? "成功" : "失败");
+			if(flag) {
+				ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); // 查找最新
+				if (orders == null) {
+					return null;
+				}
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Map<String, Object> param = new HashMap<String,Object>();
+				param.put("stallId", orders.getStallId());
+				param.put("plateNo", orders.getPlateNo());
+				param.put("startTime", sdf.format(orders.getCreateTime()));
+				if (orders.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
+					param.put("endTime", sdf.format(orders.getStatusTime()));
+				} else {
+					param.put("endTime", sdf.format(new Date()));
+				}
+				log.info("..........current order request param:{}", JSON.toJSON(param));
+				Map<String, Object> map = this.strategyFeeClient.amount(param);
+				log.info("..........current order response result map:{}", JSON.toJSON(map));
+				if (map != null) {
+					Object object = map.get("chargePrice");
+					if (object != null) {
+						orders.setTotalAmount(new BigDecimal(object.toString()));
 					}
 				}
+				
+				if (orders != null && orders.getStatus() == OrderStatus.UNPAID.value) {
+					ro = new ResOrder();
+					ro.copy(orders);
+					ResPrefectureDetail pre = this.prefectureClient.findById(orders.getPreId());
+					if (pre != null) {
+						ro.setPreLongitude(pre.getLongitude());
+						ro.setPreLatitude(pre.getLatitude());
+						ro.setPrefectureAddress(pre.getAddress());
+						ro.setGuideImage(pre.getRouteGuidance());
+						ro.setGuideRemark(pre.getRouteDescription());
+					}
+					if (stall != null) {
+						ro.setStallName(stall.getStallName());
+						ro.setBluetooth(stall.getLockSn());
+					}
+					
+					if(orders.getStallId() != null) {
+						Map<String,Object> feeParam = new HashMap<String,Object>();
+						feeParam.put("stallId", orders.getStallId());
+						int freeMins = strategyFeeClient.freeMins(feeParam);
+						ro.setFreeMins(freeMins);
+						log.info("..........current order free mins {}", freeMins);
+						ro.setCancelFlag((short)2);
+						ro.setRemainMins(0);
+					}
+					ro.setOrderSource((short)2);
+				}
 			}
-		/*}*/
+		}
 		return ro;
 	}
 	

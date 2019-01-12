@@ -37,8 +37,8 @@
     <if test="appVersion != null">
     	AND app_version like CONCAT('%','${appVersion}','%')
     </if> 
-    <if test="startTime != null">
-    	AND DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(startTime,'%Y-%m-%d')
+    <if test="startTime != null and startTime != ''">
+    	AND DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
     </if> 
     <if test="property!=null">  
     order by  ${property} ${direction}
@@ -60,8 +60,8 @@
     <if test="appVersion != null">
     	AND app_version like CONCAT('%','${appVersion}','%')
     </if> 
-    <if test="startTime != null">
-    	AND DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(startTime,'%Y-%m-%d')
+    <if test="startTime != null and startTime != ''">
+    	AND DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
     </if> 
   </select>
 </mapper>

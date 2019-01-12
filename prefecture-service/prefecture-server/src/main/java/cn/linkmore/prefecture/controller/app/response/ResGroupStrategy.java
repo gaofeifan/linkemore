@@ -49,6 +49,9 @@ public class ResGroupStrategy {
 	@ApiModelProperty(value = "车场数据Map其中status=1表示空闲 2表示占用 4表示下线")
 	private List<Map<String,Object>> parkingDataMap;
 	
+	@ApiModelProperty(value = "计价规则List数组")
+	private List<String> descList;
+	
 	public Long getPreId() {
 		return preId;
 	}
@@ -160,4 +163,13 @@ public class ResGroupStrategy {
 	public void setGridY(Integer gridY) {
 		this.gridY = gridY;
 	}
+
+	public List<String> getDescList() {
+		return descList;
+	}
+
+	public void setDescList(List<String> descList) {
+		this.descList = descList;
+	}
+	
  }

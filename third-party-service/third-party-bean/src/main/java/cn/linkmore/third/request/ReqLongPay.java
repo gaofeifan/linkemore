@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 
 public class ReqLongPay {
 
-	private Long orderId;
+	private String orderId;
 	
 	private BigDecimal amount;
 	
 	private Long userId;
 
-	public Long getOrderId() {
+	public String getOrderId() {
 		return orderId;
 	}
 
-	public void setOrderId(Long orderId) {
+	public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
 

@@ -858,7 +858,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		ResGroupStrategy groupStrategy = null;
 		ResStrategyGroup group = strategyGroupClusterMapper.selectByPrimaryKey(groupId);
-		
+		List<String> descList = new ArrayList<String>();
 		Set<Object> lockSnList = null;
 		int count = 0;
 		if(group != null) {
@@ -890,7 +890,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 						JSONArray array = detailObj.getJSONArray("data");
 						for (int i = 0; i < array.size(); i++) {
 							String fee = "";
-							
 							String obj = array.getString(i);
 							log.info("..........group strategy obj{}", obj);
 							JSONObject jsonObj = JSONObject.parseObject(obj);
@@ -906,7 +905,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 							String remark = jsonObj.getString("remark");
 							log.info("charge hour free = {} remark ={}", chargeHourFree, remark);
 							sb.append(beginTime + "-" + endTime + " ");
-							
 							if (chargeUnit == 1) {
 								fee = chargeFee + "元/分";
 							} else if (chargeUnit == 2) {
@@ -915,6 +913,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 								fee = chargeFee + "元/次";
 							}
 							sb.append(fee);
+							descList.add(beginTime + "-" + endTime + " "+ fee);
 							try {
 								log.info("begin = {}, end = {}, now = {}", beginTime, endTime, getCurrentTime());
 								if(isInZone(getLong(beginTime),getLong(endTime),getCurrentTime())){
@@ -948,10 +947,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			}
 			groupStrategy.setFreeMins(appFreeMins);
-			groupStrategy.setBusinessTime("00:00 - 24:00");
+			if(preDetail.getBusinessTime()!=null) {
+				groupStrategy.setBusinessTime(preDetail.getBusinessTime());
+			}else {
+				groupStrategy.setBusinessTime("00:00 - 24:00");
+			}
 			if(sb.length() > 3) {
 				groupStrategy.setDesc(sb.toString().substring(0, sb.length()-3));
 			}
+			groupStrategy.setDescList(descList);
 			groupStrategy.setGroupId(groupId);
 			groupStrategy.setGroupName(group.getName());
 			//获取上次使用车牌
@@ -1012,14 +1016,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 				log.info("statuMap : {}",JSON.toJSON(statuMap));
 				
 				List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
-				log.info("eleList = {}",JSON.toJSON(eleList));
 				List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
 				Map<String,Object> paramMap = null;
 				if(CollectionUtils.isNotEmpty(eleList)) {
 					for(PrefectureElement ele: eleList) {
 						paramMap = new HashMap<String,Object>();
 						if("button".equals(ele.getEleType())) {
-							log.info("elename :{} real exist :{}",ele.getEleName(), statuMap.get(ele.getEleName()));
 							if(statuMap.get(ele.getEleName()) != null) {
 								cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
 								paramMap.put("name", ele.getEleName());
@@ -1057,7 +1059,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 	
 	private static boolean isInZone(long timeStart,long timeEnd,long nowTime) throws ParseException {
-		return timeStart <= nowTime && nowTime <= timeEnd;
+		Boolean flag = false;
+		if(timeStart < timeEnd) {
+			return timeStart <= nowTime && nowTime <= timeEnd;
+		}else if(timeStart > timeEnd){
+			if(nowTime > timeStart || nowTime < timeEnd ) {
+				flag = true;
+			}
+		}
+		return flag;
 	}
 	private static long getLong(String timeStr) throws ParseException {
 		return sdf.parse(timeStr).getTime();

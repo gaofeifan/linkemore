@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.third.request.ReqAppAlipay;
 import cn.linkmore.third.request.ReqLongPay;
+import cn.linkmore.third.request.ReqLoongPayVerifySign;
 import cn.linkmore.third.response.ResLoongPay;
 import cn.linkmore.third.service.AppLoongPayService;
 
@@ -38,5 +39,11 @@ public class ApploongPayController {
 	@ResponseBody
 	public boolean callbackMsg(@RequestBody Map<String, Object> map) {
 		return this.appLongPayService.callbackMsg(map);
+	}
+	
+	@RequestMapping(value="/v3.0/verify-sigature",method=RequestMethod.POST)
+	@ResponseBody
+	public boolean verifySigature(@RequestBody ReqLoongPayVerifySign sign) {
+		return this.appLongPayService.verifySigature(sign);
 	}
 }

@@ -3,6 +3,7 @@ package cn.linkmore.third.service;
 import java.util.Map;
 
 import cn.linkmore.third.request.ReqLongPay;
+import cn.linkmore.third.request.ReqLoongPayVerifySign;
 import cn.linkmore.third.response.ResLoongPay;
 
 /**
@@ -26,5 +27,12 @@ public interface AppLoongPayService {
 	 * @Version  v2.0
 	 */
 	boolean callbackMsg(Map<String, Object> map);
+
+	/**
+	 * @Description  校验
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	boolean verifySigature(ReqLoongPayVerifySign verifySign);
 
 }

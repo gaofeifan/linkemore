@@ -80,10 +80,10 @@
 			AND en.name like #{entName}
 		</if>
 		<if test="downTime!=null">
-	    <![CDATA[and t.down_time >= #{downTime}]]>
+	    <![CDATA[and down_time >= #{downTime}]]>
 	    </if> 
 	    <if test="leaveTime!=null">
-	    <![CDATA[and t.leave_time <= #{leaveTime}]]>
+	    <![CDATA[and leave_time <= #{leaveTime}]]>
 	    </if> 
 		<if test="property==null">
 			order by down_time desc
@@ -105,10 +105,10 @@
 			AND en.name like #{entName}
 		</if>
 		<if test="downTime!=null">
-	    <![CDATA[and t.down_time >= #{downTime}]]>
+	    <![CDATA[and down_time >= #{downTime}]]>
 	    </if> 
 	    <if test="leaveTime!=null">
-	    <![CDATA[and t.leave_time <= #{leaveTime}]]>
+	    <![CDATA[and leave_time <= #{leaveTime}]]>
 	    </if> 
 	</select>
 	
@@ -118,9 +118,6 @@
 		<if test="preName != null">
 			AND pre_name like #{preName}
 		</if>
-		<!-- <if test="entName != null">
-			AND en.name like #{entName}
-		</if> -->
 		<if test="downTime!=null">
 	    <![CDATA[and t.down_time >= #{downTime}]]>
 	    </if> 

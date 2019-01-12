@@ -427,10 +427,10 @@ public class StallServiceImpl implements StallService {
 				// 更新根据车位名称查询的车位编号为新安装的车位编号
 				stallName.setLockSn(reqLockIntall.getLockSn());
 				this.stallMasterMapper.update(stallName);
+				// 判断原来车位在安装表里面是否存在
+				this.stallLockMasterMapper.deleteByLockSn(stall.getLockSn());
 				// 更新原来车位编号的车位将车位编号设置为null
 				this.stallMasterMapper.delete(stall.getId());
-				// 判断原来车位在安装表里面是否存在
-				this.stallLockMasterMapper.deleteByStallId(stall.getId());
 				// 更新更改后的车位锁关系
 				stallLock.setSn(reqLockIntall.getLockSn());
 				stallLock.setStallId(stallName.getId());
@@ -1837,7 +1837,7 @@ public class StallServiceImpl implements StallService {
 					log.info("用户争抢锁异常信息{}",e.getMessage());
 				}
 				if (!have) {
-					throw new BusinessException(StatusEnum.STALL_HIVING_DO);
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
 				}
 				// 放入缓存
 				String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
@@ -1978,8 +1978,7 @@ public class StallServiceImpl implements StallService {
 			Stopwatch stopwatch = Stopwatch.createStarted();
 			ResLockInfo lockInfo = lockTools.lockInfo(stall.getLockSn());
 			log.info("<<<<<<<<<bluetooth verify>>>>>>>>>>>>lockInfo:{}",JSON.toJSON(lockInfo));
-			if(lockInfo != null && lockInfo.getLockState() != 0) {
-				
+			if(lockInfo != null && lockInfo.getLockState() == 1) {
 				if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId())) {
 					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
 				} else {
