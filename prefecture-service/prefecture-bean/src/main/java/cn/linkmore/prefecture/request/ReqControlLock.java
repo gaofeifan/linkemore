@@ -16,6 +16,7 @@ public class ReqControlLock {
 
 	private Short type;
 	
+	private Long userId;
 
 	public String getLockSn() {
 		return lockSn;
@@ -64,7 +65,13 @@ public class ReqControlLock {
 	public void setType(Short type) {
 		this.type = type;
 	}
-	
-	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 	
 }

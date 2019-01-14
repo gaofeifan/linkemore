@@ -2009,5 +2009,54 @@ public class StallServiceImpl implements StallService {
 		}
 		return flag;
 	}
+
+	@Override
+	public Boolean appControl(ReqControlLock reqc) {
+		ResLockMessage res =  null;
+		if (reqc.getStatus() == 1) {
+			res = lockTools.downLockMes(reqc.getLockSn());
+		} else if (reqc.getStatus() == 2) {
+			res = lockTools.upLockMes(reqc.getLockSn());
+		}
+		Stall stall = stallClusterMapper.findById(reqc.getStallId());
+		log.info("降锁返回结果"+JsonUtil.toJson(res));
+		int code = res.getCode();
+		EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
+		boolean falg = false;
+		if (code == 200) {
+			falg = true;
+			if (reqc.getStatus() == 2) {
+				log.info("<<<<<<<<<up success>>>>>>>>>");
+				// 未完成记录同一用户只有一单
+				if (Objects.nonNull(record)) {
+					EntRentRecord up = new EntRentRecord();
+					up.setLeaveTime(new Date());
+					up.setStatus(1L);
+					up.setId(record.getId());
+					entRentedRecordMasterMapper.updateByIdSelective(up);
+				}
+			} else {
+				log.info("<<<<<<<<<down success>>>>>>>>>");
+			}
+			stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
+			stall.setStatus(reqc.getStatus() == 1 ? 2 : 1);
+			stallMasterMapper.lockdown(stall);
+		} else {
+			if (reqc.getStatus() == 1) {
+				log.info("<<<<<<<<<down fail>>>>>>>>>>");
+				// 降锁失败 取消绑定
+				if (Objects.nonNull(record)) {
+					EntRentRecord up = new EntRentRecord();
+					up.setLeaveTime(new Date());
+					up.setStatus(2L);
+					up.setId(record.getId());
+					entRentedRecordMasterMapper.updateByIdSelective(up);
+				}
+			} else {
+				log.info("<<<<<<<<<up fail>>>>>>>>>>");
+			}
+		}
+		return falg;
+	}
 	
 }

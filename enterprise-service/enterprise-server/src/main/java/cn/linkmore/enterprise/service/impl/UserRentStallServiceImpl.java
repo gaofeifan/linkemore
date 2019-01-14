@@ -8,12 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -21,8 +28,6 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
-import cn.linkmore.enterprise.controller.app.request.ReqToothAuth;
-import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.OwnerStall;
@@ -33,37 +38,47 @@ import cn.linkmore.enterprise.entity.EntOwnerPre;
 import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.service.OwnerStallService;
+import cn.linkmore.enterprise.service.PrefectureService;
+import cn.linkmore.enterprise.service.UserRentStallService;
+import cn.linkmore.prefecture.client.FeignLockClient;
+import cn.linkmore.prefecture.client.OpsPrefectureClient;
+import cn.linkmore.prefecture.client.PrefectrueClient;
+import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqControlLock;
+import cn.linkmore.prefecture.response.ResLockInfo;
+import cn.linkmore.prefecture.response.ResLockInfos;
+import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.MapUtil;
-import cn.linkmore.util.StringUtil;
 import cn.linkmore.util.TokenUtil;
-
 @Service
-public class OwnerStallServiceImpl implements OwnerStallService {
+public class UserRentStallServiceImpl implements UserRentStallService {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private RedisService redisService;
-	
+	@Autowired
+	private OwnerStallService ownerStallService;
+	@Autowired
+	private PrefectureClient prefectrueClient;
 	@Autowired
 	private RedisLock redisLock;
-
 	@Autowired
 	private OwnerStallClusterMapper ownerStallClusterMapper;
-
 	@Autowired
 	private EntRentedRecordMasterMapper entRentedRecordMasterMapper;
-
 	@Autowired
 	private EntRentedRecordClusterMapper entRentedRecordClusterMapper;
-
+	@Autowired
+	private FeignLockClient feignLockClient;
 	@Autowired
 	private StallClient stallClient;
 
+	
+	
 	@Override
 	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
@@ -73,20 +88,31 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		OwnerRes res = new OwnerRes();
 		Boolean isHave = false;
 		int num = 0;
-
 		try {
 			Long userId = user.getId();
-
 			// 查询是否有未完成进程
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(userId);
-
 			List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
-
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
+			List<Long> collect = prelist.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
+			Map<String, Object> map = new HashMap<>();
+			map.put("preIds", collect);
+			List<ResPre> preList = this.prefectrueClient.findPreByIds(map );
+			List<String> gateways = preList.stream().map(pre -> pre.getGateway()).collect(Collectors.toList());
+			List<ResLockInfos> lockInfos = this.feignLockClient.lockLists(gateways);
+			Map<Long,List<ResLockInfo>> tempMap = new HashMap<>();
+			
+			for (ResLockInfos info : lockInfos) {
+				for (ResPre resPre : preList) {
+					if(resPre.getGateway().equals(info.getGroupId())) {
+						tempMap.put(resPre.getId(), info.getInfos());
+						break;
+					}
+				}
+
+			}
 			log.info("车位>>>" + stalllist.size() + "车区>>>" + prelist.size() + "用户>>>" + JSON.toJSONString(user));
-
 			List<OwnerPre> list = new ArrayList<>();
-
 			if (record != null) { // 未完成进程
 				for (EntOwnerPre pre : prelist) {
 					if (pre.getPreId().equals(record.getPreId())) {
@@ -100,12 +126,21 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 						for (EntOwnerStall enttall : stalllist) {
 							if (enttall.getStallId().equals(record.getStallId())) {
 								OwnerStall OwnerStall = new OwnerStall();
+								if(tempMap != null && !tempMap.isEmpty()) {
+									for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
+										if(info.getKey() == pre.getPreId()) {
+											for (ResLockInfo inf : info.getValue()) {
+												if(inf.getLockCode().equals(enttall.getLockSn())) {
+													OwnerStall.setBattery(inf.getElectricity());
+												}
+											}
+										}
+									}
+								}
 								OwnerStall.setStallId(enttall.getStallId());
 								OwnerStall.setMobile(enttall.getMobile());
 								OwnerStall.setPlate(enttall.getPlate());
 								OwnerStall.setStallName(enttall.getStallName());
-								OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
-								OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
 								OwnerStall.setImageUrl(enttall.getImageUrl());
 								OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
 								OwnerStall.setStallLocal(enttall.getStallLocal());
@@ -133,19 +168,27 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 					ownerpre.setLongitude(pre.getLongitude());
 					ownerpre.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(),
 							new Double(pre.getLatitude()), new Double(pre.getLongitude())));
-
 					List<OwnerStall> ownerstalllist = new ArrayList<>();
-
 					for (EntOwnerStall enttall : stalllist) {
 						if (pre.getPreId().equals(enttall.getPreId())) {
-
 							OwnerStall OwnerStall = new OwnerStall();
+							if(tempMap != null && !tempMap.isEmpty()) {
+								for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
+									if(info.getKey() == pre.getPreId()) {
+										for (ResLockInfo inf : info.getValue()) {
+											if(inf.getLockCode().equals(enttall.getLockSn())) {
+												OwnerStall.setBattery(inf.getElectricity());
+											}
+										}
+									}
+								}
+							}
 							OwnerStall.setStallId(enttall.getStallId());
 							OwnerStall.setMobile(enttall.getMobile());
 							OwnerStall.setPlate(enttall.getPlate());
 							OwnerStall.setStallName(enttall.getStallName());
-							OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
-							OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
+//							OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
+//							OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
 							OwnerStall.setImageUrl(enttall.getImageUrl());
 							OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
 							OwnerStall.setStallLocal(enttall.getStallLocal());
@@ -176,8 +219,10 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		}
 	}
 
+
+
 	@Override
-	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
+	public Boolean control(ReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
@@ -253,89 +298,20 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		reqc.setKey(rediskey);
 		reqc.setStallId(reqOperatStall.getStallId());
 		reqc.setStatus(reqOperatStall.getState());
-		stallClient.controllock(reqc);
+		Boolean control = stallClient.appControl(reqc);
 		log.info("用户>>>" + user.getId() + "调用>>>" + reqOperatStall.getStallId());
+		return control;
 	}
 
-	@Override
-	public void watch(ReqWatchStatus reqWatchStatus, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		if (user == null) {
-			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
-		}
-		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqWatchStatus.getStallId();
-		String val = String.valueOf(this.redisService.get(rediskey));
-		Map<String, Object> map = new HashMap<>();
-		map = stallClient.watch(reqWatchStatus.getStallId());
-		Boolean control = true;
-		Boolean blue = true;
-		if (map != null && !map.isEmpty()) {
-			if ("200".equals(String.valueOf(map.get("code")))
-					&& String.valueOf(map.get("status")).equals(String.valueOf(reqWatchStatus.getStatus() - 1))) {
-				blue = true;
-			} else {
-				blue = false;
-			}
-		}
-		if (StringUtil.isNotBlank(val)) {
-			if (val.equals(String.valueOf(user.getId()))) {
-				control = false;
-			}
-		}
-		log.info("用户>>>" + user.getId() + ">>>" + rediskey);
-		if (!control && !blue) {
-			throw new BusinessException(
-					reqWatchStatus.getStatus() == 2 ? StatusEnum.ORDER_LOCKUP_FAIL : StatusEnum.ORDER_LOCKDOWN_FAIL);
-		}
-	}
 
-	public static String handleTime(String time) {
-		time = time.replace(" ", "");
-		time = time.replace("-", "");
-		time = time.replace(":", "");
-		String newtime = null;
-		if (time != null) {
-			newtime = time.substring(0, 4) + "年" + time.substring(4, 6) + "月" + time.substring(6, 8) + "日"
-					+ time.substring(8, 10) + "时" + time.substring(10, 12) + "分";
-		}
-		return newtime;
-	}
 
 	@Override
 	public Boolean owner(HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		Boolean is = false;
-		if (user != null) {
-			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
-			if (stalllist.size() > 0) {
-				is = true;
-			}
-		}
-		log.info("用户>>>" + JSON.toJSONString(user));
-		return is;
+		Boolean owner = this.ownerStallService.owner(request);
+		return owner;
 	}
+	
+	
 
-	@Override
-	public void tooth(ReqToothAuth reqToothAuth) {
-		String userid = String.valueOf(reqToothAuth.getUserId());
-		String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqToothAuth.getStallId();
-		Boolean have = false;
-			have = this.redisLock.getLock(robkey, userid);
-			log.info("用户=======>" + reqToothAuth.getUserId() + (have == true ? "已得到" : "未得到") + "锁" + robkey);
-			if (!have) {
-				throw new BusinessException(StatusEnum.STALL_HIVING_DO);
-			}
-			if(have) {
-				Map<String, Object> pam = new HashMap<>();
-				pam.put("stallId", reqToothAuth.getStallId());
-				pam.put("userId", userid);
-				Integer using = entRentedRecordClusterMapper.findUsingRecord(pam);
-				log.info("用户=======>" + using);
-				if (using>0) {
-					this.redisService.remove(robkey);
-					throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
-				}
-			}
-	}
-
+	
 }

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.master.StallFaultFeedBackMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.StallFaultFeedBack">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="dict_id" jdbcType="BIGINT" property="dictId" />
+    <result column="dict_name" jdbcType="VARCHAR" property="dictName" />
+    <result column="extra" jdbcType="VARCHAR" property="extra" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mobile, create_time, dict_id, dict_name, extra, user_id, stall_id
+  </sql>
+
+ <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_stall_fault_feedback
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.linkmore.account.entity.StallFaultFeedBack">
+    insert into t_stall_fault_feedback (id, mobile, create_time, 
+      dict_id, dict_name, extra, 
+      user_id, stall_id)
+    values (#{id,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{dictId,jdbcType=BIGINT}, #{dictName,jdbcType=VARCHAR}, #{extra,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.linkmore.account.entity.StallFaultFeedBack">
+    insert into t_stall_fault_feedback
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="dictId != null">
+        dict_id,
+      </if>
+      <if test="dictName != null">
+        dict_name,
+      </if>
+      <if test="extra != null">
+        extra,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="stallId != null">
+        stall_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dictId != null">
+        #{dictId,jdbcType=BIGINT},
+      </if>
+      <if test="dictName != null">
+        #{dictName,jdbcType=VARCHAR},
+      </if>
+      <if test="extra != null">
+        #{extra,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="stallId != null">
+        #{stallId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.linkmore.account.entity.StallFaultFeedBack">
+    update t_stall_fault_feedback
+    <set>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dictId != null">
+        dict_id = #{dictId,jdbcType=BIGINT},
+      </if>
+      <if test="dictName != null">
+        dict_name = #{dictName,jdbcType=VARCHAR},
+      </if>
+      <if test="extra != null">
+        extra = #{extra,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="stallId != null">
+        stall_id = #{stallId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.linkmore.account.entity.StallFaultFeedBack">
+    update t_stall_fault_feedback
+    set mobile = #{mobile,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      dict_id = #{dictId,jdbcType=BIGINT},
+      dict_name = #{dictName,jdbcType=VARCHAR},
+      extra = #{extra,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
+      stall_id = #{stallId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

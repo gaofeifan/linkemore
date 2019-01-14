@@ -58,9 +58,10 @@
   </resultMap>
   
   <resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
-  	<id column="id" property="id"/>
-  	<result column="name" property="name" />
-  	<result column="city_id" property="cityId" />
+  	<id column="id" jdbcType="BIGINT" property="id"/>
+  	<result column="name" jdbcType="VARCHAR" property="name" />
+  	<result column="city_id" jdbcType="BIGINT" property="cityId" />
+  	<result column="gateway" jdbcType="VARCHAR" property="gateway" />
   </resultMap>
   
    <resultMap id="ResPreGateMap" type="cn.linkmore.prefecture.response.ResPreGateway">
@@ -168,7 +169,7 @@
     </foreach> 
   </select> 
   <select id="findPreByIds" parameterType="java.util.Map" resultMap="ResPreMap">
-    select  p.id ,p.name,p.city_id
+    select  p.id ,p.name,p.city_id,gateway
     from v_prefecture p
     where id in
     <foreach collection="preIds" item="id" open="(" separator="," close=")"  >

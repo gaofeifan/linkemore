@@ -13,10 +13,16 @@ import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResStallName;
+import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 /**
  * @author luzhishen
  * @Date 2018年7月20日
  * @Version v1.0
+ */
+/**
+ * @author   GFF
+ * @Date     2019年1月13日
+ * @Version  v2.0
  */
 public interface EntStallService {
 

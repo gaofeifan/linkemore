@@ -1,5 +1,6 @@
 package cn.linkmore.enterprise.controller.feign;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 import cn.linkmore.enterprise.service.StallExcStatusService;
+import cn.linkmore.util.ObjectUtils;
 import io.swagger.annotations.ApiOperation;
 
 @RequestMapping("/feign/stall/exc")
@@ -54,4 +56,9 @@ public class FeignStallExcCauseController {
 		this.excStatusService.updateExcStatus(map);
 	}
 	
+	@RequestMapping(value = "/save",method = RequestMethod.POST)
+	@ResponseBody
+	public void save(@RequestBody ResEntExcStallStatus causes){
+		this.excStatusService.save(causes);
+	}
 }

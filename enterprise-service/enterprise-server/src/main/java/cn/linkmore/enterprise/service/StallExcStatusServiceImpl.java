@@ -55,6 +55,10 @@ public class StallExcStatusServiceImpl implements StallExcStatusService {
 	public ResEntExcStallStatus findByStallId(Long stallId) {
 		return this.clusterMapper.findByStallId(stallId);
 	}
+	@Override
+	public void save(ResEntExcStallStatus cause) {
+		this.masterMapper.saveReq(cause);
+	}
 	
 	
 	
