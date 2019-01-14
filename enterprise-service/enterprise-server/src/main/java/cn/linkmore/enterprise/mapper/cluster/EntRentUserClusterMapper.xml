@@ -368,7 +368,7 @@
 	<if test="plate != null">
 		and ru.plate = #{plate}
 	</if>
-	group by 
+	group by
 		ru.pre_id,
 		ru.pre_name,
 		ru.stall_id,
