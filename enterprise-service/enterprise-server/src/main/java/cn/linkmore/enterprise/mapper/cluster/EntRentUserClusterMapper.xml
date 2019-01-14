@@ -276,9 +276,7 @@
 				AND c.status = '2'
 				AND cu.plate IS NOT NULL
 				AND cs.stall_id IS NOT NULL
-			) 
-			<!-- 
-			UNION 
+			) UNION 
 			(
 				SELECT distinct 
 					tu.company_name,
@@ -336,9 +334,6 @@
    	</if>
    	<if test="stallId != null">
    		and stall_id = #{stallId}
-   	</if>
-   	<if test="userId != null">
-   		and user_id = #{userId}
    	</if>
    	<if test="plate != null">
    		and plate = #{plate}
