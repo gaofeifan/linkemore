@@ -1,5 +1,9 @@
 package cn.linkmore.enterprise.controller.app.response;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -42,6 +46,14 @@ public class OwnerStall {
 	@ApiModelProperty(value = "车位导航图")
 	private String imageUrl;
 	
+	@ApiModelProperty(value = "电池电量")
+	private int battery;
+	
+	@ApiModelProperty(value = "车位结束时间")
+	private Date stallEndTime;
+	
+	@ApiModelProperty(value = "网关状态 0离线 1 在线")
+	private int gatewayStatus;
 	public String getLockSn() {
 		return lockSn;
 	}
@@ -138,5 +150,31 @@ public class OwnerStall {
 		this.endTime = endTime;
 	}
 
+	public int getBattery() {
+		return battery;
+	}
 
+	public void setBattery(int battery) {
+		this.battery = battery;
+	}
+
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
+	public Date getStallEndTime() {
+		return stallEndTime;
+	}
+
+	public void setStallEndTime(Date stallEndTime) {
+		this.stallEndTime = stallEndTime;
+	}
+
+	public int getGatewayStatus() {
+		return gatewayStatus;
+	}
+
+	public void setGatewayStatus(int gatewayStatus) {
+		this.gatewayStatus = gatewayStatus;
+	}
+
+
+	
 }

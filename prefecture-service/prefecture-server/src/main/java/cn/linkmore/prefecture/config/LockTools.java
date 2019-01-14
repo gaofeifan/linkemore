@@ -11,6 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistoryList;
@@ -26,7 +27,8 @@ import cn.linkmore.util.ObjectUtils;
  * @Date     2018年11月8日
  * @Version  v2.0
  */
-@Component
+@Component(value="lockTools")
+@Primary
 public class LockTools {
 
 	private static Logger log = LoggerFactory.getLogger(LockTools.class);
@@ -66,6 +68,7 @@ public class LockTools {
 		ResLockMessage message = JsonUtil.toObject(resData, ResLockMessage.class);
 		return message;
 	}
+	
 	private Object getData(Map<String,Object> param,String url) {
 		String sign = Sign.getSign(param, lockProperties.getAppSecret());
 		param.put("sign", sign);

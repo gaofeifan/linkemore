@@ -3,10 +3,14 @@ package cn.linkmore.prefecture.client.hystrix;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.enterprise.request.ReqStallExcCause;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
 @Component
@@ -30,6 +34,11 @@ public class FeignStallExcStatusClientHystrix implements FeignStallExcStatusClie
 	public void updateExcStatus(Map<String, Object> map) {
 		log.info("=======Hystrix==========void updateExcStatus(Map<String, Object> map");
 		
+	}
+
+	@Override
+	public void save(ResEntExcStallStatus causes) {
+		log.info("=======Hystrix==========void save(ResEntExcStallStatus causes");
 	}
 	
 	

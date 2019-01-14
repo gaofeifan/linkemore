@@ -129,7 +129,7 @@
   </select>
   
   <select id="findAllStallList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
-  	select id, stall_name, pre_id, lock_sn
+  	select id, stall_name, pre_id, lock_sn, status
 	from v_stall 
 	where type = 0 AND id in  
     <foreach collection="stallList"  index="index" item="id" open="(" separator="," close=")"  >

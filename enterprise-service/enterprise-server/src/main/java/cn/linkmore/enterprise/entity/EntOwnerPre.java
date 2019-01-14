@@ -52,7 +52,4 @@ public class EntOwnerPre {
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
-
-	
-	
 }

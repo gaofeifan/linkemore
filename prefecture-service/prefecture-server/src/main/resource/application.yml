@@ -7,7 +7,7 @@ spring:
     name: prefecture-server
   boot: 
     admin:
-      url: http://192.168.1.128:6002
+      url: http://192.168.1.142:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -17,7 +17,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.128:6003/eureka/
+      defaultZone: http://192.168.1.142:6003/eureka/
 feign:
   hystrix:
     enabled: true
@@ -38,7 +38,7 @@ hystrix:
               ConnectTimeout: 35000    
  
 master-db:   
-  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+  url: jdbc:mysql://192.168.1.218:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -58,7 +58,7 @@ master-db:
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   
 cluster-db:   
-  url: jdbc:mysql://192.168.1.219:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+  url: jdbc:mysql://192.168.1.219:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -84,7 +84,7 @@ security:
 redis:
   host: 192.168.1.218
   port: 6379
-  database: 2
+  database: 4
   timeout: 5000
   password: ppyx1234
   pool-max-active: 500
@@ -117,9 +117,8 @@ swagger:
 
 strategyfee: 
   url: 
-    base: http://192.168.1.76:8086
-    fee: ${strategyfee.url.base}/charge/api/reckon_charge_price
-    list: ${strategyfee.url.base}/charge/api/get_charge_list
-    detail: ${strategyfee.url.base}/charge/api/get_charge_detail
+    fee: http://192.168.1.76:8086/charge/api/reckon_charge_price
+    list: http://192.168.1.76:8086/charge/api/get_charge_list
+    detail: http://192.168.1.76:8086//charge/api/get_charge_detail
   fee-code: 987656
   fee-secret: 99876505523

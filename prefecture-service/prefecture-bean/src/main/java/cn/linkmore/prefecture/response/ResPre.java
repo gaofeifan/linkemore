@@ -16,6 +16,8 @@ public class ResPre {
 	private String name;
 	
 	private Long cityId;
+
+	private String gateway;
 	
 	public Long getId() {
 		return id;
@@ -34,5 +36,11 @@ public class ResPre {
 	}
 	public void setCityId(Long cityId) {
 		this.cityId = cityId;
+	}
+	public String getGateway() {
+		return gateway;
+	}
+	public void setGateway(String gateway) {
+		this.gateway = gateway;
 	}
 }
