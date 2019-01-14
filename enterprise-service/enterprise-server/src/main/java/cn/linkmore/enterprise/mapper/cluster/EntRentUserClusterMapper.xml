@@ -376,7 +376,7 @@
 		vm.veh_user_id ,
 		tu.username ,
 		ru.start_time,
-		ru.end_time 
+		ru.end_time
   </select>
   
   
