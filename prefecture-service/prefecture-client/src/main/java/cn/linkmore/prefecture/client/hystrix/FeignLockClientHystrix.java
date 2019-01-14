@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import cn.linkmore.prefecture.client.FeignLockClient;
 import cn.linkmore.prefecture.response.ResLockInfo;
+import cn.linkmore.prefecture.response.ResLockInfos;
 import cn.linkmore.prefecture.response.ResLockMessage;
 /**
  * 锁服务熔断
@@ -54,5 +55,13 @@ public class FeignLockClientHystrix implements FeignLockClient {
 		log.info("Hystrix ResLockMessage upLockMes(String sn) ");
 		return null;
 	}
+
+	@Override
+	public List<ResLockInfos> lockLists(List<String> lockSns) {
+		log.info("Hystrix ResLockMessage lockLists(List<String> lockSns) ");
+		return null;
+	}
+	
+	
 
 }

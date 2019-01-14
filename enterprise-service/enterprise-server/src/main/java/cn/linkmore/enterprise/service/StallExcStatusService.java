@@ -3,6 +3,7 @@ package cn.linkmore.enterprise.service;
 import java.util.List;
 import java.util.Map;
 
+import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.entity.StallExcStatus;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 
@@ -62,5 +63,7 @@ public interface StallExcStatusService {
 	 * @Version  v2.0
 	 */
 	ResEntExcStallStatus findByStallId(Long stallId);
+	
+	void save(ResEntExcStallStatus cause);
 
 }

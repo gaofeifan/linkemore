@@ -18,6 +18,11 @@ import cn.linkmore.enterprise.controller.ent.response.ResStallName;
  * @Date 2018年7月20日
  * @Version v1.0
  */
+/**
+ * @author   GFF
+ * @Date     2019年1月13日
+ * @Version  v2.0
+ */
 public interface EntStallService {
 
 	/**
@@ -39,7 +44,7 @@ public interface EntStallService {
 	/**
 	 * @Description  根据员工查询可操作车位
 	 * @Author   GFF 
-	 * @Version  v2.0
+	 * @Version  v2.0lo
 	 */
 	List<Long> findStaffId(Map<String, Long> map);
 

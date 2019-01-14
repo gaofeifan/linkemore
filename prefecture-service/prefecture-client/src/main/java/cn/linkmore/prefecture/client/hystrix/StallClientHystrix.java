@@ -2,13 +2,11 @@ package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
@@ -18,7 +16,6 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
-import cn.linkmore.prefecture.request.ReqStallOperateLog;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
@@ -202,14 +199,22 @@ public class StallClientHystrix implements StallClient {
 
 	@Override
 	public int updateStatus(ReqStall stall) {
-		
+		log.info("prefecture service int updateStatus(ReqStall stall) hystrix");
 		return 0;
+	}
+	
+	@Override
+	public void managerlockSn(ReqControlLock reqc) {
+		log.info("prefecture service int managerlockSn(ReqControlLock reqc) hystrix");
 	}
 
 	@Override
-	public void managerlockSn(ReqControlLock reqc) {
-		// TODO Auto-generated method stub
+	public Boolean appControl(ReqControlLock reqc) {
+		log.info("prefecture service void appControl(ReqControlLock reqc) hystrix");
+		return null;
 		
 	}
+	
+	
 
 }

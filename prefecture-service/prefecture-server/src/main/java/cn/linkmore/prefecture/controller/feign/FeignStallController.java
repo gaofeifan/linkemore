@@ -32,6 +32,7 @@ import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallLockService;
 import cn.linkmore.prefecture.service.StallOperateLogService;
 import cn.linkmore.prefecture.service.StallService;
+import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
 
 /**
@@ -381,4 +382,10 @@ public class FeignStallController {
 		this.stallOperateService.save(sol);
 	}
 	
+	@RequestMapping(value = "/v2.0/app/control", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean appControl(@RequestBody ReqControlLock reqc) {
+		log.info("controllock:{} .......................................",JsonUtil.toJson(reqc));
+		return this.stallService.appControl(reqc);
+	}
 }

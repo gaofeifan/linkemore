@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.enterprise.entity.StallExcStatus;
+import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 
 /**
  * 车位异常状态 -- 写
@@ -29,5 +30,12 @@ public interface StallExcStatusMasterMapper {
 	 * @Version  v2.0
 	 */
 	void saveBatch(List<StallExcStatus> excs);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void saveReq(ResEntExcStallStatus cause);
 
 }
