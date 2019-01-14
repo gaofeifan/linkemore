@@ -99,10 +99,11 @@ public interface StallClusterMapper {
 	List<ResStall> findPreStallList(Map<String, Object> param);
 	
 	List<ResStall> findFreeStallList(Map<String, Object> params);
+	
 	/**
 	 * 查询分组内所有车位信息
 	 */
-	//List<ResStall> findAllStallList(Map<String, Object> params);
+	List<ResStall> findAllStallList(Map<String, Object> params);
 	
 	/**
 	 * @Description  

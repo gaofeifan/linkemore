@@ -329,4 +329,12 @@ public interface StallService {
 	 * @return
 	 */
 	boolean verify(Long stallId, HttpServletRequest request);
+	
+	/**
+	 * @return 
+	 * @Description  个人版锁操作
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean appControl(ReqControlLock reqc);
 }

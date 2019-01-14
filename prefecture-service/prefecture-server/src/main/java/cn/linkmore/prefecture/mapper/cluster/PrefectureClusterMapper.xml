@@ -40,6 +40,11 @@
     <result column="business_time" jdbcType="VARCHAR" property="businessTime" />
     <result column="grid_x" jdbcType="INTEGER" property="gridX" />
     <result column="grid_y" jdbcType="INTEGER" property="gridY" />
+    
+    <result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="under_layer" jdbcType="VARCHAR" property="underLayer" />
+    <result column="total_stall_num" jdbcType="INTEGER" property="totalStallNum" />
+    <result column="pre_type" jdbcType="SMALLINT" property="preType" />
   </resultMap>
   
   <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.controller.app.response.ResPrefecture">
@@ -55,12 +60,18 @@
   	<result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
   	<result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
   	<result column="business_time" jdbcType="VARCHAR" property="businessTime" />
+  	
+  	<result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="under_layer" jdbcType="VARCHAR" property="underLayer" />
+    <result column="total_stall_num" jdbcType="INTEGER" property="totalStallNum" />
+    <result column="pre_type" jdbcType="SMALLINT" property="preType" />
   </resultMap>
   
   <resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
-  	<id column="id" property="id"/>
-  	<result column="name" property="name" />
-  	<result column="city_id" property="cityId" />
+  	<id column="id" jdbcType="BIGINT" property="id"/>
+  	<result column="name" jdbcType="VARCHAR" property="name" />
+  	<result column="city_id" jdbcType="BIGINT" property="cityId" />
+  	<result column="gateway" jdbcType="VARCHAR" property="gateway" />
   </resultMap>
   
    <resultMap id="ResPreGateMap" type="cn.linkmore.prefecture.response.ResPreGateway">
@@ -103,7 +114,7 @@
     route_description, base_dict_id, city_id, order_index, leave_time, charge_price, 
     charge_time, type, enterprise_id, category, limit_status, gateway, 
     strategy_description, runtime, increase, month_rent, version, create_user_id, business_time,
-    grid_x, grid_y
+    grid_x, grid_y, region, under_layer, total_stall_num, pre_type
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -117,7 +128,7 @@
   
   <select id="findPreByStatusAndGPS" resultMap="ResPrefectureMap" parameterType="java.util.Map">
     select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
-  		p.charge_time,p.image_url, p.business_time
+  		p.charge_time,p.image_url, p.business_time, p.region, p.under_layer, p.total_stall_num, p.pre_type
 	from v_prefecture p 
 	where p.status = #{status} and (p.type is null or p.type = 0 )
     and p.category in ('0','2')
@@ -139,7 +150,7 @@
   
   <select id="findPreByStatusAndGPS1" resultMap="ResPrefectureMap" parameterType="java.util.Map">
     select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
-  		p.charge_time,p.image_url, p.business_time
+  		p.charge_time,p.image_url, p.business_time, p.region, p.under_layer, p.total_stall_num, p.pre_type
 	from v_prefecture p
 	where p.status = #{status} 
     and p.category = 1
@@ -168,7 +179,7 @@
     </foreach> 
   </select> 
   <select id="findPreByIds" parameterType="java.util.Map" resultMap="ResPreMap">
-    select  p.id ,p.name,p.city_id
+    select  p.id ,p.name,p.city_id,gateway
     from v_prefecture p
     where id in
     <foreach collection="preIds" item="id" open="(" separator="," close=")"  >

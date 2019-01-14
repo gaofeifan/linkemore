@@ -9,6 +9,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResAppointGroupDetail;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
@@ -157,5 +158,12 @@ public interface PrefectureService {
 	ResGroupStrategy findGroupStrategy(Long groupId, HttpServletRequest request);
 
 	Boolean checkPlate(Long plateId, HttpServletRequest request);
+	/**
+	 * 预约时查看车区内车位详情
+	 * @param reqBooking
+	 * @param request
+	 * @return
+	 */
+	ResAppointGroupDetail findAppointGroupDetail(ReqBooking reqBooking, HttpServletRequest request);
 
 }
