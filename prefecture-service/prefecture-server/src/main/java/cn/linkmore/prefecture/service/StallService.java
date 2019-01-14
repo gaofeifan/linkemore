@@ -314,7 +314,7 @@ public interface StallService {
 	
 	boolean control(Long stallId, HttpServletRequest request);
 	
-	void watchDownResult(Long stallId, HttpServletRequest request);
+	//void watchDownResult(Long stallId, HttpServletRequest request);
 	/**
 	 * 下单成功后降锁
 	 * @param stallId
