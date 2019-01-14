@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.CodePayPrefectureClusterMapper">
+    
+    <select id="findPage"  resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		   SELECT * from v_prefecture_config a 
+			LEFT JOIN 
+			(
+			SELECT appId as w_appId,preId FROM v_prefecture_config where type = 'wx' GROUP BY preId
+			)  b ON  a.preId =  b.preId 
+			LEFT JOIN 
+			(
+			SELECT appId as z_appId,preId FROM v_prefecture_config where type = 'zfb' GROUP BY preId
+			) c ON a.preId =  c.preId 
+			LEFT JOIN 
+			(
+			SELECT sum(amount) as w_m,parkCode FROM  o_code_order  where payType = 1 
+			<if test="endTime!=null">
+    		 and  finishTime  &lt;= #{endTime}
+    		</if> 
+			GROUP BY parkCode
+			) d ON a.preId  = d.parkCode
+			LEFT JOIN 
+			(
+			SELECT sum(amount) as z_m,parkCode FROM  o_code_order  where payType = 2 
+			<if test="endTime!=null">
+    		 and  finishTime  &lt;= #{endTime}
+    		</if> 
+			GROUP BY parkCode
+			) e ON a.preId  = e.parkCode 
+			WHERE 1=1
+			<if test="startTime!=null">
+    		 and  create_time &gt;= #{startTime}
+    		</if> 
+    		<if test="preId!=null">
+    	     	and  a.preId = #{preId}
+    		</if> 
+			GROUP BY a.preId 
+			 <if test="property==null">  
+		     order by create_time desc
+		     </if>
+		    <if test="property!=null">  
+		    order by ${property} ${direction}
+		    </if>
+		    limit  #{start},#{pageSize}
+  </select>
+  
+   <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    	SELECT COUNT(DISTINCT(preId)) from v_prefecture_config 
+    	WHERE 1=1
+			<if test="startTime!=null">
+    		 and  create_time &gt;= #{startTime}
+    		</if> 
+    		<if test="preId!=null">
+    	     	and  preId = #{preId}
+    		</if> 
+   </select>
+  
+  <select id="findRecordPage"  resultType="java.util.HashMap" parameterType="java.util.HashMap">
+  			SELECT * from 
+  			(
+  			SELECT   id,parkCode,TIMESTAMPDIFF(MINUTE,entranceTime,MAX(finishTime) ) as time,
+  			sum(amount) as money,
+  			MAX(finishTime) as endTime,
+  			entranceTime,
+  			plateNo,
+  			orderNo,
+  			parkName 
+  			from o_code_order   
+  			GROUP BY orderNo
+  			) a
+			WHERE 1=1
+			<if test="startTime!=null">
+    		 and  entranceTime &gt;= #{startTime}
+    		</if> 
+    		<if test="endTime!=null">
+    		 and  endTime  &lt;= #{endTime}
+    		</if> 
+    		<if test="preId!=null">
+    	     	and  parkCode = #{preId}
+    		</if> 
+    		<if test="plateNo">
+    	     	and  plateNo like #{plateNo}
+    		</if> 
+			 <if test="property==null">  
+		     order by id desc
+		     </if>
+		    <if test="property!=null">  
+		    order by ${property} ${direction}
+		    </if>
+		    limit  #{start},#{pageSize}
+  </select>
+ 
+  <select id="countRecord"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
+    	
+    	SELECT COUNT(1) FROM
+    	 (
+    	 SELECT plateNo,parkCode,MAX(finishTime) as time,entranceTime,orderNo FROM o_code_order GROUP BY orderNo
+    	 ) a
+    	WHERE 1=1
+			<if test="startTime!=null">
+    		 and  entranceTime &gt;= #{startTime}
+    		</if> 
+    		<if test="endTime!=null">
+    		 and  time  &lt;= #{endTime}
+    		</if> 
+    		<if test="preId!=null">
+    	     	and  parkCode = #{preId}
+    		</if> 
+    		<if test="plateNo">
+    	     	and  plateNo like #{plateNo}
+    		</if> 
+   </select>
+   
+   <select id="payList"  resultType="java.util.HashMap" parameterType="java.util.HashMap">
+    	SELECT  
+    	*
+    	FROM o_code_order WHERE 
+    	orderNo  = #{orderNo}
+   </select>
+  
+
+</mapper>

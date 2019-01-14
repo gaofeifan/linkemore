@@ -118,6 +118,7 @@ public enum StatusEnum {
 	LOCK_SN_EXISTS(8005081,"车位编号不存在"),
 	LOCK_SN_AlREADY_BAND(8005080,"该锁编码已经绑定"),
 	FAIL_STALL_NUM(8005081,"车位不存在"),
+
 	STALL_NAME_USER(8005090,"车位名称已存在"),
 	DOWN_LOCK_FAIL_RETRY(8005091,"通讯失败,再降一次"),
 	DOWN_LOCK_FAIL_CHANGE(8005092,"降锁失败,请使用其他车位"),
@@ -125,9 +126,10 @@ public enum StatusEnum {
 	DOWN_LOCK_FAIL_DROP(8005094,"网关掉线,未找到车位锁"),
 	
 	PREFECTURE_NOT_EXIST(8005095,"企业账户下不存在车区"),
-	
-	
-	;
+	PARK_CODE_NO_ORDER(8005096,"未查询到订单"),
+	PARK_CODE_FINISH_(8005097,"订单已完成结算"),
+	WX_PAY_NO_PARM(8005098,"发起订单失败");
+
 	
 	public int code;
 	public String label;
