@@ -23,6 +23,18 @@ public class ReqH5Term {
 	private String priKey;
 
 	private String pubKey;
+	
+	private String notifyUrl;
+	
+	
+
+	public String getNotifyUrl() {
+		return notifyUrl;
+	}
+
+	public void setNotifyUrl(String notifyUrl) {
+		this.notifyUrl = notifyUrl;
+	}
 
 	public String getOrderId() {
 		return orderId;

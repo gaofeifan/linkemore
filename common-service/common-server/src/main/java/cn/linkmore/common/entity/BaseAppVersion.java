@@ -26,7 +26,10 @@ public class BaseAppVersion {
 
     @GColumn
     private Integer type;
-
+    
+    @GColumn
+    private Integer scope;
+    
     @GColumn
     private Integer updateStatus;
 
@@ -95,7 +98,15 @@ public class BaseAppVersion {
         this.type = type;
     }
 
-    public Integer getUpdateStatus() {
+    public Integer getScope() {
+		return scope;
+	}
+
+	public void setScope(Integer scope) {
+		this.scope = scope;
+	}
+
+	public Integer getUpdateStatus() {
         return updateStatus;
     }
 

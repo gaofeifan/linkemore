@@ -23,6 +23,8 @@ public interface EntRentUserMasterMapper {
     EntRentUser findById(Long id);
 
     int updateByIdSelective(EntRentUser record);
+    
+    int updateUserIdNULLById(EntRentUser record);
 
     int updateById(EntRentUser record);
 

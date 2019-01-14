@@ -10,6 +10,9 @@ public class ReqSerch {
 	String plate;
 	@ApiModelProperty(value = "车厂id")
 	String preId;
+	@ApiModelProperty(value = "用户身份")
+	String openid;
+	
 	public String getPlate() {
 		return plate;
 	}
@@ -21,6 +24,18 @@ public class ReqSerch {
 	}
 	public void setPreId(String preId) {
 		this.preId = preId;
+	}
+	/**
+	 * @return the openid
+	 */
+	public String getOpenid() {
+		return openid;
+	}
+	/**
+	 * @param openid the openid to set
+	 */
+	public void setOpenid(String openid) {
+		this.openid = openid;
 	}
 	
 	

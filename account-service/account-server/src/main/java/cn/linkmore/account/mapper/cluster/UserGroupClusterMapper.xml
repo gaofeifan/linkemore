@@ -73,14 +73,13 @@
     	<include refid="Base_Column_List" />
     FROM
     t_user_group_v2 ug
-	<where>
+	where status=2
 	<if test="groupType != null">
    	AND group_type = #{groupType,jdbcType=TINYINT}
     </if>
     <if test="name != null">
    	AND name like #{name,jdbcType=VARCHAR}
     </if>
-	</where>
     <if test="property==null">  
     order by update_time desc
     </if>

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.third.pay.wxmini.HttpTool;
 import cn.linkmore.third.request.ReqH5Term;
 import cn.linkmore.third.request.ReqH5Token;
@@ -29,11 +28,16 @@ import cn.linkmore.third.trade.ThreadRepertory;
 import cn.linkmore.third.trade.wx.PayCommonUtil;
 import cn.linkmore.third.trade.wx.UniPayReqData;
 import cn.linkmore.third.trade.wx.WeChatPay;
+import cn.linkmore.third.trade.zfb.AliMobilePay;
+import cn.linkmore.third.trade.zfb.AlipayConfig;
+import cn.linkmore.third.trade.zfb.AlipaySubmit;
 
 @Service
 public class H5PayServiceImpl implements H5PayService {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private static final String  api_mch = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
 	@Override
 	public ResH5Degree wxOpenid(ReqH5Token reqH5Token) {
@@ -49,8 +53,15 @@ public class H5PayServiceImpl implements H5PayService {
 
 	@Override
 	public ResH5Degree aliOpenid(ReqH5Token reqH5Token) {
-		// TODO Auto-generated method stub
-		return null;
+		String appId = reqH5Token.getAppid();
+		String code = reqH5Token.getCode();
+		String privateKey = reqH5Token.getPrivateKey();
+	    String  publicKey = reqH5Token.getPublicKey();
+		String openid = AliMobilePay.oauth2GetOpenid(appId, code, privateKey, publicKey);
+		ResH5Degree res = new ResH5Degree();
+		res.setOpenid(openid);
+		log.info("aliOpenid>>>>>>"+openid );
+		return res;
 	}
 
 	@Override
@@ -73,7 +84,7 @@ public class H5PayServiceImpl implements H5PayService {
 					reqH5Term.getOrderId(), reqH5Term.getTotalAmount(), reqH5Term.getOrderId(), timeStart, 
 					timeExpire, "JSAPI", reqH5Term.getOrderId(), reqH5Term.getOpenId(),reqH5Term.getAppId(),reqH5Term.getMchId(),reqH5Term.getMchKey());
 			
-			String response = HttpTool.sendPostUrl("https://api.mch.weixin.qq.com/pay/unifiedorder", requestXml, "UTF-8");
+			String response = HttpTool.sendPostUrl(api_mch, requestXml, "UTF-8");
 			log.info("解析响应>>>" + reqH5Term.getOrderId()+requestXml);
 			Map<String, Object> unioPayResponseMap = PayCommonUtil.getMapFromXML(response);
 			
@@ -116,9 +127,22 @@ public class H5PayServiceImpl implements H5PayService {
 	}
 
 	@Override
-	public ResH5Term alipay(ReqH5Term reqH5Term) {
-		// TODO Auto-generated method stub
-		return null;
+	public String alipay(ReqH5Term reqH5Term) {
+		//把请求参数打包成数组
+		Map<String, String> sParas = new HashMap<String, String>();
+		sParas.put("service", AlipayConfig.service);
+        sParas.put("partner", AlipayConfig.partner(reqH5Term.getMchId()));
+        sParas.put("seller_id",  AlipayConfig.partner(reqH5Term.getMchId()));
+        sParas.put("_input_charset", AlipayConfig.input_charset);
+		sParas.put("payment_type", AlipayConfig.payment_type);
+		sParas.put("notify_url", reqH5Term.getNotifyUrl());
+		sParas.put("return_url", AlipayConfig.return_url);
+		sParas.put("out_trade_no", reqH5Term.getOrderId());
+		sParas.put("subject", reqH5Term.getOpenId());
+		sParas.put("total_fee", reqH5Term.getTotalAmount().toString());
+		String requestURI = AlipaySubmit.buildRequest(sParas,"get",reqH5Term.getMchKey());
+		log.info("requestURI->" + requestURI);
+		return requestURI;
 	}
 
 }

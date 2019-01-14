@@ -21,6 +21,21 @@ eureka:
 feign:
   hystrix:
     enabled: true
+ribbon:
+  ConnectTimeout: 6000
+  ReadTimeout: 60000
+hystrix: 
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 35000
+            ribbon:
+              ReadTimeout: 30000
+              ConnectTimeout: 35000    
  
 master-db:   
   url: jdbc:mysql://192.168.1.218:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
@@ -84,10 +99,8 @@ redis:
   channel: prefecture
   
 lock:
-  #app-secret: 1e2e90b4f56d58352bfb6119190535d7
-  #app-id: 1d46bc15df4c4b6a9a5710183da916c1
-  app-id: 95b94e076c8546db9f329bbd8c0f2030
   app-secret: b36441d95239bc919eac75aa18c0c54b
+  app-id: 95b94e076c8546db9f329bbd8c0f2030
   linkemore-lock-url: http://open-api.linkmoreparking.cn
 logging:
   level:

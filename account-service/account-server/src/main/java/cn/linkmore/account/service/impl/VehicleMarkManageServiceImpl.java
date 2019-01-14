@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -107,9 +108,42 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 		}
 		return existFalg;
 	}
-
+	
 	@Override
-	@Transactional
+	public int insertByNoRepeat(ReqVehicleMark bean) {
+		List<VehicleMarkManage> list = this.findByUserId(bean.getUserId());
+		List<String> fieldVlaue = ObjectUtils.findFieldVlaue(list, "vehMark", new String[]{"vehMark"}, new String[] {bean.getVehMark()});
+
+		if(fieldVlaue == null || fieldVlaue.size() <= 0){
+			VehicleMarkManage manage = new VehicleMarkManage();
+			manage.setVehUserId(String.valueOf(bean.getUserId()));
+			manage.setVehMark(bean.getVehMark());
+			manage.setCreateTime(new Date());
+			manage.setUpdateTime(new Date());
+			int num = vehicleMarkManageMasterMapper.insertSelective(manage);
+			if(num > 0) {
+				syncData(bean.getUserId(), bean.getVehMark());
+			}
+			/*
+			if(num > 0) {
+				Map<String,Object> presonParam = new HashMap<String,Object>();
+				presonParam.put("plate", bean.getVehMark());
+				ReqRentEntUser ent = new ReqRentEntUser();
+				ent.setPlate(bean.getVehMark());
+				if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
+					opsRentEntUserClient.syncRentStallByUserId(bean.getUserId());
+					opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
+				}
+				userGroupInputService.syncByUserIdAndPlate(bean.getUserId(), bean.getVehMark());
+			}
+			*/
+			return num;
+		}
+		return 0;
+	}
+	
+	@Override
+	//@Transactional
 	public void deleteById(Long id, HttpServletRequest request) {
 		List<ResVechicleMark> list = this.findResList(request);
 		for (ResVechicleMark resVechicleMark : list) {
@@ -118,7 +152,8 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				String key = TokenUtil.getKey(request);
 				CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
 				//userGroupInputService.syncByUserId(user.getId());
-				threadPools.execute(new SyncData(user.getId()));
+				//threadPools.execute(new SyncData(user.getId()));
+				syncData(user.getId(),null);
 				return;
 			}
 		}
@@ -132,21 +167,43 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	
 	class SyncData implements Runnable {
 		private Long userId;
-		public SyncData(Long userId) {
+		private String plate;
+
+		public SyncData(Long userId,String plate) {
 			this.userId=userId;
+			this.plate=plate;
 		}
 		@Override
 		public void run() {
 			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
+				//延迟一秒，考虑主从环境，可能会有同步时差
+				Thread.sleep(1000);
+				if(userId != null) {
+					userGroupInputService.syncByUserId(userId);	//同步用户分组信息
+					opsRentEntUserClient.syncRentStallByUserId(userId); //同步企业长租车位
+					opsRentEntUserClient.syncRentPersonalUserStallByUserId(userId);
+				}
+				if (StringUtils.isNotEmpty(plate)) {
+					opsRentEntUserClient.syncRentPersonalUserStallByPlate(plate); //同步个人长租车位
+				}
+				if(userId != null && StringUtils.isNotEmpty(plate)) {
+					userGroupInputService.syncByUserIdAndPlate(userId, plate);	//同步用户分组
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			userGroupInputService.syncByUserId(this.userId);
 		}
-		
+	}
+	/**
+	 * 同步，企业长租车位,个人长租车位，用户分组
+	 * @param userId
+	 * @param Plate
+	 */
+	private void syncData(Long userId,String plate) {
+		threadPools.execute(new SyncData(userId,plate));
 	}
 
+	
 /*
 	@Override
 	public List<ResVechicleMark> selectResList(HttpServletRequest request) {
@@ -210,10 +267,12 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 			mark.setUpdateTime(new Date());
 			mark.setVehMark(bean.getNewpl());
 			int count=vehicleMarkManageMasterMapper.updateById(mark);
-			userGroupInputService.syncByUserIdAndPlate(bean.getUserId(), bean.getNewpl());
+			//userGroupInputService.syncByUserIdAndPlate(bean.getUserId(), bean.getNewpl());
+			syncData(bean.getUserId(), bean.getNewpl());
 			return count;
 		}
 		return 0;
 	}
 	
+
 }

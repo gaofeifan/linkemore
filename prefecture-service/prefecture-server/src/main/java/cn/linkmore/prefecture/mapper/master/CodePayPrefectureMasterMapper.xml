@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="cn.linkmore.prefecture.dao.master.CodePayPrefectureMasterMapper">
+
+	<insert id="save" parameterType="java.util.HashMap">
+		insert into v_prefecture_config
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			preId,appId,mchId,
+			type,name,create_time,
+			<if test="appSecret != null">
+				appSecret,
+			</if>
+			<if test="mchKey != null">
+				mchKey,
+			</if>
+			<if test="priKey != null">
+				priKey,
+			</if>
+			<if test="pubKey != null">
+				pubKey,
+			</if>
+
+		</trim>
+
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{preId,jdbcType=VARCHAR},#{appId,jdbcType=VARCHAR},#{mchId,jdbcType=VARCHAR},
+			#{type,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},NOW(),
+
+			<if test="appSecret != null">
+				#{appSecret,jdbcType=VARCHAR},
+			</if>
+			<if test="mchKey != null">
+				#{mchKey,jdbcType=VARCHAR},
+			</if>
+			<if test="priKey != null">
+				#{priKey,jdbcType=VARCHAR},
+			</if>
+			<if test="pubKey != null">
+				#{pubKey,jdbcType=VARCHAR},
+			</if>
+
+		</trim>
+	</insert>
+
+	<delete id="delete" parameterType="java.lang.String">
+		delete from v_prefecture_config
+		where preId = #{preId}
+	</delete>
+	
+	<delete id="deleteOld" parameterType="java.util.HashMap">
+		delete from v_prefecture_config
+		where preId = #{preId} and type =  #{type}
+	</delete>
+	
+
+</mapper>

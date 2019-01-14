@@ -59,5 +59,11 @@ public interface BaseAppVersionClusterMapper {
 	 * @Version  v2.0
 	 */
 	ResVersionBean findLast(Integer appType);
+	/**
+	 * 查最后的灰度版本
+	 * @param param
+	 * @return
+	 */
+	List<ResVersionBean> findGrayLast(Map<String, Object> param);
 
 }

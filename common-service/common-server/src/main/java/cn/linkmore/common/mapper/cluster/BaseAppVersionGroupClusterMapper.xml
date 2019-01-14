@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.common.dao.cluster.BaseAppVersionGroupClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.common.response.ResBaseAppVersionGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="version_id" jdbcType="BIGINT" property="versionId" />
+    <result column="user_group_id" jdbcType="BIGINT" property="userGroupId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="group_type" jdbcType="TINYINT" property="groupType" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+	vg.id, vg.version_id, vg.user_group_id, ug.name, ug.content, ug.group_type, vg.create_user_id, vg.create_user_name, vg.create_time
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_group_v2 ug
+  	inner join t_base_app_version_group vg on ug.id=vg.user_group_id
+    where vg.id = #{id,jdbcType=BIGINT}
+  </select>
+
+ <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+ 	select 
+	<include refid="Base_Column_List" />
+	from t_user_group_v2 ug
+	inner join t_base_app_version_group vg on ug.id=vg.user_group_id
+	where 1 = 1
+	<if test="versionId != null">
+  		AND vg.version_id = #{versionId,jdbcType=BIGINT}
+	</if> 
+	<if test="groupType != null">  
+    	AND group_type = #{groupType,jdbcType=TINYINT}
+    </if> 
+    <if test="name!=null">  
+    	AND ug.name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="property!=null">
+    	order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+   <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(*)
+	from t_user_group_v2 ug
+	inner join t_base_app_version_group vg on ug.id=vg.user_group_id
+	where 1 = 1
+	<if test="versionId != null">
+  		AND vg.version_id = #{versionId,jdbcType=BIGINT}
+	</if> 
+	<if test="groupType != null">  
+    	AND group_type = #{groupType,jdbcType=TINYINT}
+    </if> 
+    <if test="name!=null">  
+    	AND ug.name like #{name,jdbcType=VARCHAR}
+    </if> 
+  </select>
+
+ <select id="findList" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
+ 	select 
+	<include refid="Base_Column_List" />
+	from t_user_group_v2 ug
+	inner join t_base_app_version_group vg on ug.id=vg.user_group_id
+	where 1 = 1
+	<if test="versionId != null">
+  		AND vg.version_id = #{versionId,jdbcType=BIGINT}
+	</if> 
+	<if test="groupType != null">  
+    	AND group_type = #{groupType,jdbcType=TINYINT}
+    </if> 
+    <if test="name!=null">  
+    	AND ug.name like #{name,jdbcType=VARCHAR}
+    </if> 
+    <if test="property!=null">
+    	order by  ${property} ${direction}
+    </if>
+  </select>
+
+
+
+
+</mapper>

@@ -9,6 +9,7 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="scope" jdbcType="INTEGER" property="scope" />
     <result column="update_status" jdbcType="INTEGER" property="updateStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="description" jdbcType="VARCHAR" property="description" />
@@ -23,7 +24,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, version, code, name, status, url, type, update_status, create_time, description, 
+    id, version, code, name, status, url, type, scope,update_status, create_time, description, 
     update_time
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -36,7 +37,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_base_app_version
-    where type = #{appType} and status= #{status}
+    where type = #{appType} and status= #{status} and scope != 2
     order by code desc
   </select>
   <select id="findLast" parameterType="java.util.Map" resultMap="ResBaseResultMap">
@@ -47,8 +48,17 @@
     order by code desc
     limit 0,1
   </select>
+  
+  <select id="findGrayLast" parameterType="java.util.Map" resultMap="ResBaseResultMap">
+    select v.* from t_base_app_version v
+	inner join t_base_app_version_group vg on v.id=vg.version_id and  v.scope=2 and v.type=#{appType} and v.status=1
+	inner join t_user_group_detail gd on vg.user_group_id=gd.user_group_id and gd.user_id= #{userId}
+	order by v.code desc 
+	limit 0,1
+  </select>
+  
   <select id="findPage" resultMap="BaseResultMap"   parameterType="java.util.HashMap" >
-  	select id, version, code, name, status, url, type, update_status, 
+  	select id, version, code, name, status, url, type, scope ,update_status, 
     create_time, description, update_time
     from t_base_app_version
     where 1 = 1

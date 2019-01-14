@@ -189,7 +189,7 @@ public class UserGroupController extends BaseController {
 	 */
 	@RequestMapping(value = "/find_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResUserGroup> findList(@RequestBody Map<String, Object> map) {
+	public List<ResUserGroup> findList(@RequestParam Map<String, Object> map) {
 		return this.userGroupService.findList(map);
 	}
 

@@ -35,7 +35,10 @@ public class ReqBaseVersion {
 
 	@ApiModelProperty(value="适用客户端：1安卓；2ios；",required = false)
 	private Integer type;
-
+	
+	@ApiModelProperty(value="升级范围：1 所有用户；2 指定用户；",required = false)
+	private Integer scope;
+	
 	@ApiModelProperty(value="是否必须升级；1是",required = false)
 	private Integer updateStatus = 0;
 
@@ -126,6 +129,14 @@ public class ReqBaseVersion {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public Integer getScope() {
+		return scope;
+	}
+
+	public void setScope(Integer scope) {
+		this.scope = scope;
 	}
 
 	public Integer getUpdateStatus() {

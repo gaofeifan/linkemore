@@ -34,6 +34,7 @@ import cn.linkmore.account.dao.master.AdminUserMasterMapper;
 import cn.linkmore.account.dao.master.UserAppfansMasterMapper;
 import cn.linkmore.account.dao.master.UserInfoMasterMapper;
 import cn.linkmore.account.dao.master.UserMasterMapper;
+import cn.linkmore.account.dao.master.UserStaffMasterMapper;
 import cn.linkmore.account.dao.master.UserVechicleMasterMapper;
 import cn.linkmore.account.entity.Account;
 import cn.linkmore.account.entity.User;
@@ -133,7 +134,10 @@ public class UserServiceImpl implements UserService {
 	private WechatFansClusterMapper wechatFansClusterMapper;
 	
 	@Autowired
-	private UserStaffClusterMapper UserStaffClusterMapper;
+	private UserStaffClusterMapper userStaffClusterMapper;
+	
+	@Autowired
+	private UserStaffMasterMapper userStaffMasterMapper;
 	
 	@Override
 	public void updateNickname(String nickname, HttpServletRequest request) {
@@ -333,6 +337,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int delete(List<Long> ids) {
 		accountMasterMapper.deleteByIds(ids);
+		userStaffMasterMapper.deleteByIds(ids);
 		return this.userMasterMapper.deleteByIds(ids);
 	}
 	
@@ -365,7 +370,7 @@ public class UserServiceImpl implements UserService {
 	private final static String STAFF_CODE = "6699";
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser appLogin(ReqAuthLogin rl, HttpServletRequest request) {
-		ResUserStaff rus = UserStaffClusterMapper.findByMobile(rl.getMobile()); 
+		ResUserStaff rus = userStaffClusterMapper.findByMobile(rl.getMobile()); 
 		log.info(">>>>>>appLogin rus = {}",JSON.toJSON(rus));
 		if(!(rus!=null&&STAFF_CODE.equals(rl.getCode()))) {
 			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+rl.getMobile());

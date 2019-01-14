@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import cn.linkmore.third.trade.ThreadRepertory;
+
 
 /**
  * 支付参数封装类@常磊
@@ -26,7 +28,7 @@ public class UniPayReqData {
 		parameterMap.put("appid", appID);// 公众号ID
 		parameterMap.put("mch_id", mchID);// 微信支付给的商户号
 		parameterMap.put("key", key);// 微信支付给的key
-		parameterMap.put("device_info", deviceInfo);// 门店号，指定的售卖机
+		parameterMap.put("device_info", deviceInfo);// 门店号
 		parameterMap.put("nonce_str", PayCommonUtil.getRandomString(32));// 随机字符串
 		//StringUtils.abbreviate(body.replaceAll("[^0-9a-zA-Z\\u4e00-\\u9fa5 ]", ""), 600)
 		parameterMap.put("body", body);// 商品描述
@@ -40,7 +42,7 @@ public class UniPayReqData {
 		parameterMap.put("spbill_create_ip", "192.168.1.115"); // 终端IP
 		parameterMap.put("time_start", timeStart);
 		parameterMap.put("time_expire", timeExpire);
-		parameterMap.put("notify_url", "http://test.linkmoreparking.cn/api/order/h5/o"); // 支付成功回调地址
+		parameterMap.put("notify_url", ThreadRepertory.getParm().get("notifyUrl")); // 支付成功回调地址
 		parameterMap.put("trade_type", tradeType == null ? "NATIVE" : tradeType);
 		if (tradeType.equalsIgnoreCase("NATIVE"))
 			parameterMap.put("product_id", productId);// 商品ID
