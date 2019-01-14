@@ -59,5 +59,10 @@ public interface RentEntUserService {
 	 * @param plate
 	 */
 	void syncRentPersonalUserStallByPlate(String plate);
+	/**
+	 * 同步个人长租车位-根据用户ID
+	 * @param plate
+	 */
+	void syncRentPersonalUserStallByUserId(Long userId);
 
 }

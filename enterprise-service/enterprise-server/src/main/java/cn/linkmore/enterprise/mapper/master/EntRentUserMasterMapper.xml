@@ -217,6 +217,11 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="updateUserIdNULLById" parameterType="cn.linkmore.enterprise.entity.EntRentUser">
+    update t_ent_rent_user set user_id= null where id = #{id,jdbcType=BIGINT}
+  </update>
+    
   <update id="updateReq" parameterType="cn.linkmore.enterprise.request.ReqRentUser">
     update t_ent_rent_user
     <set>

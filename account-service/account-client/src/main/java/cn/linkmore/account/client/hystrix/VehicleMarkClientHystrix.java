@@ -57,6 +57,12 @@ public class VehicleMarkClientHystrix  implements VehicleMarkClient{
 	public void update(ReqVehicleMark reqMark) {
 		log.info("account service VechicleMark reqMark() reqMark) hystrix");
 	}
+
+	@Override
+	public int insertByNoRepeat(ReqVehicleMark bean) {
+		log.info("account service insert(ReqVehicleMark bean) hystrix");
+		return 0;
+	}
 	
 }
 

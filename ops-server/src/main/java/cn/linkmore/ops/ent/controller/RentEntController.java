@@ -24,6 +24,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqRentEnt;
 import cn.linkmore.ops.ent.service.RentEntService;
+import cn.linkmore.ops.ent.service.RentEntUserService;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.security.response.ResPerson;
 
@@ -33,6 +34,8 @@ public class RentEntController {
 
 	@Resource
 	private RentEntService rentEntService;
+	@Resource
+	private RentEntUserService rentEntUserService;
 	
 	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

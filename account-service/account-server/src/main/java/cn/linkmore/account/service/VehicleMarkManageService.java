@@ -70,4 +70,6 @@ public interface VehicleMarkManageService {
 
 	List<ResVechicleMark> findResList(Long userId);
 
+	int insertByNoRepeat(ReqVehicleMark bean);
+
 }

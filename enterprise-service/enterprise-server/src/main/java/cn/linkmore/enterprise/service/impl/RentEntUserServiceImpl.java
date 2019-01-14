@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.client.UserClient;
+import cn.linkmore.account.client.VehicleMarkClient;
+import cn.linkmore.account.request.ReqVehicleMark;
+import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
@@ -53,6 +56,8 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	private RentEntService rentEntService;
 	@Resource
 	private UserClient userClient;
+	@Resource
+	private VehicleMarkClient vehicleMarkClient;
 	
 	@Resource
 	private EntRentUserClusterMapper entRentUserClusterMapper;
@@ -165,8 +170,29 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 		syncRentStall(new HashMap<String, Object>());
 	}
 	
+	
 	public void syncRentStall(Map<String, Object> param) {
 		param.put("type", 1);
+		
+		//自动创建用户和为用户创建车牌
+		if(param.get("companyId") != null) {
+			List<RentEntUser> listRentEntUser = rentEntUserClusterMapper.findList(param);
+			if (CollectionUtils.isNotEmpty(listRentEntUser)) {
+				Long userId=0L;
+				for (RentEntUser stall : listRentEntUser) {
+					if (StringUtils.isNotEmpty(stall.getMobile()) ) {
+						userId = userClient.getUserIdByMobile(stall.getMobile());
+						ReqVehicleMark vehicleMarkManage=new ReqVehicleMark();
+						vehicleMarkManage.setUserId(userId);
+						vehicleMarkManage.setVehMark(stall.getPlate());
+						vehicleMarkManage.setNewpl(stall.getPlate());
+						vehicleMarkClient.insertByNoRepeat(vehicleMarkManage);
+					}
+				}
+			}
+		}
+		
+		//开使比对
 		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findCompanyUserList(param);
 		List<EntRentUser> newRentUserList = entRentUserClusterMapper.findRentComUserList(param);
 		log.info("sync rent com user old list size={} , new list size={}",oldRentUserList.size(),newRentUserList.size());	
@@ -203,6 +229,7 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			log.info("delete the rent com user size={},data={}", ids.size(),JSON.toJSON(ids) );
 			entRentUserMasterMapper.delete(ids);
 		}
+		
 		log.info("sync rent com user finished.");
 	}
 	
@@ -237,12 +264,41 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	}
 	
 	@Override
+	public void syncRentPersonalUserStallByUserId(Long userId) {
+		log.info("sync rent Personal user userId:{} ",userId);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("userId", userId);
+		syncRentPersonalUserStall(param);
+	}
+	
+	@Override
 	public void syncRentPersonalUserStall() {
 		syncRentPersonalUserStall(new HashMap<String, Object>());
 	}
+	/**
+	 * 同步个人长租车位
+	 * @param param
+	 */
 	public void syncRentPersonalUserStall(Map<String, Object> param) {
 		
 		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findPersonalUserList(param);
+		
+		//自动创建用户和为用户创建车牌
+		if (CollectionUtils.isNotEmpty(oldRentUserList)) {
+			Long userId=0L;
+			for (EntRentUser stall : oldRentUserList) {
+				if (StringUtils.isNotEmpty(stall.getMobile()) ) {
+					userId = userClient.getUserIdByMobile(stall.getMobile());
+					ReqVehicleMark vehicleMarkManage=new ReqVehicleMark();
+					vehicleMarkManage.setUserId(userId);
+					vehicleMarkManage.setVehMark(stall.getPlate());
+					vehicleMarkManage.setNewpl(stall.getPlate());
+					vehicleMarkClient.insertByNoRepeat(vehicleMarkManage);
+				}
+			}
+		}
+
+		
 		List<EntRentUser> newRentUserList = entRentUserClusterMapper.findRentPersonalUserList(param);
 		log.info("sync rent Personal user old list size={} , new list size={}",oldRentUserList.size(),newRentUserList.size());
 
@@ -274,6 +330,22 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 			log.info("add the new rent Personal user size={},data={}", entRentUser.size(),JSON.toJSON(entRentUser));
 			entRentUserMasterMapper.saveBatch(entRentUser);
 		}
+		
+		/**
+		 * 用户从app上删除车牌的，将userid置为null
+		 */
+		if (CollectionUtils.isNotEmpty(oldRentUserList)) {
+			for (EntRentUser stall : oldRentUserList) {
+				EntRentUser newStall=existRentPersonalUser(newRentUserList,stall);
+				if(newStall == null) {
+					//stall.setUserId(null);
+					//System.out.println("null");
+					entRentUserMasterMapper.updateUserIdNULLById(stall);
+				//	entRentUserMasterMapper.updateByIdSelective(stall);
+				}
+			}
+		}
+		
 		
 	}
 
