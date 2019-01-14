@@ -41,10 +41,10 @@ public class ResGroupStrategy {
 	private String plateNumber;
 	
 	@ApiModelProperty(value = "车区网格横格数量")
-	private Integer gridX;
+	private Integer gridX = 11;
 	
 	@ApiModelProperty(value = "车区网格纵格数量")
-	private Integer gridY;
+	private Integer gridY = 21;
 	
 	@ApiModelProperty(value = "车场数据Map其中status=1表示空闲 2表示占用 4表示下线")
 	private List<Map<String,Object>> parkingDataMap;

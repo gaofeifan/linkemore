@@ -1049,6 +1049,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Set<Object> lockSnList = new HashSet<Object>();
 		List<ResStall> stallList = new ArrayList<ResStall>();
 		ResStall resStall = null;
+		Integer count = 0;
 		ResVechicleMark vehicleMark = vehicleMarkClient.findById(reqBooking.getPlateId());
 		if (vehicleMark == null) {
 			throw new BusinessException(StatusEnum.VALID_EXCEPTION);
@@ -1062,6 +1063,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 		ResStrategyGroup group = strategyGroupClusterMapper.selectByPrimaryKey(reqBooking.getGroupId());
 		ResPrefectureDetail preDetail = this.prefectureClusterMapper.findById(reqBooking.getPrefectureId());
 		if (preDetail != null && StringUtils.isNotBlank(preDetail.getGateway())) {
+			if(preDetail.getGridX() !=null ) {
+				groupStrategy.setGridX(preDetail.getGridX());
+				groupStrategy.setGridY(preDetail.getGridY());
+			}
 			groupDetail.setPreName(preDetail.getName());
 			if (preDetail.getStatus() == 1) {
 				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE); // 无空闲车位可用
@@ -1091,7 +1096,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 			}
 			params.put("stallList", stallIds);
 			List<cn.linkmore.prefecture.response.ResStall> groupStallList = stallClusterMapper.findAllStallList(params);
-			if(CollectionUtils.isNotEmpty(groupStallList)) {
+			/*if(CollectionUtils.isNotEmpty(groupStallList)) {
 				for (cn.linkmore.prefecture.response.ResStall stall : groupStallList) {
 					resStall = new ResStall();
 					resStall.setStallId(stall.getId());
@@ -1108,7 +1113,66 @@ public class PrefectureServiceImpl implements PrefectureService {
 					resStall.setStatus(stall.getStatus());
 					stallList.add(resStall);
 				} 
+			}*/
+			
+			Map<String,Object> statuMap = new HashMap<String,Object>();
+			for (cn.linkmore.prefecture.response.ResStall stall : groupStallList) {
+				resStall = new ResStall();
+				resStall.setStallId(stall.getId());
+				if(stall.getStatus() == 1) {
+					if(lockSnList.contains(stall.getLockSn())) {
+						//空闲车位锁
+						stall.setStatus(1);
+					}else {
+						stall.setStatus(2);
+					}
+				}
+				resStall.setLockSn(stall.getLockSn());
+				resStall.setStallName(stall.getStallName());
+				stallList.add(resStall);
+				statuMap.put(stall.getStallName(), stall);
 			}
+			
+			List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
+			List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
+			Map<String,Object> paramMap = null;
+			if(CollectionUtils.isNotEmpty(eleList)) {
+				for(PrefectureElement ele: eleList) {
+					paramMap = new HashMap<String,Object>();
+					if("button".equals(ele.getEleType())) {
+						if(statuMap.get(ele.getEleName()) != null) {
+							cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
+							paramMap.put("name", ele.getEleName());
+							//此处需要根据车位锁实际状态优化
+							paramMap.put("status", stall.getStatus());
+							paramMap.put("stallId", stall.getId());
+							paramMap.put("index", count);
+							paramMap.put("lockSn", stall.getLockSn());
+						}else {
+							paramMap.put("name", ele.getEleName());
+							paramMap.put("status", 4);
+							paramMap.put("index", count);
+							paramMap.put("stallId", 0L);
+							paramMap.put("lockSn", "");
+						}
+					}else  if("img".equals(ele.getEleType())){
+						if(StringUtils.isNotBlank(ele.getEleSrc())) {
+							paramMap.put("src", ele.getEleSrc());
+						}
+					}
+					paramMap.put("type", ele.getEleType());
+					paramMap.put("x", ele.getEleX());
+					paramMap.put("y", ele.getEleY());
+					paramMap.put("width", ele.getEleWidth());
+					paramMap.put("height", ele.getEleHeight());
+					mapList.add(paramMap);
+					count ++;
+				}
+			}
+			log.info(".........parking data map = {}", JSON.toJSON(mapList));
+			groupStrategy.setParkingDataMap(mapList);
+			
+			
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String freeMins = "";
