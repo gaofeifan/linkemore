@@ -13,6 +13,6 @@ public interface H5PayService {
 	
 	ResH5Term	wxpay(ReqH5Term reqH5Term);
 	
-	ResH5Term	alipay(ReqH5Term reqH5Term);
+	String  alipay(ReqH5Term reqH5Term);
 	
 }

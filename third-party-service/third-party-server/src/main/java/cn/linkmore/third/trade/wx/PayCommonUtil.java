@@ -22,6 +22,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
+/**
+ * changlei
+ */
 public class PayCommonUtil {
 	static Logger logger = LoggerFactory.getLogger(PayCommonUtil.class);
 	 //微信参数配置  

@@ -1,5 +1,7 @@
 package cn.linkmore.account.dao.master;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.account.entity.UserStaff;
@@ -45,4 +47,9 @@ public interface UserStaffMasterMapper {
 	 * @Version  v2.0
 	 */
 	void updateReq(ReqUserStaff record);
+	/**
+	 * 删除用户时同步删除员工用户
+	 * @param ids
+	 */
+	void deleteByIds(List<Long> ids);
 }
