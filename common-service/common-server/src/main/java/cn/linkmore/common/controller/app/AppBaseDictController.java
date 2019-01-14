@@ -39,4 +39,14 @@ public class AppBaseDictController {
 		ResponseEntity<List<ResDonwLockError>> success = ResponseEntity.success(res, request);
 		return success;
 	}
+	
+	@ApiOperation(value = "查询故障原因", notes = "查询故障原因", consumes = "application/json")
+	@RequestMapping(value="/v2.0/cause/switch",method=RequestMethod.GET)
+	public ResponseEntity<List<ResDonwLockError>> findLockFaultCause(HttpServletRequest request) {
+		List<ResDonwLockError> res = this.baseDictService.findLockFaultCause();
+		ResponseEntity<List<ResDonwLockError>> success = ResponseEntity.success(res, request);
+		return success;
+	}
+	
+	
 }

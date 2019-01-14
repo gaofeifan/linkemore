@@ -13,7 +13,6 @@ import cn.linkmore.enterprise.controller.ent.request.ReqStallExcCause;
 import cn.linkmore.enterprise.controller.ent.response.ResDetailStall;
 import cn.linkmore.enterprise.controller.ent.response.ResEntStalls;
 import cn.linkmore.enterprise.controller.ent.response.ResStallName;
-import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 /**
  * @author luzhishen
  * @Date 2018年7月20日
@@ -45,7 +44,7 @@ public interface EntStallService {
 	/**
 	 * @Description  根据员工查询可操作车位
 	 * @Author   GFF 
-	 * @Version  v2.0
+	 * @Version  v2.0lo
 	 */
 	List<Long> findStaffId(Map<String, Long> map);
 

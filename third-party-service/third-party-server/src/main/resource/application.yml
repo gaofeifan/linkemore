@@ -171,7 +171,7 @@ spring:
       force: true 
   boot: 
     admin:
-      url: http://192.168.1.220:6002
+      url: http://192.168.1.128:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -181,7 +181,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.223:6003/eureka/ 
+      defaultZone: http://192.168.1.128:6003/eureka/ 
 feign:
   hystrix:
     enabled: true
@@ -332,3 +332,11 @@ union-pay:
   middle-cert-path: cert/acp_test_middle.cer
   root-cert-path: cert/acp_test_root.cer 
   online: true 
+
+loong-pay: 
+  merchantId: 105002573995156
+  posId: 029915416
+  branchId: 110000000
+  url: https://ibsbjstar.ccb.com.cn/CCBIS/ccbMain
+  pubKey: 30819d300d06092a864886f70d010101050003818b0030818702818100a121d79346cc2f116e55630f38f620fe8e599595a749c7335a2c8518fc541ae2ffa4862a1425574cff5fb001b64f7a74731ef156cb75029b3d0593634daa3ac3fe59e1b11dec0bd7b3b3257e44d4313be40540c9eed343ad6136c89d8c571d04299b2c2d2bf83a9d28c37dc77a731886fd868f7153b3bc1e361390364f4f0f77020113
+  
