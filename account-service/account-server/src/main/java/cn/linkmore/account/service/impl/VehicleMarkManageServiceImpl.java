@@ -90,8 +90,8 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 					ReqRentEntUser ent = new ReqRentEntUser();
 					ent.setPlate(bean.getVehMark());
 					if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
-						opsRentEntUserClient.syncRentStallByUserId(user.getId());
-						opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
+						//opsRentEntUserClient.syncRentStallByUserId(user.getId());
+						//opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
 						if(bean.getPreId() != null && bean.getPreId().intValue() != 0L) {
 							Map<String,Object> param = new HashMap<String,Object>();
 							param.put("userId", user.getId());
@@ -180,11 +180,11 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				Thread.sleep(1000);
 				if(userId != null) {
 					userGroupInputService.syncByUserId(userId);	//同步用户分组信息
-					opsRentEntUserClient.syncRentStallByUserId(userId); //同步企业长租车位
-					opsRentEntUserClient.syncRentPersonalUserStallByUserId(userId);
+					//opsRentEntUserClient.syncRentStallByUserId(userId); //同步企业长租车位
+					//opsRentEntUserClient.syncRentPersonalUserStallByUserId(userId); //同步个人长租车位
 				}
 				if (StringUtils.isNotEmpty(plate)) {
-					opsRentEntUserClient.syncRentPersonalUserStallByPlate(plate); //同步个人长租车位
+					//opsRentEntUserClient.syncRentPersonalUserStallByPlate(plate); //同步个人长租车位
 				}
 				if(userId != null && StringUtils.isNotEmpty(plate)) {
 					userGroupInputService.syncByUserIdAndPlate(userId, plate);	//同步用户分组
