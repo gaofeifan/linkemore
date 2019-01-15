@@ -30,7 +30,7 @@
     delete from v_stall
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.prefecture.entity.Stall">
+  <insert id="save" useGeneratedKeys="true" keyProperty="id"  parameterType="cn.linkmore.prefecture.entity.Stall">
     insert into v_stall (id, stall_name, sell_count, 
       pre_id, gateway_id, radar, 
       lock_id, lock_sn, lock_status, 

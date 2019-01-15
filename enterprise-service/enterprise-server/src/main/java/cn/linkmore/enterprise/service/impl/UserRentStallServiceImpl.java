@@ -52,6 +52,7 @@ import cn.linkmore.prefecture.response.ResLockInfos;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.TokenUtil;
 @Service
@@ -146,6 +147,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
 								OwnerStall.setStallLocal(enttall.getStallLocal());
 								OwnerStall.setLockSn(enttall.getLockSn());
+								OwnerStall.setStallEndTime(DateUtils.convert(enttall.getStartTime(), null));
 								OwnerStall.setLockStatus(enttall.getLockStatus());
 								OwnerStall.setStatus(enttall.getStatus() == 1l ? 1 : 2l);
 								ownerstalllist.add(OwnerStall);
@@ -192,6 +194,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 //							OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
 //							OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
 							OwnerStall.setImageUrl(enttall.getImageUrl());
+							OwnerStall.setStallEndTime(DateUtils.convert(enttall.getStartTime(), null));
 							OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
 							OwnerStall.setStallLocal(enttall.getStallLocal());
 							OwnerStall.setLockSn(enttall.getLockSn());
@@ -220,8 +223,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			throw new BusinessException(StatusEnum.SERVER_EXCEPTION);
 		}
 	}
-
-
 
 	@Override
 	public Boolean control(ReqConStall reqOperatStall, HttpServletRequest request) {

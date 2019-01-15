@@ -26,7 +26,7 @@ public class AppStallFaultController {
 	private StallFaultService stallFaultService;
 	
 	@ApiOperation(value = "保存", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0/save", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> save(@RequestBody ReqStallFault fault ,HttpServletRequest request){
 		this.stallFaultService.save(fault,request);
