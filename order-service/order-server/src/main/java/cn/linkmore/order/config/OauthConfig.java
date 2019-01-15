@@ -3,7 +3,7 @@ package cn.linkmore.order.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-//@ConfigurationProperties(prefix ="oauth22")
+@ConfigurationProperties(prefix ="oauth")
 @Component
 public class OauthConfig {
 	
