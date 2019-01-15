@@ -721,7 +721,7 @@ public class StallServiceImpl implements StallService {
 					log.info("<<<<<<<<<respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
 					int code = res.getCode();
 					stopwatch.stop();
-					log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+					log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
 					sendMsg(uid, reqc.getStatus(), code);
 					String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqc.getStallId();
 					EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));
@@ -1822,7 +1822,6 @@ public class StallServiceImpl implements StallService {
 		}
 		
 		Stall stall = stallClusterMapper.findById(stallId);
-		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
 			Set<Object> lockSnList =  this.redisService
 					.members(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId());
@@ -1849,20 +1848,18 @@ public class StallServiceImpl implements StallService {
 				// 1 降下
 				Stopwatch stopwatch = Stopwatch.createStarted();
 				res = lockTools.downLockMes(stall.getLockSn());
+				log.info("<<<<<<<<<<<<<controlling res :{}>>>>>>>>>>>>>>>", JSON.toJSON(res));
 				if(res != null) {
-					log.info("<<<<<<<<<respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+					log.info("<<<<<<<<<controling respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
 					int code = res.getCode();
 					stopwatch.stop();
-					log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+					log.info("<<<<<<<<<controling user：{} down:{}<<<<<<<<<using time:{}s>>>>>>>>>",user.getId(), stall.getStallName(), String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
 					if (code == 200) {
 						flag = true;
 						//去掉空闲车位
 						redisService.remove(rediskey);
 						this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 						this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId());
-						/*stall.setLockStatus(2);
-						stall.setStatus(2);
-						stallMasterMapper.lockdown(stall);*/
 					}else if(code == 500){
 						redisService.remove(rediskey);
 						if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId())) {
@@ -1872,9 +1869,7 @@ public class StallServiceImpl implements StallService {
 									ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
 							throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
 						}
-					}/* else if (code == 400){
-						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_DROP);
-					} */else {
+					}else {
 						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
 					}
 				}
@@ -1885,40 +1880,8 @@ public class StallServiceImpl implements StallService {
 		}else {
 			throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
 		}
-		log.info("<<<<<<<<<control result flag>>>>>>>>> = {}", flag);
+		log.info("<<<<<<<<<controled result flag>>>>>>>>> = {}", flag);
 	    return flag;
-	}
-
-	@Override
-	public void watchDownResult(Long stallId, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		if (user == null) {
-			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
-		}
-		
-		String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
-		String val = String.valueOf(this.redisService.get(rediskey));
-		Map<String, Object> map = new HashMap<>();
-		map = watch(stallId);
-		Boolean control = true;
-		Boolean blue = true;
-		if (map != null && !map.isEmpty()) {
-			if ("200".equals(String.valueOf(map.get("code")))
-					&& map.get("status").equals(Constants.LockStatus.DOWN.status)) {
-				blue = true;
-			} else {
-				blue = false;
-			}
-		}
-		if (StringUtil.isNotBlank(val)) {
-			if (val.equals(String.valueOf(user.getId()))) {
-				control = false;
-			}
-		}
-		log.info("用户>>>" + user.getId() + ">>>" + rediskey);
-		if (!control && !blue) {
-			throw new BusinessException(StatusEnum.ORDER_LOCKDOWN_FAIL);
-		}
 	}
 
 	@Override
@@ -1930,30 +1893,24 @@ public class StallServiceImpl implements StallService {
 		}
 
 		Stall stall = stallClusterMapper.findById(stallId);
-		log.info("stall:{}", JsonUtil.toJson(stall));
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
-			log.info("<<<<<<<<<order controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			log.info("<<<<<<<<<order control>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
 			ResLockMessage res = null;
 			// 1 降下
 			Stopwatch stopwatch = Stopwatch.createStarted();
 			res = lockTools.downLockMes(stall.getLockSn());
 			if (res != null) {
-				log.info("<<<<<<<<<order respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+				log.info("<<<<<<<<<order control respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
 				int code = res.getCode();
 				stopwatch.stop();
-				log.info("<<<<<<<<<order using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+				log.info("<<<<<<<<<order control using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
 				if (code == 200) {
 					flag = true;
 					// 去掉空闲车位
 					this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
-					/*stall.setLockStatus(2);
-					stall.setStatus(2);
-					stallMasterMapper.lockdown(stall);*/
 				} else if (code == 500) {
 					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
-				} /*else if (code == 400){
-					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_DROP);
-				}*/ else{
+				} else{
 					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
 				}
 			}
@@ -2003,13 +1960,10 @@ public class StallServiceImpl implements StallService {
 		if(flag) {
 			this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
 			this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + stallId + user.getId());
-			/*stall.setLockStatus(2);
-			stall.setStatus(2);
-			stallMasterMapper.lockdown(stall);*/
 		}
 		return flag;
 	}
-
+	
 	@Override
 	public Boolean appControl(ReqControlLock reqc) {
 		ResLockMessage res =  null;

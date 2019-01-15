@@ -182,9 +182,20 @@ public class ResPrefectureDetail {
      * 总车位数
      */
     private Integer totalStallNum;
+    /**
+     * 车区类型，1临停车区（包含临停和固定车位） 2固定车区（全部为固定车位）
+     */
+    private Short preType;
     
-    
-    public String getRegion() {
+    public Short getPreType() {
+		return preType;
+	}
+
+	public void setPreType(Short preType) {
+		this.preType = preType;
+	}
+
+	public String getRegion() {
 		return region;
 	}
 

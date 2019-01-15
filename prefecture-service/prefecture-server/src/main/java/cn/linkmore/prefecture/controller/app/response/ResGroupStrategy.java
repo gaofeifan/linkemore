@@ -41,13 +41,16 @@ public class ResGroupStrategy {
 	private String plateNumber;
 	
 	@ApiModelProperty(value = "车区网格横格数量")
-	private Integer gridX;
+	private Integer gridX = 11;
 	
 	@ApiModelProperty(value = "车区网格纵格数量")
-	private Integer gridY;
+	private Integer gridY = 21;
 	
 	@ApiModelProperty(value = "车场数据Map其中status=1表示空闲 2表示占用 4表示下线")
 	private List<Map<String,Object>> parkingDataMap;
+	
+	@ApiModelProperty(value = "分组下所有车位列表")
+	private List<ResStall> stallList;
 	
 	@ApiModelProperty(value = "计价规则List数组")
 	private List<String> descList;
@@ -170,6 +173,14 @@ public class ResGroupStrategy {
 
 	public void setDescList(List<String> descList) {
 		this.descList = descList;
+	}
+
+	public List<ResStall> getStallList() {
+		return stallList;
+	}
+
+	public void setStallList(List<ResStall> stallList) {
+		this.stallList = stallList;
 	}
 	
  }

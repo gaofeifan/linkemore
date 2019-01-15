@@ -1,6 +1,9 @@
 package cn.linkmore.prefecture.controller.app;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +34,7 @@ public class AppStallController {
 	@Autowired
 	private StallService stallService;
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@ApiOperation(value = "用户操作车位锁", notes = "用户操作车位锁", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control", method = RequestMethod.POST)
@@ -42,7 +46,8 @@ public class AppStallController {
 			 response = ResponseEntity.success(flag, request);
 		}  catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(),  request);
-		} catch (Exception e) { 
+		} catch (Exception e) {
+			log.info(">>>>>>>>>>>>control exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		 return response;
@@ -59,6 +64,7 @@ public class AppStallController {
 		}  catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(),  request);
 		} catch (Exception e) { 
+			log.info(">>>>>>>>>>>>verify-bluetooth exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		 return response;
@@ -74,26 +80,10 @@ public class AppStallController {
 			 response = ResponseEntity.success(flag, request);
 		}  catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(),  request);
-		} catch (Exception e) { 
+		} catch (Exception e) { 			
+			log.info(">>>>>>>>>>>>down-control exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
-		 return response;
-	}
-
-	@ApiOperation(value = "查看操作结果", notes = "查看操作结果", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/watch", method = RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<Boolean> watch(@Validated @RequestParam(value="stallId", required=true) Long stallId,
-			HttpServletRequest request) {
-		ResponseEntity<Boolean> response = null;
-		 try {
-			 stallService.watchDownResult(stallId,request);
-			 response = ResponseEntity.success(true, request);
-		 } catch (BusinessException e) {
-			response = ResponseEntity.fail( e.getStatusEnum(),  request);
-		 } catch (Exception e) { 
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		 }
 		 return response;
 	}
 }

@@ -44,6 +44,16 @@
      GROUP BY pre_id
   </select>
   
+  <select id="findPreByIds"   resultMap="PreResultMap" parameterType="java.util.Set" >
+    SELECT  id as pre_id,name as pre_name,address,longitude,latitude
+    FROM v_prefecture 
+    WHERE id IN 
+	<foreach collection="collection" open="(" separator="," close=")" item="id">
+    	${id}
+    </foreach>
+     
+  </select>
+  
   <select id="findStall2"   resultMap="StallResultMap" >     
 	select  
 		a.pre_id as pre_id,

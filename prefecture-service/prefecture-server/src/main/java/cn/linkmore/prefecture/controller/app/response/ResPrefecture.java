@@ -53,6 +53,72 @@ public class ResPrefecture {
 	@ApiModelProperty(value = "营业时长")
 	private String businessTime;
 	
+	@ApiModelProperty(value = "区域地面、地下")
+    private String region;
+	
+	@ApiModelProperty(value = "区域地面")
+    private String region1;
+	
+	@ApiModelProperty(value = "区域地下")
+    private String region2;
+	
+	@ApiModelProperty(value = "地下层级B2-B5")
+    private String underLayer;
+
+	@ApiModelProperty(value = "总车位数")
+    private Integer totalStallNum;
+	
+	@ApiModelProperty(value = "车区类型，1临停车区（包含临停和固定车位） 2固定车区（全部为固定车位）")
+    private Short preType = (short)1;
+    
+    public Short getPreType() {
+		return preType;
+	}
+
+	public void setPreType(Short preType) {
+		this.preType = preType;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public String getRegion1() {
+		return region1;
+	}
+
+	public void setRegion1(String region1) {
+		this.region1 = region1;
+	}
+
+	public String getRegion2() {
+		return region2;
+	}
+
+	public void setRegion2(String region2) {
+		this.region2 = region2;
+	}
+
+	public String getUnderLayer() {
+		return underLayer;
+	}
+
+	public void setUnderLayer(String underLayer) {
+		this.underLayer = underLayer;
+	}
+
+	public Integer getTotalStallNum() {
+		return totalStallNum;
+	}
+
+	public void setTotalStallNum(Integer totalStallNum) {
+		this.totalStallNum = totalStallNum;
+	}
+	
 	public String getBusinessTime() {
 		return businessTime;
 	}
