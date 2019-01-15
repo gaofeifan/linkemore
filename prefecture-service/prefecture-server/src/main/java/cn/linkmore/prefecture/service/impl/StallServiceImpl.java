@@ -2045,6 +2045,27 @@ public class StallServiceImpl implements StallService {
 			res = lockTools.upLockMes(reqc.getLockSn());
 		}
 		Stall stall = stallClusterMapper.findById(reqc.getStallId());
+		Set<Object> lockSnList =  this.redisService
+				.members(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId());
+		if(lockSnList.contains(stall.getLockSn()) && stall.getStatus() == 1) {
+			// 争抢
+			String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqc.getStallId();
+			Boolean have = true;
+			try {
+				have = this.redisLock.getLock(robkey, reqc.getUserId());
+				log.info("用户=======>" + reqc.getUserId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
+			} catch (Exception e) {
+				log.info("用户争抢锁异常信息{}",e.getMessage());
+			}
+			if (!have) {
+				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+			}
+			// 放入缓存
+			String rediskey = RedisKey.ACTION_STALL_DOING.key + reqc.getStallId();
+			this.redisService.set(rediskey, reqc.getUserId(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+			log.info("用户>>>" + reqc.getUserId() + "缓存>>>" + rediskey);
+			log.info("用户>>>" + reqc.getUserId() + "调用>>>" + reqc.getStallId());
+		}
 		log.info("降锁返回结果"+JsonUtil.toJson(res));
 		int code = res.getCode();
 		EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
