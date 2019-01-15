@@ -102,7 +102,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			List<String> gateways = preList.stream().map(pre -> pre.getGateway()).collect(Collectors.toList());
 			List<ResLockInfos> lockInfos = this.feignLockClient.lockLists(gateways);
 			Map<Long,List<ResLockInfo>> tempMap = new HashMap<>();
-			
 			for (ResLockInfos info : lockInfos) {
 				for (ResPre resPre : preList) {
 					if(resPre.getGateway().equals(info.getGroupId())) {
@@ -133,6 +132,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											for (ResLockInfo inf : info.getValue()) {
 												if(inf.getLockCode().equals(enttall.getLockSn())) {
 													OwnerStall.setBattery(inf.getElectricity());
+													OwnerStall.setGatewayStatus(inf.getOnlineState());
 												}
 											}
 										}
@@ -179,6 +179,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										for (ResLockInfo inf : info.getValue()) {
 											if(inf.getLockCode().equals(enttall.getLockSn())) {
 												OwnerStall.setBattery(inf.getElectricity());
+												OwnerStall.setGatewayStatus(inf.getOnlineState());
 											}
 										}
 									}
