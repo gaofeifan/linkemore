@@ -65,7 +65,7 @@ public class BaseDictServiceImpl implements BaseDictService {
 
 	@Override
 	public List<ResDonwLockError> selectLockDownErrorCause() {
-		List<ResBaseDict> list = this.findList(DOWN_LOCK_ERROR_CAUSE);
+		List<ResBaseDict> list = this.findList(DOWN_CAUSE);
 		List<ResDonwLockError> resultList = new ArrayList<>();
 		for (ResBaseDict resBaseDict : list) {
 			ResDonwLockError lockError = ObjectUtils.copyObject(resBaseDict,new ResDonwLockError());
