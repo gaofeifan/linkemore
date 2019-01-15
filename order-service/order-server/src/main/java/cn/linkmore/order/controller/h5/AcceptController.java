@@ -67,7 +67,7 @@ public class AcceptController {
 	@ResponseBody
 	public ResponseEntity<?> serchPlate(@RequestBody ReqSerch reqSerch, HttpServletRequest request)
 			throws IOException {
-		log.info("获取订单详情");
+		log.info("是否有订单");
 		ResponseEntity<Boolean> response = null;
 		try {
 			Boolean res =	redirectService.serchPlate(reqSerch);
