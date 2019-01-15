@@ -83,9 +83,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		if (user == null) {
-			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
-		}
 		OwnerRes res = new OwnerRes();
 		Boolean isHave = false;
 		int num = 0;
@@ -96,6 +93,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
 			List<Long> collect = prelist.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
+			if(prelist == null || prelist.size() == 0 || stalllist == null || stalllist.size() == 0) {
+				return res;
+			}
 			Map<String, Object> map = new HashMap<>();
 			map.put("preIds", collect);
 			List<ResPre> preList = this.prefectrueClient.findPreByIds(map );
