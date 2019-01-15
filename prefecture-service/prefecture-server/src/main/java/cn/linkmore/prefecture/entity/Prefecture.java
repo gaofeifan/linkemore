@@ -169,8 +169,58 @@ public class Prefecture {
      * 网格纵坐标
      */
     private Integer gridY;
+    /**
+     * 区域地面、地下
+     */
+    private String region;
+    /**
+     * 地下层级B2-B5
+     */
+    private String underLayer;
+    /**
+     * 总车位数
+     */
+    private Integer totalStallNum;
     
-    public Integer getGridX() {
+    /**
+     * 车区类型，1临停车区（包含临停和固定车位） 2固定车区（全部为固定车位）
+     */
+    private Short preType;
+    
+    public Short getPreType() {
+		return preType;
+	}
+
+	public void setPreType(Short preType) {
+		this.preType = preType;
+	}
+    
+    
+    public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public String getUnderLayer() {
+		return underLayer;
+	}
+
+	public void setUnderLayer(String underLayer) {
+		this.underLayer = underLayer;
+	}
+
+	public Integer getTotalStallNum() {
+		return totalStallNum;
+	}
+
+	public void setTotalStallNum(Integer totalStallNum) {
+		this.totalStallNum = totalStallNum;
+	}
+
+	public Integer getGridX() {
 		return gridX;
 	}
 

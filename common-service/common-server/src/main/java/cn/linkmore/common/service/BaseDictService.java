@@ -85,4 +85,11 @@ public interface BaseDictService {
 	 */
 	List<ResBaseDict> causeClose();
 
+	/**
+	 * @Description  查询车位故障原因
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResDonwLockError> findLockFaultCause();
+
 }

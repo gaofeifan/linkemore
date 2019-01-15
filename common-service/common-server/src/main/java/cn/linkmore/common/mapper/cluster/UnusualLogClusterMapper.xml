@@ -35,7 +35,7 @@
     	</if>
     </if>
     <if test="appVersion != null">
-    	AND app_version like CONCAT('%','${appVersion}','%')
+    	AND app_version like CONCAT('%',#{appVersion},'%')
     </if> 
     <if test="startTime != null and startTime != ''">
     	AND DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
@@ -58,7 +58,7 @@
     	</if>
     </if>
     <if test="appVersion != null">
-    	AND app_version like CONCAT('%','${appVersion}','%')
+    	AND app_version like CONCAT('%',#{appVersion},'%')
     </if> 
     <if test="startTime != null and startTime != ''">
     	AND DATE_FORMAT(create_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')

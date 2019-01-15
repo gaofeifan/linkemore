@@ -3,6 +3,7 @@ package cn.linkmore.prefecture.client;
 import java.util.List;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.FeignLockClientHystrix;
 import cn.linkmore.prefecture.response.ResLockInfo;
+import cn.linkmore.prefecture.response.ResLockInfos;
 import cn.linkmore.prefecture.response.ResLockMessage;
 
 @FeignClient(value = "prefecture-server", path = "/feign/lock", fallback=FeignLockClientHystrix.class,configuration = FeignConfiguration.class)
@@ -40,4 +42,8 @@ public interface FeignLockClient {
 	@RequestMapping(value="/up-lock-mes",method=RequestMethod.GET)
 	@ResponseBody
 	public ResLockMessage upLockMes(@RequestParam("sn") String sn);
+
+	@RequestMapping(value="/lock-lists",method=RequestMethod.POST)
+	@ResponseBody
+	public List<ResLockInfos> lockLists( @RequestBody List<String> groups);
 }

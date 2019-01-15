@@ -26,18 +26,35 @@
   <sql id="Base_Column_List">
     id, rent_com_id, user_id, user_name, mobile, plate,create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time, status
   </sql>
-  <select id="findByComId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_ent_rent_com_user
-    where rent_com_id = #{rentComId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </select>
+  
+
+  
   <select id="findMaxId" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_ent_rent_com_user
     order by id desc 
     limit 0,1
+  </select>
+  
+  
+  <select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rent_com_user
+    <where>
+	    <if test="rentComId != null">
+	   	AND rent_com_id = #{companyId,jdbcType=BIGINT}
+	    </if>
+	   
+	</where>
+
   </select>
   
    <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">

@@ -964,5 +964,7 @@ public class EntStallServiceImpl implements EntStallService {
 		}
 		return count;
 	}
+	
+	
 
 }

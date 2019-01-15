@@ -128,7 +128,11 @@ public enum StatusEnum {
 	PREFECTURE_NOT_EXIST(8005095,"企业账户下不存在车区"),
 	PARK_CODE_NO_ORDER(8005096,"未查询到订单"),
 	PARK_CODE_FINISH_(8005097,"订单已完成结算"),
-	WX_PAY_NO_PARM(8005098,"发起订单失败");
+	WX_PAY_NO_PARM(8005098,"发起订单失败"),
+	UP_LOCK_FAIL_RETRY_OWNER(8005099,"地锁升起失败,再升一次"),
+	DOWN_LOCK_FAIL_RETRY_OWNER(8005100,"地锁降下失败,再降一次"),
+	UP_LOCK_FAIL_CHANGE_OWNER(8005101,"地锁升起失败"),
+	DOWN_LOCK_FAIL_CHANGE_OWNER(8005102,"地锁降下失败");
 
 	
 	public int code;

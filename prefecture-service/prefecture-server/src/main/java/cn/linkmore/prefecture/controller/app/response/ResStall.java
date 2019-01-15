@@ -12,6 +12,9 @@ public class ResStall {
 	private String stallName;
 	@ApiModelProperty(value = "车位锁编号")
 	private String lockSn;
+	@ApiModelProperty(value = "车位状态1，空闲；2，使用中；4，下线  5 故障")
+	private Integer status;
+	
 	public Long getStallId() {
 		return stallId;
 	}
@@ -30,4 +33,11 @@ public class ResStall {
 	public void setLockSn(String lockSn) {
 		this.lockSn = lockSn;
 	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.StallFaultFeedBackClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.StallFaultFeedBack">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="dict_id" jdbcType="BIGINT" property="dictId" />
+    <result column="dict_name" jdbcType="VARCHAR" property="dictName" />
+    <result column="extra" jdbcType="VARCHAR" property="extra" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mobile, create_time, dict_id, dict_name, extra, user_id, stall_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_stall_fault_feedback
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>

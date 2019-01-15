@@ -25,4 +25,11 @@
       #{item.excStatus,jdbcType=BIGINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.excRemark,jdbcType=VARCHAR})
      </foreach>
 	</insert>
+	<insert id="saveReq" parameterType="cn.linkmore.enterprise.response.ResEntExcStallStatus">
+	 insert into v_stall_exc_status (id, stall_id, status, 
+      exc_status, create_time, exc_remark)
+    values 
+    (#{id,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, #{status,jdbcType=SMALLINT}, 
+      #{excStatus,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{excRemark,jdbcType=VARCHAR})
+	</insert>
 </mapper>

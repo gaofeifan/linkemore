@@ -68,4 +68,8 @@ public interface VehicleMarkClient {
 	@RequestMapping(value = "/v2.0/update", method = RequestMethod.PUT)
 	@ResponseBody
 	public void update(@RequestBody ReqVehicleMark reqMark);
+	
+	@RequestMapping(value = "/v2.0/insert", method = RequestMethod.POST)
+	@ResponseBody
+	public int insertByNoRepeat(@RequestBody ReqVehicleMark bean);
 }

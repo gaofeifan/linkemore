@@ -1,10 +1,12 @@
 package cn.linkmore.prefecture.controller.feign;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.response.ResLockInfo;
+import cn.linkmore.prefecture.response.ResLockInfos;
 import cn.linkmore.prefecture.response.ResLockMessage;
 
 @Controller
@@ -57,5 +60,20 @@ public class FeignLockController {
 	@ResponseBody
 	public ResLockMessage upLockMes(@RequestParam("sn") String sn) {
 		return this.lockTools.upLockMes(sn);
+	}
+	
+	@RequestMapping(value="/lock-lists",method=RequestMethod.POST)
+	@ResponseBody
+	public List<ResLockInfos> lockLists( @RequestBody List<String> groups) {
+		List<ResLockInfos> infos = new ArrayList<>();
+		ResLockInfos info = null;
+		for (String string : groups) {
+			List<ResLockInfo> list = this.lockTools.lockListByGroupCode(string);
+			info = new ResLockInfos();
+			info.setGroupId(string);
+			info.setInfos(list);
+			infos.add(info);
+		}
+		return infos;
 	}
 }

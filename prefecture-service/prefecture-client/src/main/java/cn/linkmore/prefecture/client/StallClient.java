@@ -230,4 +230,8 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/watch2", method = RequestMethod.POST)
 	public Map<String,Object> watch2(@RequestBody Long stallId);
 	
+	@RequestMapping(value = "/v2.0/app/control", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean appControl(@RequestBody ReqControlLock reqc);
+	
 }

@@ -5,15 +5,22 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -66,6 +73,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
+		System.out.println("findStall");
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
@@ -80,10 +88,20 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			// 查询是否有未完成进程
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(userId);
 
-			List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
-
+			//List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
+			List<EntOwnerPre> prelist=null;
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
+			
+			Set<Long> ids=new HashSet<Long>();
+			if(CollectionUtils.isNotEmpty(stalllist)&& stalllist.size()>0) {
+				for(EntOwnerStall entOwnerStall:stalllist) {
+					ids.add(entOwnerStall.getPreId());
+				}
+				prelist = ownerStallClusterMapper.findPreByIds(ids);
+			}
+
 			log.info("车位>>>" + stalllist.size() + "车区>>>" + prelist.size() + "用户>>>" + JSON.toJSONString(user));
+			System.out.println("车位>>>" + stalllist.size() + "车区>>>" + prelist.size() + "用户>>>" + JSON.toJSONString(user));
 
 			List<OwnerPre> list = new ArrayList<>();
 
@@ -99,7 +117,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 						List<OwnerStall> ownerstalllist = new ArrayList<>();
 						for (EntOwnerStall enttall : stalllist) {
 							if (enttall.getStallId().equals(record.getStallId())) {
-
 								OwnerStall OwnerStall = new OwnerStall();
 								OwnerStall.setStallId(enttall.getStallId());
 								OwnerStall.setMobile(enttall.getMobile());
@@ -113,7 +130,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 								OwnerStall.setLockSn(enttall.getLockSn());
 								OwnerStall.setLockStatus(enttall.getLockStatus());
 								OwnerStall.setStatus(enttall.getStatus() == 1l ? 1 : 2l);
-
 								ownerstalllist.add(OwnerStall);
 								num++;
 								isHave = true;
@@ -127,7 +143,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				}
 			} else {
 				for (EntOwnerPre pre : prelist) {
-
 					OwnerPre ownerpre = new OwnerPre();
 					ownerpre.setPreId(pre.getPreId());
 					ownerpre.setPreName(pre.getPreName());
@@ -200,7 +215,6 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 				newrecord.setPreName(entOwnerStall.getPreName());
 				newrecord.setEntPreId(entOwnerStall.getEntPreId());
 				newrecord.setPlateNo(entOwnerStall.getPlate());
-
 				isAllow = true;
 				break;
 			}

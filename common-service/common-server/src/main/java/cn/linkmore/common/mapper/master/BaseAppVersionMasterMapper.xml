@@ -9,6 +9,8 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="scope" jdbcType="INTEGER" property="scope" />
+    
     <result column="update_status" jdbcType="INTEGER" property="updateStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="description" jdbcType="VARCHAR" property="description" />
@@ -32,21 +34,21 @@
   <insert id="insert" parameterType="cn.linkmore.common.entity.BaseAppVersion">
     insert into t_base_app_version (id, version, code, 
       name, status, url, 
-      type, update_status, create_time, 
+      type,scope, update_status, create_time, 
       description, update_time)
     values (#{id,jdbcType=BIGINT}, #{version,jdbcType=VARCHAR}, #{code,jdbcType=BIGINT}, 
       #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{updateStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{type,jdbcType=INTEGER}, #{scope,jdbcType=INTEGER}, #{updateStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{description,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertReq" parameterType="cn.linkmore.common.request.ReqAppVersion">
     insert into t_base_app_version (id, version, code, 
       name, status, url, 
-      type, update_status, create_time, 
+      type,scope, update_status, create_time, 
       description, update_time)
     values (#{id,jdbcType=BIGINT}, #{version,jdbcType=VARCHAR}, #{code,jdbcType=BIGINT}, 
       #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{updateStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{type,jdbcType=INTEGER},#{scope,jdbcType=INTEGER}, #{updateStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{description,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.linkmore.common.entity.BaseAppVersion">
@@ -72,6 +74,9 @@
       </if>
       <if test="type != null">
         type,
+      </if>
+      <if test="scope != null">
+        scope,
       </if>
       <if test="updateStatus != null">
         update_status,
@@ -108,6 +113,9 @@
       <if test="type != null">
         #{type,jdbcType=INTEGER},
       </if>
+      <if test="scope != null">
+        #{scope,jdbcType=INTEGER},
+      </if>
       <if test="updateStatus != null">
         #{updateStatus,jdbcType=INTEGER},
       </if>
@@ -143,6 +151,9 @@
       <if test="type != null">
         type = #{type,jdbcType=INTEGER},
       </if>
+      <if test="scope != null">
+        scope = #{scope,jdbcType=INTEGER},
+      </if>
       <if test="updateStatus != null">
         update_status = #{updateStatus,jdbcType=INTEGER},
       </if>
@@ -166,6 +177,7 @@
       status = #{status,jdbcType=INTEGER},
       url = #{url,jdbcType=VARCHAR},
       type = #{type,jdbcType=INTEGER},
+      scope = #{scope,jdbcType=INTEGER},
       update_status = #{updateStatus,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       description = #{description,jdbcType=VARCHAR},
@@ -192,6 +204,9 @@
       </if>
       <if test="type != null">
         type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="scope != null">
+        scope = #{scope,jdbcType=INTEGER},
       </if>
       <if test="updateStatus != null">
         update_status = #{updateStatus,jdbcType=INTEGER},

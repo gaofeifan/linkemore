@@ -40,6 +40,10 @@
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
     <result column="business_time" jdbcType="VARCHAR" property="businessTime" />
     
+    <result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="under_layer" jdbcType="VARCHAR" property="underLayer" />
+    <result column="total_stall_num" jdbcType="INTEGER" property="totalStallNum" />
+    <result column="pre_type" jdbcType="SMALLINT" property="preType" />
   </resultMap>
   
   <delete id="delete" parameterType="java.util.List" >
@@ -61,7 +65,8 @@
       type, enterprise_id, category, 
       limit_status,gateway ,strategy_description,
       runtime, increase, month_rent, version, create_user_id, 
-      create_user_name, business_time, grid_x, grid_y)
+      create_user_name, business_time, grid_x, grid_y, 
+      region, under_layer, total_stall_num, pre_type)
     values (#{id,jdbcType=BIGINT}, #{strategyId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR}, #{districtId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=DECIMAL}, #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, 
@@ -75,7 +80,8 @@
       #{strategyDescription,jdbcType=VARCHAR}, #{runtime,jdbcType=INTEGER},
       #{monthRent,jdbcType=INTEGER}, #{increase,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR},
       #{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR},#{businessTime,jdbcType=VARCHAR},
-      #{gridX,jdbcType=INTEGER}, #{gridY,jdbcType=INTEGER}
+      #{gridX,jdbcType=INTEGER}, #{gridY,jdbcType=INTEGER},#{region,jdbcType=VARCHAR},#{underLayer,jdbcType=VARCHAR},
+      #{totalStallNum,jdbcType=INTEGER},#{preType,jdbcType=SMALLINT}
       )
   </insert>
   
@@ -121,7 +127,11 @@
       version = #{version,jdbcType=VARCHAR},
       business_time = #{businessTime,jdbcType=VARCHAR},
       grid_x = #{gridX,jdbcType=INTEGER},
-      grid_y = #{gridY,jdbcType=INTEGER}
+      grid_y = #{gridY,jdbcType=INTEGER},
+      region = #{region,jdbcType=VARCHAR},
+      under_layer = #{underLayer,jdbcType=VARCHAR},
+      total_stall_num = #{totalStallNum,jdbcType=INTEGER},
+      pre_type = #{preType,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

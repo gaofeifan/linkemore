@@ -92,4 +92,11 @@ public class FeignVehicleMarkController{
 		return this.vehicleMarkManageService.update(bean);
 	}
 	
+	@RequestMapping(value = "/v2.0/insert", method = RequestMethod.POST)
+	@ResponseBody
+	public int insert(@RequestBody ReqVehicleMark bean) {
+		return this.vehicleMarkManageService.insertByNoRepeat(bean);
+	}
+
+	
 }

@@ -276,7 +276,9 @@
 				AND c.status = '2'
 				AND cu.plate IS NOT NULL
 				AND cs.stall_id IS NOT NULL
-			) UNION 
+			) 
+			<!-- 
+			UNION 
 			(
 				SELECT distinct 
 					tu.company_name,
@@ -296,7 +298,7 @@
 				  INNER JOIN t_ent_rent_com_user cu on tu.plate=cu.plate
 				  WHERE tu.company_id is not null AND tu.stall_id in (SELECT stall_id FROM t_ent_rent_com_stall )
 			)
-			
+			 -->
 		) o where 1 = 1 and
      start_time <![CDATA[ < ]]> NOW()
      and 
@@ -335,6 +337,9 @@
    	<if test="stallId != null">
    		and stall_id = #{stallId}
    	</if>
+   	<if test="userId != null">
+   		and user_id = #{userId}
+   	</if>
    	<if test="plate != null">
    		and plate = #{plate}
    	</if>
@@ -363,7 +368,7 @@
 	<if test="plate != null">
 		and ru.plate = #{plate}
 	</if>
-	group by 
+	group by
 		ru.pre_id,
 		ru.pre_name,
 		ru.stall_id,
@@ -371,7 +376,7 @@
 		vm.veh_user_id ,
 		tu.username ,
 		ru.start_time,
-		ru.end_time 
+		ru.end_time
   </select>
   
   

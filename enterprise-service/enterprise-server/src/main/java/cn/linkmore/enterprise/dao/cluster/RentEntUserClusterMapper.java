@@ -16,12 +16,14 @@ import cn.linkmore.enterprise.request.ReqRentEntUser;
 @Mapper
 public interface RentEntUserClusterMapper {
 
-    RentEntUser findById(Long id);
-
+	RentEntUser findById(Long id);
+	
 	Integer count(Map<String, Object> param);
 
 	List<RentEntUser> findPage(Map<String, Object> param);
 
+	List<RentEntUser> findList(Map<String, Object> param);
+	
 	RentEntUser findMaxId();
 	
 	RentEntUser findByPlate(ReqRentEntUser ent);

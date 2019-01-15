@@ -25,6 +25,8 @@ public class ReqAppVersion {
 
     private Integer type;
   
+    private Integer scope;
+    
     private Integer updateStatus;
 
     private Date createTime;
@@ -89,7 +91,15 @@ public class ReqAppVersion {
         this.type = type;
     }
 
-    public Integer getUpdateStatus() {
+    public Integer getScope() {
+		return scope;
+	}
+
+	public void setScope(Integer scope) {
+		this.scope = scope;
+	}
+
+	public Integer getUpdateStatus() {
         return updateStatus;
     }
 

@@ -1,7 +1,9 @@
 package cn.linkmore.prefecture.controller.app;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResAppointGroupDetail;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail;
@@ -58,6 +62,7 @@ public class AppPrefectureController {
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
+			log.info(">>>>>>>>>>>>map list exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
@@ -91,7 +96,7 @@ public class AppPrefectureController {
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
-			log.info("exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
+			log.info(">>>>>>>>>>>>group_strategy exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
@@ -108,7 +113,7 @@ public class AppPrefectureController {
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
-			log.info("stack = {} message = {}", e.getStackTrace(), e.getMessage());
+			log.info(">>>>>>>>>>>>detail exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
@@ -148,6 +153,7 @@ public class AppPrefectureController {
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
+			log.info(">>>>>>>>>>>>check-plate exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
@@ -164,6 +170,25 @@ public class AppPrefectureController {
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
+			log.info(">>>>>>>>>>>>stall-list exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
+	
+	
+	@ApiOperation(value = "车区预约分组详情信息", notes = "根据车区分组ID查看分组计费策略详情", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/appoint_group_detail", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResAppointGroupDetail> findAppointGroupDetail(@Validated @RequestBody ReqBooking reqBooking, HttpServletRequest request) {
+		ResponseEntity<ResAppointGroupDetail> response = null;
+		try { 
+			ResAppointGroupDetail groupDetail = this.prefectureService.findAppointGroupDetail(reqBooking, request);
+			response = ResponseEntity.success(groupDetail, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			log.info(">>>>>>>>>>>>appoint_group_detail exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
