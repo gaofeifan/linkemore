@@ -31,6 +31,7 @@ import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.OwnerStall;
+import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.OwnerStallClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
@@ -308,6 +309,25 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public Boolean owner(HttpServletRequest request) {
 		Boolean owner = this.ownerStallService.owner(request);
+		return owner;
+	}
+
+
+
+	@Override
+	public ResCurrentOwner current(HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		EntRentedRecord record = this.entRentedRecordClusterMapper.findByUser(user.getId());
+		ResCurrentOwner owner = new ResCurrentOwner();
+		if(record == null) {
+			owner.setStatus(false);
+		}else {
+			owner.setStatus(true);
+			owner.setPreId(record.getPreId());
+			owner.setPreName(record.getPreName());
+			owner.setStallId(record.getStallId());
+			owner.setStallName(record.getStallName());
+		}
 		return owner;
 	}
 	

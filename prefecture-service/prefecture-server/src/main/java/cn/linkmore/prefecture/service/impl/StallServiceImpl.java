@@ -2024,6 +2024,9 @@ public class StallServiceImpl implements StallService {
 		EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
 		boolean falg = false;
 		if (code == 200) {
+			if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
+				this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus());
+			}
 			falg = true;
 			if (reqc.getStatus() == 2) {
 				log.info("<<<<<<<<<up success>>>>>>>>>");
@@ -2042,6 +2045,23 @@ public class StallServiceImpl implements StallService {
 			stall.setStatus(reqc.getStatus() == 1 ? 2 : 1);
 			stallMasterMapper.lockdown(stall);
 		} else {
+			if(code == 500) {
+				if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
+					if(reqc.getStatus() == 1) {
+						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE_OWNER);
+					}else if(reqc.getStatus() == 2){
+						throw new BusinessException(StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER);
+					}
+					redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus());
+				}else {
+					if(reqc.getStatus() == 1) {
+						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY_OWNER);
+					}else if(reqc.getStatus() == 2){
+						throw new BusinessException(StatusEnum.UP_LOCK_FAIL_RETRY_OWNER);
+					}
+					redisService.set(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus(),"",ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+				}
+			}
 			if (reqc.getStatus() == 1) {
 				log.info("<<<<<<<<<down fail>>>>>>>>>>");
 				// 降锁失败 取消绑定

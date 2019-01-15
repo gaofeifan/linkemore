@@ -347,6 +347,7 @@ public class Constants {
 		
 		MANAGER_STALL_UP("manager:lock-uping:"),
 		MANAGER_STALL_DOWN("manager:lock-downing:"),
+		OWNER_CONTROL_LOCK("owner:control-lock:"),
 		MANAGER_STALL("manager:lock:");
 		
 		public String key;
