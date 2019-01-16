@@ -428,12 +428,13 @@ public class StallServiceImpl implements StallService {
 			// 更新原来车位编号的车位将车位编号设置为null
 			this.stallLockMasterMapper.deleteByStallId(stall.getId());
 			this.stallMasterMapper.delete(stall.getId());
+			StallLock oStallLock = this.stallLockClusterMapper.findByStallId(stallName.getId());
 			// 更新更改后的车位锁关系
-			stallLock.setSn(reqLockIntall.getLockSn());
-			stallLock.setStallId(stallName.getId());
-			stallLock.setPrefectureId(stallName.getPreId());
-			this.stallLockMasterMapper.updateBind(stallLock);
-			stallName.setLockId(stallLock.getId());
+			oStallLock.setSn(reqLockIntall.getLockSn());
+//			oStallLock.setStallId(stallName.getId());
+			oStallLock.setPrefectureId(stallName.getPreId());
+			this.stallLockMasterMapper.update(stallLock);
+//			stallName.setLockId(stallLock.getId());
 			this.stallMasterMapper.update(stallName);
 		}else if(stallLock != null|| stallName != null ) {
 			if(stallLock != null) {
@@ -2043,27 +2044,6 @@ public class StallServiceImpl implements StallService {
 			res = lockTools.upLockMes(reqc.getLockSn());
 		}
 		Stall stall = stallClusterMapper.findById(reqc.getStallId());
-		Set<Object> lockSnList =  this.redisService
-				.members(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId());
-		if(lockSnList.contains(stall.getLockSn()) && stall.getStatus() == 1) {
-			// 争抢
-			String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqc.getStallId();
-			Boolean have = true;
-			try {
-				have = this.redisLock.getLock(robkey, reqc.getUserId());
-				log.info("用户=======>" + reqc.getUserId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
-			} catch (Exception e) {
-				log.info("用户争抢锁异常信息{}",e.getMessage());
-			}
-			if (!have) {
-				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
-			}
-			// 放入缓存
-			String rediskey = RedisKey.ACTION_STALL_DOING.key + reqc.getStallId();
-			this.redisService.set(rediskey, reqc.getUserId(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
-			log.info("用户>>>" + reqc.getUserId() + "缓存>>>" + rediskey);
-			log.info("用户>>>" + reqc.getUserId() + "调用>>>" + reqc.getStallId());
-		}
 		log.info("降锁返回结果"+JsonUtil.toJson(res));
 		int code = res.getCode();
 		EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());

@@ -153,12 +153,10 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								ownerstalllist.add(OwnerStall);
 								num++;
 								isHave = true;
-								break;
 							}
 						}
 						ownerpre.setStalls(ownerstalllist);
 						list.add(ownerpre);
-						break;
 					}
 				}
 			} else {
