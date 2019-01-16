@@ -1056,39 +1056,39 @@ public class OrdersServiceImpl implements OrdersService {
 			return null;
 		}
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Map<String, Object> param = new HashMap<String,Object>();
-		param.put("stallId", orders.getStallId());
-		param.put("plateNo", orders.getPlateNo());
-		param.put("startTime", sdf.format(orders.getCreateTime()));
-		if (orders.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
-			param.put("endTime", sdf.format(orders.getStatusTime()));
-		} else {
-			param.put("endTime", sdf.format(new Date()));
-		}
-		log.info("..........current order request param:{}", JSON.toJSON(param));
-		Map<String, Object> map = this.strategyFeeClient.amount(param);
-		log.info("..........current order response result map:{}", JSON.toJSON(map));
-		if (map != null) {
-			Object object = map.get("chargePrice");
-			if (object != null) {
-				orders.setTotalAmount(new BigDecimal(object.toString()));
-				Map<String,Object> checkParam = new HashMap<String,Object>();
-				checkParam.put("plateNo", orders.getPlateNo());
-				checkParam.put("preId", orders.getPreId());
-				boolean flag = userPlateClient.exists(checkParam);
-				log.info("..........current order free plate :{}, flag :{}", orders.getPlateNo(), flag);
-				if(flag) {
-					orders.setTotalAmount(new BigDecimal(0.00));
-				}
-			}
-		}
-		
 		ResOrder ro = null;
 		if (orders != null && (orders.getStatus() == OrderStatus.UNPAID.value
 				|| orders.getStatus() == OrderStatus.SUSPENDED.value)) {
 			ro = new ResOrder();
 			ro.copy(orders);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Map<String, Object> param = new HashMap<String,Object>();
+			param.put("stallId", orders.getStallId());
+			param.put("plateNo", orders.getPlateNo());
+			param.put("startTime", sdf.format(orders.getCreateTime()));
+			if (orders.getStatus().intValue() == OrderStatus.SUSPENDED.value) {
+				param.put("endTime", sdf.format(orders.getStatusTime()));
+			} else {
+				param.put("endTime", sdf.format(new Date()));
+			}
+			log.info("..........current order request param:{}", JSON.toJSON(param));
+			Map<String, Object> map = this.strategyFeeClient.amount(param);
+			log.info("..........current order response result map:{}", JSON.toJSON(map));
+			if (map != null) {
+				Object object = map.get("chargePrice");
+				if (object != null) {
+					ro.setTotalAmount(new BigDecimal(object.toString()));
+					Map<String,Object> checkParam = new HashMap<String,Object>();
+					checkParam.put("plateNo", orders.getPlateNo());
+					checkParam.put("preId", orders.getPreId());
+					boolean flag = userPlateClient.exists(checkParam);
+					log.info("..........current order free plate :{}, flag :{}", orders.getPlateNo(), flag);
+					if(flag) {
+						ro.setTotalAmount(new BigDecimal(0.00));
+					}
+				}
+			}
+			
 			ResPrefectureDetail pre = this.prefectureClient.findById(orders.getPreId());
 			if (pre != null) {
 				ro.setPreLongitude(pre.getLongitude());
@@ -1105,15 +1105,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if(orders.getLockDownStatus() != null && orders.getLockDownStatus().intValue() == 1) {
 				ro.setCancelFlag((short)2);
 				log.info("..........current order lock down success");
-			}/*else if(orders.getLockDownStatus() != null && orders.getLockDownStatus().intValue() == 0){
-				//根据车位锁编号判断车锁状态是否为降下
-				Map<String,Object> lockParam = stallClient.watch(orders.getStallId());
-				log.info("..........current order lock down failed response result lock-param = {}", JSON.toJSON(lockParam));
-				if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
-					ro.setCancelFlag((short)2);
-				}
-			}*/
-			else {
+			} else {
 				//根据车位锁编号判断车锁状态是否为降下
 				Map<String,Object> lockParam = stallClient.watch(orders.getStallId());
 				log.info("..........current order lock down failed response result lock-param = {}", JSON.toJSON(lockParam));
@@ -1149,6 +1141,7 @@ public class OrdersServiceImpl implements OrdersService {
 				ro.setCancelFlag((short)2);
 			}
 		}
+		log.info("..........current order {}", JSON.toJSON(ro));
 		return ro;
 	}
 	

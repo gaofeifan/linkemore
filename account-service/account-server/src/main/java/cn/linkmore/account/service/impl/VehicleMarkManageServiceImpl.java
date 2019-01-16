@@ -12,11 +12,14 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
@@ -85,20 +88,25 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				manage.setUpdateTime(new Date());
 				int num = vehicleMarkManageMasterMapper.insertSelective(manage);
 				if(num > 0) {
+					
 					Map<String,Object> presonParam = new HashMap<String,Object>();
 					presonParam.put("plate", bean.getVehMark());
 					ReqRentEntUser ent = new ReqRentEntUser();
 					ent.setPlate(bean.getVehMark());
+					
 					if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
 						//opsRentEntUserClient.syncRentStallByUserId(user.getId());
 						//opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
+						Map<String,Object> param = new HashMap<String,Object>();
+						param.put("userId", user.getId());
 						if(bean.getPreId() != null && bean.getPreId().intValue() != 0L) {
-							Map<String,Object> param = new HashMap<String,Object>();
-							param.put("userId", user.getId());
 							param.put("preId", bean.getPreId());
-							existFalg = opsRentUserClient.checkExist(param);
-							logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
+						}else {
+							param.put("preId", 0L);
 						}
+						param.put("plate", null);
+						existFalg = opsRentUserClient.checkExist(param);
+						logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
 					}
 					userGroupInputService.syncByUserIdAndPlate(user.getId(), bean.getVehMark());
 				}
@@ -252,7 +260,20 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	public List<ResVechicleMark> findResList(HttpServletRequest request) {
-		return this.vehicleMarkManageClusterMapper.findResList(getCache(request).getId());
+		Map<String,Object> param = null;
+		List<ResVechicleMark> list = this.vehicleMarkManageClusterMapper.findResList(getCache(request).getId());
+		if(CollectionUtils.isNotEmpty(list)) {
+			for(ResVechicleMark vm: list) {
+				param = new HashMap<String,Object>();
+				param.put("userId", vm.getUserId());
+				param.put("plate", vm.getVehMark());
+				param.put("preId", 0L);
+				boolean existFlag = opsRentUserClient.checkExist(param);
+				logger.info("------------param:{}---------->>>>>> {}",JSON.toJSON(param), existFlag);
+				vm.setRentPlateFlag(existFlag);
+			}
+		}
+		return list;
 	}
 
 	@Override

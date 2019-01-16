@@ -12,6 +12,16 @@ public class ResVechicleMark {
 
 	@GColumn
 	private String vehMark;
+	
+	private Boolean rentPlateFlag;
+
+	public Boolean getRentPlateFlag() {
+		return rentPlateFlag;
+	}
+
+	public void setRentPlateFlag(Boolean rentPlateFlag) {
+		this.rentPlateFlag = rentPlateFlag;
+	}
 
 	public Long getId() {
 		return id;
