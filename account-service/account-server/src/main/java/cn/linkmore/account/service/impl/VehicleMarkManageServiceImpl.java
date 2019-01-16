@@ -178,6 +178,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 			try {
 				//延迟一秒，考虑主从环境，可能会有同步时差
 				Thread.sleep(1000);
+				/*
 				if(userId != null) {
 					userGroupInputService.syncByUserId(userId);	//同步用户分组信息
 					//opsRentEntUserClient.syncRentStallByUserId(userId); //同步企业长租车位
@@ -189,6 +190,16 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				if(userId != null && StringUtils.isNotEmpty(plate)) {
 					userGroupInputService.syncByUserIdAndPlate(userId, plate);	//同步用户分组
 				}
+				*/
+				if(userId != null) {
+					if(StringUtils.isNotEmpty(plate)) {
+						userGroupInputService.syncByUserIdAndPlate(userId, plate);	//同步用户分组
+					}else {
+						userGroupInputService.syncByUserId(userId);	//同步用户分组信息
+					}
+				}
+				
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
