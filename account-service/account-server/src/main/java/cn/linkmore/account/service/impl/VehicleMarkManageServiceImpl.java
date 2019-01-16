@@ -88,20 +88,25 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				manage.setUpdateTime(new Date());
 				int num = vehicleMarkManageMasterMapper.insertSelective(manage);
 				if(num > 0) {
+					
 					Map<String,Object> presonParam = new HashMap<String,Object>();
 					presonParam.put("plate", bean.getVehMark());
 					ReqRentEntUser ent = new ReqRentEntUser();
 					ent.setPlate(bean.getVehMark());
+					
 					if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
 						//opsRentEntUserClient.syncRentStallByUserId(user.getId());
 						//opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
+						Map<String,Object> param = new HashMap<String,Object>();
+						param.put("userId", user.getId());
 						if(bean.getPreId() != null && bean.getPreId().intValue() != 0L) {
-							Map<String,Object> param = new HashMap<String,Object>();
-							param.put("userId", user.getId());
 							param.put("preId", bean.getPreId());
-							existFalg = opsRentUserClient.checkExist(param);
-							logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
+						}else {
+							param.put("preId", 0L);
 						}
+						param.put("plate", null);
+						existFalg = opsRentUserClient.checkExist(param);
+						logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
 					}
 					userGroupInputService.syncByUserIdAndPlate(user.getId(), bean.getVehMark());
 				}
@@ -262,6 +267,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				param = new HashMap<String,Object>();
 				param.put("userId", vm.getUserId());
 				param.put("plate", vm.getVehMark());
+				param.put("preId", 0L);
 				boolean existFlag = opsRentUserClient.checkExist(param);
 				logger.info("------------param:{}---------->>>>>> {}",JSON.toJSON(param), existFlag);
 				vm.setRentPlateFlag(existFlag);

@@ -23,8 +23,10 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.EntPrefectureClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntRentUserClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.OwnerStallClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
+import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.request.ReqCheck;
@@ -65,6 +67,10 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	
 	@Autowired
 	private RentEntUserService rentEntUserService;
+	
+	@Autowired
+	private OwnerStallClusterMapper ownerStallClusterMapper;
+
 	@Override
 	public int saveEntRentUser(Long entId, Long entPreId, Long stallId, String mobile, String realname, String plate) {
 		
@@ -230,14 +236,47 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	 * @return
 	 */
 	public Boolean checkExist(Map<String,Object> param){
-		logger.info("company param = {}",JSON.toJSON(param));
+		boolean flag = false;
+		Long userId = (Long)param.get("userId");
+		Long preId = (Long)param.get("preId");
+		String plate = null;
+		if(param.get("plate") != null) {
+			plate = (String)param.get("plate");
+		}
+		
+		List<EntOwnerStall> ownStallList = ownerStallClusterMapper.findStall(userId);
+		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>check the use have the privilage of rent stall param = {} result = {}",JSON.toJSON(param),JSON.toJSON(ownStallList));
+		if(preId == 0L && plate == null) {
+			if(CollectionUtils.isNotEmpty(ownStallList)) {
+				return true;
+			}
+		}else if(preId != 0L && plate == null){
+			if(CollectionUtils.isNotEmpty(ownStallList)) {
+				for(EntOwnerStall ownerStall: ownStallList) {
+					if(preId.equals(ownerStall.getPreId())) {
+						flag = true;
+						break;
+					}
+				}
+			}
+		}else if(preId == 0L && plate != null) {
+			if(CollectionUtils.isNotEmpty(ownStallList)) {
+				for(EntOwnerStall ownerStall: ownStallList) {
+					if(plate.equals(ownerStall.getPlate())) {
+						flag = true;
+						break;
+					}
+				}
+			}
+		}
+		/*logger.info("company param = {}",JSON.toJSON(param));
 		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findComUserList(param);
 		logger.info("company oldRentUserList = {}",JSON.toJSON(oldRentUserList));
 		Boolean flag = false;
 		if(CollectionUtils.isNotEmpty(oldRentUserList)) {
 			flag = true;
 		}
-		logger.info("company flag = {}",JSON.toJSON(flag));
+		logger.info("company flag = {}",JSON.toJSON(flag));*/
 		return flag;
 	}
 

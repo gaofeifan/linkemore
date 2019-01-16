@@ -28,8 +28,8 @@ public class UserStaffController {
 		try {
 			this.userStaffService.save(record);
 			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
-			msg = new ViewMsg(e.getMessage(),false);
+		}catch(RuntimeException e) {
+			msg = new ViewMsg("对应账号不存在",false);
 		}catch(Exception e) {
 			e.printStackTrace();
 			msg = new ViewMsg("保存失败",false);
@@ -45,7 +45,7 @@ public class UserStaffController {
 		try {
 			this.userStaffService.update(record);
 			msg = new ViewMsg("保存成功",true);
-		}catch(DataException e) {
+		}catch(RuntimeException e) {
 			msg = new ViewMsg(e.getMessage(),false);
 		}catch(Exception e) {
 			msg = new ViewMsg("保存失败",false);
