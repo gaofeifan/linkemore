@@ -5,16 +5,16 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("故障车位")
 public class ReqStallFault {
 
-	@ApiModelProperty(value="车位id")
+	@ApiModelProperty(value="车位id",required = true)
 	private Long stallId;
 	
-	@ApiModelProperty(value="故障原因id")
+	@ApiModelProperty(value="故障原因id",required = true)
 	private Long dictId;
 	
-	@ApiModelProperty(value="故障原因名称")
+	@ApiModelProperty(value="故障原因名称",required = true)
 	private String dictName;
 	
-	@ApiModelProperty(value="其他")
+	@ApiModelProperty(value="其他",required = false)
 	private String extra;
 
 	public Long getStallId() {

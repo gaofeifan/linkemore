@@ -31,6 +31,7 @@ import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.OwnerStall;
+import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.OwnerStallClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
@@ -51,6 +52,7 @@ import cn.linkmore.prefecture.response.ResLockInfos;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.TokenUtil;
 @Service
@@ -82,9 +84,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
-		if (user == null) {
-			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
-		}
 		OwnerRes res = new OwnerRes();
 		Boolean isHave = false;
 		int num = 0;
@@ -95,13 +94,15 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
 			List<Long> collect = prelist.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
+			if(prelist == null || prelist.size() == 0 || stalllist == null || stalllist.size() == 0) {
+				return res;
+			}
 			Map<String, Object> map = new HashMap<>();
 			map.put("preIds", collect);
 			List<ResPre> preList = this.prefectrueClient.findPreByIds(map );
 			List<String> gateways = preList.stream().map(pre -> pre.getGateway()).collect(Collectors.toList());
 			List<ResLockInfos> lockInfos = this.feignLockClient.lockLists(gateways);
 			Map<Long,List<ResLockInfo>> tempMap = new HashMap<>();
-			
 			for (ResLockInfos info : lockInfos) {
 				for (ResPre resPre : preList) {
 					if(resPre.getGateway().equals(info.getGroupId())) {
@@ -132,6 +133,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											for (ResLockInfo inf : info.getValue()) {
 												if(inf.getLockCode().equals(enttall.getLockSn())) {
 													OwnerStall.setBattery(inf.getElectricity());
+													OwnerStall.setGatewayStatus(inf.getOnlineState());
 												}
 											}
 										}
@@ -145,6 +147,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
 								OwnerStall.setStallLocal(enttall.getStallLocal());
 								OwnerStall.setLockSn(enttall.getLockSn());
+								OwnerStall.setStallEndTime(DateUtils.convert(enttall.getStartTime(), null));
 								OwnerStall.setLockStatus(enttall.getLockStatus());
 								OwnerStall.setStatus(enttall.getStatus() == 1l ? 1 : 2l);
 								ownerstalllist.add(OwnerStall);
@@ -178,6 +181,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										for (ResLockInfo inf : info.getValue()) {
 											if(inf.getLockCode().equals(enttall.getLockSn())) {
 												OwnerStall.setBattery(inf.getElectricity());
+												OwnerStall.setGatewayStatus(inf.getOnlineState());
 											}
 										}
 									}
@@ -190,6 +194,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 //							OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
 //							OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
 							OwnerStall.setImageUrl(enttall.getImageUrl());
+							OwnerStall.setStallEndTime(DateUtils.convert(enttall.getStartTime(), null));
 							OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
 							OwnerStall.setStallLocal(enttall.getStallLocal());
 							OwnerStall.setLockSn(enttall.getLockSn());
@@ -218,8 +223,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			throw new BusinessException(StatusEnum.SERVER_EXCEPTION);
 		}
 	}
-
-
 
 	@Override
 	public Boolean control(ReqConStall reqOperatStall, HttpServletRequest request) {
@@ -308,6 +311,25 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public Boolean owner(HttpServletRequest request) {
 		Boolean owner = this.ownerStallService.owner(request);
+		return owner;
+	}
+
+
+
+	@Override
+	public ResCurrentOwner current(HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		EntRentedRecord record = this.entRentedRecordClusterMapper.findByUser(user.getId());
+		ResCurrentOwner owner = new ResCurrentOwner();
+		if(record == null) {
+			owner.setStatus(false);
+		}else {
+			owner.setStatus(true);
+			owner.setPreId(record.getPreId());
+			owner.setPreName(record.getPreName());
+			owner.setStallId(record.getStallId());
+			owner.setStallName(record.getStallName());
+		}
 		return owner;
 	}
 	

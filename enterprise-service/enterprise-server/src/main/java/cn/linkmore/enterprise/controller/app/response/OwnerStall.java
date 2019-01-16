@@ -52,7 +52,7 @@ public class OwnerStall {
 	@ApiModelProperty(value = "车位结束时间")
 	private Date stallEndTime;
 	
-	@ApiModelProperty(value = "网关状态 0离线 1 在线")
+	@ApiModelProperty(value = "网关状态(默认展示0  调不到锁平台时显示0) 0离线 1 在线")
 	private int gatewayStatus;
 	public String getLockSn() {
 		return lockSn;
