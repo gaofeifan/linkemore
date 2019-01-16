@@ -12,11 +12,14 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
@@ -178,6 +181,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 			try {
 				//延迟一秒，考虑主从环境，可能会有同步时差
 				Thread.sleep(1000);
+				/*
 				if(userId != null) {
 					userGroupInputService.syncByUserId(userId);	//同步用户分组信息
 					//opsRentEntUserClient.syncRentStallByUserId(userId); //同步企业长租车位
@@ -189,6 +193,16 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				if(userId != null && StringUtils.isNotEmpty(plate)) {
 					userGroupInputService.syncByUserIdAndPlate(userId, plate);	//同步用户分组
 				}
+				*/
+				if(userId != null) {
+					if(StringUtils.isNotEmpty(plate)) {
+						userGroupInputService.syncByUserIdAndPlate(userId, plate);	//同步用户分组
+					}else {
+						userGroupInputService.syncByUserId(userId);	//同步用户分组信息
+					}
+				}
+				
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -241,7 +255,19 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	@Override
 	public List<ResVechicleMark> findResList(HttpServletRequest request) {
-		return this.vehicleMarkManageClusterMapper.findResList(getCache(request).getId());
+		Map<String,Object> param = null;
+		List<ResVechicleMark> list = this.vehicleMarkManageClusterMapper.findResList(getCache(request).getId());
+		if(CollectionUtils.isNotEmpty(list)) {
+			for(ResVechicleMark vm: list) {
+				param = new HashMap<String,Object>();
+				param.put("userId", vm.getUserId());
+				param.put("plate", vm.getVehMark());
+				boolean existFlag = opsRentUserClient.checkExist(param);
+				logger.info("------------param:{}---------->>>>>> {}",JSON.toJSON(param), existFlag);
+				vm.setRentPlateFlag(existFlag);
+			}
+		}
+		return list;
 	}
 
 	@Override
