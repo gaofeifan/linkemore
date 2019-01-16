@@ -12,6 +12,9 @@ public class ResVechicleMark {
 
 	@ApiModelProperty(value="车牌号")
 	private String vehMark;
+	
+	@ApiModelProperty(value="是否长租车牌")
+	private Boolean rentPlateFlag;
 
 	public Long getId() {
 		return id;
@@ -37,5 +40,13 @@ public class ResVechicleMark {
 		this.userId = userId;
 	}
 
+	public Boolean getRentPlateFlag() {
+		return rentPlateFlag;
+	}
+
+	public void setRentPlateFlag(Boolean rentPlateFlag) {
+		this.rentPlateFlag = rentPlateFlag;
+	}
+	
 }
 
