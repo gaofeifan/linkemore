@@ -63,13 +63,13 @@ public class RentUserClientHystrix implements OpsRentUserClient {
 	@Override
 	public Boolean checkExist(Map<String, Object> param) {
 		log.info("enterprise service List<ResEntRentUser> checkExist() hystrix");		
-		return null;
+		return false;
 	}
 
 	@Override
 	public Boolean exists(Map<String, Object> param) {
 		log.info("enterprise service List<ResEntRentUser> exists() hystrix");	
-		return null;
+		return false;
 	}
 
 	@Override
