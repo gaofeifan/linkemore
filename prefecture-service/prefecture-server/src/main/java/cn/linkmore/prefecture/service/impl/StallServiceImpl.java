@@ -426,9 +426,7 @@ public class StallServiceImpl implements StallService {
 			// 更新根据车位名称查询的车位编号为新安装的车位编号
 			stallName.setLockSn(reqLockIntall.getLockSn());
 			// 更新原来车位编号的车位将车位编号设置为null
-			if(!stallName.getLockSn().equals(stallLock.getSn())) {
-				this.stallLockMasterMapper.deleteByStallId(stall.getId());
-			}
+			this.stallLockMasterMapper.deleteByStallId(stall.getId());
 			this.stallMasterMapper.delete(stall.getId());
 			// 更新更改后的车位锁关系
 			stallLock.setSn(reqLockIntall.getLockSn());
