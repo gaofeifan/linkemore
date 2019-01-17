@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
+import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 
@@ -28,7 +29,7 @@ public interface UserRentStallService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	Boolean control(ReqConStall reqConStall, HttpServletRequest request);
+	Boolean control(ReqUserRentStall reqConStall, HttpServletRequest request);
 
 	/**
 	 * @Description  

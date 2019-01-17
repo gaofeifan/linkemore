@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
+import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.service.UserRentStallService;
@@ -51,10 +51,10 @@ public class AppUserRentStallController {
 		 return response;
 	}
 	
-	@ApiOperation(value = "长租用户操作车位锁", notes = "8005099,地锁升起失败,再升一次,8005100,地锁降下失败,再降一次,8005101,地锁升起失败,8005102,地锁降下失败,8005093 车位锁其他用户在操作;", consumes = "application/json")
+	@ApiOperation(value = "长租用户操作车位锁", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Boolean> controlLock(@Validated @RequestBody ReqConStall reqConStall,HttpServletRequest request) {
+	public ResponseEntity<Boolean> controlLock(@Validated @RequestBody ReqUserRentStall reqConStall,HttpServletRequest request) {
 		try {
 			Boolean control = userRentStallService.control(reqConStall, request);
 			return ResponseEntity.success(control, request);
