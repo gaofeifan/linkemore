@@ -13,7 +13,7 @@ public class ReqUserRentStall {
 	
 	@ApiModelProperty("操作动作( 1:下降 2 升起 )")
 	@NotNull(message="状态不能为空")
-	@Range(max=2,min=1,message="操作动作为1或2")
+//	@Range(max=2,min=1,message="操作动作为1或2")
 	private Integer state;
 
 	public Long getStallId() {
