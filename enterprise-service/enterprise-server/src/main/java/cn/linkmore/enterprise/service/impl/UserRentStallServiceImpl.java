@@ -28,6 +28,7 @@ import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
+import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.OwnerStall;
@@ -223,7 +224,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	}
 
 	@Override
-	public Boolean control(ReqConStall reqOperatStall, HttpServletRequest request) {
+	public Boolean control(ReqUserRentStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
