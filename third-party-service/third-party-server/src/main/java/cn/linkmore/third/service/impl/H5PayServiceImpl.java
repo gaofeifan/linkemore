@@ -68,7 +68,7 @@ public class H5PayServiceImpl implements H5PayService {
 	public ResH5Term wxpay(ReqH5Term reqH5Term) {
 		ResH5Term resParm = new ResH5Term();
 		try {
-			log.info("存储配置信息>>>" + JSON.toJSON(reqH5Term));
+			//log.info("存储配置信息>>>" + JSON.toJSON(reqH5Term));
 			Map<String, Object> map = ObjectUtils.objectToMap(reqH5Term);
 			ThreadRepertory.setParm(map);
 
@@ -136,7 +136,7 @@ public class H5PayServiceImpl implements H5PayService {
         sParas.put("_input_charset", AlipayConfig.input_charset);
 		sParas.put("payment_type", AlipayConfig.payment_type);
 		sParas.put("notify_url", reqH5Term.getNotifyUrl());
-		sParas.put("return_url", AlipayConfig.return_url);
+		sParas.put("return_url", reqH5Term.getReturn_url());
 		sParas.put("out_trade_no", reqH5Term.getOrderId());
 		sParas.put("subject", reqH5Term.getOpenId());
 		sParas.put("total_fee", reqH5Term.getTotalAmount().toString());

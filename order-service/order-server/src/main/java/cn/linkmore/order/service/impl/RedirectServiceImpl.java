@@ -305,7 +305,7 @@ public class RedirectServiceImpl implements RedirectService {
 		req.setPreId(reqPayParm.getPreId());
 		req.setType(Transaction.WX);
 		ResPayConfig config = payConfigClient.getConfig(req);
-		log.info("config---" + JSON.toJSON(config));
+		//log.info("config---" + JSON.toJSON(config));
 		// 获取支付凭证
 		ReqH5Term reqH5Term = new ReqH5Term();
 		reqH5Term.setNotifyUrl(oauthConfig.getNotifyUrl());
@@ -455,7 +455,7 @@ public class RedirectServiceImpl implements RedirectService {
 		req.setPreId(reqPayParm.getPreId());
 		req.setType(Transaction.ZFB);
 		ResPayConfig config = payConfigClient.getConfig(req);
-		log.info("config---" + JSON.toJSON(config));
+		//log.info("config---" +    JSON.toJSON(config));
 		// 获取支付凭证
 		ReqH5Term reqH5Term = new ReqH5Term();
 		reqH5Term.setNotifyUrl(oauthConfig.getSendUrl());
@@ -465,6 +465,7 @@ public class RedirectServiceImpl implements RedirectService {
 		reqH5Term.setOpenId(reqPayParm.getOpenid());
 		reqH5Term.setOrderId(orderId);
 		reqH5Term.setTotalAmount(totalAmount);
+		reqH5Term.setReturn_url(oauthConfig.getZfbReturnUrl());
 		String parmUrl = h5PayClient.alipay(reqH5Term);
 		log.info("parmUrl---" + parmUrl);
 		return parmUrl;
