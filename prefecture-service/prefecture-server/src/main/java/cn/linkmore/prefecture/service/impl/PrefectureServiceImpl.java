@@ -538,6 +538,16 @@ public class PrefectureServiceImpl implements PrefectureService {
 				count = 0L;
 			}
 			detail.setLeisureStall(count.intValue());
+			if(preDetail.getRegion()!= null && preDetail.getRegion().contains("地面")) {
+				detail.setRegion1("地面");
+			}
+			if(preDetail.getRegion()!= null && preDetail.getRegion().contains("地下")) {
+				detail.setRegion2("地下");
+			}
+			detail.setTotalStallNum(preDetail.getTotalStallNum());
+			detail.setUnderLayer(preDetail.getUnderLayer());
+			detail.setPreType(preDetail.getPreType());
+			
 			List<ResPrefectureGroup> preGroup = new ArrayList<ResPrefectureGroup>();
 			ResPrefectureGroup group = null;
 			Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + preId);
