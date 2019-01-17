@@ -121,7 +121,7 @@ public class RedirectServiceImpl implements RedirectService {
 		BigDecimal totalmoney = new BigDecimal(0);
 		// 无过往订单
 		if (list.isEmpty() && list.size() == 0) {
-			totalmoney = new BigDecimal(data.get("amount").toString());
+			totalmoney = new BigDecimal(data.get("amount").toString()).setScale(2);
 			res.setUseTime(useTime);
 			res.setMoney(totalmoney);
 			//res.setPayrecords(payrecords);
@@ -158,7 +158,7 @@ public class RedirectServiceImpl implements RedirectService {
 		}
 		// 超时
 		if (staytime >= Long.valueOf(String.valueOf(data.get("freeTime")))) {
-			totalmoney = new BigDecimal(data.get("amount").toString()).subtract(alreadyPay);
+			totalmoney = new BigDecimal(data.get("amount").toString()).subtract(alreadyPay).setScale(2);
 			res.setUseTime(staytime);
 			res.setMoney(totalmoney);
 			res.setPayrecords(payrecords);
