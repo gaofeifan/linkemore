@@ -237,8 +237,8 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 	 */
 	public Boolean checkExist(Map<String,Object> param){
 		boolean flag = false;
-		Long userId = (Long)param.get("userId");
-		Long preId = (Long)param.get("preId");
+		Long userId = Long.valueOf(param.get("userId").toString());
+		Long preId = Long.valueOf(param.get("preId").toString());
 		String plate = null;
 		if(param.get("plate") != null) {
 			plate = (String)param.get("plate");
