@@ -31,6 +31,9 @@ public class ResPrefecture {
 	
 	@ApiModelProperty(value = "计费价格")
 	private String chargePrice;
+	
+	@ApiModelProperty(value = "免费时长")
+	private String freeMins;
 
 	@ApiModelProperty(value = "车区地图")
 	private String imageUrl;
@@ -245,6 +248,14 @@ public class ResPrefecture {
 
 	public void setPlateNumber(String plateNumber) {
 		this.plateNumber = plateNumber;
+	}
+
+	public String getFreeMins() {
+		return freeMins;
+	}
+
+	public void setFreeMins(String freeMins) {
+		this.freeMins = freeMins;
 	} 
 	
 }

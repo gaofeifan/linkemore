@@ -51,6 +51,11 @@ public class ResLockInfo {
 	 *  升降成功次数
 	 */ 
 	private int optionSuccessCount;
+	
+	/**
+	 *  网关状态 1 在线 0 离线
+	 */ 
+	private int onlineState;
 
 	public String getLockCode() {
 		return lockCode;
@@ -130,5 +135,13 @@ public class ResLockInfo {
 
 	public void setOptionSuccessCount(int optionSuccessCount) {
 		this.optionSuccessCount = optionSuccessCount;
+	}
+
+	public int getOnlineState() {
+		return onlineState;
+	}
+
+	public void setOnlineState(int onlineState) {
+		this.onlineState = onlineState;
 	}
 }

@@ -52,7 +52,7 @@ public class UserStaffServiceImpl implements UserStaffService {
 			record.setId(user.getId());
 			this.userStaffMasterMapper.saveReq(record);
 		}else {
-			throw new DataException("对应账号不存在");
+			throw new RuntimeException("对应账号不存在");
 		}
 	}
 

@@ -428,6 +428,39 @@ public class PrefectureServiceImpl implements PrefectureService {
 			if(prb.getRegion()!= null && prb.getRegion().contains("地下")) {
 				prb.setRegion2("地下");
 			}
+			
+			String freeMins = "";
+			String appFreeMins = "";
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("prefectureId", prb.getId());
+			List<ResStrategyGroup> strategyGroupList = strategyGroupClusterMapper.findPreGroupList(param);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			if (CollectionUtils.isNotEmpty(strategyGroupList)) {
+				for (ResStrategyGroup strategyGroup : strategyGroupList) {
+					Map<String, Object> paramFee = new HashMap<String, Object>();
+					paramFee.put("strategGroupId", strategyGroup.getId());
+					paramFee.put("searchDateTime", sdf.format(new Date()));
+					String json = strategyFeeService.info(paramFee);
+					log.info("..........pre detail param fee{},json{}", JSON.toJSON(paramFee), json);
+					if (json != null) {
+						JSONObject data = JSONObject.parseObject(json);
+						if (data.getInteger("code") == 200) {
+							if(data.getString("detail") != null) {
+								JSONObject detailObj = JSONObject.parseObject(data.getString("detail"));
+								freeMins = String.valueOf(detailObj.getInteger("free"));
+							}
+						}
+					}
+				}
+			}
+			if(StringUtils.isNotBlank(freeMins)) {
+				if(Integer.valueOf(freeMins)>= 60) {
+					appFreeMins = "免费" + div(Double.valueOf(freeMins), 60D, 2) +"小时";
+				}else {
+					appFreeMins = "免费" + freeMins +"分钟";
+				}
+			}
+			prb.setFreeMins(appFreeMins);
 		}
 
 		Map<Long, List<ResPrefecture>> map = preList.stream().collect(Collectors.groupingBy(ResPrefecture::getCityId));
@@ -505,6 +538,16 @@ public class PrefectureServiceImpl implements PrefectureService {
 				count = 0L;
 			}
 			detail.setLeisureStall(count.intValue());
+			if(preDetail.getRegion()!= null && preDetail.getRegion().contains("地面")) {
+				detail.setRegion1("地面");
+			}
+			if(preDetail.getRegion()!= null && preDetail.getRegion().contains("地下")) {
+				detail.setRegion2("地下");
+			}
+			detail.setTotalStallNum(preDetail.getTotalStallNum());
+			detail.setUnderLayer(preDetail.getUnderLayer());
+			detail.setPreType(preDetail.getPreType());
+			
 			List<ResPrefectureGroup> preGroup = new ArrayList<ResPrefectureGroup>();
 			ResPrefectureGroup group = null;
 			Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + preId);

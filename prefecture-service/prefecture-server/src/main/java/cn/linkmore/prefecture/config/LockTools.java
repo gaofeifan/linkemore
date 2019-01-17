@@ -192,16 +192,19 @@ public class LockTools {
 		ResLockInfo info = null;
 		for (Map<String,Object> obj : lockInfos) {
 			info = new ResLockInfo();
-			info.setElectricity(Integer.decode(obj.get("electricity").toString()));
-			info.setGatewaySum(Integer.decode(obj.get("gatewaySum").toString()));
-			info.setInductionState(Integer.decode(obj.get("inductionState").toString()));
+			info.setElectricity(Integer.parseInt(obj.get("electricity").toString()));
+			info.setGatewaySum(Integer.parseInt(obj.get("gatewaySum").toString()));
+			info.setInductionState(Integer.parseInt(obj.get("inductionState").toString()));
 			info.setLockCode(obj.get("lockCode").toString());
-			info.setLockState(Integer.decode(obj.get("lockState").toString()));
+			info.setLockState(Integer.parseInt(obj.get("lockState").toString()));
 			info.setModel(obj.get("model").toString());
-			info.setOptionCount(Integer.decode(obj.get("optionCount").toString()));
-			info.setOptionSuccessCount(Integer.decode(obj.get("optionSuccessCount").toString()));
-			info.setParkingState(Integer.decode(obj.get("parkingState").toString()));
+			info.setOptionCount(Integer.parseInt(obj.get("optionCount").toString()));
+			info.setOptionSuccessCount(Integer.parseInt(obj.get("optionSuccessCount").toString()));
+			info.setParkingState(Integer.parseInt(obj.get("parkingState").toString()));
 			info.setVersion(obj.get("version").toString());
+			if(obj.get("onlineState") != null) {
+				info.setOnlineState(Integer.parseInt(obj.get("onlineState").toString()));
+			}
 			resLockInfos.add(info);
 		}
 		return resLockInfos;

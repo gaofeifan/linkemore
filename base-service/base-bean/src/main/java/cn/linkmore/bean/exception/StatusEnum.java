@@ -132,7 +132,8 @@ public enum StatusEnum {
 	UP_LOCK_FAIL_RETRY_OWNER(8005099,"地锁升起失败,再升一次"),
 	DOWN_LOCK_FAIL_RETRY_OWNER(8005100,"地锁降下失败,再降一次"),
 	UP_LOCK_FAIL_CHANGE_OWNER(8005101,"地锁升起失败"),
-	DOWN_LOCK_FAIL_CHANGE_OWNER(8005102,"地锁降下失败");
+	DOWN_LOCK_FAIL_CHANGE_OWNER(8005102,"地锁降下失败"),
+	STAFF_STALL_BIN_EXISTS(8005103,"该车位已绑定该车锁");
 
 	
 	public int code;

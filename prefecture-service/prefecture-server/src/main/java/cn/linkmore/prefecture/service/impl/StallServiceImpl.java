@@ -10,15 +10,19 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Stopwatch;
+
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.ClientSource;
@@ -122,7 +126,6 @@ import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
-import cn.linkmore.util.StringUtil;
 import cn.linkmore.util.TokenUtil;
 
 /**
@@ -394,7 +397,6 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public void install(ReqLockIntall reqLockIntall,HttpServletRequest request) {
-		
 		CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 
@@ -404,40 +406,108 @@ public class StallServiceImpl implements StallService {
 	    Stall stall = new Stall();
 
 	    stallLock =	stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
-		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
-		
+	    stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
 		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
 		if(stallName != null) {
 			if(!checkStaffStallAuth(cu.getId(), stallName.getId())) {
 				throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
 			}
-		}
-		//	安装数据存
-		if(stallLock != null) {
-			//判断根据车位编号查询的车位为下线状态
-			if(stall.getStatus() != 4) {
+			if(stallName.getStatus() != 4) {
 				throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
 			}
-			// 如果新安装的车位编号与车位名称与原来的不相同
-			if(!stall.getStallName().equals(reqLockIntall.getStallName())) {
-				if(stallName.getStatus() != 4) {
-					// 判断根据车位名称车位状态也为下线状态
-					throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
+			//	判断绑定的车位还是为原车位时操作
+			if(stallLock != null && stallLock.getStallId() != null && stallLock.getStallId().equals(stallName.getId()) ) {
+				throw new BusinessException(StatusEnum.STAFF_STALL_BIN_EXISTS);
+			}
+		}
+		
+		//	判断如果是两个车位之间的互换操作
+		if(stallLock != null && stallName != null && stallLock.getStallId() != null && stallName.getLockId() != null && stallName.getId() != stallLock.getStallId()) {
+			// 更新根据车位名称查询的车位编号为新安装的车位编号
+			stallName.setLockSn(reqLockIntall.getLockSn());
+			// 更新原来车位编号的车位将车位编号设置为null
+			this.stallLockMasterMapper.deleteByStallId(stall.getId());
+			this.stallMasterMapper.delete(stall.getId());
+			StallLock oStallLock = this.stallLockClusterMapper.findByStallId(stallName.getId());
+			// 更新更改后的车位锁关系
+			oStallLock.setSn(reqLockIntall.getLockSn());
+//			oStallLock.setStallId(stallName.getId());
+			oStallLock.setPrefectureId(stallName.getPreId());
+			this.stallLockMasterMapper.update(stallLock);
+//			stallName.setLockId(stallLock.getId());
+			this.stallMasterMapper.update(stallName);
+		}else if(stallLock != null|| stallName != null ) {
+			if(stallLock != null) {
+				if(stallName != null) {
+					stallLock.setStallId(stallName.getId());
+					stallLock.setPrefectureId(stallName.getPreId());
+					stallLock.setBindTime(new Date());
+					this.stallLockMasterMapper.updateBind(stallLock);
+					stallName.setLockId(stallLock.getId());
+					stallName.setLockSn(stallLock.getSn());
+					this.stallMasterMapper.update(stallName);
+				}else {
+					if(stall != null) {
+						this.stallMasterMapper.delete(stall.getId());
+					}
+					// 插入新车位并绑定
+					stallName = new Stall();
+					stallName.setStallName(reqLockIntall.getStallName());
+					stallName.setSellCount(0);
+					stallName.setPreId(reqLockIntall.getPreId());
+					stallName.setGatewayId(0l);
+					stallName.setBindOrderStatus((short) 0);
+					stallName.setStatus(4);
+					stallName.setLockBattery(0);
+					stallName.setCreateTime(now);
+					stallName.setUpdateTime(now);
+					stallName.setLockSn(reqLockIntall.getLockSn());
+					stallName.setLockId(stallLock.getId());
+					stallName.setLockStatus(0);
+					stallName.setLockBattery(0);
+					stallName.setType((short)0);
+					stallName.setAreaName(reqLockIntall.getAreaName());
+					stallName.setStallLocal(reqLockIntall.getStallName());
+					// 插入车位
+					this.stallMasterMapper.save(stallName);
+					Map<String, Object> param = new HashMap<>();
+					param.put("userId", cu.getId());
+					List<ResAdminUserAuth> userAuth = this.adminUserAuthClusterMapper.findList(param );
+					if(userAuth == null || userAuth.size() == 0) {
+						throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+					}
+					param.put("stallId", stallName.getId());
+					List<ResAdminAuthStall> list = this.adminAuthStallClusterMapper.findStallList(param);
+					if(list == null || list.size() == 0) {
+						AdminAuthStall record = new AdminAuthStall();
+						record.setAuthId(userAuth.get(0).getAuthId());
+						record.setStallId(stallName.getId());
+						this.AdminAuthStallMasterMapper.save(record );
+					}
+					stallLock.setStallId(stallName.getId());
+					stallLock.setPrefectureId(stallName.getPreId());
+					stallLock.setBindTime(new Date());
+					this.stallLockMasterMapper.updateBind(stallLock);
 				}
-				// 更新根据车位名称查询的车位编号为新安装的车位编号
-				stallName.setLockSn(reqLockIntall.getLockSn());
-				this.stallMasterMapper.update(stallName);
-				// 判断原来车位在安装表里面是否存在
-				this.stallLockMasterMapper.deleteByLockSn(stall.getLockSn());
-				// 更新原来车位编号的车位将车位编号设置为null
-				this.stallMasterMapper.delete(stall.getId());
-				// 更新更改后的车位锁关系
+			}else {
+				this.stallLockMasterMapper.deleteByStallId(stallName.getId());
+				stallLock = new StallLock();
+				stallLock.setCreateTime(now);
 				stallLock.setSn(reqLockIntall.getLockSn());
+				stallLock.setCreateUserName(adminUser.getRealname());
+				stallLock.setCreateUserId(adminUser.getId());
 				stallLock.setStallId(stallName.getId());
 				stallLock.setPrefectureId(stallName.getPreId());
-				this.stallLockMasterMapper.update(stallLock);
+				stallLock.setBindTime(new Date());
+				stallLockMasterMapper.save(stallLock);
+				stallLockMasterMapper.updateBind(stallLock);
+				
+				stallName.setLockSn(reqLockIntall.getLockSn());
+				stallName.setLockId(stallLock.getId());
+				this.stallMasterMapper.update(stallName);
+				
 			}
-		}else {
+		//	安装数else {
 	    //验证
 //		if(stallLock!=null|| stall!=null ) {
 //			throw new BusinessException(StatusEnum.LOCK_SN_AlREADY_BAND);
@@ -445,7 +515,7 @@ public class StallServiceImpl implements StallService {
 //		if(stallName!= null) {
 //			throw new BusinessException(StatusEnum.STALL_NAME_USER);
 //		}
-//		
+	}else {
 		 stallLock = new StallLock();
 	     stall = new Stall();
 		
@@ -474,6 +544,7 @@ public class StallServiceImpl implements StallService {
 		stall.setType((short)0);
 		stall.setAreaName(reqLockIntall.getAreaName());
 		stall.setStallLocal(reqLockIntall.getStallName());
+		
 		// 插入车位
 		this.stallMasterMapper.save(stall);
 		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
