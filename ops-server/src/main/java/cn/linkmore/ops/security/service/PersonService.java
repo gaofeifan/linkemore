@@ -1,6 +1,8 @@
 package cn.linkmore.ops.security.service;
 
 import java.util.List;
+import java.util.Map;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.security.request.ReqCheck;
@@ -91,7 +93,7 @@ public interface PersonService {
 	 * 启用的所有角色信息
 	 * @return
 	 */
-	List<ResRole> roleList();
+	List<ResRole> roleList(Map<String,Object> param);
 	
 	/**
 	 * 用户绑定角色
