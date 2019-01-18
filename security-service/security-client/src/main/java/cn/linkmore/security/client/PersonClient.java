@@ -1,6 +1,7 @@
 package cn.linkmore.security.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,9 +53,9 @@ public interface PersonClient {
 	@ResponseBody
 	public void unlock(@RequestParam("id") Long id);
 	
-	@RequestMapping(value = "/v2.0/role_list", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/role_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResRole> roleList();
+	public List<ResRole> roleList(@RequestBody Map<String,Object> param);
 	
 	@RequestMapping(value = "/v2.0/bind", method = RequestMethod.GET)
 	@ResponseBody

@@ -36,7 +36,7 @@
   
    <select id="findList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
     select id,type, username,realname, password, lock_status, lock_time, login_ip, lock_count, login_time, create_time,
-    status
+    status,ent_id
     from t_sec_person
     where  1=1 
     <if test="username!=null">  
@@ -45,6 +45,7 @@
      <if test="realname!=null">  
     and realname = #{realname,jdbcType=VARCHAR}
     </if> 
+    
     <if test="status!=null">  
     and status = #{status,jdbcType=INTEGER}
     </if>  
@@ -65,6 +66,9 @@
     </if>  
     <if test="realname!=null">  
     and realname = #{realname,jdbcType=VARCHAR}
+    </if> 
+    <if test="entId!=null">  
+    and ent_id = #{entId,jdbcType=BIGINT}
     </if> 
     <if test="status!=null">  
     and status = #{status,jdbcType=INTEGER}
@@ -92,6 +96,9 @@
     </if> 
     <if test="realname!=null">  
     and realname = #{realname,jdbcType=VARCHAR}
+    </if> 
+    <if test="entId!=null">  
+    and ent_id = #{entId,jdbcType=BIGINT}
     </if> 
     <if test="status!=null">  
     and status = #{status,jdbcType=INTEGER}

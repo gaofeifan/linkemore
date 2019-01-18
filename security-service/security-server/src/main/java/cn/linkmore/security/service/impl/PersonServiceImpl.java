@@ -167,8 +167,7 @@ public class PersonServiceImpl implements PersonService {
 	
 	
 	@Override
-	public List<ResRole> roleList(){
-		Map<String,Object> param = new HashMap<String,Object>();
+	public List<ResRole> roleList(Map<String,Object> param){
 		param.put("status", 1);
 		return this.roleClusterMapper.findList(param);
 	}
