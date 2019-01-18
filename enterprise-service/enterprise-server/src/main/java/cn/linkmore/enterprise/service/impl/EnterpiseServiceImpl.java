@@ -96,7 +96,13 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 		person.setLoginIp("");
 		person.setRealname(record.getName());
 		person.setLoginTime(new Date());
+		//person.setEntId(entId);
 		Long personId = this.personClient.save(person);
+		
+		person.setId(personId);
+		person.setEntId(personId);
+		personClient.updateEntId(person);
+		
 		record.setId(personId);
 		record.setCreateTime(new Date());
 		record.setUpdateTime(new Date());

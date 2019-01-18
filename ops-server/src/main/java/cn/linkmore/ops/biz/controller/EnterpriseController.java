@@ -26,7 +26,7 @@ import cn.linkmore.security.request.ReqPerson;
  */
 @Controller
 @RequestMapping("/admin/biz/enterprise")
-public class EnterpriseController {
+public class EnterpriseController extends BaseController{
 	@Resource
 	private EnterpriseService enterpriseService;
 

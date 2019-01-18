@@ -99,5 +99,9 @@ public class PersonClientHystrix implements PersonClient {
 		log.info("person roleList");
 		return null;
 	}
-
+	@Override
+	public int updateEntId(ReqPerson reqPerson) {
+		log.info("person updateEntId");
+		return 0;
+	}
 }
