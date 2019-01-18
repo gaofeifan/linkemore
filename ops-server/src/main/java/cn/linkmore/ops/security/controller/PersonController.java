@@ -50,6 +50,7 @@ public class PersonController extends BaseController{
 	public ViewMsg save(ReqPerson person){
 		ViewMsg msg = null;
 		try {
+			/*
 			Subject subject = SecurityUtils.getSubject();
 			ResPerson resPerson = (ResPerson)subject.getSession().getAttribute("person"); 
 			Map<String,Object> param = new HashMap<String,Object>();
@@ -61,6 +62,12 @@ public class PersonController extends BaseController{
 				person.setEntId(enter.getId());
 				person.setType(2);
 			}
+			*/
+			if(getPerson().getEntId() != null && getPerson().getEntId()>0) {
+				person.setEntId(getPerson().getEntId());
+				person.setType(2);
+			}
+			
 			this.personService.save(person);
 			msg = new ViewMsg("保存成功",true);
 		}catch(DataException e) {
