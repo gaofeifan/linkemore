@@ -69,7 +69,10 @@
     </if> 
     <if test="entId!=null">  
     and ent_id = #{entId,jdbcType=BIGINT}
-    </if> 
+    </if>
+    <if test="idNotEQUAL !=null">  
+    	and id ! = #{idNotEQUAL,jdbcType=BIGINT}
+    </if>
     <if test="status!=null">  
     and status = #{status,jdbcType=INTEGER}
     </if>  
@@ -91,18 +94,27 @@
   <select id="count"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
     select count(1)
     from t_sec_person where 1=1
-    <if test="username!=null">  
+   <if test="username!=null">  
     and username = #{username,jdbcType=VARCHAR}
-    </if> 
+    </if>  
     <if test="realname!=null">  
     and realname = #{realname,jdbcType=VARCHAR}
     </if> 
     <if test="entId!=null">  
     and ent_id = #{entId,jdbcType=BIGINT}
-    </if> 
+    </if>
+    <if test="idNotEQUAL !=null">  
+    	and id ! = #{idNotEQUAL,jdbcType=BIGINT}
+    </if>
     <if test="status!=null">  
     and status = #{status,jdbcType=INTEGER}
     </if>  
+    <if test="property==null">  
+     order by create_time desc
+    </if>
+    <if test="property!=null">  
+    order by  ${property} ${direction}
+    </if> 
   </select>
   
   <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">

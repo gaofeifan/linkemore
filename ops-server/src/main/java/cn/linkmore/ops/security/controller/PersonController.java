@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.controller.BaseController;
 import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.security.request.ReqCheck;
 import cn.linkmore.ops.security.response.ResPersonRole;
@@ -35,7 +37,7 @@ import cn.linkmore.security.response.ResPerson;
  */
 @Controller
 @RequestMapping("/admin/security/person")
-public class PersonController {
+public class PersonController extends BaseController{
 	
 	@Autowired
 	private PersonService personService;
@@ -111,6 +113,10 @@ public class PersonController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request,ViewPageable pageable){
+		if(getPerson().getEntId() != null && getPerson().getEntId()>0) {
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"entId",getPerson().getEntId()));
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"idNotEQUAL",getPerson().getId()));
+		}
 		return this.personService.findPage(pageable); 
 	}  
 	
