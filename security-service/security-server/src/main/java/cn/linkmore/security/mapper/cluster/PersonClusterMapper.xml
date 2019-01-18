@@ -71,7 +71,7 @@
     and ent_id = #{entId,jdbcType=BIGINT}
     </if>
     <if test="idNotEQUAL !=null">  
-    	and id ! = #{idNotEQUAL,jdbcType=BIGINT}
+    	and id != #{idNotEQUAL,jdbcType=BIGINT}
     </if>
     <if test="status!=null">  
     and status = #{status,jdbcType=INTEGER}
@@ -104,17 +104,11 @@
     and ent_id = #{entId,jdbcType=BIGINT}
     </if>
     <if test="idNotEQUAL !=null">  
-    	and id ! = #{idNotEQUAL,jdbcType=BIGINT}
+    	and id != #{idNotEQUAL,jdbcType=BIGINT}
     </if>
     <if test="status!=null">  
     and status = #{status,jdbcType=INTEGER}
     </if>  
-    <if test="property==null">  
-     order by create_time desc
-    </if>
-    <if test="property!=null">  
-    order by  ${property} ${direction}
-    </if> 
   </select>
   
   <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
