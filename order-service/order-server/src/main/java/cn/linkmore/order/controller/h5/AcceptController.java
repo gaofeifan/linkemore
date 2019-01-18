@@ -160,7 +160,8 @@ public class AcceptController {
 	@RequestMapping(value = "/f", method = RequestMethod.GET)
 	public String returnIndex()  {
 		log.info("转发到支付宝成功页面");
-		String retURI = "redirect:http://order.linkmoreparking.cn/#/paysuccess";//支付成功后的返回页面
+		//String retURI = "redirect:http://order.linkmoreparking.cn/#/paysuccess";//支付成功后的返回页面
+		String retURI = "redirect:http://qrcode.linkmoreparking.com/#/paysuccess";//支付成功后的返回页面
 		return retURI;
 	}
 

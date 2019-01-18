@@ -27,5 +27,7 @@ public interface PersonMasterMapper {
 	int unlock(Long id);
 
 	void updatePassword(Person person);
+
+	int updateEntId(ReqPerson reqPerson);
 	
 }

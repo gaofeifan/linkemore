@@ -38,7 +38,6 @@ public class CodePreController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	// 查询列表
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(ViewPageable pageable, HttpServletRequest request) throws IOException {
@@ -46,7 +45,6 @@ public class CodePreController {
 		return codePreService.findPage(pageable);
 	}
 
-	// 查询列表
 	@RequestMapping(value = "/record", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage record(ViewPageable pageable, HttpServletRequest request) throws IOException {
@@ -54,7 +52,6 @@ public class CodePreController {
 		return codePreService.findRecordPage(pageable);
 	}
 
-	// 查询列表
 	@RequestMapping(value = "/payList", method = RequestMethod.POST)
 	@ResponseBody
 	public List<Map<String, Object>> payList(@RequestBody String orderNo, HttpServletRequest request)
@@ -63,7 +60,6 @@ public class CodePreController {
 		return codePreService.payList(orderNo);
 	}
 
-	// 查询列表
 	@RequestMapping(value = "/selectAll", method = RequestMethod.POST)
 	@ResponseBody
 	public List<Map<String, Object>> selectAll() throws IOException {
@@ -71,7 +67,6 @@ public class CodePreController {
 		return codePreService.selectAll();
 	}
 
-	// 查询列表
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg save(ReqDep reqDep, HttpServletRequest request) throws IOException {
@@ -87,7 +82,6 @@ public class CodePreController {
 		return msg;
 	}
 
-	// 删除
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg delete(@RequestBody String preId) throws IOException {
@@ -103,7 +97,6 @@ public class CodePreController {
 		return msg;
 	}
 
-	// 删除
 	@RequestMapping(value = "/down", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> down(@RequestBody String orderNo, HttpServletRequest request) throws IOException {

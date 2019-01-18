@@ -29,7 +29,7 @@
     and name like #{name,jdbcType=VARCHAR}
     </if> 
     <if test="code!=null">  
-    and code = #{code,jdbcType=INTEGER}
+    and code like #{code,jdbcType=INTEGER}
     </if>  
     <if test="status!=null">  
     and status = #{status,jdbcType=INTEGER}

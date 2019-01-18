@@ -3,29 +3,41 @@ package cn.linkmore.order.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@ConfigurationProperties(prefix ="oauth")
+@ConfigurationProperties(prefix = "oauth")
 @Component
 public class OauthConfig {
-	
-	/*第一次重定向获取code */
+
 	private String wxCodeUrl;
-	
-	/*第一次重定向获取code */
+
 	private String zfbCodeUrl;
 
-	/*第二次重定向到H5页面 */
-	
 	private String h5Url;
-	
+
 	private String notifyUrl;
-	
-    private  String  parkOrder;
-    
-    private String sendUrl;
-    
-    private String orderCheckout;
-  
-    
+
+	private String parkOrder;
+
+	private String sendUrl;
+
+	private String orderCheckout;
+
+	private String zfbReturnUrl;
+
+	/**
+	 * @return the zfbReturnUrl
+	 */
+	public String getZfbReturnUrl() {
+		return zfbReturnUrl;
+	}
+
+	/**
+	 * @param zfbReturnUrl
+	 *            the zfbReturnUrl to set
+	 */
+	public void setZfbReturnUrl(String zfbReturnUrl) {
+		this.zfbReturnUrl = zfbReturnUrl;
+	}
+
 	/**
 	 * @return the orderCheckout
 	 */
@@ -34,7 +46,8 @@ public class OauthConfig {
 	}
 
 	/**
-	 * @param orderCheckout the orderCheckout to set
+	 * @param orderCheckout
+	 *            the orderCheckout to set
 	 */
 	public void setOrderCheckout(String orderCheckout) {
 		this.orderCheckout = orderCheckout;
@@ -48,7 +61,8 @@ public class OauthConfig {
 	}
 
 	/**
-	 * @param sendUrl the sendUrl to set
+	 * @param sendUrl
+	 *            the sendUrl to set
 	 */
 	public void setSendUrl(String sendUrl) {
 		this.sendUrl = sendUrl;
@@ -62,7 +76,8 @@ public class OauthConfig {
 	}
 
 	/**
-	 * @param parkOrder the parkOrder to set
+	 * @param parkOrder
+	 *            the parkOrder to set
 	 */
 	public void setParkOrder(String parkOrder) {
 		this.parkOrder = parkOrder;
@@ -99,9 +114,5 @@ public class OauthConfig {
 	public void setH5Url(String h5Url) {
 		this.h5Url = h5Url;
 	}
-	
-	
-	
 
-	
 }

@@ -1,22 +1,33 @@
 package cn.linkmore.ops.security.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.ops.biz.controller.BaseController;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.security.request.ReqCheck;
 import cn.linkmore.ops.security.response.ResPersonRole;
 import cn.linkmore.ops.security.response.ResRole;
 import cn.linkmore.ops.security.service.PersonService;
 import cn.linkmore.security.request.ReqPerson;
+import cn.linkmore.security.response.ResPerson;
 
 /**
  * Controller - 权限模块  - 用户
@@ -26,16 +37,30 @@ import cn.linkmore.security.request.ReqPerson;
  */
 @Controller
 @RequestMapping("/admin/security/person")
-public class PersonController {
+public class PersonController extends BaseController{
 	
 	@Autowired
 	private PersonService personService;
+	
+	@Autowired
+	private EnterpriseService enterService;
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg save(ReqPerson person){
 		ViewMsg msg = null;
 		try {
+			Subject subject = SecurityUtils.getSubject();
+			ResPerson resPerson = (ResPerson)subject.getSession().getAttribute("person"); 
+			Map<String,Object> param = new HashMap<String,Object>();
+			param.put("property", "id");
+			param.put("value", resPerson.getId());
+			ResEnterprise enter = enterService.find(param);
+			//如果为企业管理员账号添加操作员则设置ent_id为操作人id
+			if(enter != null) {
+				person.setEntId(enter.getId());
+				person.setType(2);
+			}
 			this.personService.save(person);
 			msg = new ViewMsg("保存成功",true);
 		}catch(DataException e) {
@@ -88,6 +113,10 @@ public class PersonController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request,ViewPageable pageable){
+		if(getPerson().getEntId() != null && getPerson().getEntId()>0) {
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"entId",getPerson().getEntId()));
+			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"idNotEQUAL",getPerson().getId()));
+		}
 		return this.personService.findPage(pageable); 
 	}  
 	
@@ -110,7 +139,17 @@ public class PersonController {
 	@RequestMapping(value = "/role_list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResRole> roleList(HttpServletRequest request){
-		return this.personService.roleList();
+		Subject subject = SecurityUtils.getSubject();
+		ResPerson resPerson = (ResPerson)subject.getSession().getAttribute("person"); 
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("property", "id");
+		param.put("value", resPerson.getId());
+		ResEnterprise enter = enterService.find(param);
+		Map<String,Object> roleParam = new HashMap<String,Object>();
+		if(enter != null) {
+			roleParam.put("code", "%parking%");
+		}
+		return this.personService.roleList(roleParam);
 	}  
 	
 	

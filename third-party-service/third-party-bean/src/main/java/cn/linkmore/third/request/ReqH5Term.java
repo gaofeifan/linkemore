@@ -26,7 +26,23 @@ public class ReqH5Term {
 	
 	private String notifyUrl;
 	
+	private String return_url;
 	
+	
+	
+	/**
+	 * @return the return_url
+	 */
+	public String getReturn_url() {
+		return return_url;
+	}
+
+	/**
+	 * @param return_url the return_url to set
+	 */
+	public void setReturn_url(String return_url) {
+		this.return_url = return_url;
+	}
 
 	public String getNotifyUrl() {
 		return notifyUrl;

@@ -2,6 +2,8 @@ package cn.linkmore.ops.security.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewPage;
@@ -101,10 +103,10 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public List<ResRole> roleList() {
+	public List<ResRole> roleList(Map<String,Object> param) {
 		List<ResRole> resRoleList = new ArrayList<ResRole>();
 		ResRole resRole = null;
-		List<cn.linkmore.security.response.ResRole> resList = this.personClient.roleList();
+		List<cn.linkmore.security.response.ResRole> resList = this.personClient.roleList(param);
 		for(cn.linkmore.security.response.ResRole role :resList) {
 			resRole = new ResRole();
 			resRole = ObjectUtils.copyObject(role, resRole);

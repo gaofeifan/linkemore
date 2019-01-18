@@ -53,6 +53,12 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   
+   <update id="updateEntId" parameterType="cn.linkmore.security.entity.Person">
+    update t_sec_person
+    set end_id = #{entId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
   <update id="updatePassword" parameterType="cn.linkmore.security.entity.Person" >
     update t_sec_person
     set  password = #{password,jdbcType=VARCHAR}
