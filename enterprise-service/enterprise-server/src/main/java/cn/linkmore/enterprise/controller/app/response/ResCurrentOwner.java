@@ -15,6 +15,9 @@ public class ResCurrentOwner {
 	/**
 	 *  车位id
 	 */ 
+	@ApiModelProperty(value="长租车位数量")
+	private int stallNumber;
+	
 	@ApiModelProperty(value="车位id")
 	private Long stallId;
 	
@@ -65,5 +68,13 @@ public class ResCurrentOwner {
 
 	public void setPreName(String preName) {
 		this.preName = preName;
+	}
+
+	public int getStallNumber() {
+		return stallNumber;
+	}
+
+	public void setStallNumber(int stallNumber) {
+		this.stallNumber = stallNumber;
 	}
 }

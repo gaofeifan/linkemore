@@ -305,6 +305,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		if(!control) {
 			if(this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId())) {
 				Object object = this.redisService.get(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId());
+				this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId());
 				throw new BusinessException(StatusEnum.get((int)object));
 				
 			}
@@ -331,7 +332,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		if(record == null) {
 			owner.setStatus(false);
 		}else {
+			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
 			owner.setStatus(true);
+			owner.setStallNumber(stalllist.size());
 			owner.setPreId(record.getPreId());
 			owner.setPreName(record.getPreName());
 			owner.setStallId(record.getStallId());
