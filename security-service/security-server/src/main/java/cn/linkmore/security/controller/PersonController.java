@@ -1,6 +1,7 @@
 package cn.linkmore.security.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,12 @@ public class PersonController {
 		return this.personService.update(reqPerson);
 	}
 	
+	@RequestMapping(value = "/v2.0/updateEntId", method = RequestMethod.POST)
+	@ResponseBody
+	public int updateEntId(@RequestBody ReqPerson reqPerson){
+		return this.personService.updateEntId(reqPerson);
+	}	
+	
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public int delete(@RequestBody List<Long> ids){ 
@@ -78,10 +85,10 @@ public class PersonController {
 		this.personService.unlock(id);
 	}
 	
-	@RequestMapping(value = "/v2.0/role_list", method = RequestMethod.GET)
+	@RequestMapping(value = "/v2.0/role_list", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResRole> roleList(){
-		return this.personService.roleList();
+	public List<ResRole> roleList(@RequestBody Map<String,Object> param){
+		return this.personService.roleList(param);
 	}  
 	
 	
