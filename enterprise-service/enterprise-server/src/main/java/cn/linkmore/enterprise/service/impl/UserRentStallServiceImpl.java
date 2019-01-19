@@ -302,12 +302,17 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		reqc.setStatus(reqOperatStall.getState());
 		reqc.setUserId(user.getId());
 		Boolean control = stallClient.appControl(reqc);
-		if(!control) {
+		if(control == null || !control) {
 			if(this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId())) {
 				Object object = this.redisService.get(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId());
 				this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId());
+				if(control == null) {
+					control = false;
+				}
 				throw new BusinessException(StatusEnum.get((int)object));
 				
+			}else {
+				control = true;
 			}
 		}
 		log.info("用户>>>" + user.getId() + "调用>>>" + reqOperatStall.getStallId());
