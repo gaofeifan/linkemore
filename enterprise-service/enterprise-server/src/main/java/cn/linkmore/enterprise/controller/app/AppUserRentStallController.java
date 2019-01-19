@@ -51,7 +51,7 @@ public class AppUserRentStallController {
 		 return response;
 	}
 	
-	@ApiOperation(value = "长租用户操作车位锁", consumes = "application/json")
+	@ApiOperation(value = "长租用户操作车位锁",notes = "8005099地锁升起失败,再升一次,8005100地锁降下失败,再降一次,8005101地锁升起失败,8005102地锁降下失败,8005093 车位锁其他用户在操作;", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> controlLock(@Validated @RequestBody ReqUserRentStall reqConStall,HttpServletRequest request) {

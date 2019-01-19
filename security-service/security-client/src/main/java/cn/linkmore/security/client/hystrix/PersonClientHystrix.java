@@ -1,6 +1,8 @@
 package cn.linkmore.security.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -59,12 +61,6 @@ public class PersonClientHystrix implements PersonClient {
 	}
 
 	@Override
-	public List<ResRole> roleList() {
-		log.info("person roleList");
-		return null;
-	}
-
-	@Override
 	public void bind(Long id, String ids) {
 		log.info("person bind");
 	}
@@ -98,4 +94,14 @@ public class PersonClientHystrix implements PersonClient {
 		log.info("person updateEntPassword");
 	}
 
+	@Override
+	public List<ResRole> roleList(Map<String, Object> param) {
+		log.info("person roleList");
+		return null;
+	}
+	@Override
+	public int updateEntId(ReqPerson reqPerson) {
+		log.info("person updateEntId");
+		return 0;
+	}
 }

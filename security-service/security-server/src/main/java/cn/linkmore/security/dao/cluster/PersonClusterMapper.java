@@ -24,4 +24,6 @@ public interface PersonClusterMapper {
 
 	Integer check(Map<String, Object> param);
 
+	
+
 }

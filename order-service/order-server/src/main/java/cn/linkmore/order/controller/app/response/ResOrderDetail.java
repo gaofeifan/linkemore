@@ -31,7 +31,7 @@ public class ResOrderDetail{
 	private Date endTime;
 	@ApiModelProperty(value = "支付时间")
 	private Date payTime;
-	@ApiModelProperty(value = "支付类型[1免费，2停车券，3账户，4支付宝，5微信，6ApplePay、7微信、8银联云闪付、7华为Pay、8小米Pay、9建行龙支付]")
+	@ApiModelProperty(value = "支付类型[1免费，2停车券，3账户，4支付宝，5微信，6ApplePay、7微信、8银联云闪付、9华为Pay、10小米Pay、11建行龙支付]")
 	private Short payType;
 	@ApiModelProperty(value = "总金额")
 	private BigDecimal totalAmount;
