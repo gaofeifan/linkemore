@@ -14,6 +14,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="type" jdbcType="INTEGER" property="type" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -37,12 +38,12 @@
       lock_status, lock_time, login_ip, 
       lock_count, login_time, status, 
       create_time, realname, ent_id, 
-      type)
+      type,ent_name)
     values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{lockStatus,jdbcType=INTEGER}, #{lockTime,jdbcType=TIMESTAMP}, #{loginIp,jdbcType=VARCHAR}, 
       #{lockCount,jdbcType=INTEGER}, #{loginTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{realname,jdbcType=VARCHAR}, #{entId,jdbcType=BIGINT}, 
-      #{type,jdbcType=INTEGER})
+      #{type,jdbcType=INTEGER},#{entName,jdbcType=VARCHAR})
   </insert>
   <update id="update" parameterType="cn.linkmore.security.entity.Person">
     update t_sec_person
