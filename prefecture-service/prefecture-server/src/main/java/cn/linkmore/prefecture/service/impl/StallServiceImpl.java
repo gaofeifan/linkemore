@@ -1653,6 +1653,7 @@ public class StallServiceImpl implements StallService {
 			ResEntExcStallStatus entExcStall = feignStallExcStatusClient.findByStallId(stallId);
 			if (entExcStall != null) {
 				detail.setExcCode(entExcStall.getExcStatus());
+				detail.setExcName(entExcStall.getExcRemark());
 			}
 		}
 		return detail;
