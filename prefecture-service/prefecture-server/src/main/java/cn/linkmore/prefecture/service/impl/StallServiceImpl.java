@@ -2100,6 +2100,12 @@ public class StallServiceImpl implements StallService {
 //						throw new BusinessException(StatusEnum.UP_LOCK_FAIL_RETRY_OWNER);
 					}
 				}
+			}else {
+				if(reqc.getStatus() == 1) {
+					this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+				}else if(reqc.getStatus() == 2){
+					this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+				}
 			}
 			if (reqc.getStatus() == 1) {
 				log.info("<<<<<<<<<down fail>>>>>>>>>>");

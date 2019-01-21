@@ -557,6 +557,7 @@ public class UserServiceImpl implements UserService {
 	
 	private final static ConcurrentHashMap<Long,Long> LOGIN_USER = new ConcurrentHashMap<Long,Long>();
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
+		String os = request.getHeader("os");
 		Token   last  = null;
 		String key = TokenUtil.getKey(request);
 		Long userId = null;
@@ -570,9 +571,15 @@ public class UserServiceImpl implements UserService {
 			userId = 0L;
 		}
 		synchronized(userId) {
-			last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+//			if(StringUtils.isNotBlank(os) && Integer.decode(os) == ClientSource.WXAPP.source) {
+//				last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ ClientSource.WXAPP.source + user.getId());
+//			}else {
+				last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+//			}
 			log.info("cacheUser syn userId = {}, last = {}",userId, JSON.toJSON(last));
 			if(last!=null){ 
+				if(StringUtils.isNotBlank(os) && Integer.decode(os) == ClientSource.WXAPP.source) {
+				}
 				log.info("cacheUser syn openId = {}", user.getOpenId());
 				if(user.getOpenId()!=null) { 
 					this.redisService.remove(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId());  
