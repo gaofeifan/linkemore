@@ -191,6 +191,7 @@
                 <directory>src/main/resource</directory>
                 <includes>
                     <include>**/*.yml</include>
+                    <include>**/*.xml</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>
