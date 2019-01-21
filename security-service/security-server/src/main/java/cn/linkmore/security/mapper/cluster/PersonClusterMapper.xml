@@ -14,11 +14,12 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="type" jdbcType="INTEGER" property="type" />
   </resultMap>
   <sql id="Base_Column_List">
     id, username, password, lock_status, lock_time, login_ip, lock_count, login_time, 
-    status, create_time, realname, ent_id, type
+    status, create_time, realname, ent_id, type, ent_name
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -29,9 +30,9 @@
   
   <select id="findByUsername" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select id,type, username,realname, password, lock_status, lock_time, login_ip, lock_count, login_time, create_time,
-    status,ent_id
+    status,ent_id ,ent_name
     from t_sec_person
-    where username = #{username,jdbcType=BIGINT} limit 0,1
+    where username = #{username,jdbcType=VARCHAR} limit 0,1
   </select>
   
    <select id="findList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
