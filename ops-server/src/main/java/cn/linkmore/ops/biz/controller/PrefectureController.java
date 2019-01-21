@@ -81,19 +81,14 @@ public class PrefectureController extends BaseController{
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
-		Subject subject = SecurityUtils.getSubject();
-		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
-		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("property", "id");
-		param.put("value", person.getId());
-		ResEnterprise enter = enterService.find(param);
-		if(enter != null) {
-			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
-			/*List<ViewFilter> filters = pageable.getFilters();
-			ViewFilter vf = new ViewFilter();
-			vf.setProperty("createUserId");
-			vf.setValue(person.getId());
-			filters.add(vf);*/
+		if(getPerson().getEntId()!= null && getPerson().getEntId() != 0L) {
+			Map<String,Object> param = new HashMap<String,Object>();
+			param.put("property", "id");
+			param.put("value", getPerson().getEntId());
+			ResEnterprise enter = enterService.find(param);
+			if(enter != null) {
+				pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createEntId",getPerson().getEntId()));
+			}
 		}
 		return this.preService.findPage(pageable);
 	}
@@ -104,8 +99,6 @@ public class PrefectureController extends BaseController{
 	@RequestMapping(value = "/list-business", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage listBusiness(HttpServletRequest request, ViewPageable pageable) {
-		 Subject subject = SecurityUtils.getSubject();
-		 ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
 		 return this.preService.findPage(pageable);
 	}
 
@@ -150,12 +143,13 @@ public class PrefectureController extends BaseController{
 	@ResponseBody
 	public List<ResPreList> findSelectListByUser() {
 		Map<String, Object> map=new HashMap<String, Object>();
-		map.put("property", "id");
-		map.put("value", getPerson().getId());
-		//log.error("userid={}",getPerson().getId());
-		ResEnterprise enter=enterService.find(map);
-		if(enter!=null) {
-			map.put("createUserId", getPerson().getId());
+		if(getPerson().getEntId()!= null && getPerson().getEntId() != 0L) {
+			map.put("property", "id");
+			map.put("value", getPerson().getEntId());
+			ResEnterprise enter=enterService.find(map);
+			if(enter!=null) {
+				map.put("createEntId", getPerson().getEntId());
+			}
 		}
 		return this.preService.findSelectListByUser(map);
 	}
@@ -204,10 +198,12 @@ public class PrefectureController extends BaseController{
 	public ViewMsg save(ReqPrefectureEntity prefecture) {
 		ViewMsg msg = null;
 		try {
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
-			prefecture.setCreateUserId(person.getId());
-			prefecture.setCreateUserName(person.getUsername());
+			prefecture.setCreateUserId(getPerson().getId());
+			prefecture.setCreateUserName(getPerson().getUsername());
+			if(getPerson().getEntId() != null ) {
+				prefecture.setCreateEntId(getPerson().getEntId());
+				prefecture.setCreateEntName(getPerson().getEntName());
+			}
 			this.preService.save(prefecture);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {

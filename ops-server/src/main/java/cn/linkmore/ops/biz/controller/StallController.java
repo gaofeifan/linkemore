@@ -60,11 +60,13 @@ public class StallController {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
 		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("property", "id");
-		param.put("value", person.getId());
-		ResEnterprise enter = enterService.find(param);
-		if(enter != null) {
-			param.put("createUserId", person.getId());
+		if(person.getEntId()!= null && person.getEntId() != 0L) {
+			param.put("property", "id");
+			param.put("value", person.getEntId());
+			ResEnterprise enter = enterService.find(param);
+			if(enter != null) {
+				param.put("createEntId", person.getId());
+			}
 		}
 		return stallService.findTree(param);
 	}
@@ -191,32 +193,6 @@ public class StallController {
 		}
 		return msg;
 	}
-	
-	/*@RequestMapping(value = "/rent-stall", method = RequestMethod.POST)
-	@ResponseBody
-	public List<ResStall> rentStallList(HttpServletRequest request,Long pid) {
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("preId", pid);
-		map.put("type", 2);
-		List<ResStall> list = this.opsStallClient.findStallList(map);
-		List<ResStall> notUsedList = new ArrayList<ResStall>();
-		List<ResEntRentUser> rentUserList = opsRentUserClient.usedStallList();
-		List<Long> usedStallId = new ArrayList<Long>();
-		for(ResEntRentUser rentUser : rentUserList) {
-			usedStallId.add(rentUser.getStallId());
-			log.info("rentUserList = {}",JSON.toJSON(usedStallId));
-		}
-		if(CollectionUtils.isNotEmpty(list)) {
-			for(ResStall resStall : list) {
-				if(!usedStallId.contains(resStall.getId())) {
-					log.info("remove the stallId = {}",resStall.getId());
-					notUsedList.add(resStall);
-				}
-			}
-		}
-		log.info("param = {}, result = {}",JSON.toJSON(map),JSON.toJSON(notUsedList));
-		return notUsedList;
-	}*/
 	
 	@RequestMapping(value = "/rent-stall", method = RequestMethod.POST)
 	@ResponseBody

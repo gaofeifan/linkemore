@@ -34,7 +34,30 @@ public class StallLock {
      */
     private String createUserName;
     
-    
+    /**
+     * 创建企业id
+     */
+    private Long createEntId;
+    /**
+     * 创建企业名称
+     */
+    private String createEntName;
+
+	public Long getCreateEntId() {
+		return createEntId;
+	}
+
+	public void setCreateEntId(Long createEntId) {
+		this.createEntId = createEntId;
+	}
+
+	public String getCreateEntName() {
+		return createEntName;
+	}
+
+	public void setCreateEntName(String createEntName) {
+		this.createEntName = createEntName;
+	}
 
 	public Long getId() {
         return id;

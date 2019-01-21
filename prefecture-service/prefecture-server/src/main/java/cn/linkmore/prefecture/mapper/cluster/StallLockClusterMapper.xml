@@ -8,8 +8,10 @@
     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="bind_time" jdbcType="TIMESTAMP" property="bindTime" />
-    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" /> 
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_ent_id" jdbcType="BIGINT" property="createEntId" /> 
+    <result column="create_ent_name" jdbcType="VARCHAR" property="createEntName" />
   </resultMap>
   
   <resultMap id="BaseResultMap2" type="cn.linkmore.prefecture.entity.StallLock">
@@ -25,7 +27,7 @@
   </resultMap>
   
   <sql id="Base_Column_List">
-    id, sn, prefecture_id, stall_id, create_time, bind_time, create_user_id, create_user_name,model,version,battery
+    id, sn, prefecture_id, stall_id, create_time, bind_time, create_user_id, create_user_name,model,version,battery,create_ent_id, create_ent_name
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -71,7 +73,10 @@
     and sn = #{sn,jdbcType=VARCHAR}
     </if> 
     <if test="createUserId!=null">  
-    and create_user_id = #{createUserId,jdbcType=VARCHAR}
+    and create_user_id = #{createUserId,jdbcType=BIGINT}
+    </if> 
+    <if test="createEntId!=null">  
+    and create_ent_id = #{createEntId,jdbcType=BIGINT}
     </if> 
      
     <if test="property==null">  
@@ -91,7 +96,10 @@
     and sn = #{sn,jdbcType=VARCHAR}
     </if>  
     <if test="createUserId!=null">  
-    and create_user_id = #{createUserId,jdbcType=VARCHAR}
+    and create_user_id = #{createUserId,jdbcType=BIGINT}
+    </if> 
+    <if test="createEntId!=null">  
+    and create_ent_id = #{createEntId,jdbcType=BIGINT}
     </if> 
   </select>
   <select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap" >

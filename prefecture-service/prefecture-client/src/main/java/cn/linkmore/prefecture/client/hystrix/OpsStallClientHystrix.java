@@ -82,12 +82,6 @@ public class OpsStallClientHystrix implements OpsStallClient {
 		log.info("prefecture service stall changedUp() hystrix");
 		return 0;
 	}
-
-
-	@Override
-	public void saveAndBind(Long preId, String stallName, String sn) {
-		log.info("prefecture service stall saveAndBind() hystrix");
-	}
 	
 	@Override
 	public ResStallEntity findById(Long stallId) {
@@ -117,6 +111,11 @@ public class OpsStallClientHystrix implements OpsStallClient {
 	public int changedDown(List<Long> ids) {
 		log.info("prefecture service stall changedDown() hystrix ids={}",JSON.toJSON(ids));
 		return 0;
+	}
+
+	@Override
+	public void saveAndBind(ReqStall reqStall) {
+		log.info("prefecture service stall saveAndBind() hystrix");
 	}
 	
 	

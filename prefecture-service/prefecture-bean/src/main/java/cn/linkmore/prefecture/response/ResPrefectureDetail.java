@@ -187,6 +187,31 @@ public class ResPrefectureDetail {
      */
     private Short preType;
     
+    /**
+     * 创建商家id
+     */
+    private Long createEntId;
+    
+    /**
+     * 创建商家名称
+     */
+    private String createEntName;
+    
+    public Long getCreateEntId() {
+		return createEntId;
+	}
+	public void setCreateEntId(Long createEntId) {
+		this.createEntId = createEntId;
+	}
+	
+    public String getCreateEntName() {
+		return createEntName;
+	}
+
+	public void setCreateEntName(String createEntName) {
+		this.createEntName = createEntName;
+	}
+    
     public Short getPreType() {
 		return preType;
 	}

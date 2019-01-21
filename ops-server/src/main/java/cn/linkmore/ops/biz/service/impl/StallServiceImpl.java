@@ -3,6 +3,8 @@ package cn.linkmore.ops.biz.service.impl;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallOps;
+import cn.linkmore.security.response.ResPerson;
 
 /**
  * 车位
@@ -72,7 +75,18 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public void saveAndBind(Long preId, String stallName, String sn) {
-	   this.stallClient.saveAndBind(preId,stallName,sn);
+	   ReqStall reqStall = new ReqStall();
+	   reqStall.setPreId(preId);
+	   reqStall.setStallName(stallName);
+	   reqStall.setLockSn(sn);
+	   ResPerson person = (ResPerson)SecurityUtils.getSubject().getSession().getAttribute("person");
+	   if(person.getEntId()!= null && person.getEntId() != 0L) {
+		   reqStall.setCreateEntId(person.getEntId());
+		   reqStall.setCreateEntName(person.getEntName());
+	   }
+	   reqStall.setCreateUserId(person.getId());
+	   reqStall.setCreateUserName(person.getUsername());
+	   this.stallClient.saveAndBind(reqStall);
 	}
 
 	@Override
