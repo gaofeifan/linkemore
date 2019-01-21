@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.controller.app.request.ReqStallFault;
@@ -42,7 +43,7 @@ public class StallFaultServiceImpl implements StallFaultService {
 		backMasterMapper.insert(feedback);
 		ResEntExcStallStatus cause = new ResEntExcStallStatus();
 		cause.setCreateTime(new Date());
-		cause.setExcRemark(feedback.getDictName());
+		cause.setExcRemark(StringUtils.isNotBlank(feedback.getExtra()) ? feedback.getDictName()+feedback.getExtra() : feedback.getDictName());
 		cause.setExcStatus(feedback.getDictId());
 		cause.setStallId(feedback.getStallId());
 		cause.setStatus((short)0);

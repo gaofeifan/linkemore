@@ -135,6 +135,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 												if(inf.getLockCode().equals(enttall.getLockSn())) {
 													OwnerStall.setBattery(inf.getElectricity());
 													OwnerStall.setGatewayStatus(inf.getOnlineState());
+													break;
 												}
 											}
 										}
@@ -154,10 +155,12 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								ownerstalllist.add(OwnerStall);
 								num++;
 								isHave = true;
+								break;
 							}
 						}
 						ownerpre.setStalls(ownerstalllist);
 						list.add(ownerpre);
+						break;
 					}
 				}
 			} else {
@@ -181,6 +184,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											if(inf.getLockCode().equals(enttall.getLockSn())) {
 												OwnerStall.setBattery(inf.getElectricity());
 												OwnerStall.setGatewayStatus(inf.getOnlineState());
+												break;
 											}
 										}
 									}
@@ -310,7 +314,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					control = false;
 				}
 				throw new BusinessException(StatusEnum.get((int)object));
-				
 			}else {
 				control = true;
 			}
