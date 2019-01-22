@@ -1109,10 +1109,9 @@ public class OrdersServiceImpl implements OrdersService {
 				//根据车位锁编号判断车锁状态是否为降下
 				Map<String,Object> lockParam = stallClient.watch(orders.getStallId());
 				log.info("..........current order lock down failed response result lock-param = {}", JSON.toJSON(lockParam));
-				if("200".equals(lockParam.get("code").toString())) {
-					if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
-						ro.setCancelFlag((short)2);
-					}
+				if("200".equals(String.valueOf(lockParam.get("code"))) &&
+						Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
+					ro.setCancelFlag((short)2);
 				}
 			}
 			long beginTime = orders.getBeginTime().getTime();
@@ -1168,7 +1167,7 @@ public class OrdersServiceImpl implements OrdersService {
 			Map<String,Object> lockParam = stallClient.watch(orders.getStallId());
 			long endTime = System.currentTimeMillis();
 			log.info("downResult.....................{}获取降锁状态时间:{}秒", JSON.toJSON(lockParam), (endTime - startTime)/1000);
-			if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
+			if("200".equals(String.valueOf(lockParam.get("code"))) && Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
 				count = 0;
 			}
 		}
@@ -1800,7 +1799,7 @@ public class OrdersServiceImpl implements OrdersService {
 				//根据车位锁编号判断车锁状态是否为降下
 				Map<String,Object> lockParam = stallClient.watch(order.getStallId());
 				log.info("...........cancel order response result lock param = {}", JSON.toJSON(lockParam));
-				if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
+				if("200".equals(String.valueOf(lockParam.get("code"))) && Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
 					throw new BusinessException(StatusEnum.ORDER_LOCK_DOWN);
 				}
 				long beginTime = order.getBeginTime().getTime();
