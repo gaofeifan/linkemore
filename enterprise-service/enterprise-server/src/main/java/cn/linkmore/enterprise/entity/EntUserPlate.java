@@ -16,8 +16,26 @@ public class EntUserPlate {
     private Date createTime;
     
     private Long preId;
+    
+    private Long entId;
+    
+    
 
-    public Long getId() {
+    /**
+	 * @return the entId
+	 */
+	public Long getEntId() {
+		return entId;
+	}
+
+	/**
+	 * @param entId the entId to set
+	 */
+	public void setEntId(Long entId) {
+		this.entId = entId;
+	}
+
+	public Long getId() {
         return id;
     }
 

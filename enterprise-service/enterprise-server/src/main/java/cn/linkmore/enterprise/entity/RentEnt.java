@@ -24,6 +24,14 @@ public class RentEnt {
      */
     private Long createUserId;
     /**
+     * 创建用户Id
+     */
+    private Long entId;
+    /**
+     * 创建用户Id
+     */
+    private String entName;
+    /**
      * 创建用户名称
      */
     private String createUserName;
@@ -66,7 +74,38 @@ public class RentEnt {
 	 */
 	private Integer userCount = 0;
 	
-    public Integer getStallCount() {
+	
+	
+	
+    /**
+	 * @return the entId
+	 */
+	public Long getEntId() {
+		return entId;
+	}
+
+	/**
+	 * @param entId the entId to set
+	 */
+	public void setEntId(Long entId) {
+		this.entId = entId;
+	}
+
+	/**
+	 * @return the entName
+	 */
+	public String getEntName() {
+		return entName;
+	}
+
+	/**
+	 * @param entName the entName to set
+	 */
+	public void setEntName(String entName) {
+		this.entName = entName;
+	}
+
+	public Integer getStallCount() {
 		return stallCount;
 	}
 

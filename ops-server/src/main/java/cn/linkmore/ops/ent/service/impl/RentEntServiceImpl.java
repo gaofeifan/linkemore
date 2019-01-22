@@ -61,13 +61,17 @@ public class RentEntServiceImpl implements RentEntService {
 		
 		Map<String, Object> map=new HashMap<String, Object>();
 		map.put("property", "id");
-		map.put("value", person.getId());
+		map.put("value", person.getEntId());
 		ResEnterprise enter=enterService.find(map);
 		if(enter != null) {
 			List<ViewFilter> list = pageable.getFilters();
 			ViewFilter vf = new ViewFilter();
-			vf.setProperty("createUserId");
-			vf.setValue(person.getId());
+/*			vf.setProperty("createUserId");
+			vf.setValue(person.getId());*/
+			
+	        vf.setProperty("entId");
+			vf.setValue(person.getEntId());
+			
 			list.add(vf);
 			//pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
 		}
@@ -104,6 +108,7 @@ public class RentEntServiceImpl implements RentEntService {
 				reqRentEntStall.setPreName(preDetail.getName());
 				reqRentEntStall.setCreateTime(ent.getCreateTime());
 				reqRentEntStall.setCreateUserId(ent.getCreateUserId());
+				reqRentEntStall.setEntId(ent.getEntId());
 				reqRentEntStall.setCreateUserName(ent.getCreateUserName());
 				reqRentEntStall.setUpdateTime(ent.getUpdateTime());
 				reqRentEntStall.setUpdateUserId(ent.getUpdateUserId());
@@ -136,7 +141,7 @@ public class RentEntServiceImpl implements RentEntService {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
 		Map<String, Object> param = new HashMap<>();
-		param.put("createUserId", person.getId());
+		param.put("createUserId", person.getEntId()==null?person.getId():person.getEntId());
 		List<ResPreList> preList = prefectureClient.findSelectListByUser(param);
 		if(CollectionUtils.isNotEmpty(preList)) {
 			param.put("preId", preList.get(0).getId());

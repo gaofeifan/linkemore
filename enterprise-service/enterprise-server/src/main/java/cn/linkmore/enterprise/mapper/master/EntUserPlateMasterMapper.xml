@@ -9,6 +9,7 @@
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
   </resultMap>
   
   <delete id="delete" parameterType="java.util.List">
@@ -20,11 +21,11 @@
   </delete>
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntUserPlate">
     insert into t_ent_user_plate (id, plate_no, mobile, 
-      create_user_id, create_user_name, create_time, pre_id
+      create_user_id, create_user_name, create_time, pre_id, ent_id
       )
     values (#{id,jdbcType=BIGINT}, #{plateNo,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
       #{createUserId,jdbcType=BIGINT}, #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
-      #{preId,jdbcType=BIGINT}
+      #{preId,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}
       )
   </insert>
   
@@ -37,13 +38,13 @@
   
   <insert id="saveBatch" parameterType="java.util.List">
     insert into t_ent_user_plate (id, plate_no, mobile, 
-      create_user_id, create_user_name, create_time, pre_id
+      create_user_id, create_user_name, create_time, pre_id,ent_id
       )
     values
       <foreach collection ="list" item="item" separator =",">
       (#{item.id,jdbcType=BIGINT}, #{item.plateNo,jdbcType=VARCHAR}, #{item.mobile,jdbcType=VARCHAR}, 
       #{item.createUserId,jdbcType=BIGINT}, #{item.createUserName,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
-      #{item.preId,jdbcType=BIGINT}
+      #{item.preId,jdbcType=BIGINT},#{item.entId,jdbcType=BIGINT}
       )
       </foreach >
   </insert>

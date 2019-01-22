@@ -43,13 +43,17 @@ public class RentUserServiceImpl implements RentUserService {
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
 		Map<String, Object> map=new HashMap<String, Object>();
 		map.put("property", "id");
-		map.put("value", person.getId());
+		map.put("value", person.getEntId());
 		ResEnterprise enter=enterService.find(map);
 		if(enter != null) {
 			List<ViewFilter> list = pageable.getFilters();
 			ViewFilter vf = new ViewFilter();
-			vf.setProperty("createUserId");
-			vf.setValue(person.getId());
+	/*		vf.setProperty("createUserId");
+			vf.setValue(person.getId());*/
+			
+			vf.setProperty("entId");
+			vf.setValue(person.getEntId());
+			
 			list.add(vf);
 		}
 		return this.rentUserClient.findList(pageable);
