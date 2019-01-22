@@ -991,7 +991,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 					resStall.setLockSn(stall.getLockSn());
 					resStall.setStallName(stall.getStallName());
 					stallList.add(resStall);
-					statuMap.put(stall.getStallName(), stall);
+					statuMap.put(stall.getStallName().toUpperCase(), stall);
 				}
 				
 				List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
@@ -1001,7 +1001,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 					for(PrefectureElement ele: eleList) {
 						paramMap = new HashMap<String,Object>();
 						if("button".equals(ele.getEleType())) {
-							if(statuMap.get(ele.getEleName()) != null) {
+							if(statuMap.get(ele.getEleName().toUpperCase()) != null) {
 								cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
 								paramMap.put("name", ele.getEleName());
 								//此处需要根据车位锁实际状态优化
