@@ -1590,13 +1590,6 @@ public class StallServiceImpl implements StallService {
 						detail.setOrderType("APP");
 					}
 					detail.setPlate(resUserOrder.getPlateNo());
-					if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 1) {
-						detail.setResetStatus(false);
-						detail.setExcCode(0L);
-						detail.setExcName("订单挂起未释放");
-					}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
-						detail.setOrderStatus((short)7);
-					}
 				}else if(stall.getType() == 2) {
 					Map<String,Object> map = new HashMap<String, Object>();
 					map.put("validTime", 1);
@@ -1651,6 +1644,13 @@ public class StallServiceImpl implements StallService {
 					detail.setAssignPlate(json.get("plate").toString());
 					break;
 				}
+			}
+			if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 1) {
+				detail.setResetStatus(false);
+				detail.setExcCode(0L);
+				detail.setExcName("订单挂起未释放");
+			}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
+				detail.setOrderStatus((short)7);
 			}
 			detail.setAssignStatus(assignStatus);
 			detail.setOnoffStatus(true);
