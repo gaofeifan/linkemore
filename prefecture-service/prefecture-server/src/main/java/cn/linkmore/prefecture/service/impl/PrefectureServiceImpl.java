@@ -1002,7 +1002,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 						paramMap = new HashMap<String,Object>();
 						if("button".equals(ele.getEleType())) {
 							if(statuMap.get(ele.getEleName().toUpperCase()) != null) {
-								cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
+								cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName().toUpperCase());
 								paramMap.put("name", ele.getEleName());
 								//此处需要根据车位锁实际状态优化
 								paramMap.put("status", stall.getStatus());
