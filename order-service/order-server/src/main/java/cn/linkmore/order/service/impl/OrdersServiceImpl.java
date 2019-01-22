@@ -1109,8 +1109,10 @@ public class OrdersServiceImpl implements OrdersService {
 				//根据车位锁编号判断车锁状态是否为降下
 				Map<String,Object> lockParam = stallClient.watch(orders.getStallId());
 				log.info("..........current order lock down failed response result lock-param = {}", JSON.toJSON(lockParam));
-				if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
-					ro.setCancelFlag((short)2);
+				if("200".equals(lockParam.get("code").toString())) {
+					if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
+						ro.setCancelFlag((short)2);
+					}
 				}
 			}
 			long beginTime = orders.getBeginTime().getTime();
@@ -1140,8 +1142,9 @@ public class OrdersServiceImpl implements OrdersService {
 				//当订单处于挂起状态时，直接结账离场
 				ro.setCancelFlag((short)2);
 			}
+			log.info("..........current order {}", JSON.toJSON(ro));
 		}
-		log.info("..........current order {}", JSON.toJSON(ro));
+		
 		return ro;
 	}
 	
