@@ -954,7 +954,7 @@ public class OrdersServiceImpl implements OrdersService {
 				param.put("updateTime", current);
 				param.put("statusTime", current);
 				param.put("statusHistory", OrderStatusHistory.CLOSED.code);
-				param.put("status", OrderStatus.COMPLETED.value);
+				param.put("status", OrderStatus.CLOSED.value);
 				this.orderMasterMapper.updateClose(param);
 				new CancelStallThread(order.getStallId()).start();
 				Thread thread = new PushThread(order.getUserId().toString(), "订单通知", "无空闲车位,订单已关闭",
@@ -1109,8 +1109,10 @@ public class OrdersServiceImpl implements OrdersService {
 				//根据车位锁编号判断车锁状态是否为降下
 				Map<String,Object> lockParam = stallClient.watch(orders.getStallId());
 				log.info("..........current order lock down failed response result lock-param = {}", JSON.toJSON(lockParam));
-				if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
-					ro.setCancelFlag((short)2);
+				if("200".equals(lockParam.get("code").toString())) {
+					if(Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
+						ro.setCancelFlag((short)2);
+					}
 				}
 			}
 			long beginTime = orders.getBeginTime().getTime();
@@ -1140,8 +1142,9 @@ public class OrdersServiceImpl implements OrdersService {
 				//当订单处于挂起状态时，直接结账离场
 				ro.setCancelFlag((short)2);
 			}
+			log.info("..........current order {}", JSON.toJSON(ro));
 		}
-		log.info("..........current order {}", JSON.toJSON(ro));
+		
 		return ro;
 	}
 	

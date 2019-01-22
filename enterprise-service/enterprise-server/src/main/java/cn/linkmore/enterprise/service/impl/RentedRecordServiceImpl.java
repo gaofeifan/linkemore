@@ -6,13 +6,19 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
+import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.request.ReqRentedRecord;
 import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.response.ResRentedRecord;
@@ -29,6 +35,8 @@ public class RentedRecordServiceImpl implements RentedRecordService {
 
 	@Resource
 	private EntRentedRecordClusterMapper entRentedRecordClusterMapper;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
 	public ViewPage findList(ViewPageable pageable) {
@@ -49,7 +57,8 @@ public class RentedRecordServiceImpl implements RentedRecordService {
 		Integer count = this.entRentedRecordClusterMapper.count(param);
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
-		List<ResEnterprise> list = this.entRentedRecordClusterMapper.findPage(param);
+		List<EntRentedRecord> list = this.entRentedRecordClusterMapper.findPage(param);
+		//log.info("ent rent record list = {}",JSON.toJSON(list));
 		return new ViewPage(count, pageable.getPageSize(), list);
 	}
 

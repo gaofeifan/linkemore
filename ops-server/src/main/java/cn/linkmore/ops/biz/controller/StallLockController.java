@@ -61,10 +61,12 @@ public class StallLockController extends BaseController{
 	public ViewMsg save(ReqStallLock record) {
 		ViewMsg msg = null;
 		try {
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
-			record.setCreateUserId(person.getId());
-			record.setCreateUserName(person.getUsername());
+			record.setCreateUserId(getPerson().getId());
+			record.setCreateUserName(getPerson().getUsername());
+			if(getPerson().getEntId() != null ) {
+				record.setCreateEntId(getPerson().getEntId());
+				record.setCreateEntName(getPerson().getEntName());
+			}
 			this.stallLockService.save(record);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {
@@ -117,20 +119,16 @@ public class StallLockController extends BaseController{
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
-		Subject subject = SecurityUtils.getSubject();
-		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
 		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("property", "id");
-		param.put("value", person.getId());
-		ResEnterprise enter = enterService.find(param);
-		if(enter != null) {
-			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
-			/*List<ViewFilter> filters = pageable.getFilters();
-			ViewFilter vf = new ViewFilter();
-			vf.setProperty("createUserId");
-			vf.setValue(person.getId());
-			filters.add(vf);*/
+		if(getPerson().getEntId()!= null && getPerson().getEntId() != 0L) {
+			param.put("property", "id");
+			param.put("value", getPerson().getEntId());
+			ResEnterprise enter = enterService.find(param);
+			if(enter != null) {
+				pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createEntId",getPerson().getId()));
+			}
 		}
+		
 		
 		return this.stallLockService.findPage(pageable);
 	}

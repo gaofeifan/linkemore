@@ -190,8 +190,33 @@ public class ReqPrefectureEntity {
      * 车区类型，1临停车区（包含临停和固定车位） 2固定车区（全部为固定车位）
      */
     private Short preType;
+    /**
+     * 创建商家id
+     */
+    private Long createEntId;
     
-    public Short getPreType() {
+    /**
+     * 创建商家名称
+     */
+    private String createEntName;
+    
+    public String getCreateEntName() {
+		return createEntName;
+	}
+
+	public void setCreateEntName(String createEntName) {
+		this.createEntName = createEntName;
+	}
+
+	public Long getCreateEntId() {
+		return createEntId;
+	}
+
+	public void setCreateEntId(Long createEntId) {
+		this.createEntId = createEntId;
+	}
+
+	public Short getPreType() {
 		return preType;
 	}
 

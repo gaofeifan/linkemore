@@ -686,20 +686,24 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public void saveAndBind(Long preId, String stallName, String sn) {
+	public void saveAndBind(ReqStall reqStall) {
 		Date now = new Date();
 		StallLock lock = new StallLock();
-		lock.setSn(sn);
+		lock.setSn(reqStall.getLockSn());
 		lock.setCreateTime(now);
+		lock.setCreateEntId(reqStall.getCreateEntId());
+		lock.setCreateEntName(reqStall.getCreateEntName());
+		lock.setCreateUserId(reqStall.getCreateUserId());
+		lock.setCreateUserName(reqStall.getCreateUserName());
 		this.stallLockMasterMapper.save(lock);
 		ReqStall stall = new ReqStall();
-		stall.setStallName(stallName);
+		stall.setStallName(reqStall.getStallName());
 		stall.setLockStatus(null);
-		stall.setLockSn(sn);
+		stall.setLockSn(reqStall.getLockSn());
 		stall.setStatus(4);
 		stall.setLockBattery(0);
 		stall.setLockId(lock.getId());
-		stall.setPreId(preId);
+		stall.setPreId(reqStall.getPreId());
 		this.save(stall);
 		lock.setPrefectureId(stall.getPreId());
 		lock.setBindTime(now);

@@ -45,7 +45,20 @@ public class ResPreExcel {
      */
     private String createUserName;
     
-    public String getCreateUserName() {
+    /**
+     * 创建企业
+     */
+    private String createEntName;
+    
+    public String getCreateEntName() {
+		return createEntName;
+	}
+
+	public void setCreateEntName(String createEntName) {
+		this.createEntName = createEntName;
+	}
+
+	public String getCreateUserName() {
 		return createUserName;
 	}
 
