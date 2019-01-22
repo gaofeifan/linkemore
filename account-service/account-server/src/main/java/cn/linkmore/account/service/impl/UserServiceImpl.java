@@ -571,58 +571,31 @@ public class UserServiceImpl implements UserService {
 			userId = 0L;
 		}
 		synchronized(userId) {
-			if(StringUtils.isNotBlank(os) && Integer.decode(os) == ClientSource.WXAPP.source) {
-				last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ ClientSource.WXAPP.source + user.getId());
-				log.info("cacheUser syn userId = {}, last = {}",userId, JSON.toJSON(last));
-				if(last!=null){ 
-					log.info("cacheUser syn openId = {}", user.getOpenId());
-					if(user.getOpenId()!=null) { 
-						this.redisService.remove(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+ClientSource.WXAPP.source+user.getOpenId());  
-					}
-					this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ClientSource.WXAPP.source+user.getId());
-					this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+ClientSource.WXAPP.source+last.getAccessToken());  
-					last.setAccessToken(key); 
-					log.info("cacheUser syn key = {}, last = {}",key,JSON.toJSON(last));
+			last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+			log.info("cacheUser syn userId = {}, last = {}",userId, JSON.toJSON(last));
+			if(last!=null){ 
+				log.info("cacheUser syn openId = {}", user.getOpenId());
+				if(user.getOpenId()!=null) { 
+					this.redisService.remove(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId());  
 				}
-				user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-				this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+ClientSource.WXAPP.source+key, user,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
-				
-				Token token = new Token();
-				token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-				token.setTimestamp(new Date().getTime());
-				token.setAccessToken(key);
-				log.info("token = {}",JSON.toJSON(token));
-				if(user.getClient().intValue()==ClientSource.WXAPP.source) {
-					this.redisService.set(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+ClientSource.WXAPP.source+user.getOpenId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
-				}
-				this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+ClientSource.WXAPP.source+user.getId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
-			}else {
-				last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
-				log.info("cacheUser syn userId = {}, last = {}",userId, JSON.toJSON(last));
-				if(last!=null){ 
-					log.info("cacheUser syn openId = {}", user.getOpenId());
-					if(user.getOpenId()!=null) { 
-						this.redisService.remove(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId());  
-					}
-					this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
-					this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
-					last.setAccessToken(key); 
-					log.info("cacheUser syn key = {}, last = {}",key,JSON.toJSON(last));
-				}
-				user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-				this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
-				
-				Token token = new Token();
-				token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
-				token.setTimestamp(new Date().getTime());
-				token.setAccessToken(key);
-				log.info("token = {}",JSON.toJSON(token));
-				if(user.getClient().intValue()==ClientSource.WXAPP.source) {
-					this.redisService.set(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
-				}
-				this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
+				this.redisService.remove(Constants.RedisKey.USER_APP_AUTH_USER.key+last.getAccessToken());  
+				last.setAccessToken(key); 
+				log.info("cacheUser syn key = {}, last = {}",key,JSON.toJSON(last));
 			}
-		} 
+			user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
+			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_USER.key+key, user,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+			
+			Token token = new Token();
+			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
+			token.setTimestamp(new Date().getTime());
+			token.setAccessToken(key);
+			log.info("token = {}",JSON.toJSON(token));
+			if(user.getClient().intValue()==ClientSource.WXAPP.source) {
+				this.redisService.set(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+			}
+			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
+			}
 		log.info("last = {}",JSON.toJSON(last));
 		return last;
 	}
