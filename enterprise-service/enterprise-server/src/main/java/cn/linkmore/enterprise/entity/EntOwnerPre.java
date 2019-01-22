@@ -3,6 +3,7 @@ package cn.linkmore.enterprise.entity;
 
 public class EntOwnerPre {
 
+	
 	private Long preId;
 	
 	private String preName;
@@ -12,6 +13,8 @@ public class EntOwnerPre {
 	private Double longitude;
 	
 	private Double latitude;
+	
+	private String gateway;
 
 	public Long getPreId() {
 		return preId;
@@ -52,4 +55,14 @@ public class EntOwnerPre {
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
+
+	public String getGateway() {
+		return gateway;
+	}
+
+	public void setGateway(String gateway) {
+		this.gateway = gateway;
+	}
+	
+	
 }

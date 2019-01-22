@@ -6,6 +6,7 @@
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="gateway" jdbcType="VARCHAR" property="gateway" />
     <result column="longitude" jdbcType="DOUBLE" property="longitude" />
     <result column="latitude" jdbcType="DOUBLE" property="latitude" />
   </resultMap>
@@ -45,7 +46,7 @@
   </select>
   
   <select id="findPreByIds"   resultMap="PreResultMap" parameterType="java.util.Set" >
-    SELECT  id as pre_id,name as pre_name,address,longitude,latitude
+    SELECT  id as pre_id,name as pre_name,address,longitude,latitude,gateway
     FROM v_prefecture 
     WHERE id IN 
 	<foreach collection="collection" open="(" separator="," close=")" item="id">
