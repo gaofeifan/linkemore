@@ -954,7 +954,7 @@ public class OrdersServiceImpl implements OrdersService {
 				param.put("updateTime", current);
 				param.put("statusTime", current);
 				param.put("statusHistory", OrderStatusHistory.CLOSED.code);
-				param.put("status", OrderStatus.COMPLETED.value);
+				param.put("status", OrderStatus.CLOSED.value);
 				this.orderMasterMapper.updateClose(param);
 				new CancelStallThread(order.getStallId()).start();
 				Thread thread = new PushThread(order.getUserId().toString(), "订单通知", "无空闲车位,订单已关闭",
