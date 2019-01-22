@@ -29,6 +29,9 @@
      	<if test="mobile != null">
     		and mobile like #{mobile}
     	</if>
+    	<if test="entId != null">
+    		and ent_id = #{entId}
+    	</if>
     	<if test="plateNo != null">
     		and plate_no like #{plateNo}
     	</if>
@@ -52,6 +55,9 @@
      1 = 1
      	<if test="mobile != null">
     		and mobile like #{mobile}
+    	</if>
+    	<if test="entId != null">
+    		and ent_id = #{entId}
     	</if>
     	<if test="plateNo != null">
     		and plate_no like #{plateNo}

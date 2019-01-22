@@ -17,7 +17,25 @@ public class ReqEntUserPlate {
     
     private Long preId;
     
-    public Long getPreId() {
+    private Long entId;
+    
+    
+    
+    /**
+	 * @return the entId
+	 */
+	public Long getEntId() {
+		return entId;
+	}
+
+	/**
+	 * @param entId the entId to set
+	 */
+	public void setEntId(Long entId) {
+		this.entId = entId;
+	}
+
+	public Long getPreId() {
 		return preId;
 	}
 
