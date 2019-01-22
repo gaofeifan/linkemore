@@ -686,20 +686,24 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public void saveAndBind(Long preId, String stallName, String sn) {
+	public void saveAndBind(ReqStall reqStall) {
 		Date now = new Date();
 		StallLock lock = new StallLock();
-		lock.setSn(sn);
+		lock.setSn(reqStall.getLockSn());
 		lock.setCreateTime(now);
+		lock.setCreateEntId(reqStall.getCreateEntId());
+		lock.setCreateEntName(reqStall.getCreateEntName());
+		lock.setCreateUserId(reqStall.getCreateUserId());
+		lock.setCreateUserName(reqStall.getCreateUserName());
 		this.stallLockMasterMapper.save(lock);
 		ReqStall stall = new ReqStall();
-		stall.setStallName(stallName);
+		stall.setStallName(reqStall.getStallName());
 		stall.setLockStatus(null);
-		stall.setLockSn(sn);
+		stall.setLockSn(reqStall.getLockSn());
 		stall.setStatus(4);
 		stall.setLockBattery(0);
 		stall.setLockId(lock.getId());
-		stall.setPreId(preId);
+		stall.setPreId(reqStall.getPreId());
 		this.save(stall);
 		lock.setPrefectureId(stall.getPreId());
 		lock.setBindTime(now);
@@ -1586,13 +1590,6 @@ public class StallServiceImpl implements StallService {
 						detail.setOrderType("APP");
 					}
 					detail.setPlate(resUserOrder.getPlateNo());
-					if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 1) {
-						detail.setResetStatus(false);
-						detail.setExcCode(0L);
-						detail.setExcName("订单挂起未释放");
-					}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
-						detail.setOrderStatus((short)7);
-					}
 				}else if(stall.getType() == 2) {
 					Map<String,Object> map = new HashMap<String, Object>();
 					map.put("validTime", 1);
@@ -1648,11 +1645,19 @@ public class StallServiceImpl implements StallService {
 					break;
 				}
 			}
+			if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 1) {
+				detail.setResetStatus(false);
+				detail.setExcCode(0L);
+				detail.setExcName("订单挂起未释放");
+			}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
+				detail.setOrderStatus((short)7);
+			}
 			detail.setAssignStatus(assignStatus);
 			detail.setOnoffStatus(true);
 			ResEntExcStallStatus entExcStall = feignStallExcStatusClient.findByStallId(stallId);
 			if (entExcStall != null) {
 				detail.setExcCode(entExcStall.getExcStatus());
+				detail.setExcName(entExcStall.getExcRemark());
 			}
 		}
 		return detail;
@@ -2099,6 +2104,12 @@ public class StallServiceImpl implements StallService {
 						this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.UP_LOCK_FAIL_RETRY_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
 //						throw new BusinessException(StatusEnum.UP_LOCK_FAIL_RETRY_OWNER);
 					}
+				}
+			}else {
+				if(reqc.getStatus() == 1) {
+					this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+				}else if(reqc.getStatus() == 2){
+					this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
 				}
 			}
 			if (reqc.getStatus() == 1) {

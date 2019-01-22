@@ -50,24 +50,10 @@ public class PersonController extends BaseController{
 	public ViewMsg save(ReqPerson person){
 		ViewMsg msg = null;
 		try {
-			/*
-			Subject subject = SecurityUtils.getSubject();
-			ResPerson resPerson = (ResPerson)subject.getSession().getAttribute("person"); 
-			Map<String,Object> param = new HashMap<String,Object>();
-			param.put("property", "id");
-			param.put("value", resPerson.getId());
-			ResEnterprise enter = enterService.find(param);
-			//如果为企业管理员账号添加操作员则设置ent_id为操作人id
-			if(enter != null) {
-				person.setEntId(enter.getId());
-				person.setType(2);
-			}
-			*/
 			if(getPerson().getEntId() != null && getPerson().getEntId()>0) {
 				person.setEntId(getPerson().getEntId());
 				person.setType(2);
 			}
-			
 			this.personService.save(person);
 			msg = new ViewMsg("保存成功",true);
 		}catch(DataException e) {

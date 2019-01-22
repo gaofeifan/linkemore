@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.order.controller.app.request.ReqPayConfirm;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.controller.app.response.ResPayCheckout;
@@ -48,56 +50,19 @@ public class AppPayController {
 	@RequestMapping(value = "/v2.0/confirm", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<ResPayConfirm> confirm(@RequestBody ReqPayConfirm roc, HttpServletRequest request) {
+		ResponseEntity<ResPayConfirm> response = null;
 		try { 
 			ResPayConfirm confirm = this.payService.confirm(roc,request);
 			return ResponseEntity.success(confirm, request);
-		}catch(Exception e) {
-			e.printStackTrace();
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			//e.printStackTrace();
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
-		return ResponseEntity.fail(null, request);
+		return response;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	  
 	@ApiOperation(value = "校验支付", notes = "校验支付[订单ID不为空]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/verify", method = RequestMethod.GET)
 	@ResponseBody

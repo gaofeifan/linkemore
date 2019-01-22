@@ -10,6 +10,8 @@
     <result column="bind_time" jdbcType="TIMESTAMP" property="bindTime" />
     <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_ent_id" jdbcType="BIGINT" property="createEntId" /> 
+    <result column="create_ent_name" jdbcType="VARCHAR" property="createEntName" />
   </resultMap>
   
   <delete id="delete" parameterType="java.lang.Long">
@@ -32,8 +34,9 @@
   </update>
   
   <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.linkmore.prefecture.entity.StallLock">
-  	insert into t_biz_stall_lock (sn,  create_time, create_user_id, create_user_name)
-    values ( #{sn,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},#{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR} )
+  	insert into t_biz_stall_lock (sn,  create_time, create_user_id, create_user_name, create_ent_id, create_ent_name)
+    values ( #{sn,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},#{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR},
+    #{createEntId,jdbcType=BIGINT},#{createEntName,jdbcType=VARCHAR} )
   </insert>
   
   <insert id="batchSave"  parameterType="java.util.List"> 

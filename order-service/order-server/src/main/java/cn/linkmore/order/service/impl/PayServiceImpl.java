@@ -361,6 +361,9 @@ public class PayServiceImpl implements PayService {
 			}
 		}
 		Orders order = this.ordersClusterMapper.findById(roc.getOrderId());
+		if(order.getStatus() == OrderStatus.COMPLETED.value) {
+			throw new BusinessException(StatusEnum.ORDER_COMPLETED_PAY);
+		}
 		// 调用计费策略
 		/*
 		ReqStrategy reqStrategy = new ReqStrategy();
@@ -432,11 +435,7 @@ public class PayServiceImpl implements PayService {
 		if (order.getStatusHistory() != null) {
 			endTime = order.getStatusTime();
 		}
-		//TODO 9.14号过后需要删除
-		/*String plateNo = baseConfig.getFreePlate();
-		if (plateNo != null && plateNo.contains(order.getPlateNo())) {
-			order.setActualAmount(new BigDecimal(0.00));
-		}*/
+		
 		Map<String,Object> checkParam = new HashMap<String,Object>();
 		checkParam.put("plateNo", order.getPlateNo());
 		checkParam.put("preId", order.getPreId());

@@ -60,8 +60,21 @@ public class ResPerson {
      * 分类0:系统级别,1自定义，2企业用户
      */
     private Integer type;
+    
+    /**
+     * 企业名称
+     */
+    private String entName;
 
-    public Long getId() {
+    public String getEntName() {
+		return entName;
+	}
+
+	public void setEntName(String entName) {
+		this.entName = entName;
+	}
+
+	public Long getId() {
         return id;
     }
 

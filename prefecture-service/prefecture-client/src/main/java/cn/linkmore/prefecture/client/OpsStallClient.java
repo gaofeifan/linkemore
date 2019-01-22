@@ -86,7 +86,7 @@ public interface OpsStallClient {
 	
 	@RequestMapping(value = "/v2.0/save_bind", method = RequestMethod.POST)
 	@ResponseBody
-	public void saveAndBind(@RequestParam("preId") Long preId,@RequestParam("stallName") String stallName,@RequestParam("sn") String sn);
+	public void saveAndBind(@RequestBody ReqStall reqStall);
 	
 	@RequestMapping(value = "/v2.0/find-list", method = RequestMethod.POST)
 	@ResponseBody

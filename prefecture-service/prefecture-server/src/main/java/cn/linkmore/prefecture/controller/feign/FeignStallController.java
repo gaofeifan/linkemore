@@ -358,12 +358,6 @@ public class FeignStallController {
 		return 0;
 	}
 	
-	@RequestMapping(value = "/v2.0/save_bind", method = RequestMethod.POST)
-	@ResponseBody
-	public void saveAndBind(@RequestParam("preId") Long preId,@RequestParam("stallName") String stallName,@RequestParam("sn") String sn) {
-		this.stallService.saveAndBind(preId, stallName, sn);
-	}
-	
 	@RequestMapping(value = "/v2.0/update-brand", method = RequestMethod.POST)
 	@ResponseBody
 	public int updateBrand(@RequestBody Map<String,Object> param) {

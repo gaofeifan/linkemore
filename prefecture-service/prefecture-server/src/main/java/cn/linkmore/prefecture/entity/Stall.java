@@ -81,7 +81,7 @@ public class Stall {
 	 */
     private Double lockVoltage;
     /**
-	 * 绑定订单状态
+	 * 绑定订单状态  0正常1挂起2关闭
 	 */
     private Short bindOrderStatus;
     

@@ -52,16 +52,30 @@ public class ReqPerson {
      * 真实名称
      */
     private String realname;
+    
+    /**
+     * 分类0:系统级别,1自定义，2企业用户
+     */
+    private Integer type = 1;
+    
     /**
      * 企业id
      */
     private Long entId;
     /**
-     * 分类0:系统级别,1自定义，2企业用户
+     * 企业名称
      */
-    private Integer type = 1;
+    private String entName;
 
-    public Long getId() {
+    public String getEntName() {
+		return entName;
+	}
+
+	public void setEntName(String entName) {
+		this.entName = entName;
+	}
+
+	public Long getId() {
         return id;
     }
 

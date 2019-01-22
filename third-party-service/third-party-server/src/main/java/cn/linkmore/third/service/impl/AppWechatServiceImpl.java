@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.third.config.AppWechatConfig;
 import cn.linkmore.third.pay.PayConstants;
 import cn.linkmore.third.pay.wxpay.WeixinPay;
@@ -67,6 +69,8 @@ public class AppWechatServiceImpl implements AppWechatService {
 			} catch (JSONException e) {
 				json = null;
 			}
+		}else {
+			throw new BusinessException(StatusEnum.ACCOUNT_WECHAT_LOGIN_ERROR);
 		} 
 		log.info("get wechat fans json:{}",JsonUtil.toJson(json));
 		ResFans rf = null;

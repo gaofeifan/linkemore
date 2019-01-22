@@ -90,6 +90,12 @@ public class PersonServiceImpl implements PersonService {
 	public Long save(ReqPerson reqPerson) {
 		Person person = new Person();
 		person = ObjectUtils.copyObject(reqPerson, person);
+		if(person.getEntId()!= null && person.getEntId()!=0L) {
+			ResPerson resPerson = personClusterMapper.findById(person.getEntId());
+			if(resPerson != null) {
+				person.setEntName(resPerson.getUsername());
+			}
+		}
 		person.setCreateTime(new Date());
 		person.setPassword(PasswordUtil.encode(person.getPassword()));
 		person.setLockCount(0);

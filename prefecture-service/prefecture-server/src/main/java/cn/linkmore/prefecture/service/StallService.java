@@ -132,12 +132,6 @@ public interface StallService {
 	 */
 	List<ResStall> findList(Map<String, Object> param);
 
-	/**
-	 * 保存并绑定
-	 */
-	void saveAndBind(Long preId, String stallName, String sn);
-	
-	
 	List<ResStallOps> findListByParam(Map<String, Object> param);
 	
 	/**
@@ -337,4 +331,8 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	Boolean appControl(ReqControlLock reqc);
+	/**
+	 * 保存并绑定
+	 */
+	void saveAndBind(ReqStall reqStall);
 }

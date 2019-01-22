@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,22 +94,31 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			Long userId = user.getId();
 			// 查询是否有未完成进程
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(userId);
-			List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
+			List<EntOwnerPre> prelist = null;// ownerStallClusterMapper.findPre(userId);
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
-			List<Long> collect = prelist.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
-			if(prelist == null || prelist.size() == 0 || stalllist == null || stalllist.size() == 0) {
+//			List<Long> collect = prelist.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
+			if(stalllist == null || stalllist.size() == 0) {
 				return res;
 			}
-			Map<String, Object> map = new HashMap<>();
-			map.put("preIds", collect);
-			List<ResPre> preList = this.prefectrueClient.findPreByIds(map );
-			List<String> gateways = preList.stream().map(pre -> pre.getGateway()).collect(Collectors.toList());
+//			Map<String, Object> map = new HashMap<>();
+//			map.put("preIds", collect);
+			Set<Long> ids = new HashSet<Long>();
+			if(CollectionUtils.isNotEmpty(stalllist)&& stalllist.size()>0) {
+				for(EntOwnerStall entOwnerStall:stalllist) {
+					ids.add(entOwnerStall.getPreId());
+				}
+				prelist = ownerStallClusterMapper.findPreByIds(ids);
+			}
+			if(prelist == null || prelist.size() == 0) {
+				return res;
+			}
+			List<String> gateways = prelist.stream().map(pre -> pre.getGateway()).collect(Collectors.toList());
 			List<ResLockInfos> lockInfos = this.feignLockClient.lockLists(gateways);
 			Map<Long,List<ResLockInfo>> tempMap = new HashMap<>();
 			for (ResLockInfos info : lockInfos) {
-				for (ResPre resPre : preList) {
+				for (EntOwnerPre resPre : prelist) {
 					if(resPre.getGateway().equals(info.getGroupId())) {
-						tempMap.put(resPre.getId(), info.getInfos());
+						tempMap.put(resPre.getPreId(), info.getInfos());
 						break;
 					}
 				}
@@ -135,6 +146,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 												if(inf.getLockCode().equals(enttall.getLockSn())) {
 													OwnerStall.setBattery(inf.getElectricity());
 													OwnerStall.setGatewayStatus(inf.getOnlineState());
+													break;
 												}
 											}
 										}
@@ -148,16 +160,18 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
 								OwnerStall.setStallLocal(enttall.getStallLocal());
 								OwnerStall.setLockSn(enttall.getLockSn());
-								OwnerStall.setStallEndTime(DateUtils.convert(enttall.getStartTime(), null));
+								OwnerStall.setStallEndTime(DateUtils.convert(enttall.getEndTime(), null));
 								OwnerStall.setLockStatus(enttall.getLockStatus());
 								OwnerStall.setStatus(enttall.getStatus() == 1l ? 1 : 2l);
 								ownerstalllist.add(OwnerStall);
 								num++;
 								isHave = true;
+								break;
 							}
 						}
 						ownerpre.setStalls(ownerstalllist);
 						list.add(ownerpre);
+						break;
 					}
 				}
 			} else {
@@ -181,6 +195,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											if(inf.getLockCode().equals(enttall.getLockSn())) {
 												OwnerStall.setBattery(inf.getElectricity());
 												OwnerStall.setGatewayStatus(inf.getOnlineState());
+												break;
 											}
 										}
 									}
@@ -193,7 +208,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 //							OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
 //							OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
 							OwnerStall.setImageUrl(enttall.getImageUrl());
-							OwnerStall.setStallEndTime(DateUtils.convert(enttall.getStartTime(), null));
+							OwnerStall.setStallEndTime(DateUtils.convert(enttall.getEndTime(), null));
 							OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
 							OwnerStall.setStallLocal(enttall.getStallLocal());
 							OwnerStall.setLockSn(enttall.getLockSn());
@@ -310,7 +325,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					control = false;
 				}
 				throw new BusinessException(StatusEnum.get((int)object));
-				
 			}else {
 				control = true;
 			}

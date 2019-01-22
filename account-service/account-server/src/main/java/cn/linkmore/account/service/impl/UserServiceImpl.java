@@ -557,6 +557,7 @@ public class UserServiceImpl implements UserService {
 	
 	private final static ConcurrentHashMap<Long,Long> LOGIN_USER = new ConcurrentHashMap<Long,Long>();
 	private Token cacheUser(HttpServletRequest request, CacheUser user) {
+		String os = request.getHeader("os");
 		Token   last  = null;
 		String key = TokenUtil.getKey(request);
 		Long userId = null;
@@ -594,7 +595,7 @@ public class UserServiceImpl implements UserService {
 				this.redisService.set(Constants.RedisKey.USER_WXAPP_AUTH_TOKEN.key+user.getOpenId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
 			}
 			this.redisService.set(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId(), token,Constants.ExpiredTime.ACCESS_TOKEN_EXP_TIME.time); 
-		} 
+			}
 		log.info("last = {}",JSON.toJSON(last));
 		return last;
 	}
@@ -889,29 +890,34 @@ public class UserServiceImpl implements UserService {
 	public cn.linkmore.account.controller.app.response.ResUser mini(String code, HttpServletRequest request) {
 		ResMiniSession rms = wechatMiniClient.getSession(code);
 		log.info("rms:{}",JsonUtil.toJson(rms));
-		UserInfo ui = this.userInfoClusterMapper.find(rms.getOpenid());
-		if (ui == null) {
-			ui = this.saveUserInfo(rms);
-		}
 		CacheUser cu = new CacheUser(); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
-		if (ui.getUserId() != null) {
-			ResUser user = this.userClusterMapper.findById(ui.getUserId());
-			if (user != null) {
-				ru.setId(user.getId());
-				ru.setMobile(user.getUsername());
-				cu.setMobile(user.getMobile());
+		if(rms != null) {
+			UserInfo ui = this.userInfoClusterMapper.find(rms.getOpenid());
+			if (ui == null) {
+				ui = this.saveUserInfo(rms);
 			}
+			if (ui.getUserId() != null) {
+				ResUser user = this.userClusterMapper.findById(ui.getUserId());
+				if (user != null) {
+					ru.setId(user.getId());
+					ru.setMobile(user.getUsername());
+					cu.setMobile(user.getMobile());
+				}
+			}
+			ru.setAlias(rms.getOpenid());
+			String key = TokenUtil.getKey(request);  
+			ru.setToken(key);  
+			cu.setId(ui.getUserId());
+			cu.setOpenId(rms.getOpenid());
+			cu.setToken(key); 
+			cu.setSession(rms.getSession_key());
+			cu.setClient((short)ClientSource.WXAPP.source);
+			this.cacheUser(request, cu);
+		}else {
+			log.info("...........................mini progrem login error........................");
+			return null;
 		}
-		ru.setAlias(rms.getOpenid());
-		String key = TokenUtil.getKey(request);  
-		ru.setToken(key);  
-		cu.setId(ui.getUserId());
-		cu.setOpenId(rms.getOpenid());
-		cu.setToken(key); 
-		cu.setSession(rms.getSession_key());
-		cu.setClient((short)ClientSource.WXAPP.source);
-		this.cacheUser(request, cu);
 		return ru;
 	}
 	
@@ -985,22 +991,13 @@ public class UserServiceImpl implements UserService {
 		} else if (user.getStatus().equals("2")) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {
-			log.info("mobile exist..................");
-			/*user.setLastLoginTime(new Date());
-			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("id", user.getId());
-			param.put("lastLoginTime", new Date());
-			param.put("updateTime", new Date());
-			this.userMasterMapper.updateLoginTime(param);*/
-
-			/*user.setLastLoginTime(new Date());
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("id", user.getId());
 			param.put("lastLoginTime", new Date());
 			param.put("updateTime", new Date());
 			this.userMasterMapper.updateLoginTime(param);
-			this.updateFansStatus((short)0, user.getId());*/
-			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
+			this.updateFansStatus((short)0, user.getId());
+			//throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
 		}
 		CacheUser cu = this.getCacheUser(request);
 		UserInfo ui = this.userInfoClusterMapper.find(cu.getOpenId());
