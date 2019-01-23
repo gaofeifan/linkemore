@@ -407,7 +407,8 @@ public class StallServiceImpl implements StallService {
 
 	    stallLock =	stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
 	    stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
-		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
+//		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
+		Stall stallName = stallClusterMapper.findByLockNameAndPreId(reqLockIntall.getStallName(),reqLockIntall.getPreId());
 		if(stall != null) {
 			if(!checkStaffStallAuth(cu.getId(), stall.getId())) {
 				throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
@@ -1536,9 +1537,9 @@ public class StallServiceImpl implements StallService {
 		Stall stall = this.stallClusterMapper.findById(stallId);
 		ResLockInfo lockBean = this.lockTools.lockInfo(stall.getLockSn());
 		List<ResBaseDict> baseDict = this.baseDictClient.findList(DOWN_CAUSE);
+		detail.setStallId(stall.getId());
 		if (lockBean != null) {
 			detail.setBetty(lockBean.getElectricity());
-			detail.setStallId(stall.getId());
 			detail.setCarStatus(lockBean.getParkingState());
 			switch (lockBean.getLockState()) {
 			case 0:
@@ -1617,7 +1618,7 @@ public class StallServiceImpl implements StallService {
 							if (new Date().getTime() >= entRentUser.getEndTime().getTime()) {
 								continue;
 							}
-							 rentUser = entRentUser;
+							rentUser = entRentUser;
 							if (!paltes.contains(entRentUser.getPlate())) {
 								sb.append(entRentUser.getPlate()).append("/");
 								paltes.add(entRentUser.getPlate());

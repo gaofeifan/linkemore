@@ -47,7 +47,6 @@
       #{type,jdbcType=SMALLINT}, #{brand,jdbcType=SMALLINT},#{areaName,jdbcType=VARCHAR}
       )
   </insert>
-  
   <update id="update" parameterType="cn.linkmore.prefecture.entity.Stall">
     update v_stall
     set stall_name = #{stallName,jdbcType=VARCHAR},

@@ -75,6 +75,12 @@
     from v_stall
     where stall_name = #{name,jdbcType=VARCHAR} limit 0,1
   </select>
+  <select id="findByLockNameAndPreId" resultMap="BaseResultMap" >
+    select 
+        <include refid="Base_Column_List" />
+    from v_stall
+    where stall_name = #{0} and pre_id = #{1} limit 0,1
+  </select>
   
   
   <select id="findStallsByPreId" parameterType="java.lang.Long" resultMap="ResponseResultMap">

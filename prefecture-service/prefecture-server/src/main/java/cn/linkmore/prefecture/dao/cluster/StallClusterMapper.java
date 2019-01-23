@@ -112,4 +112,6 @@ public interface StallClusterMapper {
 	 */
 	List<ResStall> findStallsByPreIds(Map<String, Object> map);
 	
+	Stall findByLockNameAndPreId(String stallName, Long preId);
+	
 }
