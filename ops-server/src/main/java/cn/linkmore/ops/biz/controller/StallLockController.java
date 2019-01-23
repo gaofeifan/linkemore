@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
 import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
@@ -31,7 +26,6 @@ import cn.linkmore.ops.biz.service.StallService;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqStallLock;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
-import cn.linkmore.security.response.ResPerson;
 import cn.linkmore.util.ExcelRead;
 
 /**
@@ -125,7 +119,7 @@ public class StallLockController extends BaseController{
 			param.put("value", getPerson().getEntId());
 			ResEnterprise enter = enterService.find(param);
 			if(enter != null) {
-				pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createEntId",getPerson().getId()));
+				pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createEntId",getPerson().getEntId()));
 			}
 		}
 		

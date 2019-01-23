@@ -1645,6 +1645,8 @@ public class StallServiceImpl implements StallService {
 					break;
 				}
 			}
+			detail.setAssignStatus(assignStatus);
+			detail.setOnoffStatus(true);
 			if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 1) {
 				detail.setResetStatus(false);
 				detail.setExcCode(0L);
@@ -1652,8 +1654,6 @@ public class StallServiceImpl implements StallService {
 			}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
 				detail.setOrderStatus((short)7);
 			}
-			detail.setAssignStatus(assignStatus);
-			detail.setOnoffStatus(true);
 			ResEntExcStallStatus entExcStall = feignStallExcStatusClient.findByStallId(stallId);
 			if (entExcStall != null) {
 				detail.setExcCode(entExcStall.getExcStatus());

@@ -963,6 +963,20 @@ public class PayServiceImpl implements PayService {
 			} else {
 				detail.setLeaveTime(15);
 			}
+		}else {
+			if(order!= null && order.getUserId().longValue() == cu.getId().longValue()) {
+				log.info("get the order null reset the value falg :{}, order:{}", flag, JsonUtil.toJson(order));
+				ResPrefectureDetail pre = prefectureClient.findById(order.getPreId());
+				detail = new ResOrderDetail();
+				detail.copy(order);
+				if (pre != null) {
+					detail.setLeaveTime(pre.getLeaveTime());
+				} else {
+					detail.setLeaveTime(15);
+				}
+			}else {
+				log.info("verfiy error");
+			}
 		}
 		return detail;
 	}

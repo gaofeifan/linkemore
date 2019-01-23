@@ -126,6 +126,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			}
 			log.info("车位>>>" + stalllist.size() + "车区>>>" + prelist.size() + "用户>>>" + JSON.toJSONString(user));
 			List<OwnerPre> list = new ArrayList<>();
+			Set<Long> stallIdList = new HashSet<>();
 			if (record != null) { // 未完成进程
 				for (EntOwnerPre pre : prelist) {
 					if (pre.getPreId().equals(record.getPreId())) {
@@ -187,6 +188,10 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					List<OwnerStall> ownerstalllist = new ArrayList<>();
 					for (EntOwnerStall enttall : stalllist) {
 						if (pre.getPreId().equals(enttall.getPreId())) {
+							if(stallIdList.contains(enttall.getStallId())) {
+								continue;
+							}
+							stallIdList.add(enttall.getStallId());
 							OwnerStall OwnerStall = new OwnerStall();
 							if(tempMap != null && !tempMap.isEmpty()) {
 								for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
