@@ -56,10 +56,13 @@ public class RentEntController {
 			ent.setUpdateTime(new Date());
 			ent.setStatus(1);
 			ent.setCreateUserId(person.getId());
-			ent.setEntId(person.getEntId());
-			ent.setEntName(person.getEntName());
+			ent.setCreateUserName(person.getUsername());
 			ent.setUpdateUserId(person.getId());
 			ent.setUpdateUserName(person.getUsername());
+			if(person.getEntId()!= null && person.getEntId() > 0L) {
+				ent.setEntId(person.getEntId());
+				ent.setEntName(person.getEntName());
+			}
 			this.rentEntService.save(ent);
 			msg = new ViewMsg("保存成功", true);
 		} catch (DataException e) {

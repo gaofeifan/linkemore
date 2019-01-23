@@ -29,11 +29,11 @@ public class ReqRentEnt {
      */
     private String createUserName;
     /**
-     * 创建用户Id
+     * 创建企业Id
      */
     private Long entId;
     /**
-     * 创建用户名称
+     * 创建企业名称
      */
     private String entName;
     /**

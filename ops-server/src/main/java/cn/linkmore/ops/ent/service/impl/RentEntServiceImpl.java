@@ -75,17 +75,6 @@ public class RentEntServiceImpl implements RentEntService {
 			list.add(vf);
 			//pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getId()));
 		}
-		/*
-		
-		List<ViewFilter> list = pageable.getFilters();
-		ViewFilter vf = new ViewFilter();
-		vf.setProperty("createUserId");
-		Subject subject = SecurityUtils.getSubject();
-		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
-		Long id = person.getId();
-		vf.setValue(id);
-		list.add(vf);
-		*/
 		return this.rentEntClient.list(pageable);
 	}
 
