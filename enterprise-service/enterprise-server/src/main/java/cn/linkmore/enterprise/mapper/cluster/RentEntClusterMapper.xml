@@ -44,6 +44,9 @@
     <if test="createUserId != null">
    	AND create_user_id = #{createUserId}
     </if>
+    <if test="entId != null">
+   	AND ent_id = #{entId}
+    </if>
 	</where>
     <if test="property==null">  
     order by create_time desc
@@ -65,6 +68,9 @@
 	    <if test="createUserId != null">
 	   	AND create_user_id = #{createUserId}
 	    </if>
+	    <if test="entId != null">
+  		AND ent_id = #{entId}
+    	</if>
 	</where>
   </select>
   

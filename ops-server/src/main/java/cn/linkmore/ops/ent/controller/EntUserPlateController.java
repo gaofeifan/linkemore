@@ -64,12 +64,14 @@ public class EntUserPlateController extends BaseController {
 		try {
 			Subject subject = SecurityUtils.getSubject();
 			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
+			
+			plate.setEntId(person.getEntId());
 			plate.setCreateTime(new Date());
 			plate.setCreateUserId(person.getId());
 			plate.setCreateUserName(person.getUsername());
 			
 			Map<String, Object> param = new HashMap<>();
-			param.put("createUserId", person.getId());
+			param.put("createUserId", person.getEntId());
 			List<ResPrefectureDetail> preList = prefectureClient.findList(param);
 			if(CollectionUtils.isNotEmpty(preList)) {
 				plate.setPreId(preList.get(0).getId());
@@ -159,6 +161,9 @@ public class EntUserPlateController extends BaseController {
 							userPlate.setCreateUserName(userName);
 							userPlate.setCreateTime(new Date());
 							userPlate.setPreId(preId);
+							if(person.getEntId()!=null) {
+								userPlate.setEntId(person.getEntId());
+							}							
 							checkParam = new HashMap<String,Object>();
 							checkParam.put("preId", userPlate.getPreId());
 							checkParam.put("plateNo", userPlate.getPlateNo());

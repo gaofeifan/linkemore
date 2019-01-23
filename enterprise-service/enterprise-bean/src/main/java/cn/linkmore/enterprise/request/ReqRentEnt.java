@@ -29,6 +29,14 @@ public class ReqRentEnt {
      */
     private String createUserName;
     /**
+     * 创建用户Id
+     */
+    private Long entId;
+    /**
+     * 创建用户名称
+     */
+    private String entName;
+    /**
      * 创建时间
      */
     private Date createTime;
@@ -69,8 +77,38 @@ public class ReqRentEnt {
     private String preName;
     
     private List<ReqRentEntStall > stalls;
+    
+    
 
-    public Long getId() {
+    /**
+	 * @return the entId
+	 */
+	public Long getEntId() {
+		return entId;
+	}
+
+	/**
+	 * @param entId the entId to set
+	 */
+	public void setEntId(Long entId) {
+		this.entId = entId;
+	}
+
+	/**
+	 * @return the entName
+	 */
+	public String getEntName() {
+		return entName;
+	}
+
+	/**
+	 * @param entName the entName to set
+	 */
+	public void setEntName(String entName) {
+		this.entName = entName;
+	}
+
+	public Long getId() {
         return id;
     }
 

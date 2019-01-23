@@ -90,11 +90,11 @@ public class OrderController extends BaseController{
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person");
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("property", "id");
-		param.put("value", person.getId());
+		param.put("value", person.getEntId());
 		ResEnterprise enter = enterService.find(param);
 		Map<String,Object> paramSearch = new HashMap<String,Object>();
 		if(enter != null ) {
-			paramSearch.put("createUserId", person.getId());
+			paramSearch.put("createUserId", person.getEntId());
 		}
 		return this.prefectureService.findList(paramSearch);
 	} 
