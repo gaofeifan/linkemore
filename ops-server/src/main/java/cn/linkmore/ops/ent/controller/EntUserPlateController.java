@@ -66,6 +66,7 @@ public class EntUserPlateController extends BaseController {
 			ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
 			
 			plate.setEntId(person.getEntId());
+
 			plate.setCreateTime(new Date());
 			plate.setCreateUserId(person.getId());
 			plate.setCreateUserName(person.getUsername());

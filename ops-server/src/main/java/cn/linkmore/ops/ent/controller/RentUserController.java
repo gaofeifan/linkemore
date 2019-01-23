@@ -45,6 +45,7 @@ public class RentUserController extends BaseController {
 			user.setCreateTime(new Date());
 			user.setCreateUserId(getPerson().getId());
 			user.setEntId(getPerson().getEntId());
+			user.setEntName(getPerson().getEntName());
 			user.setCreateUserName(getPerson().getUsername());
 			user.setUpdateTime(new Date());
 			user.setUpdateUserId(getPerson().getId());

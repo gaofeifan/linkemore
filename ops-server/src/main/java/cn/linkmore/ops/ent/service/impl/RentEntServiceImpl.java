@@ -109,6 +109,7 @@ public class RentEntServiceImpl implements RentEntService {
 				reqRentEntStall.setCreateTime(ent.getCreateTime());
 				reqRentEntStall.setCreateUserId(ent.getCreateUserId());
 				reqRentEntStall.setEntId(ent.getEntId());
+				reqRentEntStall.setEntName(ent.getEntName());
 				reqRentEntStall.setCreateUserName(ent.getCreateUserName());
 				reqRentEntStall.setUpdateTime(ent.getUpdateTime());
 				reqRentEntStall.setUpdateUserId(ent.getUpdateUserId());
