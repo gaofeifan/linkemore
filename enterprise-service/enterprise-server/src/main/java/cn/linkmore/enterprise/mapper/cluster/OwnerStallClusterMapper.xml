@@ -102,7 +102,7 @@
     
   </select>
   
-  
+  	<!-- and ru.user_id= vm.veh_user_id -->
 	<select id="findStall"   resultMap="StallResultMap" >
 	SELECT  
 		pre_id,
@@ -170,7 +170,7 @@
 			DATE_FORMAT(ru.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
 			DATE_FORMAT(ru.end_time,'%Y-%m-%d %H:%i:%s') as end_time
 		FROM v_vehicle_mark_manage vm 
-		INNER JOIN t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.user_id= vm.veh_user_id and ru.type =0 
+		INNER JOIN t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =0 
 		INNER JOIN v_stall s ON ru.stall_id = s.id 
 		INNER JOIN v_prefecture p ON s.pre_id = p.id
 		INNER JOIN t_user tu on tu.id = vm.veh_user_id and tu.id= #{0} 
