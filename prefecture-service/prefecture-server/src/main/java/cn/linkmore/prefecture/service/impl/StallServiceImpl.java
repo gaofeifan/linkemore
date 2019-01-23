@@ -434,8 +434,14 @@ public class StallServiceImpl implements StallService {
 			// 更新根据车位名称查询的车位编号为新安装的车位编号
 			stallName.setLockSn(reqLockIntall.getLockSn());
 			// 更新原来车位编号的车位将车位编号设置为null
-			this.stallLockMasterMapper.deleteByStallId(stall.getId());
-			this.stallMasterMapper.delete(stall.getId());
+			StallLock lock = this.stallLockClusterMapper.findByStallId(stall.getId());
+			lock.setSn(null);
+			lock.setStallId(null);
+			this.stallLockMasterMapper.update(lock);
+			this.stallLockMasterMapper.updateBind(lock);
+			stall.setLockSn(null);
+			stall.setLockId(null);
+			this.stallMasterMapper.update(stall);
 			StallLock oStallLock = this.stallLockClusterMapper.findByStallId(stallName.getId());
 			// 更新更改后的车位锁关系
 			oStallLock.setSn(reqLockIntall.getLockSn());
@@ -456,6 +462,8 @@ public class StallServiceImpl implements StallService {
 					this.stallMasterMapper.update(stallName);
 				}else {
 					if(stall != null) {
+						stall.setLockSn(null);
+						stall.setLockId(null);
 						this.stallMasterMapper.delete(stall.getId());
 					}
 					// 插入新车位并绑定
@@ -498,7 +506,12 @@ public class StallServiceImpl implements StallService {
 					this.stallLockMasterMapper.updateBind(stallLock);
 				}
 			}else {
-				this.stallLockMasterMapper.deleteByStallId(stallName.getId());
+				StallLock lock = this.stallLockClusterMapper.findByStallId(stallName.getId());
+				lock.setSn(null);
+				lock.setStallId(null);
+				this.stallLockMasterMapper.update(lock);
+				this.stallLockMasterMapper.updateBind(lock);
+//				this.stallLockMasterMapper.deleteByStallId(stallName.getId());
 				stallLock = new StallLock();
 				stallLock.setCreateTime(now);
 				stallLock.setSn(reqLockIntall.getLockSn());
@@ -1590,7 +1603,9 @@ public class StallServiceImpl implements StallService {
 						detail.setOrderType("APP");
 					}
 					detail.setPlate(resUserOrder.getPlateNo());
-				}else if(stall.getType() == 2) {
+				}
+				}
+				if(stall.getType() == 2) {
 					Map<String,Object> map = new HashMap<String, Object>();
 					map.put("validTime", 1);
 					List<ResEntRentUser> rentUsers = opsRentUserClient.findAll(map);
@@ -1659,7 +1674,7 @@ public class StallServiceImpl implements StallService {
 				detail.setExcCode(entExcStall.getExcStatus());
 				detail.setExcName(entExcStall.getExcRemark());
 			}
-		}
+//		}
 		return detail;
 	}
 
