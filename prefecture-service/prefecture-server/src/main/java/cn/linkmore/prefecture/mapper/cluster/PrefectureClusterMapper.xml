@@ -218,6 +218,9 @@
     <if test="createUserId!=null">  
     	and create_user_id = #{createUserId} 
     </if>
+    <if test="createEntId!=null">  
+    	and create_ent_id = #{createEntId} 
+    </if>
   </select>
   
   <!-- 增加过滤条件的车区 -->

@@ -142,7 +142,11 @@ public class RentEntServiceImpl implements RentEntService {
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson)subject.getSession().getAttribute("person"); 
 		Map<String, Object> param = new HashMap<>();
-		param.put("createUserId", person.getEntId()==null?person.getId():person.getEntId());
+		if(person.getEntId()!= null) {
+			param.put("createEntId", person.getEntId());
+		}else {
+			param.put("createUserId", person.getId());
+		}
 		List<ResPreList> preList = prefectureClient.findSelectListByUser(param);
 		if(CollectionUtils.isNotEmpty(preList)) {
 			param.put("preId", preList.get(0).getId());
