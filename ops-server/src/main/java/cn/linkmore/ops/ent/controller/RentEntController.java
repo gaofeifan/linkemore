@@ -57,6 +57,7 @@ public class RentEntController {
 			ent.setStatus(1);
 			ent.setCreateUserId(person.getId());
 			ent.setEntId(person.getEntId());
+			ent.setEntName(person.getEntName());
 			ent.setUpdateUserId(person.getId());
 			ent.setUpdateUserName(person.getUsername());
 			this.rentEntService.save(ent);

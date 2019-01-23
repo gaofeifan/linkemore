@@ -1,9 +1,14 @@
 package cn.linkmore.ops.ent.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +20,9 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqCheck;
 import cn.linkmore.enterprise.request.ReqRentUser;
+import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.ops.biz.controller.BaseController;
+import cn.linkmore.ops.biz.service.EnterpriseService;
 import cn.linkmore.ops.ent.service.RentUserService;
 
 /**
@@ -31,9 +38,21 @@ public class RentUserController extends BaseController {
 	@Resource
 	private RentUserService rentUserService;
 	
+	@Autowired
+	private EnterpriseService enterService;
+	
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage findList(HttpServletRequest request, ViewPageable pageable) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		if(getPerson().getEntId()!= null && getPerson().getEntId() != 0L) {
+			param.put("property", "id");
+			param.put("value", getPerson().getEntId());
+			ResEnterprise enter = enterService.find(param);
+			if(enter != null) {
+				pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createEntId",getPerson().getEntId()));
+			}
+		}
 		return this.rentUserService.findList(request,pageable);
 	}
 	
@@ -45,10 +64,15 @@ public class RentUserController extends BaseController {
 			user.setCreateTime(new Date());
 			user.setCreateUserId(getPerson().getId());
 			user.setEntId(getPerson().getEntId());
+			user.setEntName(getPerson().getEntName());
 			user.setCreateUserName(getPerson().getUsername());
 			user.setUpdateTime(new Date());
 			user.setUpdateUserId(getPerson().getId());
 			user.setUpdateUserName(getPerson().getUsername());
+			if(getPerson().getEntId()!= null) {
+				user.setCreateEntId(getPerson().getEntId());
+				user.setCreateEntName(getPerson().getEntName());
+			}
 			this.rentUserService.save(user);
 			msg = new ViewMsg("保存成功", true);
 		} catch (BusinessException e) {

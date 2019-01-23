@@ -46,7 +46,7 @@
     insert into t_ent_rent_user (id, ent_id, ent_pre_id, pre_id, mobile, realname, 
       plate, stall_id, user_id,ent_name,pre_name,stall_name,start_time,end_time,type,
       company_id,company_name, create_user_id, create_user_name, create_time, 
-      update_user_id, update_user_name, update_time
+      update_user_id, update_user_name, update_time, create_ent_id, create_ent_name
       )
     values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT}, #{entPreId,jdbcType=BIGINT}, 
       #{preId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
@@ -54,7 +54,8 @@
       #{entName,jdbcType=VARCHAR}, #{preName,jdbcType=VARCHAR}, #{stallName,jdbcType=VARCHAR},
       #{startTime,jdbcType=TIMESTAMP} ,#{endTime,jdbcType=TIMESTAMP},#{type},#{companyId},#{companyName},
       #{createUserId,jdbcType=BIGINT}, #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateUserId,jdbcType=BIGINT}, #{updateUserName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+      #{updateUserId,jdbcType=BIGINT}, #{updateUserName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+      #{createEntId,jdbcType=BIGINT},  #{createEntName,jdbcType=VARCHAR}
       )
       </insert>
   <insert id="saveBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
@@ -296,11 +297,11 @@
       plate = #{plate,jdbcType=VARCHAR},
       stall_id = #{stallId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
-       stall_name = #{stallName,jdbcType=VARCHAR},
-        pre_name = #{preName,jdbcType=VARCHAR},
-          company_name = #{companyName},
-           company_id = #{companyId},
-         ent_name = #{entName,jdbcType=VARCHAR}
+      stall_name = #{stallName,jdbcType=VARCHAR},
+      pre_name = #{preName,jdbcType=VARCHAR},
+      company_name = #{companyName},
+      company_id = #{companyId},
+      ent_name = #{entName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
