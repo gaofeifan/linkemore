@@ -144,8 +144,6 @@ public class RentEntServiceImpl implements RentEntService {
 		Map<String, Object> param = new HashMap<>();
 		if(person.getEntId()!= null) {
 			param.put("createEntId", person.getEntId());
-		}else {
-			param.put("createUserId", person.getId());
 		}
 		List<ResPreList> preList = prefectureClient.findSelectListByUser(param);
 		if(CollectionUtils.isNotEmpty(preList)) {
