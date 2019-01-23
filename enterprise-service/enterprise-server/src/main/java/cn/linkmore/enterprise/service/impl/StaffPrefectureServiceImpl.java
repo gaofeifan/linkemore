@@ -437,6 +437,32 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 			@Override
 			public void run() {
 				try {
+					//推送给个人版
+					String title = "订单操作";
+					String content = (Type ==1?"订单已被管理员挂起":"订单已被管理员关闭");
+					PushType type = (Type ==1?PushType.ORDER_STAFF_SUSPEND_NOTICE:PushType.ORDER_STAFF_CLOSED_NOTICE);
+					String bool = "true";
+					Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + orders.getUserId().toString());
+
+					ReqPush rp = new ReqPush();
+					rp.setAlias(orders.getUserId().toString());
+					rp.setTitle(title);
+					rp.setContent(content);
+					rp.setClient(token.getClient());
+					rp.setType(type);
+					rp.setData(bool);
+					pushClient.push(rp);
+				} catch (Exception e) {
+					log.info("push sms erro");
+				}
+				try {
+					if (req != null) {
+						smsClient.send(req);
+					}
+				} catch (Exception e) {
+					log.info("send sms erro");
+				}
+				try {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("orderNo", orders.getOrderNo());
 					map.put("beginTime", orders.getBeginTime());
@@ -451,32 +477,6 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 					HttpUtil.sendJson("http://192.168.1.172:8086/order/orderDeal", json);
 				} catch (Exception e) {
 					log.info("tell lock erro");
-				}
-				try {
-					if (req != null) {
-						smsClient.send(req);
-					}
-				} catch (Exception e) {
-					log.info("send sms erro");
-				}
-				try {
-					//推送给个人版
-					String title = "订单操作";
-					String content = (Type ==1?"订单已被管理员挂起":"订单已被管理员关闭");
-					PushType type = (Type ==1?PushType.ORDER_STAFF_SUSPEND_NOTICE:PushType.ORDER_STAFF_CLOSED_NOTICE);
-					String bool = "true";
-					Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + orders.getUserId().toString());
-					
-					ReqPush rp = new ReqPush();
-					rp.setAlias(orders.getUserId().toString());
-					rp.setTitle(title);
-					rp.setContent(content);
-					rp.setClient(token.getClient());
-					rp.setType(type);
-					rp.setData(bool);
-					pushClient.push(rp);
-				} catch (Exception e) {
-					log.info("push sms erro");
 				}
 			}
 		});
