@@ -569,7 +569,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 					}
 				}
 			}
-
+			log.info("..........find pre detail free map{}", JSON.toJSON(map));
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("prefectureId", preDetail.getId());
 			List<ResStrategyGroup> strategyGroupList = strategyGroupClusterMapper.findPreGroupList(param);
