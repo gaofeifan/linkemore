@@ -438,6 +438,7 @@ public class StallServiceImpl implements StallService {
 			StallLock lock = this.stallLockClusterMapper.findByStallId(stall.getId());
 			lock.setSn(null);
 			lock.setStallId(null);
+			lock.setPrefectureId(null);
 			this.stallLockMasterMapper.update(lock);
 			this.stallLockMasterMapper.updateBind(lock);
 			stall.setLockSn(null);
@@ -515,10 +516,13 @@ public class StallServiceImpl implements StallService {
 				}
 			}else {
 				StallLock lock = this.stallLockClusterMapper.findByStallId(stallName.getId());
-				lock.setSn(null);
-				lock.setStallId(null);
-				this.stallLockMasterMapper.update(lock);
-				this.stallLockMasterMapper.updateBind(lock);
+				if(lock != null) {
+					lock.setSn(null);
+					lock.setStallId(null);
+					lock.setPrefectureId(null);
+					this.stallLockMasterMapper.update(lock);
+					this.stallLockMasterMapper.updateBind(lock);
+				}
 //				this.stallLockMasterMapper.deleteByStallId(stallName.getId());
 				stallLock = new StallLock();
 				stallLock.setCreateTime(now);
@@ -1622,7 +1626,7 @@ public class StallServiceImpl implements StallService {
 					ResEntRentUser rentUser = null;
 					for (ResEntRentUser entRentUser : rentUsers) {
 						if (entRentUser.getStallId().equals(stall.getId())) {
-							if (new Date().getTime() >= entRentUser.getEndTime().getTime()) {
+							if (new Date().getTime() >= entRentUser.getEndTime().getTime() || entRentUser.getEntId() == null) {
 								continue;
 							}
 							rentUser = entRentUser;
