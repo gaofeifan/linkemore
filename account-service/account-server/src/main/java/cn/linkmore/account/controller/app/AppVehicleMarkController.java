@@ -72,12 +72,16 @@ public class AppVehicleMarkController{
 	@ApiOperation(value="删除",notes="根据id删除", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<?> delete(@ApiParam(value="id",required=true) @NotNull(message="id不能为空") @Min(message="请输入整数",value=1)  @RequestParam("id") Long id,HttpServletRequest request){
+		ResponseEntity<?> response = null;
 		try {
 			this.vehicleMarkManageService.deleteById(id,request);
+			return ResponseEntity.success(null, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) {
 			return ResponseEntity.fail(StatusEnum.UNAUTHORIZED.code, "此账号下没有该车牌号", request);
 		}
-		return ResponseEntity.success(null, request);
+		return response;
 	}
 	
 	/**

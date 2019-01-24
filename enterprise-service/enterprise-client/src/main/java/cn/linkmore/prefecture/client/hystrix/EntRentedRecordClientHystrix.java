@@ -14,16 +14,21 @@ public class EntRentedRecordClientHystrix implements EntRentedRecordClient {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public void updateDownTime(Long stallId) {
-		log.info("ops staffauth service void updateDownTime(Long stallId)) hystrix");
+		log.info("void updateDownTime(Long stallId)) hystrix");
 	}
 	@Override
 	public ResEntRentedRecord findLastPlateNumber(Long stallId) {
-		log.info("ops staffauth service ResEntRentedRecord findLastPlateNumber(Long stallId) ) hystrix");
+		log.info("ResEntRentedRecord findLastPlateNumber(Long stallId) ) hystrix");
 		return null;
 	}
 	@Override
 	public List<ResEntRentedRecord> findLastPlateNumberByPreId(Long preId) {
-		log.info("ops staffauth service List<ResEntRentedRecord> findLastPlateNumberByPreId(Long preId) hystrix");
+		log.info("List<ResEntRentedRecord> findLastPlateNumberByPreId(Long preId) hystrix");
+		return null;
+	}
+	@Override
+	public ResEntRentedRecord findByUserId(Long userId) {
+		log.info("ResEntRentedRecord findByUserId(Long userId) hystrix");
 		return null;
 	}
 

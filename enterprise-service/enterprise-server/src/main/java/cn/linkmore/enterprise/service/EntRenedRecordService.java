@@ -27,5 +27,11 @@ public interface EntRenedRecordService {
 	 * @Version  v2.0
 	 */
 	List<ResEntRentedRecord> findLastPlateNumberByPreId(Long preId);
+	/**
+	 * 查询当前用户使用长租车位记录
+	 * @param userId
+	 * @return
+	 */
+	EntRentedRecord findByUserId(Long userId);
 
 }

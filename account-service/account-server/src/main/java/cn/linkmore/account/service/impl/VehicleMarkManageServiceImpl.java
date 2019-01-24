@@ -34,6 +34,8 @@ import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.request.ReqRentEntUser;
+import cn.linkmore.enterprise.response.ResEntRentedRecord;
+import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.OpsRentEntUserClient;
 import cn.linkmore.prefecture.client.OpsRentUserClient;
 import cn.linkmore.redis.RedisService;
@@ -60,7 +62,11 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	@Resource
 	private OpsRentUserClient opsRentUserClient;
 	@Resource
+	private EntRentedRecordClient entRentedRecordClient;
+	@Resource
 	private UserGroupInputService userGroupInputService;
+	
+	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public List<VehicleMarkManage> findByUserId(Long userId) {
 		return this.vehicleMarkManageClusterMapper.findByUserId(userId);
@@ -154,15 +160,22 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	//@Transactional
 	public void deleteById(Long id, HttpServletRequest request) {
 		List<ResVechicleMark> list = this.findResList(request);
-		for (ResVechicleMark resVechicleMark : list) {
-			if(resVechicleMark.getId().equals(id)) {
-				this.vehicleMarkManageMasterMapper.deleteById(id);
-				String key = TokenUtil.getKey(request);
-				CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
-				//userGroupInputService.syncByUserId(user.getId());
-				//threadPools.execute(new SyncData(user.getId()));
-				syncData(user.getId(),null);
-				return;
+		String key = TokenUtil.getKey(request);
+		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		if(user!= null && CollectionUtils.isNotEmpty(list)) {
+			for (ResVechicleMark resVechicleMark : list) {
+				if(resVechicleMark.getId().equals(id)) {
+					ResEntRentedRecord resEntRentedRecord = entRentedRecordClient.findByUserId(user.getId());
+					log.info("rent plate flag:{}, using rent record:{}",resVechicleMark.getRentPlateFlag(),JSON.toJSON(resEntRentedRecord));
+					if(resVechicleMark.getRentPlateFlag() == true && resEntRentedRecord!= null && resEntRentedRecord.getPlateNo().equals(resVechicleMark.getVehMark())) {
+						throw new BusinessException(StatusEnum.DELETE_PLATE_NO_FAILED);
+					}
+					this.vehicleMarkManageMasterMapper.deleteById(id);
+					//userGroupInputService.syncByUserId(user.getId());
+					//threadPools.execute(new SyncData(user.getId()));
+					syncData(user.getId(),null);
+					return;
+				}
 			}
 		}
 		throw new RuntimeException("该账户下没有此车牌号");
