@@ -53,6 +53,8 @@
     <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
     <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_ent_id" jdbcType="BIGINT" property="createEntId" />
+    <result column="create_ent_name" jdbcType="VARCHAR" property="createEntName" />
   </resultMap>
   
   <sql id="Base_Column_List">
@@ -261,7 +263,9 @@
 		o.end_time,
 		max(o.plate) as plate,
 		o.create_user_id,
-    	o.create_user_name
+    	o.create_user_name,
+    	o.create_ent_id,
+		o.create_ent_name
 	FROM
 		(
 			(
@@ -278,7 +282,9 @@
 					u.mobile,
 					u.id AS user_id,
 					cu.create_user_id,
-         			cu.create_user_name
+         			cu.create_user_name,
+         			c.ent_id as create_ent_id,
+					c.ent_name as create_ent_name
 				FROM
 					t_ent_rent_com c
 				LEFT JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
@@ -336,7 +342,9 @@
 		o.start_time,
 		o.end_time,
 		o.create_user_id,
-    	o.create_user_name
+    	o.create_user_name,
+    	o.create_ent_id,
+    	o.create_ent_name
   </select>
    
   
