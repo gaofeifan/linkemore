@@ -461,11 +461,18 @@ public class StallServiceImpl implements StallService {
 					stallName.setLockId(stallLock.getId());
 					stallName.setLockSn(stallLock.getSn());
 					this.stallMasterMapper.update(stallName);
+					if(stall != null) {
+						stall.setLockSn(null);
+						stall.setLockId(null);
+						this.stallMasterMapper.update(stall);
+//						this.stallMasterMapper.delete(stall.getId());
+					}
 				}else {
 					if(stall != null) {
 						stall.setLockSn(null);
 						stall.setLockId(null);
-						this.stallMasterMapper.delete(stall.getId());
+						this.stallMasterMapper.update(stall);
+//						this.stallMasterMapper.delete(stall.getId());
 					}
 					// 插入新车位并绑定
 					stallName = new Stall();
