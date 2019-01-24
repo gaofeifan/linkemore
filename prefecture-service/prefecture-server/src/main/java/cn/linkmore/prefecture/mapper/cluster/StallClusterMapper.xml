@@ -79,7 +79,7 @@
     select 
         <include refid="Base_Column_List" />
     from v_stall
-    where stall_name = #{0} and pre_id = #{1} limit 0,1
+    where stall_name = #{stallName} and pre_id = #{preId} limit 0,1
   </select>
   
   
