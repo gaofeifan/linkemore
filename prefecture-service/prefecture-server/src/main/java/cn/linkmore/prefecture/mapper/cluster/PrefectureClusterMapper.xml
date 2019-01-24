@@ -215,8 +215,11 @@
     select id,name,status 
     from v_prefecture
     where status = 0
-    <if test="createUserId!=null">  
+    <!-- <if test="createUserId!=null">  
     	and create_user_id = #{createUserId} 
+    </if> -->
+    <if test="createEntId!=null">  
+    	and create_ent_id = #{createEntId} 
     </if>
   </select>
   

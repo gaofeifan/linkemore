@@ -24,11 +24,11 @@ public class RentEnt {
      */
     private Long createUserId;
     /**
-     * 创建用户Id
+     * 创建企业Id
      */
     private Long entId;
     /**
-     * 创建用户Id
+     * 创建企业名称
      */
     private String entName;
     /**

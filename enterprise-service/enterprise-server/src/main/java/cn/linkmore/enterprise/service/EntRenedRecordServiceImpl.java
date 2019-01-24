@@ -41,6 +41,12 @@ public class EntRenedRecordServiceImpl implements EntRenedRecordService {
 		return this.entRentedRecordClusterMapper.findLastPlateNumberByPreId(preId);
 	}
 	
+	@Override
+	public EntRentedRecord findByUserId(Long userId) {
+		EntRentedRecord record = this.entRentedRecordClusterMapper.findByUser(userId);
+		return record;
+	}
+	
 	
 	
 }
