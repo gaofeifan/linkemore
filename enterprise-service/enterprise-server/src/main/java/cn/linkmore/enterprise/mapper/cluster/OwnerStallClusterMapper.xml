@@ -174,7 +174,7 @@
 		INNER JOIN v_stall s ON ru.stall_id = s.id 
 		INNER JOIN v_prefecture p ON s.pre_id = p.id
 		INNER JOIN t_user tu on tu.id = vm.veh_user_id and tu.id= #{0} 
-		
+		WHERE NOW() BETWEEN ru.start_time and ru.end_time
 		UNION 
 		
 		SELECT  
@@ -199,7 +199,7 @@
 		INNER JOIN v_stall s ON ru.stall_id = s.id 
 		INNER JOIN v_prefecture p ON s.pre_id = p.id
 		INNER JOIN t_user tu on tu.id = vm.veh_user_id and tu.id= #{0} 
-		where ru.company_id is null
+		WHERE ru.company_id is null and now() BETWEEN ru.start_time and ru.end_time
 		) t
 		GROUP BY 
 			pre_id,
