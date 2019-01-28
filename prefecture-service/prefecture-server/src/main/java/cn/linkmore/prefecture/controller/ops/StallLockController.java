@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.controller.ops;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,8 +68,8 @@ public class StallLockController {
 	
 	@RequestMapping(value = "/v2.0/all", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStallLock> findAll(@RequestParam("lockId") Long lockId){
-		return this.stallLockService.findAll(lockId);
+	public List<ResStallLock> findAll(@RequestBody Map<String, Object> param){
+		return this.stallLockService.findAll(param);
 	}
 	
 	@RequestMapping(value = "/v2.0/check_sn", method = RequestMethod.POST)

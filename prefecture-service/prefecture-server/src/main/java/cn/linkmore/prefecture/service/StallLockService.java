@@ -1,6 +1,8 @@
 package cn.linkmore.prefecture.service;
 
 import java.util.List;
+import java.util.Map;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -59,7 +61,7 @@ public interface StallLockService {
 	 * 
 	 * @return
 	 */
-	List<ResStallLock> findAll(Long lockId);
+	List<ResStallLock> findAll(Map<String, Object> param);
 
 	/**
 	 * 初始化锁

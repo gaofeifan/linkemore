@@ -48,7 +48,7 @@ public interface StallLockClient {
 	
 	@RequestMapping(value = "/v2.0/all", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStallLock> findAll(@RequestParam("lockId") Long lockId);
+	public List<ResStallLock> findAll(@RequestBody Map<String, Object> param);
 	
 	@RequestMapping(value = "/v2.0/batch_save", method = RequestMethod.POST)
 	@ResponseBody
