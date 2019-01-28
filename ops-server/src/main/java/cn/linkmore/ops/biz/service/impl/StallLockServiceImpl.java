@@ -66,10 +66,10 @@ public class StallLockServiceImpl implements StallLockService {
 		return this.stallLockClient.batchSave(locks);
 	}
 
-	@Override
+	/*@Override
 	public List<ResStallLock> findAll(Long lockId) {
 		return this.stallLockClient.findAll(lockId);
-	}
+	}*/
 
 	@Override
 	public int checkSn(String sn) {
@@ -81,6 +81,11 @@ public class StallLockServiceImpl implements StallLockService {
 		Map<String, Object> param = new HashMap<>();
 		param.put("sn", sn);
 		return stallLockClient.checkFormerSn(param);
+	}
+
+	@Override
+	public List<ResStallLock> findAll(Map<String, Object> param) {
+		return this.stallLockClient.findAll(param);
 	}
 
 }

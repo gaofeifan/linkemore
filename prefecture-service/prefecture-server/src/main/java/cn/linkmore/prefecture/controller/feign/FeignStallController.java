@@ -303,8 +303,8 @@ public class FeignStallController {
 
 	@RequestMapping(value = "/v2.0/sn", method = RequestMethod.POST)
 	@ResponseBody
-	public List<ResStallLock> sn(@RequestParam("lockId") Long lockId) {
-		return stallLockService.findAll(lockId);
+	public List<ResStallLock> sn(@RequestBody Map<String, Object> param) {
+		return stallLockService.findAll(param);
 	}
 
 	@RequestMapping(value = "/v2.0/detail", method = RequestMethod.POST)

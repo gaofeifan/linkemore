@@ -54,12 +54,6 @@ public class StallLockClientHystrix implements StallLockClient {
 	}
 
 	@Override
-	public List<ResStallLock> findAll(Long lockId) {
-		log.info("prefecture service stall_lock findAll() hystrix");
-		return null;
-	}
-
-	@Override
 	public int batchSave(List<ReqStallLock> locks) {
 		log.info("prefecture service stall_lock batchSave() hystrix");
 		return 0;
@@ -80,6 +74,12 @@ public class StallLockClientHystrix implements StallLockClient {
 	@Override
 	public List<ResStallLock> findList(Map<String, Object> param) {
 		log.info("prefecture service stall_lock findList() hystrix");
+		return null;
+	}
+
+	@Override
+	public List<ResStallLock> findAll(Map<String, Object> param) {
+		log.info("prefecture service stall_lock findAll() hystrix");
 		return null;
 	}
 }

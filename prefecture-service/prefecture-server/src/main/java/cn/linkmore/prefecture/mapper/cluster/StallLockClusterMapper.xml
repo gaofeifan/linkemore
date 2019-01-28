@@ -116,6 +116,9 @@
     <if test="lockId !=null">
     || id =#{lockId}
     </if>
+    <if test="createEntId!=null">  
+    and create_ent_id = #{createEntId,jdbcType=BIGINT}
+    </if> 
   </select>
     
   <select id="checkSn" resultType="java.lang.Integer" parameterType="java.util.HashMap" >

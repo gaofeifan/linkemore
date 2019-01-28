@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.linkmore.bean.view.ViewFilter;
@@ -41,6 +43,8 @@ public class StallLockServiceImpl implements StallLockService {
 
 	@Resource
 	private RedisService redisService;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
@@ -108,11 +112,15 @@ public class StallLockServiceImpl implements StallLockService {
 	}
 
 	@Override
-	public List<ResStallLock> findAll(Long lockId) {
-		Map<String, Object> param = new HashMap<>();
+	public List<ResStallLock> findAll(Map<String,Object> param) {
+		Long lockId = Long.valueOf(param.get("lockId").toString());
+		log.info("find all lockId:{}",lockId);
 		if (-1 != lockId) {
 			param.put("lockId", lockId);
+		}else {
+			param.put("lockId", null);
 		}
+		
 		return this.stallLockClusterMapper.findAll(param);
 	}
 

@@ -68,7 +68,7 @@ public interface StallLockService {
 	 * 
 	 * @return
 	 */
-	List<ResStallLock> findAll(Long lockId);
+	List<ResStallLock> findAll(Map<String, Object> param);
 
 	/**
 	 * 查看序列号
