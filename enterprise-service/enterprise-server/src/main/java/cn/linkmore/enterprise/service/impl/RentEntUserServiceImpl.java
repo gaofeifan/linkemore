@@ -19,11 +19,11 @@ import com.alibaba.fastjson.JSON;
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.request.ReqVehicleMark;
-import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.EntRentUserClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.EnterpriseClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.RentEntUserClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentUserMasterMapper;
 import cn.linkmore.enterprise.dao.master.RentEntUserMasterMapper;
@@ -31,8 +31,8 @@ import cn.linkmore.enterprise.entity.EntRentUser;
 import cn.linkmore.enterprise.entity.RentEntUser;
 import cn.linkmore.enterprise.request.ReqRentEntUser;
 import cn.linkmore.enterprise.request.ReqRentUser;
+import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.service.EntRentUserService;
-import cn.linkmore.enterprise.service.EnterpriseService;
 import cn.linkmore.enterprise.service.RentEntService;
 import cn.linkmore.enterprise.service.RentEntStallService;
 import cn.linkmore.enterprise.service.RentEntUserService;
@@ -49,7 +49,7 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	@Resource
 	private RentEntStallService rentEntStallService;
 	@Resource
-	private EnterpriseService enterpriseService;
+	private EnterpriseClusterMapper enterpriseClusterMapper;
 	@Resource
 	private EntRentUserService entRentUserService;
 	@Resource
@@ -172,6 +172,14 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 	
 	
 	public void syncRentStall(Map<String, Object> param) {
+		
+		List<ResEnterprise> enterpriseList = this.enterpriseClusterMapper.findAll();
+		Map<Long,String> enterMap = new HashMap<Long,String>();
+		if(CollectionUtils.isNotEmpty(enterpriseList)) {
+			for(ResEnterprise enter: enterpriseList) {
+				enterMap.put(enter.getId(), enter.getName());
+			}
+		}
 		param.put("type", 1);
 		
 		//自动创建用户和为用户创建车牌
@@ -207,6 +215,11 @@ public class RentEntUserServiceImpl implements RentEntUserService {
 					stall.setUpdateTime(new Date());
 					stall.setUpdateUserId(stall.getCreateUserId());
 					stall.setUpdateUserName(stall.getCreateUserName());
+					if(stall.getCreateEntId()!= null) {
+						//同步企业id
+						stall.setEntId(stall.getCreateEntId());
+						stall.setEntName(enterMap.get(stall.getEntId()));
+					}
 					entRentUser.add(stall);
 				}
 			}
