@@ -537,7 +537,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		// 更新车位
 		ReqStall reqStall = new ReqStall();
 		reqStall.setId(oorb.getStallId());
-		reqStall.setStatus(reqStall.STATUS_FREE);
+		reqStall.setStatus(reqStall.STATUS_USED);
 		reqStall.setBindOrderStatus(reqStall.ORDER_ClOSE);
 		stallClient.updateStatus(reqStall);
 		// 更新redis
