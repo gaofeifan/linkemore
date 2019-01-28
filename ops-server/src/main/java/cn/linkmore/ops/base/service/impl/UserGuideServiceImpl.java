@@ -47,11 +47,11 @@ public class UserGuideServiceImpl implements UserGuideService {
 	@Override
 	public Boolean check(String property, String value, Long parentId, Long id) {
 		ReqCheck reqCheck = new ReqCheck();
-		reqCheck.setParentId(parentId);
+		reqCheck.setProperty(property);
 		reqCheck.setValue(value);
 		reqCheck.setParentId(parentId);
 		reqCheck.setId(id);
-		return this.userGuideClient.check(reqCheck );
+		return this.userGuideClient.check(reqCheck);
 	}
 
 	@Override
