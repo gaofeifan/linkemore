@@ -56,7 +56,7 @@
   
    <update id="updateEntId" parameterType="cn.linkmore.security.request.ReqPerson">
     update t_sec_person
-    set ent_id = #{entId,jdbcType=BIGINT},ent_name=#{userName,jdbcType=VARCHAR}
+    set ent_id = #{entId,jdbcType=BIGINT},ent_name=#{username,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   
