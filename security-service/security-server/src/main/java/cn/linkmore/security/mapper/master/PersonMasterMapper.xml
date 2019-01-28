@@ -54,9 +54,9 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   
-   <update id="updateEntId" parameterType="cn.linkmore.security.entity.Person">
+   <update id="updateEntId" parameterType="cn.linkmore.security.request.ReqPerson">
     update t_sec_person
-    set ent_id = #{entId,jdbcType=BIGINT}
+    set ent_id = #{entId,jdbcType=BIGINT},ent_name=#{userName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   
