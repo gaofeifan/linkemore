@@ -77,7 +77,7 @@
   </select>
   
   <select id="findPage" resultMap="BaseResultMap"  parameterType="java.util.HashMap">
-    select id, create_time, update_time, level, parent_id, status, title,en_title, type, order_index
+    select id, create_time, update_time, level, parent_id, status, title,en_title, type, order_index, url
     from t_user_guide where 1= 1
     <if test="parentId!=null">  
     and parent_id = #{parentId,jdbcType=BIGINT}
