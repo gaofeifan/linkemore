@@ -65,6 +65,8 @@ public enum StatusEnum {
 	ORDER_PAY_ACCOUNT_AMOUNT_LOW(8005016,"账户余额不足"),
 	ORDER_PAY_FAIL(8005017,"支付失败"),
 	ORDER_WXPAY_FAIL(8005018,"微信支付失败"),
+	ORDER_COMPLETED_PAY(8005015,"当前订单已支付,请勿重复支付"),
+
 	
 	ORDER_RECHARGE_PAY_FAIL(8005019,"支付失败"),
 	ORDER_RECHARGE_WXPAY_FAIL(8005020,"微信支付失败"),
@@ -140,7 +142,8 @@ public enum StatusEnum {
 	DOWN_LOCK_FAIL_RETRY_OWNER(8005100,"地锁降下失败,再降一次"),
 	UP_LOCK_FAIL_CHANGE_OWNER(8005101,"地锁升起失败"),
 	DOWN_LOCK_FAIL_CHANGE_OWNER(8005102,"地锁降下失败"),
-	STAFF_STALL_BIN_EXISTS(8005103,"该车位已绑定该车锁");
+	STAFF_STALL_BIN_EXISTS(8005103,"该车位已绑定该车锁"),
+	DELETE_PLATE_NO_FAILED(8005104,"当前车牌正在使用长租车位，禁止删除");
 
 	
 	public int code;
