@@ -15,6 +15,7 @@
 		<module>admin-server</module>
 		<module>eureka-server</module>
 		<module>zuul-server</module>
+		<module>zuul-openapi-server</module>
 		<module>turbine-server</module>
 		<module>sleuth-server</module>
 		<module>hystrix-dashboard</module>
