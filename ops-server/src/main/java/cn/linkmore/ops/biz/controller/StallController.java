@@ -38,7 +38,7 @@ import cn.linkmore.security.response.ResPerson;
 
 @Controller
 @RequestMapping("/admin/biz/stall")
-public class StallController {
+public class StallController extends BaseController {
 
 	@Resource
 	private StallService stallService;
@@ -124,7 +124,17 @@ public class StallController {
 	@RequestMapping(value = "/sn", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStallLock> sn(HttpServletRequest request, @RequestParam("lockId") Long lockId) {
-		return stallLockService.findAll(lockId);
+		Map<String,Object> param = new HashMap<String,Object>();
+		if(getPerson().getEntId()!= null && getPerson().getEntId() != 0L) {
+			param.put("property", "id");
+			param.put("value", getPerson().getEntId());
+			ResEnterprise enter = enterService.find(param);
+			if(enter != null) {
+				param.put("createEntId", getPerson().getEntId());
+			}
+		}
+		param.put("lockId", lockId);
+		return stallLockService.findAll(param);
 	}
 
 	@RequestMapping(value = "/detail", method = RequestMethod.POST)

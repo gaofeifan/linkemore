@@ -1681,7 +1681,7 @@ public class StallServiceImpl implements StallService {
 			}else if(stall.getBindOrderStatus() != null && stall.getBindOrderStatus() == 2) {
 				detail.setResetStatus(false);
 				detail.setExcCode(0L);
-				detail.setExcName("订单挂起未释放");
+				detail.setExcName("订单关闭未释放");
 				detail.setOrderStatus((short)7);
 			}
 			ResEntExcStallStatus entExcStall = feignStallExcStatusClient.findByStallId(stallId);
