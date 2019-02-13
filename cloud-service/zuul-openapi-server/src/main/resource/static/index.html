@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>凌猫停车平台接口文档</title>
+<link href="css/index.css" type="text/css" rel="stylesheet">
+</head>
+<body> 
+	<ul id="tabs">
+		<li><a href="#" title="tab1">用户账户服务</a></li>
+		<li><a href="#" title="tab2">基础数据服务</a></li>
+		<li><a href="#" title="tab3">预约结账服务</a></li>
+		<li><a href="#" title="tab4">车区车位服务</a></li>
+		<li><a href="#" title="tab5">停车券服务</a></li>
+		<li><a href="#" title="tab6">品牌车区服务</a></li>
+	</ul>
+	<div id="content" style="height:auto;">
+		<div id="tab1">
+			<iframe src="/api/account/swagger-ui.html"  frameborder="0"></iframe>
+		</div>
+		<div id="tab2">
+			<iframe src="/api/common/swagger-ui.html"   frameborder="0"></iframe>
+		</div>
+		<div id="tab3">
+			<iframe src="/api/order/swagger-ui.html"   frameborder="0"></iframe>
+		</div>
+		<div id="tab4">
+			<iframe src="/api/prefecture/swagger-ui.html"  frameborder="0"></iframe>
+		</div>
+		<div id="tab5">
+			<iframe src="/api/coupon/swagger-ui.html"   frameborder="0"></iframe>
+		</div>
+		<div id="tab6">
+			<iframe src="/api/enterprise/swagger-ui.html"   frameborder="0"></iframe>
+		</div>
+	</div>
+	<br>
+	<br>
+</body>
+<script src="js/jquery-1.6.3.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var height = $(window).height();
+		$('#content').css('height',(height-70)+'px');
+		$('#content iframe').css('height',(height-80)+'px');
+		$("#content div").hide(); // Initially hide all content
+		$("#tabs li:first").attr("id", "current"); // Activate first tab
+		$("#content div:first").fadeIn(); // Show first tab content
+
+		$('#tabs a').click(function(e) {
+			e.preventDefault();
+			$("#content div").hide(); //Hide all content
+			$("#tabs li").attr("id", ""); //Reset id's
+			$(this).parent().attr("id", "current"); // Activate this
+			$('#' + $(this).attr('title')).fadeIn(); // Show content for current tab
+		});
+	})();
+</script>
+</html>

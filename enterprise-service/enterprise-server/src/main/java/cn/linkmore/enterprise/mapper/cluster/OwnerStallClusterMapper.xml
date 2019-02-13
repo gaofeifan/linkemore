@@ -142,7 +142,7 @@
 		FROM t_ent_rent_com c
 		INNER JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
 		INNER JOIN v_stall s ON cs.stall_id = s.id 
-		INNER JOIN v_prefecture p ON s.pre_id = p.id
+		INNER JOIN v_prefecture p ON s.pre_id = p.id and p.status = 0
 		INNER JOIN t_ent_rent_com_user cu ON c.id = cu.rent_com_id
 		INNER JOIN v_vehicle_mark_manage m ON cu.plate = m.veh_mark
 		INNER JOIN t_user u ON u.id = m.veh_user_id and u.id = #{0} 
@@ -172,7 +172,7 @@
 		FROM v_vehicle_mark_manage vm 
 		INNER JOIN t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =0 
 		INNER JOIN v_stall s ON ru.stall_id = s.id 
-		INNER JOIN v_prefecture p ON s.pre_id = p.id
+		INNER JOIN v_prefecture p ON s.pre_id = p.id and p.status = 0
 		INNER JOIN t_user tu on tu.id = vm.veh_user_id and tu.id= #{0} 
 		WHERE NOW() BETWEEN ru.start_time and ru.end_time
 		UNION 
@@ -197,7 +197,7 @@
 		FROM v_vehicle_mark_manage vm 
 		INNER JOIN t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =1 
 		INNER JOIN v_stall s ON ru.stall_id = s.id 
-		INNER JOIN v_prefecture p ON s.pre_id = p.id
+		INNER JOIN v_prefecture p ON s.pre_id = p.id and p.status = 0
 		INNER JOIN t_user tu on tu.id = vm.veh_user_id and tu.id= #{0} 
 		WHERE ru.company_id is null and now() BETWEEN ru.start_time and ru.end_time
 		) t

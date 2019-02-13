@@ -455,7 +455,7 @@ public class CouponServiceImpl implements CouponService {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Map<String, Object> param = new HashMap<String,Object>();
-		param.put("stallId", orders.getId());
+		param.put("stallId", orders.getStallId());
 		param.put("plateNo", orders.getPlateNo());
 		param.put("startTime", sdf.format(orders.getCreateTime()));
 		param.put("endTime", sdf.format(stopDate));
