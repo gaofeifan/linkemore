@@ -22,8 +22,18 @@ public class ResEnterprise {
     private String tellphone;
 
     private String code;
+    
+    private Long preId;
 
-    public Long getId() {
+    public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
+
+	public Long getId() {
         return id;
     }
 

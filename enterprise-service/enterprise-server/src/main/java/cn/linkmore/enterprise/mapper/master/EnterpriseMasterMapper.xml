@@ -20,12 +20,11 @@
   <insert id="save" parameterType="cn.linkmore.enterprise.entity.Enterprise" useGeneratedKeys="true" keyProperty="id">
     insert into t_biz_enterprise (id, account, name, 
       industry, create_time, update_time, 
-      region, address, tellphone, 
-      code)
+      region, address, tellphone, code, pre_id)
     values (#{id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{industry,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{region,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, #{tellphone,jdbcType=VARCHAR}, 
-      #{code,jdbcType=VARCHAR})
+      #{code,jdbcType=VARCHAR},#{preId,jdbcType=BIGINT})
   </insert>
   
   <update id="update" parameterType="cn.linkmore.enterprise.entity.Enterprise">
