@@ -335,4 +335,10 @@ public interface StallService {
 	 * 保存并绑定
 	 */
 	void saveAndBind(ReqStall reqStall);
+	/**
+	 * 预约订单控制降锁
+	 * @param stall
+	 * @return
+	 */
+	Boolean controlDown(ReqOrderStall stall);
 }

@@ -1104,6 +1104,7 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			if(orders.getLockDownStatus() != null && orders.getLockDownStatus().intValue() == 1) {
 				ro.setCancelFlag((short)2);
+				ro.setDownFlag((short)1);
 				log.info("..........current order lock down success");
 			} else {
 				//根据车位锁编号判断车锁状态是否为降下
@@ -1112,6 +1113,7 @@ public class OrdersServiceImpl implements OrdersService {
 				if("200".equals(String.valueOf(lockParam.get("code"))) &&
 						Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
 					ro.setCancelFlag((short)2);
+					ro.setDownFlag((short)1);
 				}
 			}
 			long beginTime = orders.getBeginTime().getTime();
@@ -1140,6 +1142,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if(orders.getStatus() == OrderStatus.SUSPENDED.value) {
 				//当订单处于挂起状态时，直接结账离场
 				ro.setCancelFlag((short)2);
+				ro.setDownFlag((short)2);
 			}
 			log.info("..........current order {}", JSON.toJSON(ro));
 		}
@@ -1701,7 +1704,7 @@ public class OrdersServiceImpl implements OrdersService {
 				log.info("用户争抢锁异常信息{}",e.getMessage());
 			}
 			if (!have) {
-				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+				throw new BusinessException(StatusEnum.APPOINT_FAIL_CHECK);
 			}else {
 				Thread thread = new StallOrderThread(rsb, cu);
 				thread.start();
@@ -2273,6 +2276,155 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 		}
 		return ro;
+	}
+
+	@Override
+	public boolean controlDown(ReqOrderStall ros, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		if (cu == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
+		log.info("............control down order{}", JSON.toJSON(order));
+		Boolean authStatus = ros.getStallId().intValue() == order.getStallId()
+				&& order.getStatus() == OrderStatus.UNPAID.value
+				&& order.getUserId().longValue() == cu.getId().longValue();
+		if (authStatus) {
+			cn.linkmore.prefecture.request.ReqOrderStall stall = new cn.linkmore.prefecture.request.ReqOrderStall();
+			stall.setOrderId(order.getId());
+			stall.setStallId(order.getStallId());
+			stall.setUserId(cu.getId());
+			
+			/*if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId())) {
+				Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId());
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId(),
+						new Integer(count.toString()) + 1, ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+			} else {
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId(), 1,
+						ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+			}*/
+			
+			Boolean downStatus = this.stallClient.controlDown(stall);
+			
+			/*Boolean switchStatus = false;
+			if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId())) {
+				Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId());
+				log.info("downMsgPush failed times = {}",count.toString());
+				if (Integer.valueOf(count.toString()) > 1) {
+					switchStatus = true;
+				}
+				downStatus = false;
+			}*/
+			
+			log.info("downing msg..................orderId:{} downStatus:{}", order.getId(), downStatus);
+			if(!downStatus) {
+				if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+ros.getOrderId())) {
+					Object object = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key+ros.getOrderId());
+					throw new BusinessException(StatusEnum.get((int)object));
+				}
+			}
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("lockDownStatus", downStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
+			param.put("lockDownTime", new Date());
+			param.put("id", order.getId());
+			this.orderMasterMapper.updateLockStatus(param);
+			return downStatus;
+			/*if (switchStatus && !downStatus) {
+				Thread thread = new PushThread(order.getUserId().toString(), "预约切换通知", "车位锁降下失败建议切换车位",
+						PushType.ORDER_SWITCH_STATUS_NOTICE, true);
+				thread.start();
+			} else {
+				Thread thread = new PushThread(order.getUserId().toString(), "预约降锁通知", downStatus ? "车位锁降下成功" : "车位锁降下失败",
+						PushType.LOCK_DOWN_NOTICE, downStatus);
+				thread.start();
+			}*/
+		}
+		return false;
+	}
+
+	@Override
+	public String switchOrderStall(Long orderId, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		ResUserOrder order = this.ordersClusterMapper.findDetail(orderId);
+		Boolean flag = false;
+		String stallName = null;
+		if (order.getStatus().intValue() == OrderStatus.UNPAID.value
+				&& cu.getId().intValue() == order.getUserId().intValue()) {
+			Long count = 0L;
+			if (order.getBrandId() != null) {
+				count = redisService.size(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + order.getBrandId());
+			} else {
+				count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId());
+			}
+			if (count.intValue() <= 0) {
+				Map<String, Object> param = new HashMap<String, Object>();
+				Date current = new Date();
+				param.put("id", order.getId());
+				param.put("endTime", current);
+				param.put("updateTime", current);
+				param.put("statusTime", current);
+				param.put("statusHistory", OrderStatusHistory.CLOSED.code);
+				param.put("status", OrderStatus.CLOSED.value);
+				this.orderMasterMapper.updateClose(param);
+				//new CancelStallThread(order.getStallId()).start();
+				stallClient.close(order.getStallId());
+				// 关闭订单发送优惠券功能
+				couponClient.send(cu.getId());
+				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key + orderId.longValue(),
+						SwitchResult.CLOSED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
+				throw new BusinessException(StatusEnum.NO_FREE_STALL_CLOSE);
+				/*Thread thread = new PushThread(order.getUserId().toString(), "订单通知", "无空闲车位,订单已关闭",
+						PushType.ORDER_AUTO_CLOSE_NOTICE, true);
+				thread.start();*/
+			} else {
+				Object sn = null;
+				if (order.getBrandId() != null) {
+					sn = redisService.pop(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + order.getBrandId());
+				} else {
+					sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId());
+				}
+				log.info("get switch stall sn:{}", sn);
+				if (sn != null) {
+					ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
+					log.info("switch stall:{}", JsonUtil.toJson(stall));
+					if (stall.getStatus().intValue() == StallStatus.FREE.status) {
+						//Thread thread = new OfflieStallThread(order.getStallId());
+						//order.setStallId(stall.getId());
+						//order.setStallName(stall.getStallName());
+						Map<String, Object> param = new HashMap<String, Object>();
+						param.put("id", order.getId());
+						param.put("stallId", stall.getId());
+						param.put("stallName", stall.getStallName());
+						param.put("switchTime", new Date());
+						param.put("switchStatus", 1);
+						this.orderMasterMapper.updateSwitch(param);
+						this.stallClient.order(stall.getId());
+						//thread.start();
+						stallClient.close(order.getStallId());
+						stallName = stall.getStallName();
+						flag = true;
+					}
+				}
+				/*Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知", flag ? "车位切换成功" : "车位切换失败",
+						PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
+				thread.start();*/
+				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key + orderId.longValue(),
+						flag ? SwitchResult.SUCCESS.value : SwitchResult.FAILED.value,
+						ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
+				
+				if(!flag) {
+					throw new BusinessException(StatusEnum.SWITCH_STALL_FAILED);
+				}
+			}
+		} else {
+			/*Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知", "车位切换失败",
+					PushType.ORDER_SWITCH_RESULT_NOTICE, false);
+			thread.start();*/
+			this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key + orderId.longValue(),
+					SwitchResult.FAILED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
+			throw new BusinessException(StatusEnum.SWITCH_STALL_FAILED);
+		}
+		return stallName;
 	}
 	
 }
