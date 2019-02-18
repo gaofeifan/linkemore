@@ -130,8 +130,9 @@ public enum StatusEnum {
 
 	STALL_NAME_USER(8005090,"车位名称已存在"),
 	DOWN_LOCK_FAIL_RETRY(8005091,"通讯失败,再降一次"),
-	DOWN_LOCK_FAIL_CHANGE(8005092,"降锁失败,请使用其他车位"),
-	DOWN_LOCK_FAIL_CHECK(8005093,"当前车位不可用,请选择其他车位"),
+	DOWN_LOCK_FAIL_CHANGE(8005092,"降锁失败,更换其他车位"),
+	DOWN_LOCK_FAIL_CHECK(8005093,"该车位不可用,请选择其他车位"),
+	APPOINT_FAIL_CHECK(8005083,"该车位已被他人使用,请选择其他车位"),
 	DOWN_LOCK_FAIL_DROP(8005094,"网关掉线,未找到车位锁"),
 	
 	PREFECTURE_NOT_EXIST(8005095,"企业账户下不存在车区"),
@@ -143,7 +144,10 @@ public enum StatusEnum {
 	UP_LOCK_FAIL_CHANGE_OWNER(8005101,"地锁升起失败"),
 	DOWN_LOCK_FAIL_CHANGE_OWNER(8005102,"地锁降下失败"),
 	STAFF_STALL_BIN_EXISTS(8005103,"该车位已绑定该车锁"),
-	DELETE_PLATE_NO_FAILED(8005104,"当前车牌正在使用长租车位，禁止删除");
+	DELETE_PLATE_NO_FAILED(8005104,"当前车牌正在使用长租车位，禁止删除"),
+	NO_FREE_STALL_CLOSE(8005105,"无空闲车位,订单已关闭"),
+	SWITCH_STALL_FAILED(8005106,"切换车位失败")
+	;
 
 	
 	public int code;
