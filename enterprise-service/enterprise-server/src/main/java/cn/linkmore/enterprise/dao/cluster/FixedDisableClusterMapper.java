@@ -6,4 +6,4 @@ public interface FixedDisableClusterMapper {
 
     FixedDisable selectByPrimaryKey(Long id);
 
-}
+}    
