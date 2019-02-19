@@ -233,5 +233,13 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/app/control", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean appControl(@RequestBody ReqControlLock reqc);
+	/**
+	 * 预约下单控制降锁
+	 * @param stall
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/control-down", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean controlDown(@RequestBody ReqOrderStall stall);
 	
 }

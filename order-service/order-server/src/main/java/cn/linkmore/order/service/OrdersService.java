@@ -268,5 +268,19 @@ public interface OrdersService {
 	void cancel(Long orderId, HttpServletRequest request);
 
 	ResOrder downAppoint(ReqStallBooking rsb, HttpServletRequest request);
+	/**
+	 * 控制降锁
+	 * @param ros
+	 * @param request
+	 * @return
+	 */
+	boolean controlDown(ReqOrderStall ros, HttpServletRequest request);
+	/**
+	 * 切换车位
+	 * @param orderId
+	 * @param request
+	 * @return
+	 */
+	String switchOrderStall(Long orderId, HttpServletRequest request);
 		
 }

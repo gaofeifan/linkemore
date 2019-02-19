@@ -214,6 +214,12 @@ public class StallClientHystrix implements StallClient {
 		return null;
 		
 	}
+
+	@Override
+	public Boolean controlDown(ReqOrderStall stall) {
+		log.info("prefecture service Boolean controlDown(ReqOrderStall stall) hystrix");
+		return false;
+	}
 	
 	
 
