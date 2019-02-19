@@ -101,6 +101,20 @@ public interface StrategyGroupService {
 	 * @return
 	 */
 	Long existsStall( Map<String, Object> map);
+	/**
+	 * 根据车位id查询分组获得分组下空闲车位数
+	 * @param stallId
+	 * @param preId 
+	 * @return
+	 */
+	Long findFreeStall(Long stallId, Long preId);
+	/**
+	 * 查询附近空闲车位锁
+	 * @param stallId
+	 * @param preId
+	 * @return
+	 */
+	String nearFreeStallLockSn(Long stallId, Long preId);
 	
 
 

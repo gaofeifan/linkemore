@@ -76,5 +76,13 @@ public interface PrefectureClient {
 	@RequestMapping(value = "/v2.0/by-pre-ids", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResPre> findPreByIds(@RequestBody Map<String, Object> map);
+	
+	@RequestMapping(value = "/v2.0/free-stall-num", method = RequestMethod.GET)
+	@ResponseBody
+	public Long findByGroupId(@RequestParam("stallId") Long stallId, @RequestParam("preId") Long preId);
+	
+	@RequestMapping(value = "/v2.0/near-free-stall", method = RequestMethod.GET)
+	@ResponseBody
+	public String nearFreeStallLockSn(@RequestParam("stallId") Long stallId, @RequestParam("preId") Long preId);
 		
 }
