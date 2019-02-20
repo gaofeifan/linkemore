@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.service.PrefectureService;
+import cn.linkmore.prefecture.service.StrategyGroupService;
 
 /**
  * Controller - 车区信息
@@ -31,6 +33,9 @@ public class FeignPrefectureController {
 
 	@Autowired
 	private PrefectureService preService;
+	
+	@Autowired
+	private StrategyGroupService strategyGroupService;
 	
 	/**
 	 * 根据主键查询批量车区名称
@@ -62,5 +67,16 @@ public class FeignPrefectureController {
 		return this.preService.findPreByIds(map);
 	}
 	
+	@RequestMapping(value = "/v2.0/free-stall-num", method = RequestMethod.GET)
+	@ResponseBody
+	public Long findByGroupId(@RequestParam("stallId") Long stallId, @RequestParam("preId") Long preId) {
+		return this.strategyGroupService.findFreeStall(stallId, preId);
+	}
+	
+	@RequestMapping(value = "/v2.0/near-free-stall", method = RequestMethod.GET)
+	@ResponseBody
+	public String nearFreeStallLockSn(@RequestParam("stallId") Long stallId, @RequestParam("preId") Long preId) {
+		return this.strategyGroupService.nearFreeStallLockSn(stallId, preId);
+	}
 	
 }

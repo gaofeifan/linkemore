@@ -22,8 +22,16 @@
 
   <select id="findList" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
-		<include refid="Base_Column_List" />
-		from v_strategy_group_detail
+		    d.id,
+			d.stall_id,
+			d.stall_name,
+			d.strategy_group_id,
+			d.area_id, 
+			d.area_name,
+			v.lock_sn
+		FROM
+			v_strategy_group_detail d
+		LEFT JOIN v_stall v ON d.stall_id = v.id
 		where 1 = 1
 		and strategy_group_id =	#{strategyGroupId,jdbcType=BIGINT}
 		order by area_name ASC,stall_name asc

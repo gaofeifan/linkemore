@@ -2351,11 +2351,15 @@ public class OrdersServiceImpl implements OrdersService {
 		if (order.getStatus().intValue() == OrderStatus.UNPAID.value
 				&& cu.getId().intValue() == order.getUserId().intValue()) {
 			Long count = 0L;
-			if (order.getBrandId() != null) {
+			/*if (order.getBrandId() != null) {
 				count = redisService.size(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + order.getBrandId());
 			} else {
 				count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId());
-			}
+			}*/
+			
+			count = prefectureClient.findByGroupId(order.getStallId(), order.getPreId());
+			log.info("get the group free stall count ={} ", count);
+			
 			if (count.intValue() <= 0) {
 				Map<String, Object> param = new HashMap<String, Object>();
 				Date current = new Date();
@@ -2378,11 +2382,12 @@ public class OrdersServiceImpl implements OrdersService {
 				thread.start();*/
 			} else {
 				Object sn = null;
-				if (order.getBrandId() != null) {
+				/*if (order.getBrandId() != null) {
 					sn = redisService.pop(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + order.getBrandId());
 				} else {
 					sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId());
-				}
+				}*/
+				sn = prefectureClient.nearFreeStallLockSn(order.getStallId(), order.getPreId());
 				log.info("get switch stall sn:{}", sn);
 				if (sn != null) {
 					ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
@@ -2391,6 +2396,7 @@ public class OrdersServiceImpl implements OrdersService {
 						//Thread thread = new OfflieStallThread(order.getStallId());
 						//order.setStallId(stall.getId());
 						//order.setStallName(stall.getStallName());
+						redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId(), sn);
 						Map<String, Object> param = new HashMap<String, Object>();
 						param.put("id", order.getId());
 						param.put("stallId", stall.getId());
