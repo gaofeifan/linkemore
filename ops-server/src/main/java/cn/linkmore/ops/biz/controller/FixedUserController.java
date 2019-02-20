@@ -17,7 +17,7 @@ import cn.linkmore.ops.biz.service.FixedUserService;
 import cn.linkmore.prefecture.request.ReqStall;
 
 @RestController
-@RequestMapping("/admin-biz/fixed/user")
+@RequestMapping("/admin/biz/fixed/user")
 public class FixedUserController {
 
 	@Autowired
