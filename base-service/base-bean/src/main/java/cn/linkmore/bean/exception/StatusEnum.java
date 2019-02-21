@@ -117,7 +117,7 @@ public enum StatusEnum {
 	STALL_AlREADY_CONTROL(8005072,"该车位其他用户使用中"),
 	STALL_OPERATE_ASSIGN_DELETE(8005075,"删除指定车位失败"),
 	
-	STALL_HIVING_DO(8005073,"操作中，请稍候"),
+	STALL_HIVING_DO(8005073,"该车位正被他人使用，请使用其他车位"),
 	STALL_LOCK_NO_UP(8005076,"车位锁没有竖起"),
 	
 	ORDER_OPERATE_NULLORDER(8005077,"订单不存在"),
@@ -131,7 +131,7 @@ public enum StatusEnum {
 	STALL_NAME_USER(8005090,"车位名称已存在"),
 	DOWN_LOCK_FAIL_RETRY(8005091,"通讯失败，再降一次"),
 	DOWN_LOCK_FAIL_CHANGE(8005092,"降锁失败，更换其他车位"),
-	DOWN_LOCK_FAIL_CHECK(8005093,"该车位不可用，请选择其他车位"),
+	DOWN_LOCK_FAIL_CHECK(8005093,"该车位不可用，请使用其他车位"),
 	APPOINT_FAIL_CHECK(8005083,"该车位已被他人使用，请选择其他车位"),
 	DOWN_LOCK_FAIL_DROP(8005094,"网关掉线，未找到车位锁"),
 	
@@ -139,10 +139,10 @@ public enum StatusEnum {
 	PARK_CODE_NO_ORDER(8005096,"未查询到订单"),
 	PARK_CODE_FINISH_(8005097,"订单已完成结算"),
 	WX_PAY_NO_PARM(8005098,"发起订单失败"),
-	UP_LOCK_FAIL_RETRY_OWNER(8005099,"地锁升起失败，再升一次"),
-	DOWN_LOCK_FAIL_RETRY_OWNER(8005100,"地锁降下失败，再降一次"),
-	UP_LOCK_FAIL_CHANGE_OWNER(8005101,"地锁升起失败"),
-	DOWN_LOCK_FAIL_CHANGE_OWNER(8005102,"地锁降下失败"),
+	UP_LOCK_FAIL_RETRY_OWNER(8005099,"升锁失败，请再试一次"),
+	DOWN_LOCK_FAIL_RETRY_OWNER(8005100,"降锁失败，请再试一次"),
+	UP_LOCK_FAIL_CHANGE_OWNER(8005101,"升锁失败，故障上报"),
+	DOWN_LOCK_FAIL_CHANGE_OWNER(8005102,"降锁失败，故障上报"),
 	STAFF_STALL_BIN_EXISTS(8005103,"该车位已绑定该车锁"),
 	DELETE_PLATE_NO_FAILED(8005104,"当前车牌正在使用长租车位，禁止删除"),
 	NO_FREE_STALL_CLOSE(8005105,"无空闲车位，订单已关闭"),
