@@ -104,6 +104,8 @@ import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.request.ReqPush;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
@@ -117,7 +119,7 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class OrdersServiceImpl implements OrdersService {
-
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -277,7 +279,7 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	public void create(ReqBooking rb, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("create order ing rb:{},cu:{}", JsonUtil.toJson(rb), JsonUtil.toJson(cu));
 		Thread thread = new OrderThread(rb, cu);
 		thread.start();
@@ -731,7 +733,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public ResOrderDetail detail(Long id, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResUserOrder order = this.ordersClusterMapper.findDetail(id);
 		if (order.getUserId().intValue() != cu.getId().intValue()) {
 			return null;
@@ -799,7 +801,7 @@ public class OrdersServiceImpl implements OrdersService {
 			map.put("type", type.id);
 			map.put("content", content);
 			map.put("status", status);
-			CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
+			CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(token.getAccessToken(),null) );
 			userSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
 		} else {
 			ReqPush rp = new ReqPush();
@@ -875,7 +877,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public void down(ReqOrderStall ros, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Thread thread = new DownThread(ros, cu);
 		thread.start();
 	}
@@ -1025,14 +1027,14 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public void switchStall(ReqSwitch rs, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Thread thread = new SwitchThread(rs, cu);
 		thread.start();
 	}
 
 	@Override
 	public List<ResCheckedOrder> list(Long start, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("userId", cu.getId());
 		param.put("start", start);
@@ -1049,7 +1051,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public ResOrder current(HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("..........current order user :{}", JsonUtil.toJson(cu));
 		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); // 查找最新
 		if (orders == null) {
@@ -1154,7 +1156,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public Integer downResult(HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());
 		Integer count = 0;
 		Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + orders.getId());
@@ -1217,7 +1219,7 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) {
 		log.info("brand order :{}", JsonUtil.toJson(rb));
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info(" order user is {}", JsonUtil.toJson(cu));
 		ResBrandPre brand = entBrandPreClient.findById(rb.getBrandId());
 		if (brand == null) {
@@ -1688,7 +1690,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public void appoint(ReqStallBooking rsb, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("choose stall request param :{} cu:{}", JsonUtil.toJson(rsb), JsonUtil.toJson(cu));
 		if(cu != null) {
 			// 争抢
@@ -1780,7 +1782,7 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	@Transactional(rollbackFor = RuntimeException.class)
 	public void cancel(Long orderId, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Orders order = this.ordersClusterMapper.findById(orderId);
 		log.info("...........cancel order :{},cu:{}", JsonUtil.toJson(order), JsonUtil.toJson(cu));
 		//判断订单是否属于当前登录用户
@@ -2207,7 +2209,7 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public ResOrder downAppoint(ReqStallBooking rsb, HttpServletRequest request) {
 		ResOrder ro = null;
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("down appoint request param :{} cu:{}", JsonUtil.toJson(rsb), JsonUtil.toJson(cu));
 		ResStallEntity stall = this.stallClient.findById(rsb.getStallId());
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {

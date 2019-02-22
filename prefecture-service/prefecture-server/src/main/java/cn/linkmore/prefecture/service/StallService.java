@@ -10,6 +10,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuth;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuthPre;
@@ -335,4 +336,10 @@ public interface StallService {
 	 * 保存并绑定
 	 */
 	void saveAndBind(ReqStall reqStall);
+	/**
+	 * @Description  查询锁绑定的网关
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResLockGatewayList> findLockGateways(HttpServletRequest request, String lockSn);
 }

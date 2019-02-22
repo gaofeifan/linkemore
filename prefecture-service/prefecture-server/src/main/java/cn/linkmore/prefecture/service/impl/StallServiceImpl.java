@@ -72,6 +72,7 @@ import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
+import cn.linkmore.prefecture.core.lock.LockFactory;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthCityClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
@@ -100,6 +101,7 @@ import cn.linkmore.prefecture.response.ResAdminAuthPre;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.prefecture.response.ResAdminUserAuth;
+import cn.linkmore.prefecture.response.ResLockGatewayList;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockMessage;
 import cn.linkmore.prefecture.response.ResPre;
@@ -122,6 +124,9 @@ import cn.linkmore.task.TaskPool;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.request.ReqPush;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.StaffUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
@@ -139,7 +144,6 @@ import cn.linkmore.util.TokenUtil;
 public class StallServiceImpl implements StallService {
 	@Autowired
 	private AdminAuthStallMasterMapper AdminAuthStallMasterMapper;
-	
 	@Autowired
 	private AdminAuthPreMasterMapper adminAuthPreMasterMapper;
 	@Autowired
@@ -209,7 +213,9 @@ public class StallServiceImpl implements StallService {
 	private static final String DOWN_CAUSE = "cause_down";
 	private static final String BATTERY = "battery-change";
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
+	private UserFactory staffUserFactory = StaffUserFactory.getInstance();
+	private LockFactory lockFactory = LockFactory.getInstance();
 	@Override
 	public void order(Long id) {
 		Stall stall = new Stall();
@@ -1022,7 +1028,7 @@ public class StallServiceImpl implements StallService {
 				map.put("type", type);
 				map.put("content", content);
 				map.put("code", bool);
-				CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
+				CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(token.getAccessToken(),null) );
 				//userSocketClient.push(content, cu.getOpenId());
 				log.info("openid>>>" + cu.getOpenId());
 				System.out.println(JsonUtil.toJson(map));
@@ -1523,7 +1529,6 @@ public class StallServiceImpl implements StallService {
 				PushType type = PushType.LOCK_CONTROL_NOTICE;
 				String bool = (code == 200 ? "true" : "false");
 				Token token = (Token) redisService.get(RedisKey.STAFF_STAFF_AUTH_TOKEN.key + uid.toString());
-
 				log.info("sendMsgT   send>>>" + uid+"--content");
 				ReqPush rp = new ReqPush();
 				rp.setAlias(uid);
@@ -1863,6 +1868,12 @@ public class StallServiceImpl implements StallService {
 				stallSn.setCityId(detail.getCityId());
 				stallSn.setStallName(stall.getStallName());
 			}
+			List<ResLockGatewayList> lockGatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn());
+			if(lockGatewayList != null) {
+				for (ResLockGatewayList resLockGatewayList : lockGatewayList) {
+					stallSn.getGatewayList().add(new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getSerialNumber()));
+				}
+			}
 		}
 		return stallSn;
 	}
@@ -1930,7 +1941,7 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean control(Long stallId, HttpServletRequest request) {
 		boolean flag = false;
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -2001,7 +2012,7 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean controlLock(Long stallId, HttpServletRequest request) {
 		boolean flag = false;
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -2038,7 +2049,7 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean verify(Long stallId, HttpServletRequest request) {
 		boolean flag = false;
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -2158,5 +2169,20 @@ public class StallServiceImpl implements StallService {
 		}
 		return falg;
 	}
+
+	@Override
+	public List<cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList> findLockGateways(
+			HttpServletRequest request, String lockSn) {
+		List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(lockSn);
+		List<cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList> list =new ArrayList<>();
+		cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList gateway = null;
+		for (ResLockGatewayList resLockGatewayList : gatewayList) {
+			gateway = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getSerialNumber());
+			gateway.setBindFlag(resLockGatewayList.getBindFlag());
+			list.add(gateway);
+		}
+		return list;
+	}
+	
 	
 }

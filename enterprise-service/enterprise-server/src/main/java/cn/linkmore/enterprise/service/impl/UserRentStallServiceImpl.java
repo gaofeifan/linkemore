@@ -55,6 +55,8 @@ import cn.linkmore.prefecture.response.ResLockInfos;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.TokenUtil;
@@ -62,7 +64,7 @@ import cn.linkmore.util.TokenUtil;
 public class UserRentStallServiceImpl implements UserRentStallService {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Autowired
 	private RedisService redisService;
 	@Autowired
@@ -86,7 +88,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	
 	@Override
 	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		OwnerRes res = new OwnerRes();
 		Boolean isHave = false;
 		int num = 0;
@@ -245,7 +247,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 
 	@Override
 	public Boolean control(ReqUserRentStall reqOperatStall, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -350,7 +352,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 
 	@Override
 	public ResCurrentOwner current(HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		EntRentedRecord record = this.entRentedRecordClusterMapper.findByUser(user.getId());
 		ResCurrentOwner owner = new ResCurrentOwner();
 		if(record == null) {
