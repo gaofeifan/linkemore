@@ -39,6 +39,8 @@ import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.OpsRentEntUserClient;
 import cn.linkmore.prefecture.client.OpsRentUserClient;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
 /**
@@ -49,6 +51,7 @@ import cn.linkmore.util.TokenUtil;
 @Service
 public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Resource
 	private RedisService redisService;
 	@Resource
@@ -76,7 +79,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	//@Transactional
 	public Boolean save(cn.linkmore.account.controller.app.request.ReqVehicleMark bean, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		CacheUser user = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 		Boolean existFalg = false;
 		ReqVehicleMark mark = ObjectUtils.copyObject(bean,new ReqVehicleMark());
 		mark.setUserId(user.getId());
@@ -100,7 +103,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 					ReqRentEntUser ent = new ReqRentEntUser();
 					ent.setPlate(bean.getVehMark());
 					
-					if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
+					/*if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
 						//opsRentEntUserClient.syncRentStallByUserId(user.getId());
 						//opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
 						Map<String,Object> param = new HashMap<String,Object>();
@@ -113,7 +116,19 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 						param.put("plate", null);
 						existFalg = opsRentUserClient.checkExist(param);
 						logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
+					}*/
+					
+					Map<String,Object> param = new HashMap<String,Object>();
+					param.put("userId", user.getId());
+					if(bean.getPreId() != null && bean.getPreId().intValue() != 0L) {
+						param.put("preId", bean.getPreId());
+					}else {
+						param.put("preId", 0L);
 					}
+					param.put("plate", null);
+					existFalg = opsRentUserClient.checkExist(param);
+					logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
+					
 					userGroupInputService.syncByUserIdAndPlate(user.getId(), bean.getVehMark());
 				}
 			}
@@ -161,7 +176,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 	public void deleteById(Long id, HttpServletRequest request) {
 		List<ResVechicleMark> list = this.findResList(request);
 		String key = TokenUtil.getKey(request);
-		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		CacheUser user = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 		if(user!= null && CollectionUtils.isNotEmpty(list)) {
 			for (ResVechicleMark resVechicleMark : list) {
 				if(resVechicleMark.getId().equals(id)) {
@@ -246,7 +261,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 /*	@Override
 	public void save(cn.linkmore.account.controller.app.request.ReqVehicleMark bean, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser user = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		CacheUser user = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 		ReqVehicleMark mark = ObjectUtils.copyObject(bean,new ReqVehicleMark());
 		mark.setUserId(user.getId());
 		this.save(mark);
@@ -268,7 +283,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 
 	private CacheUser getCache(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		return (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		return (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 	}
 
 	@Override
