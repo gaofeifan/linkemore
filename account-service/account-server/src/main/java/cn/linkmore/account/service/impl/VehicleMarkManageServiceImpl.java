@@ -103,7 +103,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 					ReqRentEntUser ent = new ReqRentEntUser();
 					ent.setPlate(bean.getVehMark());
 					
-					/*if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
+					if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
 						//opsRentEntUserClient.syncRentStallByUserId(user.getId());
 						//opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
 						Map<String,Object> param = new HashMap<String,Object>();
@@ -116,19 +116,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 						param.put("plate", null);
 						existFalg = opsRentUserClient.checkExist(param);
 						logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
-					}*/
-					
-					Map<String,Object> param = new HashMap<String,Object>();
-					param.put("userId", user.getId());
-					if(bean.getPreId() != null && bean.getPreId().intValue() != 0L) {
-						param.put("preId", bean.getPreId());
-					}else {
-						param.put("preId", 0L);
 					}
-					param.put("plate", null);
-					existFalg = opsRentUserClient.checkExist(param);
-					logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
-					
 					userGroupInputService.syncByUserIdAndPlate(user.getId(), bean.getVehMark());
 				}
 			}
