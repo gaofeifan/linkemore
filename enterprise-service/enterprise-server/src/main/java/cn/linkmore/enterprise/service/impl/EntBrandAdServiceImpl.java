@@ -40,6 +40,8 @@ import cn.linkmore.enterprise.response.ResBrandAd;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.service.EntBrandAdService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
@@ -55,6 +57,8 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
+	
 	@Resource
 	private EntBrandAdMasterMapper entBrandAdMasterMapper;
 
@@ -108,7 +112,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 			}
 
 			CacheUser cu = (CacheUser) this.redisService
-					.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+					.get(appUserFactory.createTokenRedisKey( TokenUtil.getKey(request), request.getHeader("os")) );
 
 			if (cu != null && cu.getId() != null) {
 				// 当前用户是否已接受优惠券信息，接受之后则以后不在提示
@@ -147,7 +151,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 	@Override
 	public boolean send(Long entId, HttpServletRequest request) {
 		boolean flag = false;
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey( TokenUtil.getKey(request), request.getHeader("os")));
 		if (cu != null && cu.getId() != null) {
 			// 判断是否已经发送了品牌优惠
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -201,7 +205,7 @@ public class EntBrandAdServiceImpl implements EntBrandAdService {
 			}
 
 			CacheUser cu = (CacheUser) this.redisService
-					.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+					.get(appUserFactory.createTokenRedisKey( TokenUtil.getKey(request), request.getHeader("os")) );
 			if (cu != null && cu.getId() != null) {
 				// 当前用户是否已接受优惠券信息，接受之后则以后不在提示
 				param.put("userId", cu.getId());

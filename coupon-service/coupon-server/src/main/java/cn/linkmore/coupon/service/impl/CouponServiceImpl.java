@@ -68,6 +68,8 @@ import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.request.ReqSms;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -83,6 +85,7 @@ import cn.linkmore.util.TokenUtil;
 @Service
 public class CouponServiceImpl implements CouponService {
 
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -512,7 +515,7 @@ public class CouponServiceImpl implements CouponService {
 
 	@Override
 	public List<cn.linkmore.coupon.controller.app.response.ResCoupon> usableList(HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os")) );
 		List<ResCoupon> list = this.userEnabledList(cu.getId());
 		List<cn.linkmore.coupon.controller.app.response.ResCoupon> rcs = new ArrayList<cn.linkmore.coupon.controller.app.response.ResCoupon>();
 		cn.linkmore.coupon.controller.app.response.ResCoupon r = null;
@@ -526,7 +529,7 @@ public class CouponServiceImpl implements CouponService {
 
 	@Override
 	public List<cn.linkmore.coupon.controller.app.response.ResCoupon> paymentList(HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os"))  );
 		ResUserOrder ruo = this.orderClient.last(cu.getId());
 		if (ruo == null || !(ruo.getStatus().intValue() != OrderStatus.UNPAID.value
 				|| ruo.getStatus().intValue() != OrderStatus.SUSPENDED.value)) {

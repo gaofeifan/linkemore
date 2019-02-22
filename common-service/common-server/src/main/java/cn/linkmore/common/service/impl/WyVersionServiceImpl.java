@@ -61,7 +61,7 @@ public class WyVersionServiceImpl implements WyVersionService {
 	public ResWyAppVersion currentAppVersion(Integer appType,HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 //		String key = TokenUtil.getKey(request);
-//		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+//		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 //		ResUserStaff staff = userStaffClient.findByMobile(user.getMobile());
 //		if(staff != null) {
 //			ResVersionBean version = this.wyAppVersionClusterMapper.findLast(appType);

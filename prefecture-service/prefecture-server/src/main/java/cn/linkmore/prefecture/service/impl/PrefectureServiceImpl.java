@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -21,9 +23,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -56,6 +60,9 @@ import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResStall;
 import cn.linkmore.prefecture.controller.app.response.ResStallInfo;
+import cn.linkmore.prefecture.controller.staff.response.ResGateway;
+import cn.linkmore.prefecture.controller.staff.response.ResStallLock;
+import cn.linkmore.prefecture.core.lock.LockFactory;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.PrefectureElementClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
@@ -70,15 +77,23 @@ import cn.linkmore.prefecture.entity.StrategyGroupDetail;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
+import cn.linkmore.prefecture.response.ResGatewayDetails;
+import cn.linkmore.prefecture.response.ResGatewayGroup;
 import cn.linkmore.prefecture.response.ResLockInfo;
+import cn.linkmore.prefecture.response.ResLocksGateway;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
+import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.prefecture.response.ResStrategyGroup;
 import cn.linkmore.prefecture.service.PrefectureService;
+import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.prefecture.service.StrategyFeeService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.StaffUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.MapDistance;
@@ -95,9 +110,12 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class PrefectureServiceImpl implements PrefectureService {
-	
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
+	private UserFactory staffUserFactory = StaffUserFactory.getInstance();
+	@Autowired
+	private StallService stallService;
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
+	private LockFactory lockFactory = LockFactory.getInstance();
 	private static final String formatStr = "HH:mm";
 	
 	private static SimpleDateFormat sdf=new SimpleDateFormat(formatStr);
@@ -172,7 +190,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Override
 	public List<ResPrefectureList> getStallCount(HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("status", 0);
 		// 此处cityId暂时为空，返回所有的车区信息
@@ -310,6 +328,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Prefecture pre = new Prefecture();
 		pre = ObjectUtils.copyObject(reqPre, pre);
 		pre.setCreateTime(new Date());
+		String string = this.lockFactory.getLock(null).saveGroup(pre.getName());
+		if(org.apache.commons.lang3.StringUtils.isNotBlank(string)) {
+			pre.setGateway(string);
+		}
 		return this.prefectureMasterMapper.save(pre);
 	}
 
@@ -357,7 +379,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Override
 	public List<ResPreCity> list(ReqPrefecture rp, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		Map<Long, String> cityMap = new HashMap<Long, String>();
 		paramMap.put("status", 0);
@@ -520,7 +542,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail findPreDetailById(Long preId,
 			HttpServletRequest request) {
 		cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail detail = new cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail();
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResPrefectureDetail preDetail = prefectureClusterMapper.findById(preId);
 		String freeMins = "";
 		String appFreeMins = "";
@@ -768,7 +790,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Override
 	public List<ResPrefecture> nearList(ReqNearPrefecture rp, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Double raidusMile = 15000D;
 		Map<String, Object> paramMap = new HashMap<String,Object>();
 		if(rp.getCityId() == 0L) {
@@ -838,7 +860,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Override
 	public ResGroupStrategy findGroupStrategy(Long groupId,HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResGroupStrategy groupStrategy = null;
 		ResStrategyGroup group = strategyGroupClusterMapper.selectByPrimaryKey(groupId);
 		List<String> descList = new ArrayList<String>();
@@ -1058,7 +1080,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Override
 	public Boolean checkPlate(Long plateId, HttpServletRequest request) {
 		Boolean flag = false;
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if(cu != null && cu.getId() != null) {
 			ResUserOrder ruo = this.orderClient.last(cu.getId());
 			log.info("..........checkPlate ruo = {}",JSON.toJSON(ruo));
@@ -1308,5 +1330,102 @@ public class PrefectureServiceImpl implements PrefectureService {
 		groupDetail.setAssignFlag(assign);
 		return groupDetail;
 	}
+	
+	@Override
+	public Boolean bindGroup(Long preId, String serialNumber, HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(staffUserFactory.createTokenRedisKey(request));
+		if(!stallService.checkStaffPreAuth(user.getId(), preId)) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
+		ResPrefectureDetail detail = this.findById(preId);
+		return lockFactory.getLock().bindGroup(detail.getGateway(), serialNumber);
+	}
+	
+	@Override
+	public Boolean unBindGroup(String groupCode, String serialNumber, HttpServletRequest request) {
+		return lockFactory.getLock().unbindGroup(groupCode, serialNumber);
+	}
+
+	@Override
+	public List<ResGateway> findGatewayGroup(Long preId, HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(staffUserFactory.createTokenRedisKey(request));
+		if(!stallService.checkStaffPreAuth(user.getId(), preId)) {
+			throw new BusinessException(StatusEnum.STAFF_PREFECTURE_EXISTS);
+		}
+		ResPrefectureDetail detail = this.findById(preId);
+		List<ResGatewayGroup> group = lockFactory.getLock().getGatewayGroup(detail.getGateway());
+		List<ResGateway> gatewayList = new ArrayList<>();
+		if(group != null) {
+			for (ResGatewayGroup resGatewayGroup : group) {
+				gatewayList.add(new ResGateway(resGatewayGroup.getSerialNumber(),resGatewayGroup.getGatewayState()));
+			}
+		}
+		return gatewayList;
+	}
+
+	@Override
+	public cn.linkmore.prefecture.controller.staff.response.ResGatewayDetails getGatewayDetails(String serialNumber, HttpServletRequest request) {
+		ResGatewayDetails gatewayDetails = lockFactory.getLock().getGatewayDetails(serialNumber);
+		cn.linkmore.prefecture.controller.staff.response.ResGatewayDetails details = new cn.linkmore.prefecture.controller.staff.response.ResGatewayDetails();
+		details.setAgentName(gatewayDetails.getAgentName());
+		details.setGroupCode(gatewayDetails.getGroupCode());
+		details.setSerialNumber(gatewayDetails.getSerialNumber());
+		details.setSimType(gatewayDetails.getSimType());
+		details.setVersion(gatewayDetails.getGatewayVersion());
+		details.setGatewayState(gatewayDetails.getGatewayState());
+		List<ResLocksGateway> gateways = this.lockFactory.getLock().getLocksGateway(serialNumber);
+		if(StringUtils.isNotBlank(gatewayDetails.getGroupCode())) {
+			ResPrefectureDetail detail = this.prefectureClusterMapper.findByGateway(gatewayDetails.getGroupCode());
+			if(detail != null) {
+				details.setPreId(detail.getId());
+				details.setPreName(detail.getName());
+			}
+		}
+		if(gateways != null && gateways.size() != 0) {
+			List<cn.linkmore.prefecture.response.ResStall> list = null;
+			
+			if(details.getPreId() != null) {
+				Map<String, Object> param = new HashMap<>();
+				param.put("preId", details.getPreId());
+				list = this.stallService.findStallsByPreIds(param );
+			}
+			ResStallLock stallLock = null;
+			for (ResLocksGateway gateway : gateways) {
+				stallLock = new ResStallLock();
+				stallLock.setBindFlag(gateway.getBindFlag());
+				stallLock.setBattery(gateway.getElectricity());
+				stallLock.setLockSn(gateway.getLockSerialNumber());
+				stallLock.setSignal(gateway.getSignal());
+				if(list != null) {
+					String lockSn = gateway.getLockSerialNumber() != null ? gateway.getLockSerialNumber().substring(4).toUpperCase() : gateway.getLockSerialNumber();
+					for (cn.linkmore.prefecture.response.ResStall resStallOps : list) {
+						if(lockSn != null && lockSn.equals(resStallOps.getLockSn())) {
+							stallLock.setStallId(resStallOps.getId());
+							stallLock.setStallName(resStallOps.getStallName());
+							break;
+						}
+					}
+				}
+				details.getStallLocks().add(stallLock);
+			}
+		}
+		return details;
+	}
+
+	@Override
+	public Boolean loadLock(HttpServletRequest request, String serialNumber) {
+		return lockFactory.getLock().loadAllLock(serialNumber);
+	}
+
+	@Override
+	public Boolean restartGateway(HttpServletRequest request, String serialNumber) {
+		return null;
+	}
+
+	@Override
+	public Boolean unBindLock(String lockSn, String serialNumber, HttpServletRequest request) {
+		return lockFactory.getLock().unBindLock(serialNumber, lockSn);
+	}
+	
 
 }

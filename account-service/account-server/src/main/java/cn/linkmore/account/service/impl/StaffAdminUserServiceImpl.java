@@ -38,6 +38,8 @@ import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.third.response.ResMiniSession;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 @Service
@@ -60,6 +62,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private WechatMiniClient wechatMiniClient;
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	private UserFactory appUserFactory = AppUserFactory.getInstance(); 
 	@Override
 	public ResAdmin login(ReqAuthLogin rl, HttpServletRequest request) {
 		if(!("6699".equals(rl.getCode()))) {

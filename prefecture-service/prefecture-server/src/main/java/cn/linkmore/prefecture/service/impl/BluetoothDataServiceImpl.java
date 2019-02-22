@@ -27,6 +27,8 @@ import cn.linkmore.prefecture.response.ResBluetoothData;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.service.BluetoothDataService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.TokenUtil;
 
@@ -39,7 +41,7 @@ import cn.linkmore.util.TokenUtil;
 public class BluetoothDataServiceImpl implements BluetoothDataService {
 	@Autowired
 	private BluetoothDataClusterMapper bluetoothDataClusterMapper;
-	
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Autowired
 	private BluetoothDataMasterMapper bluetoothDataMasterMapper;
 	
@@ -87,7 +89,7 @@ public class BluetoothDataServiceImpl implements BluetoothDataService {
 
 	@Override
 	public Boolean saveData(String param, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Boolean flag = false;
 		BluetoothData bluetooth = new BluetoothData();
 		if(cu != null) {

@@ -37,6 +37,8 @@ import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.TokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,6 +54,7 @@ public class AppMiniController {
 	private UserService userService;
 	@Resource
 	private RedisService redisService;
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 
 	@ApiOperation(value = "登录", notes = "微信小程序登录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/login", method = RequestMethod.GET)
@@ -125,7 +128,7 @@ public class AppMiniController {
 	@RequestMapping(value = "/v2.0/decrypt/mobile", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> bindMobile(@RequestBody ReqMiniMobile rmm, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os")));
 		String json = null; 
 		log.info("se:{},data:{},iv:{}", cu.getSession(), rmm.getData(), rmm.getIv());
 		try {

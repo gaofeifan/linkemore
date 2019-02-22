@@ -75,4 +75,11 @@ public interface PrefectureClusterMapper {
 	List<ResPre> findPreByIds(Map<String,Object> map);
 	
 	List<ResPreList> findSelectListByUser(Map<String,Object> map);
+
+	/**
+	 * @Description  根据分组查询
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResPrefectureDetail findByGateway(String groupCode);
 }
