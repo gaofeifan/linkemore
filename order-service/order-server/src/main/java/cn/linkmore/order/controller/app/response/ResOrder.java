@@ -69,6 +69,8 @@ public class ResOrder {
 	private int remainMins;
 	@ApiModelProperty(value = "订单类型[1普通订单,2扫码降锁订单]")
 	private Short orderSource = 1;
+	@ApiModelProperty(value = "降锁状态[0已预约,1已降锁,2已挂起去结账]")
+	private Short downFlag = 0;
 	public Long getId() {
 		return id;
 	}
@@ -277,6 +279,12 @@ public class ResOrder {
 	}
 	public void setOrderSource(Short orderSource) {
 		this.orderSource = orderSource;
+	}
+	public Short getDownFlag() {
+		return downFlag;
+	}
+	public void setDownFlag(Short downFlag) {
+		this.downFlag = downFlag;
 	}
 	
 }

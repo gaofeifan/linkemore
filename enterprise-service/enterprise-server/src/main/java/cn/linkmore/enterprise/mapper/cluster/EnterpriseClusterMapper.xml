@@ -12,10 +12,11 @@
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="tellphone" jdbcType="VARCHAR" property="tellphone" />
     <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, account, name, industry, create_time, update_time, region, address, tellphone, 
-    code
+    code,pre_id
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

@@ -66,8 +66,20 @@ public class ReqPerson {
      * 企业名称
      */
     private String entName;
+    /**
+     * 车区id
+     */
+    private Long preId;
 
-    public String getEntName() {
+    public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
+
+	public String getEntName() {
 		return entName;
 	}
 

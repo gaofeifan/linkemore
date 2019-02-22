@@ -342,4 +342,17 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	List<ResLockGatewayList> findLockGateways(HttpServletRequest request, String lockSn);
+	/* 预约订单控制降锁
+	 * @param stall
+	 * @return
+	 */
+	Boolean controlDown(ReqOrderStall stall);
+	
+	/**
+	 * @param lockSn 
+	 * @Description  批量更新
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn);
 }

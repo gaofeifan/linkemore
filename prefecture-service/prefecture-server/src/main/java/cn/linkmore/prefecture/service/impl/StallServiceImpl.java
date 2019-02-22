@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1961,7 +1962,7 @@ public class StallServiceImpl implements StallService {
 					log.info("用户争抢锁异常信息{}",e.getMessage());
 				}
 				if (!have) {
-					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+					throw new BusinessException(StatusEnum.APPOINT_FAIL_CHECK);
 				}
 				// 放入缓存
 				String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
@@ -2184,5 +2185,54 @@ public class StallServiceImpl implements StallService {
 		return list;
 	}
 	
+	public Boolean controlDown(ReqOrderStall reqOrderStall) {
+		Boolean flag = false;
+		Stall stall = stallClusterMapper.findById(reqOrderStall.getStallId());
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("<<<<<<<<<stall control down>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			ResLockMessage res = null;
+			// 1 降下
+			Stopwatch stopwatch = Stopwatch.createStarted();
+			res = lockTools.downLockMes(stall.getLockSn());
+			if (res != null) {
+				log.info("<<<<<<<<<stall control down respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+				int code = res.getCode();
+				stopwatch.stop();
+				log.info("<<<<<<<<<stall control down using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+				if (code == 200) {
+					flag = true;
+					log.info("downing.....................success");
+					stall.setLockStatus(LockStatus.DOWN.status);
+					stallMasterMapper.lockdown(stall);
+					this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqOrderStall.getOrderId());
+					// 去掉空闲车位
+					this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+				} else if (code == 500) {
+					if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqOrderStall.getOrderId())) {
+						//throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+						this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					} else {
+						//throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+						this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqOrderStall.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_RETRY.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					}
+				} else{
+					//throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);					
+					this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+				}
+			}
+		}else {
+			//throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+			this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+		}
+		log.info("<<<<<<<<<stall control down flag>>>>>>>>> = {}", flag);
+		return flag;
+	}
+
+	@Override
+	public Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn) {
+		String[] strings = serialNumbers.split(",");
+		Boolean gateway = this.lockFactory.getLock().batchBindGateway(lockSn, strings);
+		return gateway;
+	}
 	
 }

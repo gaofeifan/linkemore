@@ -25,7 +25,17 @@ public class Enterprise {
     
     private String password;
     
-    public String getPassword() {
+    private Long preId;
+    
+    public Long getPreId() {
+		return preId;
+	}
+
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
+
+	public String getPassword() {
 		return password;
 	}
 

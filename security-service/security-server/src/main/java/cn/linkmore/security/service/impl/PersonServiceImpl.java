@@ -108,6 +108,7 @@ public class PersonServiceImpl implements PersonService {
 			person.setType(1); 
 		}
 		person.setLoginTime(new Date());
+		person.setPreId(reqPerson.getPreId());
 		this.personMasterMapper.save(person);
 		return person.getId();
 	}

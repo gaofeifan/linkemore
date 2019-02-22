@@ -52,6 +52,18 @@ public class PrefectureClientHystrix implements PrefectureClient {
 		log.info("List<ResPre> findPreByIds(Map<String, Object> map) hystrix");
 		return null;
 	}
+
+	@Override
+	public Long findByGroupId(Long stallId, Long preId) {
+		log.info("Long findByGroupId(Long stallId, Long preId) hystrix");
+		return 0L;
+	}
+
+	@Override
+	public String nearFreeStallLockSn(Long stallId, Long preId) {
+		log.info("String nearFreeStallLockSn(Long stallId, Long preId) hystrix");
+		return null;
+	}
 	
 
 }

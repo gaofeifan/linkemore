@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.master.FixedUserMasterMapper">
+
+
+  <delete id="delete" parameterType="java.util.HashMap">
+    delete from t_fixed_disable
+    where fixed_id = #{fixedId,jdbcType=BIGINT}
+    and  user_id = #{userId,jdbcType=BIGINT}
+  </delete>
+
+ 
+  <insert id="save" parameterType="cn.linkmore.enterprise.entity.FixedUserPick">
+    insert into t_fixed_disable 
+    (fixed_id, user_id, create_user_id,create_time)
+    values (
+    #{fixedId,jdbcType=BIGINT}, 
+    #{userId,jdbcType=BIGINT}, 
+    #{createUserId,jdbcType=BIGINT}, 
+    #{createTime,jdbcType=TIMESTAMP}
+   )
+  </insert>
+  
+</mapper>

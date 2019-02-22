@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.FixedUserClusterMapper">
+
+	<resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.ReqFixedUser">
+
+
+		<result column="fixed_id" jdbcType="BIGINT" property="fixedId" />
+		<result column="userid" jdbcType="BIGINT" property="userId" />
+		<result column="username" jdbcType="VARCHAR" property="username" />
+		<result column="plates" jdbcType="VARCHAR" property="plates" />
+		<result column="stalls" jdbcType="VARCHAR" property="stalls" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="lastTime" />
+		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+		<result column="start_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="pick" jdbcType="SMALLINT" property="pick" />
+
+	</resultMap>
+
+	<select id="findPage" parameterType="java.util.HashMap"	resultMap="BaseResultMap">
+		SELECT * FROM
+		(SELECT a.fixed_id,b.start_time,b.update_time,
+		b.end_time,d.username,d.id as userid,
+		GROUP_CONCAT(c.veh_mark) as plates,z.stalls,
+		(CASE when e.id is NULL THEN 1
+		ELSE 0
+		end) pick
+		FROM t_fixed_plate a LEFT JOIN t_fixed_rent b ON a.fixed_id = b.id
+		LEFT JOIN v_vehicle_mark_manage c ON a.plate_no = c.veh_mark
+		LEFT JOIN t_user d ON c.veh_user_id = d.id
+		LEFT JOIN t_fixed_disable e ON a.fixed_id = e.fixed_id AND d.id =
+		e.user_id
+		LEFT JOIN (SELECT fixed_id,GROUP_CONCAT(stall_name) as stalls from
+		t_fixed_stall GROUP BY fixed_id) z ON a.fixed_id = z.fixed_id
+		WHERE d.username != " " AND c.veh_mark != ""
+		AND c.veh_mark in (SELECT plate_no FROM t_fixed_plate)
+		GROUP BY a.fixed_id,c.veh_user_id) al
+		where 1=1 
+		<if test="mobile != null">
+			and username = #{mobile}
+		</if>
+		<if test="plates != null">
+			and plates  like CONCAT('%',#{plates},'%')
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
+		limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+
+	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT count(1) FROM
+		(SELECT a.fixed_id,b.start_time,b.update_time,
+		b.end_time,d.username,d.id as userid,
+		GROUP_CONCAT(c.veh_mark) as plates,z.stalls,
+		(CASE when e.id is NULL THEN 1
+		ELSE 0
+		end) pick
+		FROM t_fixed_plate a LEFT JOIN t_fixed_rent b ON a.fixed_id = b.id
+		LEFT JOIN v_vehicle_mark_manage c ON a.plate_no = c.veh_mark
+		LEFT JOIN t_user d ON c.veh_user_id = d.id
+		LEFT JOIN t_fixed_disable e ON a.fixed_id = e.fixed_id AND d.id =
+		e.user_id
+		LEFT JOIN (SELECT fixed_id,GROUP_CONCAT(stall_name) as stalls from
+		t_fixed_stall GROUP BY fixed_id) z ON a.fixed_id = z.fixed_id
+		WHERE d.username != " " AND c.veh_mark != ""
+		AND c.veh_mark in (SELECT plate_no FROM t_fixed_plate)
+		GROUP BY a.fixed_id,c.veh_user_id) al
+		where 1=1 
+		<if test="mobile != null">
+			and username = #{mobile}
+		</if>
+		<if test="plates != null">
+			and plates  like CONCAT('%',#{plates},'%')
+		</if>
+	</select>
+
+</mapper>

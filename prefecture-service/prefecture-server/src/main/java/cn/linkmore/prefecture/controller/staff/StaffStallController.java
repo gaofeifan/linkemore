@@ -213,13 +213,14 @@ public class StaffStallController {
 		List<ResLockGatewayList> gateways = stallService.findLockGateways(request,lockSn);
 		return ResponseEntity.success(gateways, request);
 	}
+	
 	@ApiOperation(value = "更新车位锁绑定的网关(批量更新)", notes = "更新车位锁绑定的网关(批量更新)")
 	@PutMapping(value = "/edit-lock-bind-gateway")
 	@ResponseBody
 	public ResponseEntity<Boolean> editLockBindGateway(HttpServletRequest request, @ApiParam(value="锁编号",required=true) @NotNull(message="锁编号不能为空") @RequestParam(value = "lockSn",required= true) String lockSn	
 			,@ApiParam("网关编号 多个网关编号,分隔('网关编号1','网关编号2')") @NotNull(message="网关编号不能为空") @RequestParam(value = "serialNumbers",required= true) String serialNumbers
 			){
-//		stallService.editLockBindGateway(request,serialNumbers);
+		stallService.editLockBindGateway(request,serialNumbers,lockSn);
 		return ResponseEntity.success(true, request);
 	}
 	
