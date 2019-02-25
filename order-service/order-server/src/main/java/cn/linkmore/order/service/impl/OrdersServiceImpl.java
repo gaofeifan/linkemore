@@ -2282,7 +2282,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public boolean controlDown(ReqOrderStall ros, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if (cu == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -2350,7 +2350,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public String switchOrderStall(Long orderId, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResUserOrder order = this.ordersClusterMapper.findDetail(orderId);
 		Boolean flag = false;
 		String stallName = null;
