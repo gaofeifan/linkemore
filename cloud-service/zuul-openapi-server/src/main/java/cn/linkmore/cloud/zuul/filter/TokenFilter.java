@@ -17,11 +17,13 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 
 public class TokenFilter extends ZuulFilter {
-
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	private static final String API_APP_PATH = "/app/";
 	private static final String API_ENT_PATH = "/ent/";
@@ -143,7 +145,7 @@ public class TokenFilter extends ZuulFilter {
 		String key = TokenUtil.getKey(request);
 		log.info("ip:{},token:{}", ip, key);
 		log.info(uri);
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + key);
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("json:{}", JsonUtil.toJson(cu));
 		if (url.contains(SWAGGER_PATH) || (openResources.contains(uri) || cu != null)) {
 			ctx.setSendZuulResponse(true);

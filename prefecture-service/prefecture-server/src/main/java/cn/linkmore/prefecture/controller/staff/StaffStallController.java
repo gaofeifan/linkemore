@@ -2,12 +2,14 @@ package cn.linkmore.prefecture.controller.staff;
 
 import java.util.List;
 
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,13 +23,15 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResGateway;
+import cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuth;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
-import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +43,8 @@ import io.swagger.annotations.ApiParam;
 @Validated
 public class StaffStallController {
 
+	@Resource
+	private PrefectureService prefectureService;
 	@Resource
 	private StallService stallService;
 	
@@ -137,4 +143,86 @@ public class StaffStallController {
 			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 	}
+	@ApiOperation(value = "绑定网关", notes = "绑定网关")
+	@GetMapping(value = "/bind-group")
+	@ResponseBody
+	public ResponseEntity<Boolean> bindGroup(HttpServletRequest request, @ApiParam(value="车区id",required=true) @NotNull(message="车区id不能为空") @RequestParam(value = "preId",required= true) Long preId ,
+			@ApiParam(value="网关编号",required=true) @NotBlank(message="网关编号不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber 
+			){
+		Boolean falg = this.prefectureService.bindGroup(preId,serialNumber,request);
+		return ResponseEntity.success(falg, request);
+	}
+	
+	@ApiOperation(value = "删除(解除)绑定网关", notes = "删除绑定网关")
+	@GetMapping(value = "/unbind-group")
+	@ResponseBody
+	public ResponseEntity<Boolean> unBindGroup(HttpServletRequest request, @ApiParam(value="分组编号",required=true) @NotNull(message="分组编号不能为空") @RequestParam(value = "groupCode",required= true) String groupCode ,
+			@ApiParam(value="网关编号",required=true) @NotBlank(message="网关编号不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber 
+			){
+		Boolean falg = this.prefectureService.unBindGroup(groupCode,serialNumber,request);
+		return ResponseEntity.success(falg, request);
+	}
+	
+	@ApiOperation(value = "删除(解除)网关绑定的锁", notes = "删除(解除)网关绑定的锁")
+	@GetMapping(value = "/unbind-lock")
+	@ResponseBody
+	public ResponseEntity<Boolean> unBindLock(HttpServletRequest request, @ApiParam(value="锁编号",required=true) @NotNull(message="锁编号编号不能为空") @RequestParam(value = "lockSn",required= true) String lockSn ,
+			@ApiParam(value="网关编号",required=true) @NotBlank(message="网关编号不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber 
+			){
+		Boolean falg = this.prefectureService.unBindLock(lockSn,serialNumber,request);
+		return ResponseEntity.success(falg, request);
+	}
+	
+	@ApiOperation(value = "查询网关list", notes = "查询网关list")
+	@GetMapping(value = "/find-gateway-group")
+	@ResponseBody
+	public ResponseEntity<List<ResGateway>> findGatewayGroup(HttpServletRequest request, @ApiParam(value="车区id",required=true) @NotNull(message="车区id不能为空") @RequestParam(value = "preId",required= true) Long preId
+			){
+		List<ResGateway> group = this.prefectureService.findGatewayGroup(preId,request);
+		return ResponseEntity.success(group, request);
+	}
+	
+	@ApiOperation(value = "查询网关(扫一扫)", notes = "查询网关(扫一扫")
+	@GetMapping(value = "/find-gateway-serialNumber")
+	@ResponseBody
+	public ResponseEntity<cn.linkmore.prefecture.controller.staff.response.ResGatewayDetails> getGatewayDetails(HttpServletRequest request, @ApiParam(value="网关编号",required=true) @NotNull(message="网关编号不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber
+			){
+		cn.linkmore.prefecture.controller.staff.response.ResGatewayDetails details = prefectureService.getGatewayDetails(serialNumber,request);
+		return ResponseEntity.success(details, request);
+	}
+	
+	@ApiOperation(value = "加载锁", notes = "加载锁")
+	@GetMapping(value = "/load-lock")
+	@ResponseBody
+	public ResponseEntity<Boolean> loadAllLock(HttpServletRequest request, @ApiParam(value="网关编号",required=true) @NotNull(message="网关不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber	){
+		Boolean falg = prefectureService.loadLock(request,serialNumber);
+		return ResponseEntity.success(falg, request);
+	}
+	
+	@ApiOperation(value = "重启网关", notes = "重启网关")
+	@GetMapping(value = "/restart-gateway")
+	@ResponseBody
+	public ResponseEntity<Boolean> restartGateway(HttpServletRequest request, @ApiParam(value="网关编号",required=true) @NotNull(message="网关不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber	){
+		Boolean falg = prefectureService.restartGateway(request,serialNumber);
+		return ResponseEntity.success(falg, request);
+	}
+	@ApiOperation(value = "查询锁绑定的网关/未绑定的网关(用于展示批量更新车位锁网关的列表)", notes = "重启网关")
+	@GetMapping(value = "/find-lock-gateways")
+	@ResponseBody
+	public ResponseEntity<List<ResLockGatewayList>> findLockGateways(HttpServletRequest request, @ApiParam(value="锁编号编号",required=true) @NotNull(message="锁编号不能为空") @RequestParam(value = "lockSn",required= true) String lockSn	){
+		List<ResLockGatewayList> gateways = stallService.findLockGateways(request,lockSn);
+		return ResponseEntity.success(gateways, request);
+	}
+	
+	@ApiOperation(value = "更新车位锁绑定的网关(批量更新)", notes = "更新车位锁绑定的网关(批量更新)")
+	@PutMapping(value = "/edit-lock-bind-gateway")
+	@ResponseBody
+	public ResponseEntity<Boolean> editLockBindGateway(HttpServletRequest request, @ApiParam(value="锁编号",required=true) @NotNull(message="锁编号不能为空") @RequestParam(value = "lockSn",required= true) String lockSn	
+			,@ApiParam("网关编号 多个网关编号,分隔('网关编号1','网关编号2')") @NotNull(message="网关编号不能为空") @RequestParam(value = "serialNumbers",required= true) String serialNumbers
+			){
+		stallService.editLockBindGateway(request,serialNumbers,lockSn);
+		return ResponseEntity.success(true, request);
+	}
+	
+	
 }

@@ -17,6 +17,8 @@ import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.TokenUtil;
 
 @Service
@@ -28,10 +30,11 @@ public class StallFaultServiceImpl implements StallFaultService {
 	private StallFaultFeedBackMasterMapper backMasterMapper;
 	@Resource
 	private RedisService redisService;
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Override
 	public void save(ReqStallFault fault , HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 		StallFaultFeedBack feedback = new StallFaultFeedBack();
 		feedback.setCreateTime(new Date());
 		feedback.setDictId(fault.getDictId());

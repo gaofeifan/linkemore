@@ -1,7 +1,7 @@
 package cn.linkmore.util;
 
 import java.lang.reflect.Field;
-
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -115,6 +115,7 @@ public class BeanUtils {
 		}
 		return map;
 	}
+	
 
 	/**
 	 * @Description  获得父类集合，包含当前class

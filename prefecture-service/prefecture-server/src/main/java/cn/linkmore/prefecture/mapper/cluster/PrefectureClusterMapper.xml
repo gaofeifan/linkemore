@@ -121,6 +121,13 @@
     from v_prefecture
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findByGateway" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_prefecture
+    where gateway = #{groupCode,jdbcType=BIGINT}
+    limit 0,1
+  </select>
   <select id="findPreList" parameterType="java.lang.Long" resultType="cn.linkmore.prefecture.response.ResPrefecture">
     select  id,name from v_prefecture 
   </select>

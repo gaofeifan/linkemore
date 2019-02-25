@@ -26,6 +26,31 @@
     <result column="create_user_name" jdbcType="VARCHAR" property="createName" />
     
   </resultMap>
+  <resultMap id="BaseResultMapOps" type="cn.linkmore.prefecture.response.ResStallOps">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+    <result column="sell_count" jdbcType="INTEGER" property="sellCount" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="gateway_id" jdbcType="BIGINT" property="gatewayId" />
+    <result column="radar" jdbcType="VARCHAR" property="radar" />
+    <result column="lock_id" jdbcType="BIGINT" property="lockId" />
+    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+    <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="stall_local" jdbcType="VARCHAR" property="stallLocal" />
+    <result column="route_guidance" jdbcType="VARCHAR" property="routeGuidance" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="lock_battery" jdbcType="INTEGER" property="lockBattery" />
+    <result column="lock_voltage" jdbcType="DOUBLE" property="lockVoltage" />
+    <result column="bind_order_status" jdbcType="SMALLINT" property="bindOrderStatus" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="brand" jdbcType="SMALLINT" property="brand" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createName" />
+    
+  </resultMap>
   
   <resultMap id="ResponseResultMap" type="cn.linkmore.prefecture.response.ResStall">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -276,7 +301,7 @@
     </if>
     limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
-  <select id="findListByParam" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+  <select id="findListByParam" resultMap="BaseResultMapOps" parameterType="java.util.HashMap" >
     SELECT
 	*
 	FROM

@@ -46,6 +46,8 @@ import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.prefecture.client.StrategyBaseClient;
 import cn.linkmore.prefecture.response.ResStrategyBase;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.MapUtil;
@@ -61,7 +63,7 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class EntBrandPreServiceImpl implements EntBrandPreService {
-
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Resource
@@ -96,7 +98,7 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 
 	@Override
 	public List<ResEntBrandPreCity> list(ReqBrandPre rp, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("status", 0);
 		// 此处cityId暂时为空，返回所有的车区信息
@@ -202,7 +204,7 @@ public class EntBrandPreServiceImpl implements EntBrandPreService {
 
 	@Override
 	public List<ResEntBrandPreLeisure> getStallCount(HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("status", 0);
 		// 此处cityId暂时为空，返回所有的车区信息

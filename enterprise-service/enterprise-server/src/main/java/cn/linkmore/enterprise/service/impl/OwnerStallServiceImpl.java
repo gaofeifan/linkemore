@@ -44,6 +44,8 @@ import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.StringUtil;
 import cn.linkmore.util.TokenUtil;
@@ -52,7 +54,7 @@ import cn.linkmore.util.TokenUtil;
 public class OwnerStallServiceImpl implements OwnerStallService {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Autowired
 	private RedisService redisService;
 	
@@ -74,7 +76,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	@Override
 	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
 		System.out.println("findStall");
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -196,7 +198,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os")) );
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -277,7 +279,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public void watch(ReqWatchStatus reqWatchStatus, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os")) );
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -321,7 +323,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public Boolean owner(HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Boolean is = false;
 		if (user != null) {
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());

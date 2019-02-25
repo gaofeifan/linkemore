@@ -96,6 +96,8 @@ import cn.linkmore.third.request.ReqWechatMiniOrder;
 import cn.linkmore.third.response.ResAppWechatOrder;
 import cn.linkmore.third.response.ResLoongPay;
 import cn.linkmore.third.response.ResWechatMiniOrder;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 import cn.linkmore.util.XMLUtil;
@@ -109,6 +111,8 @@ import cn.linkmore.util.XMLUtil;
  */
 @Service
 public class PayServiceImpl implements PayService {
+	
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -198,7 +202,7 @@ public class PayServiceImpl implements PayService {
 	
 	@Override
 	public ResPayCheckout checkout(Long orderId, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResUserOrder order = this.ordersClusterMapper.findUserLatest(cu.getId());
 		if (!(order.getStatus().intValue() == OrderStatus.UNPAID.value
 				|| order.getStatus().intValue() == OrderStatus.SUSPENDED.value)) {
@@ -348,7 +352,7 @@ public class PayServiceImpl implements PayService {
 	@Override
 	@Transactional(rollbackFor = RuntimeException.class)
 	public ResPayConfirm confirm(ReqPayConfirm roc, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResOrderConfirm confirm = null;
 		ResCoupon coupon = null;
 		if (roc.getCouponId() != null) {
@@ -938,7 +942,7 @@ public class PayServiceImpl implements PayService {
 
 	@Override
 	public ResOrderDetail verify(Long orderId, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResUserOrder order = this.ordersClusterMapper.findUserLatest(cu.getId());
 		Boolean flag = false;
 
