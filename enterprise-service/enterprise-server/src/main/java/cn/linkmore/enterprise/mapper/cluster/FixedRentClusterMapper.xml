@@ -122,14 +122,14 @@
   
   <select id="stallList" parameterType="java.util.HashMap" resultMap="ResultStallMap">
   	SELECT id,stall_name FROM v_stall
-  	<where>
+  	where type=2
   	<if test="preId != null">
    	AND pre_id = #{preId,jdbcType=BIGINT}
     </if>
     <if test="status != null">
    	AND status = #{status,jdbcType=BIGINT}
     </if>
-  	</where>
+  	
   	ORDER BY stall_name ASC
   </select>
 
