@@ -8,6 +8,18 @@
     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
     <result column="status" jdbcType="SMALLINT" property="status" />
   </resultMap>
+  
+   <resultMap id="ResStallResultMap" type="cn.linkmore.enterprise.response.ResStall">
+    <id column="id" jdbcType="BIGINT" property="id" />
+
+    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+	<result column="lock_sn" jdbcType="VARCHAR" property="lockSN" />
+    <result column="lock_state" jdbcType="BIGINT" property="lockState" />
+    <result column="stall_state" jdbcType="BIGINT" property="stallState" />
+    <result column="fixed_state" jdbcType="BIGINT" property="fixedState" />
+    
+  </resultMap>
+  
   <sql id="Base_Column_List">
     id, fixed_id, stall_id, stall_name, status
   </sql>
@@ -17,5 +29,60 @@
     from t_fixed_stall
     where id = #{id,jdbcType=BIGINT}
   </select>
-
+  
+  <select id="selectByFixedId" parameterType="java.lang.Long" resultMap="ResStallResultMap">
+    select 
+    fs.stall_id as id,vs.stall_name,vs.lock_sn,vs.status as stall_state,fs.status as fixed_state
+    from t_fixed_stall fs
+    inner join v_stall vs on fs.stall_id=vs.id 
+    where fixed_id = #{fixedId,jdbcType=BIGINT}
+    order by stall_name asc
+  </select>
+  
+  <select id="selectByFixedAndStall" parameterType="java.util.HashMap" resultMap="ResStallResultMap">
+  	select fixed_id,stall_id as id,status as fixed_state  from t_fixed_stall 
+  	<where>
+  	<if test="fixedId != null">
+  		AND fixed_id = #{fixedId,jdbcType=BIGINT}
+  	</if>
+  	<if test="stallId != null">
+  		AND stall_id = #{stallId,jdbcType=BIGINT}
+  	</if>
+  	</where>
+  	limit 1
+  </select>
+  
+  <select id="existsStall" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+  	select 1 from v_stall 
+  	<where>
+  	<if test="preId != null">
+  		AND pre_id = #{preId,jdbcType=BIGINT}
+  	</if>
+  	<if test="stallId != null">
+  		AND id = #{stallId,jdbcType=BIGINT}
+  	</if>
+  	<if test="stallName != null">
+  		AND stall_name = #{stallName,jdbcType=VARCHAR}
+  	</if>
+  	</where>
+  	limit 1
+  </select>
+  
+  <select id="existsFixedStall" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    select 1 from t_fixed_stall fs
+	inner join v_stall vs on fs.stall_id=vs.id
+  	<if test="preId != null">
+  		AND vs.pre_id = #{preId,jdbcType=BIGINT}
+  	</if>
+  	<where>
+  	<if test="stallId != null">
+  		AND vs.id = #{stallId,jdbcType=BIGINT}
+  	</if>
+  	<if test="stallName != null">
+  		AND vs.stall_name = #{stallName,jdbcType=VARCHAR}
+  	</if>
+  	</where>
+  	limit 1
+  </select>
+  
 </mapper>

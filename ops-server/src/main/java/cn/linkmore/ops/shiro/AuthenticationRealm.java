@@ -112,6 +112,7 @@ public class AuthenticationRealm extends AuthorizingRealm {
 			}
 			Subject currentPerson = SecurityUtils.getSubject();
 			currentPerson.getSession().setAttribute("person", person);
+			currentPerson.getSession().setTimeout(8*60*60*1000);
 			log.info("session {}",JSON.toJSON(currentPerson.getSession().getAttribute("person")));
 			this.menuService.cachePersonAuthList(); 
 			
