@@ -22,7 +22,7 @@ public class LockProperties {
 	private static final String unbindLockList = "/api/v1/lock/unbind-lock-list";
 	private static final String bindLockList = "/api/v1/lock/bind-lock-list";
 	private static final String bindLock = "/api/v1/lock/config/bind-lock";
-	private static final String unbindLock = "/api/v1/lock/config/unbind-lock";
+	private static final String unbindLock = "/api/v1/lock/config/unbind-lock-relave";
 	private static final String removeLock = "/api/v1/lock/remove-lock";
 	private static final String lockGatewayList = "/api/v1/lock/lock-gateway-list";
 	private static final String lockGateway = "/api/v1/lock/locks-gateway";
