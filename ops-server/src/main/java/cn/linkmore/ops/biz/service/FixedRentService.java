@@ -1,4 +1,4 @@
-package cn.linkmore.enterprise.service;
+package cn.linkmore.ops.biz.service;
 
 import java.util.List;
 import java.util.Map;
@@ -9,24 +9,19 @@ import cn.linkmore.enterprise.request.ReqFixedRent;
 import cn.linkmore.enterprise.response.ResFixedRent;
 import cn.linkmore.enterprise.response.ResStall;
 
-/**
- * 固定车位
- * @author kobe
- *
- */
 public interface FixedRentService {
 	ViewPage findPage(ViewPageable pageable);
 
-	List<ResStall> stallList(Map<String, Object> map);
-	
 	List<ResStall> freeStallList(Map<String, Object> map);
 
+	List<ResStall> stallList(Map<String, Object> map);
+	
 	ResFixedRent view(Long fixedId);
 	
 	int insert(ReqFixedRent reqFixedRent);
 
 	int update(ReqFixedRent reqFixedRent);
-
+	
 	int deleteStall(Map<String, Object> map);
 	
 	int open(Map<String, Object> map);
@@ -34,6 +29,4 @@ public interface FixedRentService {
 	int close(Map<String, Object> map);
 
 	String check(ReqFixedRent reqFixedRent);
-
-	
 }

@@ -6,12 +6,46 @@
     delete from t_fixed_stall
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  
+   <delete id="deleteStall" parameterType="java.util.HashMap">
+   	 delete from t_fixed_stall 
+   	 where fixed_id=#{fixedId,jdbcType=BIGINT}
+   	 and stall_id in 
+    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
+       #{id}
+    </foreach>
+   	
+   </delete>
+   
+   <delete id="updateStatus" parameterType="java.util.HashMap">
+   	 update t_fixed_stall set status =#{status,jdbcType=BIGINT} where fixed_id=#{fixedId,jdbcType=BIGINT} and stall_id=#{stallId,jdbcType=BIGINT}
+   </delete>
+   
   <insert id="insert" parameterType="cn.linkmore.enterprise.entity.FixedStall">
     insert into t_fixed_stall (id, fixed_id, stall_id, 
       stall_name, status)
     values (#{id,jdbcType=BIGINT}, #{fixedId,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, 
       #{stallName,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT})
   </insert>
+ 
+   <insert id="insertByStallName" parameterType="cn.linkmore.enterprise.entity.FixedStall">
+    insert into t_fixed_stall (fixed_id, stall_id,stall_name, status)
+    select #{fixedId,jdbcType=BIGINT},vs.id,vs.stall_name,#{status,jdbcType=SMALLINT} from v_stall vs
+    inner join t_fixed_rent fr on vs.pre_id = fr.pre_id and fr.id = #{fixedId,jdbcType=BIGINT}
+    where vs.stall_name = #{stallName,jdbcType=VARCHAR}
+    limit 1
+  </insert>
+
+ <insert id="insertMore" parameterType="java.util.HashMap">
+  insert into t_fixed_stall(fixed_id, stall_id,stall_name, status)
+  select #{fixedId,jdbcType=BIGINT},id,stall_name,#{status,jdbcType=SMALLINT} 
+  from v_stall 
+  where id in 
+    <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
+       #{id}
+    </foreach>
+  </insert>
+
   <insert id="insertSelective" parameterType="cn.linkmore.enterprise.entity.FixedStall">
     insert into t_fixed_stall
     <trim prefix="(" suffix=")" suffixOverrides=",">

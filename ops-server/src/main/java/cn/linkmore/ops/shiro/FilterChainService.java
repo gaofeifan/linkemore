@@ -25,22 +25,22 @@ import cn.linkmore.ops.security.service.InterfaceService;
 
 @Component
 public class FilterChainService{ 
-	
+
 	@Autowired
-	private InterfaceService interfaceService;	
+	private InterfaceService interfaceService;
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 	public static final String PERMISSION_STRING="perms[{0}]";
  
-	public Map<String,String> getFilterChainMap() throws Exception { 
+	public Map<String,String> getFilterChainMap() throws Exception {
 		List<ResInterface> list = this.interfaceService.findAll();
 		log.info("interface list size {}" , list.size());
-        Map<String,String> section = new HashMap<String,String>(); 
+        Map<String,String> section = new HashMap<String,String>();
         if(list!=null&&list.size()>0)
         for(ResInterface re:list){
         	if(StringUtils.isNotEmpty(re.getPath())&&re.getAuthorize()==1){
         		section.put(re.getPath(),  MessageFormat.format(PERMISSION_STRING,re.getId()));
         	}
-        }  
+        }
         return section;
-	} 
+	}
 }

@@ -19,10 +19,14 @@ public class FixedRent {
 
     private Long createUserId;
 
+    private String createUserName;
+    
     private Date createTime;
 
     private Long updateUserId;
-
+    
+    private String updateUserName;
+    
     private Date updateTime;
 
     public Long getId() {
@@ -112,4 +116,21 @@ public class FixedRent {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+	public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
+
+	public String getUpdateUserName() {
+		return updateUserName;
+	}
+
+	public void setUpdateUserName(String updateUserName) {
+		this.updateUserName = updateUserName;
+	}
+    
 }

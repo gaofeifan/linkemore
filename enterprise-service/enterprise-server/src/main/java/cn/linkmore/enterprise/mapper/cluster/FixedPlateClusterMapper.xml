@@ -16,4 +16,19 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
  
+   <select id="selectByFixedId" parameterType="java.lang.Long" resultType="String">
+    select 
+     plate_no
+    from t_fixed_plate
+    where fixed_id = #{fixed_id,jdbcType=BIGINT}
+  </select>
+ 
+   <select id="selectUserNameByFixedId" parameterType="java.lang.Long" resultType="String">
+    select distinct tu.username from t_user tu
+	inner join v_vehicle_mark_manage vm on tu.id=vm.veh_user_id
+	inner join t_fixed_plate fp on fp.plate_no=vm.veh_mark AND fp.fixed_id = #{fixed_id,jdbcType=BIGINT}
+  </select>
+ 
+ 
+ 
 </mapper>

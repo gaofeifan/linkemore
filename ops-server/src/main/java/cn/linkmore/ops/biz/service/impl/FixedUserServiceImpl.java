@@ -44,8 +44,8 @@ public class FixedUserServiceImpl implements FixedUserService {
 		if (enter != null) {
 			List<ViewFilter> list = pageable.getFilters();
 			ViewFilter vf = new ViewFilter();
-			vf.setProperty("entId");
-			vf.setValue(person.getEntId());
+			vf.setProperty("createUserId");
+			vf.setValue(person.getId());
 			list.add(vf);
 		}
 		return fixedUserClient.findPage(pageable);
