@@ -227,13 +227,12 @@ public class LockServiceImpl implements LockService{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ResLockInfo> lockListByGroupCode(String groupCode) {
-		String url = lockProperties.getLinkemoreLockUrl()+lockProperties.getLocklist();
 		long millis = new Date().getTime();
 		Map<String, Object> map = new TreeMap<>();
 		map.put("appId", lockProperties.getAppId());
 		map.put("timestamp", millis);
 		map.put("groupCode", groupCode);
-		ResLockMessage resLockMessage = getDataMes(map,url);
+		ResLockMessage resLockMessage = getDataMes(map,getUrl(lockProperties.getLocklist()));
 		List<Map<String,Object>> lockInfos = (List<Map<String, Object>>)resLockMessage.getData();
 		List<ResLockInfo> resLockInfos = new ArrayList<>();
 		ResLockInfo info = null;
@@ -382,7 +381,7 @@ public class LockServiceImpl implements LockService{
 	@Override
 	public List<ResUnBindLock> unBindLockList(String serialNumber) {
 		proToTypeMap.put("serialNumber", serialNumber);
-		Object data = getData(proToTypeMap, LockProperties.getUnbindLockList());
+		Object data = getData(proToTypeMap, getUrl(LockProperties.getUnbindLockList()));
 		List<Map<String,Object>> list = (List<Map<String,Object>>)data;
 		List<ResUnBindLock> listBean = ObjectUtils.mapsToListBean(ResUnBindLock.class, list);
 		return listBean;
@@ -391,7 +390,7 @@ public class LockServiceImpl implements LockService{
 	@Override
 	public List<ResUnBindLock> bindLockList(String serialNumber) {
 		proToTypeMap.put("serialNumber", serialNumber);
-		Object data = getData(proToTypeMap, LockProperties.getBindLockList());
+		Object data = getData(proToTypeMap, getUrl(LockProperties.getBindLockList()));
 		List<Map<String,Object>> list = (List<Map<String,Object>>)data;
 		List<ResUnBindLock> listBean = ObjectUtils.mapsToListBean(ResUnBindLock.class, list);
 		return listBean;
@@ -401,7 +400,7 @@ public class LockServiceImpl implements LockService{
 	public Boolean bindLock(String gatewaySerialNumbe, String lockSerialNumber) {
 		proToTypeMap.put("gatewaySerialNumbe", gatewaySerialNumbe);
 		proToTypeMap.put("lockSerialNumber", lockSerialNumber);
-		ResLockMes lockMes = get(proToTypeMap, LockProperties.getBindLock());
+		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getBindLock()));
 		return lockMes.getStatus();
 	}
 
@@ -409,7 +408,7 @@ public class LockServiceImpl implements LockService{
 	public Boolean unBindLock(String gatewaySerialNumbe, String lockSerialNumber) {
 		proToTypeMap.put("gatewaySerialNumbe", gatewaySerialNumbe);
 		proToTypeMap.put("lockSerialNumber", lockSerialNumber);
-		ResLockMes lockMes = get(proToTypeMap, LockProperties.getUnBindLock());
+		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getUnBindLock()));
 		return lockMes.getStatus();
 	}
 
