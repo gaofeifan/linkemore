@@ -1419,7 +1419,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Override
 	public Boolean restartGateway(HttpServletRequest request, String serialNumber) {
-		return null;
+		return lockFactory.getLock().restart(serialNumber);
 	}
 
 	@Override
