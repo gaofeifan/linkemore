@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.controller.staff.response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -24,6 +26,11 @@ public class ResStallLock {
 	private String bindFlag = "0";
 
 	public String getLockSn() {
+		/*if(StringUtils.isNoneBlank(lockSn)) {
+			if(lockSn.contains("0000")) {
+				return lockSn.substring(4);
+			}
+		}*/
 		return lockSn;
 	}
 

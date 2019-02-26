@@ -6,7 +6,7 @@
     delete from t_fixed_rent
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.linkmore.enterprise.entity.FixedRent">
+  <insert id="insert" parameterType="cn.linkmore.enterprise.entity.FixedRent" useGeneratedKeys="true" keyProperty="id">
     insert into t_fixed_rent (id, start_time, end_time, 
       mobile, ent_id, pre_id, 
       pre_name, create_user_id, create_time, 

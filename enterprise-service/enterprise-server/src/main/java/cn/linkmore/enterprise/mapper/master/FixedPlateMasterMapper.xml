@@ -12,6 +12,25 @@
     values (#{id,jdbcType=BIGINT}, #{plateNo,jdbcType=VARCHAR}, #{fixedId,jdbcType=BIGINT}
       )
   </insert>
+  
+   <insert id="insertMore" parameterType="java.util.HashMap">
+  	insert into t_fixed_plate (plate_no, fixed_id)
+	values
+    <foreach collection ="plateNos" item="plate" index= "index" separator =",">
+         (#{plate},#{fixedId,jdbcType=BIGINT})
+    </foreach>
+  </insert>
+  
+   <delete id="deleteByPlate" parameterType="java.util.HashMap">
+   	 delete from t_fixed_plate 
+   	 where fixed_id=#{fixedId,jdbcType=BIGINT}
+   	 and plate_no in 
+    <foreach collection="plateNos"  index="index" item="plateNo" open="(" separator="," close=")" >
+       #{plateNo}
+    </foreach>
+   	
+   </delete>
+  
   <insert id="insertSelective" parameterType="cn.linkmore.enterprise.entity.FixedPlate">
     insert into t_fixed_plate
     <trim prefix="(" suffix=")" suffixOverrides=",">

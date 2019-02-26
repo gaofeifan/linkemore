@@ -114,6 +114,7 @@ public class PayServiceImpl implements PayService {
 	
 	private UserFactory appUserFactory = AppUserFactory.getInstance();
 
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -882,7 +883,7 @@ public class PayServiceImpl implements PayService {
 			map.put("type", type.id);
 			map.put("content", content);
 			map.put("status", status);
-			CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
+			CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(token.getAccessToken(),null));
 			userSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
 		} else {
 			ReqPush rp = new ReqPush();

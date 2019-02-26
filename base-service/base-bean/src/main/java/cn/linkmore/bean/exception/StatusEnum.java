@@ -129,7 +129,7 @@ public enum StatusEnum {
 	FAIL_STALL_NUM(8005081,"车位不存在"),
 
 	STALL_NAME_USER(8005090,"车位名称已存在"),
-	DOWN_LOCK_FAIL_RETRY(8005091,"通讯失败，再降一次"),
+	DOWN_LOCK_FAIL_RETRY(8005091,"降锁失败，请再试一次"),
 	DOWN_LOCK_FAIL_CHANGE(8005092,"降锁失败，更换其他车位"),
 	DOWN_LOCK_FAIL_CHECK(8005093,"该车位不可用，请使用其他车位"),
 	APPOINT_FAIL_CHECK(8005083,"该车位已被他人使用，请选择其他车位"),
