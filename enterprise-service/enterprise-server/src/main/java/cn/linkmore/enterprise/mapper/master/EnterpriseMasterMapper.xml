@@ -35,7 +35,8 @@
       region = #{region,jdbcType=BIGINT},
       address = #{address,jdbcType=VARCHAR},
       tellphone = #{tellphone,jdbcType=VARCHAR},
-      code = #{code,jdbcType=VARCHAR}
+      code = #{code,jdbcType=VARCHAR},
+      pre_id = #{preId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
