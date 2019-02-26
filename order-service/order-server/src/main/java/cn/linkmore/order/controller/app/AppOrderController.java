@@ -205,7 +205,7 @@ public class AppOrderController {
 		return response;
 	}
 	
-	@ApiOperation(value = "用户操作降锁", notes = "8005092降锁失败，更换其他车位；,8005091通讯失败，再降一次；", consumes = "application/json")
+	@ApiOperation(value = "用户操作降锁", notes = "8005092降锁失败，更换其他车位；,8005091降锁失败，请再试一次；", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control-down", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> controlDown(@RequestBody ReqOrderStall ros, 
