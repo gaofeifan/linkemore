@@ -2181,7 +2181,7 @@ public class StallServiceImpl implements StallService {
 		List<cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList> list =new ArrayList<>();
 		cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList gateway = null;
 		for (ResLockGatewayList resLockGatewayList : gatewayList) {
-			gateway = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getSerialNumber());
+			gateway = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getGatewaySerialNumber());
 			gateway.setBindFlag(resLockGatewayList.getBindFlag());
 			list.add(gateway);
 		}

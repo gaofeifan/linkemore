@@ -18,7 +18,7 @@ public class LockFactory {
 	}
 	
 	
-	public LockService getLock(Class<?> clazz) {
+	public synchronized LockService getLock(Class<?> clazz) {
 		if(AppLockDecorator.class.isInstance(clazz)) {
 			return new AppLockDecorator(lockService, reqc);
 		}else if(AppLockMessageDecorator.class.isInstance(clazz)) {
@@ -32,7 +32,7 @@ public class LockFactory {
 		return getLock(null);
 	}
 	
-	public LockFactory setReqc(ReqControlLock reqc) {
+	public synchronized LockFactory setReqc(ReqControlLock reqc) {
 		this.reqc = reqc;
 		return this;
 	}
