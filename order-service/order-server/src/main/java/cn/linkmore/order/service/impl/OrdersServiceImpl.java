@@ -2326,6 +2326,7 @@ public class OrdersServiceImpl implements OrdersService {
 					throw new BusinessException(StatusEnum.get((int)object));
 				}else {
 					log.info("the server is unconnecting");
+					this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + ros.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_RETRY.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
 					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
 				}
 			}
