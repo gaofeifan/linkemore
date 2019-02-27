@@ -2,61 +2,66 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.OwnerStallClusterMapper">
 
- <resultMap id="PreResultMap" type="cn.linkmore.enterprise.entity.EntOwnerPre">
-    <result column="pre_id" jdbcType="BIGINT" property="preId" />
-    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
-    <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="gateway" jdbcType="VARCHAR" property="gateway" />
-    <result column="longitude" jdbcType="DOUBLE" property="longitude" />
-    <result column="latitude" jdbcType="DOUBLE" property="latitude" />
-  </resultMap>
-   
-   <resultMap id="StallResultMap" type="cn.linkmore.enterprise.entity.EntOwnerStall">
-    <result column="pre_id" jdbcType="BIGINT" property="preId" />
-    <result column="ent_id" jdbcType="BIGINT" property="entId" />
-    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
-    <result column="pre_name" jdbcType="VARCHAR" property="preName" /> 
-    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
-    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
-    <result column="plate" jdbcType="VARCHAR" property="plate" />
-    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
-     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-    <result column="route_guidance" jdbcType="VARCHAR" property="imageUrl" />
-    <result column="route_description" jdbcType="VARCHAR" property="routeGuidance" />
-    <result column="stall_local" jdbcType="VARCHAR" property="stallLocal" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="lock_status" jdbcType="VARCHAR" property="lockStatus" />
-    <result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
-  </resultMap>
+	<resultMap id="PreResultMap" type="cn.linkmore.enterprise.entity.EntOwnerPre">
+		<result column="pre_id" jdbcType="BIGINT" property="preId" />
+		<result column="pre_name" jdbcType="VARCHAR" property="preName" />
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="gateway" jdbcType="VARCHAR" property="gateway" />
+		<result column="longitude" jdbcType="DOUBLE" property="longitude" />
+		<result column="latitude" jdbcType="DOUBLE" property="latitude" />
+	</resultMap>
 
-      
-  <select id="findPre"   resultMap="PreResultMap" >
-    select  pre_id,pre_name,address,longitude,latitude
-    from 	
-    t_ent_rent_user a
-	LEFT JOIN v_prefecture b ON a.pre_id = b.id
-     where 
-     start_time <![CDATA[ < ]]> NOW()
-     and 
-     end_time <![CDATA[ > ]]>  NOW()
-     and
-     user_id =#{0}  
-     GROUP BY pre_id
-  </select>
-  
-  <select id="findPreByIds"   resultMap="PreResultMap" parameterType="java.util.Set" >
-    SELECT  id as pre_id,name as pre_name,address,longitude,latitude,gateway
-    FROM v_prefecture 
-    WHERE id IN 
-	<foreach collection="collection" open="(" separator="," close=")" item="id">
-    	${id}
-    </foreach>
-     
-  </select>
-  
-  <select id="findStall2"   resultMap="StallResultMap" >     
-	select  
+	<resultMap id="StallResultMap" type="cn.linkmore.enterprise.entity.EntOwnerStall">
+		<result column="pre_id" jdbcType="BIGINT" property="preId" />
+		<result column="ent_id" jdbcType="BIGINT" property="entId" />
+		<result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
+		<result column="pre_name" jdbcType="VARCHAR" property="preName" />
+		<result column="stall_id" jdbcType="BIGINT" property="stallId" />
+		<result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+		<result column="plate" jdbcType="VARCHAR" property="plate" />
+		<result column="mobile" jdbcType="VARCHAR" property="mobile" />
+		<result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+		<result column="route_guidance" jdbcType="VARCHAR" property="imageUrl" />
+		<result column="route_description" jdbcType="VARCHAR" property="routeGuidance" />
+		<result column="stall_local" jdbcType="VARCHAR" property="stallLocal" />
+		<result column="status" jdbcType="VARCHAR" property="status" />
+		<result column="lock_status" jdbcType="VARCHAR" property="lockStatus" />
+		<result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+	</resultMap>
+
+
+	<select id="findPre" resultMap="PreResultMap">
+		select pre_id,pre_name,address,longitude,latitude
+		from
+		t_ent_rent_user a
+		LEFT JOIN v_prefecture b ON a.pre_id = b.id
+		where
+		start_time <![CDATA[ < ]]>
+		NOW()
+		and
+		end_time <![CDATA[ > ]]>
+		NOW()
+		and
+		user_id =#{0}
+		GROUP BY pre_id
+	</select>
+
+	<select id="findPreByIds" resultMap="PreResultMap"
+		parameterType="java.util.Set">
+		SELECT id as pre_id,name as
+		pre_name,address,longitude,latitude,gateway
+		FROM v_prefecture
+		WHERE id IN
+		<foreach collection="collection" open="(" separator="," close=")"
+			item="id">
+			${id}
+		</foreach>
+
+	</select>
+
+	<select id="findStall2" resultMap="StallResultMap">
+		select
 		a.pre_id as pre_id,
 		a.stall_id as stall_id,
 		a.stall_name as stall_name,
@@ -71,19 +76,23 @@
 		b.status,
 		b.lock_status,
 		b.lock_sn,
-		DATE_FORMAT(start_time,'%Y-%m-%d %H:%i:%s') as start_time,
+		DATE_FORMAT(start_time,'%Y-%m-%d %H:%i:%s') as
+		start_time,
 		DATE_FORMAT(end_time,'%Y-%m-%d %H:%i:%s') as end_time
-	from t_ent_rent_user a  
-		 left join v_stall  b on  a.stall_id = b.id 
-		 left join v_prefecture c on a.pre_id = c.id
-	where 
-	     start_time <![CDATA[ < ]]> NOW()
-	     and 
-	     end_time <![CDATA[ > ]]>  NOW()
-	     and
-	     user_id =#{0} 
-	     and (a.company_id is null or a.company_id in(select id from t_ent_rent_com t where status=2))
-	group by 
+		from t_ent_rent_user a
+		left join v_stall b on a.stall_id = b.id
+		left join v_prefecture c on a.pre_id = c.id
+		where
+		start_time <![CDATA[ < ]]>
+		NOW()
+		and
+		end_time <![CDATA[ > ]]>
+		NOW()
+		and
+		user_id =#{0}
+		and (a.company_id is null or a.company_id in(select id from
+		t_ent_rent_com t where status=2))
+		group by
 		a.pre_id,
 		a.stall_id ,
 		a.stall_name,
@@ -99,12 +108,12 @@
 		b.lock_sn,
 		DATE_FORMAT(start_time,'%Y-%m-%d %H:%i:%s'),
 		DATE_FORMAT(end_time,'%Y-%m-%d %H:%i:%s')
-    
-  </select>
-  
-  	<!-- and ru.user_id= vm.veh_user_id -->
-	<select id="findStall"   resultMap="StallResultMap" >
-	SELECT  
+
+	</select>
+
+	<!-- and ru.user_id= vm.veh_user_id -->
+	<select id="findStall" resultMap="StallResultMap">
+		SELECT
 		pre_id,
 		stall_id,
 		stall_name,
@@ -121,102 +130,154 @@
 		start_time,
 		end_time,
 		plate
-	FROM (
+		FROM (
 		SELECT
-			c.pre_id,
-			cs.stall_id,
-			cs.stall_name,
-			cu.plate,
-			u.mobile,
-			c.id as ent_id ,
-			c.pre_id as ent_pre_id,
-			c.pre_name,
-			p.route_description,
-			p.route_guidance,
-			s.stall_local,
-			s.status,
-			s.lock_status,
-			s.lock_sn,
-			DATE_FORMAT(c.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
-			DATE_FORMAT(c.end_time,'%Y-%m-%d %H:%i:%s') as end_time
+		c.pre_id,
+		cs.stall_id,
+		cs.stall_name,
+		cu.plate,
+		u.mobile,
+		c.id as ent_id ,
+		c.pre_id as ent_pre_id,
+		c.pre_name,
+		p.route_description,
+		p.route_guidance,
+		s.stall_local,
+		s.status,
+		s.lock_status,
+		s.lock_sn,
+		DATE_FORMAT(c.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
+		DATE_FORMAT(c.end_time,'%Y-%m-%d %H:%i:%s') as end_time
 		FROM t_ent_rent_com c
-		INNER JOIN t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
-		INNER JOIN v_stall s ON cs.stall_id = s.id 
+		INNER JOIN
+		t_ent_rent_com_stall cs ON c.id = cs.rent_com_id
+		INNER JOIN v_stall s
+		ON cs.stall_id = s.id
 		INNER JOIN v_prefecture p ON s.pre_id = p.id and p.status = 0
-		INNER JOIN t_ent_rent_com_user cu ON c.id = cu.rent_com_id
-		INNER JOIN v_vehicle_mark_manage m ON cu.plate = m.veh_mark
-		INNER JOIN t_user u ON u.id = m.veh_user_id and u.id = #{0} 
+		INNER JOIN
+		t_ent_rent_com_user cu ON c.id = cu.rent_com_id
+		INNER JOIN
+		v_vehicle_mark_manage m ON cu.plate = m.veh_mark
+		INNER JOIN t_user u ON
+		u.id = m.veh_user_id and u.id = #{0}
 		WHERE u.id IS NOT NULL
 		AND c.status = '2'
-		AND NOW() between c.start_time AND c.end_time
+		AND NOW() between c.start_time AND
+		c.end_time
 
-		UNION 
-		
-		SELECT  
-			ru.pre_id,
-			ru.stall_id,
-			ru.stall_name,
-			ru.plate,
-			tu.mobile,
-			null as ent_id,
-			p.id as ent_pre_id,
-			ru.pre_name,
-			p.route_description,
-			p.route_guidance,
-			s.stall_local,
-			s.status,
-			s.lock_status,
-			s.lock_sn,
-			DATE_FORMAT(ru.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
-			DATE_FORMAT(ru.end_time,'%Y-%m-%d %H:%i:%s') as end_time
-		FROM v_vehicle_mark_manage vm 
-		INNER JOIN t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =0 
-		INNER JOIN v_stall s ON ru.stall_id = s.id 
+		UNION
+
+		SELECT
+		ru.pre_id,
+		ru.stall_id,
+		ru.stall_name,
+		ru.plate,
+		tu.mobile,
+		null as ent_id,
+		p.id as ent_pre_id,
+		ru.pre_name,
+		p.route_description,
+		p.route_guidance,
+		s.stall_local,
+		s.status,
+		s.lock_status,
+		s.lock_sn,
+		DATE_FORMAT(ru.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
+		DATE_FORMAT(ru.end_time,'%Y-%m-%d %H:%i:%s') as end_time
+		FROM v_vehicle_mark_manage vm
+		INNER JOIN t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =0
+		INNER JOIN v_stall s ON ru.stall_id = s.id
 		INNER JOIN v_prefecture p ON s.pre_id = p.id and p.status = 0
-		INNER JOIN t_user tu on tu.id = vm.veh_user_id and tu.id= #{0} 
+		INNER JOIN
+		t_user tu on tu.id = vm.veh_user_id and tu.id= #{0}
 		WHERE NOW() BETWEEN ru.start_time and ru.end_time
-		UNION 
-		
-		SELECT  
-			ru.pre_id,
-			ru.stall_id,
-			ru.stall_name,
-			ru.plate,
-			tu.mobile,
-			null as ent_id,
-			p.id as ent_pre_id,
-			ru.pre_name,
-			p.route_description,
-			p.route_guidance,
-			s.stall_local,
-			s.status,
-			s.lock_status,
-			s.lock_sn,
-			DATE_FORMAT(ru.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
-			DATE_FORMAT(ru.end_time,'%Y-%m-%d %H:%i:%s') as end_time
-		FROM v_vehicle_mark_manage vm 
-		INNER JOIN t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =1 
-		INNER JOIN v_stall s ON ru.stall_id = s.id 
+		UNION
+
+		SELECT
+		ru.pre_id,
+		ru.stall_id,
+		ru.stall_name,
+		ru.plate,
+		tu.mobile,
+		null as ent_id,
+		p.id as ent_pre_id,
+		ru.pre_name,
+		p.route_description,
+		p.route_guidance,
+		s.stall_local,
+		s.status,
+		s.lock_status,
+		s.lock_sn,
+		DATE_FORMAT(ru.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
+		DATE_FORMAT(ru.end_time,'%Y-%m-%d %H:%i:%s') as end_time
+		FROM v_vehicle_mark_manage vm
+		INNER JOIN t_ent_rent_user ru on vm.veh_mark =ru.plate and ru.type =1
+		INNER JOIN v_stall s ON ru.stall_id = s.id
 		INNER JOIN v_prefecture p ON s.pre_id = p.id and p.status = 0
-		INNER JOIN t_user tu on tu.id = vm.veh_user_id and tu.id= #{0} 
+		INNER JOIN
+		t_user tu on tu.id = vm.veh_user_id and tu.id= #{0}
 		WHERE ru.company_id is null and now() BETWEEN ru.start_time and ru.end_time
 		) t
-		GROUP BY 
-			pre_id,
-			stall_id,
-			stall_name,
-			mobile,
-			ent_id ,
-			ent_pre_id,
-			pre_name,
-			route_description,
-			route_guidance,
-			stall_local,
-			status,
-			lock_status,
-			lock_sn,
-			start_time,
-			end_time,
-			plate
-  </select>
+		GROUP BY
+		pre_id,
+		stall_id,
+		stall_name,
+		mobile,
+		ent_id ,
+		ent_pre_id,
+		pre_name,
+		route_description,
+		route_guidance,
+		stall_local,
+		status,
+		lock_status,
+		lock_sn,
+		start_time,
+		end_time,
+		plate
+	</select>
+
+
+	<!-- queryStalls -->
+	<select id="queryStalls" resultMap="StallResultMap">
+		SELECT * FROM (
+		SELECT
+		u.id as user_id,
+		p.id as pre_id,
+		s.id as stall_id,
+		s.stall_name,
+		fp.plate_no as plate,
+		u.mobile,
+		null as ent_id,
+		p.id as ent_pre_id,
+		p.name as pre_name,
+		p.route_description,
+		p.route_guidance,
+		s.stall_local,
+		s.status,
+		s.lock_status,
+		s.lock_sn,
+		DATE_FORMAT(fr.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
+		DATE_FORMAT(fr.end_time,'%Y-%m-%d %H:%i:%s') as end_time
+		FROM v_vehicle_mark_manage vm
+		INNER JOIN t_fixed_plate fp on vm.veh_mark =fp.plate_no
+		INNER JOIN
+		t_fixed_stall fs on fs.fixed_id= fp.fixed_id and `status`=1
+		INNER JOIN
+		v_stall s ON fs.stall_id = s.id
+		INNER JOIN v_prefecture p ON s.pre_id = p.id and p.status = 0
+		INNER JOIN
+		t_user u on u.id = vm.veh_user_id
+		INNER JOIN t_fixed_rent fr on fr.id= fs.fixed_id
+		LEFT JOIN t_fixed_disable
+		fd ON fp.fixed_id = fd.fixed_id
+		AND vm.veh_user_id = fd.user_id and
+		fd.id is null
+		WHERE NOW() BETWEEN fr.start_time and fr.end_time
+		) al WHERE user_id = #{0}
+		GROUP BY plate,user_id
+	</select>
+
+
+
 </mapper>
