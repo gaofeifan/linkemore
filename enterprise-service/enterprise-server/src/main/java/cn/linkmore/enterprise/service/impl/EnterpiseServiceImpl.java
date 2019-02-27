@@ -122,6 +122,14 @@ public class EnterpiseServiceImpl implements EnterpriseService {
 
 	@Override
 	public int update(ReqEnterprise record) {
+		
+		ReqPerson person = new ReqPerson();
+		person.setId(record.getId());
+		person.setEntId(record.getId());
+		person.setUsername(record.getAccount());
+		person.setPreId(record.getPreId());
+		personClient.updateEntId(person);
+		
 		record.setUpdateTime(new Date());
 		Enterprise enter = ObjectUtils.copyObject(record, new Enterprise());
 		return this.enterpriseMasterMapper.update(enter);

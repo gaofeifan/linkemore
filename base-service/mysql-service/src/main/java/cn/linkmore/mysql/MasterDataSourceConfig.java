@@ -33,6 +33,7 @@ public class MasterDataSourceConfig {
 	@Primary
 	public DataSource masterDataSource() {
 		DruidDataSource datasource = new DruidDataSource();
+		
 		datasource.setUrl(this.getUrl());
 		datasource.setUsername(this.getUsername());
 		datasource.setPassword(this.getPassword());

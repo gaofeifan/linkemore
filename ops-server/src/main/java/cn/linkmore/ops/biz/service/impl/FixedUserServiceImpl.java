@@ -26,28 +26,18 @@ public class FixedUserServiceImpl implements FixedUserService {
 
 	@Autowired
 	private FixedUserClient fixedUserClient;
-	@Autowired
-	private EnterpriseService enterService;
 
 	@Override
 	public ViewPage findList(HttpServletRequest request, ViewPageable pageable) {
 
 		Subject subject = SecurityUtils.getSubject();
 		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
-        if(person==null) {
-        	return fixedUserClient.findPage(pageable);
-        }
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("property", "id");
-		map.put("value", person==null?null:person.getEntId());
-		ResEnterprise enter = enterService.find(map);
-		if (enter != null) {
+
 			List<ViewFilter> list = pageable.getFilters();
 			ViewFilter vf = new ViewFilter();
 			vf.setProperty("createUserId");
-			vf.setValue(person.getId());
+			vf.setValue(person==null?null:person.getPreId());
 			list.add(vf);
-		}
 		return fixedUserClient.findPage(pageable);
 	}
 

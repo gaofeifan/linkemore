@@ -114,7 +114,6 @@ public class PayServiceImpl implements PayService {
 	
 	private UserFactory appUserFactory = AppUserFactory.getInstance();
 
-	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
