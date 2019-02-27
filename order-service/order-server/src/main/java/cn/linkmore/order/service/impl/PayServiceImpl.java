@@ -886,6 +886,8 @@ public class PayServiceImpl implements PayService {
 			if(token == null) {
 				token = (Token) this.redisService.get(appUserFactory.createUserIdRedisKey(Long.decode(uid), "1"));
 			}
+		}else {
+			token = (Token) this.redisService.get(appUserFactory.createUserIdRedisKey(Long.decode(uid), os));
 		}
 		headerOs.remove(Long.decode(uid));
 		if (token.getClient().intValue() == ClientSource.WXAPP.source) {
