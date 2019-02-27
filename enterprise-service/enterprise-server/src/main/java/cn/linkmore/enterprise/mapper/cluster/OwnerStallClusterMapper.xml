@@ -275,7 +275,7 @@
 		fd.id is null
 		WHERE NOW() BETWEEN fr.start_time and fr.end_time
 		) al WHERE user_id = #{0}
-		GROUP BY plate,user_id
+		GROUP BY plate,user_id,stall_id
 	</select>
 
 
