@@ -225,5 +225,12 @@ public interface PrefectureService {
 	 */
 	Boolean unBindLock(String lockSn, String serialNumber, HttpServletRequest request);
 
+	/**
+	 * @Description  删除锁
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean removeLock(String serialNumber, HttpServletRequest request);
+
 
 }

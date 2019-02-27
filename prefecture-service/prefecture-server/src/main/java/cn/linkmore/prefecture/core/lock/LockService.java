@@ -169,4 +169,12 @@ public interface LockService {
 	 * @Version  v2.0
 	 */
 	Boolean batchBindGateway(String lockSerialNumber,String[] gatewaySerials);
+
+
+	/**
+	 * @Description  删除锁
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public Boolean removeLock(String serialNumber);
 }

@@ -142,5 +142,10 @@ public class LockDecorator implements LockService {
 		return lockService.batchBindGateway(lockSerialNumber,gatewaySerials);
 	}
 
+	@Override
+	public Boolean removeLock(String serialNumber) {
+		return lockService.removeLock(serialNumber);
+	}
+
 	
 }
