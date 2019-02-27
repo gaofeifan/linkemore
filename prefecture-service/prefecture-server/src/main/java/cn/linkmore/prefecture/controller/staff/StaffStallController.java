@@ -166,10 +166,10 @@ public class StaffStallController {
 	@ApiOperation(value = "删除(解除)网关绑定的锁", notes = "删除(解除)网关绑定的锁")
 	@GetMapping(value = "/unbind-lock")
 	@ResponseBody
-	public ResponseEntity<Boolean> unBindLock(HttpServletRequest request, @ApiParam(value="锁编号",required=true) @NotNull(message="锁编号编号不能为空") @RequestParam(value = "lockSn",required= true) String lockSn ,
+	public ResponseEntity<Boolean> unBindLock(HttpServletRequest request ,
 			@ApiParam(value="网关编号",required=true) @NotBlank(message="网关编号不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber 
 			){
-		Boolean falg = this.prefectureService.unBindLock(lockSn,serialNumber,request);
+		Boolean falg = this.prefectureService.removeLock(serialNumber,request);
 		return ResponseEntity.success(falg, request);
 	}
 	

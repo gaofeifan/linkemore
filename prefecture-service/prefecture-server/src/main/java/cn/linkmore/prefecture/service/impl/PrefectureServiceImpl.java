@@ -1426,6 +1426,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public Boolean unBindLock(String lockSn, String serialNumber, HttpServletRequest request) {
 		return lockFactory.getLock().unBindLock(serialNumber, lockSn);
 	}
+
+	@Override
+	public Boolean removeLock(String serialNumber, HttpServletRequest request) {
+		return lockFactory.getLock().removeLock(serialNumber);
+	}
+	
 	
 
 }
