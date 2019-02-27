@@ -2358,16 +2358,27 @@ public class OrdersServiceImpl implements OrdersService {
 		if (order.getStatus().intValue() == OrderStatus.UNPAID.value
 				&& cu.getId().intValue() == order.getUserId().intValue()) {
 			Long count = 0L;
-			/*if (order.getBrandId() != null) {
-				count = redisService.size(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + order.getBrandId());
+			
+			Integer switchCount = 0;
+			Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId() + order.getUserId());
+			if (o != null) {
+				switchCount = new Integer(o.toString());
+			}
+			log.info("switch stall count ={} ", switchCount);
+			
+			if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId() + order.getUserId())) {
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId() + order.getUserId(),
+						new Integer(switchCount.toString()) + 1, ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
 			} else {
-				count = redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId());
-			}*/
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId() + order.getUserId(), 1,
+						ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+			}
 			
 			count = prefectureClient.findByGroupId(order.getStallId(), order.getPreId());
+			
 			log.info("get the group free stall count ={} ", count);
 			
-			if (count.intValue() <= 0) {
+			if (count.intValue() <= 0 || switchCount > 1) {
 				Map<String, Object> param = new HashMap<String, Object>();
 				Date current = new Date();
 				param.put("id", order.getId());
@@ -2389,11 +2400,6 @@ public class OrdersServiceImpl implements OrdersService {
 				thread.start();*/
 			} else {
 				Object sn = null;
-				/*if (order.getBrandId() != null) {
-					sn = redisService.pop(RedisKey.PREFECTURE_BRAND_FREE_STALL.key + order.getBrandId());
-				} else {
-					sn = redisService.pop(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId());
-				}*/
 				sn = prefectureClient.nearFreeStallLockSn(order.getStallId(), order.getPreId());
 				log.info("get switch stall sn:{}", sn);
 				if (sn != null) {
@@ -2416,6 +2422,7 @@ public class OrdersServiceImpl implements OrdersService {
 						stallClient.close(order.getStallId());
 						stallName = stall.getStallName();
 						flag = true;
+						
 					}
 				}
 				/*Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知", flag ? "车位切换成功" : "车位切换失败",
@@ -2435,6 +2442,10 @@ public class OrdersServiceImpl implements OrdersService {
 			thread.start();*/
 			this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key + orderId.longValue(),
 					SwitchResult.FAILED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
+			throw new BusinessException(StatusEnum.SWITCH_STALL_FAILED);
+		}
+		
+		if(stallName == null) {
 			throw new BusinessException(StatusEnum.SWITCH_STALL_FAILED);
 		}
 		return stallName;
