@@ -34,5 +34,10 @@ public interface OwnerStallClusterMapper {
 	 * 获取已登记的长租车位
 	 */
 	 List<EntOwnerStall> findStall(Long userid);
+	 
+	 /**
+	  * 获取已登记的长租车位2.0
+	  */
+	 List<EntOwnerStall> queryStalls (Long userid);
 
 }

@@ -57,7 +57,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Autowired
 	private RedisService redisService;
-	
+
 	@Autowired
 	private RedisLock redisLock;
 
@@ -75,8 +75,13 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
-		System.out.println("findStall");
+
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+
+		/*
+		 * user = new CacheUser(); user.setId(572L);
+		 */
+
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -90,20 +95,22 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			// 查询是否有未完成进程
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(userId);
 
-			//List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
-			List<EntOwnerPre> prelist=null;
-			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
-			
-			Set<Long> ids=new HashSet<Long>();
-			if(CollectionUtils.isNotEmpty(stalllist)&& stalllist.size()>0) {
-				for(EntOwnerStall entOwnerStall:stalllist) {
+			// List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
+			List<EntOwnerPre> prelist = null;
+			// List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
+			List<EntOwnerStall> stalllist = ownerStallClusterMapper.queryStalls(userId);
+
+			Set<Long> ids = new HashSet<Long>();
+			if (CollectionUtils.isNotEmpty(stalllist) && stalllist.size() > 0) {
+				for (EntOwnerStall entOwnerStall : stalllist) {
 					ids.add(entOwnerStall.getPreId());
 				}
 				prelist = ownerStallClusterMapper.findPreByIds(ids);
 			}
 
 			log.info("车位>>>" + stalllist.size() + "车区>>>" + prelist.size() + "用户>>>" + JSON.toJSONString(user));
-			System.out.println("车位>>>" + stalllist.size() + "车区>>>" + prelist.size() + "用户>>>" + JSON.toJSONString(user));
+			System.out
+					.println("车位>>>" + stalllist.size() + "车区>>>" + prelist.size() + "用户>>>" + JSON.toJSONString(user));
 
 			List<OwnerPre> list = new ArrayList<>();
 
@@ -198,7 +205,8 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public void control(ReqConStall reqOperatStall, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os")) );
+		CacheUser user = (CacheUser) this.redisService
+				.get(appUserFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os")));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -234,7 +242,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			have = this.redisLock.getLock(robkey, user.getId());
 			log.info("用户=======>" + user.getId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
 		} catch (Exception e) {
-			
+
 		}
 		if (!have) {
 			throw new BusinessException(StatusEnum.STALL_HIVING_DO);
@@ -243,11 +251,11 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		pam.put("stallId", reqOperatStall.getStallId());
 		pam.put("userId", user.getId());
 		using = entRentedRecordClusterMapper.findUsingRecord(pam);
-		if (using>0) {
+		if (using > 0) {
 			this.redisService.remove(robkey);
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
-	
+
 		// 未完成记录同一用户只有一单
 		EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
 
@@ -279,7 +287,8 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Override
 	public void watch(ReqWatchStatus reqWatchStatus, HttpServletRequest request) {
-		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os")) );
+		CacheUser user = (CacheUser) this.redisService
+				.get(appUserFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os")));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -340,22 +349,22 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		String userid = String.valueOf(reqToothAuth.getUserId());
 		String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqToothAuth.getStallId();
 		Boolean have = false;
-			have = this.redisLock.getLock(robkey, userid);
-			log.info("用户=======>" + reqToothAuth.getUserId() + (have == true ? "已得到" : "未得到") + "锁" + robkey);
-			if (!have) {
-				throw new BusinessException(StatusEnum.STALL_HIVING_DO);
+		have = this.redisLock.getLock(robkey, userid);
+		log.info("用户=======>" + reqToothAuth.getUserId() + (have == true ? "已得到" : "未得到") + "锁" + robkey);
+		if (!have) {
+			throw new BusinessException(StatusEnum.STALL_HIVING_DO);
+		}
+		if (have) {
+			Map<String, Object> pam = new HashMap<>();
+			pam.put("stallId", reqToothAuth.getStallId());
+			pam.put("userId", userid);
+			Integer using = entRentedRecordClusterMapper.findUsingRecord(pam);
+			log.info("用户=======>" + using);
+			if (using > 0) {
+				this.redisService.remove(robkey);
+				throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 			}
-			if(have) {
-				Map<String, Object> pam = new HashMap<>();
-				pam.put("stallId", reqToothAuth.getStallId());
-				pam.put("userId", userid);
-				Integer using = entRentedRecordClusterMapper.findUsingRecord(pam);
-				log.info("用户=======>" + using);
-				if (using>0) {
-					this.redisService.remove(robkey);
-					throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
-				}
-			}
+		}
 	}
 
 }
