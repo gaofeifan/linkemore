@@ -1870,9 +1870,12 @@ public class StallServiceImpl implements StallService {
 				stallSn.setStallName(stall.getStallName());
 			}
 			List<ResLockGatewayList> lockGatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn());
+			cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
 			if(lockGatewayList != null) {
 				for (ResLockGatewayList resLockGatewayList : lockGatewayList) {
-					stallSn.getGatewayList().add(new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getSerialNumber()));
+					rgl = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getGatewaySerialNumber());
+					rgl.setBindFlag(resLockGatewayList.getBindFlag());
+					stallSn.getGatewayList().add(rgl);
 				}
 			}
 		}
@@ -2178,7 +2181,7 @@ public class StallServiceImpl implements StallService {
 		List<cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList> list =new ArrayList<>();
 		cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList gateway = null;
 		for (ResLockGatewayList resLockGatewayList : gatewayList) {
-			gateway = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getSerialNumber());
+			gateway = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getGatewaySerialNumber());
 			gateway.setBindFlag(resLockGatewayList.getBindFlag());
 			list.add(gateway);
 		}

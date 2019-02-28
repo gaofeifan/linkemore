@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -115,6 +116,8 @@ public class PayServiceImpl implements PayService {
 	private UserFactory appUserFactory = AppUserFactory.getInstance();
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private static ConcurrentHashMap<Long, String> headerOs = new ConcurrentHashMap<>();
 
 	@Autowired
 	private BaseConfig baseConfig;
@@ -197,7 +200,6 @@ public class PayServiceImpl implements PayService {
 	@Resource
 	private OpsEntUserPlateClient userPlateClient; 
 
-	
 	private static final List<String> loongpay = Arrays.asList("USRMSG","ACCDATE","INSTALLNUM","ERRMSG","USRINFO");
 	
 	@Override
@@ -524,6 +526,7 @@ public class PayServiceImpl implements PayService {
 			order.setPayType(orderPayType);
 			order.setEndTime(endTime);
 			this.updateConfirm(order);
+			this.putOs(request, order.getUserId());
 			// 支付宝 支付
 			if (roc.getPayType() == TradePayType.ALIPAY.type) {
 				ReqAppAlipay alipay = new ReqAppAlipay();
@@ -875,7 +878,16 @@ public class PayServiceImpl implements PayService {
 	}
 
 	private void send(String uid, String title, String content, PushType type, Boolean status) {
-		Token token = (Token) this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
+		String os = headerOs.get(Long.decode(uid));
+		Token token = null;
+		if(os ==  null) {
+			os = "0";
+			token = (Token) this.redisService.get(appUserFactory.createUserIdRedisKey(Long.decode(uid), os));
+			if(token == null) {
+				token = (Token) this.redisService.get(appUserFactory.createUserIdRedisKey(Long.decode(uid), "1"));
+			}
+		}
+		headerOs.remove(Long.decode(uid));
 		if (token.getClient().intValue() == ClientSource.WXAPP.source) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("title", title);
@@ -1037,6 +1049,12 @@ public class PayServiceImpl implements PayService {
 		return flag;
 	}
 
+	private void putOs(HttpServletRequest request,Long uid) {
+		String os = request.getHeader("os");
+		os = os == null ? "0" : os;
+		headerOs.put(uid, os);
+	}
+	
 	private Boolean wechatMini(String json) {
 		Boolean flag = false;
 		flag = this.wechatMiniClient.verify(json);
