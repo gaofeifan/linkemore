@@ -95,7 +95,8 @@
 	FROM v_stall vs
 	left join t_fixed_stall ts on vs.id=ts.stall_id
 	left join t_fixed_rent tr on tr.id=ts.fixed_id
-	<where>
+	where vs.status in (1,2)
+	
     <if test="preId != null">
    		AND vs.pre_id = #{preId,jdbcType=BIGINT}
     </if>
@@ -117,12 +118,12 @@
     <if test="endTime != null">
    		AND tr.end_time &lt;=  #{endTime}
     </if>
-	</where>
+	
   </select>
   
   <select id="stallList" parameterType="java.util.HashMap" resultMap="ResultStallMap">
   	SELECT id,stall_name FROM v_stall
-  	where type=2
+  	where 1=1 and status in (1,2)
   	<if test="preId != null">
    	AND pre_id = #{preId,jdbcType=BIGINT}
     </if>
@@ -136,8 +137,11 @@
   <select id="freeStallList" parameterType="java.util.HashMap" resultMap="ResultStallMap">
   	SELECT vs.id,vs.stall_name FROM v_stall vs 
 	LEFT JOIN t_fixed_stall fs on vs.id=fs.stall_id
-	LEFT JOIN t_fixed_rent fr on fs.fixed_id=fr.id and fr.pre_id=6
-	WHERE fs.id is null and vs.type=2
+	LEFT JOIN t_fixed_rent fr on fs.fixed_id=fr.id 
+	<if test="preId != null">
+   	AND fr.pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+	WHERE fs.id is null and vs.type=2 and vs.status in (1,2)
 	<if test="preId != null">
    	AND vs.pre_id = #{preId,jdbcType=BIGINT}
     </if>

@@ -54,7 +54,7 @@
   
   <select id="existsStall" parameterType="java.util.HashMap" resultType="java.lang.Integer">
   	select 1 from v_stall 
-  	<where>
+  	where type = 2
   	<if test="preId != null">
   		AND pre_id = #{preId,jdbcType=BIGINT}
   	</if>
@@ -64,22 +64,25 @@
   	<if test="stallName != null">
   		AND stall_name = #{stallName,jdbcType=VARCHAR}
   	</if>
-  	</where>
+  	
   	limit 1
   </select>
   
   <select id="existsFixedStall" parameterType="java.util.HashMap" resultType="java.lang.Integer">
     select 1 from t_fixed_stall fs
-	inner join v_stall vs on fs.stall_id=vs.id
+	inner join v_stall vs on fs.stall_id=vs.id and vs.type = 2
   	<if test="preId != null">
   		AND vs.pre_id = #{preId,jdbcType=BIGINT}
   	</if>
-  	<where>
   	<if test="stallId != null">
   		AND vs.id = #{stallId,jdbcType=BIGINT}
   	</if>
   	<if test="stallName != null">
   		AND vs.stall_name = #{stallName,jdbcType=VARCHAR}
+  	</if>
+  	<where>
+  	<if test="NEQFixedId != null">
+  		AND fs.fixed_id != #{NEQFixedId,jdbcType=BIGINT}
   	</if>
   	</where>
   	limit 1
