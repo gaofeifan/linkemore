@@ -97,8 +97,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 			// List<EntOwnerPre> prelist = ownerStallClusterMapper.findPre(userId);
 			List<EntOwnerPre> prelist = null;
-			// List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
-			List<EntOwnerStall> stalllist = ownerStallClusterMapper.queryStalls(userId);
+			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
 
 			Set<Long> ids = new HashSet<Long>();
 			if (CollectionUtils.isNotEmpty(stalllist) && stalllist.size() > 0) {
