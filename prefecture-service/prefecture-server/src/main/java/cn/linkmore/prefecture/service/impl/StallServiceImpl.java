@@ -2236,8 +2236,7 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn) {
-		String[] strings = serialNumbers.split(",");
-		Boolean gateway = this.lockFactory.getLock().batchBindGateway(lockSn, strings);
+		Boolean gateway = this.lockFactory.getLock().batchBindGateway(lockSn, serialNumbers);
 		return gateway;
 	}
 	
