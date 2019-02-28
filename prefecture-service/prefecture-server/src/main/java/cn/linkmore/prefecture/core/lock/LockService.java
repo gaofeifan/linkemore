@@ -168,7 +168,7 @@ public interface LockService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	Boolean batchBindGateway(String lockSerialNumber,String[] gatewaySerials);
+	Boolean batchBindGateway(String lockSerialNumber,String serialNumbers);
 
 
 	/**

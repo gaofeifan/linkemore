@@ -138,7 +138,7 @@ public class LockDecorator implements LockService {
 	}
 
 	@Override
-	public Boolean batchBindGateway(String lockSerialNumber, String[] gatewaySerials) {
+	public Boolean batchBindGateway(String lockSerialNumber, String gatewaySerials) {
 		return lockService.batchBindGateway(lockSerialNumber,gatewaySerials);
 	}
 
