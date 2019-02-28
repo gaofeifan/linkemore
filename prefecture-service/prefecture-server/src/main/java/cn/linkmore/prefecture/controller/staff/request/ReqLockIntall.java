@@ -30,6 +30,12 @@ public class ReqLockIntall {
 		this.areaName = areaName;
 	}
 	public String getLockSn() {
+		if(lockSn != null) {
+			if(lockSn.contains("0000")) {
+				lockSn = lockSn.substring(4);
+			}
+			lockSn = lockSn.toUpperCase();
+		}
 		return lockSn;
 	}
 	public void setLockSn(String lockSn) {

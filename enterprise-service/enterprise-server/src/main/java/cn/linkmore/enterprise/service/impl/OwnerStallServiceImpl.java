@@ -281,6 +281,7 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 		reqc.setKey(rediskey);
 		reqc.setStallId(reqOperatStall.getStallId());
 		reqc.setStatus(reqOperatStall.getState());
+		reqc.setOs(request.getHeader("os"));
 		stallClient.controllock(reqc);
 		log.info("用户>>>" + user.getId() + "调用>>>" + reqOperatStall.getStallId());
 	}

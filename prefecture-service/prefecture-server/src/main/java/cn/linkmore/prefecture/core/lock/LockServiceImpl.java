@@ -2,6 +2,7 @@ package cn.linkmore.prefecture.core.lock;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -443,7 +444,7 @@ public class LockServiceImpl implements LockService{
 	@Override
 	public Boolean batchBindGateway(String lockSerialNumber, String[] gatewaySerials) {
 		proToTypeMap.put("lockSerialNumber", lockSerialNumber);
-		proToTypeMap.put("gatewaySerials", gatewaySerials);
+		proToTypeMap.put("gatewaySerials", Arrays.asList(gatewaySerials));
 		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getBatchBindGateway()));
 		return lockMes.getStatus();
 	}

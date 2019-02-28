@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -209,6 +210,7 @@ public class StallServiceImpl implements StallService {
 	private FeignStallExcStatusClient feignStallExcStatusClient;
 	@Autowired
 	private BaseDictClient baseDictClient;
+	private ConcurrentHashMap<Long, String> osMap = new ConcurrentHashMap<>();
 	@Autowired
 	private StallOperateLogService stallOperateLogService;
 	private static final String DOWN_CAUSE = "cause_down";
@@ -837,6 +839,7 @@ public class StallServiceImpl implements StallService {
 					int code = res.getCode();
 					stopwatch.stop();
 					log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+					osMap.put(Long.decode(uid), reqc.getOs());
 					sendMsg(uid, reqc.getStatus(), code);
 					String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqc.getStallId();
 					EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));
@@ -1019,7 +1022,7 @@ public class StallServiceImpl implements StallService {
 		String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");
 		PushType type = PushType.LOCK_CONTROL_NOTICE;
 		String bool = (code == 200 ? "true" : "false");
-		Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
+		Token token = (Token) redisService.get(appUserFactory.createUserIdRedisKey(Long.decode(uid), osMap.get(uid)));
 		log.info("send>>>" + JsonUtil.toJson(token));
 		if (token != null) {
 			if (token.getClient().intValue() == ClientSource.WXAPP.source) {
