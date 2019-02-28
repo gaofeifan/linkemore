@@ -131,16 +131,18 @@ public class FixedRentController  extends BaseController{
 				if(!isValidPlates(reqFixedRent.getPlateNos())) {
 					return new ViewMsg("车牌号不正确", true); 
 				}
-			}
-			
-			String checkMsg=fixedRentService.check(reqFixedRent);
-			if(StringUtils.isNotEmpty(checkMsg)) {
-				return new ViewMsg(checkMsg, false);
+			}else {
+				return new ViewMsg("车牌号不能为空", true); 
 			}
 			
 			reqFixedRent.setEntId(getPerson().getEntId());
 			reqFixedRent.setEntName(getPerson().getEntName());
 			reqFixedRent.setPreId(getPerson().getPreId());
+			
+			String checkMsg=fixedRentService.check(reqFixedRent);
+			if(StringUtils.isNotEmpty(checkMsg)) {
+				return new ViewMsg(checkMsg, false);
+			}
 
 			reqFixedRent.setCreateUserId(getPerson().getId());
 			reqFixedRent.setUpdateUserId(getPerson().getId());
@@ -188,6 +190,8 @@ public class FixedRentController  extends BaseController{
 					if(!isValidPlates(reqFixedRent.getPlateNos())) {
 						return new ViewMsg("车牌号不正确", true); 
 					}
+				}else {
+					return new ViewMsg("车牌号不能为空", true); 
 				}
 				
 				String checkMsg=fixedRentService.check(reqFixedRent);
@@ -289,9 +293,19 @@ public class FixedRentController  extends BaseController{
 				if(!isValidPlates(reqFixedRent.getPlateNos())) {
 					return new ViewMsg("车牌号不正确", true); 
 				}
+			}else {
+				return new ViewMsg("车牌号不能为空", true); 
 			}
+			
+			String checkMsg=fixedRentService.check(reqFixedRent);
+			if(StringUtils.isNotEmpty(checkMsg)) {
+				return new ViewMsg(checkMsg, false);
+			}
+			
+			
 			reqFixedRent.setUpdateUserId(getPerson().getId());
-
+			reqFixedRent.setUpdateTime(new Date());
+			
 			int a =fixedRentService.update(reqFixedRent);
 			msg= a>0?new ViewMsg("保存成功", true):new ViewMsg("保存失败", false);
 		} catch (DataException e) {

@@ -140,8 +140,6 @@ public class AppOrderController {
 	@RequestMapping(value = "/v2.1/switch", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> switchOrderStall(@RequestParam("orderId")Long orderId, HttpServletRequest request) {
-		/*this.ordersService.switchStall(rs, request);
-		return ResponseEntity.success(null, request);*/
 		ResponseEntity<?> response = null;
 		try { 
 			String stallName = this.ordersService.switchOrderStall(orderId, request);
