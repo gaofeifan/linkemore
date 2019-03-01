@@ -220,8 +220,8 @@ public class StaffStallController {
 	public ResponseEntity<Boolean> editLockBindGateway(HttpServletRequest request, @ApiParam(value="锁编号",required=true) @NotNull(message="锁编号不能为空") @RequestParam(value = "lockSn",required= true) String lockSn	
 			,@ApiParam("网关编号 多个网关编号,分隔('网关编号1','网关编号2')") @NotNull(message="网关编号不能为空") @RequestParam(value = "serialNumbers",required= true) String serialNumbers
 			){
-		stallService.editLockBindGateway(request,serialNumbers,lockSn);
-		return ResponseEntity.success(true, request);
+		Boolean falg = stallService.editLockBindGateway(request,serialNumbers,lockSn);
+		return ResponseEntity.success(falg, request);
 	}
 	
 	
