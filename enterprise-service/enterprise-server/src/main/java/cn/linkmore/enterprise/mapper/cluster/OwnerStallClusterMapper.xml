@@ -240,57 +240,50 @@
 
 	<!-- queryStalls -->
 	<select id="findStall" resultMap="StallResultMap">
-		SELECT
-		u.id as user_id,
-		p.id as pre_id,
-		s.id as stall_id,
-		s.stall_name,
-		fp.plate_no as plate,
-		u.mobile,
-		null as ent_id,
-		p.id as ent_pre_id,
-		p.name as pre_name,
-		p.route_description,
-		p.route_guidance,
-		s.stall_local,
-		s.status,
-		s.lock_status,
-		s.lock_sn,
-		DATE_FORMAT(fr.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
-		DATE_FORMAT(fr.end_time,'%Y-%m-%d %H:%i:%s') as end_time
-		FROM v_vehicle_mark_manage vm
+		SELECT  
+			p.id as pre_id,
+			s.id as stall_id,
+			s.stall_name,
+			fp.plate_no as plate,
+			u.mobile,
+			null as ent_id,
+			p.id as ent_pre_id,
+			p.name as pre_name,
+			p.route_description,
+			p.route_guidance,
+			s.stall_local,
+			s.status,
+			s.lock_status,
+			s.lock_sn,
+			DATE_FORMAT(fr.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
+			DATE_FORMAT(fr.end_time,'%Y-%m-%d %H:%i:%s') as end_time
+		FROM v_vehicle_mark_manage vm 
 		INNER JOIN t_fixed_plate fp on vm.veh_mark =fp.plate_no
-		INNER JOIN
-		t_fixed_stall fs on fs.fixed_id= fp.fixed_id and `status`=1
-		INNER JOIN
-		v_stall s ON fs.stall_id = s.id
+		INNER JOIN t_fixed_stall fs on fs.fixed_id= fp.fixed_id and `status`=1
+		INNER JOIN v_stall s ON fs.stall_id = s.id 
 		INNER JOIN v_prefecture p ON s.pre_id = p.id and p.status = 0
-		INNER JOIN
-		t_user u on u.id = vm.veh_user_id and u.id= #{0}
+		INNER JOIN t_user u on u.id = vm.veh_user_id 
 		INNER JOIN t_fixed_rent fr on fr.id= fs.fixed_id
-		LEFT JOIN t_fixed_disable
-		fd ON fp.fixed_id = fd.fixed_id
-		AND vm.veh_user_id = fd.user_id and
-		fd.id is null
-		WHERE NOW() BETWEEN fr.start_time and fr.end_time
-	     GROUP BY  
-	     pre_id,
-		stall_id,
-		stall_name,
-		mobile,
-		ent_id ,
-		ent_pre_id,
-		pre_name,
-		route_description,
-		route_guidance,
-		stall_local,
-		status,
-		lock_status,
-		lock_sn,
-		start_time,
-		end_time,
-		plate
-
+		LEFT JOIN t_fixed_disable fd ON fp.fixed_id = fd.fixed_id
+		AND vm.veh_user_id = fd.user_id
+		WHERE NOW() BETWEEN fr.start_time and fr.end_time and fd.id is null and u.id = {0}
+		GROUP BY 
+			pre_id,
+			stall_id,
+			stall_name,
+			mobile,
+			ent_id ,
+			ent_pre_id,
+			pre_name,
+			route_description,
+			route_guidance,
+			stall_local,
+			status,
+			lock_status,
+			lock_sn,
+			start_time,
+			end_time,
+			plate
 	</select>
 
 
