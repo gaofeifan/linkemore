@@ -56,8 +56,8 @@
 	tr.start_time,tr.end_time,vs.lock_sn,vs.status as stall_state,ifnull(ts.status,0) as fixed_state
 	FROM v_stall vs
 	left join t_fixed_stall ts on vs.id=ts.stall_id
-	left join t_fixed_rent tr on tr.id=ts.fixed_id
-	where vs.status in (1,2)
+	left join t_fixed_rent tr on tr.id=ts.fixed_id and tr.end_time &gt;= now()
+	where vs.status in (1,2) 
 	
     <if test="preId != null">
    		AND vs.pre_id = #{preId,jdbcType=BIGINT}
@@ -94,7 +94,7 @@
   	SELECT count(*)
 	FROM v_stall vs
 	left join t_fixed_stall ts on vs.id=ts.stall_id
-	left join t_fixed_rent tr on tr.id=ts.fixed_id
+	left join t_fixed_rent tr on tr.id=ts.fixed_id and tr.end_time &gt;= now()
 	where vs.status in (1,2)
 	
     <if test="preId != null">
@@ -137,7 +137,7 @@
   <select id="freeStallList" parameterType="java.util.HashMap" resultMap="ResultStallMap">
   	SELECT vs.id,vs.stall_name FROM v_stall vs 
 	LEFT JOIN t_fixed_stall fs on vs.id=fs.stall_id
-	LEFT JOIN t_fixed_rent fr on fs.fixed_id=fr.id 
+	LEFT JOIN t_fixed_rent fr on fs.fixed_id=fr.id  and fr.end_time &gt;= now()
 	<if test="preId != null">
    	AND fr.pre_id = #{preId,jdbcType=BIGINT}
     </if>

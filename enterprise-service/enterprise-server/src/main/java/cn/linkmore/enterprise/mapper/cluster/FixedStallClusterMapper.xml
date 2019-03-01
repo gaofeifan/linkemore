@@ -71,6 +71,7 @@
   <select id="existsFixedStall" parameterType="java.util.HashMap" resultType="java.lang.Integer">
     select 1 from t_fixed_stall fs
 	inner join v_stall vs on fs.stall_id=vs.id and vs.type = 2
+	inner join t_fixed_rent fr on fs.fixed_id=fr.id and fr.end_time &gt;= now()
   	<if test="preId != null">
   		AND vs.pre_id = #{preId,jdbcType=BIGINT}
   	</if>
