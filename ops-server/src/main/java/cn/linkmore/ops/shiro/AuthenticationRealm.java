@@ -119,6 +119,10 @@ public class AuthenticationRealm extends AuthorizingRealm {
 				e.printStackTrace();
 			}
 			Subject currentPerson = SecurityUtils.getSubject();
+	
+			if(person.getPreId()==null) {
+				person.setPreId(0L);
+			}
 			currentPerson.getSession().setAttribute("person", person);
 			currentPerson.getSession().setTimeout(8*60*60*1000);
 			log.info("session {}",JSON.toJSON(currentPerson.getSession().getAttribute("person")));
