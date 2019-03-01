@@ -112,7 +112,7 @@
 	</select>
 
 	<!-- and ru.user_id= vm.veh_user_id -->
-	<select id="findStall" resultMap="StallResultMap">
+	<select id="queryStalls" resultMap="StallResultMap">
 		SELECT
 		pre_id,
 		stall_id,
@@ -239,8 +239,7 @@
 
 
 	<!-- queryStalls -->
-	<select id="queryStalls" resultMap="StallResultMap">
-		SELECT * FROM (
+	<select id="findStall" resultMap="StallResultMap">
 		SELECT
 		u.id as user_id,
 		p.id as pre_id,
@@ -267,15 +266,31 @@
 		v_stall s ON fs.stall_id = s.id
 		INNER JOIN v_prefecture p ON s.pre_id = p.id and p.status = 0
 		INNER JOIN
-		t_user u on u.id = vm.veh_user_id
+		t_user u on u.id = vm.veh_user_id and u.id= #{0}
 		INNER JOIN t_fixed_rent fr on fr.id= fs.fixed_id
 		LEFT JOIN t_fixed_disable
 		fd ON fp.fixed_id = fd.fixed_id
 		AND vm.veh_user_id = fd.user_id and
 		fd.id is null
 		WHERE NOW() BETWEEN fr.start_time and fr.end_time
-		) al WHERE user_id = #{0}
-		GROUP BY plate,user_id,stall_id
+	     GROUP BY  
+	     pre_id,
+		stall_id,
+		stall_name,
+		mobile,
+		ent_id ,
+		ent_pre_id,
+		pre_name,
+		route_description,
+		route_guidance,
+		stall_local,
+		status,
+		lock_status,
+		lock_sn,
+		start_time,
+		end_time,
+		plate
+
 	</select>
 
 
