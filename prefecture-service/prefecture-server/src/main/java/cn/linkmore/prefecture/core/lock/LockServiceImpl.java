@@ -1,6 +1,5 @@
 package cn.linkmore.prefecture.core.lock;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,13 +8,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
 
 import cn.linkmore.prefecture.config.LockProperties;
 import cn.linkmore.prefecture.config.StartupRunner;
@@ -31,9 +26,6 @@ import cn.linkmore.prefecture.response.ResUnBindLock;
 import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.util.JSONUtils;
 
 /**
  * 锁工具类
@@ -441,7 +433,7 @@ public class LockServiceImpl implements LockService{
 	}
 
 	@Override
-	public Boolean batchBindGateway(String lockSerialNumber, String[] gatewaySerials) {
+	public Boolean batchBindGateway(String lockSerialNumber, String gatewaySerials) {
 		proToTypeMap.put("lockSerialNumber", lockSerialNumber);
 		proToTypeMap.put("gatewaySerials", gatewaySerials);
 		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getBatchBindGateway()));

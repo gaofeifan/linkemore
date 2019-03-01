@@ -130,18 +130,23 @@ public class FixedRentServiceImpl implements FixedRentService {
 				param.put("preId", reqFixedRent.getPreId());
 				param.put("stallId", stallId);
 
+
 				Integer existsStall = fixedStallClusterMapper.existsStall(param);
 
 				if(existsStall==null ) {
-					System.out.println("车位不存在");
-					return "车位不存在";
+					System.out.println("固定车位不存在");
+					return "固定车位不存在";
 				}
-
+				
+				if (reqFixedRent.getFixedId()!=null) {
+					param.put("NEQFixedId", reqFixedRent.getFixedId());
+				}
+				
 				existsStall = fixedStallClusterMapper.existsFixedStall(param);
 
-				if(existsStall!=null && existsStall>0) {
-					System.out.println("车位已使用");
-					return "车位已使用";
+				if(existsStall != null && existsStall>0) {
+					System.out.println("固定车位已使用");
+					return "固定车位已使用";
 				}
 			}
 		}else if  (StringUtils.isNotEmpty(reqFixedRent.getStallNames())) {
@@ -152,11 +157,11 @@ public class FixedRentServiceImpl implements FixedRentService {
 				param.put("stallName", stallName);
 				Integer existsStall = fixedStallClusterMapper.existsStall(param);
 				if(existsStall==null ) {
-					return "车位不存在";
+					return "固定车位不存在";
 				}
 				existsStall = fixedStallClusterMapper.existsFixedStall(param);
-				if(existsStall!=null && existsStall>0) {
-					return "车位已使用";
+				if(existsStall != null && existsStall>0) {
+					return "固定车位已使用";
 				}
 			}
 		}

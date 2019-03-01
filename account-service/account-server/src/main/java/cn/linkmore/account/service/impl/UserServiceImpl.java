@@ -575,7 +575,6 @@ public class UserServiceImpl implements UserService {
 		}
 		synchronized(userId) {
 			last = (Token)this.redisService.get(appUserFactory.createUserIdRedisKey(userId, os));
-//			last = (Token)this.redisService.get(Constants.RedisKey.USER_APP_AUTH_TOKEN.key+user.getId());
 			log.info("cacheUser syn userId = {}, last = {}",userId, JSON.toJSON(last));
 			if(last!=null){ 
 				log.info("cacheUser syn openId = {}", user.getOpenId());
