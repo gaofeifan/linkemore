@@ -266,7 +266,7 @@
 		INNER JOIN t_fixed_rent fr on fr.id= fs.fixed_id
 		LEFT JOIN t_fixed_disable fd ON fp.fixed_id = fd.fixed_id
 		AND vm.veh_user_id = fd.user_id
-		WHERE NOW() BETWEEN fr.start_time and fr.end_time and fd.id is null and u.id = {0}
+		WHERE NOW() BETWEEN fr.start_time and fr.end_time and fd.id is null and u.id = #{0}
 		GROUP BY 
 			pre_id,
 			stall_id,
