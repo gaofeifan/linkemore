@@ -128,8 +128,8 @@ public class LockDecorator implements LockService {
 	}
 
 	@Override
-	public List<ResLockGatewayList> getLockGatewayList(String serialNumber) {
-		return getLockGatewayList(serialNumber);
+	public List<ResLockGatewayList> getLockGatewayList(String serialNumber,String groupCode) {
+		return lockService.getLockGatewayList(serialNumber,groupCode);
 	}
 
 	@Override

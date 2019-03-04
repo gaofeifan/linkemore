@@ -278,6 +278,4 @@
 		GROUP BY plate,user_id,stall_id
 	</select>
 
-
-
 </mapper>

@@ -27,6 +27,8 @@ public class ResGatewayDetails {
 	private int gatewayState = 0;
 	@ApiModelProperty(value="sim类型")
 	private String simType;
+	@ApiModelProperty(value="信号")
+	private String signal;
 	@ApiModelProperty(value="车位锁信息")
 	private List<cn.linkmore.prefecture.controller.staff.response.ResStallLock> stallLocks = new ArrayList<>();
 
@@ -119,6 +121,14 @@ public class ResGatewayDetails {
 
 	public void setGatewayState(int gatewayState) {
 		this.gatewayState = gatewayState;
+	}
+
+	public String getSignal() {
+		return signal;
+	}
+
+	public void setSignal(String signal) {
+		this.signal = signal;
 	}
 	
 	

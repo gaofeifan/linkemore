@@ -117,6 +117,7 @@ public class LockServiceImpl implements LockService{
 		String sign = SignTool.getSign(param, lockProperties.getAppSecret());
 		param.put("sign", sign);
 		log.info(JsonUtil.toJson(param));
+		log.info("【LOCK URL】 "+url);
 		String resData = HttpUtil.sendJson(url, JsonUtil.toJson(param));
 		log.info(JsonUtil.toJson(resData));
 		Map<String,Object> map = JsonUtil.toObject(resData, Map.class);
@@ -414,8 +415,9 @@ public class LockServiceImpl implements LockService{
 	}
 
 	@Override
-	public List<ResLockGatewayList> getLockGatewayList(String SerialNumber) {
+	public List<ResLockGatewayList> getLockGatewayList(String SerialNumber,String groupCode) {
 		proToTypeMap.put("serialNumber", SerialNumber);
+		proToTypeMap.put("groupCode", groupCode);
 		Object data = getData(proToTypeMap, getUrl(LockProperties.getLockGatewayList()));
 		if(data == null) {
 			return new ArrayList<>();
@@ -442,7 +444,7 @@ public class LockServiceImpl implements LockService{
 
 	@Override
 	public Boolean removeLock(String serialNumber) {
-		proToTypeMap.put("serialNumber", serialNumber);
+		proToTypeMap.put("lockSerialNumber", serialNumber);
 		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getRemoveLock()));
 		return lockMes.getStatus();
 	}
