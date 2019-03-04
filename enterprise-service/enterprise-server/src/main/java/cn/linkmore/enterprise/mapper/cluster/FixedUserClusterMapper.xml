@@ -12,7 +12,7 @@
 		<result column="stalls" jdbcType="VARCHAR" property="stalls" />
 		<result column="leave_time" jdbcType="TIMESTAMP" property="lastTime" />
 		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-		<result column="start_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="pick" jdbcType="SMALLINT" property="pick" />
 
 	</resultMap>
@@ -21,7 +21,7 @@
 		resultMap="BaseResultMap">
 		SELECT * FROM
 		(SELECT
-		a.fixed_id,b.start_time,
+		a.fixed_id,b.create_time,
 		b.end_time,d.username,d.id as userid,h.leave_time,b.pre_id,
 		GROUP_CONCAT(c.veh_mark) as
 		plates,z.stalls,
