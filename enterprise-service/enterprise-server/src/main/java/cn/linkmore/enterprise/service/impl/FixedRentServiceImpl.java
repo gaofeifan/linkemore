@@ -1,8 +1,10 @@
 package cn.linkmore.enterprise.service.impl;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +63,6 @@ public class FixedRentServiceImpl implements FixedRentService {
 	private FeignLockClient feignLockClient;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -119,17 +120,16 @@ public class FixedRentServiceImpl implements FixedRentService {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String check(ReqFixedRent reqFixedRent) {
-
+		
 		if (StringUtils.isNotEmpty(reqFixedRent.getStallIds())) {
 			String[] arrayStall = reqFixedRent.getStallIds().split(",");
 			for (String stallId : arrayStall) {
 				Map<String, Object> param =new HashMap<String, Object>();
 				param.put("preId", reqFixedRent.getPreId());
 				param.put("stallId", stallId);
-
 
 				Integer existsStall = fixedStallClusterMapper.existsStall(param);
 
