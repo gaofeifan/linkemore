@@ -1,5 +1,7 @@
 package cn.linkmore.order.controller.app.response;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,16 +13,19 @@ import io.swagger.annotations.ApiModelProperty;
 public class ResCheckedOrder {
 	@ApiModelProperty(value = "主键")
 	private Long id;
-	@ApiModelProperty(value = "车区名")
+	@ApiModelProperty(value = "车区名称")
 	private String prefectureName;
-	@ApiModelProperty(value = "车位名")
+	@ApiModelProperty(value = "车位名称")
 	private String stallName;
-	@ApiModelProperty(value = "状态[3已完成]")
+	@ApiModelProperty(value = "状态[3已完成,4已取消,7已关闭]")
 	private Short status;
 	@ApiModelProperty(value = "创建时间")
 	private String orderTime; 
 	@ApiModelProperty(value = "停车时长")
 	private String parkingTime;
+	@ApiModelProperty(value = "停车金额")
+	private String totalAmount;
+	
 	public Long getId() {
 		return id;
 	}
@@ -57,8 +62,16 @@ public class ResCheckedOrder {
 	public void setParkingTime(String parkingTime) {
 		this.parkingTime = parkingTime;
 	} 
+	
+	
+	public String getTotalAmount() {
+		return totalAmount;
+	}
+	public void setTotalAmount(String totalAmount) {
+		this.totalAmount = totalAmount;
+	}
 	public void copy(ResUserOrder ruo) {
-		SimpleDateFormat sdf = new SimpleDateFormat("M月d日 HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("Y年M月d日 HH:mm");
 		this.setOrderTime(sdf.format(ruo.getCreateTime()));
 		this.setId(ruo.getId());
 		Date start = ruo.getCreateTime();
@@ -85,6 +98,8 @@ public class ResCheckedOrder {
 		this.setParkingTime(parkingTime.toString()); 
 		this.setStatus(ruo.getStatus().shortValue());
 		this.setStallName(ruo.getStallName());
-		this.setPrefectureName(ruo.getPreName());   
+		this.setPrefectureName(ruo.getPreName()); 
+		DecimalFormat df2 =new DecimalFormat("0.00");
+		this.setTotalAmount(df2.format(ruo.getTotalAmount().doubleValue()));
 	}
 }

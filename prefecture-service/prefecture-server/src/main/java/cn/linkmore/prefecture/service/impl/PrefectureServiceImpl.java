@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -23,12 +21,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -86,12 +81,12 @@ import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
-import cn.linkmore.prefecture.response.ResStallOps;
 import cn.linkmore.prefecture.response.ResStrategyGroup;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallService;
 import cn.linkmore.prefecture.service.StrategyFeeService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.third.client.LocateClient;
 import cn.linkmore.user.factory.AppUserFactory;
 import cn.linkmore.user.factory.StaffUserFactory;
 import cn.linkmore.user.factory.UserFactory;
@@ -100,7 +95,6 @@ import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.MapDistance;
 import cn.linkmore.util.MapUtil;
 import cn.linkmore.util.ObjectUtils;
-import cn.linkmore.util.TokenUtil;
 
 /**
  * Service实现类 - 车区信息
@@ -156,6 +150,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private PrefectureElementClusterMapper prefectureElementClusterMapper;
 
+	@Autowired
+	private LocateClient locateClient;
+	
 	@Override
 	public ResPrefectureDetail findById(Long preId) {
 		ResPrefectureDetail detail = prefectureClusterMapper.findById(preId);
@@ -382,7 +379,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<ResPreCity> list(ReqPrefecture rp, HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		Map<Long, String> cityMap = new HashMap<Long, String>();
+		Map<Long, ResCity> cityMap = new HashMap<Long, ResCity>();
 		paramMap.put("status", 0);
 		// 此处cityFlag=0，返回所有的车区信息
 		if ("1".equals(rp.getCityFlag())) {
@@ -394,10 +391,27 @@ public class PrefectureServiceImpl implements PrefectureService {
 		log.info("..........pre list param = {}",JSON.toJSON(paramMap));
 		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		List<ResCity> cityList = cityClient.findSelectList();
+		
+		cn.linkmore.third.response.ResLocate info = this.locateClient.get(rp.getLongitude(),rp.getLatitude());
+		log.info("prefecture list locate info = {}",JSON.toJSON(info));
+		
 		if(CollectionUtils.isNotEmpty(cityList)) {
 			for(ResCity city: cityList) {
-				cityMap.put(city.getId(), city.getCityName());
+				if(info!=null&&info.getAdcode()!=null) {
+					if(info.getAdcode().substring(0, 4).equals(city.getCode().substring(0,4))) {
+						city.setStatus(1);
+					}
+				}
+				city.setDistance(MapUtil.getDistance(Double.valueOf(city.getLatitude()), Double.valueOf(city.getLongitude()), new Double(rp.getLatitude()),
+						new Double(rp.getLongitude())));
 			}
+			
+			Collections.sort(cityList, new Comparator<ResCity>() {
+				public int compare(ResCity city1, ResCity city2) {
+					return Double.valueOf(city1.getDistance()).compareTo(Double.valueOf(city2.getDistance()));
+				}
+			});
+			log.info("process city list = {}", JSON.toJSON(cityList));
 		}
 		Long plateId = null;
 		String plateNumber = null;
@@ -490,20 +504,26 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 		List<ResPreCity> resPreCityList = new ArrayList<ResPreCity>();
 		ResPreCity resPreCity = null;
-		for (Long cityId : map.keySet()) {
-			resPreCity = new ResPreCity();
-			resPreCity.setCityId(cityId);
-			resPreCity.setCityName(cityMap.get(cityId));
-			List<ResPrefecture> prefecturelist = map.get(cityId);
-			Collections.sort(prefecturelist, new Comparator<ResPrefecture>() {
-				public int compare(ResPrefecture pre1, ResPrefecture pre2) {
-					return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));
-				}
-			});
+		
+		for(ResCity city : cityList) {
+			if(CollectionUtils.isNotEmpty(map.get(city.getId()))) {
+				resPreCity = new ResPreCity();
+				resPreCity.setCityId(city.getId());
+				resPreCity.setCityName(city.getCityName());
+				resPreCity.setStatus(city.getStatus());
+				List<ResPrefecture> prefecturelist = map.get(city.getId());
+				Collections.sort(prefecturelist, new Comparator<ResPrefecture>() {
+					public int compare(ResPrefecture pre1, ResPrefecture pre2) {
+						return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));
+					}
+				});
 
-			resPreCity.setPrefectures(prefecturelist);
-			resPreCityList.add(resPreCity);
+				resPreCity.setPrefectures(prefecturelist);
+				resPreCityList.add(resPreCity);
+			}
 		}
+		
+		
 		return resPreCityList;
 	}
 
