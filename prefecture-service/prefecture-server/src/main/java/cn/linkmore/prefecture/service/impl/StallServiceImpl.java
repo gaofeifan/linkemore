@@ -628,15 +628,6 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public int update(ReqStall reqStall) {
-		Date now = new Date();
-		reqStall.setUpdateTime(now);
-		Stall stall = new Stall();
-		stall = ObjectUtils.copyObject(reqStall, stall);
-		return stallMasterMapper.update(stall);
-	}
-
-	@Override
 	public int check(ReqCheck reqCheck) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("stallName", reqCheck.getProperty());
@@ -2238,6 +2229,12 @@ public class StallServiceImpl implements StallService {
 	public Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn) {
 		Boolean gateway = this.lockFactory.getLock().batchBindGateway(lockSn, serialNumbers);
 		return gateway;
+	}
+
+	@Override
+	public int update(Stall stall) {
+		stall.setUpdateTime(new Date());
+		return stallMasterMapper.update(stall);
 	}
 	
 }

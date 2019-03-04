@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSON;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
@@ -273,7 +274,7 @@ public class FeignStallController {
 		if (st != null) {
 			st.setStallName(stall.getStallName());
 			st.setStallLocal(stall.getStallLocal());
-			ReqStall reqStall = new ReqStall();
+			Stall reqStall = new Stall();
 			reqStall = ObjectUtils.copyObject(st, reqStall);
 			return this.stallService.update(reqStall);
 		}
@@ -288,7 +289,7 @@ public class FeignStallController {
 		if (st != null) {
 			st.setBindOrderStatus(stall.getBindOrderStatus());
 			st.setStatus(stall.getStatus());
-			ReqStall reqStall = new ReqStall();
+			Stall reqStall = new Stall();
 			reqStall = ObjectUtils.copyObject(st, reqStall);
 			return this.stallService.update(reqStall);
 		}
