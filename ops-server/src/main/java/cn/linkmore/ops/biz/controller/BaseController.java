@@ -15,6 +15,8 @@ public abstract class BaseController {
 	
 	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
+	public SimpleDateFormat sdf_date = new SimpleDateFormat("yyyy-MM-dd");
+	
 	public ObjectMapper mapper= new ObjectMapper();
 	/**
 	 * 获取当前用户

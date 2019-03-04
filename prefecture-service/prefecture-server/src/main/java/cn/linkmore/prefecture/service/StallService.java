@@ -337,11 +337,12 @@ public interface StallService {
 	 */
 	void saveAndBind(ReqStall reqStall);
 	/**
+	 * @param preId 
 	 * @Description  查询锁绑定的网关
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResLockGatewayList> findLockGateways(HttpServletRequest request, String lockSn);
+	List<ResLockGatewayList> findLockGateways(HttpServletRequest request, String lockSn, Long preId);
 	/* 预约订单控制降锁
 	 * @param stall
 	 * @return

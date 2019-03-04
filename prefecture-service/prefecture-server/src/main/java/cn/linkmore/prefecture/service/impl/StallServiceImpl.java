@@ -103,6 +103,7 @@ import cn.linkmore.prefecture.response.ResAdminAuthPre;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.prefecture.response.ResAdminUserAuth;
+import cn.linkmore.prefecture.response.ResGatewayGroup;
 import cn.linkmore.prefecture.response.ResLockGatewayList;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockMessage;
@@ -1871,14 +1872,16 @@ public class StallServiceImpl implements StallService {
 				stallSn.setPreId(detail.getId());
 				stallSn.setCityId(detail.getCityId());
 				stallSn.setStallName(stall.getStallName());
-			}
-			List<ResLockGatewayList> lockGatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn());
-			cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
-			if(lockGatewayList != null) {
-				for (ResLockGatewayList resLockGatewayList : lockGatewayList) {
-					rgl = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getGatewaySerialNumber());
-					rgl.setBindFlag(resLockGatewayList.getBindFlag());
-					stallSn.getGatewayList().add(rgl);
+				List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn(),detail.getGateway());
+				cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
+				if(gatewayList != null) {
+					for (ResLockGatewayList resLockGatewayList : gatewayList) {
+						if(resLockGatewayList.getBindFlag().equals("1")) {
+							rgl = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getGatewaySerialNumber());
+							rgl.setBindFlag(resLockGatewayList.getBindFlag());
+							stallSn.getGatewayList().add(rgl);
+						}
+					}
 				}
 			}
 		}
@@ -2179,8 +2182,9 @@ public class StallServiceImpl implements StallService {
 
 	@Override
 	public List<cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList> findLockGateways(
-			HttpServletRequest request, String lockSn) {
-		List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(lockSn);
+			HttpServletRequest request, String lockSn, Long preId) {
+		ResPrefectureDetail detail = this.prefectureService.findById(preId);
+		List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(lockSn,detail.getGateway());
 		List<cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList> list =new ArrayList<>();
 		cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList gateway = null;
 		for (ResLockGatewayList resLockGatewayList : gatewayList) {

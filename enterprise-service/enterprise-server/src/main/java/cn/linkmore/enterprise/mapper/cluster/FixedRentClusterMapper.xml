@@ -51,14 +51,16 @@
   </select>
 
   <select id="findPage" parameterType="java.util.HashMap" resultMap="ResultMap">
-  	SELECT tr.id as fixed_id,vs.id as stall_id,vs.stall_name,
-	(SELECT GROUP_CONCAT(CONCAT('',plate_no,'')) FROM  t_fixed_plate where fixed_id=tr.id ) as plate_nos,
-	tr.start_time,tr.end_time,vs.lock_sn,vs.status as stall_state,ifnull(ts.status,0) as fixed_state
-	FROM v_stall vs
-	left join t_fixed_stall ts on vs.id=ts.stall_id
-	left join t_fixed_rent tr on tr.id=ts.fixed_id and tr.end_time &gt;= now()
-	where vs.status in (1,2) 
 	
+	SELECT tr.id as fixed_id,vs.id as stall_id,vs.stall_name,
+	(SELECT GROUP_CONCAT(CONCAT('',plate_no,'')) FROM  t_fixed_plate where fixed_id=tr.id ) as plate_nos,
+	tr.start_time,tr.end_time,vs.lock_sn,vs.status as stall_state,ifnull(tr.status,0) as fixed_state
+	FROM v_stall vs
+	left join ( select  ts.stall_id,ts.status,tr.id,tr.start_time,tr.end_time,tr.ent_id from t_fixed_stall ts 
+	  			inner join t_fixed_rent tr on tr.id=ts.fixed_id and tr.end_time &gt;= now()
+			  ) as tr on  vs.id=tr.stall_id
+	where vs.status in (1,2)
+
     <if test="preId != null">
    		AND vs.pre_id = #{preId,jdbcType=BIGINT}
     </if>
@@ -91,10 +93,10 @@
   </select>
 
   <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
-  	SELECT count(*)
-	FROM v_stall vs
-	left join t_fixed_stall ts on vs.id=ts.stall_id
-	left join t_fixed_rent tr on tr.id=ts.fixed_id and tr.end_time &gt;= now()
+	SELECT count(1) FROM v_stall vs
+	left join ( select  ts.stall_id,ts.status,tr.id,tr.start_time,tr.end_time,tr.ent_id from t_fixed_stall ts 
+	  			inner join t_fixed_rent tr on tr.id=ts.fixed_id and tr.end_time &gt;= now()
+			  ) as tr on  vs.id=tr.stall_id
 	where vs.status in (1,2)
 	
     <if test="preId != null">

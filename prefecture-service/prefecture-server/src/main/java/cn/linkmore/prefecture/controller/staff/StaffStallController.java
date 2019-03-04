@@ -167,9 +167,10 @@ public class StaffStallController {
 	@GetMapping(value = "/unbind-lock")
 	@ResponseBody
 	public ResponseEntity<Boolean> unBindLock(HttpServletRequest request ,
-			@ApiParam(value="网关编号",required=true) @NotBlank(message="网关编号不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber 
+			@ApiParam(value="网关编号",required=true) @NotBlank(message="编号不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber ,
+			@ApiParam(value="锁编号",required=true) @NotBlank(message="锁编号") @RequestParam(value = "lockSn",required= true) String lockSn 
 			){
-		Boolean falg = this.prefectureService.removeLock(serialNumber,request);
+		Boolean falg = this.prefectureService.removeLock(lockSn,request);
 		return ResponseEntity.success(falg, request);
 	}
 	
@@ -209,8 +210,9 @@ public class StaffStallController {
 	@ApiOperation(value = "查询锁绑定的网关/未绑定的网关(用于展示批量更新车位锁网关的列表)", notes = "重启网关")
 	@GetMapping(value = "/find-lock-gateways")
 	@ResponseBody
-	public ResponseEntity<List<ResLockGatewayList>> findLockGateways(HttpServletRequest request, @ApiParam(value="锁编号编号",required=true) @NotNull(message="锁编号不能为空") @RequestParam(value = "lockSn",required= true) String lockSn	){
-		List<ResLockGatewayList> gateways = stallService.findLockGateways(request,lockSn);
+	public ResponseEntity<List<ResLockGatewayList>> findLockGateways(HttpServletRequest request, @ApiParam(value="锁编号编号",required=true) @NotNull(message="锁编号不能为空") @RequestParam(value = "lockSn",required= true) String lockSn	,
+			@ApiParam(value="车区id",required=true) @NotNull(message="车区id不能为空") @RequestParam(value = "preId",required= true) Long preId	){
+		List<ResLockGatewayList> gateways = stallService.findLockGateways(request,lockSn,preId);
 		return ResponseEntity.success(gateways, request);
 	}
 	

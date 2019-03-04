@@ -1394,6 +1394,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		details.setSimType(gatewayDetails.getSimType());
 		details.setVersion(gatewayDetails.getGatewayVersion());
 		details.setGatewayState(gatewayDetails.getGatewayState());
+		details.setSignal(gatewayDetails.getSignal());
 		List<ResLocksGateway> gateways = this.lockFactory.getLock().getLocksGateway(serialNumber);
 		if(StringUtils.isNotBlank(gatewayDetails.getGroupCode())) {
 			ResPrefectureDetail detail = this.prefectureClusterMapper.findByGateway(gatewayDetails.getGroupCode());
@@ -1423,6 +1424,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 						if(lockSn != null && lockSn.equals(resStallOps.getLockSn())) {
 							stallLock.setStallId(resStallOps.getId());
 							stallLock.setStallName(resStallOps.getStallName());
+							stallLock.setBindStallStatus(1);
 							break;
 						}
 					}

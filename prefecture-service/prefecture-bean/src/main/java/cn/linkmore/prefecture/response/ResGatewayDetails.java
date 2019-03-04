@@ -59,6 +59,11 @@ public class ResGatewayDetails {
 	 */ 
 	private String agentName;
 	
+	/**
+	 *  网关信号
+	 */ 
+	private String signal;
+		
 	public String getGroupName() {
 		return groupName;
 	}
@@ -170,6 +175,13 @@ public class ResGatewayDetails {
 	public void setAgentName(String agentName) {
 		this.agentName = agentName;
 	}
-	
+
+	public String getSignal() {
+		return signal;
+	}
+
+	public void setSignal(String signal) {
+		this.signal = signal;
+	}
 	
 }

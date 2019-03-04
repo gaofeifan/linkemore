@@ -1,5 +1,7 @@
 package cn.linkmore.ops.biz.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,7 +45,7 @@ public class FixedRentController  extends BaseController{
 	
 	@Autowired
 	private FixedRentService fixedRentService;
-
+	
 	/**
 	 * 固定车位列表分页
 	 * @param request
@@ -116,6 +118,53 @@ public class FixedRentController  extends BaseController{
 		}
 		return true;
 	}
+	public  boolean isValidDate(String str) {
+		boolean convertSuccess = true;
+		try {
+			// 设置lenient为false. 否则SimpleDateFormat会比较宽松地验证日期，比如2007/02/29会被接受，并转换成2007/03/01
+			sdf_date.setLenient(false);
+			sdf_date.parse(str);
+		} catch (ParseException e) {
+			// 如果throw java.text.ParseException或者NullPointerException，就说明格式不对
+			convertSuccess = false;
+		}
+		return convertSuccess;
+	}
+	public  Date StringToDate(String time) {
+		try {
+			return sdf_date.parse(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public  String checkTime(String startTime, String endTime) {
+		if (StringUtils.isEmpty(startTime)) {
+			return "起始日期不能为空";
+		}
+		if (StringUtils.isEmpty(endTime)) {
+			return "截至日期不能为空";
+		}
+		if(!isValidDate(startTime)) {
+			System.out.println("{"+startTime+"}");
+			System.out.println("{"+isValidDate(startTime)+"}");
+			return "起始日期不正确,格式应为(yyyy-MM-dd)";
+		}
+		if(!isValidDate(endTime)) {
+			return "截至日期不正确,格式应为(yyyy-MM-dd)";
+		}
+		Date d_startTime=StringToDate(startTime);
+		Date d_endTime=StringToDate(endTime);
+		
+		if(d_startTime.getTime() > d_endTime.getTime() ){
+			return "起始日期不能大于截至日期";
+		}
+		
+		if(d_endTime.getTime() < new Date().getTime()){
+			return "截至日期不能小于当前日期";
+		}
+		return "";
+	}
 	
 	/**
 	 * 新增
@@ -127,6 +176,12 @@ public class FixedRentController  extends BaseController{
 	public ViewMsg save(ReqFixedRent reqFixedRent) {
 		ViewMsg msg = null;
 		try {
+			
+			String checkTime=checkTime(reqFixedRent.getStartTime(),reqFixedRent.getEndTime());
+			if(StringUtils.isNotEmpty(checkTime)){
+				return new ViewMsg(checkTime, true);
+			}
+			
 			if (StringUtils.isNotEmpty(reqFixedRent.getPlateNos())) {
 				if(!isValidPlates(reqFixedRent.getPlateNos())) {
 					return new ViewMsg("车牌号不正确", true); 
@@ -186,6 +241,12 @@ public class FixedRentController  extends BaseController{
 				return new ViewMsg("车位号重复", true);
 			}
 			for(ReqFixedRent reqFixedRent:listReqFixedRent) {
+				
+				String checkTime=checkTime(reqFixedRent.getStartTime(),reqFixedRent.getEndTime());
+				if(StringUtils.isNotEmpty(checkTime)){
+					return new ViewMsg(checkTime, true);
+				}
+				
 				if (StringUtils.isNotEmpty(reqFixedRent.getPlateNos())) {
 					if(!isValidPlates(reqFixedRent.getPlateNos())) {
 						return new ViewMsg("车牌号不正确", true); 
@@ -289,6 +350,10 @@ public class FixedRentController  extends BaseController{
 	public ViewMsg update(ReqFixedRent reqFixedRent) {
 		ViewMsg msg = null;
 		try {
+			String checkTime=checkTime(reqFixedRent.getStartTime(),reqFixedRent.getEndTime());
+			if(StringUtils.isNotEmpty(checkTime)){
+				return new ViewMsg(checkTime, true);
+			}
 			if (StringUtils.isNotEmpty(reqFixedRent.getPlateNos())) {
 				if(!isValidPlates(reqFixedRent.getPlateNos())) {
 					return new ViewMsg("车牌号不正确", true); 

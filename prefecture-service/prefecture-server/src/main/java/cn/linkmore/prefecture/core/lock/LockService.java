@@ -154,7 +154,7 @@ public interface LockService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	List<ResLockGatewayList> getLockGatewayList(String lockSerialNumber);
+	List<ResLockGatewayList> getLockGatewayList(String SerialNumber, String groupCode);
 	
 	/**
 	 * @Description  重启网关
@@ -177,4 +177,6 @@ public interface LockService {
 	 * @Version  v2.0
 	 */
 	public Boolean removeLock(String serialNumber);
+
+
 }
