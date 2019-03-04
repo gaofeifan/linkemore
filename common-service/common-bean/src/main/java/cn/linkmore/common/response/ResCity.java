@@ -43,7 +43,27 @@ public class ResCity {
 	 * 纬度
 	 */
 	private String latitude;
+	/**
+	 * 距离
+	 */
+	private String distance;
+	/**
+	 * 默认状态1定位选中，0未选中，2指定选中
+	 */
+	private Integer status = 0; 
 	
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public String getDistance() {
+		return distance;
+	}
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
 	public Long getId() {
 		return id;
 	}

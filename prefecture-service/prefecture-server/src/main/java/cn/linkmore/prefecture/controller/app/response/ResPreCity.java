@@ -14,8 +14,19 @@ public class ResPreCity {
 	@ApiModelProperty(value = "城市名称")
 	private String cityName;
 	
+	@ApiModelProperty(value = "默认状态1定位选中，0未选中，2指定选中")
+	private Integer status = 0; 
+	
 	@ApiModelProperty(value = "车区列表")
 	private List<ResPrefecture> prefectures;
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
 	public Long getCityId() {
 		return cityId;

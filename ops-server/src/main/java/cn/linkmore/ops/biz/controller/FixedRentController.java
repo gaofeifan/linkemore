@@ -302,7 +302,6 @@ public class FixedRentController  extends BaseController{
 				return new ViewMsg(checkMsg, false);
 			}
 			
-			
 			reqFixedRent.setUpdateUserId(getPerson().getId());
 			reqFixedRent.setUpdateTime(new Date());
 			

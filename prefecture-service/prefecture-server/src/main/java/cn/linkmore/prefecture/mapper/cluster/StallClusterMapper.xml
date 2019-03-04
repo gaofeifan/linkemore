@@ -45,10 +45,6 @@
     <result column="lock_battery" jdbcType="INTEGER" property="lockBattery" />
     <result column="lock_voltage" jdbcType="DOUBLE" property="lockVoltage" />
     <result column="bind_order_status" jdbcType="SMALLINT" property="bindOrderStatus" />
-    <result column="type" jdbcType="SMALLINT" property="type" />
-    <result column="brand" jdbcType="SMALLINT" property="brand" />
-    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
-    <result column="create_user_name" jdbcType="VARCHAR" property="createName" />
     
   </resultMap>
   

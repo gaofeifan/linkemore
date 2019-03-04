@@ -155,7 +155,7 @@
     <include refid="Res_Column_List" />
     from o_orders  
     where user_id = #{userId,jdbcType=BIGINT} 
-    and status = 3 
+    and status in ('3','4','7')
     order by id desc   
     limit #{start,jdbcType=BIGINT},10
   </select>

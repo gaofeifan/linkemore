@@ -38,8 +38,8 @@ public class ResStallOps {
     private Float lockVoltage;
 
     private Short bindOrderStatus;
-
-    public Long getId() {
+    
+	public Long getId() {
         return id;
     }
 
