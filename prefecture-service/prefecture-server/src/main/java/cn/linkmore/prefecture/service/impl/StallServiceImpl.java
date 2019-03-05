@@ -1856,6 +1856,7 @@ public class StallServiceImpl implements StallService {
 			stallSn.setModel(lock.getModel());
 			stallSn.setVersion(lock.getVersion());
 			Stall stall = this.stallClusterMapper.findByLockSn(sn);
+			ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
 			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
 			if(stallLock != null && stallLock.getStallId() != null){
 				stallSn.setInstallStatus((short)1);
@@ -1863,7 +1864,7 @@ public class StallServiceImpl implements StallService {
 			if(stall != null && stallLock.getStallId() != null) {
 				stallSn.setStallId(stall.getId());
 				stallSn.setStallStatus(stall.getStatus().shortValue());
-				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
+				
 				ResCity resCity = this.cityClient.getById(detail.getCityId());
 				if(resCity != null) {
 					stallSn.setCityName(resCity.getCityName());
@@ -1872,15 +1873,16 @@ public class StallServiceImpl implements StallService {
 				stallSn.setPreId(detail.getId());
 				stallSn.setCityId(detail.getCityId());
 				stallSn.setStallName(stall.getStallName());
-				List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn(),detail.getGateway());
-				cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
-				if(gatewayList != null) {
-					for (ResLockGatewayList resLockGatewayList : gatewayList) {
-						if(resLockGatewayList.getBindFlag().equals("1")) {
-							rgl = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getGatewaySerialNumber());
-							rgl.setBindFlag(resLockGatewayList.getBindFlag());
-							stallSn.getGatewayList().add(rgl);
-						}
+				
+			}
+			List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn(),detail.getGateway());
+			cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
+			if(gatewayList != null) {
+				for (ResLockGatewayList resLockGatewayList : gatewayList) {
+					if(resLockGatewayList.getBindFlag().equals("1")) {
+						rgl = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getGatewaySerialNumber());
+						rgl.setBindFlag(resLockGatewayList.getBindFlag());
+						stallSn.getGatewayList().add(rgl);
 					}
 				}
 			}
