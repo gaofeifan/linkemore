@@ -92,10 +92,10 @@
 		INNER JOIN t_fixed_rent b ON c.fixed_id = b.id
 		WHERE 1=1 
 		<if test="mobile != null">
-			and d.id = #{mobile}
+			and d.username = #{mobile}
 		</if>
 		<if test="createUserId != null">
-			and ent_id = #{createUserId}
+			and pre_id = #{createUserId}
 		</if>
 		GROUP BY username,fixed_id
 		) al
@@ -119,7 +119,7 @@
 		SELECT COUNT(1)
 		FROM
 		(
-		SELECT al.*
+		SELECT al.username
 		FROM (
 		SELECT d.username,d.id as userid,GROUP_CONCAT(a.veh_mark) as
 		plates,c.fixed_id,b.create_time,b.end_time
@@ -129,10 +129,10 @@
 		INNER JOIN t_fixed_rent b ON c.fixed_id = b.id
 		WHERE 1=1 
 		<if test="mobile != null">
-			and d.id = #{mobile}
+			and d.username = #{mobile}
 		</if>
 		<if test="createUserId != null">
-			and ent_id = #{createUserId}
+			and pre_id = #{createUserId}
 		</if>
 		GROUP BY username,fixed_id
 		) al
