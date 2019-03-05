@@ -377,9 +377,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Override
 	public List<ResPreCity> list(ReqPrefecture rp, HttpServletRequest request) {
+
 		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		Map<Long, ResCity> cityMap = new HashMap<Long, ResCity>();
+		List<ResPreCity> resPreCityList = new ArrayList<ResPreCity>();
 		paramMap.put("status", 0);
 		// 此处cityFlag=0，返回所有的车区信息
 		if ("1".equals(rp.getCityFlag())) {
@@ -388,22 +389,34 @@ public class PrefectureServiceImpl implements PrefectureService {
 		if(StringUtils.isNotBlank(rp.getPreName())) {
 			paramMap.put("name", '%'+ rp.getPreName()+ '%');
 		}
-		log.info("..........pre list param = {}",JSON.toJSON(paramMap));
-		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
 		List<ResCity> cityList = cityClient.findSelectList();
-		
 		cn.linkmore.third.response.ResLocate info = this.locateClient.get(rp.getLongitude(),rp.getLatitude());
 		log.info("prefecture list locate info = {}",JSON.toJSON(info));
-		
+		List<String> codeList = new ArrayList<String>();
 		if(CollectionUtils.isNotEmpty(cityList)) {
 			for(ResCity city: cityList) {
+				if(city.getAdcode()!= null && city.getAdcode().length()>=4) {
+					codeList.add(city.getAdcode().substring(0, 4));
+				}
 				if(info!=null&&info.getAdcode()!=null) {
 					if(info.getAdcode().substring(0, 4).equals(city.getCode().substring(0,4))) {
 						city.setStatus(1);
+						if("1".equals(rp.getHomeFlag()) && "0".equals(rp.getCityFlag())) {
+							paramMap.put("cityId", city.getId());
+						}
 					}
 				}
 				city.setDistance(MapUtil.getDistance(Double.valueOf(city.getLatitude()), Double.valueOf(city.getLongitude()), new Double(rp.getLatitude()),
 						new Double(rp.getLongitude())));
+			}
+			
+			if(CollectionUtils.isNotEmpty(codeList) && info!=null && info.getAdcode()!=null) {
+				if(!codeList.contains(info.getAdcode().substring(0, 4))) {
+					//首页数据过滤，全部城市
+					if("1".equals(rp.getHomeFlag()) && "0".equals(rp.getCityFlag())) {
+						paramMap.put("cityId", 0L);
+					}
+				}
 			}
 			
 			Collections.sort(cityList, new Comparator<ResCity>() {
@@ -413,6 +426,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 			});
 			log.info("process city list = {}", JSON.toJSON(cityList));
 		}
+		
+		
+		log.info("..........pre list param = {}",JSON.toJSON(paramMap));
+		List<ResPrefecture> preList = prefectureClusterMapper.findPreByStatusAndGPS(paramMap);
+		
 		Long plateId = null;
 		String plateNumber = null;
 		if (cu != null && cu.getId() != null) {
@@ -446,83 +464,85 @@ public class PrefectureServiceImpl implements PrefectureService {
 				}
 			}
 		}
-		Long count = 0L;
-		for (ResPrefecture prb : preList) {
-			prb.setPlateId(plateId);
-			prb.setPlateNumber(plateNumber);
-			prb.setChargeTime(prb.getChargeTime() + "分钟");
-			prb.setChargePrice(prb.getChargePrice() + "元");
-			count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getId());
-			if (count == null) {
-				count = 0L;
-			}
-			prb.setLeisureStall(count.intValue());
-			prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()),
-					new Double(rp.getLongitude())));
-			if(prb.getRegion()!= null && prb.getRegion().contains("地面")) {
-				prb.setRegion1("地面");
-			}
-			if(prb.getRegion()!= null && prb.getRegion().contains("地下")) {
-				prb.setRegion2("地下");
-			}
-			
-			String freeMins = "";
-			String appFreeMins = "";
-			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("prefectureId", prb.getId());
-			List<ResStrategyGroup> strategyGroupList = strategyGroupClusterMapper.findPreGroupList(param);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			if (CollectionUtils.isNotEmpty(strategyGroupList)) {
-				for (ResStrategyGroup strategyGroup : strategyGroupList) {
-					Map<String, Object> paramFee = new HashMap<String, Object>();
-					paramFee.put("strategGroupId", strategyGroup.getId());
-					paramFee.put("searchDateTime", sdf.format(new Date()));
-					String json = strategyFeeService.info(paramFee);
-					log.info("..........pre detail param fee{},json{}", JSON.toJSON(paramFee), json);
-					if (json != null) {
-						JSONObject data = JSONObject.parseObject(json);
-						if (data.getInteger("code") == 200) {
-							if(data.getString("detail") != null) {
-								JSONObject detailObj = JSONObject.parseObject(data.getString("detail"));
-								freeMins = String.valueOf(detailObj.getInteger("free"));
+		
+		if(CollectionUtils.isNotEmpty(preList)) {
+			Long count = 0L;
+			for (ResPrefecture prb : preList) {
+				prb.setPlateId(plateId);
+				prb.setPlateNumber(plateNumber);
+				prb.setChargeTime(prb.getChargeTime() + "分钟");
+				prb.setChargePrice(prb.getChargePrice() + "元");
+				count = this.redisService.size(RedisKey.PREFECTURE_FREE_STALL.key + prb.getId());
+				if (count == null) {
+					count = 0L;
+				}
+				prb.setLeisureStall(count.intValue());
+				prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()),
+						new Double(rp.getLongitude())));
+				if(prb.getRegion()!= null && prb.getRegion().contains("地面")) {
+					prb.setRegion1("地面");
+				}
+				if(prb.getRegion()!= null && prb.getRegion().contains("地下")) {
+					prb.setRegion2("地下");
+				}
+				
+				String freeMins = "";
+				String appFreeMins = "";
+				Map<String, Object> param = new HashMap<String, Object>();
+				param.put("prefectureId", prb.getId());
+				List<ResStrategyGroup> strategyGroupList = strategyGroupClusterMapper.findPreGroupList(param);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				if (CollectionUtils.isNotEmpty(strategyGroupList)) {
+					for (ResStrategyGroup strategyGroup : strategyGroupList) {
+						Map<String, Object> paramFee = new HashMap<String, Object>();
+						paramFee.put("strategGroupId", strategyGroup.getId());
+						paramFee.put("searchDateTime", sdf.format(new Date()));
+						String json = strategyFeeService.info(paramFee);
+						log.info("..........pre detail param fee{},json{}", JSON.toJSON(paramFee), json);
+						if (json != null) {
+							JSONObject data = JSONObject.parseObject(json);
+							if (data.getInteger("code") == 200) {
+								if(data.getString("detail") != null) {
+									JSONObject detailObj = JSONObject.parseObject(data.getString("detail"));
+									freeMins = String.valueOf(detailObj.getInteger("free"));
+								}
 							}
 						}
 					}
 				}
+				if(StringUtils.isNotBlank(freeMins)) {
+					if(Integer.valueOf(freeMins)>= 60) {
+						appFreeMins = "免费" + div(Double.valueOf(freeMins), 60D, 2) +"小时";
+					}else {
+						appFreeMins = "免费" + freeMins +"分钟";
+					}
+				}
+				prb.setFreeMins(appFreeMins);
 			}
-			if(StringUtils.isNotBlank(freeMins)) {
-				if(Integer.valueOf(freeMins)>= 60) {
-					appFreeMins = "免费" + div(Double.valueOf(freeMins), 60D, 2) +"小时";
-				}else {
-					appFreeMins = "免费" + freeMins +"分钟";
+
+			Map<Long, List<ResPrefecture>> map = preList.stream().collect(Collectors.groupingBy(ResPrefecture::getCityId));
+
+			
+			ResPreCity resPreCity = null;
+			
+			for(ResCity city : cityList) {
+				if(CollectionUtils.isNotEmpty(map.get(city.getId()))) {
+					resPreCity = new ResPreCity();
+					resPreCity.setCityId(city.getId());
+					resPreCity.setCityName(city.getCityName());
+					resPreCity.setStatus(city.getStatus());
+					List<ResPrefecture> prefecturelist = map.get(city.getId());
+					Collections.sort(prefecturelist, new Comparator<ResPrefecture>() {
+						public int compare(ResPrefecture pre1, ResPrefecture pre2) {
+							return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));
+						}
+					});
+
+					resPreCity.setPrefectures(prefecturelist);
+					resPreCityList.add(resPreCity);
 				}
 			}
-			prb.setFreeMins(appFreeMins);
 		}
-
-		Map<Long, List<ResPrefecture>> map = preList.stream().collect(Collectors.groupingBy(ResPrefecture::getCityId));
-
-		List<ResPreCity> resPreCityList = new ArrayList<ResPreCity>();
-		ResPreCity resPreCity = null;
-		
-		for(ResCity city : cityList) {
-			if(CollectionUtils.isNotEmpty(map.get(city.getId()))) {
-				resPreCity = new ResPreCity();
-				resPreCity.setCityId(city.getId());
-				resPreCity.setCityName(city.getCityName());
-				resPreCity.setStatus(city.getStatus());
-				List<ResPrefecture> prefecturelist = map.get(city.getId());
-				Collections.sort(prefecturelist, new Comparator<ResPrefecture>() {
-					public int compare(ResPrefecture pre1, ResPrefecture pre2) {
-						return Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));
-					}
-				});
-
-				resPreCity.setPrefectures(prefecturelist);
-				resPreCityList.add(resPreCity);
-			}
-		}
-		
 		
 		return resPreCityList;
 	}
@@ -1424,6 +1444,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 						if(lockSn != null && lockSn.equals(resStallOps.getLockSn())) {
 							stallLock.setStallId(resStallOps.getId());
 							stallLock.setStallName(resStallOps.getStallName());
+							stallLock.setBindStallStatus(1);
 							break;
 						}
 					}
