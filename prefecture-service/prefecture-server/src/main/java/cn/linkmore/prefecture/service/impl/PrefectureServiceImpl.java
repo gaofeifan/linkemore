@@ -401,6 +401,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 				if(info!=null&&info.getAdcode()!=null) {
 					if(info.getAdcode().substring(0, 4).equals(city.getCode().substring(0,4))) {
 						city.setStatus(1);
+						if("1".equals(rp.getHomeFlag()) && "0".equals(rp.getCityFlag())) {
+							paramMap.put("cityId", city.getId());
+						}
 					}
 				}
 				city.setDistance(MapUtil.getDistance(Double.valueOf(city.getLatitude()), Double.valueOf(city.getLongitude()), new Double(rp.getLatitude()),

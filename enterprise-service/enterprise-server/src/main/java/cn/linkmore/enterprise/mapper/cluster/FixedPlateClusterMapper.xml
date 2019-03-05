@@ -6,13 +6,19 @@
     <result column="plate_no" jdbcType="VARCHAR" property="plateNo" />
     <result column="fixed_id" jdbcType="BIGINT" property="fixedId" />
   </resultMap>
+  
+  <resultMap id="ResResultMap" type="cn.linkmore.enterprise.response.ResFixedPlate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="plates" jdbcType="VARCHAR" property="plates" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, plate_no, fixed_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_fixed_plate
+    from t_fixed_plate 
     where id = #{id,jdbcType=BIGINT}
   </select>
  
@@ -29,6 +35,17 @@
 	inner join t_fixed_plate fp on fp.plate_no=vm.veh_mark AND fp.fixed_id = #{fixed_id,jdbcType=BIGINT}
   </select>
  
+  <select id="findPlateNosByStallId" parameterType="java.lang.Long" resultMap="ResResultMap">
+    SELECT
+		GROUP_CONCAT(fp.plate_no order by fp.plate_no desc separator '/') as plates, fr.mobile, fr.id
+	FROM
+		t_fixed_plate fp
+	LEFT JOIN t_fixed_stall fs ON fs.fixed_id = fp.fixed_id
+	left join t_fixed_rent fr on fr.id = fs.fixed_id
+	WHERE
+		fs.stall_id = #{stallId,jdbcType=BIGINT} and NOW() BETWEEN fr.start_time and fr.end_time
+	group by fp.fixed_id limit 0,1
+  </select>
  
  
 </mapper>
