@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +50,13 @@ import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.entity.EntStaffAuth;
 import cn.linkmore.enterprise.entity.StallExcStatus;
+import cn.linkmore.enterprise.response.ResEntRentedRecord;
 import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.enterprise.response.ResFixedPlate;
 import cn.linkmore.enterprise.service.EntRentUserService;
 import cn.linkmore.enterprise.service.EntStallService;
 import cn.linkmore.enterprise.service.EnterpriseService;
+import cn.linkmore.enterprise.service.FixedPlateService;
 import cn.linkmore.enterprise.service.StallExcStatusService;
 import cn.linkmore.order.client.EntOrderClient;
 import cn.linkmore.order.client.OrderClient;
@@ -136,6 +140,10 @@ public class EntStallServiceImpl implements EntStallService {
 
 	@Autowired
 	private EntRentUserService entRentUserService;
+	
+	@Autowired
+	private FixedPlateService fixedPlateService;
+
 
 	@Autowired
 	private EntStaffClusterMapper entStaffClusterMapper;
@@ -638,7 +646,7 @@ public class EntStallServiceImpl implements EntStallService {
 				resDetailStall.setPlate(resEntOrder.getPlate());
 			}
 		}
-		if (resStallEntity.getType() != null && resStallEntity.getType() == 2) {
+		if (resStallEntity.getType() != null && resStallEntity.getType() == 2) {/*
 			List<String> paltes = new ArrayList<>();
 			StringBuilder sb = new StringBuilder();
 			List<EntRentUser> rentUsers = this.entRentUserService.findAll();
@@ -671,6 +679,26 @@ public class EntStallServiceImpl implements EntStallService {
 					resDetailStall.setDownTime(record.getDownTime());
 				}
 			}
+		*/
+		
+			ResFixedPlate fixedPlate = fixedPlateService.findPlateNosByStallId(resStallEntity.getId());
+			log.info("...........property........stallName = {} , plateNos = {}", resStallEntity.getStallName(), JSON.toJSON(fixedPlate));
+			if(fixedPlate != null) {
+				resDetailStall.setPlate(fixedPlate.getPlates());
+				if(StringUtils.isNotEmpty(fixedPlate.getMobile())) {
+					resDetailStall.setMobile(fixedPlate.getMobile());
+				}
+			}
+			if (resStallEntity.getStatus() == 2) {
+				EntRentedRecord record = this.rentedRecordClusterMapper.findByStallId(resStallEntity.getId());
+				if (record != null && record.getDownTime() != null) {
+					resDetailStall.setDownTime(record.getDownTime());
+				}
+			}
+		
+		
+		
+		
 		} else if (resStallEntity.getType() != null && resStallEntity.getType() == 0) {
 			if (resStallEntity.getStatus() == 2) {
 				resDetailStall.setDownTime(resEntOrder.getLockDownTime());

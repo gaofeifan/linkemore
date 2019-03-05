@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,6 +51,7 @@ import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
 import cn.linkmore.enterprise.response.ResEntStaff;
 import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.enterprise.response.ResFixedPlate;
 import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.notice.client.UserSocketClient;
 import cn.linkmore.order.client.EntOrderClient;
@@ -61,6 +64,7 @@ import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
 import cn.linkmore.prefecture.client.FeignEnterpriseClient;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
+import cn.linkmore.prefecture.client.FixedPlateClient;
 import cn.linkmore.prefecture.client.OpsRentUserClient;
 import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
@@ -211,6 +215,9 @@ public class StallServiceImpl implements StallService {
 	private FeignStallExcStatusClient feignStallExcStatusClient;
 	@Autowired
 	private BaseDictClient baseDictClient;
+	@Autowired
+	private FixedPlateClient fixedPlateClient;
+	
 	private ConcurrentHashMap<Long, String> osMap = new ConcurrentHashMap<>();
 	@Autowired
 	private StallOperateLogService stallOperateLogService;
@@ -1627,7 +1634,7 @@ public class StallServiceImpl implements StallService {
 					detail.setPlate(resUserOrder.getPlateNo());
 				}
 				}
-				if(stall.getType() == 2) {
+				if(stall.getType() == 2) {/*
 					Map<String,Object> map = new HashMap<String, Object>();
 					map.put("validTime", 1);
 					List<ResEntRentUser> rentUsers = opsRentUserClient.findAll(map);
@@ -1663,6 +1670,22 @@ public class StallServiceImpl implements StallService {
 							detail.setDownTime(record.getDownTime());
 						}
 					}
+				*/
+				ResFixedPlate fixedPlate = fixedPlateClient.findPlateNosByStallId(stall.getId());
+				log.info("...........manage........stallName = {} , plateNos = {}", stall.getStallName(), JSON.toJSON(fixedPlate));
+				if(fixedPlate != null) {
+					detail.setPlate(fixedPlate.getPlates());
+					if(StringUtils.isNotEmpty(fixedPlate.getMobile())) {
+						detail.setMobile(fixedPlate.getMobile());
+					}
+				}
+				if (stall.getStatus() == 2) {
+					ResEntRentedRecord record = this.entRentedRecordClient.findLastPlateNumber(stall.getId());
+					if (record != null && record.getDownTime() != null) {
+						detail.setDownTime(record.getDownTime());
+					}
+				}
+				
 				}
 			}
 			// 指定车位锁
