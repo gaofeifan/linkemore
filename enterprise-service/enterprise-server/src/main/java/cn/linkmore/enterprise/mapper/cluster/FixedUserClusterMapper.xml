@@ -17,7 +17,7 @@
 
 	</resultMap>
 
-	<select id="findPage" parameterType="java.util.HashMap"
+	<select id="findPageold" parameterType="java.util.HashMap"
 		resultMap="BaseResultMap">
 		SELECT * FROM
 		(SELECT
@@ -25,32 +25,43 @@
 		b.end_time,d.username,d.id as userid,h.leave_time,b.pre_id,
 		GROUP_CONCAT(c.veh_mark) as
 		plates,z.stalls,
-		(CASE when e.id is NULL THEN 1
+		(CASE when e.id is NULL
+		THEN 1
 		ELSE 0
 		end) pick
 		FROM
-		t_fixed_plate a LEFT JOIN t_fixed_rent b ON a.fixed_id = b.id
+		t_fixed_plate a LEFT JOIN t_fixed_rent b ON
+		a.fixed_id = b.id
 		LEFT JOIN
-		v_vehicle_mark_manage c ON a.plate_no = c.veh_mark
+		v_vehicle_mark_manage c ON a.plate_no =
+		c.veh_mark
 		LEFT JOIN t_user d
 		ON c.veh_user_id = d.id
-		LEFT JOIN t_fixed_disable e ON a.fixed_id =
+		LEFT JOIN
+		t_fixed_disable e ON a.fixed_id =
 		e.fixed_id AND d.id =
 		e.user_id
-		LEFT JOIN (SELECT
-		fixed_id,GROUP_CONCAT(g.stall_name) as stalls FROM t_fixed_stall f
-		LEFT JOIN v_stall g ON f.stall_id = g.id WHERE f.status=1 GROUP BY
+		LEFT
+		JOIN (SELECT
+		fixed_id,GROUP_CONCAT(g.stall_name) as stalls FROM
+		t_fixed_stall f
+		LEFT JOIN v_stall g ON f.stall_id = g.id WHERE
+		f.status=1 GROUP BY
 		fixed_id
 		) z ON a.fixed_id = z.fixed_id
 		LEFT JOIN
-		(SELECT leave_time,user_id FROM (select * from t_ent_rented_record order by
+		(SELECT leave_time,user_id FROM (select * from t_ent_rented_record
+		order by
 		leave_time desc limit 100000 ) t GROUP BY user_id) h
-		ON h.user_id =d.id
+		ON
+		h.user_id =d.id
 		WHERE d.username != " " AND
 		c.veh_mark != ""
-		AND c.veh_mark in (SELECT
+		AND
+		c.veh_mark in (SELECT
 		plate_no FROM t_fixed_plate)
-		GROUP BY a.fixed_id,c.veh_user_id) al
+		GROUP BY
+		a.fixed_id,c.veh_user_id) al
 		where 1=1
 		<if test="mobile != null">
 			and username = #{mobile}
@@ -67,38 +78,116 @@
 		limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
 	</select>
 
+
+	<select id="findPage" parameterType="java.util.HashMap"
+		resultMap="BaseResultMap">
+		SELECT al.*,GROUP_CONCAT(f.stall_name) as stalls,h.leave_time,
+		(CASE when g.id is NULL THEN 1 ELSE 0 end) pick
+		FROM (
+		SELECT d.username,d.id as userid,GROUP_CONCAT(a.veh_mark) as
+		plates,c.fixed_id,b.create_time,b.end_time
+		FROM v_vehicle_mark_manage a INNER JOIN t_fixed_plate c ON a.veh_mark =
+		c.plate_no
+		INNER JOIN t_user d ON a.veh_user_id = d.id
+		INNER JOIN t_fixed_rent b ON c.fixed_id = b.id
+		WHERE 1=1 
+		<if test="mobile != null">
+			and d.username = #{mobile}
+		</if>
+		<if test="createUserId != null">
+			and pre_id = #{createUserId}
+		</if>
+		GROUP BY username,fixed_id
+		) al
+		INNER JOIN t_fixed_stall e ON al.fixed_id = e.fixed_id AND e.status = 1
+		INNER JOIN v_stall f ON e.stall_id = f.id
+		LEFT JOIN t_fixed_disable g ON g.fixed_id = e.fixed_id AND g.user_id =
+		al.userid
+		LEFT JOIN (SELECT leave_time,user_id FROM (select leave_time,user_id from
+		t_ent_rented_record order by leave_time desc limit 100000) t GROUP BY
+		user_id) h
+		ON h.user_id = al.userid
+		WHERE 1=1
+		<if test="plates != null">
+			and al.plates like CONCAT('%',#{plates},'%')
+		</if>
+		GROUP BY al.username,al.fixed_id
+		limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+
 	<select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM
+		(
+		SELECT al.username
+		FROM (
+		SELECT d.username,d.id as userid,GROUP_CONCAT(a.veh_mark) as
+		plates,c.fixed_id,b.create_time,b.end_time
+		FROM v_vehicle_mark_manage a INNER JOIN t_fixed_plate c ON a.veh_mark =
+		c.plate_no
+		INNER JOIN t_user d ON a.veh_user_id = d.id
+		INNER JOIN t_fixed_rent b ON c.fixed_id = b.id
+		WHERE 1=1 
+		<if test="mobile != null">
+			and d.username = #{mobile}
+		</if>
+		<if test="createUserId != null">
+			and pre_id = #{createUserId}
+		</if>
+		GROUP BY username,fixed_id
+		) al
+		INNER JOIN t_fixed_stall e ON al.fixed_id = e.fixed_id AND e.status = 1
+		INNER JOIN v_stall f ON e.stall_id = f.id
+		WHERE 1=1
+		<if test="plates != null">
+			and al.plates like CONCAT('%',#{plates},'%')
+		</if>
+		GROUP BY al.username,al.fixed_id
+		) alll
+	</select>
+	
+	<select id="countold" parameterType="java.util.HashMap" resultType="java.lang.Integer">
 		SELECT count(1) FROM
 		(SELECT
 		a.fixed_id,b.start_time,
 		b.end_time,d.username,d.id as userid,h.leave_time,b.pre_id,
 		GROUP_CONCAT(c.veh_mark) as
 		plates,z.stalls,
-		(CASE when e.id is NULL THEN 1
+		(CASE when e.id is NULL
+		THEN 1
 		ELSE 0
 		end) pick
 		FROM
-		t_fixed_plate a LEFT JOIN t_fixed_rent b ON a.fixed_id = b.id
+		t_fixed_plate a LEFT JOIN t_fixed_rent b ON
+		a.fixed_id = b.id
 		LEFT JOIN
-		v_vehicle_mark_manage c ON a.plate_no = c.veh_mark
+		v_vehicle_mark_manage c ON a.plate_no =
+		c.veh_mark
 		LEFT JOIN t_user d
 		ON c.veh_user_id = d.id
-		LEFT JOIN t_fixed_disable e ON a.fixed_id =
+		LEFT JOIN
+		t_fixed_disable e ON a.fixed_id =
 		e.fixed_id AND d.id =
 		e.user_id
-		LEFT JOIN (SELECT
-		fixed_id,GROUP_CONCAT(g.stall_name) as stalls FROM t_fixed_stall f
-		LEFT JOIN v_stall g ON f.stall_id = g.id WHERE f.status=1 GROUP BY
+		LEFT
+		JOIN (SELECT
+		fixed_id,GROUP_CONCAT(g.stall_name) as stalls FROM
+		t_fixed_stall f
+		LEFT JOIN v_stall g ON f.stall_id = g.id WHERE
+		f.status=1 GROUP BY
 		fixed_id
 		) z ON
 		a.fixed_id = z.fixed_id
 		LEFT JOIN
-		(SELECT leave_time,user_id FROM (select * from t_ent_rented_record order by
+		(SELECT leave_time,user_id FROM (select * from t_ent_rented_record
+		order by
 		leave_time desc limit 100000 ) t GROUP BY user_id) h
-		ON h.user_id =d.id
+		ON
+		h.user_id =d.id
 		WHERE d.username != " " AND
 		c.veh_mark != ""
-		AND c.veh_mark in (SELECT
+		AND
+		c.veh_mark in (SELECT
 		plate_no FROM t_fixed_plate)
 		GROUP BY
 		a.fixed_id,c.veh_user_id) al
