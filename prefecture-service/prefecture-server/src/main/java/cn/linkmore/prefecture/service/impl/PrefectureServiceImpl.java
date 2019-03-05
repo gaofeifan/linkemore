@@ -1424,6 +1424,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 						if(lockSn != null && lockSn.equals(resStallOps.getLockSn())) {
 							stallLock.setStallId(resStallOps.getId());
 							stallLock.setStallName(resStallOps.getStallName());
+							stallLock.setBindStallStatus(1);
 							break;
 						}
 					}
