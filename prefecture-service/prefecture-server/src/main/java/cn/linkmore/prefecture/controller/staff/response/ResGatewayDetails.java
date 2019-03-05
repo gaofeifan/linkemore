@@ -130,6 +130,8 @@ public class ResGatewayDetails {
 	public void setSignal(String signal) {
 		this.signal = signal;
 	}
-	
-	
+
+	public void setLockNumber(int lockNumber) {
+		this.lockNumber = lockNumber;
+	}
 }

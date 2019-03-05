@@ -22,9 +22,10 @@ public class ResStallLock {
 	@ApiModelProperty(value="车位id")
 	private Long stallId;
 	
-	@ApiModelProperty(value="绑定状态 0未绑定 1已绑定")
+	@ApiModelProperty(value="绑定网关状态 0未绑定 1已绑定")
 	private String bindFlag = "0";
-
+	@ApiModelProperty(value="绑定车位状态 0 未绑定 1已绑定")
+	private int bindStallStatus=0;
 	public String getLockSn() {
 		/*if(StringUtils.isNoneBlank(lockSn)) {
 			if(lockSn.contains("0000")) {
@@ -76,6 +77,14 @@ public class ResStallLock {
 
 	public void setBindFlag(String bindFlag) {
 		this.bindFlag = bindFlag;
+	}
+
+	public int getBindStallStatus() {
+		return bindStallStatus;
+	}
+
+	public void setBindStallStatus(int bindStallStatus) {
+		this.bindStallStatus = bindStallStatus;
 	}
 	
 }
