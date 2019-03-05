@@ -22,9 +22,18 @@ public class ReqPrefecture {
 	@ApiModelProperty(value = "城市标识", required = true) 
 	private String cityFlag = "0";
 	
+	@ApiModelProperty(value = "首页标识1首页、0非首页", required = false) 
+	private String homeFlag = "0";
+	
 	@ApiModelProperty(value = "车区名称（模糊搜索）cityFlag=0 表示所有车区搜索，车区名称默认为空", required = true) 
 	private String preName;
 	
+	public String getHomeFlag() {
+		return homeFlag;
+	}
+	public void setHomeFlag(String homeFlag) {
+		this.homeFlag = homeFlag;
+	}
 	public Long getCityId() {
 		return cityId;
 	}
