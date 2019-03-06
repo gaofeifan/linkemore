@@ -1879,8 +1879,9 @@ public class StallServiceImpl implements StallService {
 			stallSn.setModel(lock.getModel());
 			stallSn.setVersion(lock.getVersion());
 			Stall stall = this.stallClusterMapper.findByLockSn(sn);
+			ResPrefectureDetail detail = null;
 			if(preId == null) {
-				ResPrefectureDetail detail = this.prefectureService.findById(preId);
+				detail = this.prefectureService.findById(preId);
 				List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn(),detail.getGateway());
 				cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
 				if(gatewayList != null) {
@@ -1900,7 +1901,9 @@ public class StallServiceImpl implements StallService {
 			if(stall != null && stallLock.getStallId() != null) {
 				stallSn.setStallId(stall.getId());
 				stallSn.setStallStatus(stall.getStatus().shortValue());
-				
+				if(detail == null) {
+					detail = this.prefectureService.findById(stall.getPreId());
+				}
 				ResCity resCity = this.cityClient.getById(detail.getCityId());
 				if(resCity != null) {
 					stallSn.setCityName(resCity.getCityName());
