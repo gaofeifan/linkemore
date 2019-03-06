@@ -81,4 +81,11 @@ public interface StallMasterMapper {
 	 * @return
 	 */
 	int updateBrandStall(List<Long> ids);
+
+	/**
+	 * @Description  删除
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void deleteIds(List<Long> ids);
 }

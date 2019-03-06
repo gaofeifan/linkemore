@@ -75,8 +75,10 @@ public class StaffStallController {
 	@RequestMapping(value="/stall-detail-sn",method=RequestMethod.GET)
 	@ResponseBody
 	@ApiOperation(value = "根据车位锁编号查询车位编号", notes = "根据车位锁编号查询车位编号", consumes = "application/json")
-	public ResponseEntity<ResStaffStallSn> findStaffStallSn(HttpServletRequest request,  @ApiParam("车位锁编号") @NotNull(message="sn") @RequestParam("sn") String sn) {
-		ResStaffStallSn detail = this.stallService.findStaffStallSn(request,sn);
+	public ResponseEntity<ResStaffStallSn> findStaffStallSn(HttpServletRequest request,  @ApiParam("车位锁编号") @NotNull(message="sn") @RequestParam("sn") String sn,
+			@ApiParam(value="车区",required=false) @RequestParam(value="preId",required=false) Long preId
+			) {
+		ResStaffStallSn detail = this.stallService.findStaffStallSn(request,sn,preId);
 		return ResponseEntity.success(detail, request);
 	}
 	

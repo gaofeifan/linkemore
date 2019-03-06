@@ -278,11 +278,12 @@ public interface StallService {
 	
 	
 	/**
+	 * @param preId 
 	 * @Description  根据车位锁编号查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn);
+	ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn, Long preId);
 	
 	/**
 	 * @Description  查询车位锁在一定时间端内的信号强度变化
@@ -356,4 +357,11 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn);
+	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void delete(List<Long> ids);
 }

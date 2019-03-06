@@ -73,7 +73,8 @@ public interface LockService {
 	public void setLockName(Map<String, Object> map );
 
 
-	String saveGroup(String groupName);
+	String saveGroup(String groupName, String cityCode, String cityName, Double longitude, Double latitude,
+			Integer positionNum);
 
 
 	Boolean removeGroupCode(String groupCode);

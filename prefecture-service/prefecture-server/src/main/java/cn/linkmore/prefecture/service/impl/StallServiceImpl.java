@@ -1845,7 +1845,7 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn) {
+	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn, Long preId) {
 		ResStaffStallSn stallSn = new ResStaffStallSn();
 		if(sn.contains("0000")) {
 			sn = sn.substring(4).toUpperCase();
@@ -1879,7 +1879,7 @@ public class StallServiceImpl implements StallService {
 			stallSn.setModel(lock.getModel());
 			stallSn.setVersion(lock.getVersion());
 			Stall stall = this.stallClusterMapper.findByLockSn(sn);
-			ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
+			ResPrefectureDetail detail = this.prefectureService.findById(preId);
 			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
 			if(stallLock != null && stallLock.getStallId() != null){
 				stallSn.setInstallStatus((short)1);
@@ -2267,6 +2267,11 @@ public class StallServiceImpl implements StallService {
 	public Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn) {
 		Boolean gateway = this.lockFactory.getLock().batchBindGateway(lockSn, serialNumbers);
 		return gateway;
+	}
+
+	@Override
+	public void delete(List<Long> ids) {
+		this.stallMasterMapper.deleteIds(ids);
 	}
 	
 }
