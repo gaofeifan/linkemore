@@ -262,9 +262,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				newrecord.setDownTime(new Date());
 				newrecord.setPreId(entOwnerStall.getPreId());
 				newrecord.setStallName(entOwnerStall.getStallName());
-				newrecord.setEntId(entOwnerStall.getEntId());
+				//newrecord.setEntId(entOwnerStall.getEntId());
 				newrecord.setPreName(entOwnerStall.getPreName());
-				newrecord.setEntPreId(entOwnerStall.getEntPreId());
+				//newrecord.setEntPreId(entOwnerStall.getEntPreId());
 				newrecord.setPlateNo(entOwnerStall.getPlate());
 				isAllow = true;
 				break;

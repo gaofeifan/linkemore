@@ -7,9 +7,9 @@ public class EntOwnerStall {
 	
 	private Long stallId;
 	
-	private Long entId;
+	/*private Long entId;
 	
-	private Long entPreId;
+	private Long entPreId;*/
 	
 	private String preName;
 	
@@ -36,12 +36,8 @@ public class EntOwnerStall {
 	private String lockSn;
 	
 	private Long userId;
-	
-	private Long companyId;
-	
-	private String companyName;
 
-	public Long getEntId() {
+	/*public Long getEntId() {
 		return entId;
 	}
 
@@ -55,7 +51,7 @@ public class EntOwnerStall {
 
 	public void setEntPreId(Long entPreId) {
 		this.entPreId = entPreId;
-	}
+	}*/
 
 	public String getPreName() {
 		return preName;
@@ -177,20 +173,4 @@ public class EntOwnerStall {
 		this.userId = userId;
 	}
 
-	public Long getCompanyId() {
-		return companyId;
-	}
-
-	public void setCompanyId(Long companyId) {
-		this.companyId = companyId;
-	}
-
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-	
 }
