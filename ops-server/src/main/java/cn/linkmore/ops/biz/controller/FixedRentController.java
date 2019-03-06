@@ -132,29 +132,31 @@ public class FixedRentController  extends BaseController{
 	}
 	public  Date StringToDate(String time) {
 		try {
-			return sdf_date.parse(time);
+			return sdf.parse(time);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	public  String checkTime(String startTime, String endTime) {
-		if (StringUtils.isEmpty(startTime)) {
+	
+	public  String checkTime(ReqFixedRent reqFixedRent) {
+		if (StringUtils.isEmpty(reqFixedRent.getStartTime())) {
 			return "起始日期不能为空";
 		}
-		if (StringUtils.isEmpty(endTime)) {
+		if (StringUtils.isEmpty(reqFixedRent.getEndTime())) {
 			return "截至日期不能为空";
 		}
-		if(!isValidDate(startTime)) {
-			System.out.println("{"+startTime+"}");
-			System.out.println("{"+isValidDate(startTime)+"}");
+		if(!isValidDate(reqFixedRent.getStartTime())) {
 			return "起始日期不正确,格式应为(yyyy-MM-dd)";
 		}
-		if(!isValidDate(endTime)) {
+		if(!isValidDate(reqFixedRent.getEndTime())) {
 			return "截至日期不正确,格式应为(yyyy-MM-dd)";
 		}
-		Date d_startTime=StringToDate(startTime);
-		Date d_endTime=StringToDate(endTime);
+		reqFixedRent.setStartTime(reqFixedRent.getStartTime()+" 00:00:00");
+		reqFixedRent.setEndTime(reqFixedRent.getEndTime()+" 23:59:59");
+		
+		Date d_startTime=StringToDate(reqFixedRent.getStartTime());
+		Date d_endTime=StringToDate(reqFixedRent.getEndTime());
 		
 		if(d_startTime.getTime() > d_endTime.getTime() ){
 			return "起始日期不能大于截至日期";
@@ -166,6 +168,27 @@ public class FixedRentController  extends BaseController{
 		return "";
 	}
 	
+	public String checkFixed(ReqFixedRent reqFixedRent) {
+		//验证时间段
+		String checkTime=checkTime(reqFixedRent);
+		if(StringUtils.isNotEmpty(checkTime)){
+			return checkTime;
+		}
+		if (StringUtils.isNotEmpty(reqFixedRent.getPlateNos())) {
+			if(!isValidPlates(reqFixedRent.getPlateNos())) {
+				return "车牌号不正确"; 
+			}
+		}else {
+			return "车牌号不能为空"; 
+		}
+		if (StringUtils.isEmpty(reqFixedRent.getStallIds())) {
+			return "没有选择车位"; 
+		}
+		if(reqFixedRent.getPlateNos().split(",").length > 3 * reqFixedRent.getStallIds().split(",").length) {
+			return "车牌号的数量不能超过车位数量的3倍"; 
+		}
+		return "";
+	}
 	/**
 	 * 新增
 	 * @param reqStrategyGroup
@@ -177,24 +200,16 @@ public class FixedRentController  extends BaseController{
 		ViewMsg msg = null;
 		try {
 			
-			String checkTime=checkTime(reqFixedRent.getStartTime(),reqFixedRent.getEndTime());
-			if(StringUtils.isNotEmpty(checkTime)){
-				return new ViewMsg(checkTime, true);
-			}
-			
-			if (StringUtils.isNotEmpty(reqFixedRent.getPlateNos())) {
-				if(!isValidPlates(reqFixedRent.getPlateNos())) {
-					return new ViewMsg("车牌号不正确", true); 
-				}
-			}else {
-				return new ViewMsg("车牌号不能为空", true); 
+			String checkMsg=checkFixed(reqFixedRent);
+			if (StringUtils.isNotEmpty(checkMsg)) {
+				return new ViewMsg(checkMsg, true); 
 			}
 			
 			reqFixedRent.setEntId(getPerson().getEntId());
 			reqFixedRent.setEntName(getPerson().getEntName());
 			reqFixedRent.setPreId(getPerson().getPreId());
 			
-			String checkMsg=fixedRentService.check(reqFixedRent);
+			checkMsg=fixedRentService.check(reqFixedRent);
 			if(StringUtils.isNotEmpty(checkMsg)) {
 				return new ViewMsg(checkMsg, false);
 			}
@@ -241,21 +256,11 @@ public class FixedRentController  extends BaseController{
 				return new ViewMsg("车位号重复", true);
 			}
 			for(ReqFixedRent reqFixedRent:listReqFixedRent) {
-				
-				String checkTime=checkTime(reqFixedRent.getStartTime(),reqFixedRent.getEndTime());
-				if(StringUtils.isNotEmpty(checkTime)){
-					return new ViewMsg(checkTime, true);
+				String checkMsg=checkFixed(reqFixedRent);
+				if (StringUtils.isNotEmpty(checkMsg)) {
+					return new ViewMsg(checkMsg, true); 
 				}
-				
-				if (StringUtils.isNotEmpty(reqFixedRent.getPlateNos())) {
-					if(!isValidPlates(reqFixedRent.getPlateNos())) {
-						return new ViewMsg("车牌号不正确", true); 
-					}
-				}else {
-					return new ViewMsg("车牌号不能为空", true); 
-				}
-				
-				String checkMsg=fixedRentService.check(reqFixedRent);
+				checkMsg=fixedRentService.check(reqFixedRent);
 				if(StringUtils.isNotEmpty(checkMsg)) {
 					return new ViewMsg(checkMsg, false);
 				}
@@ -350,19 +355,12 @@ public class FixedRentController  extends BaseController{
 	public ViewMsg update(ReqFixedRent reqFixedRent) {
 		ViewMsg msg = null;
 		try {
-			String checkTime=checkTime(reqFixedRent.getStartTime(),reqFixedRent.getEndTime());
-			if(StringUtils.isNotEmpty(checkTime)){
-				return new ViewMsg(checkTime, true);
-			}
-			if (StringUtils.isNotEmpty(reqFixedRent.getPlateNos())) {
-				if(!isValidPlates(reqFixedRent.getPlateNos())) {
-					return new ViewMsg("车牌号不正确", true); 
-				}
-			}else {
-				return new ViewMsg("车牌号不能为空", true); 
+			String checkMsg=checkFixed(reqFixedRent);
+			if (StringUtils.isNotEmpty(checkMsg)) {
+				return new ViewMsg(checkMsg, true); 
 			}
 			
-			String checkMsg=fixedRentService.check(reqFixedRent);
+			checkMsg=fixedRentService.check(reqFixedRent);
 			if(StringUtils.isNotEmpty(checkMsg)) {
 				return new ViewMsg(checkMsg, false);
 			}
