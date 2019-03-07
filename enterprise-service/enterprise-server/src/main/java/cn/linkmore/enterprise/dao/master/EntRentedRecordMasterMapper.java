@@ -15,8 +15,6 @@ import cn.linkmore.enterprise.entity.EntRentedRecord;
 public interface EntRentedRecordMasterMapper {
     int deleteById(Long id);
 
-    int save(EntRentedRecord record);
-
     int saveSelective(EntRentedRecord record);
 
     int updateByIdSelective(EntRentedRecord record);

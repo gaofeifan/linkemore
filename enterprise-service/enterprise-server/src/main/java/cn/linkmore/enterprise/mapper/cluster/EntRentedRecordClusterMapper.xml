@@ -3,8 +3,6 @@
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntRentedRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="ent_id" jdbcType="BIGINT" property="entId" />
-    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
     <result column="plate_no" jdbcType="BIGINT" property="plateNo" />
     <result column="down_time" jdbcType="TIMESTAMP" property="downTime" />
     <result column="leave_time" jdbcType="TIMESTAMP" property="leaveTime" />
@@ -27,7 +25,7 @@
     <result column="status" jdbcType="BIGINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id,user_id,status,ent_pre_id, plate_no, down_time, leave_time, stall_id, stall_name, pre_id, 
+    id, user_id,status, plate_no, down_time, leave_time, stall_id, stall_name, pre_id, 
     pre_name
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -50,6 +48,15 @@
     <include refid="Base_Column_List" />
     from t_ent_rented_record
     where user_id = #{userId,jdbcType=BIGINT}
+    and status = 0 order by id desc limit 0,1
+  </select>
+  
+  <select id="findByUserIdAndStallId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rented_record
+    where user_id = #{userId,jdbcType=BIGINT}
+    and stall_id = #{stallId,jdbcType=BIGINT}
     and status = 0 order by id desc limit 0,1
   </select>
   
@@ -126,4 +133,12 @@
 	    </if> 
 	    order by down_time desc
 	</select>
+	
+	<select id="findAllByUser" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rented_record
+    where user_id = #{userId,jdbcType=BIGINT}
+    and status = 0 
+  </select>
 </mapper>

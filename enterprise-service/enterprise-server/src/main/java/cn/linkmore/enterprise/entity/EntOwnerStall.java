@@ -36,7 +36,11 @@ public class EntOwnerStall {
 	private String lockSn;
 	
 	private Long userId;
-
+	
+	private Short rentOmType = 0;
+	
+	private Short rentMoType = 0;
+	
 	/*public Long getEntId() {
 		return entId;
 	}
@@ -52,6 +56,22 @@ public class EntOwnerStall {
 	public void setEntPreId(Long entPreId) {
 		this.entPreId = entPreId;
 	}*/
+
+	public Short getRentOmType() {
+		return rentOmType;
+	}
+
+	public void setRentOmType(Short rentOmType) {
+		this.rentOmType = rentOmType;
+	}
+
+	public Short getRentMoType() {
+		return rentMoType;
+	}
+
+	public void setRentMoType(Short rentMoType) {
+		this.rentMoType = rentMoType;
+	}
 
 	public String getPreName() {
 		return preName;

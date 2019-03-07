@@ -11,20 +11,16 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Stopwatch;
-
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.BindOrderStatus;
 import cn.linkmore.bean.common.Constants.ClientSource;
@@ -2096,9 +2092,14 @@ public class StallServiceImpl implements StallService {
 		} else if (reqc.getStatus() == 2) {
 			res = lockTools.upLockMes(stall.getLockSn());
 		}
-		log.info("降锁返回结果"+JsonUtil.toJson(res));
+		log.info("操作{}返回结果{}",reqc.getStatus() == 1 ? "降锁" : "升锁" , JsonUtil.toJson(res));
 		int code = res.getCode();
-		EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
+		//EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
+		Map<String,Long> param = new HashMap<String,Long>();
+		param.put("userId", reqc.getUserId());
+		param.put("stallId", reqc.getStallId());		
+		EntRentRecord record = entRentedRecordClusterMapper.findByUserIdAndStallId(param);
+
 		boolean falg = false;
 		if (code == 200) {
 			if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
@@ -2119,6 +2120,12 @@ public class StallServiceImpl implements StallService {
 					up.setId(record.getId());
 					entRentedRecordMasterMapper.updateByIdSelective(up);
 				}
+				
+				//若为多对一标识，若当前车位有他人使用记录，升锁则结束他人记录
+				//若为多对一标识，若当前车位没有他人使用记录，升锁则结束自己记录
+				//若为一对多标识，升锁则结束当前自己的记录
+				
+				
 			} else {
 				log.info("<<<<<<<<<down success>>>>>>>>>");
 			}

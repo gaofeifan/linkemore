@@ -8,27 +8,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
@@ -42,35 +37,29 @@ import cn.linkmore.enterprise.entity.EntOwnerPre;
 import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.service.OwnerStallService;
-import cn.linkmore.enterprise.service.PrefectureService;
 import cn.linkmore.enterprise.service.UserRentStallService;
 import cn.linkmore.prefecture.client.FeignLockClient;
-import cn.linkmore.prefecture.client.OpsPrefectureClient;
-import cn.linkmore.prefecture.client.PrefectrueClient;
-import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockInfos;
-import cn.linkmore.prefecture.response.ResPre;
+import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisLock;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.factory.AppUserFactory;
 import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.MapUtil;
-import cn.linkmore.util.TokenUtil;
 @Service
 public class UserRentStallServiceImpl implements UserRentStallService {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Autowired
 	private RedisService redisService;
 	@Autowired
 	private OwnerStallService ownerStallService;
-	@Autowired
-	private PrefectureClient prefectrueClient;
 	@Autowired
 	private RedisLock redisLock;
 	@Autowired
@@ -84,8 +73,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Autowired
 	private StallClient stallClient;
 
-	
-	
 	@Override
 	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
@@ -94,16 +81,13 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		int num = 0;
 		try {
 			Long userId = user.getId();
-			// 查询是否有未完成进程
+			// 查询最新的未完成进程
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(userId);
-			List<EntOwnerPre> prelist = null;// ownerStallClusterMapper.findPre(userId);
+			List<EntOwnerPre> prelist = null;
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
-//			List<Long> collect = prelist.stream().map(pre -> pre.getPreId()).collect(Collectors.toList());
 			if(stalllist == null || stalllist.size() == 0) {
 				return res;
 			}
-//			Map<String, Object> map = new HashMap<>();
-//			map.put("preIds", collect);
 			Set<Long> ids = new HashSet<Long>();
 			if(CollectionUtils.isNotEmpty(stalllist)&& stalllist.size()>0) {
 				for(EntOwnerStall entOwnerStall:stalllist) {
@@ -155,6 +139,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										}
 									}
 								}
+								OwnerStall.setRentMoType(enttall.getRentMoType());
+								OwnerStall.setRentOmType(enttall.getRentOmType());
 								OwnerStall.setStallId(enttall.getStallId());
 								OwnerStall.setMobile(enttall.getMobile());
 								OwnerStall.setPlate(enttall.getPlate());
@@ -174,6 +160,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 						}
 						ownerpre.setStalls(ownerstalllist);
 						list.add(ownerpre);
+						log.info("..........findStall isHave = {} list = {}", isHave, list);
 						break;
 					}
 				}
@@ -208,6 +195,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 									}
 								}
 							}
+							OwnerStall.setRentMoType(enttall.getRentMoType());
+							OwnerStall.setRentOmType(enttall.getRentOmType());
 							OwnerStall.setStallId(enttall.getStallId());
 							OwnerStall.setMobile(enttall.getMobile());
 							OwnerStall.setPlate(enttall.getPlate());
@@ -291,27 +280,63 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		Map<String, Object> pam = new HashMap<>();
 		pam.put("stallId", reqOperatStall.getStallId());
 		pam.put("userId", user.getId());
+		//判断当前车位是否被其他人使用
 		using = entRentedRecordClusterMapper.findUsingRecord(pam);
+		ResStallEntity stallEntity = stallClient.findById(reqOperatStall.getStallId());
+		log.info("operate the stallName = {},stall={}",stallEntity.getStallName(),JSON.toJSON(stallEntity));
+		//原有逻辑支持一对多操作
 		if (using>0) {
 			this.redisService.remove(robkey);
 			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
 		}
-	
+		
+		//新逻辑
+		/*if(stallEntity!= null) {
+			//多对一操作允许控制同一个车位
+			if(stallEntity.getRentMoType().intValue() == 0) {
+				if (using>0) {
+					this.redisService.remove(robkey);
+					throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+				}
+			}
+		}*/
+		
 		// 未完成记录同一用户只有一单
-		EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
-
+		//EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
+		Map<String,Long> param = new HashMap<String,Long>();
+		param.put("userId", user.getId());
+		param.put("stallId", reqOperatStall.getStallId());
+		EntRentedRecord record = entRentedRecordClusterMapper.findByUserIdAndStallId(param);
+		log.info("record = {}",JSON.toJSON(record));
 		if (reqOperatStall.getState() == 2) {
 			log.info("用户>>>" + user.getId() + "升锁>>>" + reqOperatStall.getStallId());
 		} else if (reqOperatStall.getState() == 1) {
 			log.info("用户>>>" + user.getId() + "降锁>>>" + reqOperatStall.getStallId());
-			if (!Objects.nonNull(record)) {
+			
+			//正常车位，若无使用记录则插入数据    && stallEntity.getRentOmType().intValue() == 0 && stallEntity.getRentMoType().intValue() == 0
+			if(!Objects.nonNull(record)) {
+				entRentedRecordMasterMapper.saveSelective(newrecord);
+			}
+			//当长租车位为1对多标识时，若无记录或者有使用记录但使用记录车位Id和当前操作车位Id不一致时可添加使用记录
+			/*if(stallEntity.getRentOmType().intValue() == 1 && (record == null || (record!=null && record.getStallId()!=stallEntity.getId()))) {
+				entRentedRecordMasterMapper.saveSelective(newrecord);
+			}*/
+			
+			//当长租车位为多对1标识时，若当前用户无使用记录，且该车位没有被占用则可以新增记录
+			/*if(stallEntity.getRentMoType().intValue() == 1 && record == null && using ==0) {
+				entRentedRecordMasterMapper.saveSelective(newrecord);
+			}*/
+			
+			//原流程
+			//Objects.nonNull 如果参数不为空则返回true
+			/*if (!Objects.nonNull(record)) {
 				try {
 					entRentedRecordMasterMapper.saveSelective(newrecord);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				log.info("用户>>>" + user.getId() + "record>>>" + reqOperatStall.getStallId());
-			}
+			}*/
 		}
 		// 放入缓存
 		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
@@ -353,23 +378,52 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public ResCurrentOwner current(HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		int count = 0;
+		List<EntRentedRecord> recordList = this.entRentedRecordClusterMapper.findAllByUser(user.getId());
 		EntRentedRecord record = this.entRentedRecordClusterMapper.findByUser(user.getId());
 		ResCurrentOwner owner = new ResCurrentOwner();
 		if(record == null) {
 			owner.setStatus(false);
+			owner.setSwitchFlag(true);
 		}else {
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
-			owner.setStatus(true);
-			owner.setStallNumber(stalllist.size());
-			owner.setPreId(record.getPreId());
-			owner.setPreName(record.getPreName());
-			owner.setStallId(record.getStallId());
-			owner.setStallName(record.getStallName());
+			if(CollectionUtils.isNotEmpty(stalllist)) {
+				for(EntOwnerStall ownerStall : stalllist) {
+					log.info("current user have the record size ={}",recordList.size());
+					//使用记录>1条则判断当前用户是否可点击切换车位
+					if(recordList.size() > 1) {
+						for(EntRentedRecord rentRecord: recordList) {
+							if(ownerStall.getRentOmType().intValue() == 1) {
+								if(rentRecord.getStallId().equals(ownerStall.getStallId())) {
+									count++;
+								}
+							}
+						}
+					}else {
+						//使用记录为仅有1条记录时，根据当前记录的车位id与开通了1对多操作的id进行对比
+						if(ownerStall.getRentOmType().intValue() == 1) {
+							count = 1;
+							if(!record.getStallId().equals(ownerStall.getStallId())) {
+								count++;
+							}
+						}
+					}
+				}
+				
+				if(count > 1) {
+					owner.setSwitchFlag(true);
+				}
+				owner.setStatus(true);
+				owner.setStallNumber(stalllist.size());
+				owner.setPreId(record.getPreId());
+				owner.setPreName(record.getPreName());
+				owner.setStallId(record.getStallId());
+				owner.setStallName(record.getStallName());
+			}else {
+				owner.setStatus(false);
+			}
 		}
 		return owner;
 	}
-	
-	
-
 	
 }
