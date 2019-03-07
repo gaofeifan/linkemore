@@ -596,12 +596,12 @@ public class StallServiceImpl implements StallService {
 		// 插入车位
 		this.stallMasterMapper.save(stall);
 		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
-		ResLockInfo info = this.lockTools.lockInfo(reqLockIntall.getLockSn());
-		if(info != null) {
-			stallLock.setBattery(info.getElectricity());
-			stallLock.setModel(info.getModel());
-			stallLock.setVersion(info.getVersion());
-		}
+//		ResLockInfo info = this.lockTools.lockInfo(reqLockIntall.getLockSn());
+//		if(info != null) {
+//			stallLock.setBattery(info.getElectricity());
+//			stallLock.setModel(info.getModel());
+//			stallLock.setVersion(info.getVersion());
+//		}
 		//更新锁
 		stallLock.setBindTime(now);
 		stallLock.setStallId(stall.getId());
