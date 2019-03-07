@@ -98,6 +98,8 @@ public interface StallService {
 	 */
 	List<ResStallOps> findList(Map<String, Object> param);
 
+	void delete(List<Long> ids);
+
 	
 
 }

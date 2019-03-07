@@ -1845,7 +1845,7 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn) {
+	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn, Long preId) {
 		ResStaffStallSn stallSn = new ResStaffStallSn();
 		if(sn.contains("0000")) {
 			sn = sn.substring(4).toUpperCase();
@@ -1879,22 +1879,9 @@ public class StallServiceImpl implements StallService {
 			stallSn.setModel(lock.getModel());
 			stallSn.setVersion(lock.getVersion());
 			Stall stall = this.stallClusterMapper.findByLockSn(sn);
-			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
-			if(stallLock != null && stallLock.getStallId() != null){
-				stallSn.setInstallStatus((short)1);
-			}
-			if(stall != null && stallLock.getStallId() != null) {
-				stallSn.setStallId(stall.getId());
-				stallSn.setStallStatus(stall.getStatus().shortValue());
-				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
-				ResCity resCity = this.cityClient.getById(detail.getCityId());
-				if(resCity != null) {
-					stallSn.setCityName(resCity.getCityName());
-				}
-				stallSn.setPreName(detail.getName());
-				stallSn.setPreId(detail.getId());
-				stallSn.setCityId(detail.getCityId());
-				stallSn.setStallName(stall.getStallName());
+			ResPrefectureDetail detail = null;
+			if(preId == null) {
+				detail = this.prefectureService.findById(preId);
 				List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn(),detail.getGateway());
 				cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
 				if(gatewayList != null) {
@@ -1906,6 +1893,26 @@ public class StallServiceImpl implements StallService {
 						}
 					}
 				}
+			}
+			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
+			if(stallLock != null && stallLock.getStallId() != null){
+				stallSn.setInstallStatus((short)1);
+			}
+			if(stall != null && stallLock.getStallId() != null) {
+				stallSn.setStallId(stall.getId());
+				stallSn.setStallStatus(stall.getStatus().shortValue());
+				if(detail == null) {
+					detail = this.prefectureService.findById(stall.getPreId());
+				}
+				ResCity resCity = this.cityClient.getById(detail.getCityId());
+				if(resCity != null) {
+					stallSn.setCityName(resCity.getCityName());
+				}
+				stallSn.setPreName(detail.getName());
+				stallSn.setPreId(detail.getId());
+				stallSn.setCityId(detail.getCityId());
+				stallSn.setStallName(stall.getStallName());
+				
 			}
 		}
 		return stallSn;
@@ -2265,6 +2272,11 @@ public class StallServiceImpl implements StallService {
 	public Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn) {
 		Boolean gateway = this.lockFactory.getLock().batchBindGateway(lockSn, serialNumbers);
 		return gateway;
+	}
+
+	@Override
+	public void delete(List<Long> ids) {
+		this.stallMasterMapper.deleteIds(ids);
 	}
 	
 }

@@ -261,4 +261,10 @@ public class StallController {
 		List<ResStall> list = this.stallService.findList(param);
 		return list;
 	}
+	
+	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public void delete(@RequestBody List<Long> ids) {
+		this.stallService.delete(ids);
+	}
 }

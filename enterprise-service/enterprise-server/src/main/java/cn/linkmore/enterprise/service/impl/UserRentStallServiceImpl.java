@@ -359,12 +359,16 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			owner.setStatus(false);
 		}else {
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
-			owner.setStatus(true);
-			owner.setStallNumber(stalllist.size());
-			owner.setPreId(record.getPreId());
-			owner.setPreName(record.getPreName());
-			owner.setStallId(record.getStallId());
-			owner.setStallName(record.getStallName());
+			if(CollectionUtils.isNotEmpty(stalllist)) {
+				owner.setStatus(true);
+				owner.setStallNumber(stalllist.size());
+				owner.setPreId(record.getPreId());
+				owner.setPreName(record.getPreName());
+				owner.setStallId(record.getStallId());
+				owner.setStallName(record.getStallName());
+			}else {
+				owner.setStatus(false);
+			}
 		}
 		return owner;
 	}

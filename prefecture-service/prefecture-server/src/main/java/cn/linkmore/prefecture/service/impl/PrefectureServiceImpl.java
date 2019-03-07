@@ -326,10 +326,15 @@ public class PrefectureServiceImpl implements PrefectureService {
 		Prefecture pre = new Prefecture();
 		pre = ObjectUtils.copyObject(reqPre, pre);
 		pre.setCreateTime(new Date());
-		String string = this.lockFactory.getLock(null).saveGroup(pre.getName());
-		if(org.apache.commons.lang3.StringUtils.isNotBlank(string)) {
-			pre.setGateway(string);
+		if(pre != null && pre.getCityId() != null) {
+			ResCity resCity = cityClient.getById(pre.getCityId());
+			String string = this.lockFactory.getLock().saveGroup(pre.getName(),resCity.getCode(),resCity.getCityName(),new Double(resCity.getLongitude()),new Double(resCity.getLatitude()),1);
+			if(org.apache.commons.lang3.StringUtils.isNotBlank(string)) {
+				pre.setGateway(string);
+			}
+			
 		}
+		
 		return this.prefectureMasterMapper.save(pre);
 	}
 

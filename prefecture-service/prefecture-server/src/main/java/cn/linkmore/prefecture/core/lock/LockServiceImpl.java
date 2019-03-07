@@ -276,8 +276,13 @@ public class LockServiceImpl implements LockService{
 	 * @Version  v2.0
 	 */
 	@Override
-	public String saveGroup(String groupName) {
+	public String saveGroup(String groupName,String cityCode,String cityName,Double longitude,Double latitude,Integer positionNum) {
 		proToTypeMap.put("groupName", groupName);
+		proToTypeMap.put("cityCode", cityCode);
+		proToTypeMap.put("cityName", cityName);
+		proToTypeMap.put("longitude", longitude);
+		proToTypeMap.put("latitude", latitude);
+		proToTypeMap.put("positionNum", positionNum);
 		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getSaveGroup()));
 		if(lockMes.getStatus()) {
 			return lockMes.getObj().toString();

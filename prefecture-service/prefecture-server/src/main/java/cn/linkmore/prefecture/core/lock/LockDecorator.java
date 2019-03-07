@@ -20,7 +20,6 @@ import cn.linkmore.redis.RedisService;
 public class LockDecorator implements LockService {
 
 	private LockService lockService;
-	
 	protected RedisService redisService = StartupRunner.get().getBean(RedisService.class);
 	
 	public LockDecorator(LockService lockService) {
@@ -68,8 +67,9 @@ public class LockDecorator implements LockService {
 	}
 
 	@Override
-	public String saveGroup(String groupName) {
-		return lockService.saveGroup(groupName);
+	public String saveGroup(String groupName, String cityCode, String cityName, Double longitude, Double latitude,
+			Integer positionNum) {
+		return lockService.saveGroup(groupName, cityCode, cityName, longitude, latitude, positionNum);
 	}
 
 	@Override
