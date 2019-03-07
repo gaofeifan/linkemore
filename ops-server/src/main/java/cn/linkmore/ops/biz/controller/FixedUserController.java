@@ -18,7 +18,7 @@ import cn.linkmore.prefecture.request.ReqStall;
 
 @RestController
 @RequestMapping("/admin/biz/fixed/user")
-public class FixedUserController {
+public class FixedUserController  extends BaseController{
 
 	@Autowired
      private FixedUserService fixedUserService;
@@ -26,6 +26,9 @@ public class FixedUserController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage findList(HttpServletRequest request, ViewPageable pageable) {
+		
+		System.out.println("fixed-user session:pre_id="+getPerson().getPreId());
+		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"createUserId",getPerson().getPreId()));
 		return this.fixedUserService.findList(request,pageable);
 	}
 	

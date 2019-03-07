@@ -55,17 +55,9 @@ public class FixedRentController  extends BaseController{
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage list(HttpServletRequest request, ViewPageable pageable) {
-		/*
-		if(getPerson().getEntId()!=null && getPerson().getEntId()>0) {
-			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"entId",getPerson().getEntId()));
-		}
-		*/
-		System.out.println("session:ent_id="+getPerson().getEntId());
-		System.out.println("session:pre_id="+getPerson().getPreId());
 		
-		if(getPerson().getPreId()!=null && getPerson().getPreId()>0) {
-			pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"preId",getPerson().getPreId()));
-		}
+		System.out.println(" fixed-rent session:pre_id="+getPerson().getPreId());
+		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"preId",getPerson().getPreId()));
 		
 		return this.fixedRentService.findPage(pageable);
 	}
