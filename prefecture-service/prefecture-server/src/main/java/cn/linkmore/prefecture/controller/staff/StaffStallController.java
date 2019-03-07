@@ -227,6 +227,13 @@ public class StaffStallController {
 		Boolean falg = stallService.editLockBindGateway(request,serialNumbers,lockSn);
 		return ResponseEntity.success(falg, request);
 	}
-	
+	@ApiOperation(value = "确认绑定", notes = "确认绑定")
+	@GetMapping(value = "/confirm")
+	@ResponseBody
+	public ResponseEntity<Boolean> confirm(HttpServletRequest request, @ApiParam(value="网关编号",required=true) @NotNull(message="网关编号不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber
+			){
+		Boolean flag = prefectureService.confirm(serialNumber,request);
+		return ResponseEntity.success(flag, request);
+	}
 	
 }

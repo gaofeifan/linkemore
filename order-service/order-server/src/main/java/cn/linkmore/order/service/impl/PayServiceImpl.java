@@ -383,9 +383,8 @@ public class PayServiceImpl implements PayService {
 		log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm order:{} fee:{}",JSON.toJSON(order), JSON.toJSON(rm));
 		String totalStr = rm.get("totalAmount").toString();
 		*/
-		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Map<String, Object> param = new HashMap<String,Object>();
+		Map<String, Object> param = new HashMap<String,Object>(); 
 		param.put("stallId", order.getStallId());
 		param.put("plateNo", order.getPlateNo());
 		param.put("startTime", sdf.format(order.getCreateTime()));

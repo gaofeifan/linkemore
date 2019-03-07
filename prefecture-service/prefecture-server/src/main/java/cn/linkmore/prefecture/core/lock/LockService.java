@@ -180,4 +180,10 @@ public interface LockService {
 	public Boolean removeLock(String serialNumber);
 
 
+	/**
+	 * @Description  确认绑定
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public Boolean confirm(String serialNumber);
 }

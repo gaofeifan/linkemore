@@ -1479,6 +1479,11 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public Boolean removeLock(String serialNumber, HttpServletRequest request) {
 		return lockFactory.getLock().removeLock(serialNumber);
 	}
+
+	@Override
+	public Boolean confirm(String serialNumber, HttpServletRequest request) {
+		return lockFactory.getLock().confirm(serialNumber);
+	}
 	
 	
 

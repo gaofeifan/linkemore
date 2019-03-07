@@ -28,6 +28,7 @@ public class LockProperties {
 	private static final String lockGateway = "/api/v1/lock/locks-gateway";
 	private static final String restart = "/api/v1/gateway/option/restart";
 	private static final String batchBindGateway = "/api/v1/lock/config/batch-bind-gateway";
+	private static final String confirm = "/api/v1//gateway/config/confirm";
 	
 	private String appId;
 	private String appSecret;
@@ -118,5 +119,8 @@ public class LockProperties {
 	}
 	public static String getBatchBindGateway() {
 		return batchBindGateway;
+	}
+	public static String getConfirm() {
+		return confirm;
 	}
 }

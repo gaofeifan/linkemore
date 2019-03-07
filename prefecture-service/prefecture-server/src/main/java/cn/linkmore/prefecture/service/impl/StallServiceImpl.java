@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -413,6 +414,7 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
+	@Transactional()
 	public void install(ReqLockIntall reqLockIntall,HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
@@ -421,7 +423,6 @@ public class StallServiceImpl implements StallService {
 		Date now = new Date();
 	    StallLock stallLock = new StallLock();
 	    Stall stall = new Stall();
-
 	    stallLock =	stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
 	    stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
 //		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
@@ -551,11 +552,9 @@ public class StallServiceImpl implements StallService {
 				stallLock.setBindTime(new Date());
 				stallLockMasterMapper.save(stallLock);
 				stallLockMasterMapper.updateBind(stallLock);
-				
 				stallName.setLockSn(reqLockIntall.getLockSn());
 				stallName.setLockId(stallLock.getId());
 				this.stallMasterMapper.update(stallName);
-				
 			}
 		//	安装数else {
 	    //验证
@@ -568,7 +567,6 @@ public class StallServiceImpl implements StallService {
 	}else {
 		 stallLock = new StallLock();
 	     stall = new Stall();
-		
 		// 插入锁
 		stallLock.setCreateTime(now);
 		stallLock.setSn(reqLockIntall.getLockSn());
@@ -671,7 +669,6 @@ public class StallServiceImpl implements StallService {
 		StallLock stallLock = new StallLock();
 		stallLock = ObjectUtils.copyObject(lock, stallLock);
 		stallLockMasterMapper.updateBind(stallLock);
-
 		Stall sta = new Stall();
 		sta = ObjectUtils.copyObject(stall, sta);
 		log.info("{}:{}>>{},返回结果{}", "绑定车位锁", "车位(" + stall.getStallName() + "),车位锁(" + sn + ")", "绑定成功", 200);
@@ -1880,7 +1877,7 @@ public class StallServiceImpl implements StallService {
 			stallSn.setVersion(lock.getVersion());
 			Stall stall = this.stallClusterMapper.findByLockSn(sn);
 			ResPrefectureDetail detail = null;
-			if(preId == null) {
+			if(preId != null) {
 				detail = this.prefectureService.findById(preId);
 				List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn(),detail.getGateway());
 				cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
@@ -1912,7 +1909,6 @@ public class StallServiceImpl implements StallService {
 				stallSn.setPreId(detail.getId());
 				stallSn.setCityId(detail.getCityId());
 				stallSn.setStallName(stall.getStallName());
-				
 			}
 		}
 		return stallSn;

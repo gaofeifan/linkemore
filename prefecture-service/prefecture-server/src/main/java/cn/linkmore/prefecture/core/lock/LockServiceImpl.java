@@ -453,9 +453,13 @@ public class LockServiceImpl implements LockService{
 		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getRemoveLock()));
 		return lockMes.getStatus();
 	}
-	
-	
-	
+
+	@Override
+	public Boolean confirm(String serialNumber) {
+		proToTypeMap.put("serialNumber", serialNumber);
+		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getConfirm()));
+		return lockMes.getStatus();
+	}
 	
 }
 

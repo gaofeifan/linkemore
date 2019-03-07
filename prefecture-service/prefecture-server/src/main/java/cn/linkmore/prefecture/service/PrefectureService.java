@@ -232,5 +232,12 @@ public interface PrefectureService {
 	 */
 	Boolean removeLock(String serialNumber, HttpServletRequest request);
 
+	/**
+	 * @Description  确认绑定
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean confirm(String serialNumber, HttpServletRequest request);
+
 
 }

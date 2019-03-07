@@ -147,5 +147,10 @@ public class LockDecorator implements LockService {
 		return lockService.removeLock(serialNumber);
 	}
 
+	@Override
+	public Boolean confirm(String serialNumber) {
+		return lockService.confirm(serialNumber);
+	}
+
 	
 }
