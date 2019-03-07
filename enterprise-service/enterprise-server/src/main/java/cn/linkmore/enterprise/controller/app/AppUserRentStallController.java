@@ -2,6 +2,8 @@ package cn.linkmore.enterprise.controller.app;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
@@ -34,6 +38,8 @@ public class AppUserRentStallController {
 
 	@Autowired
 	private UserRentStallService userRentStallService;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
@@ -61,6 +67,7 @@ public class AppUserRentStallController {
 		} catch (BusinessException e) {
 			return ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
+			log.info("e={}",JSON.toJSON(e.getMessage()));
 			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 	}

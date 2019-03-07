@@ -120,6 +120,31 @@ public class ReqStall {
      * 创建企业名称
      */
     private String createEntName;
+    
+    /**
+     * 长租车位标识一对多标识 默认0 1开启
+     */
+    private Short rentOmType = 0;
+    /**
+     * 长租车位标识多对一标识 默认0 1开启
+     */
+    private Short rentMoType = 0;
+    
+    public Short getRentOmType() {
+		return rentOmType;
+	}
+
+	public void setRentOmType(Short rentOmType) {
+		this.rentOmType = rentOmType;
+	}
+
+	public Short getRentMoType() {
+		return rentMoType;
+	}
+
+	public void setRentMoType(Short rentMoType) {
+		this.rentMoType = rentMoType;
+	}
 
 	public Long getCreateEntId() {
 		return createEntId;

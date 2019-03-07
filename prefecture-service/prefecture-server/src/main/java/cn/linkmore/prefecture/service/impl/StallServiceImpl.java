@@ -1,7 +1,6 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +14,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,10 +45,8 @@ import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
-import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
 import cn.linkmore.enterprise.response.ResEntStaff;
-import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.response.ResFixedPlate;
 import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.notice.client.UserSocketClient;
@@ -108,7 +103,6 @@ import cn.linkmore.prefecture.response.ResAdminAuthPre;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.prefecture.response.ResAdminUserAuth;
-import cn.linkmore.prefecture.response.ResGatewayGroup;
 import cn.linkmore.prefecture.response.ResLockGatewayList;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockMessage;
@@ -631,15 +625,6 @@ public class StallServiceImpl implements StallService {
 		map.put("serialNumber", reqLockIntall.getLockSn());
 		map.put("name", reqLockIntall.getStallName());
 		lockTools.setLockName(map);
-	}
-
-	@Override
-	public int update(ReqStall reqStall) {
-		Date now = new Date();
-		reqStall.setUpdateTime(now);
-		Stall stall = new Stall();
-		stall = ObjectUtils.copyObject(reqStall, stall);
-		return stallMasterMapper.update(stall);
 	}
 
 	@Override
@@ -2134,9 +2119,14 @@ public class StallServiceImpl implements StallService {
 		} else if (reqc.getStatus() == 2) {
 			res = lockTools.upLockMes(stall.getLockSn());
 		}
-		log.info("降锁返回结果"+JsonUtil.toJson(res));
+		log.info("操作{}返回结果{}",reqc.getStatus() == 1 ? "降锁" : "升锁" , JsonUtil.toJson(res));
 		int code = res.getCode();
-		EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
+		//EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
+		Map<String,Long> param = new HashMap<String,Long>();
+		param.put("userId", reqc.getUserId());
+		param.put("stallId", reqc.getStallId());		
+		EntRentRecord record = entRentedRecordClusterMapper.findByUserIdAndStallId(param);
+
 		boolean falg = false;
 		if (code == 200) {
 			if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
@@ -2157,6 +2147,12 @@ public class StallServiceImpl implements StallService {
 					up.setId(record.getId());
 					entRentedRecordMasterMapper.updateByIdSelective(up);
 				}
+				
+				//若为多对一标识，若当前车位有他人使用记录，升锁则结束他人记录
+				//若为多对一标识，若当前车位没有他人使用记录，升锁则结束自己记录
+				//若为一对多标识，升锁则结束当前自己的记录
+				
+				
 			} else {
 				log.info("<<<<<<<<<down success>>>>>>>>>");
 			}
@@ -2275,4 +2271,8 @@ public class StallServiceImpl implements StallService {
 		this.stallMasterMapper.deleteIds(ids);
 	}
 	
+	public int update(Stall stall) {
+		stall.setUpdateTime(new Date());
+		return stallMasterMapper.update(stall);
+	}
 }
