@@ -573,7 +573,7 @@ public class StallServiceImpl implements StallService {
 		stallLock.setCreateUserName(adminUser.getRealname());
 		stallLock.setCreateUserId(adminUser.getId());
 		stallLockMasterMapper.save(stallLock);
-		stallLock = stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
+//		stallLock = stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
 
 		// 插入新车位并绑定
 		stall.setStallName(reqLockIntall.getStallName());
@@ -595,7 +595,7 @@ public class StallServiceImpl implements StallService {
 		
 		// 插入车位
 		this.stallMasterMapper.save(stall);
-		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
+//		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
 //		ResLockInfo info = this.lockTools.lockInfo(reqLockIntall.getLockSn());
 //		if(info != null) {
 //			stallLock.setBattery(info.getElectricity());

@@ -23,6 +23,7 @@ import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockMessage;
 import cn.linkmore.prefecture.response.ResLocksGateway;
 import cn.linkmore.prefecture.response.ResUnBindLock;
+import cn.linkmore.prefecture.service.impl.PrefectureServiceImpl;
 import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -135,7 +136,7 @@ public class LockServiceImpl implements LockService{
 	 * @Description  查询网关信号强度
 	 * @Author   GFF 
 	 * @Version  v2.0
-	 */
+	 */ 
 	@SuppressWarnings("unchecked")
 	public ResSignalHistory lockSignalHistory(String sn) {
 		proToTypeMap.put("serialNumber", sn);
@@ -271,7 +272,7 @@ public class LockServiceImpl implements LockService{
 	}
 	
 	/**
-	 * @Description   ops的车场用与锁服务的车区同步
+	 * @Description   ops的车场用与锁服务的车区同步 
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
@@ -280,9 +281,12 @@ public class LockServiceImpl implements LockService{
 		proToTypeMap.put("groupName", groupName);
 		proToTypeMap.put("cityCode", cityCode);
 		proToTypeMap.put("cityName", cityName);
-		proToTypeMap.put("longitude", longitude);
-		proToTypeMap.put("latitude", latitude);
+		proToTypeMap.put("longitude", longitude == null ? 0D : longitude);
+		proToTypeMap.put("latitude", latitude == null ? 0D : latitude);
 		proToTypeMap.put("positionNum", positionNum);
+		proToTypeMap.put("state", 1);
+		proToTypeMap.put("provinceName", PrefectureServiceImpl.lockServerCity.get(0).getName());
+		proToTypeMap.put("provinceCode", PrefectureServiceImpl.lockServerCity.get(0).getProvinceCode());
 		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getSaveGroup()));
 		if(lockMes.getStatus()) {
 			return lockMes.getObj().toString();
