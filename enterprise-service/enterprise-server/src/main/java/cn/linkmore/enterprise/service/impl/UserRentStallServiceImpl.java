@@ -83,6 +83,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			Long userId = user.getId();
 			// 查询最新的未完成进程
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(userId);
+			List<EntRentedRecord> recordList = this.entRentedRecordClusterMapper.findAllByUser(user.getId());
 			List<EntOwnerPre> prelist = null;
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
 			if(stalllist == null || stalllist.size() == 0) {
@@ -113,7 +114,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			log.info("车位>>>" + stalllist.size() + "车区>>>" + prelist.size() + "用户>>>" + JSON.toJSONString(user));
 			List<OwnerPre> list = new ArrayList<>();
 			Set<Long> stallIdList = new HashSet<>();
-			if (record != null) { // 未完成进程
+			if ("0".equals(location.getSwitchFlag()) && record != null) { // 未完成进程
 				for (EntOwnerPre pre : prelist) {
 					if (pre.getPreId().equals(record.getPreId())) {
 						OwnerPre ownerpre = new OwnerPre();
@@ -195,6 +196,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 									}
 								}
 							}
+							
 							OwnerStall.setRentMoType(enttall.getRentMoType());
 							OwnerStall.setRentOmType(enttall.getRentOmType());
 							OwnerStall.setStallId(enttall.getStallId());
@@ -210,6 +212,18 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							OwnerStall.setLockSn(enttall.getLockSn());
 							OwnerStall.setLockStatus(enttall.getLockStatus());
 							OwnerStall.setStatus(enttall.getStatus() == 1l ? 1 : 2l);
+							
+							//当前车位被该用户占用的情况下设置一对多标识为1
+							if(enttall.getStatus().intValue() == 2) {
+								if(CollectionUtils.isNotEmpty(recordList)) {
+									for(EntRentedRecord rentRecord: recordList) {
+										if(OwnerStall.getStallId().equals(rentRecord.getStallId())) {
+											OwnerStall.setRentOmType((short)1);
+										}
+									}
+								}
+							}
+							
 							num++;
 							ownerstalllist.add(OwnerStall);
 						}
