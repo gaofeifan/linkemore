@@ -1033,12 +1033,19 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	@Override
-	public List<ResCheckedOrder> list(Long start, HttpServletRequest request) {
+	public List<ResCheckedOrder> list(Long start, String orderFlag ,HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("userId", cu.getId());
 		param.put("start", start);
-		List<ResUserOrder> list = this.ordersClusterMapper.findUserList(param);
+		List<ResUserOrder> list = null;
+		log.info("orderFlag = {}", orderFlag);
+		if(orderFlag!= null && "1".equals(orderFlag)) {
+			list = this.ordersClusterMapper.findUserList(param);
+		}else {
+			list = this.ordersClusterMapper.findFinishedUserList(param);
+		}
+		//List<ResUserOrder> list = this.ordersClusterMapper.findUserList(param);
 		List<ResCheckedOrder> res = new ArrayList<ResCheckedOrder>();
 		ResCheckedOrder ro = null;
 		for (ResUserOrder ruo : list) {

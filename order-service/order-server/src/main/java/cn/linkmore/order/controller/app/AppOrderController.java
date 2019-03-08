@@ -164,8 +164,8 @@ public class AppOrderController {
 	@ApiOperation(value = "用户已完成订单列表", notes = "订单列表[起始请从0开始每页10条记录]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<ResCheckedOrder>> list(@RequestParam("start") Long start,HttpServletRequest request) {
-		List<ResCheckedOrder> orders = this.ordersService.list(start,request);
+	public ResponseEntity<List<ResCheckedOrder>> list(@RequestParam("start") Long start, @RequestParam(value = "orderFlag", defaultValue = "0", required = false) String orderFlag, HttpServletRequest request) {
+		List<ResCheckedOrder> orders = this.ordersService.list(start, orderFlag, request);
 		return ResponseEntity.success(orders, request);
 	}
 	@ApiOperation(value = "订单详情", notes = "订单详情[订单ID须为数字]", consumes = "application/json")
