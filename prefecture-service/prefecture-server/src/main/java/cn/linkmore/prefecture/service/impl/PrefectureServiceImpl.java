@@ -379,9 +379,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 			if(gateway == null) {
 				gateway = this.lockFactory.getLock().saveGroup(pre.getName(),lockServerCity.get(0).getProvinceCode(),lockServerCity.get(0).getName(),new Double(resCity.getLongitude()),new Double(resCity.getLatitude()),1);
 			}
-			String string = this.lockFactory.getLock().saveGroup(pre.getName(),resCity.getCode(),resCity.getCityName(),new Double(resCity.getLongitude()),new Double(resCity.getLatitude()),1);
-			if(org.apache.commons.lang3.StringUtils.isNotBlank(string)) {
-				pre.setGateway(string);
+//			String string = this.lockFactory.getLock().saveGroup(pre.getName(),resCity.getCode(),resCity.getCityName(),new Double(resCity.getLongitude()),new Double(resCity.getLatitude()),1);
+			if(org.apache.commons.lang3.StringUtils.isNotBlank(gateway)) {
+				pre.setGateway(gateway);
 			}
 		}
 		return this.prefectureMasterMapper.save(pre);

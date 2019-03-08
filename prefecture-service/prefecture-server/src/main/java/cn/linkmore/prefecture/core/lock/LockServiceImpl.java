@@ -285,8 +285,8 @@ public class LockServiceImpl implements LockService{
 		proToTypeMap.put("latitude", latitude == null ? 0D : latitude);
 		proToTypeMap.put("positionNum", positionNum);
 		proToTypeMap.put("state", 1);
-		proToTypeMap.put("provinceName", PrefectureServiceImpl.lockServerCity.get(0).getName());
-		proToTypeMap.put("provinceCode", PrefectureServiceImpl.lockServerCity.get(0).getProvinceCode());
+//		proToTypeMap.put("provinceName", PrefectureServiceImpl.lockServerCity.get(0).getName());
+//		proToTypeMap.put("provinceCode", PrefectureServiceImpl.lockServerCity.get(0).getProvinceCode());
 		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getSaveGroup()));
 		if(lockMes.getStatus()) {
 			return lockMes.getObj().toString();
@@ -294,7 +294,7 @@ public class LockServiceImpl implements LockService{
 		return null;
 	}
 	
-	/**
+	/** 
 	 * @Description  删除车区信息
 	 * @Author   GFF 
 	 * @Version  v2.0
