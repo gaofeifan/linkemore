@@ -1890,6 +1890,7 @@ public class StallServiceImpl implements StallService {
 				if(resCity != null) {
 					stallSn.setCityName(resCity.getCityName());
 				}
+				detail = this.prefectureService.findById(stall.getPreId());
 				stallSn.setPreName(detail.getName());
 				stallSn.setPreId(detail.getId());
 				stallSn.setCityId(detail.getCityId());
