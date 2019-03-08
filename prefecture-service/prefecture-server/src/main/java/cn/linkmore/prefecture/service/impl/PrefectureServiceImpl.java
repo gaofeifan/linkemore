@@ -161,36 +161,36 @@ public class PrefectureServiceImpl implements PrefectureService {
 		city.setName("北京");
 		city.setProvinceCode("010");
 		lockServerCity.add(city);
-		city = new LockServerCity();
-		city.setId(6L);
-		city.setName("上海");
-		city.setProvinceCode("020");
-		lockServerCity.add(city);
-		city = new LockServerCity();
+//		city = new LockServerCity();
 //		city.setId(6L);
-		city.setName("浙江");
-		city.setProvinceCode("030");
-		lockServerCity.add(city);
-		city = new LockServerCity();
-		city.setId(3L);
-		city.setName("杭州");
-		city.setProvinceCode("030001");
-		lockServerCity.add(city);
-		city = new LockServerCity();
-		city.setId(5L);
-		city.setName("广州");
-		city.setProvinceCode("040001");
-		lockServerCity.add(city);
-		city = new LockServerCity();
-		city.setId(7L);
-		city.setName("香港");
-		city.setProvinceCode("050");
-		lockServerCity.add(city);
-		city = new LockServerCity();
-		city.setId(4L);
-		city.setName("深圳");
-		city.setProvinceCode("040002");
-		lockServerCity.add(city);
+//		city.setName("上海");
+//		city.setProvinceCode("020");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+////		city.setId(6L);
+//		city.setName("浙江");
+//		city.setProvinceCode("030");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+//		city.setId(3L);
+//		city.setName("杭州");
+//		city.setProvinceCode("030001");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+//		city.setId(5L);
+//		city.setName("广州");
+//		city.setProvinceCode("040001");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+//		city.setId(7L);
+//		city.setName("香港");
+//		city.setProvinceCode("050");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+//		city.setId(4L);
+//		city.setName("深圳");
+//		city.setProvinceCode("040002");
+//		lockServerCity.add(city);
 		
 		
 		
@@ -370,12 +370,12 @@ public class PrefectureServiceImpl implements PrefectureService {
 		if(pre != null && pre.getCityId() != null) {
 			ResCity resCity = cityClient.getById(pre.getCityId());
 			String gateway = null;
-			for (LockServerCity c : lockServerCity) {
+			/*for (LockServerCity c : lockServerCity) {
 				if(c.getId() != null && c.getId() == pre.getCityId()) {
 					gateway = this.lockFactory.getLock().saveGroup(pre.getName(),c.getProvinceCode(),c.getName(),new Double(resCity.getLongitude()),new Double(resCity.getLatitude()),1);
 					break;
 				}
-			}
+			}*/
 			if(gateway == null) {
 				gateway = this.lockFactory.getLock().saveGroup(pre.getName(),lockServerCity.get(0).getProvinceCode(),lockServerCity.get(0).getName(),new Double(resCity.getLongitude()),new Double(resCity.getLatitude()),1);
 			}
