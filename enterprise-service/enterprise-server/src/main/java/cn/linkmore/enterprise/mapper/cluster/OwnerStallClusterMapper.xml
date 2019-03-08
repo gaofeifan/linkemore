@@ -13,8 +13,8 @@
 
 	<resultMap id="StallResultMap" type="cn.linkmore.enterprise.entity.EntOwnerStall">
 		<result column="pre_id" jdbcType="BIGINT" property="preId" />
-		<result column="ent_id" jdbcType="BIGINT" property="entId" />
-		<result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
+		<!-- <result column="ent_id" jdbcType="BIGINT" property="entId" />
+		<result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" /> -->
 		<result column="pre_name" jdbcType="VARCHAR" property="preName" />
 		<result column="stall_id" jdbcType="BIGINT" property="stallId" />
 		<result column="stall_name" jdbcType="VARCHAR" property="stallName" />
@@ -28,6 +28,9 @@
 		<result column="status" jdbcType="VARCHAR" property="status" />
 		<result column="lock_status" jdbcType="VARCHAR" property="lockStatus" />
 		<result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
+		
+		<result column="rent_om_type" jdbcType="SMALLINT" property="rentOmType" />
+		<result column="rent_mo_type" jdbcType="SMALLINT" property="rentMoType" />
 	</resultMap>
 
 
@@ -57,57 +60,6 @@
 			item="id">
 			${id}
 		</foreach>
-
-	</select>
-
-	<select id="findStall2" resultMap="StallResultMap">
-		select
-		a.pre_id as pre_id,
-		a.stall_id as stall_id,
-		a.stall_name as stall_name,
-		max(a.plate) as plate,
-		a.mobile as mobile,
-		a.ent_id as ent_id,
-		a.ent_pre_id as ent_pre_id,
-		a.pre_name as pre_name,
-		c.route_description,
-		c.route_guidance,
-		b.stall_local,
-		b.status,
-		b.lock_status,
-		b.lock_sn,
-		DATE_FORMAT(start_time,'%Y-%m-%d %H:%i:%s') as
-		start_time,
-		DATE_FORMAT(end_time,'%Y-%m-%d %H:%i:%s') as end_time
-		from t_ent_rent_user a
-		left join v_stall b on a.stall_id = b.id
-		left join v_prefecture c on a.pre_id = c.id
-		where
-		start_time <![CDATA[ < ]]>
-		NOW()
-		and
-		end_time <![CDATA[ > ]]>
-		NOW()
-		and
-		user_id =#{0}
-		and (a.company_id is null or a.company_id in(select id from
-		t_ent_rent_com t where status=2))
-		group by
-		a.pre_id,
-		a.stall_id ,
-		a.stall_name,
-		a.mobile,
-		a.ent_id ,
-		a.ent_pre_id ,
-		a.pre_name ,
-		c.route_description,
-		c.route_guidance,
-		b.stall_local,
-		b.status,
-		b.lock_status,
-		b.lock_sn,
-		DATE_FORMAT(start_time,'%Y-%m-%d %H:%i:%s'),
-		DATE_FORMAT(end_time,'%Y-%m-%d %H:%i:%s')
 
 	</select>
 
@@ -237,8 +189,6 @@
 		plate
 	</select>
 
-
-	<!-- queryStalls -->
 	<select id="findStall" resultMap="StallResultMap">
 		SELECT  
 			p.id as pre_id,
@@ -246,8 +196,8 @@
 			s.stall_name,
 			fp.plate_no as plate,
 			u.mobile,
-			null as ent_id,
-			p.id as ent_pre_id,
+			<!-- null as ent_id,
+			p.id as ent_pre_id, -->
 			p.name as pre_name,
 			p.route_description,
 			p.route_guidance,
@@ -255,6 +205,8 @@
 			s.status,
 			s.lock_status,
 			s.lock_sn,
+			s.rent_om_type,
+			s.rent_mo_type,
 			DATE_FORMAT(fr.start_time,'%Y-%m-%d %H:%i:%s') as start_time,
 			DATE_FORMAT(fr.end_time,'%Y-%m-%d %H:%i:%s') as end_time
 		FROM v_vehicle_mark_manage vm 
@@ -272,8 +224,8 @@
 			stall_id,
 			stall_name,
 			mobile,
-			ent_id ,
-			ent_pre_id,
+			<!-- ent_id ,
+			ent_pre_id, -->
 			pre_name,
 			route_description,
 			route_guidance,
@@ -281,6 +233,8 @@
 			status,
 			lock_status,
 			lock_sn,
+			s.rent_om_type,
+			s.rent_mo_type,
 			start_time,
 			end_time,
 			plate

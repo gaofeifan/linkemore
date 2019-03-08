@@ -6,9 +6,9 @@ public class EntRentedRecord {
 	
     private Long id;
 
-    private Long entId;
+    /*private Long entId;
 
-    private Long entPreId;
+    private Long entPreId;*/
 
     private String plateNo;
 
@@ -56,7 +56,7 @@ public class EntRentedRecord {
         this.id = id;
     }
 
-    public Long getEntId() {
+    /*public Long getEntId() {
         return entId;
     }
 
@@ -70,7 +70,7 @@ public class EntRentedRecord {
 
     public void setEntPreId(Long entPreId) {
         this.entPreId = entPreId;
-    }
+    }*/
     
     public String getPlateNo() {
 		return plateNo;

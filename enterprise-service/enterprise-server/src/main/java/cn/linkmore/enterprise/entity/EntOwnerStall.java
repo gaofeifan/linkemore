@@ -7,9 +7,9 @@ public class EntOwnerStall {
 	
 	private Long stallId;
 	
-	private Long entId;
+	/*private Long entId;
 	
-	private Long entPreId;
+	private Long entPreId;*/
 	
 	private String preName;
 	
@@ -37,11 +37,11 @@ public class EntOwnerStall {
 	
 	private Long userId;
 	
-	private Long companyId;
+	private Short rentOmType = 0;
 	
-	private String companyName;
-
-	public Long getEntId() {
+	private Short rentMoType = 0;
+	
+	/*public Long getEntId() {
 		return entId;
 	}
 
@@ -55,6 +55,22 @@ public class EntOwnerStall {
 
 	public void setEntPreId(Long entPreId) {
 		this.entPreId = entPreId;
+	}*/
+
+	public Short getRentOmType() {
+		return rentOmType;
+	}
+
+	public void setRentOmType(Short rentOmType) {
+		this.rentOmType = rentOmType;
+	}
+
+	public Short getRentMoType() {
+		return rentMoType;
+	}
+
+	public void setRentMoType(Short rentMoType) {
+		this.rentMoType = rentMoType;
 	}
 
 	public String getPreName() {
@@ -177,20 +193,4 @@ public class EntOwnerStall {
 		this.userId = userId;
 	}
 
-	public Long getCompanyId() {
-		return companyId;
-	}
-
-	public void setCompanyId(Long companyId) {
-		this.companyId = companyId;
-	}
-
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-	
 }
