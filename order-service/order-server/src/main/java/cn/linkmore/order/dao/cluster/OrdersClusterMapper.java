@@ -271,6 +271,12 @@ public interface OrdersClusterMapper {
 	 * @return
 	 */
 	List<ResUserOrder> getDayOfCanceOrderlList(Long userId);
+	/**
+	 * 已完成订单，兼容之前旧数据
+	 * @param param
+	 * @return
+	 */
+	List<ResUserOrder> findFinishedUserList(Map<String, Object> param);
 
 
 
