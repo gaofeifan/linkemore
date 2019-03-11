@@ -88,7 +88,7 @@ public class ResPayCheckout {
 		if(this.totalAmount==null) {
 			this.totalAmount = new BigDecimal(0d);
 		}
-		return this.totalAmount.setScale(2,   BigDecimal.ROUND_HALF_UP);
+		return this.totalAmount.setScale(2, BigDecimal.ROUND_HALF_UP);
 	}
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;

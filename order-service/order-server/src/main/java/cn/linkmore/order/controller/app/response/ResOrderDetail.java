@@ -1,6 +1,7 @@
 package cn.linkmore.order.controller.app.response;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -201,9 +202,33 @@ public class ResOrderDetail{
 		this.setStatus(ruo.getStatus().shortValue());
 		this.setStallName(ruo.getStallName());
 		this.setPrefectureName(ruo.getPreName());   
-		this.setTotalAmount(ruo.getTotalAmount());
+		
+		if(ruo.getTotalAmount() == null) {
+			this.setTotalAmount(new BigDecimal(0d));
+		}
+		if(ruo.getActualAmount() == null) {
+			this.setActualAmount(new BigDecimal(0d));
+		}
+		if(ruo.getCouponAmount() == null) {
+			this.setCouponAmount(new BigDecimal(0d));
+		}
+		
+		this.setTotalAmount(ruo.getTotalAmount().setScale(2, RoundingMode.HALF_UP));
+		this.setActualAmount(ruo.getActualAmount().setScale(2, RoundingMode.HALF_UP));
+		this.setCouponAmount(ruo.getCouponAmount().setScale(2, RoundingMode.HALF_UP));
+
+		/*if(ruo.getTotalAmount() != null) {
+			this.setTotalAmount(ruo.getTotalAmount().setScale(2, RoundingMode.HALF_UP));
+		}
+		if(ruo.getActualAmount() != null) {
+			this.setActualAmount(ruo.getActualAmount().setScale(2, RoundingMode.HALF_UP));
+		}
+		if(ruo.getCouponAmount() != null) {
+			this.setCouponAmount(ruo.getCouponAmount().setScale(2, RoundingMode.HALF_UP));
+		}*/
+		/*this.setTotalAmount(ruo.getTotalAmount());
 		this.setActualAmount(ruo.getActualAmount());
-		this.setCouponAmount(ruo.getCouponAmount());
+		this.setCouponAmount(ruo.getCouponAmount());*/
 		this.setPayType(ruo.getPayType().shortValue());
 		long day = 0;
 		long hour = 0;
