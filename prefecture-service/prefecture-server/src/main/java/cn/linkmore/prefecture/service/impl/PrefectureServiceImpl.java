@@ -158,7 +158,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		LockServerCity city = new LockServerCity();
 		city.setDefault(true);
 		city.setId(1L);
-		city.setName("北京");
+		city.setName("BeiJing");
 		city.setProvinceCode("010");
 		lockServerCity.add(city);
 //		city = new LockServerCity();

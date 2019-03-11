@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.core.lock;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,6 @@ import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockMessage;
 import cn.linkmore.prefecture.response.ResLocksGateway;
 import cn.linkmore.prefecture.response.ResUnBindLock;
-import cn.linkmore.prefecture.service.impl.PrefectureServiceImpl;
 import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -293,6 +293,7 @@ public class LockServiceImpl implements LockService{
 		}
 		return null;
 	}
+	
 	
 	/** 
 	 * @Description  删除车区信息
