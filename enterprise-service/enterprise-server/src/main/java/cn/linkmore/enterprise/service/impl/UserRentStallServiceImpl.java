@@ -393,6 +393,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	public ResCurrentOwner current(HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		int count = 0;
+		int singleCount = 1;
 		List<EntRentedRecord> recordList = this.entRentedRecordClusterMapper.findAllByUser(user.getId());
 		EntRentedRecord record = this.entRentedRecordClusterMapper.findByUser(user.getId());
 		ResCurrentOwner owner = new ResCurrentOwner();
@@ -416,15 +417,14 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					}else {
 						//使用记录为仅有1条记录时，根据当前记录的车位id与开通了1对多操作的id进行对比
 						if(ownerStall.getRentOmType().intValue() == 1) {
-							count = 1;
 							if(!record.getStallId().equals(ownerStall.getStallId())) {
-								count++;
+								singleCount++;
 							}
 						}
 					}
 				}
 				
-				if(count > 1) {
+				if(count > 1 || singleCount > 1) {
 					owner.setSwitchFlag(true);
 				}
 				owner.setStatus(true);
