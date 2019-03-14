@@ -172,6 +172,13 @@ public class UserClientHystrix implements UserClient{
 		log.info("account service int delete(List<Long> ids) hystrix");
 		return 0;
 	}
+
+
+	@Override
+	public Object reset(List<Long> ids, String passwrod) {
+		log.info("account service int reset(List<Long> ids, String passwrod) hystrix");
+		return null;
+	}
 	
 	
 	

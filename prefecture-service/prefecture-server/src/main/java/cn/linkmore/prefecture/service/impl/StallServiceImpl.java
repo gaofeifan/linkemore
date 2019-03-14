@@ -1,7 +1,6 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,13 +14,12 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -47,10 +45,8 @@ import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
-import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
 import cn.linkmore.enterprise.response.ResEntStaff;
-import cn.linkmore.enterprise.response.ResEnterprise;
 import cn.linkmore.enterprise.response.ResFixedPlate;
 import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.notice.client.UserSocketClient;
@@ -107,7 +103,6 @@ import cn.linkmore.prefecture.response.ResAdminAuthPre;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.prefecture.response.ResAdminUserAuth;
-import cn.linkmore.prefecture.response.ResGatewayGroup;
 import cn.linkmore.prefecture.response.ResLockGatewayList;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockMessage;
@@ -413,6 +408,7 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
+	@Transactional()
 	public void install(ReqLockIntall reqLockIntall,HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
@@ -421,7 +417,6 @@ public class StallServiceImpl implements StallService {
 		Date now = new Date();
 	    StallLock stallLock = new StallLock();
 	    Stall stall = new Stall();
-
 	    stallLock =	stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
 	    stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
 //		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
@@ -551,11 +546,9 @@ public class StallServiceImpl implements StallService {
 				stallLock.setBindTime(new Date());
 				stallLockMasterMapper.save(stallLock);
 				stallLockMasterMapper.updateBind(stallLock);
-				
 				stallName.setLockSn(reqLockIntall.getLockSn());
 				stallName.setLockId(stallLock.getId());
 				this.stallMasterMapper.update(stallName);
-				
 			}
 		//	安装数else {
 	    //验证
@@ -568,14 +561,13 @@ public class StallServiceImpl implements StallService {
 	}else {
 		 stallLock = new StallLock();
 	     stall = new Stall();
-		
 		// 插入锁
 		stallLock.setCreateTime(now);
 		stallLock.setSn(reqLockIntall.getLockSn());
 		stallLock.setCreateUserName(adminUser.getRealname());
 		stallLock.setCreateUserId(adminUser.getId());
 		stallLockMasterMapper.save(stallLock);
-		stallLock = stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
+//		stallLock = stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
 
 		// 插入新车位并绑定
 		stall.setStallName(reqLockIntall.getStallName());
@@ -597,13 +589,13 @@ public class StallServiceImpl implements StallService {
 		
 		// 插入车位
 		this.stallMasterMapper.save(stall);
-		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
-		ResLockInfo info = this.lockTools.lockInfo(reqLockIntall.getLockSn());
-		if(info != null) {
-			stallLock.setBattery(info.getElectricity());
-			stallLock.setModel(info.getModel());
-			stallLock.setVersion(info.getVersion());
-		}
+//		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
+//		ResLockInfo info = this.lockTools.lockInfo(reqLockIntall.getLockSn());
+//		if(info != null) {
+//			stallLock.setBattery(info.getElectricity());
+//			stallLock.setModel(info.getModel());
+//			stallLock.setVersion(info.getVersion());
+//		}
 		//更新锁
 		stallLock.setBindTime(now);
 		stallLock.setStallId(stall.getId());
@@ -636,15 +628,6 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public int update(ReqStall reqStall) {
-		Date now = new Date();
-		reqStall.setUpdateTime(now);
-		Stall stall = new Stall();
-		stall = ObjectUtils.copyObject(reqStall, stall);
-		return stallMasterMapper.update(stall);
-	}
-
-	@Override
 	public int check(ReqCheck reqCheck) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("stallName", reqCheck.getProperty());
@@ -671,7 +654,6 @@ public class StallServiceImpl implements StallService {
 		StallLock stallLock = new StallLock();
 		stallLock = ObjectUtils.copyObject(lock, stallLock);
 		stallLockMasterMapper.updateBind(stallLock);
-
 		Stall sta = new Stall();
 		sta = ObjectUtils.copyObject(stall, sta);
 		log.info("{}:{}>>{},返回结果{}", "绑定车位锁", "车位(" + stall.getStallName() + "),车位锁(" + sn + ")", "绑定成功", 200);
@@ -1845,7 +1827,7 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn) {
+	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn, Long preId) {
 		ResStaffStallSn stallSn = new ResStaffStallSn();
 		if(sn.contains("0000")) {
 			sn = sn.substring(4).toUpperCase();
@@ -1879,22 +1861,9 @@ public class StallServiceImpl implements StallService {
 			stallSn.setModel(lock.getModel());
 			stallSn.setVersion(lock.getVersion());
 			Stall stall = this.stallClusterMapper.findByLockSn(sn);
-			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
-			if(stallLock != null && stallLock.getStallId() != null){
-				stallSn.setInstallStatus((short)1);
-			}
-			if(stall != null && stallLock.getStallId() != null) {
-				stallSn.setStallId(stall.getId());
-				stallSn.setStallStatus(stall.getStatus().shortValue());
-				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
-				ResCity resCity = this.cityClient.getById(detail.getCityId());
-				if(resCity != null) {
-					stallSn.setCityName(resCity.getCityName());
-				}
-				stallSn.setPreName(detail.getName());
-				stallSn.setPreId(detail.getId());
-				stallSn.setCityId(detail.getCityId());
-				stallSn.setStallName(stall.getStallName());
+			ResPrefectureDetail detail = null;
+			if(preId != null) {
+				detail = this.prefectureService.findById(preId);
 				List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn(),detail.getGateway());
 				cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
 				if(gatewayList != null) {
@@ -1906,6 +1875,26 @@ public class StallServiceImpl implements StallService {
 						}
 					}
 				}
+			}
+			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
+			if(stallLock != null && stallLock.getStallId() != null){
+				stallSn.setInstallStatus((short)1);
+			}
+			if(stall != null && stallLock.getStallId() != null) {
+				stallSn.setStallId(stall.getId());
+				stallSn.setStallStatus(stall.getStatus().shortValue());
+				if(detail == null) {
+					detail = this.prefectureService.findById(stall.getPreId());
+				}
+				ResCity resCity = this.cityClient.getById(detail.getCityId());
+				if(resCity != null) {
+					stallSn.setCityName(resCity.getCityName());
+				}
+				detail = this.prefectureService.findById(stall.getPreId());
+				stallSn.setPreName(detail.getName());
+				stallSn.setPreId(detail.getId());
+				stallSn.setCityId(detail.getCityId());
+				stallSn.setStallName(stall.getStallName());
 			}
 		}
 		return stallSn;
@@ -2131,9 +2120,14 @@ public class StallServiceImpl implements StallService {
 		} else if (reqc.getStatus() == 2) {
 			res = lockTools.upLockMes(stall.getLockSn());
 		}
-		log.info("降锁返回结果"+JsonUtil.toJson(res));
+		log.info("操作{}返回结果{}",reqc.getStatus() == 1 ? "降锁" : "升锁" , JsonUtil.toJson(res));
 		int code = res.getCode();
-		EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
+		//EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
+		Map<String,Long> param = new HashMap<String,Long>();
+		param.put("userId", reqc.getUserId());
+		param.put("stallId", reqc.getStallId());		
+		EntRentRecord record = entRentedRecordClusterMapper.findByUserIdAndStallId(param);
+
 		boolean falg = false;
 		if (code == 200) {
 			if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
@@ -2154,6 +2148,12 @@ public class StallServiceImpl implements StallService {
 					up.setId(record.getId());
 					entRentedRecordMasterMapper.updateByIdSelective(up);
 				}
+				
+				//若为多对一标识，若当前车位有他人使用记录，升锁则结束他人记录
+				//若为多对一标识，若当前车位没有他人使用记录，升锁则结束自己记录
+				//若为一对多标识，升锁则结束当前自己的记录
+				
+				
 			} else {
 				log.info("<<<<<<<<<down success>>>>>>>>>");
 			}
@@ -2266,5 +2266,14 @@ public class StallServiceImpl implements StallService {
 		Boolean gateway = this.lockFactory.getLock().batchBindGateway(lockSn, serialNumbers);
 		return gateway;
 	}
+
+	@Override
+	public void delete(List<Long> ids) {
+		this.stallMasterMapper.deleteIds(ids);
+	}
 	
+	public int update(Stall stall) {
+		stall.setUpdateTime(new Date());
+		return stallMasterMapper.update(stall);
+	}
 }

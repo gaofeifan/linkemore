@@ -103,6 +103,13 @@ public class StallServiceImpl implements StallService {
 	public List<ResStallOps> findList(Map<String, Object> param) {
 		return this.stallClient.findList(param);
 	}
+
+	@Override
+	public void delete(List<Long> ids) {
+		this.stallClient.delete(ids);
+	}
+	
+	
 	
 	
 }

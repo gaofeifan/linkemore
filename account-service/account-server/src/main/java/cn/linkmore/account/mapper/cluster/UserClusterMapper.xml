@@ -281,6 +281,12 @@
 	  	and  u.username = #{mobile}
    </foreach>
   </select>
+  <select id="findByIds" resultMap="ResBaseResultMap" parameterType="java.util.List">
+  	select <include refid="Base_Column_List"/> from t_user u where
+   <foreach collection="list"  index="index" item="mobile" open="(" separator="," close=")"  >
+	  	and  u.id = #{id}
+   </foreach>
+  </select>
   
   
 </mapper>

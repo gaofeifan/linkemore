@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.core.lock;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -135,7 +136,7 @@ public class LockServiceImpl implements LockService{
 	 * @Description  查询网关信号强度
 	 * @Author   GFF 
 	 * @Version  v2.0
-	 */
+	 */ 
 	@SuppressWarnings("unchecked")
 	public ResSignalHistory lockSignalHistory(String sn) {
 		proToTypeMap.put("serialNumber", sn);
@@ -271,13 +272,26 @@ public class LockServiceImpl implements LockService{
 	}
 	
 	/**
-	 * @Description   ops的车场用与锁服务的车区同步
+	 * @Description   ops的车场用与锁服务的车区同步 
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
 	@Override
-	public String saveGroup(String groupName) {
+	public String saveGroup(String groupName,String cityCode,String cityName,Double longitude,Double latitude,Integer positionNum) {
+		try {
+			groupName = new String(groupName.getBytes(),"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		proToTypeMap.put("groupName", groupName);
+		proToTypeMap.put("cityCode", cityCode);
+		proToTypeMap.put("cityName", cityName);
+		proToTypeMap.put("longitude", longitude == null ? 0D : longitude);
+		proToTypeMap.put("latitude", latitude == null ? 0D : latitude);
+		proToTypeMap.put("positionNum", positionNum);
+		proToTypeMap.put("state", 1);
+//		proToTypeMap.put("provinceName", PrefectureServiceImpl.lockServerCity.get(0).getName());
+//		proToTypeMap.put("provinceCode", PrefectureServiceImpl.lockServerCity.get(0).getProvinceCode());
 		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getSaveGroup()));
 		if(lockMes.getStatus()) {
 			return lockMes.getObj().toString();
@@ -285,7 +299,8 @@ public class LockServiceImpl implements LockService{
 		return null;
 	}
 	
-	/**
+	
+	/** 
 	 * @Description  删除车区信息
 	 * @Author   GFF 
 	 * @Version  v2.0
@@ -448,9 +463,13 @@ public class LockServiceImpl implements LockService{
 		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getRemoveLock()));
 		return lockMes.getStatus();
 	}
-	
-	
-	
+
+	@Override
+	public Boolean confirm(String serialNumber) {
+		proToTypeMap.put("serialNumber", serialNumber);
+		ResLockMes lockMes = get(proToTypeMap, getUrl(LockProperties.getConfirm()));
+		return lockMes.getStatus();
+	}
 	
 }
 

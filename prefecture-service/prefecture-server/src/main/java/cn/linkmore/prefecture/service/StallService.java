@@ -18,6 +18,7 @@ import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
+import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
@@ -101,7 +102,7 @@ public interface StallService {
 	 * 
 	 * @param stall
 	 */
-	int update(ReqStall stall);
+	int update(Stall stall);
 
 	/**
 	 * 校验名称
@@ -278,11 +279,12 @@ public interface StallService {
 	
 	
 	/**
+	 * @param preId 
 	 * @Description  根据车位锁编号查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn);
+	ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn, Long preId);
 	
 	/**
 	 * @Description  查询车位锁在一定时间端内的信号强度变化
@@ -356,4 +358,11 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn);
+	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void delete(List<Long> ids);
 }

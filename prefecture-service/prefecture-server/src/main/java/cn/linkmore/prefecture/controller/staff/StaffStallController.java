@@ -75,8 +75,10 @@ public class StaffStallController {
 	@RequestMapping(value="/stall-detail-sn",method=RequestMethod.GET)
 	@ResponseBody
 	@ApiOperation(value = "根据车位锁编号查询车位编号", notes = "根据车位锁编号查询车位编号", consumes = "application/json")
-	public ResponseEntity<ResStaffStallSn> findStaffStallSn(HttpServletRequest request,  @ApiParam("车位锁编号") @NotNull(message="sn") @RequestParam("sn") String sn) {
-		ResStaffStallSn detail = this.stallService.findStaffStallSn(request,sn);
+	public ResponseEntity<ResStaffStallSn> findStaffStallSn(HttpServletRequest request,  @ApiParam("车位锁编号") @NotNull(message="sn") @RequestParam("sn") String sn,
+			@ApiParam(value="车区",required=false) @RequestParam(value="preId",required=false) Long preId
+			) {
+		ResStaffStallSn detail = this.stallService.findStaffStallSn(request,sn,preId);
 		return ResponseEntity.success(detail, request);
 	}
 	
@@ -225,6 +227,13 @@ public class StaffStallController {
 		Boolean falg = stallService.editLockBindGateway(request,serialNumbers,lockSn);
 		return ResponseEntity.success(falg, request);
 	}
-	
+	@ApiOperation(value = "确认绑定", notes = "确认绑定")
+	@GetMapping(value = "/confirm")
+	@ResponseBody
+	public ResponseEntity<Boolean> confirm(HttpServletRequest request, @ApiParam(value="网关编号",required=true) @NotNull(message="网关编号不能为空") @RequestParam(value = "serialNumber",required= true) String serialNumber
+			){
+		Boolean flag = prefectureService.confirm(serialNumber,request);
+		return ResponseEntity.success(flag, request);
+	}
 	
 }

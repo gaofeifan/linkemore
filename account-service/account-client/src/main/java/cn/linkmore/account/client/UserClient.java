@@ -196,4 +196,8 @@ public interface UserClient {
 	@ResponseBody
 	public List<ResUser> findAll();
 
+	@RequestMapping(value = "/reset", method = RequestMethod.PUT)
+	@ResponseBody
+	public Object reset(@RequestBody List<Long> ids, @RequestParam("passwrod") String passwrod);
+
 }

@@ -29,15 +29,6 @@ public class FixedUserServiceImpl implements FixedUserService {
 
 	@Override
 	public ViewPage findList(HttpServletRequest request, ViewPageable pageable) {
-
-		Subject subject = SecurityUtils.getSubject();
-		ResPerson person = (ResPerson) subject.getSession().getAttribute("person");
-
-			List<ViewFilter> list = pageable.getFilters();
-			ViewFilter vf = new ViewFilter();
-			vf.setProperty("createUserId");
-			vf.setValue(person==null?null:person.getPreId());
-			list.add(vf);
 		return fixedUserClient.findPage(pageable);
 	}
 

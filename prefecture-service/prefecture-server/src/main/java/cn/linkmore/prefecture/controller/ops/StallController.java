@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
@@ -164,9 +165,11 @@ public class StallController {
 			st.setStallLocal(stall.getStallLocal());
 			st.setType(stall.getType());
 			st.setAreaName(stall.getAreaName());
-			ReqStall reqStall = new ReqStall();
-			reqStall = ObjectUtils.copyObject(st, reqStall);
-			return this.stallService.update(reqStall);
+			st.setRentOmType(stall.getRentOmType());
+			st.setRentMoType(stall.getRentMoType());
+			Stall sta = new Stall();
+			sta = ObjectUtils.copyObject(st, sta);
+			return this.stallService.update(sta);
 		}
 		return 0;
 	}
@@ -260,5 +263,11 @@ public class StallController {
 	public List<ResStall> findStallList(@RequestBody Map<String, Object> param){
 		List<ResStall> list = this.stallService.findList(param);
 		return list;
+	}
+	
+	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public void delete(@RequestBody List<Long> ids) {
+		this.stallService.delete(ids);
 	}
 }

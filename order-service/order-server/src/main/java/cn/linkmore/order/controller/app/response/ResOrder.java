@@ -1,6 +1,8 @@
 package cn.linkmore.order.controller.app.response;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -247,7 +249,10 @@ public class ResOrder {
 		this.setStatus(ruo.getStatus().shortValue());
 		this.setStallName(ruo.getStallName());
 		this.setPrefectureName(ruo.getPreName());  
-		this.setTotalAmount(ruo.getTotalAmount());
+		System.out.println("当前订单金额 ={}" + ruo.getTotalAmount() + "保留2位小数后" +  ruo.getTotalAmount().setScale(2, RoundingMode.HALF_UP));
+		if(ruo.getTotalAmount() != null) {
+			this.setTotalAmount(ruo.getTotalAmount().setScale(2, RoundingMode.HALF_UP));
+		}
 		this.setOrderSource(ruo.getOrderSource());
 	}
 	public String getBluetooth() {

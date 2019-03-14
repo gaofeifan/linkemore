@@ -57,7 +57,6 @@ public class AppPayController {
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(),  request);
 		} catch (Exception e) { 
-			//e.printStackTrace();
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;

@@ -6,8 +6,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.linkmore.account.controller.app.request.ReqAuthCode;
+import cn.linkmore.account.controller.app.request.ReqAuthEditPW;
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
+import cn.linkmore.account.controller.app.request.ReqAuthPW;
+import cn.linkmore.account.controller.app.request.ReqAuthRegister;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.app.request.ReqEditPWAuth;
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.entity.User;
 import cn.linkmore.account.request.ReqUpdateMobile;
@@ -287,6 +292,64 @@ public interface UserService {
 	 * @Version  v2.0
 	 */
 	List<ResUser> findAll();
+
+	/**
+	 * @param request 
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	cn.linkmore.account.controller.app.response.ResUser loginPW(ReqAuthPW pw, HttpServletRequest request);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	cn.linkmore.account.controller.app.response.ResUser register(ReqAuthRegister register, HttpServletRequest request);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean authCode(ReqAuthCode authCode);
+
+	/**
+	 * @Description  原密码修改密码
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean editPW(ReqAuthEditPW pw, HttpServletRequest request);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	String sendPW(ReqAuthSend rs, HttpServletRequest request);
+
+	/**
+	 * @Description  修改密码
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updatePassword(String password, String mobile);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	String editPWAuth(ReqEditPWAuth pwAuth);
+
+	/**
+	 * @Description  重置密码
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void reset(List<Long> ids, String passwrod);
+
 
 
 }

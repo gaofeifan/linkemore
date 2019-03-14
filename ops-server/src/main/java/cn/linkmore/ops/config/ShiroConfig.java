@@ -3,6 +3,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
 
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -86,6 +87,10 @@ public class ShiroConfig {
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager securityManager,@Qualifier("authenticationFilter") AuthenticationFilter authenticationFilter,@Qualifier("filterChainService")FilterChainService filterChainService) throws Exception{
 		ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
+		
+		Map<String, Filter> filters = bean.getFilters();//获取filters
+		filters.put("authc", new ShiroLoginFilter());//将自定义 的FormAuthenticationFilter注入shiroFilter中
+		
 		bean.setSecurityManager(securityManager);
 		bean.setLoginUrl("/admin/auth/login");
 		bean.setUnauthorizedUrl("/admin/auth/403");

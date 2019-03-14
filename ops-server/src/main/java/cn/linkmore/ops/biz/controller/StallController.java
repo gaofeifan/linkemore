@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
@@ -187,6 +188,25 @@ public class StallController extends BaseController {
 		return msg;
 	}
 
+	/*
+	 * 删除专区
+	 */
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg delete(@RequestBody List<Long> ids) {
+		ViewMsg msg = null;
+		try {
+			this.stallService.delete(ids);
+			msg = new ViewMsg("删除成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = new ViewMsg("删除失败", false);
+		}
+		return msg;
+	}
+	
 	@RequestMapping(value = "/changed_down", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewMsg changedDown(HttpServletRequest request, @RequestBody List<Long> ids) {

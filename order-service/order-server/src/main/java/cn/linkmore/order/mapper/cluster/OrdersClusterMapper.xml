@@ -160,6 +160,16 @@
     limit #{start,jdbcType=BIGINT},10
   </select>
   
+  <select id="findFinishedUserList" parameterType="java.util.Map" resultMap="ResResultMap">
+    select 
+    <include refid="Res_Column_List" />
+    from o_orders  
+    where user_id = #{userId,jdbcType=BIGINT} 
+    and status = 3
+    order by id desc   
+    limit #{start,jdbcType=BIGINT},10
+  </select>
+  
    <select id="findStallLatest" parameterType="java.lang.Long" resultMap="ResResultMap">
     select 
     <include refid="Res_Column_List" />

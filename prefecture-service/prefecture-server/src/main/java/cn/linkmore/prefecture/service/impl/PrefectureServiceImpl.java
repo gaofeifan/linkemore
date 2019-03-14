@@ -67,6 +67,7 @@ import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyGroupClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyGroupDetailClusterMapper;
 import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
+import cn.linkmore.prefecture.entity.LockServerCity;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.PrefectureElement;
 import cn.linkmore.prefecture.entity.StrategyBase;
@@ -153,7 +154,48 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Autowired
 	private LocateClient locateClient;
-	
+	public static List<LockServerCity> lockServerCity = new ArrayList<>();
+	static {
+		LockServerCity city = new LockServerCity();
+		city.setDefault(true);
+		city.setId(1L);
+		city.setName("北京");
+		city.setProvinceCode("010");
+		lockServerCity.add(city);
+//		city = new LockServerCity();
+//		city.setId(6L);
+//		city.setName("上海");
+//		city.setProvinceCode("020");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+////		city.setId(6L);
+//		city.setName("浙江");
+//		city.setProvinceCode("030");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+//		city.setId(3L);
+//		city.setName("杭州");
+//		city.setProvinceCode("030001");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+//		city.setId(5L);
+//		city.setName("广州");
+//		city.setProvinceCode("040001");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+//		city.setId(7L);
+//		city.setName("香港");
+//		city.setProvinceCode("050");
+//		lockServerCity.add(city);
+//		city = new LockServerCity();
+//		city.setId(4L);
+//		city.setName("深圳");
+//		city.setProvinceCode("040002");
+//		lockServerCity.add(city);
+		
+		
+		
+	}
 	@Override
 	public ResPrefectureDetail findById(Long preId) {
 		ResPrefectureDetail detail = prefectureClusterMapper.findById(preId);
@@ -324,12 +366,24 @@ public class PrefectureServiceImpl implements PrefectureService {
 
 	@Override
 	public int save(ReqPrefectureEntity reqPre) {
-		Prefecture pre = new Prefecture();
-		pre = ObjectUtils.copyObject(reqPre, pre);
+		final Prefecture pre = ObjectUtils.copyObject(reqPre, new Prefecture());
 		pre.setCreateTime(new Date());
-		String string = this.lockFactory.getLock(null).saveGroup(pre.getName());
-		if(org.apache.commons.lang3.StringUtils.isNotBlank(string)) {
-			pre.setGateway(string);
+		if(pre != null && pre.getCityId() != null) {
+			ResCity resCity = cityClient.getById(pre.getCityId());
+			String gateway = null;
+			/*for (LockServerCity c : lockServerCity) {
+				if(c.getId() != null && c.getId() == pre.getCityId()) {
+					gateway = this.lockFactory.getLock().saveGroup(pre.getName(),c.getProvinceCode(),c.getName(),new Double(resCity.getLongitude()),new Double(resCity.getLatitude()),1);
+					break;
+				}
+			}*/
+			if(gateway == null) {
+				gateway = this.lockFactory.getLock().saveGroup(pre.getName(),lockServerCity.get(0).getProvinceCode(),lockServerCity.get(0).getName(),new Double(resCity.getLongitude()),new Double(resCity.getLatitude()),1);
+			}
+//			String string = this.lockFactory.getLock().saveGroup(pre.getName(),resCity.getCode(),resCity.getCityName(),new Double(resCity.getLongitude()),new Double(resCity.getLatitude()),1);
+			if(org.apache.commons.lang3.StringUtils.isNotBlank(gateway)) {
+				pre.setGateway(gateway);
+			}
 		}
 		return this.prefectureMasterMapper.save(pre);
 	}
@@ -1442,7 +1496,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 				if(list != null) {
 					String lockSn = gateway.getLockSerialNumber() != null ? gateway.getLockSerialNumber().substring(4).toUpperCase() : gateway.getLockSerialNumber();
 					for (cn.linkmore.prefecture.response.ResStall resStallOps : list) {
-						if(lockSn != null && lockSn.equals(resStallOps.getLockSn())) {
+						if(lockSn != null && lockSn.equalsIgnoreCase(resStallOps.getLockSn())) {
 							stallLock.setStallId(resStallOps.getId());
 							stallLock.setStallName(resStallOps.getStallName());
 							stallLock.setBindStallStatus(1);
@@ -1484,6 +1538,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}
 		List<ResOpenPres>  pres = 	prefectureClusterMapper.findByAppid(user.getAppId());
 		return pres;
+	}
+	
+	public Boolean confirm(String serialNumber, HttpServletRequest request) {
+		return lockFactory.getLock().confirm(serialNumber);
 	}
 	
 	

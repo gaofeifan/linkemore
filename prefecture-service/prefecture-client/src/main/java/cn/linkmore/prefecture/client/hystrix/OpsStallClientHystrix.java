@@ -117,6 +117,11 @@ public class OpsStallClientHystrix implements OpsStallClient {
 	public void saveAndBind(ReqStall reqStall) {
 		log.info("prefecture service stall saveAndBind() hystrix");
 	}
+
+	@Override
+	public void delete(List<Long> ids) {
+		log.info("prefecture service void delete(List<Long> ids) hystrix");
+	}
 	
 	
 }

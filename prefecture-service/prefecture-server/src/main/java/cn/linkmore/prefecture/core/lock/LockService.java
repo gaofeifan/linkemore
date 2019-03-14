@@ -73,7 +73,8 @@ public interface LockService {
 	public void setLockName(Map<String, Object> map );
 
 
-	String saveGroup(String groupName);
+	String saveGroup(String groupName, String cityCode, String cityName, Double longitude, Double latitude,
+			Integer positionNum);
 
 
 	Boolean removeGroupCode(String groupCode);
@@ -179,4 +180,10 @@ public interface LockService {
 	public Boolean removeLock(String serialNumber);
 
 
+	/**
+	 * @Description  确认绑定
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public Boolean confirm(String serialNumber);
 }

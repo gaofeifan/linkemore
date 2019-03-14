@@ -62,7 +62,7 @@ public class FixedRentServiceImpl implements FixedRentService {
 	@Autowired
 	private FeignLockClient feignLockClient;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String, Object> param = new HashMap<String, Object>();

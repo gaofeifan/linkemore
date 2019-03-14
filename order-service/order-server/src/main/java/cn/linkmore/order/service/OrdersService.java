@@ -90,10 +90,11 @@ public interface OrdersService {
 	/**
 	 * 订单列表
 	 * @param start 
+	 * @param orderFlag 
 	 * @param request
 	 * @return
 	 */
-	List<ResCheckedOrder> list(Long start, HttpServletRequest request);
+	List<ResCheckedOrder> list(Long start, String orderFlag, HttpServletRequest request);
 
 	/**
 	 * 当前订单

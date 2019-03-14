@@ -30,6 +30,13 @@ public interface EntRentRecordClusterMapper {
 	 * @Version  v2.0
 	 */
     Integer findUsingRecord(Map<String, Object> param);
+    /**
+     * 根据用户id和车位id查询使用记录
+     * @param userId
+     * @param stallId
+     * @return
+     */
+	EntRentRecord findByUserIdAndStallId(Map<String, Long> param);
 
 
 }
