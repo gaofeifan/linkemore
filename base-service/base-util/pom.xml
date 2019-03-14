@@ -83,5 +83,11 @@
 			<artifactId>base-bean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.auth0</groupId>
+		    <artifactId>java-jwt</artifactId>
+		    <version>3.1.0</version>
+		   </dependency>
 	</dependencies>
 </project>

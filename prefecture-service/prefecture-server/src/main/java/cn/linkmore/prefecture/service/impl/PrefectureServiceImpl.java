@@ -49,6 +49,7 @@ import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResAppointGroupDetail;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
+import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureGroup;
@@ -1473,6 +1474,16 @@ public class PrefectureServiceImpl implements PrefectureService {
 	@Override
 	public Boolean removeLock(String serialNumber, HttpServletRequest request) {
 		return lockFactory.getLock().removeLock(serialNumber);
+	}
+
+	@Override
+	public List<ResOpenPres> openPres(HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		if(user==  null ) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
+		List<ResOpenPres>  pres = 	prefectureClusterMapper.findByAppid(user.getAppId());
+		return pres;
 	}
 	
 	

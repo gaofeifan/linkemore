@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
@@ -82,4 +83,9 @@ public interface PrefectureClusterMapper {
 	 * @Version  v2.0
 	 */
 	ResPrefectureDetail findByGateway(String groupCode);
+	
+	
+	
+	List<ResOpenPres> findByAppid(String appId);
+	
 }

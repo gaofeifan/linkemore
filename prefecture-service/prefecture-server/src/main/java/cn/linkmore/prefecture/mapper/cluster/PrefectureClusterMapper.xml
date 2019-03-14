@@ -1,415 +1,473 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.response.ResPrefectureDetail">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="district_id" jdbcType="BIGINT" property="districtId" />
-    <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="latitude" jdbcType="DECIMAL" property="latitude" />
-    <result column="longitude" jdbcType="DECIMAL" property="longitude" />
-    <result column="route_guidance" jdbcType="VARCHAR" property="routeGuidance" />
-    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
-    <result column="stall_total" jdbcType="INTEGER" property="stallTotal" />
-    <result column="sold_times" jdbcType="INTEGER" property="soldTimes" />
-    <result column="date_contract" jdbcType="TIMESTAMP" property="dateContract" />
-    <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="route_description" jdbcType="VARCHAR" property="routeDescription" />
-    <result column="base_dict_id" jdbcType="BIGINT" property="baseDictId" />
-    <result column="city_id" jdbcType="BIGINT" property="cityId" />
-    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
-    <result column="leave_time" jdbcType="INTEGER" property="leaveTime" />
-    <result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
-    <result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
-    <result column="type" jdbcType="SMALLINT" property="type" />
-    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
-    <result column="category" jdbcType="SMALLINT" property="category" />
-    <result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
-    <result column="gateway" jdbcType="VARCHAR" property="gateway" />
-    <!-- 新增字段 -->
-    <result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
-    <result column="runtime" jdbcType="INTEGER" property="runtime" />
-    <result column="increase" jdbcType="VARCHAR" property="increase" />
-    <result column="month_rent" jdbcType="INTEGER" property="monthRent" />
-    <result column="version" jdbcType="VARCHAR" property="version" />
-    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
-    <result column="business_time" jdbcType="VARCHAR" property="businessTime" />
-    <result column="grid_x" jdbcType="INTEGER" property="gridX" />
-    <result column="grid_y" jdbcType="INTEGER" property="gridY" />
-    
-    <result column="region" jdbcType="VARCHAR" property="region" />
-    <result column="under_layer" jdbcType="VARCHAR" property="underLayer" />
-    <result column="total_stall_num" jdbcType="INTEGER" property="totalStallNum" />
-    <result column="pre_type" jdbcType="SMALLINT" property="preType" />
-  </resultMap>
-  
-  <resultMap id="ResPrefectureMap" type="cn.linkmore.prefecture.controller.app.response.ResPrefecture">
-  	<id column="id" jdbcType="BIGINT" property="id" />
-  	<result column="name" jdbcType="VARCHAR" property="name" />
-  	<result column="city_id" jdbcType="BIGINT" property="cityId" />
-  	<result column="latitude" jdbcType="DECIMAL" property="latitude" />
-  	<result column="longitude" jdbcType="DECIMAL" property="longitude" />
-  	<result column="type" jdbcType="SMALLINT" property="type" />
-  	<result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
-  	<result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
-  	<result column="address" jdbcType="VARCHAR" property="address" />
-  	<result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
-  	<result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
-  	<result column="business_time" jdbcType="VARCHAR" property="businessTime" />
-  	
-  	<result column="region" jdbcType="VARCHAR" property="region" />
-    <result column="under_layer" jdbcType="VARCHAR" property="underLayer" />
-    <result column="total_stall_num" jdbcType="INTEGER" property="totalStallNum" />
-    <result column="pre_type" jdbcType="SMALLINT" property="preType" />
-  </resultMap>
-  
-  <resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
-  	<id column="id" jdbcType="BIGINT" property="id"/>
-  	<result column="name" jdbcType="VARCHAR" property="name" />
-  	<result column="city_id" jdbcType="BIGINT" property="cityId" />
-  	<result column="gateway" jdbcType="VARCHAR" property="gateway" />
-  </resultMap>
-  
-   <resultMap id="ResPreGateMap" type="cn.linkmore.prefecture.response.ResPreGateway">
-  	<id column="id" property="preId"/>
-  	<result column="gateway" jdbcType="VARCHAR" property="number" />
-  	<result column="category" property="category" jdbcType="SMALLINT" />
-  </resultMap>
-  
-  <resultMap id="ResPreListMap" type="cn.linkmore.prefecture.response.ResPreList">
-  	<id column="id" property="id"/>
-  	<result column="name" property="name" />
-  	<result column="status" property="status"/>
-  </resultMap>
-  
-  <resultMap type="cn.linkmore.prefecture.response.ResPreExcel" id="ResPreExcelMap">
- 	<id column="id" property="id" jdbcType="BIGINT" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="date_contract" property="dateContract" jdbcType="TIMESTAMP" />
-    <result column="valid_time" property="validTime" jdbcType="TIMESTAMP" />
-    <result column="stall_total" property="stallTotal" jdbcType="INTEGER" />
-    <result column="order_index" property="orderIndex" jdbcType="INTEGER" />
-    <result column="strategy_name" property="strategyName" jdbcType="VARCHAR" />
-    <result column="base_price" property="basePrice" jdbcType="DECIMAL" />
-    <result column="timely_long" property="timelyLong" jdbcType="INTEGER" />
-    <result column="first_hour" property="firstHour" jdbcType="DECIMAL" />
-    <result column="night_timely_long" property="nightTimelyLong" jdbcType="INTEGER" />
-    <result column="night_price" property="nightPrice" jdbcType="DECIMAL" />
-    <result column="timely_unit" property="timelyUnit" jdbcType="CHAR" />
-    <result column="type" property="type" jdbcType="SMALLINT" />
-    <result column="version" property="version" jdbcType="VARCHAR" />
-    <result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
-    <result column="create_ent_name" property="createEntName" jdbcType="VARCHAR" />
- </resultMap>
-  
-  <sql id="Base_Column_List">
-    id, strategy_id, status, name, district_id, address, latitude, longitude, route_guidance, 
-    image_url, stall_total, sold_times, date_contract, valid_time, create_time, update_time, 
-    route_description, base_dict_id, city_id, order_index, leave_time, charge_price, 
-    charge_time, type, enterprise_id, category, limit_status, gateway, 
-    strategy_description, runtime, increase, month_rent, version, create_user_id, business_time,
-    grid_x, grid_y, region, under_layer, total_stall_num, pre_type, create_ent_id,create_ent_name
-  </sql>
-  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from v_prefecture
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <select id="findByGateway" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from v_prefecture
-    where gateway = #{groupCode,jdbcType=BIGINT}
-    limit 0,1
-  </select>
-  <select id="findPreList" parameterType="java.lang.Long" resultType="cn.linkmore.prefecture.response.ResPrefecture">
-    select  id,name from v_prefecture 
-  </select>
-  
-  <select id="findPreByStatusAndGPS" resultMap="ResPrefectureMap" parameterType="java.util.Map">
-    select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
-  		p.charge_time,p.image_url, p.business_time, p.region, p.under_layer, p.total_stall_num, p.pre_type
-	from v_prefecture p 
-	where p.status = #{status} and (p.type is null or p.type = 0 )
-    and p.category in ('0','2')
-    <if test="cityId != null">
-		and p.city_id = #{cityId,jdbcType=BIGINT}
-	</if>
-	<if test="name != null">
-		and p.name like #{name,jdbcType=VARCHAR}
-	</if>
-	
-	<if test="minLat != null">
-		AND (p.latitude BETWEEN #{minLat} AND #{maxLat})
-	</if>
-	
-	<if test="minLng != null">
-		and (p.longitude BETWEEN #{minLng} AND #{maxLng})
-	</if>
-  </select>
-  
-  <select id="findPreByStatusAndGPS1" resultMap="ResPrefectureMap" parameterType="java.util.Map">
-    select p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
-  		p.charge_time,p.image_url, p.business_time, p.region, p.under_layer, p.total_stall_num, p.pre_type
-	from v_prefecture p
-	where p.status = #{status} 
-    and p.category = 1
-    <if test="cityId != null">
-		and p.city_id = #{cityId,jdbcType=BIGINT}
-	</if>
-	<if test="name != null">
-		and p.name like #{name,jdbcType=VARCHAR}
-	</if>
-	
-	<if test="minLat != null">
-		AND (p.latitude BETWEEN #{minLat} AND #{maxLat})
-	</if>
-	
-	<if test="minLng != null">
-		and (p.longitude BETWEEN #{minLng} AND #{maxLng})
-	</if>
-  </select>
-  
-  <select id="findByIds" parameterType="java.util.List" resultMap="ResPreMap">
-    select  p.id ,p.name,p.city_id
-    from v_prefecture p
-    where id in
-    <foreach collection="list" item="id" open="(" separator="," close=")"  >
-       #{id}
-    </foreach> 
-  </select> 
-  <select id="findPreByIds" parameterType="java.util.Map" resultMap="ResPreMap">
-    select  p.id ,p.name,p.city_id,gateway
-    from v_prefecture p
-    where id in
-    <foreach collection="preIds" item="id" open="(" separator="," close=")"  >
-       #{id}
-    </foreach>
-    <if test="cityId != null">
-    	AND city_id = #{cityId}
-    </if>
-    <if test="category != null">
-    	AND category = #{category}
-    </if>
-    <if test="categorys != null">
-    	AND category in
-    	<foreach collection="categorys" item="cid" open="(" separator="," close=")"  >
-       		#{cid}
-    	</foreach>
-    </if>
-  </select> 
-  
-  <select id="findPreIdList"  resultType="java.lang.Long">
-    select  id  
-    from v_prefecture 
-    where  status = 0
-  </select> 
-  
-  <!-- 启用的车区 -->
-  <select id="findSelectList" resultMap="ResPreListMap" parameterType="java.lang.Long" >
-    select id,name,status 
-    from v_prefecture
-    where status = 0
-  </select>
-  
-  <select id="findSelectListByUser" resultMap="ResPreListMap" parameterType="java.util.HashMap" >
-    select id,name,status 
-    from v_prefecture
-    where status = 0
-    <!-- <if test="createUserId!=null">  
-    	and create_user_id = #{createUserId} 
-    </if> -->
-    <if test="createEntId!=null">  
-    	and create_ent_id = #{createEntId} 
-    </if>
-  </select>
-  
-  <!-- 增加过滤条件的车区 -->
-  <select id="findTreeList" resultMap="ResPreMap"   parameterType="java.util.HashMap" >
-  	select id,name
-	from v_prefecture 
-	where 1 = 1 
-	<!-- <if test="status!=null">  
-    and status = #{status}
-    </if> -->
-    <if test="createUserId!=null">  
-    and create_user_id = #{createUserId} 
-    </if>
-    <if test="createEntId!=null">  
-    and create_ent_id = #{createEntId} 
-    </if>
-    <if test="property==null">  
-    order by create_time desc
-    </if>
-    <if test="property!=null">  
-    order by  ${property} ${direction}
-    </if>
-  </select>
-  
-  <select id="findAll" resultMap="BaseResultMap" >
-    select *
-    from v_prefecture
-  </select>
-  
-  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
-    select count(1) 
-    from v_prefecture
-    where 1 = 1
-    <if test="name!=null">  
-    and name like #{name}
-    </if>
-   	<if test="type == 0">
-    	 and (type = #{type} or type is null)
-   	</if>  
-   	<if test="type == 1">
-   	and type = #{type} 
-   	</if> 
-    <if test="status!=null">  
-    and status = #{status} 
-    </if>
-    <if test="startTime!=null">
-    and date_contract &gt;= #{startTime} 
-    </if> 
-    <if test="endTime!=null">
-    and valid_time &lt;= #{endTime}
-    </if> 
-    <if test="createUserId!=null">  
-    and create_user_id = #{createUserId} 
-    </if>
-    <if test="createEntId!=null">  
-    and create_ent_id = #{createEntId} 
-    </if>
-  </select>
-  
-  <select id="findPage" resultMap="ResPreExcelMap"   parameterType="java.util.HashMap" >
-  	select p.id,p.name,p.date_contract,p.valid_time,p.order_index,p.status,p.type,COUNT(stall.id) stall_total,
-	s.name strategy_name,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit,
-	p.category, p.version, p.create_user_name, p.create_ent_name
-	from v_prefecture p 
-	LEFT JOIN v_stall stall on p.id=stall.pre_id 
-	LEFT JOIN v_strategy_base s on p.strategy_id = s.id
-	where 1=1 
-    <if test="name!=null">  
-    and p.name like #{name}
-    </if> 
-   	<if test="type == 0">
-   	 and (p.type = #{type} or p.type is null)
-   	</if>  
-   	<if test="type == 1">
-   	 and p.type = #{type} 
-   	</if> 
-    <if test="status!=null">  
-    and p.status = #{status}
-    </if> 
-    <if test="startTime!=null">
-    and p.date_contract &gt;= #{startTime}
-    </if> 
-    <if test="endTime!=null">
-    and p.valid_time &lt;= #{endTime}
-    </if> 
-    <if test="createUserId!=null">  
-    and create_user_id = #{createUserId} 
-    </if>
-    <if test="createEntId!=null">  
-    and create_ent_id = #{createEntId} 
-    </if>
-    GROUP BY p.id 
-    <if test="property==null">  
-    order by p.create_time desc
-    </if>
-    <if test="property!=null">  
-    order by ${property} ${direction}
-    </if>
-    limit  #{start},#{pageSize}
-  </select>
-  
-  <select id="check"  resultType="java.lang.Integer" parameterType="java.util.HashMap">
-    select count(1)
-    from v_prefecture where   
-    ${property} = #{value}  
-    and id != #{id} 
-  </select>
-  
-  <select id="checkName" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-    select *
-    from v_prefecture where   
-  	name = #{name}  
-  </select>
-  
-  <select id="findDetailOnList" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select *
-    from v_prefecture
-    where id = #{id}
-  </select>
-  
-  <select id="findExportList" resultMap="ResPreExcelMap"   parameterType="java.util.HashMap" >
-  	select p.id,p.name,p.date_contract,p.valid_time,p.order_index,p.status,COUNT(stall.id) stall_total,
-	s.name strategy_name,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit
-	from v_prefecture p 
-	LEFT JOIN v_stall stall on p.id=stall.pre_id 
-	LEFT JOIN v_strategy_base s on p.strategy_id = s.id
-	where 1 = 1 
-    <if test="name!=null">  
-    and p.name like #{name}
-    </if> 
-    	<if test="type == 0">
-    	 and p.type = #{type} or p.type is null
-    	</if>  
-    	<if test="type == 1">
-    	 and p.type = #{type} 
-    	</if> 
-    <if test="status!=null">  
-    and p.status = #{status}
-    </if> 
-    <if test="startTime!=null">
-    and p.date_contract &gt;= #{startTime}
-    </if> 
-    <if test="endTime!=null">
-    and p.valid_time &lt;= #{endTime}
-    </if> 
-    GROUP BY p.id 
-    order by p.order_index desc
-  </select>
-   
-  <select id="findListByCityId" resultMap="ResPreMap" parameterType="java.lang.Long" >
-    select id,name
-    from v_prefecture
-    where city_id = #{cityId,jdbcType=BIGINT} and status = 0
-  </select>
-  
-  <select id="findList" resultMap="ResPrefectureMap"   parameterType="java.util.HashMap" >
-  	select *
-	from v_prefecture 
-	where 1 = 1 
-	<if test="status!=null">  
-    and status = #{status}
-    </if>
-    <if test="createUserId!=null">  
-    and create_user_id = #{createUserId} 
-    </if>
-    <if test="createEntId!=null">  
-    and create_ent_id = #{createEntId} 
-    </if>
-    <if test="property==null">  
-    order by create_time desc
-    </if>
-    <if test="property!=null">  
-    order by  ${property} ${direction}
-    </if>
-  </select>
-  
-  
-  <select id="findPreGateList" resultMap="ResPreGateMap" >
-    select  id  , gateway,category
-    from v_prefecture 
-    where  status = 0
-  </select> 
-  
-  
+	<resultMap id="BaseResultMap"
+		type="cn.linkmore.prefecture.response.ResPrefectureDetail">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="district_id" jdbcType="BIGINT" property="districtId" />
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="latitude" jdbcType="DECIMAL" property="latitude" />
+		<result column="longitude" jdbcType="DECIMAL" property="longitude" />
+		<result column="route_guidance" jdbcType="VARCHAR" property="routeGuidance" />
+		<result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+		<result column="stall_total" jdbcType="INTEGER" property="stallTotal" />
+		<result column="sold_times" jdbcType="INTEGER" property="soldTimes" />
+		<result column="date_contract" jdbcType="TIMESTAMP" property="dateContract" />
+		<result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="route_description" jdbcType="VARCHAR" property="routeDescription" />
+		<result column="base_dict_id" jdbcType="BIGINT" property="baseDictId" />
+		<result column="city_id" jdbcType="BIGINT" property="cityId" />
+		<result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+		<result column="leave_time" jdbcType="INTEGER" property="leaveTime" />
+		<result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
+		<result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
+		<result column="type" jdbcType="SMALLINT" property="type" />
+		<result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+		<result column="category" jdbcType="SMALLINT" property="category" />
+		<result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+		<result column="gateway" jdbcType="VARCHAR" property="gateway" />
+		<!-- 新增字段 -->
+		<result column="strategy_description" jdbcType="VARCHAR"
+			property="strategyDescription" />
+		<result column="runtime" jdbcType="INTEGER" property="runtime" />
+		<result column="increase" jdbcType="VARCHAR" property="increase" />
+		<result column="month_rent" jdbcType="INTEGER" property="monthRent" />
+		<result column="version" jdbcType="VARCHAR" property="version" />
+		<result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+		<result column="business_time" jdbcType="VARCHAR" property="businessTime" />
+		<result column="grid_x" jdbcType="INTEGER" property="gridX" />
+		<result column="grid_y" jdbcType="INTEGER" property="gridY" />
+
+		<result column="region" jdbcType="VARCHAR" property="region" />
+		<result column="under_layer" jdbcType="VARCHAR" property="underLayer" />
+		<result column="total_stall_num" jdbcType="INTEGER" property="totalStallNum" />
+		<result column="pre_type" jdbcType="SMALLINT" property="preType" />
+	</resultMap>
+
+	<resultMap id="ResPrefectureMap"
+		type="cn.linkmore.prefecture.controller.app.response.ResPrefecture">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="city_id" jdbcType="BIGINT" property="cityId" />
+		<result column="latitude" jdbcType="DECIMAL" property="latitude" />
+		<result column="longitude" jdbcType="DECIMAL" property="longitude" />
+		<result column="type" jdbcType="SMALLINT" property="type" />
+		<result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
+		<result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="charge_time" jdbcType="INTEGER" property="chargeTime" />
+		<result column="charge_price" jdbcType="VARCHAR" property="chargePrice" />
+		<result column="business_time" jdbcType="VARCHAR" property="businessTime" />
+
+		<result column="region" jdbcType="VARCHAR" property="region" />
+		<result column="under_layer" jdbcType="VARCHAR" property="underLayer" />
+		<result column="total_stall_num" jdbcType="INTEGER" property="totalStallNum" />
+		<result column="pre_type" jdbcType="SMALLINT" property="preType" />
+	</resultMap>
+
+	<resultMap id="ResPreMap" type="cn.linkmore.prefecture.response.ResPre">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="city_id" jdbcType="BIGINT" property="cityId" />
+		<result column="gateway" jdbcType="VARCHAR" property="gateway" />
+	</resultMap>
+
+	<resultMap id="ResPreGateMap" type="cn.linkmore.prefecture.response.ResPreGateway">
+		<id column="id" property="preId" />
+		<result column="gateway" jdbcType="VARCHAR" property="number" />
+		<result column="category" property="category" jdbcType="SMALLINT" />
+	</resultMap>
+
+	<resultMap id="ResPreListMap" type="cn.linkmore.prefecture.response.ResPreList">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="status" property="status" />
+	</resultMap>
+
+	<resultMap id="findByAppid" type="cn.linkmore.prefecture.response.ResOpenPres">
+		<id column="id"  jdbcType="BIGINT"  property="id" />
+		<result column="name"   jdbcType="VARCHAR"  property="name" />
+		<result column="address"  jdbcType="VARCHAR"   property="address" />
+		<result column="leisureStall"  jdbcType="VARCHAR"  property="leisureStall" />
+		<result column="charge_time"  jdbcType="VARCHAR" property="chargeTime" />
+		<result column="charge_price"  jdbcType="VARCHAR" property="chargePrice" />
+	</resultMap>
+
+
+
+	<resultMap type="cn.linkmore.prefecture.response.ResPreExcel"
+		id="ResPreExcelMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="date_contract" property="dateContract"
+			jdbcType="TIMESTAMP" />
+		<result column="valid_time" property="validTime" jdbcType="TIMESTAMP" />
+		<result column="stall_total" property="stallTotal" jdbcType="INTEGER" />
+		<result column="order_index" property="orderIndex" jdbcType="INTEGER" />
+		<result column="strategy_name" property="strategyName"
+			jdbcType="VARCHAR" />
+		<result column="base_price" property="basePrice" jdbcType="DECIMAL" />
+		<result column="timely_long" property="timelyLong" jdbcType="INTEGER" />
+		<result column="first_hour" property="firstHour" jdbcType="DECIMAL" />
+		<result column="night_timely_long" property="nightTimelyLong"
+			jdbcType="INTEGER" />
+		<result column="night_price" property="nightPrice" jdbcType="DECIMAL" />
+		<result column="timely_unit" property="timelyUnit" jdbcType="CHAR" />
+		<result column="type" property="type" jdbcType="SMALLINT" />
+		<result column="version" property="version" jdbcType="VARCHAR" />
+		<result column="create_user_name" property="createUserName"
+			jdbcType="VARCHAR" />
+		<result column="create_ent_name" property="createEntName"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, strategy_id, status, name, district_id, address, latitude, longitude,
+		route_guidance,
+		image_url, stall_total, sold_times, date_contract, valid_time, create_time,
+		update_time,
+		route_description, base_dict_id, city_id, order_index, leave_time, charge_price,
+		charge_time, type, enterprise_id, category, limit_status, gateway,
+		strategy_description, runtime, increase, month_rent, version,
+		create_user_id, business_time,
+		grid_x, grid_y, region, under_layer, total_stall_num, pre_type,
+		create_ent_id,create_ent_name
+	</sql>
+	<select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from v_prefecture
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<select id="findByGateway" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from v_prefecture
+		where gateway = #{groupCode,jdbcType=BIGINT}
+		limit 0,1
+	</select>
+	<select id="findPreList" parameterType="java.lang.Long"
+		resultType="cn.linkmore.prefecture.response.ResPrefecture">
+		select id,name from v_prefecture
+	</select>
+
+	<select id="findPreByStatusAndGPS" resultMap="ResPrefectureMap"
+		parameterType="java.util.Map">
+		select
+		p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
+		p.charge_time,p.image_url, p.business_time, p.region, p.under_layer,
+		p.total_stall_num, p.pre_type
+		from v_prefecture p
+		where p.status = #{status} and (p.type is null or p.type = 0 )
+		and p.category in ('0','2')
+		<if test="cityId != null">
+			and p.city_id = #{cityId,jdbcType=BIGINT}
+		</if>
+		<if test="name != null">
+			and p.name like #{name,jdbcType=VARCHAR}
+		</if>
+
+		<if test="minLat != null">
+			AND (p.latitude BETWEEN #{minLat} AND #{maxLat})
+		</if>
+
+		<if test="minLng != null">
+			and (p.longitude BETWEEN #{minLng} AND #{maxLng})
+		</if>
+	</select>
+
+	<select id="findPreByStatusAndGPS1" resultMap="ResPrefectureMap"
+		parameterType="java.util.Map">
+		select
+		p.id,p.name,p.address,p.city_id,p.latitude,p.longitude,p.type,p.limit_status,p.charge_price,
+		p.charge_time,p.image_url, p.business_time, p.region, p.under_layer,
+		p.total_stall_num, p.pre_type
+		from v_prefecture p
+		where p.status = #{status}
+		and p.category = 1
+		<if test="cityId != null">
+			and p.city_id = #{cityId,jdbcType=BIGINT}
+		</if>
+		<if test="name != null">
+			and p.name like #{name,jdbcType=VARCHAR}
+		</if>
+
+		<if test="minLat != null">
+			AND (p.latitude BETWEEN #{minLat} AND #{maxLat})
+		</if>
+
+		<if test="minLng != null">
+			and (p.longitude BETWEEN #{minLng} AND #{maxLng})
+		</if>
+	</select>
+
+	<select id="findByIds" parameterType="java.util.List" resultMap="ResPreMap">
+		select p.id ,p.name,p.city_id
+		from v_prefecture p
+		where id in
+		<foreach collection="list" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</select>
+	<select id="findPreByIds" parameterType="java.util.Map"
+		resultMap="ResPreMap">
+		select p.id ,p.name,p.city_id,gateway
+		from v_prefecture p
+		where id in
+		<foreach collection="preIds" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+		<if test="cityId != null">
+			AND city_id = #{cityId}
+		</if>
+		<if test="category != null">
+			AND category = #{category}
+		</if>
+		<if test="categorys != null">
+			AND category in
+			<foreach collection="categorys" item="cid" open="("
+				separator="," close=")">
+				#{cid}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="findPreIdList" resultType="java.lang.Long">
+		select id
+		from v_prefecture
+		where status = 0
+	</select>
+
+	<!-- 启用的车区 -->
+	<select id="findSelectList" resultMap="ResPreListMap"
+		parameterType="java.lang.Long">
+		select id,name,status
+		from v_prefecture
+		where status = 0
+	</select>
+
+	<select id="findSelectListByUser" resultMap="ResPreListMap"
+		parameterType="java.util.HashMap">
+		select id,name,status
+		from v_prefecture
+		where status = 0
+		<!-- <if test="createUserId!=null"> and create_user_id = #{createUserId} 
+			</if> -->
+		<if test="createEntId!=null">
+			and create_ent_id = #{createEntId}
+		</if>
+	</select>
+
+	<!-- 增加过滤条件的车区 -->
+	<select id="findTreeList" resultMap="ResPreMap" parameterType="java.util.HashMap">
+		select id,name
+		from v_prefecture
+		where 1 = 1
+		<!-- <if test="status!=null"> and status = #{status} </if> -->
+		<if test="createUserId!=null">
+			and create_user_id = #{createUserId}
+		</if>
+		<if test="createEntId!=null">
+			and create_ent_id = #{createEntId}
+		</if>
+		<if test="property==null">
+			order by create_time desc
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
+	</select>
+
+	<select id="findAll" resultMap="BaseResultMap">
+		select *
+		from v_prefecture
+	</select>
+
+	<select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1)
+		from v_prefecture
+		where 1 = 1
+		<if test="name!=null">
+			and name like #{name}
+		</if>
+		<if test="type == 0">
+			and (type = #{type} or type is null)
+		</if>
+		<if test="type == 1">
+			and type = #{type}
+		</if>
+		<if test="status!=null">
+			and status = #{status}
+		</if>
+		<if test="startTime!=null">
+			and date_contract &gt;= #{startTime}
+		</if>
+		<if test="endTime!=null">
+			and valid_time &lt;= #{endTime}
+		</if>
+		<if test="createUserId!=null">
+			and create_user_id = #{createUserId}
+		</if>
+		<if test="createEntId!=null">
+			and create_ent_id = #{createEntId}
+		</if>
+	</select>
+
+	<select id="findPage" resultMap="ResPreExcelMap" parameterType="java.util.HashMap">
+		select
+		p.id,p.name,p.date_contract,p.valid_time,p.order_index,p.status,p.type,COUNT(stall.id)
+		stall_total,
+		s.name
+		strategy_name,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit,
+		p.category, p.version, p.create_user_name, p.create_ent_name
+		from v_prefecture p
+		LEFT JOIN v_stall stall on p.id=stall.pre_id
+		LEFT JOIN v_strategy_base s on p.strategy_id = s.id
+		where 1=1
+		<if test="name!=null">
+			and p.name like #{name}
+		</if>
+		<if test="type == 0">
+			and (p.type = #{type} or p.type is null)
+		</if>
+		<if test="type == 1">
+			and p.type = #{type}
+		</if>
+		<if test="status!=null">
+			and p.status = #{status}
+		</if>
+		<if test="startTime!=null">
+			and p.date_contract &gt;= #{startTime}
+		</if>
+		<if test="endTime!=null">
+			and p.valid_time &lt;= #{endTime}
+		</if>
+		<if test="createUserId!=null">
+			and create_user_id = #{createUserId}
+		</if>
+		<if test="createEntId!=null">
+			and create_ent_id = #{createEntId}
+		</if>
+		GROUP BY p.id
+		<if test="property==null">
+			order by p.create_time desc
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
+		limit #{start},#{pageSize}
+	</select>
+
+	<select id="check" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1)
+		from v_prefecture where
+		${property} = #{value}
+		and id != #{id}
+	</select>
+
+	<select id="checkName" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select *
+		from v_prefecture where
+		name = #{name}
+	</select>
+
+	<select id="findDetailOnList" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select *
+		from v_prefecture
+		where id = #{id}
+	</select>
+
+	<select id="findExportList" resultMap="ResPreExcelMap"
+		parameterType="java.util.HashMap">
+		select
+		p.id,p.name,p.date_contract,p.valid_time,p.order_index,p.status,COUNT(stall.id)
+		stall_total,
+		s.name
+		strategy_name,s.first_hour,s.base_price,s.timely_long,s.night_price,s.night_timely_long,s.timely_unit
+		from v_prefecture p
+		LEFT JOIN v_stall stall on p.id=stall.pre_id
+		LEFT JOIN v_strategy_base s on p.strategy_id = s.id
+		where 1 = 1
+		<if test="name!=null">
+			and p.name like #{name}
+		</if>
+		<if test="type == 0">
+			and p.type = #{type} or p.type is null
+		</if>
+		<if test="type == 1">
+			and p.type = #{type}
+		</if>
+		<if test="status!=null">
+			and p.status = #{status}
+		</if>
+		<if test="startTime!=null">
+			and p.date_contract &gt;= #{startTime}
+		</if>
+		<if test="endTime!=null">
+			and p.valid_time &lt;= #{endTime}
+		</if>
+		GROUP BY p.id
+		order by p.order_index desc
+	</select>
+
+	<select id="findListByCityId" resultMap="ResPreMap"
+		parameterType="java.lang.Long">
+		select id,name
+		from v_prefecture
+		where city_id = #{cityId,jdbcType=BIGINT} and status = 0
+	</select>
+
+	<select id="findList" resultMap="ResPrefectureMap"
+		parameterType="java.util.HashMap">
+		select *
+		from v_prefecture
+		where 1 = 1
+		<if test="status!=null">
+			and status = #{status}
+		</if>
+		<if test="createUserId!=null">
+			and create_user_id = #{createUserId}
+		</if>
+		<if test="createEntId!=null">
+			and create_ent_id = #{createEntId}
+		</if>
+		<if test="property==null">
+			order by create_time desc
+		</if>
+		<if test="property!=null">
+			order by ${property} ${direction}
+		</if>
+	</select>
+
+
+	<select id="findPreGateList" resultMap="ResPreGateMap">
+		select id , gateway,category
+		from v_prefecture
+		where status = 0
+	</select>
+
+	<select id="findByAppid" resultMap="findByAppid" >
+		SELECT id,name,address,charge_price,charge_time,
+		(CASE when num is NULL THEN 0
+		ELSE num
+		end) leisureStall
+		from v_prefecture a LEFT JOIN
+		(SELECT COUNT(1) as num,pre_id FROM v_stall WHERE status = 1 GROUP BY pre_id)
+		b
+		ON a.id = b.pre_id
+		WHERE id in
+		(SELECT pre_id FROM t_third_prefecture WHERE app_id =#{appId} )
+	</select>
+
+
 </mapper>
