@@ -204,19 +204,18 @@ public class ResOrderDetail{
 		this.setPrefectureName(ruo.getPreName());   
 		
 		if(ruo.getTotalAmount() == null) {
-			this.setTotalAmount(new BigDecimal(0d));
+			ruo.setTotalAmount(new BigDecimal(0d));
 		}
 		if(ruo.getActualAmount() == null) {
-			this.setActualAmount(new BigDecimal(0d));
+			ruo.setActualAmount(new BigDecimal(0d));
 		}
 		if(ruo.getCouponAmount() == null) {
-			this.setCouponAmount(new BigDecimal(0d));
+			ruo.setCouponAmount(new BigDecimal(0d));
 		}
 		
 		this.setTotalAmount(ruo.getTotalAmount().setScale(2, RoundingMode.HALF_UP));
 		this.setActualAmount(ruo.getActualAmount().setScale(2, RoundingMode.HALF_UP));
 		this.setCouponAmount(ruo.getCouponAmount().setScale(2, RoundingMode.HALF_UP));
-
 		/*if(ruo.getTotalAmount() != null) {
 			this.setTotalAmount(ruo.getTotalAmount().setScale(2, RoundingMode.HALF_UP));
 		}
