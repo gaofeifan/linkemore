@@ -303,6 +303,7 @@ public class Constants {
 		USER_APP_AUTH_USER("user_app:auth:user:"), 
 		USER_APP_AUTH_CODE("user_app:auth:code:"), 
 		USER_APP_AUTH_MOBILE("user_app:auth:mobile:"), 
+		USER_APP_AUTH_EDIT_PW("user_app:auth:edit:pw:"), 
 		STAFF_ENT_AUTH_TOKEN("staff_ent:auth:uid:"), 
 		STAFF_STAFF_AUTH_TOKEN("staff_staff:auth:uid:"), 
 		STALL_LOCK_OPER_STATUS("STALL:LOCK:OPER:STATUS:"), 

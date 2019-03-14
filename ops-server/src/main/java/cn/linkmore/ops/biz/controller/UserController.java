@@ -34,6 +34,7 @@ import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.UserService;
+import cn.linkmore.ops.request.ReqUserResetPW;
 import cn.linkmore.ops.utils.ExcelUtil;
 import io.swagger.annotations.Api;
 
@@ -68,6 +69,22 @@ public class UserController {
 		ViewMsg msg = null;
 		try {
 			this.userService.delete(ids);
+			msg = new ViewMsg("删除成功", true);
+		} catch (DataException e) {
+			msg = new ViewMsg(e.getMessage(), false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = new ViewMsg("删除失败", false);
+		}
+		return msg;
+	}
+	
+	@RequestMapping(value = "/reset", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewMsg reset(@RequestBody ReqUserResetPW reset) {
+		ViewMsg msg = null;
+		try {
+			this.userService.reset(reset);
 			msg = new ViewMsg("删除成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);

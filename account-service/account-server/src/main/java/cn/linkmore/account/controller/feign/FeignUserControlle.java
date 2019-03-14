@@ -233,4 +233,11 @@ public class FeignUserControlle {
 	public List<ResUser> findAll(){
 		return this.userService.findAll();
 	}
+	
+	@RequestMapping(value = "/reset", method = RequestMethod.PUT)
+	@ResponseBody
+	public Object reset(@RequestBody List<Long> ids, @RequestParam("passwrod") String passwrod) {
+		this.userService.reset(ids,passwrod);
+		return null;
+	}
 }

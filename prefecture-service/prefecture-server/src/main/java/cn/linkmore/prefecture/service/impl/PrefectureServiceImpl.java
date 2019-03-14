@@ -158,7 +158,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		LockServerCity city = new LockServerCity();
 		city.setDefault(true);
 		city.setId(1L);
-		city.setName("BeiJing");
+		city.setName("北京");
 		city.setProvinceCode("010");
 		lockServerCity.add(city);
 //		city = new LockServerCity();
@@ -1495,7 +1495,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 				if(list != null) {
 					String lockSn = gateway.getLockSerialNumber() != null ? gateway.getLockSerialNumber().substring(4).toUpperCase() : gateway.getLockSerialNumber();
 					for (cn.linkmore.prefecture.response.ResStall resStallOps : list) {
-						if(lockSn != null && lockSn.equals(resStallOps.getLockSn())) {
+						if(lockSn != null && lockSn.equalsIgnoreCase(resStallOps.getLockSn())) {
 							stallLock.setStallId(resStallOps.getId());
 							stallLock.setStallName(resStallOps.getStallName());
 							stallLock.setBindStallStatus(1);

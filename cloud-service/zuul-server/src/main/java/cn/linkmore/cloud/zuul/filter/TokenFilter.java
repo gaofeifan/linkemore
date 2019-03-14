@@ -51,6 +51,10 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/exception-logs/v2.0/upload");
 			add("/app/auth/v2.0/wechat");
 			add("/app/auth/v2.0/send");
+			
+			add("/app/auth/v2.0/login-pw");
+			add("/app/auth/v2.0/register");
+			add("/app/auth/v2.0/auth-code");
 
 			add("/enterprise/ent/version/current");
 			add("/enterprise/ent/auth/login");

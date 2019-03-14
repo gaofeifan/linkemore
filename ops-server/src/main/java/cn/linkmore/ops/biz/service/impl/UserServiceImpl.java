@@ -9,6 +9,7 @@ import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.UserService;
+import cn.linkmore.ops.request.ReqUserResetPW;
 /**
  * 用户信息接口 实现
  * @author   GFF
@@ -40,6 +41,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int delete(List<Long> ids) {
 		return client.delete(ids);
+	}
+
+	@Override
+	public void reset(ReqUserResetPW reset) {
+		client.reset(reset.getIds(),reset.getPasswrod());
 	}
 	
 	

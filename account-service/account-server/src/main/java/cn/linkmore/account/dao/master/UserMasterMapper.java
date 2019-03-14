@@ -100,6 +100,16 @@ public interface UserMasterMapper {
 
 	void updateFansStatus(Map<String, Object> param);
 	
+	
+	/**
+	 * @Description  更新密码
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void updatePassword(Map<String, Object> map);
+	
+	void updateIds(List<ResUser> users);
+	
 
 
 }

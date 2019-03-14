@@ -278,6 +278,11 @@ public class LockServiceImpl implements LockService{
 	 */
 	@Override
 	public String saveGroup(String groupName,String cityCode,String cityName,Double longitude,Double latitude,Integer positionNum) {
+		try {
+			groupName = new String(groupName.getBytes(),"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		proToTypeMap.put("groupName", groupName);
 		proToTypeMap.put("cityCode", cityCode);
 		proToTypeMap.put("cityName", cityName);

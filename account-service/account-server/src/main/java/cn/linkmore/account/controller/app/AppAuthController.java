@@ -3,6 +3,7 @@ package cn.linkmore.account.controller.app;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -13,11 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.account.controller.app.request.ReqAuthCode;
+import cn.linkmore.account.controller.app.request.ReqAuthEditPW;
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
+import cn.linkmore.account.controller.app.request.ReqAuthPW;
+import cn.linkmore.account.controller.app.request.ReqAuthRegister;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.app.request.ReqEditPWAuth;
 import cn.linkmore.account.controller.app.response.ResUser;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.util.BeanUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -75,6 +82,65 @@ public class AppAuthController {
 		ResponseEntity<?> response = null; 
 		this.userService.send(rs);
 		response = ResponseEntity.success(null, request);
+		return response;
+	}
+	
+	
+	@ApiOperation(value="账号密码登录",notes="账号密码登录", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/login-pw", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResUser> loginPW(@Validated @RequestBody ReqAuthPW pw, HttpServletRequest request){
+		ResponseEntity<ResUser> response = null; 
+		ResUser ru =this.userService.loginPW(pw,request);
+		response = ResponseEntity.success(ru, request);
+		return response;
+	}
+	
+	@ApiOperation(value="注册",notes="注册", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/register", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResUser> register(@Validated @RequestBody ReqAuthRegister register, HttpServletRequest request){
+		ResponseEntity<ResUser> response = null; 
+		ResUser ru =this.userService.register(register,request);
+		response = ResponseEntity.success(ru, request);
+		return response;
+	}
+	
+	@ApiOperation(value="认证验证码",notes="认证验证码", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/auth-code", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> authCode(HttpServletRequest request,@Validated @RequestBody ReqAuthCode authCode){
+		ResponseEntity<Boolean> response = null; 
+		Boolean boolean1 = this.userService.authCode(authCode);
+		response = ResponseEntity.success(boolean1, request);
+		return response;
+	}
+	
+	@ApiOperation(value="修改密码-原密码认证",notes="修改密码-原密码认证", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/edit-pw-auth", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> editPWAuth(HttpServletRequest request,@Validated @RequestBody ReqEditPWAuth pwAuth){
+		ResponseEntity<String> response = null; 
+		String token = this.userService.editPWAuth(pwAuth);
+		response = ResponseEntity.success(token, request);
+		return response;
+	}
+	@ApiOperation(value="修改密码",notes="修改密码", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/edit-pw", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> editPW(HttpServletRequest request,@Validated @RequestBody ReqAuthEditPW pw){
+		ResponseEntity<Boolean> response = null; 
+		Boolean boolean1 = this.userService.editPW(pw,request);
+		response = ResponseEntity.success(boolean1, request);
+		return response;
+	}
+	@ApiOperation(value="修改密码-发送短信验证码",notes="修改密码-发送短信验证码", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/send-pw", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> sendPW(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
+		ResponseEntity<String> response = null; 
+		String token = this.userService.sendPW(rs,request);
+		response = ResponseEntity.success(token, request);
 		return response;
 	}
 }

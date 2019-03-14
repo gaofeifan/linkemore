@@ -5,13 +5,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.jcajce.provider.asymmetric.rsa.DigestSignatureSpi.MD5;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 
+import cn.linkmore.account.controller.app.request.ReqAuthCode;
+import cn.linkmore.account.controller.app.request.ReqAuthEditPW;
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
+import cn.linkmore.account.controller.app.request.ReqAuthPW;
+import cn.linkmore.account.controller.app.request.ReqAuthRegister;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.app.request.ReqEditPWAuth;
 import cn.linkmore.account.controller.app.request.ReqMobileBind;
 import cn.linkmore.account.dao.cluster.UserAppfansClusterMapper;
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
@@ -52,6 +60,7 @@ import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
+import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.SmsTemplate;
@@ -246,6 +255,15 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
 		}
 	}
+	
+	@Override
+	public void updatePassword(String password,String mobile) {
+		Map<String,Object> map = new HashMap<>();
+		map.put("password", Md5PW.md5(mobile, password));
+		map.put("updateTime", new Date());
+		map.put("mobile", mobile);
+		this.userMasterMapper.updatePassword(map);
+	}
 
 	@Override
 	public void updateAppfans(ReqUserAppfans bean) {
@@ -389,51 +407,22 @@ public class UserServiceImpl implements UserService {
 		}
 		ResUser user = this.findByMobile(rl.getMobile());
 		if (user == null) {
-			user = new ResUser();
-			user.setMobile(rl.getMobile());
-			user.setUsername(rl.getMobile());
-			user.setPassword("");
-			user.setUserType("1");
-			user.setStatus("1");
-			user.setLastLoginTime(new Date());
-			user.setCreateTime(new Date());
-			user.setUpdateTime(new Date());
-			user.setIsAppRegister((short) 1);
-			user.setAppRegisterTime(new Date());
-			user.setIsWechatBind((short) 0);
-			user.setFansStatus((short)0);
-			this.userMasterMapper.save(user);
-			
-			Account account = new Account();
-			account.setId(user.getId());
-			account.setAmount(0.00d);
-			account.setUsableAmount(0.00d);
-			account.setFrozenAmount(0.00d);
-			account.setRechagePaymentAmount(0.00d);
-			account.setRechargeAmount(0.00d);
-			account.setAccType(1);
-			account.setStatus((short) 1);
-			account.setOrderAmount(0.00d);
-			account.setOrderPaymentAmount(0.00d);
-			account.setCreateTime(new Date());
-			accountMasterMapper.insert(account);
-			couponClient.paySend(user.getId(), 8);
+			user = insertUser(rl.getMobile(), "");
 		} else if (user.getStatus().equals("2")) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_LOCKED);
 		} else {
-			user.setLastLoginTime(new Date());
-			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("id", user.getId());
-			param.put("lastLoginTime", new Date());
-			param.put("updateTime", new Date());
-			this.userMasterMapper.updateLoginTime(param);
-			this.updateFansStatus((short)0, user.getId());
+			updateLoginTime(user);
 		}
 		String key = TokenUtil.getKey(request); 
 		log.info(">>>>>>appLogin request= {}, key = {}",JSON.toJSON(request.getSession().getId()), JSON.toJSON(key));
+		return editResUser(user, request);
+	} 
+
+	private cn.linkmore.account.controller.app.response.ResUser editResUser(ResUser user,HttpServletRequest request){
+		String key = TokenUtil.getKey(request); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
 		ru.setId(user.getId());
-		ru.setMobile(rl.getMobile());
+		ru.setMobile(user.getMobile());
 		ru.setToken(key); 
 		ru.setSex(user.getSex());
 		ru.setRealname(user.getRealname());
@@ -452,8 +441,49 @@ public class UserServiceImpl implements UserService {
 			new PushThread(ru.getId().toString(), token).start(); 
 		}
 		return ru;
-	} 
-
+	}
+	
+	private ResUser insertUser(String mobile,String passwrod) {
+		ResUser user = new ResUser();
+		user.setMobile(mobile);
+		user.setUsername(mobile);
+		user.setPassword(passwrod);
+		user.setUserType("1");
+		user.setStatus("1");
+		user.setLastLoginTime(new Date());
+		user.setCreateTime(new Date());
+		user.setUpdateTime(new Date());
+		user.setIsAppRegister((short) 1);
+		user.setAppRegisterTime(new Date());
+		user.setIsWechatBind((short) 0);
+		user.setFansStatus((short)0);
+		this.userMasterMapper.save(user);
+		
+		Account account = new Account();
+		account.setId(user.getId());
+		account.setAmount(0.00d);
+		account.setUsableAmount(0.00d);
+		account.setFrozenAmount(0.00d);
+		account.setRechagePaymentAmount(0.00d);
+		account.setRechargeAmount(0.00d);
+		account.setAccType(1);
+		account.setStatus((short) 1);
+		account.setOrderAmount(0.00d);
+		account.setOrderPaymentAmount(0.00d);
+		account.setCreateTime(new Date());
+		accountMasterMapper.insert(account);
+		couponClient.paySend(user.getId(), 8);
+		return user;
+	}
+	private void updateLoginTime(ResUser user) {
+		user.setLastLoginTime(new Date());
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("id", user.getId());
+		param.put("lastLoginTime", new Date());
+		param.put("updateTime", new Date());
+		this.userMasterMapper.updateLoginTime(param);
+		this.updateFansStatus((short)0, user.getId());
+	}
 	@Override
 	public cn.linkmore.account.controller.app.response.ResUser login(String code, HttpServletRequest request) {
 		ResFans fans = this.appWechatClient.getFans(code);
@@ -1140,4 +1170,127 @@ public class UserServiceImpl implements UserService {
 		return this.userClusterMapper.findAll();
 	}
 
+	@Override
+	public cn.linkmore.account.controller.app.response.ResUser loginPW(ReqAuthPW pw,HttpServletRequest request) {
+		ResUser resUser = this.findByMobile(pw.getMobile());
+		if(resUser == null){
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
+		}
+		if(StringUtils.isBlank(resUser.getPassword())) {
+			throw new BusinessException(StatusEnum.ACCOUNT_PASSWROD_ERROR);
+		}
+		if(resUser.getPassword().equals(Md5PW.md5(pw.getMobile(), pw.getPassword()))) {
+			updateLoginTime(resUser);
+			String key = TokenUtil.getKey(request); 
+			log.info(">>>>>>appLogin request= {}, key = {}",JSON.toJSON(request.getSession().getId()), JSON.toJSON(key));
+			return editResUser(resUser, request);
+		}
+		throw new BusinessException(StatusEnum.ACCOUNT_PASSWROD_ERROR);
+	}
+	
+	
+	@Override
+	public cn.linkmore.account.controller.app.response.ResUser register(ReqAuthRegister register,
+			HttpServletRequest request) {
+		ResUser resUser = this.findByMobile(register.getMobile());
+		if(resUser != null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
+		}
+		if(!register.getPasswrod().equals(register.getRepasswrod())) {
+			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWROD_ERROR);
+		}
+		String pw = Md5PW.md5(register.getMobile(), register.getPasswrod());
+		ResUser user = insertUser(register.getMobile(), pw);
+		return editResUser(user, request);
+	}
+
+
+	@Override
+	public Boolean authCode(ReqAuthCode authCode) {
+		ResUserStaff rus = userStaffClusterMapper.findByMobile(authCode.getMobile()); 
+		if(!(rus!=null&&STAFF_CODE.equals(authCode.getCode()))) {
+			Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+authCode.getMobile());
+			log.info(">>>>>>appLogin mobile = {}, code = {}",authCode.getMobile(), cache);
+			if(cache==null) {
+				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
+			}else {
+				if(!cache.toString().equals(authCode.getCode())) {
+					throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
+				}else {
+					this.redisService.remove(RedisKey.USER_APP_AUTH_CODE.key+authCode.getMobile());
+				}
+			}
+		}
+		return true;
+	}
+
+
+	@Override
+	public Boolean editPW(ReqAuthEditPW pw,HttpServletRequest request) {
+		if(!pw.getPasswrod().equals(pw.getRepasswrod())) {
+			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWROD_ERROR);
+		}
+		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW+pw.getMobile());
+		if(object == null) {
+			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_EXPIRED);
+		}
+		if(!object.toString().equals(pw.getToken())) {
+			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_ERROR);
+		}
+		this.updatePassword(pw.getPasswrod(), pw.getMobile());
+		ResUser user = this.findByMobile(pw.getMobile());
+		String os = request.getHeader("os");
+		String accessToken = TokenUtil.getKey(request);
+		this.redisService.remove(RedisKey.USER_APP_AUTH_EDIT_PW+pw.getMobile());
+		this.redisService.remove(appUserFactory.createUserIdRedisKey(user.getId(), os));
+		this.redisService.remove(appUserFactory.createTokenRedisKey(accessToken, os));  
+		return true;
+	}
+
+	@Override
+	public String sendPW(ReqAuthSend rs, HttpServletRequest request) {
+		this.send(rs);
+		String uuid = UUIDTool.random();
+		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW+rs.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
+		return uuid;
+	}
+
+	@Override
+	public String editPWAuth(ReqEditPWAuth pwAuth) {
+		ResUser user = this.findByMobile(pwAuth.getMobile());
+		if(user == null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
+		}
+		if(StringUtils.isBlank(user.getPassword()) && !user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPasswrod()))) {
+			throw new BusinessException(StatusEnum.ACCOUNT_PASSWROD_ERROR);
+		}
+		String uuid = UUIDTool.random();
+		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW+pwAuth.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
+		return uuid;
+	}
+
+	@Override
+	public void reset(List<Long> ids, String passwrod) {
+		List<ResUser> users = this.userClusterMapper.findByIds(ids);
+		users.stream().forEach(u -> u.setPassword(Md5PW.md5(u.getMobile(), passwrod)));
+		this.userMasterMapper.updateIds(users);
+	}
+	
+	
 }
+class UUIDTool{
+	public static String random() {
+		return UUID.randomUUID().toString();
+	}
+}
+class Md5PW{
+	private static final String LINKEMORE = "LINKEMORE";
+	public static String md5(String mobile ,String password) {
+		String hex = DigestUtils.md5Hex(LINKEMORE+mobile+password);
+		return hex;
+	}
+		
+
+}
+
+
