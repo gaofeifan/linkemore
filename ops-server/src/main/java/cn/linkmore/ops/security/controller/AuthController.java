@@ -50,7 +50,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Auth", description = "授权")
 @RestController
 @RequestMapping("/admin/auth")
-public class AuthController {
+  public class AuthController {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private PersonService personService;

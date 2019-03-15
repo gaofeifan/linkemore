@@ -19,6 +19,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.request.ReqUserResetPW;
 import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
@@ -198,6 +199,6 @@ public interface UserClient {
 
 	@RequestMapping(value = "/reset", method = RequestMethod.PUT)
 	@ResponseBody
-	public Object reset(@RequestBody List<Long> ids, @RequestParam("passwrod") String passwrod);
+	public Object reset(@RequestBody ReqUserResetPW reset);
 
 }

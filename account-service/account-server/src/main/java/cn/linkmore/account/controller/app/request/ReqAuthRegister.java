@@ -2,6 +2,7 @@ package cn.linkmore.account.controller.app.request;
 
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -19,6 +20,10 @@ public class ReqAuthRegister {
 	@ApiModelProperty(value = "确认密码，必填", required = true)
 	@NotBlank(message="确认密码不能为空") 
 	private String repasswrod;
+	@ApiModelProperty(value = "token发送短信成功后生成的", required = true)
+	@NotBlank(message="token不能为空") 
+	@Length(min=32,max=32,message="token长度应为32位")
+	private String token;
 	public String getMobile() {
 		return mobile;
 	}
@@ -37,5 +42,10 @@ public class ReqAuthRegister {
 	public void setRepasswrod(String repasswrod) {
 		this.repasswrod = repasswrod;
 	}
-	
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
 }

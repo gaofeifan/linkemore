@@ -23,6 +23,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.request.ReqUserResetPW;
 import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
@@ -236,8 +237,8 @@ public class FeignUserControlle {
 	
 	@RequestMapping(value = "/reset", method = RequestMethod.PUT)
 	@ResponseBody
-	public Object reset(@RequestBody List<Long> ids, @RequestParam("passwrod") String passwrod) {
-		this.userService.reset(ids,passwrod);
+	public Object reset(@RequestBody ReqUserResetPW reset) {
+		this.userService.reset(reset.getIds(),reset.getPasswrod());
 		return null;
 	}
 }

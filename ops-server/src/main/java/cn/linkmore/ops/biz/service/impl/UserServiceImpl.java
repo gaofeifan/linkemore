@@ -10,6 +10,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.UserService;
 import cn.linkmore.ops.request.ReqUserResetPW;
+import cn.linkmore.util.ObjectUtils;
 /**
  * 用户信息接口 实现
  * @author   GFF
@@ -45,7 +46,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void reset(ReqUserResetPW reset) {
-		client.reset(reset.getIds(),reset.getPasswrod());
+		cn.linkmore.account.request.ReqUserResetPW pw = ObjectUtils.copyObject(reset, new cn.linkmore.account.request.ReqUserResetPW());
+		client.reset(pw);
 	}
 	
 	

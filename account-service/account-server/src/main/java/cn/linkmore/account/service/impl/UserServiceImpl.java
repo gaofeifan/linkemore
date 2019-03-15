@@ -1199,6 +1199,13 @@ public class UserServiceImpl implements UserService {
 		if(!register.getPasswrod().equals(register.getRepasswrod())) {
 			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWROD_ERROR);
 		}
+		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW+register.getMobile());
+		if(object == null) {
+			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_EXPIRED);
+		}
+		if(!object.toString().equals(register.getToken())) {
+			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_ERROR);
+		}
 		String pw = Md5PW.md5(register.getMobile(), register.getPasswrod());
 		ResUser user = insertUser(register.getMobile(), pw);
 		return editResUser(user, request);
@@ -1250,7 +1257,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String sendPW(ReqAuthSend rs, HttpServletRequest request) {
 		this.send(rs);
-		String uuid = UUIDTool.random();
+		String uuid = UUIDTool.random().replaceAll("-", "");
 		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW+rs.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
 		return uuid;
 	}
@@ -1264,7 +1271,7 @@ public class UserServiceImpl implements UserService {
 		if(StringUtils.isBlank(user.getPassword()) && !user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPasswrod()))) {
 			throw new BusinessException(StatusEnum.ACCOUNT_PASSWROD_ERROR);
 		}
-		String uuid = UUIDTool.random();
+		String uuid = UUIDTool.random().replaceAll("-", "");
 		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW+pwAuth.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
 		return uuid;
 	}

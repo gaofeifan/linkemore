@@ -85,12 +85,12 @@ public class UserController {
 		ViewMsg msg = null;
 		try {
 			this.userService.reset(reset);
-			msg = new ViewMsg("删除成功", true);
+			msg = new ViewMsg("重置成功", true);
 		} catch (DataException e) {
 			msg = new ViewMsg(e.getMessage(), false);
 		} catch (Exception e) {
 			e.printStackTrace();
-			msg = new ViewMsg("删除失败", false);
+			msg = new ViewMsg("重置失败", false);
 		}
 		return msg;
 	}

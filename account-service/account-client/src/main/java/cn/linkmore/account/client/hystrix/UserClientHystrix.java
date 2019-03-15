@@ -22,6 +22,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.request.ReqUserResetPW;
 import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
@@ -175,7 +176,7 @@ public class UserClientHystrix implements UserClient{
 
 
 	@Override
-	public Object reset(List<Long> ids, String passwrod) {
+	public Object reset(@RequestBody ReqUserResetPW reset) {
 		log.info("account service int reset(List<Long> ids, String passwrod) hystrix");
 		return null;
 	}
