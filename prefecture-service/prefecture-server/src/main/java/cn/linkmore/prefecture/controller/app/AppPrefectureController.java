@@ -2,6 +2,7 @@ package cn.linkmore.prefecture.controller.app;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
@@ -23,6 +25,7 @@ import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResAppointGroupDetail;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
+import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
@@ -30,6 +33,9 @@ import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResStallInfo;
 import cn.linkmore.prefecture.service.BluetoothDataService;
 import cn.linkmore.prefecture.service.PrefectureService;
+import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -225,5 +231,23 @@ public class AppPrefectureController {
 		}
 		return response;
 	} 
+	
+	
+	@ApiOperation(value = "第三方车区列表", notes = "根据用户获取第三方车区列表", consumes = "application/json")
+	@RequestMapping(value = "/open-list", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResOpenPres>> openPres( HttpServletRequest request) {
+		ResponseEntity<List<ResOpenPres>> response = null;
+		try { 
+			List<ResOpenPres> list = this.prefectureService.openPres(request);
+			response = ResponseEntity.success(list, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
+	
 	
 }

@@ -405,6 +405,8 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		}
+		
+		
 		ResUser user = this.findByMobile(rl.getMobile());
 		if (user == null) {
 			user = insertUser(rl.getMobile(), "");

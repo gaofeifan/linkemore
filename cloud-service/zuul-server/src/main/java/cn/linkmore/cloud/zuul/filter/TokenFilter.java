@@ -65,6 +65,7 @@ public class TokenFilter extends ZuulFilter {
 			add("/open/auth/t");
 			
 			add("/app/prefectures/v2.0/map/near-list");
+			add("/app/prefectures/open-list");
 			add("/app/prefectures/v2.0/map/list");
 			add("/app/prefectures/v2.0/free/list");
 			add("/app/prefectures/v2.0/strategy");
@@ -99,6 +100,9 @@ public class TokenFilter extends ZuulFilter {
 			add("/staff/auth/login");  
 			add("/staff/vehicle-brands");  
 			add("/staff/auth/check-mobile");  
+			
+			add("/open/auth/token");
+			add("/open/auth/t");
 			
 			add("/h5/");
 			add("/h5/a");

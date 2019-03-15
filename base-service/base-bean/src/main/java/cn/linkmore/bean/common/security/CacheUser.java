@@ -19,6 +19,22 @@ public class CacheUser implements Serializable {
 	private String token;
 	private Short client;
 	private String session;
+	private String appId;
+	
+	
+	
+	/**
+	 * @return the appId
+	 */
+	public String getAppId() {
+		return appId;
+	}
+	/**
+	 * @param appId the appId to set
+	 */
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
 	public Long getId() {
 		return id;
 	}
