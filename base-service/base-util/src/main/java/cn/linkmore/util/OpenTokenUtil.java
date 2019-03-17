@@ -18,7 +18,6 @@ public class OpenTokenUtil {
 	private static final long EXPIRE_TIME = 50 * 60 * 1000;
 
 	public static String createToken() throws Exception {
-
 		long now = System.currentTimeMillis();
 		Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
 
@@ -26,7 +25,7 @@ public class OpenTokenUtil {
 		map.put("alg", "HS256");
 		map.put("typ", "JWT");
 		String token = JWT.create().withHeader(map).withClaim("uid", "183101").withClaim("mobile", "18310151719")
-				.withClaim("plates", "[]").withExpiresAt(date).withIssuedAt(new Date(now))
+				.withClaim("plates", "[京S88888]").withExpiresAt(date).withIssuedAt(new Date(now))
 				.sign(Algorithm.HMAC256(Secret));
 		return token;
 	}
@@ -34,7 +33,7 @@ public class OpenTokenUtil {
 	// 解析token
 	public static Map<String, Claim> verifyToken(String token, String secret) throws Exception {
 
-		JWTVerifier verifier = JWT.require(Algorithm.HMAC256(Secret)).build();
+		JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret)).build();
 
 		DecodedJWT jwt = verifier.verify(token);
 

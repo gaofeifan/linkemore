@@ -1314,6 +1314,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		List<ResOpenPres>  pres = 	prefectureClusterMapper.findByAppid(user.getAppId());
 		if(CollectionUtils.isNotEmpty(pres)) {
 			for(ResOpenPres preDetail: pres) {
+				preDetail.setLeisureStall(0);
 				Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + preDetail.getId());
 				Map<Long, Set<Object>> map = new HashMap<Long, Set<Object>>();
 				Set<Object> sns = null;
@@ -1346,6 +1347,8 @@ public class PrefectureServiceImpl implements PrefectureService {
 					} else {
 						preDetail.setLeisureStall(map.get(groupId).size());
 					}
+				}else {
+					preDetail.setGroupId(0L);
 				}
 			}
 		}
