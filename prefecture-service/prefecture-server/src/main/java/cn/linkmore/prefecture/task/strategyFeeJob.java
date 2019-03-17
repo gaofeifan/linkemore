@@ -38,7 +38,7 @@ public class strategyFeeJob {
 	@Value("${strategyfee.fee-secret}")
 	private String strategyFeesSecret;
 	
-	@Scheduled(cron = "0 0/10 * * * *")
+	@Scheduled(cron = "0 0/60 * * * *")
 	public void remoteGetFee() {
 		String jsonRes=httpGetFeeList();
 		log.error("strategyFeeListURL={}",strategyFeeListURL);

@@ -92,7 +92,6 @@
 		<id column="id"  jdbcType="BIGINT"  property="id" />
 		<result column="name"   jdbcType="VARCHAR"  property="name" />
 		<result column="address"  jdbcType="VARCHAR"   property="address" />
-		<result column="leisureStall"  jdbcType="VARCHAR"  property="leisureStall" />
 		<result column="charge_time"  jdbcType="VARCHAR" property="chargeTime" />
 		<result column="charge_price"  jdbcType="VARCHAR" property="chargePrice" />
 	</resultMap>
@@ -456,17 +455,16 @@
 	</select>
 
 	<select id="findByAppid" resultMap="findByAppid" >
-		SELECT id,name,address,charge_price,charge_time,
-		(CASE when num is NULL THEN 0
-		ELSE num
-		end) leisureStall
-		from v_prefecture a LEFT JOIN
-		(SELECT COUNT(1) as num,pre_id FROM v_stall WHERE status = 1 GROUP BY pre_id)
-		b
-		ON a.id = b.pre_id
-		WHERE id in
-		(SELECT pre_id FROM t_third_prefecture WHERE app_id =#{appId} )
+		SELECT
+			v.id,
+			NAME,
+			address,
+			charge_price,
+			charge_time
+		FROM
+			v_prefecture v
+		LEFT JOIN t_third_prefecture p ON v.id = p.pre_id
+		AND p.app_id =#{appId}
 	</select>
-
 
 </mapper>
