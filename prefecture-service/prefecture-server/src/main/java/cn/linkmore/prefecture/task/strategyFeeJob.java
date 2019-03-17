@@ -29,20 +29,17 @@ public class strategyFeeJob {
 	@Autowired
 	private StrategyFeeMasterMapper strategyFeeMasterMapper;
 	
-	
-	//@Value("${strategyFeeURL}")
 	@Value("${strategyfee.url.list}")
-	private String strategyFeeListURL;//="http://192.168.1.76:8086/charge/api/get_charge_list";
+	private String strategyFeeListURL;
 	
 	@Value("${strategyfee.fee-code}")
-	private String strategyFeeCode;//="987656";
+	private String strategyFeeCode;
 	
 	@Value("${strategyfee.fee-secret}")
-	private String strategyFeesSecret;//="99876505523";
+	private String strategyFeesSecret;
 	
 	@Scheduled(cron = "0 0/10 * * * *")
 	public void remoteGetFee() {
-		//System.out.println("remoteGetFee");
 		String jsonRes=httpGetFeeList();
 		log.error("strategyFeeListURL={}",strategyFeeListURL);
 		log.error("jsonRes={}",jsonRes);
