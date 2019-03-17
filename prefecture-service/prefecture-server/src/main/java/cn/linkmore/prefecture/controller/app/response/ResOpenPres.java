@@ -23,6 +23,17 @@ public class ResOpenPres {
 
 	@ApiModelProperty(value = "计费价格")
 	private String chargePrice;
+	
+	@ApiModelProperty(value = "车区分组id")
+	private Long groupId;
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
 
 	/**
 	 * @return the id

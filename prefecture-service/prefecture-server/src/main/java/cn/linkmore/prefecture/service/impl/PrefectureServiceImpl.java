@@ -1203,231 +1203,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 	}
 
 	@Override
-	public ResAppointGroupDetail findAppointGroupDetail(ReqBooking reqBooking, HttpServletRequest request) {
-		ResAppointGroupDetail groupDetail = new ResAppointGroupDetail();
-		ResGroupStrategy groupStrategy = new ResGroupStrategy();
-		List<String> descList = new ArrayList<String>();
-		Set<Object> lockSnList = new HashSet<Object>();
-		List<ResStall> stallList = new ArrayList<ResStall>();
-		ResStall resStall = null;
-		Integer count = 0;
-		ResVechicleMark vehicleMark = vehicleMarkClient.findById(reqBooking.getPlateId());
-		if (vehicleMark == null) {
-			throw new BusinessException(StatusEnum.VALID_EXCEPTION);
-		}
-		String vehMark = vehicleMark.getVehMark(); // 车牌号
-		log.info(".........stall list  vehicle mark = {}", JSON.toJSON(vehicleMark));
-		if (!this.checkCarFree(vehicleMark.getVehMark())) {
-			throw new BusinessException(StatusEnum.ORDER_REASON_CARNO_BUSY); // 当前车牌号已在预约中，请更换车牌号重新预约
-		}
-		boolean assign = false;
-		ResStrategyGroup group = strategyGroupClusterMapper.selectByPrimaryKey(reqBooking.getGroupId());
-		ResPrefectureDetail preDetail = this.prefectureClusterMapper.findById(reqBooking.getPrefectureId());
-		if (preDetail != null && StringUtils.isNotBlank(preDetail.getGateway())) {
-			if(preDetail.getGridX() !=null ) {
-				groupStrategy.setGridX(preDetail.getGridX());
-				groupStrategy.setGridY(preDetail.getGridY());
-			}
-			groupDetail.setPreName(preDetail.getName());
-			if (preDetail.getStatus() == 1) {
-				throw new BusinessException(StatusEnum.ORDER_REASON_STALL_NONE); // 无空闲车位可用
-			}
-			Set<Object> set = this.redisService.members(RedisKey.ORDER_ASSIGN_STALL.key); // 集合中所有成员元素
-			for (Object obj : set) {
-				JSONObject json = JSON.parseObject(obj.toString());
-				String vm = json.get("plate").toString(); // 车牌
-				Long pid = Long.parseLong(json.get("preId").toString()); // 车区id
-				if (pid.longValue() == reqBooking.getPrefectureId().longValue() && vehMark.equals(vm)) { // 找到车区
-					String lockSn = json.get("lockSn").toString();
-					assign = true;
-					log.info(".........stall list use the admin assign stall:{},plate:{}", lockSn, vehicleMark.getVehMark());
-					break;
-				}
-			}
-			lockSnList = this.redisService
-					.members(RedisKey.PREFECTURE_FREE_STALL.key + reqBooking.getPrefectureId()); // 集合中所有成员元素
-			log.info(".........stall list common pre lockSnList = {}", JsonUtil.toJson(lockSnList));
-		}
-		if(group != null) {
-			Map<String, Object> params = new HashMap<String, Object>();
-			List<StrategyGroupDetail> findList = strategyGroupDetailClusterMapper.findList(reqBooking.getGroupId());
-			List<Long> stallIds = new ArrayList<Long>();
-			for (StrategyGroupDetail detail : findList) {
-				stallIds.add(detail.getStallId());
-			}
-			params.put("stallList", stallIds);
-			List<cn.linkmore.prefecture.response.ResStall> groupStallList = stallClusterMapper.findAllStallList(params);
-			/*if(CollectionUtils.isNotEmpty(groupStallList)) {
-				for (cn.linkmore.prefecture.response.ResStall stall : groupStallList) {
-					resStall = new ResStall();
-					resStall.setStallId(stall.getId());
-					resStall.setLockSn(stall.getLockSn());
-					resStall.setStallName(stall.getStallName());
-					if(stall.getStatus()!= null && stall.getStatus() == 1) {
-						if(CollectionUtils.isNotEmpty(lockSnList) && lockSnList.contains(stall.getLockSn())) {
-							//空闲车位锁
-							stall.setStatus(1);
-						}else {
-							stall.setStatus(2);
-						}
-					}
-					resStall.setStatus(stall.getStatus());
-					stallList.add(resStall);
-				} 
-			}*/
-			
-			Map<String,Object> statuMap = new HashMap<String,Object>();
-			for (cn.linkmore.prefecture.response.ResStall stall : groupStallList) {
-				resStall = new ResStall();
-				resStall.setStallId(stall.getId());
-				if(stall.getStatus() == 1) {
-					if(lockSnList.contains(stall.getLockSn())) {
-						//空闲车位锁
-						stall.setStatus(1);
-					}else {
-						stall.setStatus(2);
-					}
-				}
-				resStall.setLockSn(stall.getLockSn());
-				resStall.setStallName(stall.getStallName());
-				stallList.add(resStall);
-				statuMap.put(stall.getStallName(), stall);
-			}
-			
-			List<PrefectureElement> eleList = prefectureElementClusterMapper.findByPreId(group.getPrefectureId());
-			List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
-			Map<String,Object> paramMap = null;
-			if(CollectionUtils.isNotEmpty(eleList)) {
-				for(PrefectureElement ele: eleList) {
-					paramMap = new HashMap<String,Object>();
-					if("button".equals(ele.getEleType())) {
-						if(statuMap.get(ele.getEleName()) != null) {
-							cn.linkmore.prefecture.response.ResStall stall = (cn.linkmore.prefecture.response.ResStall) statuMap.get(ele.getEleName());
-							paramMap.put("name", ele.getEleName());
-							//此处需要根据车位锁实际状态优化
-							paramMap.put("status", stall.getStatus());
-							paramMap.put("stallId", stall.getId());
-							paramMap.put("index", count);
-							paramMap.put("lockSn", stall.getLockSn());
-						}else {
-							paramMap.put("name", ele.getEleName());
-							paramMap.put("status", 4);
-							paramMap.put("index", count);
-							paramMap.put("stallId", 0L);
-							paramMap.put("lockSn", "");
-						}
-					}else  if("img".equals(ele.getEleType())){
-						if(StringUtils.isNotBlank(ele.getEleSrc())) {
-							paramMap.put("src", ele.getEleSrc());
-						}
-					}
-					paramMap.put("type", ele.getEleType());
-					paramMap.put("x", ele.getEleX());
-					paramMap.put("y", ele.getEleY());
-					paramMap.put("width", ele.getEleWidth());
-					paramMap.put("height", ele.getEleHeight());
-					mapList.add(paramMap);
-					count ++;
-				}
-			}
-			log.info(".........parking data map = {}", JSON.toJSON(mapList));
-			groupStrategy.setParkingDataMap(mapList);
-			
-			
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String freeMins = "";
-			String appFreeMins = "";
-			String topFee = "0.0";
-			StringBuffer sb = new StringBuffer();
-			Map<String, Object> paramFee = new HashMap<String, Object>();
-			paramFee.put("strategGroupId", reqBooking.getGroupId());
-			paramFee.put("searchDateTime", sdf.format(new Date()));
-			String json = strategyFeeService.info(paramFee);
-			log.info("..........group strategy param fee{},json{}", JSON.toJSON(paramFee), json);
-			if (json != null) {
-				JSONObject data = JSONObject.parseObject(json);
-				if (data.getInteger("code") == 200) {
-					if(data.getString("detail")!= null) {
-						JSONObject detailObj = JSONObject.parseObject(data.getString("detail"));
-						freeMins = String.valueOf(detailObj.getInteger("free"));
-						topFee = String.valueOf(detailObj.getBigDecimal("limitPrice"));
-						JSONArray array = detailObj.getJSONArray("data");
-						for (int i = 0; i < array.size(); i++) {
-							String fee = "";
-							String obj = array.getString(i);
-							JSONObject jsonObj = JSONObject.parseObject(obj);
-							String beginTime = jsonObj.getString("beginTime");
-							String endTime = jsonObj.getString("endTime");
-							Double chargeFee = jsonObj.getBigDecimal("chargeFee").doubleValue();
-							int chargeHourFree = 0;
-							if(jsonObj.getString("chargeHourFree") != null) {
-								chargeHourFree = jsonObj.getInteger("chargeHourFree");
-							}
-							
-							int chargeUnit = jsonObj.getInteger("chargeUnit");
-							String remark = jsonObj.getString("remark");
-							sb.append(beginTime + "-" + endTime + " ");
-							if (chargeUnit == 1) {
-								fee = chargeFee + "元/分";
-							} else if (chargeUnit == 2) {
-								fee = chargeFee + "元/时";
-							} else if (chargeUnit == 3) {
-								fee = chargeFee + "元/次";
-							}
-							sb.append(fee);
-							descList.add(beginTime + "-" + endTime + " "+ fee);
-							try {
-								if(isInZone(getLong(beginTime),getLong(endTime),getCurrentTime())){
-									groupStrategy.setCurrentTimePeriod(beginTime + "-" + endTime);
-									groupStrategy.setCurrentFee(fee);
-								}
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-							
-							sb.append("\t\r\n");
-							if (StringUtils.isNotBlank(remark)) {
-								sb.append(remark);
-								sb.append("\t\r\n");
-							}
-						}
-					}
-				}
-				log.info("..........pre detail 调用结果{} 免费时长{} 封顶计费{} 描述{}", data, freeMins, topFee, sb.toString());
-			}
-			if(topFee.equals("0.0")) {
-				groupStrategy.setTopFee("无");
-			}else {
-				groupStrategy.setTopFee((Double.valueOf(topFee)).intValue() + "元");
-			}
-			if(StringUtils.isNotBlank(freeMins)) {
-				if(Integer.valueOf(freeMins)>= 60) {
-					appFreeMins = div(Double.valueOf(freeMins), 60D, 2) +"小时";
-				}else {
-					appFreeMins = freeMins +"分钟";
-				}
-			}
-			groupStrategy.setFreeMins(appFreeMins);
-			if(preDetail.getBusinessTime()!=null) {
-				groupStrategy.setBusinessTime(preDetail.getBusinessTime());
-			}else {
-				groupStrategy.setBusinessTime("00:00 - 24:00");
-			}
-			if(sb.length() > 3) {
-				groupStrategy.setDesc(sb.toString().substring(0, sb.length()-3));
-			}
-			groupStrategy.setDescList(descList);
-			groupStrategy.setGroupId(group.getId());
-			groupStrategy.setGroupName(group.getName());
-			groupStrategy.setStallList(stallList);
-		}
-		groupDetail.setGroupStrategy(groupStrategy);
-		groupDetail.setAssignFlag(assign);
-		return groupDetail;
-	}
-	
-	@Override
 	public Boolean bindGroup(Long preId, String serialNumber, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(staffUserFactory.createTokenRedisKey(request));
 		if(!stallService.checkStaffPreAuth(user.getId(), preId)) {
@@ -1537,6 +1312,43 @@ public class PrefectureServiceImpl implements PrefectureService {
 			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		List<ResOpenPres>  pres = 	prefectureClusterMapper.findByAppid(user.getAppId());
+		if(CollectionUtils.isNotEmpty(pres)) {
+			for(ResOpenPres preDetail: pres) {
+				Set<Object> lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + preDetail.getId());
+				Map<Long, Set<Object>> map = new HashMap<Long, Set<Object>>();
+				Set<Object> sns = null;
+				List<StrategyGroupDetail> groupDetailList = strategyGroupDetailClusterMapper
+						.findPreGroupDetailList(preDetail.getId());
+				if (CollectionUtils.isNotEmpty(groupDetailList)) {
+					for (StrategyGroupDetail groupDetail : groupDetailList) {
+						Long preGroupId = groupDetail.getStrategyGroupId();
+						if (lockSnList.contains(groupDetail.getLockSn()) && !this.redisService
+								.exists(RedisKey.PREFECTURE_BUSY_STALL.key + groupDetail.getLockSn())) {
+							sns = map.get(preGroupId);
+							if (sns == null) {
+								sns = new HashSet<>();
+								map.put(preGroupId, sns);
+							}
+							sns.add(groupDetail.getLockSn());
+						}
+					}
+				}
+				log.info("..........find pre detail free map{}", JSON.toJSON(map));
+				Map<String, Object> param = new HashMap<String, Object>();
+				param.put("prefectureId", preDetail.getId());
+				List<ResStrategyGroup> strategyGroupList = strategyGroupClusterMapper.findPreGroupList(param);
+				if (CollectionUtils.isNotEmpty(strategyGroupList)) {
+					//仅处理一个车区一个分组的情况
+					Long groupId = strategyGroupList.get(0).getId();
+					preDetail.setGroupId(groupId);
+					if (map.get(groupId) == null) {
+						preDetail.setLeisureStall(0);
+					} else {
+						preDetail.setLeisureStall(map.get(groupId).size());
+					}
+				}
+			}
+		}
 		return pres;
 	}
 	

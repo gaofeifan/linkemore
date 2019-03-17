@@ -3,6 +3,8 @@ package cn.linkmore.util;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSONArray;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -23,13 +25,8 @@ public class OpenTokenUtil {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("alg", "HS256");
 		map.put("typ", "JWT");
-		String token = JWT.create()
-				.withHeader(map)
-				.withClaim("uid", "183101")
-				.withClaim("mobile", "18310151719")
-				.withClaim("plates", "")
-				.withExpiresAt(date)         
-				.withIssuedAt(new Date(now))
+		String token = JWT.create().withHeader(map).withClaim("uid", "183101").withClaim("mobile", "18310151719")
+				.withClaim("plates", "[]").withExpiresAt(date).withIssuedAt(new Date(now))
 				.sign(Algorithm.HMAC256(Secret));
 		return token;
 	}
@@ -43,19 +40,29 @@ public class OpenTokenUtil {
 
 		return jwt.getClaims();
 
-	} 
+	}
 
 	public static void main(String[] args) {
 		try {
 			String token = createToken();
 			System.out.println(token);
-			/*
-			 * String stt =
-			 * "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXgiOiIxIiwiZXhwIjoxNTUxOTUzNzA3LCJ1c2VySWQiOiIxODMxMDE1MTcxNiJ9.VVJ6_N1-Ux6U2yQrGSJUIOcMYWpC2HWt8dz6xxqf3yw\r\n";
-			 * 
-			 * Map<String, Claim> map = verifyToken(stt, Secret);
-			 * System.out.println(map.get("uid").asString());
-			 */
+			Map<String, Claim> map = verifyToken(token, Secret);
+			System.out.println(map.get("uid").asString());
+			System.out.println(map.get("mobile").asString());
+			System.out.println(map.get("plates").asString());
+			String plates = map.get("plates").asString();
+			if (plates.startsWith("[")) {
+				plates = plates.substring(1);
+	        }
+	        if (plates.endsWith("]")) {
+	        	plates = plates.substring(0,plates.length() - 1);
+	        }
+	        if(plates.length()>0) {
+	        	String[] plateArr = plates.split(",");
+	        	for(String plate : plateArr) {
+	        		System.out.println(plate);
+	        	}
+	        }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
