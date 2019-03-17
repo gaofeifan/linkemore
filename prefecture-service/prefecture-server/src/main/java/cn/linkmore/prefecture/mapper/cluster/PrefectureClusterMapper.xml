@@ -463,7 +463,7 @@
 			charge_time
 		FROM
 			v_prefecture v
-		LEFT JOIN t_third_prefecture p ON v.id = p.pre_id
+		INNER JOIN t_third_prefecture p ON v.id = p.pre_id
 		AND p.app_id =#{appId}
 	</select>
 
