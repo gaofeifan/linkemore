@@ -283,5 +283,12 @@ public interface OrdersService {
 	 * @return
 	 */
 	String switchOrderStall(Long orderId, HttpServletRequest request);
+	/**
+	 * 控制升锁
+	 * @param ros
+	 * @param request
+	 * @return
+	 */
+	boolean controlUp(ReqOrderStall ros, HttpServletRequest request);
 		
 }

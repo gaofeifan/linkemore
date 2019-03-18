@@ -168,13 +168,6 @@ public interface PrefectureService {
 	ResGroupStrategy findGroupStrategy(Long groupId, HttpServletRequest request);
 
 	Boolean checkPlate(Long plateId, HttpServletRequest request);
-	/**
-	 * 预约时查看车区内车位详情
-	 * @param reqBooking
-	 * @param request
-	 * @return
-	 */
-	ResAppointGroupDetail findAppointGroupDetail(ReqBooking reqBooking, HttpServletRequest request);
 
 	/**
 	 * @Description  绑定网关

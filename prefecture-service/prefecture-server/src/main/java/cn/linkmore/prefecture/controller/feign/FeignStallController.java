@@ -390,4 +390,11 @@ public class FeignStallController {
 		log.info("controlDown:{} .......................................",JsonUtil.toJson(stall));
 		return this.stallService.controlDown(stall);
 	}
+	
+	@RequestMapping(value = "/v2.0/control-up", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean controlUp(@RequestBody ReqOrderStall stall) {
+		log.info("controlUp:{} .......................................",JsonUtil.toJson(stall));
+		return this.stallService.controlUp(stall);
+	}
 }

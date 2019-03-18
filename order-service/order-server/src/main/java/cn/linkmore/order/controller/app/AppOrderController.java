@@ -203,7 +203,7 @@ public class AppOrderController {
 		return response;
 	}
 	
-	@ApiOperation(value = "用户操作降锁", notes = "8005092降锁失败，更换其他车位；,8005091降锁失败，请再试一次；", consumes = "application/json")
+	@ApiOperation(value = "用户预约下单后控制降锁", notes = "8005092降锁失败，更换其他车位；,8005091降锁失败，请再试一次；", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control-down", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> controlDown(@RequestBody ReqOrderStall ros, 
@@ -216,6 +216,24 @@ public class AppOrderController {
 			response = ResponseEntity.fail(e.getStatusEnum(),  request);
 		} catch (Exception e) {
 			log.info(">>>>>>>>>>>>control exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
+	}
+	
+	@ApiOperation(value = "用户预约下单后控制升锁", notes = "8005101升锁失败，故障上报；,8005099升锁失败，请再试一次；", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/control-up", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> controlUp(@RequestBody ReqOrderStall ros, 
+			HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		 try {
+			 boolean flag = ordersService.controlUp(ros, request);
+			 response = ResponseEntity.success(flag, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(),  request);
+		} catch (Exception e) {
+			log.info(">>>>>>>>>>>>control exception={}",e.getMessage());
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		 return response;

@@ -327,6 +327,7 @@ public class Constants {
 		ORDER_RECHARGE_SERIAL_NUMBER("order:recharge:serial_number:"),
 		
 		ORDER_STALL_DOWN_FAILED("order:lock-down:failure:"),
+		ORDER_STALL_UP_FAILED("order:lock-up:failure:"),
 		ACTION_STALL_DOWN_FAILED("action:lock-down:failure:"),
 		ACTION_STALL_DOING("action:lock-doing"),
 		ROB_STALL_ISHAVE("rob:stall-ishave"),

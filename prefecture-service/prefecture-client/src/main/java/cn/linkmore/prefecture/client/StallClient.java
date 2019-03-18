@@ -242,4 +242,13 @@ public interface StallClient {
 	@ResponseBody
 	public Boolean controlDown(@RequestBody ReqOrderStall stall);
 	
+	/**
+	 * 预约下单控制升锁
+	 * @param stall
+	 * @return
+	 */
+	@RequestMapping(value = "/v2.0/control-up", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean controlUp(@RequestBody ReqOrderStall stall);
+	
 }

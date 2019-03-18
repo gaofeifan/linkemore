@@ -7,6 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewPage;
@@ -220,7 +224,10 @@ public class StallClientHystrix implements StallClient {
 		log.info("prefecture service Boolean controlDown(ReqOrderStall stall) hystrix");
 		return false;
 	}
-	
-	
 
+	@Override
+	public Boolean controlUp(ReqOrderStall stall) {
+		log.info("prefecture service Boolean controlUp(ReqOrderStall stall) hystrix");
+		return null;
+	}
 }

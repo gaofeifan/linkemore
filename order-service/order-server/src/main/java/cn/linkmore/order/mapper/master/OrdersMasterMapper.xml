@@ -137,7 +137,9 @@
       pay_time = #{payTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      trade_id = #{tradeId,jdbcType=BIGINT},
+      <if test="tradeId != null">
+       trade_id = #{tradeId,jdbcType=BIGINT},
+      </if>
       status = #{status,jdbcType=INTEGER} 
     where id = #{id,jdbcType=BIGINT}
   </update>
