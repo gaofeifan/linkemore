@@ -2276,4 +2276,55 @@ public class StallServiceImpl implements StallService {
 		stall.setUpdateTime(new Date());
 		return stallMasterMapper.update(stall);
 	}
+
+	@Override
+	public boolean upLock(Long stallId, HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Boolean controlUp(ReqOrderStall reqOrderStall) {
+		Boolean flag = false;
+		Stall stall = stallClusterMapper.findById(reqOrderStall.getStallId());
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("<<<<<<<<<stall control up>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			ResLockMessage res = null;
+			// 1 降下
+			Stopwatch stopwatch = Stopwatch.createStarted();
+			res = lockTools.upLockMes(stall.getLockSn());
+			if (res != null) {
+				log.info("<<<<<<<<<stall control up respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+				int code = res.getCode();
+				stopwatch.stop();
+				log.info("<<<<<<<<<stall control up using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+				if (code == 200) {
+					flag = true;
+					log.info("uping.....................success");
+					stall.setStatus(StallStatus.FREE.status);
+					stall.setLockStatus(LockStatus.UP.status);
+					stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
+					stallMasterMapper.lockdown(stall);
+					this.redisService.remove(RedisKey.ORDER_STALL_UP_FAILED.key + reqOrderStall.getOrderId());
+					this.redisService.remove(RedisKey.PREFECTURE_BUSY_STALL.key + stall.getLockSn());
+					this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+				} else if (code == 500) {
+					if (this.redisService.exists(RedisKey.ORDER_STALL_UP_FAILED.key + reqOrderStall.getOrderId())) {
+						//升锁第二次失败，故障上报
+						this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					} else {
+						//升锁第一次失败，再升一次
+						this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key + reqOrderStall.getOrderId(), StatusEnum.UP_LOCK_FAIL_RETRY_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					}
+				} else{
+					//网关问题，升锁失败，故障上报
+					this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+				}
+			}
+		}else {
+			this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+		}
+		log.info("<<<<<<<<<stall control up flag>>>>>>>>> = {}", flag);
+		return flag;
+	}
 }

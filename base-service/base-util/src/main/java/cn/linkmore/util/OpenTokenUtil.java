@@ -3,8 +3,6 @@ package cn.linkmore.util;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.alibaba.fastjson.JSONArray;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -25,7 +23,7 @@ public class OpenTokenUtil {
 		map.put("alg", "HS256");
 		map.put("typ", "JWT");
 		String token = JWT.create().withHeader(map).withClaim("uid", "183101").withClaim("mobile", "18310151719")
-				.withClaim("plates", "[京S88888]").withExpiresAt(date).withIssuedAt(new Date(now))
+				.withClaim("plates", "[京S88888,京A12345]").withExpiresAt(date).withIssuedAt(new Date(now))
 				.sign(Algorithm.HMAC256(Secret));
 		return token;
 	}

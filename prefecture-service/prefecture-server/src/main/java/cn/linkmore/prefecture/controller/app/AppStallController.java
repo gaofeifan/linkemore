@@ -86,4 +86,22 @@ public class AppStallController {
 		}
 		 return response;
 	}
+	
+	@ApiOperation(value = "预约下单后升起车位锁", notes = "预约下单后升起车位锁", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/up-control", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> upLock(@Validated @RequestParam(value="stallId", required=true) Long stallId ,HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			 boolean flag = stallService.upLock(stallId, request);
+			 response = ResponseEntity.success(flag, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(),  request);
+		} catch (Exception e) { 			
+			log.info(">>>>>>>>>>>>down-control exception={}",e.getMessage());
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
+	}
+	
 }

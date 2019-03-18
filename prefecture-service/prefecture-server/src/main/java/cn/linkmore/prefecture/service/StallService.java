@@ -345,7 +345,8 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	List<ResLockGatewayList> findLockGateways(HttpServletRequest request, String lockSn, Long preId);
-	/* 预约订单控制降锁
+	/** 
+	 * 预约订单控制降锁
 	 * @param stall
 	 * @return
 	 */
@@ -365,4 +366,17 @@ public interface StallService {
 	 * @Version  v2.0
 	 */
 	void delete(List<Long> ids);
+	/**
+	 * 预约订单控制升锁-备份
+	 * @param stallId
+	 * @param request
+	 * @return
+	 */
+	boolean upLock(Long stallId, HttpServletRequest request);
+	/** 
+	 * 预约订单控制降锁
+	 * @param stall
+	 * @return
+	 */
+	Boolean controlUp(ReqOrderStall stall);
 }

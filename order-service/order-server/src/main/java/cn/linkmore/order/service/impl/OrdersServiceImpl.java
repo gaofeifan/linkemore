@@ -52,6 +52,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.coupon.client.CouponClient;
+import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.notice.client.UserSocketClient;
@@ -89,6 +90,8 @@ import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
+import cn.linkmore.order.service.impl.PayServiceImpl.ProduceCheckBookingThread;
+import cn.linkmore.order.service.impl.PayServiceImpl.PushThread;
 import cn.linkmore.prefecture.client.EntBrandPreClient;
 import cn.linkmore.prefecture.client.EntBrandUserClient;
 import cn.linkmore.prefecture.client.FeignLockClient;
@@ -2456,6 +2459,64 @@ public class OrdersServiceImpl implements OrdersService {
 			throw new BusinessException(StatusEnum.SWITCH_STALL_FAILED);
 		}
 		return stallName;
+	}
+
+	@Override
+	public boolean controlUp(ReqOrderStall ros, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		if (cu == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
+		log.info("............control up order{}", JSON.toJSON(order));
+		Boolean authStatus = ros.getStallId().intValue() == order.getStallId()
+				&& order.getUserId().longValue() == cu.getId().longValue();
+		if (authStatus) {
+			cn.linkmore.prefecture.request.ReqOrderStall stall = new cn.linkmore.prefecture.request.ReqOrderStall();
+			stall.setOrderId(order.getId());
+			stall.setStallId(order.getStallId());
+			stall.setUserId(cu.getId());
+			
+			Boolean upStatus = this.stallClient.controlUp(stall);
+			
+			log.info("uping msg..................orderId:{} upStatus:{}", order.getId(), upStatus);
+			if(!upStatus) {
+				if(this.redisService.exists(RedisKey.ORDER_STALL_UP_FAILED.key+ros.getOrderId())) {
+					Object object = this.redisService.get(RedisKey.ORDER_STALL_UP_FAILED.key+ros.getOrderId());
+					log.info("up flag reason = {}", StatusEnum.get((int)object));
+					throw new BusinessException(StatusEnum.get((int)object));
+				}else {
+					log.info("....................the server is unconnecting");
+					this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key + ros.getOrderId(), StatusEnum.UP_LOCK_FAIL_RETRY_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					throw new BusinessException(StatusEnum.UP_LOCK_FAIL_RETRY_OWNER);
+				}
+			}
+			Date current = new Date();
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", order.getId());
+			param.put("status", OrderStatus.COMPLETED.value);
+			param.put("updateTime", current);
+			param.put("endTime", current);
+			param.put("payTime", current);
+			//param.put("tradeId", payTradeRecord.getId());
+			this.orderMasterMapper.updatePayment(param);
+			// 3.更新优惠券信息
+			if (null != order.getCouponId()) {
+				ReqCouponPay rcp = new ReqCouponPay();
+				rcp.setCouponId(order.getCouponId());
+				rcp.setOrderAmount(order.getTotalAmount());
+				rcp.setUsedAmount(order.getCouponAmount());
+				this.couponClient.pay(rcp);
+			}
+			this.userClient.checkout(order.getUserId());
+			// 结账调用新版推送消息
+			/*Thread thread = new ProduceCheckBookingThread(order);
+			thread.start();
+			thread = new PushThread(order.getUserId().toString(), "订单支付通知", "支付成功", PushType.ORDER_COMPLETE_NOTICE, true);
+			thread.start();*/
+			return upStatus;
+		}
+		return false;
 	}
 	
 }
