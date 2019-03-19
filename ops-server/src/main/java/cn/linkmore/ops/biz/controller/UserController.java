@@ -18,6 +18,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +38,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.UserService;
 import cn.linkmore.ops.request.ReqUserResetPW;
 import cn.linkmore.ops.utils.ExcelUtil;
+import cn.linkmore.util.JsonUtil;
 import io.swagger.annotations.Api;
 
 /**
@@ -48,7 +51,7 @@ import io.swagger.annotations.Api;
 @RequestMapping("/admin/biz/user")
 @Api(tags = "user", description = "用户信息")
 public class UserController {
-	
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private UserService userService;
 
@@ -81,9 +84,14 @@ public class UserController {
 	
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg reset(@RequestBody ReqUserResetPW reset) {
+	public ViewMsg reset( ReqUserResetPW reset,HttpServletRequest request) {
 		ViewMsg msg = null;
 		try {
+			
+			String string = request.getParameter("password");
+			
+			log.info(string);
+			log.info(JsonUtil.toJson(reset));
 			this.userService.reset(reset);
 			msg = new ViewMsg("重置成功", true);
 		} catch (DataException e) {

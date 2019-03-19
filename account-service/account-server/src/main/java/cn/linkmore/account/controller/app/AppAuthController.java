@@ -1,6 +1,7 @@
 package cn.linkmore.account.controller.app;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -26,7 +27,9 @@ import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.util.BeanUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * Controller - 用户认证
@@ -112,6 +115,18 @@ public class AppAuthController {
 	public ResponseEntity<Boolean> authCode(HttpServletRequest request,@Validated @RequestBody ReqAuthCode authCode){
 		ResponseEntity<Boolean> response = null; 
 		Boolean boolean1 = this.userService.authCode(authCode);
+		response = ResponseEntity.success(boolean1, request);
+		return response;
+	}
+	@ApiOperation(value="认证是否是新用户",notes="认证是否是新用户")
+	@RequestMapping(value = "/v2.0/auth-is-new", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Boolean> authIsNew(HttpServletRequest request,
+			@ApiParam(value = "手机号，必填", required = true)
+	@Pattern(regexp="^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(16[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(19[0-9]{1}))+\\d{8})$", message="无效手机号") 
+	@RequestParam(value="mobile" ,required=true)  String mobile){
+		ResponseEntity<Boolean> response = null; 
+		Boolean boolean1 = this.userService.authIsNew(mobile);
 		response = ResponseEntity.success(boolean1, request);
 		return response;
 	}

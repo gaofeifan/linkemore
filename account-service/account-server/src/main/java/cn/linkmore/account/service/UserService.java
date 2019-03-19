@@ -350,6 +350,13 @@ public interface UserService {
 	 */
 	void reset(List<Long> ids, String passwrod);
 
+	/**
+	 * @Description  认证是否是新用户
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean authIsNew(String mobile);
+
 
 
 }

@@ -1246,8 +1246,11 @@ public class UserServiceImpl implements UserService {
 		if(!object.toString().equals(pw.getToken())) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_ERROR);
 		}
-		this.updatePassword(pw.getPasswrod(), pw.getMobile());
 		ResUser user = this.findByMobile(pw.getMobile());
+		if(user.getPassword().equals(Md5PW.md5(pw.getMobile(), pw.getPasswrod()))) {
+			throw new BusinessException(StatusEnum.USER_APP_PASSWORD_ERROR);
+		}
+		this.updatePassword(pw.getPasswrod(), pw.getMobile());
 		String os = request.getHeader("os");
 		String accessToken = TokenUtil.getKey(request);
 		this.redisService.remove(RedisKey.USER_APP_AUTH_EDIT_PW+pw.getMobile());
@@ -1284,7 +1287,12 @@ public class UserServiceImpl implements UserService {
 		users.stream().forEach(u -> u.setPassword(Md5PW.md5(u.getMobile(), passwrod)));
 		this.userMasterMapper.updateIds(users);
 	}
-	
+
+	@Override
+	public Boolean authIsNew(String mobile) {
+		ResUser user = this.findByMobile(mobile);
+		return user == null ? true : false;
+	}
 	
 }
 class UUIDTool{
