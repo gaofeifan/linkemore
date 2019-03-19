@@ -84,13 +84,9 @@ public class UserController {
 	
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	@ResponseBody
-	public ViewMsg reset( ReqUserResetPW reset,HttpServletRequest request) {
+	public ViewMsg reset(@RequestBody ReqUserResetPW reset) {
 		ViewMsg msg = null;
 		try {
-			
-			String string = request.getParameter("password");
-			
-			log.info(string);
 			log.info(JsonUtil.toJson(reset));
 			this.userService.reset(reset);
 			msg = new ViewMsg("重置成功", true);

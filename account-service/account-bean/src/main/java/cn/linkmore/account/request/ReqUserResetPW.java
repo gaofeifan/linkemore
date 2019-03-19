@@ -5,7 +5,7 @@ import java.util.List;
 public class ReqUserResetPW {
 	private List<Long> ids;
 	
-	private String passwrod;
+	private String password;
 
 	public List<Long> getIds() {
 		return ids;
@@ -15,13 +15,14 @@ public class ReqUserResetPW {
 		this.ids = ids;
 	}
 
-	public String getPasswrod() {
-		return passwrod;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setPasswrod(String passwrod) {
-		this.passwrod = passwrod;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	
+
+ 	
 	
 }
