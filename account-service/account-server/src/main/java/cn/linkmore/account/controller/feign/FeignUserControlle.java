@@ -238,7 +238,7 @@ public class FeignUserControlle {
 	@RequestMapping(value = "/reset", method = RequestMethod.PUT)
 	@ResponseBody
 	public Object reset(@RequestBody ReqUserResetPW reset) {
-		this.userService.reset(reset.getIds(),reset.getPasswrod());
+		this.userService.reset(reset.getIds(),reset.getPassword());
 		return null;
 	}
 }
