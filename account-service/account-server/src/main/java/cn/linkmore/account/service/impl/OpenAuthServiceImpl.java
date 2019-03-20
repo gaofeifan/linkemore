@@ -70,7 +70,8 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 		String key = UUID.randomUUID().toString().replaceAll("-", "");
 		String uid = token.get("uid").asString();
 		String mobile = token.get("mobile").asString();
-		log.info("response result uid = {}, mobile = {} , key = {}", uid, mobile, key);
+		String plates = token.get("plates").asString();
+		log.info("response result uid = {}, mobile = {} , plates = {}", uid, mobile, plates);
 		// 查询登陆用户
 		ResUser user = this.userClusterMapper.findByMobile(uid);
 		if (user == null) {
@@ -99,8 +100,6 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 		}
 
 		// 解析用户传递参数，若包含车牌，则初始化凌猫系统中
-		String plates = token.get("plates").asString();
-
 		if (plates.startsWith("[")) {
 			plates = plates.substring(1);
 		}
@@ -129,6 +128,7 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 		if (plates.length() > 0) {
 			String[] plateArr = plates.split(",");
 			for (String plate : plateArr) {
+				plate = plate.trim();
 				vmark = new VehicleMarkManage();
 				vmark.setVehMark(plate);
 				initPlateList.add(vmark);
