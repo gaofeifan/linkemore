@@ -660,7 +660,7 @@ public class UserServiceImpl implements UserService {
 		if(space>SPACE||space<-SPACE) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		}
-		if(this.redisService.exists(RedisKey.USER_APP_AUTH_MOBILE+rs.getMobile())) {
+		if(this.redisService.exists(RedisKey.USER_APP_AUTH_MOBILE.key+rs.getMobile())) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		} 
 		String code = getAppSmsCode(rs.getMobile());
@@ -1194,7 +1194,7 @@ public class UserServiceImpl implements UserService {
 		if(!register.getPassword().equals(register.getRepassword())) {
 			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWORD_ERROR);
 		}
-		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW+register.getMobile());
+		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW.key+register.getMobile());
 		if(object == null) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_EXPIRED);
 		}
@@ -1232,7 +1232,7 @@ public class UserServiceImpl implements UserService {
 		if(!pw.getPassword().equals(pw.getRepassword())) {
 			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWORD_ERROR);
 		}
-		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW+pw.getMobile());
+		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW.key+pw.getMobile());
 		if(object == null) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_EXPIRED);
 		}
@@ -1246,7 +1246,7 @@ public class UserServiceImpl implements UserService {
 		this.updatePassword(pw.getPassword(), pw.getMobile());
 		String os = request.getHeader("os");
 		String accessToken = TokenUtil.getKey(request);
-		this.redisService.remove(RedisKey.USER_APP_AUTH_EDIT_PW+pw.getMobile());
+		this.redisService.remove(RedisKey.USER_APP_AUTH_EDIT_PW.key+pw.getMobile());
 		this.redisService.remove(appUserFactory.createUserIdRedisKey(user.getId(), os));
 		this.redisService.remove(appUserFactory.createTokenRedisKey(accessToken, os));  
 		return true;
@@ -1256,7 +1256,7 @@ public class UserServiceImpl implements UserService {
 	public String sendPW(ReqAuthSend rs, HttpServletRequest request) {
 		this.send(rs);
 		String uuid = UUIDTool.random().replaceAll("-", "");
-		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW+rs.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
+		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW.key+rs.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
 		return uuid;
 	}
 
@@ -1270,7 +1270,7 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
 		}
 		String uuid = UUIDTool.random().replaceAll("-", "");
-		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW+pwAuth.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
+		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW.key+pwAuth.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
 		return uuid;
 	}
 
