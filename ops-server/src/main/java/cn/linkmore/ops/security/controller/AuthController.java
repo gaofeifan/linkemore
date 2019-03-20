@@ -214,7 +214,7 @@ import io.swagger.annotations.ApiOperation;
 	@ApiOperation(value = "更新密码", notes = "更新密码", consumes = "application/json")
 	@RequestMapping(value = "/update_password", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> updatePasswrod(@RequestParam("oldPassword") String oldPassword,
+	public Map<String, Object> updatePassword(@RequestParam("oldPassword") String oldPassword,
 			@RequestParam("password") String password) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Subject subject = SecurityUtils.getSubject();
