@@ -1240,7 +1240,7 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_ERROR);
 		}
 		ResUser user = this.findByMobile(pw.getMobile());
-		if(user.getPassword().equals(Md5PW.md5(pw.getMobile(), pw.getPassword()))) {
+		if(user!= null && user.getPassword().equals(Md5PW.md5(pw.getMobile(), pw.getPassword()))) {
 			throw new BusinessException(StatusEnum.USER_APP_PASSWORD_ERROR);
 		}
 		this.updatePassword(pw.getPassword(), pw.getMobile());
@@ -1266,7 +1266,7 @@ public class UserServiceImpl implements UserService {
 		if(user == null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
 		}
-		if(StringUtils.isBlank(user.getPassword()) && !user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPassword()))) {
+		if(StringUtils.isNotBlank(user.getPassword()) && !user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPassword()))) {
 			throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
 		}
 		String uuid = UUIDTool.random().replaceAll("-", "");
