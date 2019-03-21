@@ -1,11 +1,8 @@
 package cn.linkmore.account.controller.app.request;
 
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -22,11 +19,11 @@ public class ReqAuthEditPW {
 	@ApiModelProperty(value = "密码，必填", required = true)
 	@Pattern(regexp="^[0-9a-zA-Z]{6,20}$|^(?=.*\\d+)(?!.*?([\\d])\\1{5})[\\d]{6}$", message="密码不能为连续数字/字母") 
 	@NotBlank(message="密码不能为空") 
-	private String passwrod;
+	private String password;
 	@Pattern(regexp="^[0-9a-zA-Z]{6,20}$|^(?=.*\\d+)(?!.*?([\\d])\\1{5})[\\d]{6}$", message="密码不能为连续数字/字母") 
 	@ApiModelProperty(value = "确认密码，必填", required = true)
 	@NotBlank(message="确认密码不能为空") 
-	private String repasswrod;
+	private String repassword;
 	public String getToken() {
 		return token;
 	}
@@ -39,17 +36,16 @@ public class ReqAuthEditPW {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-	public String getPasswrod() {
-		return passwrod;
+	public String getPassword() {
+		return password;
 	}
-	public void setPasswrod(String passwrod) {
-		this.passwrod = passwrod;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	public String getRepasswrod() {
-		return repasswrod;
+	public String getRepassword() {
+		return repassword;
 	}
-	public void setRepasswrod(String repasswrod) {
-		this.repasswrod = repasswrod;
+	public void setRepassword(String repassword) {
+		this.repassword = repassword;
 	}
-	
 }

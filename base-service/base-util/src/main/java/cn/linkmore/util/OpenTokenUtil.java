@@ -12,18 +12,18 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 public class OpenTokenUtil {
 
 	static String Secret = "123456789123456789";
-
 	private static final long EXPIRE_TIME = 50 * 60 * 1000;
 
 	public static String createToken() throws Exception {
 		long now = System.currentTimeMillis();
 		Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
-
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("alg", "HS256");
 		map.put("typ", "JWT");
-		String token = JWT.create().withHeader(map).withClaim("uid", "183101").withClaim("mobile", "18310151719")
-				.withClaim("plates", "[京S88888,京A12345]").withExpiresAt(date).withIssuedAt(new Date(now))
+		String token = JWT.create().withHeader(map)
+				.withClaim("uid", "18310151719")
+				.withClaim("mobile", "18310185317")
+			    .withClaim("plates", "[京S88888,京A12345]").withExpiresAt(date).withIssuedAt(new Date(now))
 				.sign(Algorithm.HMAC256(Secret));
 		return token;
 	}

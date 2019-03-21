@@ -15,20 +15,17 @@ public class ReqEditPWAuth {
 	@ApiModelProperty(value = "密码，必填", required = true)
 	@Pattern(regexp="^[0-9a-zA-Z]{6,20}$|^(?=.*\\d+)(?!.*?([\\d])\\1{5})[\\d]{6}$", message="密码不能为连续数字/字母") 
 	@NotBlank(message="密码不能为空") 
-	private String passwrod;
+	private String password;
 	public String getMobile() {
 		return mobile;
 	}
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-	public String getPasswrod() {
-		return passwrod;
+	public String getPassword() {
+		return password;
 	}
-	public void setPasswrod(String passwrod) {
-		this.passwrod = passwrod;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	
-	
-	
 }

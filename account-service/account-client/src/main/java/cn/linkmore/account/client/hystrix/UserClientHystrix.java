@@ -177,7 +177,7 @@ public class UserClientHystrix implements UserClient{
 
 	@Override
 	public Object reset(@RequestBody ReqUserResetPW reset) {
-		log.info("account service int reset(List<Long> ids, String passwrod) hystrix");
+		log.info("account service int reset(List<Long> ids, String password) hystrix");
 		return null;
 	}
 	

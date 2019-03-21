@@ -348,7 +348,7 @@ public interface UserService {
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	void reset(List<Long> ids, String passwrod);
+	void reset(List<Long> ids, String password);
 
 	/**
 	 * @Description  认证是否是新用户

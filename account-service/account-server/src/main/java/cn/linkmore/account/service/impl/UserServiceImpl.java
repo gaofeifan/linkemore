@@ -7,22 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.jcajce.provider.asymmetric.rsa.DigestSignatureSpi.MD5;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.account.controller.app.request.ReqAuthCode;
 import cn.linkmore.account.controller.app.request.ReqAuthEditPW;
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
@@ -60,7 +54,6 @@ import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
-import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.PushType;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.Constants.SmsTemplate;
@@ -445,11 +438,11 @@ public class UserServiceImpl implements UserService {
 		return ru;
 	}
 	
-	private ResUser insertUser(String mobile,String passwrod) {
+	private ResUser insertUser(String mobile,String password) {
 		ResUser user = new ResUser();
 		user.setMobile(mobile);
 		user.setUsername(mobile);
-		user.setPassword(passwrod);
+		user.setPassword(password);
 		user.setUserType("1");
 		user.setStatus("1");
 		user.setLastLoginTime(new Date());
@@ -667,7 +660,7 @@ public class UserServiceImpl implements UserService {
 		if(space>SPACE||space<-SPACE) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		}
-		if(this.redisService.exists(RedisKey.USER_APP_AUTH_MOBILE+rs.getMobile())) {
+		if(this.redisService.exists(RedisKey.USER_APP_AUTH_MOBILE.key+rs.getMobile())) {
 			throw new BusinessException(StatusEnum.USER_APP_ILLEGAL_REQUEST);
 		} 
 		String code = getAppSmsCode(rs.getMobile());
@@ -1179,7 +1172,7 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
 		}
 		if(StringUtils.isBlank(resUser.getPassword())) {
-			throw new BusinessException(StatusEnum.ACCOUNT_PASSWROD_ERROR);
+			throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
 		}
 		if(resUser.getPassword().equals(Md5PW.md5(pw.getMobile(), pw.getPassword()))) {
 			updateLoginTime(resUser);
@@ -1187,7 +1180,7 @@ public class UserServiceImpl implements UserService {
 			log.info(">>>>>>appLogin request= {}, key = {}",JSON.toJSON(request.getSession().getId()), JSON.toJSON(key));
 			return editResUser(resUser, request);
 		}
-		throw new BusinessException(StatusEnum.ACCOUNT_PASSWROD_ERROR);
+		throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
 	}
 	
 	
@@ -1198,17 +1191,17 @@ public class UserServiceImpl implements UserService {
 		if(resUser != null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
 		}
-		if(!register.getPasswrod().equals(register.getRepasswrod())) {
-			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWROD_ERROR);
+		if(!register.getPassword().equals(register.getRepassword())) {
+			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWORD_ERROR);
 		}
-		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW+register.getMobile());
+		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW.key+register.getMobile());
 		if(object == null) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_EXPIRED);
 		}
 		if(!object.toString().equals(register.getToken())) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_ERROR);
 		}
-		String pw = Md5PW.md5(register.getMobile(), register.getPasswrod());
+		String pw = Md5PW.md5(register.getMobile(), register.getPassword());
 		ResUser user = insertUser(register.getMobile(), pw);
 		return editResUser(user, request);
 	}
@@ -1236,10 +1229,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Boolean editPW(ReqAuthEditPW pw,HttpServletRequest request) {
-		if(!pw.getPasswrod().equals(pw.getRepasswrod())) {
-			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWROD_ERROR);
+		if(!pw.getPassword().equals(pw.getRepassword())) {
+			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWORD_ERROR);
 		}
-		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW+pw.getMobile());
+		Object object = this.redisService.get(RedisKey.USER_APP_AUTH_EDIT_PW.key+pw.getMobile());
 		if(object == null) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_EXPIRED);
 		}
@@ -1247,13 +1240,13 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_ERROR);
 		}
 		ResUser user = this.findByMobile(pw.getMobile());
-		if(user.getPassword().equals(Md5PW.md5(pw.getMobile(), pw.getPasswrod()))) {
+		if(user!= null && user.getPassword().equals(Md5PW.md5(pw.getMobile(), pw.getPassword()))) {
 			throw new BusinessException(StatusEnum.USER_APP_PASSWORD_ERROR);
 		}
-		this.updatePassword(pw.getPasswrod(), pw.getMobile());
+		this.updatePassword(pw.getPassword(), pw.getMobile());
 		String os = request.getHeader("os");
 		String accessToken = TokenUtil.getKey(request);
-		this.redisService.remove(RedisKey.USER_APP_AUTH_EDIT_PW+pw.getMobile());
+		this.redisService.remove(RedisKey.USER_APP_AUTH_EDIT_PW.key+pw.getMobile());
 		this.redisService.remove(appUserFactory.createUserIdRedisKey(user.getId(), os));
 		this.redisService.remove(appUserFactory.createTokenRedisKey(accessToken, os));  
 		return true;
@@ -1263,7 +1256,7 @@ public class UserServiceImpl implements UserService {
 	public String sendPW(ReqAuthSend rs, HttpServletRequest request) {
 		this.send(rs);
 		String uuid = UUIDTool.random().replaceAll("-", "");
-		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW+rs.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
+		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW.key+rs.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
 		return uuid;
 	}
 
@@ -1273,18 +1266,18 @@ public class UserServiceImpl implements UserService {
 		if(user == null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
 		}
-		if(StringUtils.isBlank(user.getPassword()) && !user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPasswrod()))) {
-			throw new BusinessException(StatusEnum.ACCOUNT_PASSWROD_ERROR);
+		if(StringUtils.isNotBlank(user.getPassword()) && !user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPassword()))) {
+			throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
 		}
 		String uuid = UUIDTool.random().replaceAll("-", "");
-		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW+pwAuth.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
+		this.redisService.set(RedisKey.USER_APP_AUTH_EDIT_PW.key+pwAuth.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
 		return uuid;
 	}
 
 	@Override
-	public void reset(List<Long> ids, String passwrod) {
+	public void reset(List<Long> ids, String password) {
 		List<ResUser> users = this.userClusterMapper.findByIds(ids);
-		users.stream().forEach(u -> u.setPassword(Md5PW.md5(u.getMobile(), passwrod)));
+		users.stream().forEach(u -> u.setPassword(Md5PW.md5(u.getMobile(), password)));
 		this.userMasterMapper.updateIds(users);
 	}
 
