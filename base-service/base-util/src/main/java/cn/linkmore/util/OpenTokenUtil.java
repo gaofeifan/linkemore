@@ -23,7 +23,7 @@ public class OpenTokenUtil {
 		String token = JWT.create().withHeader(map)
 				.withClaim("uid", "18310151719")
 				.withClaim("mobile", "18310185317")
-			    .withClaim("plates", "[京S88888, 京A12345]").withExpiresAt(date).withIssuedAt(new Date(now))
+			    .withClaim("plates", "[京S88888,京A12345]").withExpiresAt(date).withIssuedAt(new Date(now))
 				.sign(Algorithm.HMAC256(Secret));
 		return token;
 	}
@@ -42,7 +42,6 @@ public class OpenTokenUtil {
 	public static void main(String[] args) {
 		try {
 			String token = createToken();
-			//String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIxODIwMTg1MzA5NiIsInBsYXRlcyI6IltcdTRlYWNBMTM0LCBcdTRlYWNCNDU2XSIsInVpZCI6IlA5ODY1MF8xMjM0NSIsImV4cCI6MTU1MzA3NTYwNiwiaWF0IjoxNTUzMDc1MzA2fQ.iV9gb6llEl39EWaFgPIdbxfwfIuFrxNuuumsubZm630";
 			System.out.println(token);
 			Map<String, Claim> map = verifyToken(token, Secret);
 			System.out.println(map.get("uid").asString());
