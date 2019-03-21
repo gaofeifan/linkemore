@@ -423,43 +423,43 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateIds" parameterType="java.util.List">
+      <foreach collection="list"  index="index" item="user" open="" separator=";" close=""  >
     update t_user
     set 
-      <foreach collection="list"  index="index" item="mobile" open="(" separator="," close=")"  >
-      username = #{list.username,jdbcType=VARCHAR},
-      password = #{list.password,jdbcType=VARCHAR},
-      nickname = #{list.nickname,jdbcType=VARCHAR},
-      sex = #{list.sex,jdbcType=SMALLINT},
-      status = #{list.status,jdbcType=VARCHAR},
-      user_type = #{list.userType,jdbcType=VARCHAR},
-      enterprise_name = #{list.enterpriseName,jdbcType=VARCHAR},
-      ent_admin_name = #{list.entAdminName,jdbcType=VARCHAR},
-      industry = #{list.industry,jdbcType=VARCHAR},
-      parent_id = #{list.parentId,jdbcType=BIGINT},
-      mobile = #{list.mobile,jdbcType=VARCHAR},
-      province = #{list.province,jdbcType=VARCHAR},
-      city = #{list.city,jdbcType=VARCHAR},
-      address = #{list.address,jdbcType=VARCHAR},
-      email = #{list.email,jdbcType=VARCHAR},
-      wechat = #{list.wechat,jdbcType=VARCHAR},
-      qq = #{list.qq,jdbcType=VARCHAR},
-      icon = #{list.icon,jdbcType=VARCHAR},
-      last_login_time = #{list.lastLoginTime,jdbcType=TIMESTAMP},
-      create_time = #{list.createTime,jdbcType=TIMESTAMP},
-      update_time = #{list.updateTime,jdbcType=TIMESTAMP},
-      hobby_brand_id = #{list.hobbyBrandId,jdbcType=BIGINT},
-      is_app_register = #{list.isAppRegister,jdbcType=SMALLINT},
-      is_wechat_bind = #{list.isWechatBind,jdbcType=SMALLINT},
-      app_register_time = #{list.appRegisterTime,jdbcType=TIMESTAMP},
-      wechat_bind_time = #{list.wechatBindTime,jdbcType=TIMESTAMP},
-      type = #{list.type,jdbcType=SMALLINT},
-      login_count = #{list.loginCount,jdbcType=INTEGER},
-      order_count = #{list.orderCount,jdbcType=INTEGER},
-      complete_order_count = #{list.completeOrderCount,jdbcType=INTEGER},
-      realname = #{list.realname,jdbcType=VARCHAR},
-      fans_status = #{list.fansStatus,jdbcType=SMALLINT}
+      username = #{user.username,jdbcType=VARCHAR},
+      password = #{user.password,jdbcType=VARCHAR},
+      nickname = #{user.nickname,jdbcType=VARCHAR},
+      sex = #{user.sex,jdbcType=SMALLINT},
+      status = #{user.status,jdbcType=VARCHAR},
+      user_type = #{user.userType,jdbcType=VARCHAR},
+      enterprise_name = #{user.enterpriseName,jdbcType=VARCHAR},
+      ent_admin_name = #{user.entAdminName,jdbcType=VARCHAR},
+      industry = #{user.industry,jdbcType=VARCHAR},
+      parent_id = #{user.parentId,jdbcType=BIGINT},
+      mobile = #{user.mobile,jdbcType=VARCHAR},
+      province = #{user.province,jdbcType=VARCHAR},
+      city = #{user.city,jdbcType=VARCHAR},
+      address = #{user.address,jdbcType=VARCHAR},
+      email = #{user.email,jdbcType=VARCHAR},
+      wechat = #{user.wechat,jdbcType=VARCHAR},
+      qq = #{user.qq,jdbcType=VARCHAR},
+      icon = #{user.icon,jdbcType=VARCHAR},
+      last_login_time = #{user.lastLoginTime,jdbcType=TIMESTAMP},
+      create_time = #{user.createTime,jdbcType=TIMESTAMP},
+      update_time = #{user.updateTime,jdbcType=TIMESTAMP},
+      hobby_brand_id = #{user.hobbyBrandId,jdbcType=BIGINT},
+      is_app_register = #{user.isAppRegister,jdbcType=SMALLINT},
+      is_wechat_bind = #{user.isWechatBind,jdbcType=SMALLINT},
+      app_register_time = #{user.appRegisterTime,jdbcType=TIMESTAMP},
+      wechat_bind_time = #{user.wechatBindTime,jdbcType=TIMESTAMP},
+      type = #{user.type,jdbcType=SMALLINT},
+      login_count = #{user.loginCount,jdbcType=INTEGER},
+      order_count = #{user.orderCount,jdbcType=INTEGER},
+      complete_order_count = #{user.completeOrderCount,jdbcType=INTEGER},
+      realname = #{user.realname,jdbcType=VARCHAR},
+      fans_status = #{user.fansStatus,jdbcType=SMALLINT}
+    	where id = #{user.id,jdbcType=BIGINT}
        </foreach>
-    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByColumn" parameterType="java.util.Map">
     update t_user

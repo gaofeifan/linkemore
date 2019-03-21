@@ -56,6 +56,7 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/auth/v2.0/login-pw");
 			add("/app/auth/v2.0/register");
 			add("/app/auth/v2.0/auth-code");
+			add("/app/auth/v2.0/edit-pw");
 
 			add("/enterprise/ent/version/current");
 			add("/enterprise/ent/auth/login");

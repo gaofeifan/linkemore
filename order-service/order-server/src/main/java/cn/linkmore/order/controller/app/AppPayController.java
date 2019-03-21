@@ -54,7 +54,7 @@ public class AppPayController {
 		try { 
 			ResPayConfirm confirm = this.payService.confirm(roc,request);
 			return ResponseEntity.success(confirm, request);
-		} catch (BusinessException e) {
+		} catch (BusinessException e) { 
 			response = ResponseEntity.fail(e.getStatusEnum(),  request);
 		} catch (Exception e) { 
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
