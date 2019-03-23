@@ -49,6 +49,7 @@ public enum StatusEnum {
 	ACCOUNT_PLATE_LIMIT(8003021,"添加失败，最多添加三个"), 
 	ACCOUNT_PLATE_EXISTS(8003022,"添加失败，车牌号已存在"), 
 	ACCOUNT_PLATE_NONE(8003023 ,"删除失败，车牌号不存在"), 
+	ACCOUNT_PLATE_EXISTS2(8003022,"添加失败，当前车牌号已被他人占用"),
 	
 	COUPON_USER_NO_EQUIRE(8004001,"非当前用户停车券"),
 	
