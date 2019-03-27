@@ -1244,11 +1244,13 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(StatusEnum.USER_APP_PASSWORD_ERROR);
 		}
 		this.updatePassword(pw.getPassword(), pw.getMobile());
-		String os = request.getHeader("os");
+//		String os = request.getHeader("os");
 		String accessToken = TokenUtil.getKey(request);
 		this.redisService.remove(RedisKey.USER_APP_AUTH_EDIT_PW.key+pw.getMobile());
-		this.redisService.remove(appUserFactory.createUserIdRedisKey(user.getId(), os));
-		this.redisService.remove(appUserFactory.createTokenRedisKey(accessToken, os));  
+		this.redisService.remove(appUserFactory.createUserIdRedisKey(user.getId(), "1"));
+		this.redisService.remove(appUserFactory.createTokenRedisKey(accessToken, "1"));  
+		this.redisService.remove(appUserFactory.createUserIdRedisKey(user.getId(), "0"));
+		this.redisService.remove(appUserFactory.createTokenRedisKey(accessToken, "0"));  
 		return true;
 	}
 
@@ -1266,7 +1268,7 @@ public class UserServiceImpl implements UserService {
 		if(user == null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
 		}
-		if(StringUtils.isNotBlank(user.getPassword()) && !user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPassword()))) {
+		if(StringUtils.isBlank(user.getPassword()) && user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPassword()))) {
 			throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
 		}
 		String uuid = UUIDTool.random().replaceAll("-", "");
@@ -1299,8 +1301,6 @@ class Md5PW{
 		String hex = DigestUtils.md5Hex(LINKEMORE+mobile+password);
 		return hex;
 	}
-		
-
 }
 
 
