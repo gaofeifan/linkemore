@@ -38,7 +38,10 @@
   <select id="findByPlateNo" resultMap="ResBaseResultMap" parameterType="java.util.HashMap" >
     select *
     from v_vehicle_mark_manage vm
-    where vm.veh_user_id = #{userId}
-    and vm.veh_mark = #{plateNo}
+    where  1 = 1
+    <if test="userId!=null">  
+    and vm.veh_user_id = #{userId}
+    </if>  
+    and vm.veh_mark = #{plateNo}  order by vm.create_time desc limit 0,1
   </select>
 </mapper>

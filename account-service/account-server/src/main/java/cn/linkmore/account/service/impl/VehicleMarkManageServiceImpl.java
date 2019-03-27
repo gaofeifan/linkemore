@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 
@@ -29,11 +28,9 @@ import cn.linkmore.account.response.ResVechicleMark;
 import cn.linkmore.account.service.UserGroupInputService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.account.service.VehicleMarkManageService;
-import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
-import cn.linkmore.enterprise.request.ReqRentEntUser;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
 import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.OpsRentEntUserClient;
@@ -85,6 +82,13 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 		mark.setUserId(user.getId());
 		List<VehicleMarkManage> list = this.findByUserId(user.getId());
 		if(list.size() < 3){
+			/*Map<String, Object> checkExistParam = new HashMap<String, Object>();
+			checkExistParam.put("plateNo", bean.getVehMark());
+			ResVechicleMark vechicle = findByPlateNo(checkExistParam);
+			if(vechicle != null) {
+				throw new BusinessException(StatusEnum.ACCOUNT_PLATE_EXISTS2);
+			}*/
+			
 			//检查车牌号是否已经存在
 			List<String> fieldVlaue = ObjectUtils.findFieldVlaue(list, "vehMark", new String[]{"vehMark"}, new String[] {bean.getVehMark()});
 			if(fieldVlaue != null && fieldVlaue.size() > 0){
@@ -97,27 +101,6 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 				manage.setUpdateTime(new Date());
 				int num = vehicleMarkManageMasterMapper.insertSelective(manage);
 				if(num > 0) {
-					
-					Map<String,Object> presonParam = new HashMap<String,Object>();
-					presonParam.put("plate", bean.getVehMark());
-					ReqRentEntUser ent = new ReqRentEntUser();
-					ent.setPlate(bean.getVehMark());
-					
-					/*if(opsRentEntUserClient.exists(ent) || opsRentUserClient.exists(presonParam)) {
-						//opsRentEntUserClient.syncRentStallByUserId(user.getId());
-						//opsRentEntUserClient.syncRentPersonalUserStallByPlate(bean.getVehMark());
-						Map<String,Object> param = new HashMap<String,Object>();
-						param.put("userId", user.getId());
-						if(bean.getPreId() != null && bean.getPreId().intValue() != 0L) {
-							param.put("preId", bean.getPreId());
-						}else {
-							param.put("preId", 0L);
-						}
-						param.put("plate", null);
-						existFalg = opsRentUserClient.checkExist(param);
-						logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
-					}*/
-					
 					Map<String,Object> param = new HashMap<String,Object>();
 					param.put("userId", user.getId());
 					if(bean.getPreId() != null && bean.getPreId().intValue() != 0L) {

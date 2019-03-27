@@ -967,6 +967,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 					.members(RedisKey.PREFECTURE_FREE_STALL.key + group.getPrefectureId());
 			ResPrefectureDetail preDetail = prefectureClusterMapper.findById(group.getPrefectureId());
 			groupStrategy = new ResGroupStrategy();
+			groupStrategy.setPreId(group.getPrefectureId());
 			if(preDetail.getGridX() !=null ) {
 				groupStrategy.setGridX(preDetail.getGridX());
 				groupStrategy.setGridY(preDetail.getGridY());
