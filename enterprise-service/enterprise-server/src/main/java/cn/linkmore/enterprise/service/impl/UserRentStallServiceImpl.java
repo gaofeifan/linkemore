@@ -140,6 +140,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										}
 									}
 								}
+								OwnerStall.setStallType(enttall.getStallType());
 								OwnerStall.setRentMoType(enttall.getRentMoType());
 								OwnerStall.setRentOmType(enttall.getRentOmType());
 								OwnerStall.setStallId(enttall.getStallId());
@@ -196,15 +197,13 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 									}
 								}
 							}
-							
+							OwnerStall.setStallType(enttall.getStallType());
 							OwnerStall.setRentMoType(enttall.getRentMoType());
 							OwnerStall.setRentOmType(enttall.getRentOmType());
 							OwnerStall.setStallId(enttall.getStallId());
 							OwnerStall.setMobile(enttall.getMobile());
 							OwnerStall.setPlate(enttall.getPlate());
 							OwnerStall.setStallName(enttall.getStallName());
-//							OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
-//							OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
 							OwnerStall.setImageUrl(enttall.getImageUrl());
 							OwnerStall.setStallEndTime(DateUtils.convert(enttall.getEndTime(), null));
 							OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
