@@ -12,9 +12,8 @@
 	</resultMap>
 
 	<resultMap id="StallResultMap" type="cn.linkmore.enterprise.entity.EntOwnerStall">
+		<result column="stall_type" jdbcType="BIGINT" property="stallType" />
 		<result column="pre_id" jdbcType="BIGINT" property="preId" />
-		<!-- <result column="ent_id" jdbcType="BIGINT" property="entId" />
-		<result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" /> -->
 		<result column="pre_name" jdbcType="VARCHAR" property="preName" />
 		<result column="stall_id" jdbcType="BIGINT" property="stallId" />
 		<result column="stall_name" jdbcType="VARCHAR" property="stallName" />
@@ -28,7 +27,6 @@
 		<result column="status" jdbcType="VARCHAR" property="status" />
 		<result column="lock_status" jdbcType="VARCHAR" property="lockStatus" />
 		<result column="lock_sn" jdbcType="VARCHAR" property="lockSn" />
-		
 		<result column="rent_om_type" jdbcType="SMALLINT" property="rentOmType" />
 		<result column="rent_mo_type" jdbcType="SMALLINT" property="rentMoType" />
 	</resultMap>
@@ -190,14 +188,13 @@
 	</select>
 
 	<select id="findStall" resultMap="StallResultMap">
-		SELECT  
+		<!-- 自有车位列表逻辑 -->
+		<!-- SELECT  
 			p.id as pre_id,
 			s.id as stall_id,
 			s.stall_name,
 			fp.plate_no as plate,
 			u.mobile,
-			<!-- null as ent_id,
-			p.id as ent_pre_id, -->
 			p.name as pre_name,
 			p.route_description,
 			p.route_guidance,
@@ -224,8 +221,6 @@
 			stall_id,
 			stall_name,
 			mobile,
-			<!-- ent_id ,
-			ent_pre_id, -->
 			pre_name,
 			route_description,
 			route_guidance,
@@ -237,7 +232,212 @@
 			s.rent_mo_type,
 			start_time,
 			end_time,
-			plate
+			plate -->
+			
+			SELECT
+				'1' as stall_type,
+				p.id AS pre_id,
+				s.id AS stall_id,
+				s.stall_name,
+				fp.plate_no AS plate,
+				u.mobile,
+				p. NAME AS pre_name,
+				p.route_description,
+				p.route_guidance,
+				s.stall_local,
+				s. STATUS,
+				s.lock_status,
+				s.lock_sn,
+				s.rent_om_type,
+				s.rent_mo_type,
+				DATE_FORMAT(
+					fr.start_time,
+					'%Y-%m-%d %H:%i:%s'
+				) AS start_time,
+				DATE_FORMAT(
+					fr.end_time,
+					'%Y-%m-%d %H:%i:%s'
+				) AS end_time
+			FROM
+				v_vehicle_mark_manage vm
+			INNER JOIN t_fixed_plate fp ON vm.veh_mark = fp.plate_no
+			INNER JOIN t_fixed_stall fs ON fs.fixed_id = fp.fixed_id
+			AND `status` = 1
+			INNER JOIN v_stall s ON fs.stall_id = s.id
+			INNER JOIN v_prefecture p ON s.pre_id = p.id
+			AND p. STATUS = 0
+			INNER JOIN t_user u ON u.id = vm.veh_user_id
+			INNER JOIN t_fixed_rent fr ON fr.id = fs.fixed_id
+			LEFT JOIN t_fixed_disable fd ON fp.fixed_id = fd.fixed_id
+			AND vm.veh_user_id = fd.user_id
+			WHERE
+				NOW() BETWEEN fr.start_time
+			AND fr.end_time
+			AND fd.id IS NULL
+			AND u.id =  #{0}
+			GROUP BY
+				pre_id,
+				stall_id,
+				stall_name,
+				mobile,
+				pre_name,
+				route_description,
+				route_guidance,
+				stall_local,
+				STATUS,
+				lock_status,
+				lock_sn,
+				s.rent_om_type,
+				s.rent_mo_type,
+				start_time,
+				end_time,
+				plate
+		UNION
+			SELECT
+				'2' as stall_type,
+				p.id AS pre_id,
+				s.id AS stall_id,
+				s.stall_name,
+				'' AS plate,
+				u.mobile,
+				p. NAME AS pre_name,
+				p.route_description,
+				p.route_guidance,
+				s.stall_local,
+				s. STATUS,
+				s.lock_status,
+				s.lock_sn,
+				s.rent_om_type,
+				s.rent_mo_type,
+				DATE_FORMAT(
+					t.start_time,
+					'%Y-%m-%d %H:%i:%s'
+				) AS start_time,
+				DATE_FORMAT(
+					t.end_time,
+					'%Y-%m-%d %H:%i:%s'
+				) AS end_time
+			FROM
+				t_auth_record t
+			INNER JOIN v_stall s ON t.stall_id = s.id
+			INNER JOIN v_prefecture p ON s.pre_id = p.id
+			AND p.STATUS = 0
+			INNER JOIN t_user u ON u.mobile= t.mobile
+		  where NOW() BETWEEN t.start_time
+			AND t.end_time
+			AND u.id =  #{0}
+			
+			
+	</select>
+	
+	<select id="findAuthStall" resultMap="StallResultMap">
+		SELECT owner_stall.*
+		FROM
+			(
+			SELECT
+				p.id AS pre_id,
+				s.id AS stall_id,
+				s.stall_name,
+				fp.plate_no AS plate,
+				u.mobile,
+				p. NAME AS pre_name,
+				p.route_description,
+				p.route_guidance,
+				s.stall_local,
+				s. STATUS,
+				s.lock_status,
+				s.lock_sn,
+				s.rent_om_type,
+				s.rent_mo_type,
+				DATE_FORMAT(
+					fr.start_time,
+					'%Y-%m-%d %H:%i:%s'
+				) AS start_time,
+				DATE_FORMAT(
+					fr.end_time,
+					'%Y-%m-%d %H:%i:%s'
+				) AS end_time
+			FROM
+				v_vehicle_mark_manage vm
+			INNER JOIN t_fixed_plate fp ON vm.veh_mark = fp.plate_no
+			INNER JOIN t_fixed_stall fs ON fs.fixed_id = fp.fixed_id
+			AND `status` = 1
+			INNER JOIN v_stall s ON fs.stall_id = s.id
+			INNER JOIN v_prefecture p ON s.pre_id = p.id
+			AND p. STATUS = 0
+			INNER JOIN t_user u ON u.id = vm.veh_user_id
+			INNER JOIN t_fixed_rent fr ON fr.id = fs.fixed_id
+			LEFT JOIN t_fixed_disable fd ON fp.fixed_id = fd.fixed_id
+			AND vm.veh_user_id = fd.user_id
+			WHERE
+				NOW() BETWEEN fr.start_time
+			AND fr.end_time
+			AND fd.id IS NULL
+			AND u.id =  #{0}
+			GROUP BY
+				pre_id,
+				stall_id,
+				stall_name,
+				mobile,
+				pre_name,
+				route_description,
+				route_guidance,
+				stall_local,
+				STATUS,
+				lock_status,
+				lock_sn,
+				s.rent_om_type,
+				s.rent_mo_type,
+				start_time,
+				end_time,
+				plate
+		) owner_stall
+		LEFT JOIN (
+		SELECT
+			s.stall_name,
+			s.id,
+			count(*) AS cnt
+		FROM
+			t_fixed_stall fs
+		INNER JOIN v_stall s ON fs.stall_id = s.id
+		INNER JOIN t_fixed_plate fp ON fs.fixed_id = fp.fixed_id
+		INNER JOIN t_fixed_rent fr ON fs.fixed_id = fr.id
+		INNER JOIN v_vehicle_mark_manage vm ON fp.plate_no = vm.veh_mark
+		INNER JOIN t_user u ON vm.veh_user_id = u.id
+		WHERE
+			u.id IS NOT NULL
+		AND NOW() BETWEEN fr.start_time
+		AND fr.end_time
+		AND fs.`status` = 1
+		AND s.id IN (
+			SELECT DISTINCT
+				s.id
+			FROM
+				v_vehicle_mark_manage vm
+			INNER JOIN t_fixed_plate fp ON vm.veh_mark = fp.plate_no
+			INNER JOIN t_fixed_stall fs ON fs.fixed_id = fp.fixed_id
+			AND `status` = 1
+			INNER JOIN v_stall s ON fs.stall_id = s.id
+			INNER JOIN v_prefecture p ON s.pre_id = p.id
+			AND p. STATUS = 0
+			INNER JOIN t_user u ON u.id = vm.veh_user_id
+			INNER JOIN t_fixed_rent fr ON fr.id = fs.fixed_id
+			LEFT JOIN t_fixed_disable fd ON fp.fixed_id = fd.fixed_id
+			AND vm.veh_user_id = fd.user_id
+			WHERE
+				NOW() BETWEEN fr.start_time
+			AND fr.end_time
+			AND fd.id IS NULL
+			AND u.id = #{0}
+		)
+		GROUP BY
+			s.stall_name,
+			s.id
+		ORDER BY
+			cnt DESC
+		) stall_user ON owner_stall.stall_id = stall_user.id
+		WHERE stall_user.cnt = 1
+
 	</select>
 
 </mapper>

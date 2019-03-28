@@ -439,5 +439,19 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		}
 		return owner;
 	}
+
+	@Override
+	public Boolean authFlag(HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		Boolean is = false;
+		if (user != null) {
+			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findAuthStall(user.getId());
+			if (stalllist.size() > 0) {
+				is = true;
+			}
+		}
+		log.info("用户>>>" + JSON.toJSONString(user));
+		return is;
+	}
 	
 }

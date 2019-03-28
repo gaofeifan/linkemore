@@ -44,5 +44,11 @@ public interface UserRentStallService {
 	 * @Version  v2.0
 	 */
 	ResCurrentOwner current(HttpServletRequest request);
+	/**
+	 * 查询用户是否有长租车位授权标识
+	 * @param request
+	 * @return
+	 */
+	Boolean authFlag(HttpServletRequest request);
 
 }

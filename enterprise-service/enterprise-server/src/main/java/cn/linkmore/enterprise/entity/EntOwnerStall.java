@@ -2,14 +2,12 @@ package cn.linkmore.enterprise.entity;
 
 
 public class EntOwnerStall {
+	//1代表自有车位 2代表授权车位
+	private String stallType;
 	
 	private Long preId;
 	
 	private Long stallId;
-	
-	/*private Long entId;
-	
-	private Long entPreId;*/
 	
 	private String preName;
 	
@@ -41,21 +39,13 @@ public class EntOwnerStall {
 	
 	private Short rentMoType = 0;
 	
-	/*public Long getEntId() {
-		return entId;
+	public String getStallType() {
+		return stallType;
 	}
 
-	public void setEntId(Long entId) {
-		this.entId = entId;
+	public void setStallType(String stallType) {
+		this.stallType = stallType;
 	}
-
-	public Long getEntPreId() {
-		return entPreId;
-	}
-
-	public void setEntPreId(Long entPreId) {
-		this.entPreId = entPreId;
-	}*/
 
 	public Short getRentOmType() {
 		return rentOmType;

@@ -22,22 +22,30 @@ public interface OwnerStallClusterMapper {
 	 * 获取可用的长租车区
 	 */
 	List<EntOwnerPre> findPre(Long userid);
-	
+
 	/**
 	 * 根据id集合获取车区
+	 * 
 	 * @param ids
 	 * @return
 	 */
 	List<EntOwnerPre> findPreByIds(Set<Long> ids);
-	
+
 	/**
 	 * 获取已登记的长租车位
 	 */
-	 List<EntOwnerStall> findStall(Long userid);
-	 
-	 /**
-	  * 获取已登记的长租车位2.0
-	  */
-	 List<EntOwnerStall> queryStalls (Long userid);
+	List<EntOwnerStall> findStall(Long userid);
+
+	/**
+	 * 获取已登记的长租车位2.0
+	 */
+	List<EntOwnerStall> queryStalls(Long userid);
+	
+	/**
+	 * 查询可授权车位，当前车位只被一个用户所使用
+	 * @param id
+	 * @return
+	 */
+	List<EntOwnerStall> findAuthStall(Long userid);
 
 }
