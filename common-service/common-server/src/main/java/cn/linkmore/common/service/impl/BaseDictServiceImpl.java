@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.common.controller.app.response.ResDonwLockError;
+import cn.linkmore.common.controller.app.response.ResRelationCode;
 import cn.linkmore.common.dao.cluster.BaseDictClusterMapper;
 import cn.linkmore.common.dao.master.BaseDictMasterMapper;
 import cn.linkmore.common.entity.BaseDict;
@@ -29,6 +30,7 @@ public class BaseDictServiceImpl implements BaseDictService {
 	public static final String CAUSE_FAULT = "cause_fault";	
 	public static final String CAUSE_HANG = "cause_hang";	
 	public static final String CAUSE_CLOSE = "cause_close";	
+	public static final String RELATION_CODE = "relation_code";
 	@Resource
 	private BaseDictClusterMapper baseDictClusterMapper;
 
@@ -101,6 +103,17 @@ public class BaseDictServiceImpl implements BaseDictService {
 		for (ResBaseDict resBaseDict : list) {
 			ResDonwLockError lockError = ObjectUtils.copyObject(resBaseDict,new ResDonwLockError());
 			resultList.add(lockError);
+		}
+		return resultList;
+	}
+
+	@Override
+	public List<ResRelationCode> findRelationCode() {
+		List<ResBaseDict> list = this.findList(RELATION_CODE);
+		List<ResRelationCode> resultList = new ArrayList<ResRelationCode>();
+		for (ResBaseDict resBaseDict : list) {
+			ResRelationCode relationCode = ObjectUtils.copyObject(resBaseDict,new ResRelationCode());
+			resultList.add(relationCode);
 		}
 		return resultList;
 	}

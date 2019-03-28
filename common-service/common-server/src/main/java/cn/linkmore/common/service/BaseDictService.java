@@ -3,6 +3,7 @@ package cn.linkmore.common.service;
 import java.util.List;
 
 import cn.linkmore.common.controller.app.response.ResDonwLockError;
+import cn.linkmore.common.controller.app.response.ResRelationCode;
 import cn.linkmore.common.request.ReqBaseDict;
 import cn.linkmore.common.request.ReqCheck;
 import cn.linkmore.common.response.ResBaseDict;
@@ -91,5 +92,10 @@ public interface BaseDictService {
 	 * @Version  v2.0
 	 */
 	List<ResDonwLockError> findLockFaultCause();
+	/**
+	 * 查询与被授权人关系
+	 * @return
+	 */
+	List<ResRelationCode> findRelationCode();
 
 }
