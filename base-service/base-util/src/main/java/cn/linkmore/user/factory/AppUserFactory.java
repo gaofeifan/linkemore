@@ -35,6 +35,7 @@ public class AppUserFactory implements UserFactory {
 			key = RedisKey.USER_APP_AUTH_USER.key+MINI;
 			break;
 		}
+		System.out.println( key + token);
 		return key+token;
 	}
 	

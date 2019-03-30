@@ -302,6 +302,7 @@ public class Constants {
 		USER_APP_AUTH_TOKEN("user_app:auth:uid:"), 
 		USER_APP_AUTH_USER("user_app:auth:user:"), 
 		USER_APP_AUTH_CODE("user_app:auth:code:"), 
+		USER_APP_AUTH_OPEN("user_app:auth:open:uid"), 
 		USER_APP_AUTH_MOBILE("user_app:auth:mobile:"), 
 		USER_APP_AUTH_EDIT_PW("user_app:auth:edit:pw:"), 
 		STAFF_ENT_AUTH_TOKEN("staff_ent:auth:uid:"), 

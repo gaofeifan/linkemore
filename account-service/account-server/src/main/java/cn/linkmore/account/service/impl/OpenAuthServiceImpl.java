@@ -24,6 +24,7 @@ import cn.linkmore.account.entity.OpenSecret;
 import cn.linkmore.account.entity.VehicleMarkManage;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.service.OpenAuthService;
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -186,13 +187,13 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 		user.setClient(new Short(os));
 
 		// 删除旧缓存
-		String oldTokenKey = String.valueOf((this.redisService.get("move_token_by_uid" + user.getMobile())));
+		String oldTokenKey = String.valueOf((this.redisService.get(RedisKey.USER_APP_AUTH_OPEN.key + user.getMobile())));
 		this.redisService.remove(appUserFactory.createTokenRedisKey(oldTokenKey, os));
 
 		// 插入缓存
 		user.setClient(new Short(os));
 		this.redisService.set(appUserFactory.createTokenRedisKey(user.getToken(), os), user, 50 * 60 * 1000);
-		this.redisService.set("move_token_by_uid" + user.getMobile(), user.getToken());
+		this.redisService.set(RedisKey.USER_APP_AUTH_OPEN.key + user.getMobile(), user.getToken());
 
 	}
 
