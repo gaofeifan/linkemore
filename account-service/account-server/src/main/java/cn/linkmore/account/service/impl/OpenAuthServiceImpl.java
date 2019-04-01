@@ -192,7 +192,7 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 
 		// 插入缓存
 		user.setClient(new Short(os));
-		this.redisService.set(appUserFactory.createTokenRedisKey(user.getToken(), os), user, 50 * 60 * 1000);
+		this.redisService.set(appUserFactory.createTokenRedisKey(user.getToken(), os), user, 48 * 60 * 1000);
 		this.redisService.set(RedisKey.USER_APP_AUTH_OPEN.key + user.getMobile(), user.getToken());
 
 	}

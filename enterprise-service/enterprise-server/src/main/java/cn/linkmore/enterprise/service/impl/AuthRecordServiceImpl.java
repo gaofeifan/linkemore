@@ -126,7 +126,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 					authRecord.setStartTime(sdf.parse(record.getStartTime()));
 					authRecord.setEndTime(sdf.parse(record.getEndTime()));
 					authRecord.setAuthFlag((short)0);
-					authRecord.setAuthUserId(0L);
+					authRecord.setAuthUserId(user.getId());
 					authRecordMasterMapper.save(authRecord);
 					flag = true;
 				} catch (ParseException e) {
