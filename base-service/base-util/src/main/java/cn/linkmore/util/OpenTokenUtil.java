@@ -12,7 +12,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 public class OpenTokenUtil {
 
 	static String Secret = "123456789123456789";
-	private static final long EXPIRE_TIME = 50 * 60 * 1000;
+	private static final long EXPIRE_TIME = 48 * 60 * 1000;
 
 	public static String createToken() throws Exception {
 		long now = System.currentTimeMillis();
