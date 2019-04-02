@@ -17,6 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -189,7 +192,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 		Set<Long> ids = new HashSet<Long>();
 		if (CollectionUtils.isNotEmpty(stalllist) && stalllist.size() > 0) {
 			for (EntOwnerStall entOwnerStall : stalllist) {
-				ids.add(entOwnerStall.getPreId());
+				ids.add(entOwnerStall.getStallId());
 			}
 		}
 		
@@ -214,7 +217,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			}
 			List<AuthRecordDetail> detailList = null;
 			AuthRecordDetail recordDetail = null;
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+			SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm");
 			for(AuthRecordPre authPre: authRecordPreList) {
 				detailList = new ArrayList<AuthRecordDetail>();
 				for (AuthRecord authRecord : authRecordList) {
@@ -226,16 +229,28 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 						recordDetail.setRelationId(authRecord.getRelationId());
 						recordDetail.setRelationName(authRecord.getRelationName());
 						recordDetail.setUsername(authRecord.getUsername());
-						recordDetail.setStartTime(sdf.format(authRecord.getStartTime()));
-						recordDetail.setEndTime(sdf.format(authRecord.getEndTime()));
+						String startTimeStr = sdf.format(authRecord.getStartTime());
+						String entTimeStr = sdf.format(authRecord.getEndTime());
+						if(startTimeStr!= null && startTimeStr.startsWith("0")) {
+							startTimeStr = startTimeStr.substring(1);
+						}
+						if(entTimeStr!= null && entTimeStr.startsWith("0")) {
+							entTimeStr = entTimeStr.substring(1);
+						}
+						recordDetail.setStartTime(startTimeStr);
+						recordDetail.setEndTime(entTimeStr);
 						recordDetail.setAuthFlag(authRecord.getAuthFlag());
 						//此处需要根据车位id查询当前授权人是否拥有车位的使用权限
+						log.info("endTime = {}, currentTime={}, flag = {}",entTimeStr,sdf.format(new Date()),
+								authRecord.getEndTime().before(new Date()));
 						if(authRecord.getEndTime().before(new Date())) {
-							authRecord.setAuthFlag((short)2);
-						}
-						if(authRecord.getAuthFlag() == 0 && !ids.contains(authRecord.getStallId()) ) {
-							authRecord.setAuthFlag((short)3);
-						}
+							recordDetail.setAuthFlag((short)2);
+						} else {
+							if(authRecord.getAuthFlag() == 0 && !ids.contains(authRecord.getStallId()) ) {
+								recordDetail.setAuthFlag((short)3);
+							}
+						} 
+						log.info("ids = {} , stallId = {}", ids, JSON.toJSON(authRecord));
 						detailList.add(recordDetail);
 					}
 				}
