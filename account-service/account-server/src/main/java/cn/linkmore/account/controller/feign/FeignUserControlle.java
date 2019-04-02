@@ -241,4 +241,11 @@ public class FeignUserControlle {
 		this.userService.reset(reset.getIds(),reset.getPassword());
 		return null;
 	}
+	
+	@RequestMapping(value = "/by-mobile-username", method = RequestMethod.GET)
+	@ResponseBody
+	public Long getUserIdByMobile(@RequestParam("mobile") String mobile,@RequestParam("username")  String username) {
+		return this.userService.getUserMapByMobile(mobile,username);
+	}
+
 }

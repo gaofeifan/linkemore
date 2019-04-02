@@ -68,6 +68,22 @@ public class RentedRecordServiceImpl implements RentedRecordService {
 		return list;
 	}
 
+	@Override
+	public List<EntRentedRecord> findLastByStallIds(List<Long> stalls) {
+		return this.entRentedRecordClusterMapper.findLastByStallIds(stalls);
+	}
+
+	@Override
+	public List<EntRentedRecord> findParkingRecord(Long id, Integer pageNo) {
+		if(pageNo == null || pageNo == 0) {
+			pageNo = 1;
+		}
+		pageNo = pageNo*10-10;
+		return this.entRentedRecordClusterMapper.findParkingRecord(id,pageNo);
+	}
+
+	
+	
 	
 	
 }

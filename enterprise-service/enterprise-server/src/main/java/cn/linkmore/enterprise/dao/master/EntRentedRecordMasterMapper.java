@@ -29,5 +29,7 @@ public interface EntRentedRecordMasterMapper {
 	void updateStatus(Map<String, Object> map);
 	
 	void updateRentUserStatus(Map<String, Object> map);
+
+	void updateType(Long id, Short type);
 	
 }

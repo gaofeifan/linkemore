@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.request.ReqRentedRecord;
 import cn.linkmore.enterprise.response.ResRentedRecord;
 
@@ -23,5 +24,9 @@ public interface RentedRecordService {
 	ViewPage findList(ViewPageable pageable);
 
 	List<ResRentedRecord> exportList(ReqRentedRecord bean);
+
+	List<EntRentedRecord> findLastByStallIds(List<Long> stalls);
+
+	List<EntRentedRecord> findParkingRecord(Long id, Integer pageNo);
 
 }

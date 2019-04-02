@@ -1268,7 +1268,7 @@ public class UserServiceImpl implements UserService {
 		if(user == null) {
 			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
 		}
-		if(StringUtils.isBlank(user.getPassword()) && user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPassword()))) {
+		if(!(StringUtils.isNotBlank(user.getPassword()) && user.getPassword().equals(Md5PW.md5(pwAuth.getMobile(), pwAuth.getPassword())))) {
 			throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
 		}
 		String uuid = UUIDTool.random().replaceAll("-", "");
@@ -1288,6 +1288,42 @@ public class UserServiceImpl implements UserService {
 		ResUser user = this.findByMobile(mobile);
 		return user == null ? true : false;
 	}
+
+	@Override
+	public Long getUserMapByMobile(String mobile, String username) {
+		ResUser user = this.userClusterMapper.findByMobile(mobile);
+		if(user == null) {
+			user = new ResUser();
+			user.setMobile(mobile);
+			user.setUsername(username);
+			user.setPassword("");
+			user.setUserType("1");
+			user.setStatus("1");
+			user.setLastLoginTime(new Date());
+			user.setCreateTime(new Date());
+			user.setUpdateTime(new Date());
+			user.setIsAppRegister((short) 1);
+			user.setAppRegisterTime(new Date());
+			user.setIsWechatBind((short) 0);
+			user.setFansStatus((short)0);
+			this.userMasterMapper.save(user);
+			Account account = new Account();
+			account.setId(user.getId());
+			account.setAmount(0.00d);
+			account.setUsableAmount(0.00d);
+			account.setFrozenAmount(0.00d);
+			account.setRechagePaymentAmount(0.00d);
+			account.setRechargeAmount(0.00d);
+			account.setAccType(1);
+			account.setStatus((short) 1);
+			account.setOrderAmount(0.00d);
+			account.setOrderPaymentAmount(0.00d);
+			account.setCreateTime(new Date());
+			accountMasterMapper.insert(account);
+		}
+		return user.getId();
+	}
+	
 	
 }
 class UUIDTool{

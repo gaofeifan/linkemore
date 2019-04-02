@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import cn.linkmore.account.client.UserClient;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -48,6 +50,8 @@ import cn.linkmore.util.DomainUtil;
 public class AuthRecordServiceImpl implements AuthRecordService {
 	
 	@Resource
+	private UserClient userClient;
+	@Resource
 	private AuthRecordMasterMapper authRecordMasterMapper;
 	
 	@Resource
@@ -55,7 +59,6 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	
 	@Autowired
 	private OwnerStallClusterMapper ownerStallClusterMapper;
-
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -112,6 +115,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			int i = 0;
 			for(String stallId: ids) {
 				try {
+					Long userId = this.userClient.getUserIdByMobile(record.getMobile(),record.getUsername());
 					authRecord = new AuthRecord();
 					authRecord.setStallId(Long.valueOf(stallId));
 					authRecord.setStallName(stallNames[i]);
@@ -121,6 +125,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 					authRecord.setUsername(record.getUsername());
 					authRecord.setPreId(record.getPreId());
 					authRecord.setPreName(record.getPreName());
+					authRecord.setUserId(userId);
 					authRecord.setRelationId(record.getRelationId());
 					authRecord.setRelationName(record.getRelationName());
 					authRecord.setStartTime(sdf.parse(record.getStartTime()));
@@ -244,4 +249,12 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 		}
 		return authRecordPreList;
 	}
+
+	@Override
+	public AuthRecord findByUserId(Long userId,Long stallId) {
+		return 	this.authRecordClusterMapper.findByUserId(userId,stallId);
+		
+	}
+	
+	
 }

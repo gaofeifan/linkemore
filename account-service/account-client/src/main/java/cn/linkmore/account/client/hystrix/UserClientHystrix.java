@@ -31,7 +31,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 
 /**
- * @author   GFF
+ * @author   GFF 
  * @Date     2018年5月22日
  * @Version  v2.0
  */
@@ -178,6 +178,12 @@ public class UserClientHystrix implements UserClient{
 	@Override
 	public Object reset(@RequestBody ReqUserResetPW reset) {
 		log.info("account service int reset(List<Long> ids, String password) hystrix");
+		return null;
+	}
+
+
+	@Override
+	public Long getUserIdByMobile(String mobile, String username) {
 		return null;
 	}
 	

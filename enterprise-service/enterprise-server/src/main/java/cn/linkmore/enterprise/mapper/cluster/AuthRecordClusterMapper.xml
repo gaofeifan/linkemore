@@ -14,19 +14,27 @@
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="auth_user_id" jdbcType="BIGINT" property="authUserId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="auth_flag" jdbcType="SMALLINT" property="authFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, stall_id, stall_name, mobile, username, start_time, end_time, relation_id, relation_name, 
-    pre_id, pre_name, auth_user_id, auth_flag, create_time, update_time
+    pre_id, pre_name, auth_user_id, auth_flag, create_time, update_time,user_id
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_auth_record
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_auth_record
+    where user_id = #{0} and stall_id = #{1}
+    limit 0,1
   </select>
   
   <select id="findRecordList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
@@ -37,8 +45,14 @@
     <if test="authUserId!=null">  
     and auth_user_id = #{authUserId,jdbcType=BIGINT}
     </if> 
+    <if test="userId!=null">  
+    and user_id = #{userId,jdbcType=BIGINT}
+    </if> 
     <if test="preId!=null">  
     and pre_id like #{preId,jdbcType=BIGINT}
+    </if> 
+    <if test="endTime!=null">  
+    and end_time >= now()
     </if> 
   </select>
   

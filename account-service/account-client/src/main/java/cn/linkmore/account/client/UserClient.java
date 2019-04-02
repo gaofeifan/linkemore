@@ -201,4 +201,8 @@ public interface UserClient {
 	@ResponseBody
 	public Object reset(@RequestBody ReqUserResetPW reset);
 
+	@RequestMapping(value = "/by-mobile-username", method = RequestMethod.GET)
+	@ResponseBody
+	public Long getUserIdByMobile(@RequestParam("mobile") String mobile,@RequestParam("username")  String username);
+
 }

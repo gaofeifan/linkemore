@@ -12,13 +12,14 @@
       mobile, username, start_time, 
       end_time, relation_id, relation_name, 
       pre_id, pre_name, auth_user_id, 
-      auth_flag, create_time, update_time
+      auth_flag, create_time, update_time,user_id
       )
     values (#{id,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}, 
       #{mobile,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
       #{endTime,jdbcType=TIMESTAMP}, #{relationId,jdbcType=BIGINT}, #{relationName,jdbcType=VARCHAR}, 
       #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, #{authUserId,jdbcType=BIGINT}, 
-      #{authFlag,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      #{authFlag,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{userId,jdbcType=BIGINT}
       )
   </insert>
  
@@ -29,7 +30,8 @@
       end_time = #{endTime,jdbcType=TIMESTAMP},
       relation_id = #{relationId,jdbcType=BIGINT},
       relation_name = #{relationName,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

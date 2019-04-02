@@ -1,5 +1,9 @@
 package cn.linkmore.enterprise.controller.app;
 
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -9,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +26,8 @@ import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
+import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
+import cn.linkmore.enterprise.controller.app.response.ResRentUser;
 import cn.linkmore.enterprise.service.UserRentStallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,7 +47,7 @@ public class AppUserRentStallController {
 	private UserRentStallService userRentStallService;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
+	 
 	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.POST)
 	@ResponseBody
@@ -57,12 +64,42 @@ public class AppUserRentStallController {
 		 return response;
 	}
 	
+	
+	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
+	@RequestMapping(value = "/v3.0/list", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<List<ResRentUser>> ownerList(@Validated  @RequestBody ReqLocation  location,HttpServletRequest request) {
+		ResponseEntity<List<ResRentUser>> response = null;
+		 try {
+			 List<ResRentUser> list = userRentStallService.findStallList(request,location);
+			 response = ResponseEntity.success(list, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
+	}
 	@ApiOperation(value = "长租用户操作车位锁",notes = "8005099地锁升起失败,再升一次,8005100地锁降下失败,再降一次,8005101地锁升起失败,8005102地锁降下失败,8005093 车位锁其他用户在操作;", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> controlLock(@Validated @RequestBody ReqUserRentStall reqConStall,HttpServletRequest request) {
 		try {
 			Boolean control = userRentStallService.control(reqConStall, request);
+			return ResponseEntity.success(control, request);
+		} catch (BusinessException e) {
+			return ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			log.info("e={}",JSON.toJSON(e.getMessage()));
+			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+	}
+	@ApiOperation(value = "长租用户操作车位锁(长租授权接口)",notes = "8005099地锁升起失败,再升一次,8005100地锁降下失败,再降一次,8005101地锁升起失败,8005102地锁降下失败,8005093 车位锁其他用户在操作;", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/control-auth", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> controlLockAuth(@Validated @RequestBody ReqUserRentStall reqConStall,HttpServletRequest request) {
+		try {
+			Boolean control = userRentStallService.controlAuth(reqConStall, request);
 			return ResponseEntity.success(control, request);
 		} catch (BusinessException e) {
 			return ResponseEntity.fail( e.getStatusEnum(),  request);
@@ -86,6 +123,13 @@ public class AppUserRentStallController {
 	public ResponseEntity<ResCurrentOwner> current(HttpServletRequest request){
 		ResCurrentOwner owner = this.userRentStallService.current(request);
 		return ResponseEntity.success(owner, request);
+	}
+	@ApiOperation(value = "停车记录", notes = "停车记录", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/parking-record", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResParkingRecord>> parkingRecord(HttpServletRequest request, @RequestParam(value="pageNo") Integer pageNo){
+		List<ResParkingRecord> records = this.userRentStallService.parkingRecord(request,pageNo);
+		return ResponseEntity.success(records, request);
 	}
 	
 	

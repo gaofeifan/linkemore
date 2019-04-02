@@ -357,6 +357,8 @@ public interface UserService {
 	 */
 	Boolean authIsNew(String mobile);
 
+	Long getUserMapByMobile(String mobile, String username);
+
 
 
 }

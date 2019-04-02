@@ -49,4 +49,11 @@ public interface AuthRecordService {
 	 */
 	public List<AuthRecordPre> findRecordList(HttpServletRequest request);
 
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	AuthRecord findByUserId(Long userId, Long stallId);
+
 }
