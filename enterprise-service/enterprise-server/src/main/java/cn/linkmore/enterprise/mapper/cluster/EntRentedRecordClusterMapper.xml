@@ -149,7 +149,7 @@
     er.pre_name,er.type,u.username,u.mobile
     from t_ent_rented_record er
     left join t_user u on er.user_id = u.id
-    where er.user_id = #{0,jdbcType=BIGINT}
+    where er.user_id = #{0}
     order by er.id desc
     limit #{1},10
   </select>

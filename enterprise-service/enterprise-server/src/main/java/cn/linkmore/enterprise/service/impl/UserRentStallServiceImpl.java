@@ -469,9 +469,12 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		List<AuthRecord> findRecordList = this.authRecordService.findRecordList(param);
 		List<Long> preIdAuthList = findRecordList.stream().map(f -> f.getPreId()).collect(Collectors.toList());
 		List<Long> stallIdAuthList = findRecordList.stream().map(f -> f.getStallId()).collect(Collectors.toList());
-		Map<String, Object> map = new HashMap<>();
-		map.put("list", stallIdAuthList);
-		List<ResStall> resStallList = this.stallClient.findPreStallList(map);
+		List<ResStall> resStallList = null;
+		if(stallIdAuthList != null && stallIdAuthList.size() != 0) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("list", stallIdAuthList);
+			resStallList = this.stallClient.findPreStallList(map);
+		}
 		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
 		List<Long> preIdOwnerList = stalllist.stream().map(s -> s.getPreId()).collect(Collectors.toList());
 		List<Long> stallIdOwnerList = stalllist.stream().map(s -> s.getStallId()).collect(Collectors.toList());
