@@ -66,7 +66,7 @@ public class AppUserRentStallController {
 	
 	
 	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
-	@RequestMapping(value = "/v3.0/list", method = RequestMethod.POST)
+	@RequestMapping(value = "/v2.0.1/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<List<ResRentUser>> ownerList(@Validated  @RequestBody ReqLocation  location,HttpServletRequest request) {
 		ResponseEntity<List<ResRentUser>> response = null;
