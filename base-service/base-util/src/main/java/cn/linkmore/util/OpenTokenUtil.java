@@ -21,9 +21,9 @@ public class OpenTokenUtil {
 		map.put("alg", "HS256");
 		map.put("typ", "JWT");
 		String token = JWT.create().withHeader(map)
-				.withClaim("uid", "18310151719")
-				.withClaim("mobile", "18310185317")
-			    .withClaim("plates", "[京S88888,京A12345]").withExpiresAt(date).withIssuedAt(new Date(now))
+				.withClaim("uid", "2009")
+				.withClaim("mobile", "18514410536")
+			    .withClaim("plates", "[京M92977,京Z63692]").withExpiresAt(date).withIssuedAt(new Date(now))
 				.sign(Algorithm.HMAC256(Secret));
 		return token;
 	}

@@ -3,7 +3,7 @@ package cn.linkmore.enterprise.controller.app.response;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel("车位锁信息")
+@ApiModel("授权车位锁信息")
 public class AuthRecordDetail {
 	
 	@ApiModelProperty(value = "主键Id")

@@ -132,5 +132,13 @@ public class AppUserRentStallController {
 		return ResponseEntity.success(records, request);
 	}
 	
+	@ApiOperation(value = "查询用户是否有车位授权标识", notes = "查询用户是否有车位授权标识", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/auth-flag", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Boolean> authFlag( HttpServletRequest request) {
+		Boolean is = userRentStallService.authFlag(request);
+		return ResponseEntity.success(is, request);
+	}
+	
 	
 }

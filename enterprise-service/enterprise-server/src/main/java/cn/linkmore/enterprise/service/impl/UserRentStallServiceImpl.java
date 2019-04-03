@@ -13,13 +13,17 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -41,7 +45,6 @@ import cn.linkmore.enterprise.entity.AuthRecord;
 import cn.linkmore.enterprise.entity.EntOwnerPre;
 import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntRentedRecord;
-import cn.linkmore.enterprise.response.ResRentedRecord;
 import cn.linkmore.enterprise.service.AuthRecordService;
 import cn.linkmore.enterprise.service.OwnerStallService;
 import cn.linkmore.enterprise.service.RentedRecordService;
@@ -156,6 +159,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										}
 									}
 								}
+								OwnerStall.setStallType(enttall.getStallType());
 								OwnerStall.setRentMoType(enttall.getRentMoType());
 								OwnerStall.setRentOmType(enttall.getRentOmType());
 								OwnerStall.setStallId(enttall.getStallId());
@@ -212,7 +216,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 									}
 								}
 							}
-
+							OwnerStall.setStallType(enttall.getStallType());
 							OwnerStall.setRentMoType(enttall.getRentMoType());
 							OwnerStall.setRentOmType(enttall.getRentOmType());
 							OwnerStall.setStallId(enttall.getStallId());
@@ -718,5 +722,17 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	}
 
 	
+	public Boolean authFlag(HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		Boolean is = false;
+		if (user != null) {
+			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findAuthStall(user.getId());
+			if (stalllist.size() > 0) {
+				is = true;
+			}
+		}
+		log.info("用户>>>" + JSON.toJSONString(user));
+		return is;
+	}
 	
 }
