@@ -2,13 +2,16 @@ package cn.linkmore.user.factory;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import cn.linkmore.bean.common.Constants.RedisKey;
-import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.util.TokenUtil;
 
 public class AppUserFactory implements UserFactory {
 
 	private static AppUserFactory userFactory = null;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	public static UserFactory getInstance() {
 		if(userFactory == null) {
@@ -31,11 +34,12 @@ public class AppUserFactory implements UserFactory {
 			key = RedisKey.USER_APP_AUTH_USER.key;
 			break;
 		case "0":
+		case "4":
 		default:
 			key = RedisKey.USER_APP_AUTH_USER.key+MINI;
 			break;
 		}
-		System.out.println( key + token);
+		log.info("createTokenRedisKey os = {}, key = {}, token={}", os, key, token);
 		return key+token;
 	}
 	
@@ -50,10 +54,12 @@ public class AppUserFactory implements UserFactory {
 			key = RedisKey.USER_APP_AUTH_TOKEN.key;
 			break;
 		case "0":
+		case "4":
 		default:
 			key = RedisKey.USER_APP_AUTH_TOKEN.key+MINI;
 			break;
 		}
+		log.info("createUserIdRedisKey os = {}, key = {}, userId={}", os, key, userId);
 		return key+userId;
 	}
 
@@ -67,6 +73,7 @@ public class AppUserFactory implements UserFactory {
 			key = RedisKey.USER_WXAPP_AUTH_TOKEN.key;
 			break;
 		case "0":
+		case "4":
 		default:
 			key = RedisKey.USER_WXAPP_AUTH_TOKEN.key+MINI;
 			break;
