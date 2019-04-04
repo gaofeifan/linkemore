@@ -74,8 +74,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Autowired
 	private AuthRecordService authRecordService;
 	@Autowired
-	private UserRentStallService userRentStallService;
-	@Autowired
 	private RedisService redisService;
 	@Autowired
 	private OwnerStallService ownerStallService;
@@ -736,6 +734,66 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		}
 		log.info("用户>>>" + JSON.toJSONString(user));
 		return is;
+	}
+
+	@Override
+	public List<OwnerPre> authStall(HttpServletRequest request) {
+		List<OwnerPre> list = new ArrayList<OwnerPre>();
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		List<EntOwnerPre> prelist = null;
+		Set<Long> stallIdList = new HashSet<>();
+		if (user != null) {
+			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findAuthStall(user.getId());
+			if (stalllist == null || stalllist.size() == 0) {
+				return list;
+			}
+			Set<Long> ids = new HashSet<Long>();
+			if (CollectionUtils.isNotEmpty(stalllist) && stalllist.size() > 0) {
+				for (EntOwnerStall entOwnerStall : stalllist) {
+					ids.add(entOwnerStall.getPreId());
+				}
+				prelist = ownerStallClusterMapper.findPreByIds(ids);
+			}
+			if (prelist == null || prelist.size() == 0) {
+				return list;
+			}
+			for (EntOwnerPre pre : prelist) {
+				OwnerPre ownerpre = new OwnerPre();
+				ownerpre.setPreId(pre.getPreId());
+				ownerpre.setPreName(pre.getPreName());
+				ownerpre.setAddress(pre.getAddress());
+				ownerpre.setLatitude(pre.getLatitude());
+				ownerpre.setLongitude(pre.getLongitude());
+				List<OwnerStall> ownerstalllist = new ArrayList<>();
+				for (EntOwnerStall enttall : stalllist) {
+					if (pre.getPreId().equals(enttall.getPreId())) {
+						if (stallIdList.contains(enttall.getStallId())) {
+							continue;
+						}
+						stallIdList.add(enttall.getStallId());
+						OwnerStall OwnerStall = new OwnerStall();
+						OwnerStall.setStallType(enttall.getStallType());
+						OwnerStall.setRentMoType(enttall.getRentMoType());
+						OwnerStall.setRentOmType(enttall.getRentOmType());
+						OwnerStall.setStallId(enttall.getStallId());
+						OwnerStall.setMobile(enttall.getMobile());
+						OwnerStall.setPlate(enttall.getPlate());
+						OwnerStall.setStallName(enttall.getStallName());
+						OwnerStall.setImageUrl(enttall.getImageUrl());
+						OwnerStall.setStallEndTime(DateUtils.convert(enttall.getEndTime(), null));
+						OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
+						OwnerStall.setStallLocal(enttall.getStallLocal());
+						OwnerStall.setLockSn(enttall.getLockSn());
+						OwnerStall.setLockStatus(enttall.getLockStatus());
+						OwnerStall.setStatus(enttall.getStatus() == 1l ? 1 : 2l);
+						ownerstalllist.add(OwnerStall);
+					}
+				}
+				ownerpre.setStalls(ownerstalllist);
+				list.add(ownerpre);
+			}
+		}
+		return list;
 	}
 	
 }

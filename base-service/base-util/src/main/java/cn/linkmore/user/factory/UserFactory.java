@@ -13,6 +13,7 @@ import cn.linkmore.bean.common.security.CacheUser;
 public interface UserFactory {
 
 	public static final String MINI = "mini:";
+	public static final String OPEN = "open:";
 	
 	/**
 	 * @Description  创建token的rediskey

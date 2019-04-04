@@ -1,11 +1,7 @@
 package cn.linkmore.enterprise.controller.app;
 
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +12,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
+import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
@@ -140,5 +135,12 @@ public class AppUserRentStallController {
 		return ResponseEntity.success(is, request);
 	}
 	
+	@ApiOperation(value = "查询用户可授权的车位", notes = "查询用户可授权的车位", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/auth-stall", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<OwnerPre>> authStall( HttpServletRequest request) {
+		List<OwnerPre> ownerPreList = userRentStallService.authStall(request);
+		return ResponseEntity.success(ownerPreList, request);
+	}
 	
 }
