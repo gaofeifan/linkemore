@@ -151,7 +151,7 @@
     left join t_user u on er.user_id = u.id
     where er.user_id = #{0}
     order by er.id desc
-    limit #{1},10
+   <!-- limit #{1},10 -->
   </select>
   <select id="findLastByStallIds" parameterType="java.util.List" resultMap="BaseResultMap">
 	  select 

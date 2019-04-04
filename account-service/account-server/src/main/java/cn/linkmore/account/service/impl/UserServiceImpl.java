@@ -1295,7 +1295,7 @@ public class UserServiceImpl implements UserService {
 		if(user == null) {
 			user = new ResUser();
 			user.setMobile(mobile);
-			user.setUsername(username);
+			user.setUsername(mobile);
 			user.setPassword("");
 			user.setUserType("1");
 			user.setStatus("1");
@@ -1306,6 +1306,7 @@ public class UserServiceImpl implements UserService {
 			user.setAppRegisterTime(new Date());
 			user.setIsWechatBind((short) 0);
 			user.setFansStatus((short)0);
+			user.setNickname(username);
 			this.userMasterMapper.save(user);
 			Account account = new Account();
 			account.setId(user.getId());
