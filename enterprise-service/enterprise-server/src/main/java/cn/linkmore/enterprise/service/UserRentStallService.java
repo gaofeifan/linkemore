@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
+import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
@@ -60,5 +61,7 @@ public interface UserRentStallService {
 	Boolean controlAuth(ReqUserRentStall reqConStall, HttpServletRequest request);
 
 	List<ResParkingRecord> parkingRecord(HttpServletRequest request, Integer pageNo);
+
+	List<OwnerPre> authStall(HttpServletRequest request);
 
 }
