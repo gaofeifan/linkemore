@@ -136,11 +136,15 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 					authRecord.setEndTime(sdf.parse(record.getEndTime()));
 					authRecord.setAuthFlag((short)0);
 					authRecord.setAuthUserId(user.getId());
+					if(authRecord.getStartTime().after(authRecord.getEndTime())) {
+						throw new BusinessException(StatusEnum.AUTH_RECORD_STARTAFTEREND);
+					}
 					authRecordMasterMapper.save(authRecord);
 					flag = true;
 				} catch (ParseException e) {
 					flag = false;
 					e.printStackTrace();
+					throw new BusinessException(StatusEnum.VALID_EXCEPTION);
 				}
 				i++;
 			}
@@ -165,10 +169,14 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			authRecord.setRelationName(record.getRelationName());
 			authRecord.setStartTime(sdf.parse(record.getStartTime()));
 			authRecord.setEndTime(sdf.parse(record.getEndTime()));
+			if(authRecord.getStartTime().after(authRecord.getEndTime())) {
+				throw new BusinessException(StatusEnum.AUTH_RECORD_STARTAFTEREND);
+			}
 			authRecordMasterMapper.update(authRecord);
 			flag = true;
 		} catch (ParseException e) {
 			e.printStackTrace();
+			throw new BusinessException(StatusEnum.VALID_EXCEPTION);
 		}
 		return flag;
 	}
