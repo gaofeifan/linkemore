@@ -21,11 +21,9 @@ public class ReqAuthRecordUpdate {
     private String endTime;
 	
 	@ApiModelProperty("关系id")
-	@NotNull(message="关系id不能为空")
     private Long relationId;
 	
 	@ApiModelProperty("关系名称")
-	@NotNull(message="关系名称不能为空")
     private String relationName;
 
 	public Long getId() {
