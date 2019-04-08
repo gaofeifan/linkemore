@@ -498,6 +498,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				rentUserStallList = new ArrayList<>();
 				rentUserStall = new ResRentUserStall();
 				rentUserStall.setDownLockTime(record.getDownTime());
+				rentUserStall.setStallId(record.getStallId());
+				rentUserStall.setUseUpLockTime(record.getLeaveTime());
+				rentUserStall.setStallName(record.getStallName());
 				if(stallIdOwnerList.contains(rentUserStall.getStallId())) {
 					rentUserStall.setIsUserRecord(1);
 					rentUserStall.setUserStatus(1);
@@ -508,15 +511,14 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							break;
 						}
 					}
-				}else {
+				}else if(stallIdAuthList.contains(record.getStallId())) {
 					AuthRecord authRecord = this.authRecordService.findByUserId(user.getId(), record.getStallId());
 					rentUserStall.setValidity(authRecord.getEndTime());
 				}
 				rentUserStall.setPreId(record.getPreId());
 				rentUserStall.setPreName(record.getPreName());
-				rentUserStall.setStallId(record.getStallId());
-				rentUserStall.setStallName(record.getStallName());
-				ResStallEntity entity = this.stallClient.findById(record.getId());
+		
+				ResStallEntity entity = this.stallClient.findById(record.getStallId());
 				rentUserStall.setStallStatus(entity.getStatus().intValue());
 				ResLockInfo lockInfo = this.feignLockClient.lockInfo(entity.getLockSn());
 				if(lockInfo != null) {
@@ -532,9 +534,21 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				// AuthRecord record = findRecordList.stream().filter(f -> f.getStallId() ==
 				// enttall.getStallId()).findFirst().get();
 				// rentUserStall.setValidity(record.getEndTime());
+				for (EntOwnerPre pre : preList) {
+					if(pre.getPreId() == rentUserStall.getPreId()) {
+						rentUser = new ResRentUser();
+						rentUser.setPreId(pre.getPreId());
+						rentUser.setPreName(pre.getPreName());
+						rentUser.setAddress(pre.getAddress());
+						rentUser.setLatitude(pre.getLatitude());
+						rentUser.setLongitude(pre.getLongitude());
+						rentUser.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(),
+								new Double(pre.getLatitude()), new Double(pre.getLongitude())));
+						rentUserList.add(rentUser);
+					}
+				}
 				rentUserStallList.add(rentUserStall);
 				rentUser.setRentUserStalls(rentUserStallList);
-				rentUserList.add(rentUser);
 				authRentStall.setIsHave(isHave);
 				authRentStall.setRentUsers(rentUserList);
 				return authRentStall;
@@ -748,12 +762,16 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public Boolean controlAuth(ReqUserRentStall reqConStall, HttpServletRequest request) {
 		Boolean control = this.control(reqConStall, request);
-		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
-		AuthRecord authRecord = authRecordService.findByUserId(user.getId(), reqConStall.getStallId());
-		if(authRecord != null && control && reqConStall.getState().equals("1")) {
+		if(control && reqConStall.getState().intValue() == 1) {
+			CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+			AuthRecord authRecord = authRecordService.findByUserId(user.getId(), reqConStall.getStallId());
 			List<EntRentedRecord> list = this.recordService.findLastByStallIds(Arrays.asList(reqConStall.getStallId()));
-			if(list != null && list.size() == 1) {
-				this.entRentedRecordMasterMapper.updateType(list.get(0).getId(),(short)2);
+			if(authRecord != null) {
+				if(list != null && list.size() == 1) {
+					this.entRentedRecordMasterMapper.updateType(list.get(0).getId(),(short)2);
+				}
+			}else {
+				this.entRentedRecordMasterMapper.updateType(list.get(0).getId(),(short)1);
 			}
 		}
 		return control;

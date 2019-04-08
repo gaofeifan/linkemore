@@ -3,6 +3,7 @@ package cn.linkmore.enterprise.dao.master;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 /**
@@ -30,6 +31,6 @@ public interface EntRentedRecordMasterMapper {
 	
 	void updateRentUserStatus(Map<String, Object> map);
 
-	void updateType(Long id, Short type);
+	void updateType(@Param("id")Long id, @Param("type")Short type);
 	
 }

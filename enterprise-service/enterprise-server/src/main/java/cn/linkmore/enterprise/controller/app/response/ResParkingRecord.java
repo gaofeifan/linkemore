@@ -2,6 +2,8 @@ package cn.linkmore.enterprise.controller.app.response;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 @ApiModel("停车记录")
@@ -18,7 +20,7 @@ public class ResParkingRecord {
 	@ApiModelProperty("车位id")
 	private Long stallId;
 	
-	@ApiModelProperty("车位类型")
+	@ApiModelProperty("车位权限类型 1 原始用户 2 被授权用户")
 	private Short stallAuthType;
 	
 	@ApiModelProperty("开始时间")
@@ -76,6 +78,7 @@ public class ResParkingRecord {
 		this.stallAuthType = stallAuthType;
 	}
 
+	@JsonFormat(pattern="MM月dd日 hh:mm",timezone="GMT+8")
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -84,6 +87,7 @@ public class ResParkingRecord {
 		this.startTime = startTime;
 	}
 
+	@JsonFormat(pattern="MM月dd日 hh:mm",timezone="GMT+8")
 	public Date getEndTime() {
 		return endTime;
 	}

@@ -149,9 +149,9 @@
     er.pre_name,er.type,u.username,u.mobile
     from t_ent_rented_record er
     left join t_user u on er.user_id = u.id
-    where er.user_id = #{0}
+    where er.user_id = #{id} and er.status = 1
     order by er.id desc
-   <!-- limit #{1},10 -->
+   limit #{pageNo},10
   </select>
   <select id="findLastByStallIds" parameterType="java.util.List" resultMap="BaseResultMap">
 	  select 
@@ -163,7 +163,7 @@
 		 t_ent_rented_record
 	     where stall_id in
 	     <foreach collection="list"  index="index" item="stallId" open="(" separator="," close=")"  >
-		 	stall_id = #{stallId} 
+		 	#{stallId} 
 	  	 </foreach>
 		  order by id desc 
 		  limit 111111111111

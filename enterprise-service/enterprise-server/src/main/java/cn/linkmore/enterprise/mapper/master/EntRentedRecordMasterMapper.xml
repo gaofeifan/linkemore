@@ -133,7 +133,7 @@
     where  stall_id = #{stallId,jdbcType=BIGINT} and status = 0
   </update>
   <update id="updateType">
-    update t_ent_rented_record set type = #{1}
-    where  id = #{0}
+    update t_ent_rented_record set type = #{type}
+    where  id = #{id}
   </update>
 </mapper>

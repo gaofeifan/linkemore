@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
@@ -78,6 +79,6 @@ public interface EntRentedRecordClusterMapper {
 	List<EntRentedRecord> findAllByUser(Long id);
 	
 	List<EntRentedRecord> findLastByStallIds(List<Long> stalls);
-	List<EntRentedRecord> findParkingRecord(Long id, Integer pageNo);
+	List<EntRentedRecord> findParkingRecord( @Param("id")Long id, @Param("pageNo")Integer pageNo);
 
 }

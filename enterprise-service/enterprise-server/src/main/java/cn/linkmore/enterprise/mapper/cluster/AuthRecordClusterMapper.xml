@@ -33,7 +33,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_auth_record
-    where user_id = #{0} and stall_id = #{1}
+    where user_id = #{userId} and stall_id = #{stallId}
     limit 0,1
   </select>
   

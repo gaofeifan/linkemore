@@ -3,6 +3,8 @@ package cn.linkmore.enterprise.dao.cluster;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import cn.linkmore.enterprise.entity.AuthRecord;
 @Mapper
 public interface AuthRecordClusterMapper {
@@ -31,6 +33,6 @@ public interface AuthRecordClusterMapper {
      */
     int count(Map<String,Object> param);
     
-	AuthRecord findByUserId(Long userId, Long stallId);
+	AuthRecord findByUserId(@Param("userId")Long userId, @Param("stallId")Long stallId);
     
 }
