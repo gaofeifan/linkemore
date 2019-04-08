@@ -436,8 +436,9 @@
 		ORDER BY
 			cnt DESC
 		) stall_user ON owner_stall.stall_id = stall_user.id
-		WHERE stall_user.cnt = 1
+		WHERE stall_user.cnt BETWEEN 0 AND 3
 
 	</select>
-
+	<!-- 测试阶段放开，线上需要修改为只有1个车位时可以授权操作 -->
+	<!-- WHERE stall_user.cnt = 1 -->
 </mapper>
