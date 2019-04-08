@@ -508,6 +508,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 						if(ownerStall.getStallId().equals(record.getStallId())) {
 							rentUserStall.setValidity(DateUtils.convert(ownerStall.getEndTime(), DateUtils.DARW_FORMAT_TIME));
 							rentUserStall.setRentMoType(ownerStall.getRentMoType());
+							rentUserStall.setRentOmType(ownerStall.getRentOmType());
 							break;
 						}
 					}
@@ -578,6 +579,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			for (EntOwnerStall enttall : stalllist) {
 				if (pre.getPreId().equals(enttall.getPreId())) {
 					rentUserStall = new ResRentUserStall();
+					rentUserStall.setRentMoType(enttall.getRentMoType());
+					rentUserStall.setRentOmType(enttall.getRentOmType());
 					if (tempMap != null && !tempMap.isEmpty()) {
 						for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
 							if (info.getKey() == pre.getPreId()) {
@@ -601,8 +604,12 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					if (enttall.getStatus() == 2) {
 						rentUserStall.setIsUserUse(1);
 					}
+					
 					for (EntRentedRecord resRentedRecord : records) {
 						if (resRentedRecord.getStallId().equals(enttall.getStallId())) {
+							if (enttall.getStatus().intValue() == 2) {
+								rentUserStall.setRentOmType((short) 1);
+							}
 							if (resRentedRecord.getUserId() != user.getId() && resRentedRecord.getType().equals("2")) {
 								AuthRecord re = this.authRecordService.findByUserId(resRentedRecord.getUserId(),
 										resRentedRecord.getStallId());
@@ -622,7 +629,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					}
 					rentUserStall.setIsUserRecord(1);
 					rentUserStall.setUserStatus(1);
-					rentUserStall.setRentMoType(enttall.getRentMoType());
 					rentUserStall.setPreId(pre.getPreId());
 					rentUserStall.setPreName(pre.getPreName());
 					rentUserStall.setStallId(enttall.getStallId());
@@ -685,6 +691,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								}
 							}
 							rentUserStall.setPreId(pre.getPreId());
+				
 							rentUserStall.setPreName(pre.getPreName());
 							rentUserStall.setStallId(resStall.getId());
 							rentUserStall.setStallName(resStall.getStallName());

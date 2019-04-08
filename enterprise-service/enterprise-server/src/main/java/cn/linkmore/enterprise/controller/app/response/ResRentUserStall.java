@@ -26,11 +26,15 @@ public class ResRentUserStall {
 	@ApiModelProperty(value="电池电量")
 	private int battery;
 	
+	@ApiModelProperty(value = "长租车位标识一对多标识 默认0 1开启")
+	private Short rentOmType = 0;
+	
 	@ApiModelProperty(value = "长租车位标识多对一标识 默认0 1开启")
 	private Short rentMoType = 0;
 	/**
 	 * 车位状态   0 上方无车 1 上方有车 ，其他值 表示未知
 	 */ 
+	@ApiModelProperty(value = "车位状态   0 上方无车 1 上方有车 ，其他值 表示未知")
 	private int parkingState = 0;
 	
 	/**
@@ -231,6 +235,14 @@ public class ResRentUserStall {
 
 	public void setRentMoType(Short rentMoType) {
 		this.rentMoType = rentMoType;
+	}
+
+	public Short getRentOmType() {
+		return rentOmType;
+	}
+
+	public void setRentOmType(Short rentOmType) {
+		this.rentOmType = rentOmType;
 	}
 	
 	
