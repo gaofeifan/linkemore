@@ -29,13 +29,11 @@ public class ReqAuthRecord {
     private String endTime;
 	
 	@ApiModelProperty("关系id")
-	@NotNull(message="关系id不能为空")
     private Long relationId;
 	
 	@ApiModelProperty("关系名称")
-	@NotNull(message="关系名称不能为空")
     private String relationName;
-    //
+
 	@ApiModelProperty("车区id")
 	@NotNull(message="车区id不能为空")
     private Long preId;
