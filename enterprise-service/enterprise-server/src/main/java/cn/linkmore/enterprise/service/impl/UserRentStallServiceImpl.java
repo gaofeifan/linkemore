@@ -34,6 +34,7 @@ import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.OwnerStall;
+import cn.linkmore.enterprise.controller.app.response.ResAuthRentStall;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
 import cn.linkmore.enterprise.controller.app.response.ResRentUser;
@@ -455,8 +456,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	}
 
 	@Override
-	public List<ResRentUser> findStallList(HttpServletRequest request, ReqLocation location) {
+	public ResAuthRentStall findStallList(HttpServletRequest request, ReqLocation location) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		ResAuthRentStall authRentStall = new ResAuthRentStall();
 		List<ResRentUser> rentUserList = new ArrayList<>();
 		List<ResRentUserStall> rentUserStallList = null;
 		ResRentUserStall rentUserStall = null;
@@ -485,7 +487,60 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		List<Long> stalls = new ArrayList<>();
 		stalls.addAll(stallIdAuthList);
 		stalls.addAll(stallIdOwnerList);
+		
 		List<EntRentedRecord> records = this.recordService.findLastByStallIds(stalls);
+		Boolean isHave = false;
+		if ("0".equals(location.getSwitchFlag())) { 
+			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
+			if(record != null) {
+				isHave = true;
+				rentUser = new ResRentUser();
+				rentUserStallList = new ArrayList<>();
+				rentUserStall = new ResRentUserStall();
+				rentUserStall.setDownLockTime(record.getDownTime());
+				if(stallIdOwnerList.contains(rentUserStall.getStallId())) {
+					rentUserStall.setIsUserRecord(1);
+					rentUserStall.setUserStatus(1);
+					for (EntOwnerStall ownerStall : stalllist) {
+						if(ownerStall.getStallId().equals(record.getStallId())) {
+							rentUserStall.setValidity(DateUtils.convert(ownerStall.getEndTime(), DateUtils.DARW_FORMAT_TIME));
+							rentUserStall.setRentMoType(ownerStall.getRentMoType());
+							break;
+						}
+					}
+				}else {
+					AuthRecord authRecord = this.authRecordService.findByUserId(user.getId(), record.getStallId());
+					rentUserStall.setValidity(authRecord.getEndTime());
+				}
+				rentUserStall.setPreId(record.getPreId());
+				rentUserStall.setPreName(record.getPreName());
+				rentUserStall.setStallId(record.getStallId());
+				rentUserStall.setStallName(record.getStallName());
+				ResStallEntity entity = this.stallClient.findById(record.getId());
+				rentUserStall.setStallStatus(entity.getStatus().intValue());
+				ResLockInfo lockInfo = this.feignLockClient.lockInfo(entity.getLockSn());
+				if(lockInfo != null) {
+					rentUserStall.setBattery(lockInfo.getElectricity());
+					rentUserStall.setParkingState(lockInfo.getParkingState());
+					if (lockInfo.getLockState() == 1) {
+						rentUserStall.setLockStatus(lockInfo.getLockState());
+					} else {
+						rentUserStall.setLockStatus(2);
+					}
+					// rentUserStall.setGatewayStatus(inf.getOnlineState());
+				}
+				// AuthRecord record = findRecordList.stream().filter(f -> f.getStallId() ==
+				// enttall.getStallId()).findFirst().get();
+				// rentUserStall.setValidity(record.getEndTime());
+				rentUserStallList.add(rentUserStall);
+				rentUser.setRentUserStalls(rentUserStallList);
+				rentUserList.add(rentUser);
+				authRentStall.setIsHave(isHave);
+				authRentStall.setRentUsers(rentUserList);
+				return authRentStall;
+			}
+		}
+		authRentStall.setIsHave(isHave);
 		for (ResLockInfos info : lockInfos) {
 			for (EntOwnerPre resPre : preList) {
 				if (resPre.getGateway().equals(info.getGroupId())) {
@@ -505,6 +560,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			rentUser.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(),
 					new Double(pre.getLatitude()), new Double(pre.getLongitude())));
 			rentUserStallList = new ArrayList<>();
+			//	长租用户车位
 			for (EntOwnerStall enttall : stalllist) {
 				if (pre.getPreId().equals(enttall.getPreId())) {
 					rentUserStall = new ResRentUserStall();
@@ -514,6 +570,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								for (ResLockInfo inf : info.getValue()) {
 									if (inf.getLockCode().equals(enttall.getLockSn())) {
 										rentUserStall.setBattery(inf.getElectricity());
+										rentUserStall.setParkingState(inf.getParkingState());
 										if (inf.getLockState() == 1) {
 											log.info(inf.getLockCode() + "===" + inf.getLockState());
 											rentUserStall.setLockStatus(inf.getLockState());
@@ -551,6 +608,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					}
 					rentUserStall.setIsUserRecord(1);
 					rentUserStall.setUserStatus(1);
+					rentUserStall.setRentMoType(enttall.getRentMoType());
 					rentUserStall.setPreId(pre.getPreId());
 					rentUserStall.setPreName(pre.getPreName());
 					rentUserStall.setStallId(enttall.getStallId());
@@ -563,6 +621,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					rentUserStallList.add(rentUserStall);
 				}
 			}
+			//	授权用户车位
 			for (AuthRecord authRecord : findRecordList) {
 				if (pre.getPreId().equals(authRecord.getPreId())) {
 					for (ResStall resStall : resStallList) {
@@ -572,8 +631,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
 									if (info.getKey() == pre.getPreId()) {
 										for (ResLockInfo inf : info.getValue()) {
-
 											if (inf.getLockCode().equals(resStall.getLockSn())) {
+												rentUserStall.setParkingState(inf.getParkingState());
 												rentUserStall.setBattery(inf.getElectricity());
 												if (inf.getLockState() == 1) {
 													log.info(inf.getLockCode() + "===" + inf.getLockState());
@@ -682,7 +741,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		// Double.valueOf(pre1.getDistance()).compareTo(Double.valueOf(pre2.getDistance()));
 		// }
 		// });
-		return rentUserList;
+		authRentStall.setRentUsers(rentUserList);
+		return authRentStall;
 	}
 
 	@Override

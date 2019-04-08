@@ -20,6 +20,7 @@ import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
+import cn.linkmore.enterprise.controller.app.response.ResAuthRentStall;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
 import cn.linkmore.enterprise.controller.app.response.ResRentUser;
@@ -63,11 +64,11 @@ public class AppUserRentStallController {
 	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
 	@RequestMapping(value = "/v2.0.1/list", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<List<ResRentUser>> ownerList(@Validated  @RequestBody ReqLocation  location,HttpServletRequest request) {
-		ResponseEntity<List<ResRentUser>> response = null;
+	public ResponseEntity<ResAuthRentStall> ownerList(@Validated  @RequestBody ReqLocation  location,HttpServletRequest request) {
+		ResponseEntity<ResAuthRentStall> response = null;
 		 try {
-			 List<ResRentUser> list = userRentStallService.findStallList(request,location);
-			 response = ResponseEntity.success(list, request);
+			ResAuthRentStall stallList = userRentStallService.findStallList(request,location);
+			 response = ResponseEntity.success(stallList, request);
 		}  catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 
