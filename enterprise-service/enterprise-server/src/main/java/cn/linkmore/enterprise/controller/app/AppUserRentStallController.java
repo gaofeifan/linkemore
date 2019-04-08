@@ -1,7 +1,9 @@
 package cn.linkmore.enterprise.controller.app;
 
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -23,7 +27,6 @@ import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResAuthRentStall;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
-import cn.linkmore.enterprise.controller.app.response.ResRentUser;
 import cn.linkmore.enterprise.service.UserRentStallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
