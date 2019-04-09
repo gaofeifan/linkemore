@@ -12,7 +12,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.service.AuthRecordService;
 
 @RestController
-@RequestMapping("/auth/record")
+@RequestMapping("/auth-record")
 public class AuthRecordController {
 
 	@Autowired

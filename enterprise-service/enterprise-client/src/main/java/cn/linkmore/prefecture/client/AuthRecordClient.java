@@ -20,7 +20,7 @@ import cn.linkmore.prefecture.client.hystrix.AuthRecordClientHystrix;
 @FeignClient(value = "enterprise-server", path = "/auth-record", fallback=AuthRecordClientHystrix.class,configuration = FeignConfiguration.class)
 public interface AuthRecordClient {
 
-	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	@RequestMapping(value = "/page", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage findList(@RequestBody ViewPageable pageable);
 	
