@@ -35,8 +35,62 @@ public class AuthRecord {
     private Date updateTime;
     
     private Long userId;
+    /**
+     * 授权记录开关，默认开1，小后台可操作关闭
+     */
+    private Short switchFlag = 1;
+    
+    //非实例化字段
+    //授权时段开始时期-结束日期
+    private String authPeriod;
+    //授权人
+    private String authUserName;
+    //最后使用时间
+    private String lastUseTime;
+    //使用次数
+    private Integer useCount;
 
-    public Long getId() {
+    public String getAuthPeriod() {
+		return authPeriod;
+	}
+
+	public void setAuthPeriod(String authPeriod) {
+		this.authPeriod = authPeriod;
+	}
+
+	public String getAuthUserName() {
+		return authUserName;
+	}
+
+	public void setAuthUserName(String authUserName) {
+		this.authUserName = authUserName;
+	}
+
+	public String getLastUseTime() {
+		return lastUseTime;
+	}
+
+	public void setLastUseTime(String lastUseTime) {
+		this.lastUseTime = lastUseTime;
+	}
+
+	public Integer getUseCount() {
+		return useCount;
+	}
+
+	public void setUseCount(Integer useCount) {
+		this.useCount = useCount;
+	}
+
+	public Short getSwitchFlag() {
+		return switchFlag;
+	}
+
+	public void setSwitchFlag(Short switchFlag) {
+		this.switchFlag = switchFlag;
+	}
+
+	public Long getId() {
         return id;
     }
 

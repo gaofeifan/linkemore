@@ -34,10 +34,12 @@ import cn.linkmore.enterprise.controller.app.request.ReqAuthRecordUpdate;
 import cn.linkmore.enterprise.controller.app.response.AuthRecordDetail;
 import cn.linkmore.enterprise.controller.app.response.AuthRecordPre;
 import cn.linkmore.enterprise.dao.cluster.AuthRecordClusterMapper;
+import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.OwnerStallClusterMapper;
 import cn.linkmore.enterprise.dao.master.AuthRecordMasterMapper;
 import cn.linkmore.enterprise.entity.AuthRecord;
 import cn.linkmore.enterprise.entity.EntOwnerStall;
+import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.service.AuthRecordService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.factory.AppUserFactory;
@@ -64,6 +66,9 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	@Autowired
 	private OwnerStallClusterMapper ownerStallClusterMapper;
 	
+	@Resource
+	private EntRentedRecordClusterMapper entRentedRecordClusterMapper;
+	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private UserFactory appUserFactory = AppUserFactory.getInstance();
@@ -73,6 +78,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		Map<String,Object> param = new HashMap<String,Object>(); 
 		List<ViewFilter> filters = pageable.getFilters();
 		if(StringUtils.isNotBlank(pageable.getSearchProperty())) {
@@ -91,6 +97,29 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 		param.put("start", pageable.getStart());
 		param.put("pageSize", pageable.getPageSize());
 		List<AuthRecord> list = this.authRecordClusterMapper.findPage(param);
+		Map<String,Long> rentRecordParam = null;
+		if(CollectionUtils.isNotEmpty(list)) {
+			for(AuthRecord authRecord: list) {
+				rentRecordParam = new HashMap<String,Long>();
+				authRecord.setAuthPeriod(sdf.format(authRecord.getStartTime()) + "-" + sdf.format(authRecord.getEndTime()));
+				if(authRecord.getEndTime().before(new Date())) {
+					authRecord.setAuthFlag((short)2);
+				} 
+				rentRecordParam.put("stallId", authRecord.getStallId());
+				rentRecordParam.put("userId", authRecord.getUserId());
+				EntRentedRecord rentRecord = entRentedRecordClusterMapper.findLastByUserIdAndStallId(rentRecordParam);
+				if(rentRecord!=null) {
+					if(rentRecord.getLeaveTime()!=null) {
+						authRecord.setLastUseTime(sdf.format(rentRecord.getLeaveTime()));
+					}else {
+						authRecord.setLastUseTime(sdf.format(rentRecord.getDownTime()));
+					}
+				}
+				Integer useCount = entRentedRecordClusterMapper.findUseCount(rentRecordParam);
+				authRecord.setUseCount(useCount);
+			}
+		}
+		
 		return new ViewPage(count,pageable.getPageSize(),list); 
 	}
 
@@ -111,7 +140,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		AuthRecord authRecord = null;
 		if(StringUtils.isNotBlank(record.getStallIds())) {
 			String [] ids = record.getStallIds().split(",");
@@ -135,6 +164,8 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 					authRecord.setStartTime(sdf.parse(record.getStartTime()));
 					authRecord.setEndTime(sdf.parse(record.getEndTime()));
 					authRecord.setAuthFlag((short)0);
+					//启用状态
+					authRecord.setSwitchFlag((short)1);
 					authRecord.setAuthUserId(user.getId());
 					if(authRecord.getStartTime().after(authRecord.getEndTime())) {
 						throw new BusinessException(StatusEnum.AUTH_RECORD_STARTAFTEREND);
@@ -159,7 +190,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		try {
 			AuthRecord authRecord = new AuthRecord();
 			authRecord.setId(record.getId());
@@ -278,6 +309,11 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	public AuthRecord findByUserId(Long userId,Long stallId) {
 		return 	this.authRecordClusterMapper.findByUserId(userId,stallId);
 		
+	}
+
+	@Override
+	public int operateSwitch(Map<String, Object> param) {
+		return this.authRecordMasterMapper.operateSwitch(param);
 	}
 	
 	

@@ -55,5 +55,10 @@ public interface AuthRecordService {
 	 * @Version  v2.0
 	 */
 	AuthRecord findByUserId(Long userId, Long stallId);
+	/**
+	 * 启用禁用
+	 * @param param
+	 */
+	public int operateSwitch(Map<String, Object> param);
 
 }

@@ -12,14 +12,14 @@
       mobile, username, start_time, 
       end_time, relation_id, relation_name, 
       pre_id, pre_name, auth_user_id, 
-      auth_flag, create_time, update_time,user_id
+      auth_flag, create_time, update_time,user_id, switch_flag
       )
     values (#{id,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}, 
       #{mobile,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
       #{endTime,jdbcType=TIMESTAMP}, #{relationId,jdbcType=BIGINT}, #{relationName,jdbcType=VARCHAR}, 
       #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, #{authUserId,jdbcType=BIGINT}, 
       #{authFlag,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-      #{userId,jdbcType=BIGINT}
+      #{userId,jdbcType=BIGINT},#{switchFlag,jdbcType=SMALLINT}
       )
   </insert>
  
@@ -38,6 +38,13 @@
   <update id="cancelAuth" parameterType="java.lang.Long">
     update t_auth_record
     set auth_flag = 1
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="operateSwitch" parameterType="java.util.HashMap">
+    update t_auth_record
+    set switch_flag = #{switchFlag, jdbcType = SMALLINT},
+    update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   
