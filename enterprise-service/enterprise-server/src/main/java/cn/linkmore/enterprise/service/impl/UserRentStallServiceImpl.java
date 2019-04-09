@@ -476,6 +476,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			resStallList = this.stallClient.findPreStallList(map);
 		}
 		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
+		stalllist = stalllist.stream().filter(s -> s.getStallType().equals("1")).collect(Collectors.toList());
 		List<Long> preIdOwnerList = stalllist.stream().map(s -> s.getPreId()).collect(Collectors.toList());
 		List<Long> stallIdOwnerList = stalllist.stream().map(s -> s.getStallId()).collect(Collectors.toList());
 		Set<Long> preIds = new HashSet<>(preIdAuthList);
@@ -525,6 +526,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				if(lockInfo != null) {
 					rentUserStall.setBattery(lockInfo.getElectricity());
 					rentUserStall.setParkingState(lockInfo.getParkingState());
+					rentUserStall.setGatewayStatus(lockInfo.getOnlineState());
 					if (lockInfo.getLockState() == 1) {
 						rentUserStall.setLockStatus(lockInfo.getLockState());
 					} else {
@@ -588,6 +590,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 									if (inf.getLockCode().equals(enttall.getLockSn())) {
 										rentUserStall.setBattery(inf.getElectricity());
 										rentUserStall.setParkingState(inf.getParkingState());
+										rentUserStall.setGatewayStatus(inf.getOnlineState());
 										if (inf.getLockState() == 1) {
 											log.info(inf.getLockCode() + "===" + inf.getLockState());
 											rentUserStall.setLockStatus(inf.getLockState());
@@ -613,6 +616,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							if (resRentedRecord.getUserId() != user.getId() && resRentedRecord.getType().equals("2")) {
 								AuthRecord re = this.authRecordService.findByUserId(resRentedRecord.getUserId(),
 										resRentedRecord.getStallId());
+								rentUserStall.setIsUserRecord(1);
 								rentUserStall.setUseUserMobile(re.getMobile());
 								rentUserStall.setUseUserName(re.getUsername());
 								break;
@@ -627,7 +631,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							}
 						}
 					}
-					rentUserStall.setIsUserRecord(1);
+					
 					rentUserStall.setUserStatus(1);
 					rentUserStall.setPreId(pre.getPreId());
 					rentUserStall.setPreName(pre.getPreName());
@@ -654,6 +658,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											if (inf.getLockCode().equals(resStall.getLockSn())) {
 												rentUserStall.setParkingState(inf.getParkingState());
 												rentUserStall.setBattery(inf.getElectricity());
+												rentUserStall.setGatewayStatus(inf.getOnlineState());
 												if (inf.getLockState() == 1) {
 													log.info(inf.getLockCode() + "===" + inf.getLockState());
 													rentUserStall.setLockStatus(inf.getLockState());
@@ -785,9 +790,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	}
 
 	@Override
-	public List<ResParkingRecord> parkingRecord(HttpServletRequest request,Integer pageNo) {
+	public List<ResParkingRecord> parkingRecord(HttpServletRequest request,Integer pageNo,Long stallId) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
-		List<EntRentedRecord> list = this.recordService.findParkingRecord(user.getId(),pageNo);
+		List<EntRentedRecord> list = this.recordService.findParkingRecord(user.getId(),pageNo,stallId);
 		List<ResParkingRecord> records = new ArrayList<>();
 		ResParkingRecord record = null;
 		for (EntRentedRecord entRentedRecord : list) {

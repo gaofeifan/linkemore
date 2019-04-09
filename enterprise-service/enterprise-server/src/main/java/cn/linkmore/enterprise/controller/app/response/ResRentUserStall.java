@@ -64,7 +64,7 @@ public class ResRentUserStall {
 	/**
 	 *  用户状态 0 授权人 1 被授权人
 	 */ 
-	@ApiModelProperty(value="用户状态 0 授权人 1 被授权人 ")
+	@ApiModelProperty(value="用户状态 1 授权人 0 被授权人 ")
 	private int userStatus=0;
 	
 	/**
@@ -85,6 +85,8 @@ public class ResRentUserStall {
 	@ApiModelProperty(value="使用用户电话")
 	private String useUserMobile;
 
+	@ApiModelProperty(value = "网关状态(默认展示0  调不到锁平台时显示0) 0离线 1 在线")
+	private int gatewayStatus;
 	public String getPreName() {
 		return preName;
 	}
@@ -243,6 +245,14 @@ public class ResRentUserStall {
 
 	public void setRentOmType(Short rentOmType) {
 		this.rentOmType = rentOmType;
+	}
+
+	public int getGatewayStatus() {
+		return gatewayStatus;
+	}
+
+	public void setGatewayStatus(int gatewayStatus) {
+		this.gatewayStatus = gatewayStatus;
 	}
 	
 	

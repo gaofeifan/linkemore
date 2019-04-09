@@ -61,7 +61,7 @@ public interface UserRentStallService {
 
 	Boolean controlAuth(ReqUserRentStall reqConStall, HttpServletRequest request);
 
-	List<ResParkingRecord> parkingRecord(HttpServletRequest request, Integer pageNo);
+	List<ResParkingRecord> parkingRecord(HttpServletRequest request, Integer pageNo, Long stallId);
 
 	List<OwnerPre> authStall(HttpServletRequest request);
 

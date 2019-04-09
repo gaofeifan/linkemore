@@ -150,6 +150,7 @@
     from t_ent_rented_record er
     left join t_user u on er.user_id = u.id
     where er.user_id = #{id} and er.status = 1
+  	 and er.stall_id = #{stallId}
     order by er.id desc
    limit #{pageNo},10
   </select>

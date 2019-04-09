@@ -74,12 +74,12 @@ public class RentedRecordServiceImpl implements RentedRecordService {
 	}
 
 	@Override
-	public List<EntRentedRecord> findParkingRecord(Long id, Integer pageNo) {
+	public List<EntRentedRecord> findParkingRecord(Long id, Integer pageNo,Long stallId) {
 		if(pageNo == null || pageNo == 0) {
 			pageNo = 1;
 		}
 		pageNo = pageNo*10-10;
-		return this.entRentedRecordClusterMapper.findParkingRecord(id,pageNo);
+		return this.entRentedRecordClusterMapper.findParkingRecord(id,pageNo,stallId);
 	}
 
 	

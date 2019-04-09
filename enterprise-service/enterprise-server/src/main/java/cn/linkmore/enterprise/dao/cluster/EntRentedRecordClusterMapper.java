@@ -79,6 +79,6 @@ public interface EntRentedRecordClusterMapper {
 	List<EntRentedRecord> findAllByUser(Long id);
 	
 	List<EntRentedRecord> findLastByStallIds(List<Long> stalls);
-	List<EntRentedRecord> findParkingRecord( @Param("id")Long id, @Param("pageNo")Integer pageNo);
+	List<EntRentedRecord> findParkingRecord( @Param("id")Long id, @Param("pageNo")Integer pageNo,@Param("stallId") Long stallId);
 
 }
