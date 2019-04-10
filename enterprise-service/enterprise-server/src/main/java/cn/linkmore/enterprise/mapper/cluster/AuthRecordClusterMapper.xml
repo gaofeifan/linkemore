@@ -33,8 +33,14 @@
     select 
     <include refid="Base_Column_List" />
     from t_auth_record
-    where user_id = #{userId} and stall_id = #{stallId}
+    where user_id = #{userId} and stall_id = #{stallId}  and end_time >= now()
     limit 0,1
+  </select>
+  <select id="findAuthUserIdAndStallId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_auth_record
+    where auth_user_id = #{userId} and stall_id = #{stallId}
   </select>
   
   <select id="findRecordList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
@@ -54,6 +60,9 @@
     <if test="endTime!=null">  
     and end_time >= now()
     </if> 
+    <if test="flag != null">
+    and auth_flag = #{flag}
+    </if>
   </select>
   
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
@@ -70,6 +79,14 @@
     <if test="preId!=null">  
     and pre_id = #{preId,jdbcType=BIGINT}
     </if> 
+    
+    <if test="startTime!=null">  
+    <![CDATA[and start_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and end_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+    
     <if test="property==null">  
      order by create_time desc
     </if>
@@ -92,6 +109,12 @@
     <if test="preId!=null">  
     and pre_id = #{preId,jdbcType=BIGINT}
     </if> 
+    <if test="startTime!=null">  
+    <![CDATA[and start_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and end_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>  
   </select>
   
   

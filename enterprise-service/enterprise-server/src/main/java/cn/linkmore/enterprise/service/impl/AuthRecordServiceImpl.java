@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.client.UserClient;
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -263,6 +264,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			List<AuthRecordDetail> detailList = null;
 			AuthRecordDetail recordDetail = null;
 			SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm");
+			SimpleDateFormat sdfAll = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
 			for(AuthRecordPre authPre: authRecordPreList) {
 				detailList = new ArrayList<AuthRecordDetail>();
 				for (AuthRecord authRecord : authRecordList) {
@@ -285,6 +287,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 						recordDetail.setStartTime(startTimeStr);
 						recordDetail.setEndTime(entTimeStr);
 						recordDetail.setAuthFlag(authRecord.getAuthFlag());
+						recordDetail.setEndTimeAll(sdfAll.format(authRecord.getEndTime()));
 						//此处需要根据车位id查询当前授权人是否拥有车位的使用权限
 						log.info("endTime = {}, currentTime={}, flag = {}",entTimeStr,sdf.format(new Date()),
 								authRecord.getEndTime().before(new Date()));
@@ -312,6 +315,23 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	}
 
 	@Override
+	public List<AuthRecord> findAuthUserIdAndStallId(Long userId, Long stallId) {
+		return this.authRecordClusterMapper.findAuthUserIdAndStallId(userId, stallId);
+	}
+
+	@Override
+	public Boolean shareStall(String stallIds,String mobile, HttpServletRequest request) {
+		Long userId = this.userClient.getUserIdByMobile(mobile);
+		String[] ids = stallIds.split(",");
+		Set<Long> s = new HashSet<>();
+		for (String string : ids) {
+			if(StringUtils.isNotBlank(string)) {
+				s.add(Long.decode(string));
+			}
+		}
+		this.redisService.add(RedisKey.USER_APP_SHARE_STALL.key+userId, s);
+		return true;
+	}
 	public int operateSwitch(Map<String, Object> param) {
 		return this.authRecordMasterMapper.operateSwitch(param);
 	}
