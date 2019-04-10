@@ -1,5 +1,6 @@
 package cn.linkmore.ops.ent.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,10 +49,11 @@ public class AuthRecordController extends BaseController{
 	public ViewMsg open(Long authId) {
 		ViewMsg msg = null;
 		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Map<String, Object> map=new HashMap<String, Object>();
 			map.put("id", authId);
 			map.put("switchFlag", 1);
-			map.put("updateDate", new Date());
+			map.put("updateTime", sdf.format(new Date()));
 			int a =authRecordService.operateSwitch(map);
 			msg= a>0?new ViewMsg("操作成功", true):new ViewMsg("操作失败", false);
 		} catch (DataException e) {
@@ -73,10 +75,11 @@ public class AuthRecordController extends BaseController{
 	public ViewMsg close(Long authId) {
 		ViewMsg msg = null;
 		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Map<String, Object> map=new HashMap<String, Object>();
 			map.put("id", authId);
-			map.put("switchFlag", 1);
-			map.put("updateDate", new Date());
+			map.put("switchFlag", (short)0);
+			map.put("updateTime", sdf.format(new Date()));
 			int a =authRecordService.operateSwitch(map);
 			msg= a>0?new ViewMsg("操作成功", true):new ViewMsg("操作失败", false);
 		} catch (DataException e) {
