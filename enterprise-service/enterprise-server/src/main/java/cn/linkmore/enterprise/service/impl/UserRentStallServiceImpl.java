@@ -296,10 +296,16 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		if (!isAllow) {
 			List<EntRentedRecord> re = entRentedRecordClusterMapper.findLastByStallIds(Arrays.asList(reqOperatStall.getStallId()));
 			if(re != null) {
-//				re.stream().filter( r -> r.get)
+				List<EntRentedRecord> list = re.stream().filter( r -> r.getUserId() == user.getId()).collect(Collectors.toList());
+				if(list != null && list.size() != 0) {
+					isAllow =true;
+					
+				}
 			}
-			log.info(user.getId() + ">>>STAFF_STALL_EXISTS");
-			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+			if(!isAllow) {
+				log.info(user.getId() + ">>>STAFF_STALL_EXISTS");
+				throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
+			}
 		}
 
 		// 争抢
