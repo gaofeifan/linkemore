@@ -294,6 +294,10 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			}
 		}
 		if (!isAllow) {
+			List<EntRentedRecord> re = entRentedRecordClusterMapper.findLastByStallIds(Arrays.asList(reqOperatStall.getStallId()));
+			if(re != null) {
+//				re.stream().filter( r -> r.get)
+			}
 			log.info(user.getId() + ">>>STAFF_STALL_EXISTS");
 			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
 		}
