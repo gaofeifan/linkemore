@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.annotations.Param;
+
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.app.request.ReqAuthRecord;
@@ -55,5 +57,9 @@ public interface AuthRecordService {
 	 * @Version  v2.0
 	 */
 	AuthRecord findByUserId(Long userId, Long stallId);
+
+	public List<AuthRecord> findAuthUserIdAndStallId(Long userId, Long stallId);
+
+	Boolean shareStall(String stallIds, String mobile, HttpServletRequest request);
 
 }

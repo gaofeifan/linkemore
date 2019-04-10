@@ -16,7 +16,8 @@ public class ResAuthRentStall {
 
 	@ApiModelProperty(value = "用户车位数据集")
 	private List<ResRentUser> rentUsers;
-
+	@ApiModelProperty(value = "分享标识 0默认 不提示分享车位,1提示分享车位",required=false)
+	private int share = 0;
 	public Boolean getIsHave() {
 		return isHave;
 	}
@@ -50,4 +51,13 @@ public class ResAuthRentStall {
 		this.rentUsers = rentUsers;
 	}
 
+	public int getShare() {
+		return share;
+	}
+
+	public void setShare(int share) {
+		this.share = share;
+	}
+
+	
 }

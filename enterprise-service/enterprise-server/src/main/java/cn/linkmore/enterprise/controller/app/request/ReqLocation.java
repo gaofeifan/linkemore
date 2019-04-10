@@ -14,6 +14,8 @@ public class ReqLocation {
 	
 	@ApiModelProperty(value = "车位列表标识默认0 点击切换车位时为1")
 	private String switchFlag = "0";
+	@ApiModelProperty(value = "分享标识分享使用其他请求不需传参  0默认正常,1被分享请求",required=false)
+	private int share = 0;
 
 	public String getSwitchFlag() {
 		return switchFlag;
@@ -37,6 +39,14 @@ public class ReqLocation {
 
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
+	}
+
+	public int getShare() {
+		return share;
+	}
+
+	public void setShare(int share) {
+		this.share = share;
 	}
 	
 	

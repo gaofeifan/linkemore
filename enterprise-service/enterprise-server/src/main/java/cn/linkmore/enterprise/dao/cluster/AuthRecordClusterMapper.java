@@ -34,5 +34,8 @@ public interface AuthRecordClusterMapper {
     int count(Map<String,Object> param);
     
 	AuthRecord findByUserId(@Param("userId")Long userId, @Param("stallId")Long stallId);
+	
+	public List<AuthRecord> findAuthUserIdAndStallId(@Param("userId")Long userId, @Param("stallId")Long stallId);
+
     
 }

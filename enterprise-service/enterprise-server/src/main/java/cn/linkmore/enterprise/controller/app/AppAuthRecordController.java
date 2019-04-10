@@ -19,6 +19,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.enterprise.controller.app.request.ReqAuthRecord;
 import cn.linkmore.enterprise.controller.app.request.ReqAuthRecordUpdate;
 import cn.linkmore.enterprise.controller.app.response.AuthRecordPre;
+import cn.linkmore.enterprise.controller.app.response.ResShareStall;
 import cn.linkmore.enterprise.service.AuthRecordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -92,6 +93,20 @@ public class AppAuthRecordController {
 		try {
 			Boolean control = authRecordService.cancalAuth(id, request);
 			return ResponseEntity.success(control, request);
+		} catch (BusinessException e) {
+			return ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			log.info("e={}",JSON.toJSON(e.getMessage()));
+			return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+	}
+	@ApiOperation(value = "分享车位",notes = "分享车位", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/share-stall", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResShareStall> shareStall(@RequestParam(value="stallIds", required=true) String stallIds,@RequestParam(value="mobile",required=true)String mobile ,HttpServletRequest request) {
+		try {
+			Boolean control = authRecordService.shareStall(stallIds,mobile, request);
+			return ResponseEntity.success(new ResShareStall(), request);
 		} catch (BusinessException e) {
 			return ResponseEntity.fail( e.getStatusEnum(),  request);
 		} catch (Exception e) { 

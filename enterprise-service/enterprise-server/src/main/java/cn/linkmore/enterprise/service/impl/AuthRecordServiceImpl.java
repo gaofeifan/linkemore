@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.client.UserClient;
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -278,6 +279,25 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	public AuthRecord findByUserId(Long userId,Long stallId) {
 		return 	this.authRecordClusterMapper.findByUserId(userId,stallId);
 		
+	}
+
+	@Override
+	public List<AuthRecord> findAuthUserIdAndStallId(Long userId, Long stallId) {
+		return this.authRecordClusterMapper.findAuthUserIdAndStallId(userId, stallId);
+	}
+
+	@Override
+	public Boolean shareStall(String stallIds,String mobile, HttpServletRequest request) {
+		Long userId = this.userClient.getUserIdByMobile(mobile);
+		String[] ids = stallIds.split(",");
+		Set<Long> s = new HashSet<>();
+		for (String string : ids) {
+			if(StringUtils.isNotBlank(string)) {
+				s.add(Long.decode(string));
+			}
+		}
+		this.redisService.add(RedisKey.USER_APP_SHARE_STALL.key+userId, s);
+		return true;
 	}
 	
 	

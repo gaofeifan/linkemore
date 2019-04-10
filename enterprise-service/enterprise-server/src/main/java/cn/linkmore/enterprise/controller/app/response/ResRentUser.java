@@ -27,6 +27,7 @@ public class ResRentUser {
 
 	@ApiModelProperty(value = "长租车位")
 	private List<ResRentUserStall> rentUserStalls = null;
+
 	public Long getPreId() {
 		return preId;
 	}
@@ -83,7 +84,5 @@ public class ResRentUser {
 		this.rentUserStalls = rentUserStalls;
 	}
 
- 	
-	
 	
 }

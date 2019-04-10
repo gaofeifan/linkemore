@@ -58,7 +58,7 @@ public class ResRentUserStall {
 	@ApiModelProperty(value="锁状态  1升起 2 降下")
 	private int lockStatus;
 	
-	@ApiModelProperty(value="车位状态 ")
+	@ApiModelProperty(value="车位状态 :1，空闲；2，使用中；4，下线")
 	private int stallStatus;
 	
 	/**
@@ -87,6 +87,12 @@ public class ResRentUserStall {
 
 	@ApiModelProperty(value = "网关状态(默认展示0  调不到锁平台时显示0) 0离线 1 在线")
 	private int gatewayStatus;
+	
+	@ApiModelProperty(value = "地下几层")
+	private String underLayer;
+	
+	@ApiModelProperty(value="当车位状态为使用中是 使用是否是被授权用户  0是授权用户 1被授权用户")
+	private int isAuthUser = 0;
 	public String getPreName() {
 		return preName;
 	}
@@ -156,7 +162,7 @@ public class ResRentUserStall {
 		this.useUpLockTime = useUpLockTime;
 	}
 
-	@JsonFormat(pattern="hh:mm",timezone="GMT+8")
+	@JsonFormat(pattern="yy-MM-dd hh:mm",timezone="GMT+8")
 	public Date getDownLockTime() {
 		return downLockTime;
 	}
@@ -254,7 +260,22 @@ public class ResRentUserStall {
 	public void setGatewayStatus(int gatewayStatus) {
 		this.gatewayStatus = gatewayStatus;
 	}
-	
-	
+
+	public String getUnderLayer() {
+		return underLayer;
+	}
+
+	public void setUnderLayer(String underLayer) {
+		this.underLayer = underLayer;
+	}
+
+	public int getIsAuthUser() {
+		return isAuthUser;
+	}
+
+	public void setIsAuthUser(int isAuthUser) {
+		this.isAuthUser = isAuthUser;
+	}
+
 	
 }
