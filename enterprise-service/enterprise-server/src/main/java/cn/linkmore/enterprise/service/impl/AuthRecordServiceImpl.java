@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.client.UserClient;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
@@ -118,6 +119,11 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 				}
 				Integer useCount = entRentedRecordClusterMapper.findUseCount(rentRecordParam);
 				authRecord.setUseCount(useCount);
+				
+				ResUser resUser = userClient.findById(authRecord.getAuthUserId());
+				if(resUser != null) {
+					authRecord.setAuthUserName(resUser.getUsername());
+				}
 			}
 		}
 		

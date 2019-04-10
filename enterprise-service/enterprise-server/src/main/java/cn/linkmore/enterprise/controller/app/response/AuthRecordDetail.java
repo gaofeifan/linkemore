@@ -21,7 +21,7 @@ public class AuthRecordDetail {
 	@ApiModelProperty(value = "用户名")
 	private String username;
 	
-	@ApiModelProperty(value = "授权状态： 0授权中 1已取消 2已失效")
+	@ApiModelProperty(value = "授权状态： 0授权中 1已取消 2已过期 3已失效")
 	private Short authFlag;
 	
 	@ApiModelProperty(value = "车位开始时间 格式MM月dd日 HH:mm")
