@@ -79,6 +79,14 @@
     <if test="preId!=null">  
     and pre_id = #{preId,jdbcType=BIGINT}
     </if> 
+    
+    <if test="startTime!=null">  
+    <![CDATA[and start_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and end_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>   
+    
     <if test="property==null">  
      order by create_time desc
     </if>
@@ -101,6 +109,12 @@
     <if test="preId!=null">  
     and pre_id = #{preId,jdbcType=BIGINT}
     </if> 
+    <if test="startTime!=null">  
+    <![CDATA[and start_time >= #{startTime,jdbcType=VARCHAR}]]>
+    </if> 
+    <if test="endTime!=null">  
+    <![CDATA[ and end_time < #{endTime,jdbcType=VARCHAR}]]>
+    </if>  
   </select>
   
   

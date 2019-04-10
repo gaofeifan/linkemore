@@ -264,6 +264,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			List<AuthRecordDetail> detailList = null;
 			AuthRecordDetail recordDetail = null;
 			SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm");
+			SimpleDateFormat sdfAll = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
 			for(AuthRecordPre authPre: authRecordPreList) {
 				detailList = new ArrayList<AuthRecordDetail>();
 				for (AuthRecord authRecord : authRecordList) {
@@ -286,6 +287,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 						recordDetail.setStartTime(startTimeStr);
 						recordDetail.setEndTime(entTimeStr);
 						recordDetail.setAuthFlag(authRecord.getAuthFlag());
+						recordDetail.setEndTimeAll(sdfAll.format(authRecord.getEndTime()));
 						//此处需要根据车位id查询当前授权人是否拥有车位的使用权限
 						log.info("endTime = {}, currentTime={}, flag = {}",entTimeStr,sdf.format(new Date()),
 								authRecord.getEndTime().before(new Date()));
