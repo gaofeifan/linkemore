@@ -15,6 +15,7 @@ import cn.linkmore.bean.exception.DataException;
 import cn.linkmore.bean.view.ViewMsg;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.ops.biz.controller.BaseController;
 import cn.linkmore.ops.ent.service.AuthRecordService;
 
 /**
@@ -25,7 +26,7 @@ import cn.linkmore.ops.ent.service.AuthRecordService;
  */
 @Controller
 @RequestMapping("/admin/ent/auth-record")
-public class AuthRecordController {
+public class AuthRecordController extends BaseController{
 
 	@Resource
 	private AuthRecordService authRecordService;
@@ -33,6 +34,7 @@ public class AuthRecordController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage findList(HttpServletRequest request, ViewPageable pageable) {
+		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"preId",getPerson().getPreId()));
 		return this.authRecordService.findList(request,pageable);
 	}
 	
