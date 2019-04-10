@@ -1,4 +1,4 @@
-package cn.linkmore.ops.ent.service;
+package cn.linkmore.ops.ent.service.impl;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqRentedRecord;
 import cn.linkmore.enterprise.response.ResRentedRecord;
+import cn.linkmore.ops.ent.service.RentedRecordService;
 import cn.linkmore.prefecture.client.OpsRentedRecordClient;
 
 /**

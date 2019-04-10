@@ -15,6 +15,7 @@
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
   </resultMap>
   
    <resultMap id="ExcelResultMap" type="cn.linkmore.enterprise.response.ResRentedRecord">
@@ -78,12 +79,16 @@
   
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
 		select
-		  record.id, record.ent_id, record.ent_pre_id, record.plate_no, record.down_time, record.leave_time, record.stall_id, record.stall_name, record.pre_id, 
-          record.pre_name,en.name ent_name
+		 record.id, record.ent_id, record.ent_pre_id, record.plate_no, record.down_time, record.leave_time, record.stall_id, record.stall_name, record.pre_id, 
+          record.pre_name,en.name ent_name,u.username,record.type
 		from t_ent_rented_record record left join t_biz_enterprise en on record.ent_id = en.id
+		left join t_user u on record.user_id= u.id
 		where 1 = 1
 		<if test="preName != null">
 			AND pre_name like #{preName}
+		</if>
+		<if test="preId != null">
+			AND record.pre_id = #{preId}
 		</if>
 		<if test="entName != null">
 			AND en.name like #{entName}
@@ -112,6 +117,9 @@
 		</if>
 		<if test="entName != null">
 			AND en.name like #{entName}
+		</if>
+		<if test="preId != null">
+			AND record.pre_id = #{preId}
 		</if>
 		<if test="downTime!=null">
 	    <![CDATA[and down_time >= #{downTime}]]>
@@ -171,4 +179,49 @@
 	  ) re 
 	  GROUP BY stall_id 
   </select>
+  <!-- 查询被授权用户完整使用车位次数 -->
+  <select id="findUseCount" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+    select 
+    count(1)
+    from t_ent_rented_record
+     where 1=1
+    	<if test="stallId != null">
+			AND stall_id = #{stallId,jdbcType=BIGINT}
+		</if>
+		<if test="userId != null">
+			AND user_id = #{userId,jdbcType=BIGINT}
+		</if>
+    and type=2 and status = 1
+  </select>
+  <!-- 查询被授权用户最近使用记录,不包括失败记录 -->
+  <select id="findLastByUserIdAndStallId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rented_record
+    where 1=1
+   	<if test="stallId != null">
+		AND stall_id = #{stallId,jdbcType=BIGINT}
+	</if>
+	<if test="userId != null">
+		AND user_id = #{userId,jdbcType=BIGINT}
+	</if>
+    and status != 2 and type=2 order by id desc limit 0,1
+  </select>
+  
+  <!-- 查询用户当月使用车位次数 -->
+  <select id="findUseCountByMonth" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+    select 
+    count(1)
+    from t_ent_rented_record
+     where 1=1
+    	<if test="stallId != null">
+			AND stall_id = #{stallId,jdbcType=BIGINT}
+		</if>
+		<if test="userId != null">
+			AND user_id = #{userId,jdbcType=BIGINT}
+		</if>
+    AND STATUS = 1
+	AND DATE_FORMAT(leave_time, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m')
+  </select>
+
 </mapper>

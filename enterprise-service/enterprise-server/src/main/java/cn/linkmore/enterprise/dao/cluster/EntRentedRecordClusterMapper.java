@@ -81,4 +81,25 @@ public interface EntRentedRecordClusterMapper {
 	List<EntRentedRecord> findLastByStallIds(List<Long> stalls);
 	List<EntRentedRecord> findParkingRecord( @Param("id")Long id, @Param("pageNo")Integer pageNo,@Param("stallId") Long stallId);
 
+	/**
+	 * @Description  查询被授权用户使用车位总次数
+	 * @Author   jiaohanbin 
+	 * @Version  v2.0
+	 */
+	Integer findUseCount(Map<String, Long> param);
+	
+	/**
+	 * 根据当前用户id和当前车位id查询最近使用记录，不包含失败记录
+	 * @param id
+	 * @param stallId
+	 * @return
+	 */
+	EntRentedRecord findLastByUserIdAndStallId(Map<String, Long> param);
+	
+	/**
+	 * @Description  查询用户当月使用车位总次数
+	 * @Author   jiaohanbin 
+	 * @Version  v2.0
+	 */
+	Integer findUseCountByMonth(Map<String, Long> param);
 }
