@@ -38,7 +38,7 @@ public class ReqLocation {
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
-	
+
 	
 	
 	

@@ -79,7 +79,7 @@ public interface EntRentedRecordClusterMapper {
 	List<EntRentedRecord> findAllByUser(Long id);
 	
 	List<EntRentedRecord> findLastByStallIds(List<Long> stalls);
-	List<EntRentedRecord> findParkingRecord( @Param("id")Long id, @Param("pageNo")Integer pageNo);
+	List<EntRentedRecord> findParkingRecord( @Param("id")Long id, @Param("pageNo")Integer pageNo,@Param("stallId") Long stallId);
 
 	/**
 	 * @Description  查询被授权用户使用车位总次数

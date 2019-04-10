@@ -126,8 +126,10 @@ public class AppUserRentStallController {
 	@ApiOperation(value = "停车记录", notes = "停车记录", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/parking-record", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<ResParkingRecord>> parkingRecord(HttpServletRequest request, @RequestParam(value="pageNo") Integer pageNo){
-		List<ResParkingRecord> records = this.userRentStallService.parkingRecord(request,pageNo);
+	public ResponseEntity<List<ResParkingRecord>> parkingRecord(HttpServletRequest request, @RequestParam(value="pageNo") Integer pageNo,
+			@RequestParam(value="stallId") Long stallId
+			){
+		List<ResParkingRecord> records = this.userRentStallService.parkingRecord(request,pageNo,stallId);
 		return ResponseEntity.success(records, request);
 	}
 	

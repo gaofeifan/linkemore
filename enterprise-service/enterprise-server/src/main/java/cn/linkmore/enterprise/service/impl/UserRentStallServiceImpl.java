@@ -317,10 +317,20 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		using = entRentedRecordClusterMapper.findUsingRecord(pam);
 		ResStallEntity stallEntity = stallClient.findById(reqOperatStall.getStallId());
 		log.info("operate the stallName = {},stall={}", stallEntity.getStallName(), JSON.toJSON(stallEntity));
+		Long userId = null;
 		// 原有逻辑支持一对多操作
 		if (using > 0) {
-			this.redisService.remove(robkey);
-			throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+			//被授权用户使用时 授权用户可以操作
+			List<AuthRecord> records = this.authRecordService.findAuthUserIdAndStallId(user.getId(),reqOperatStall.getStallId());
+			if(records == null || records.size() == 0) {
+				this.redisService.remove(robkey);
+				throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+			}
+			EntRentedRecord record = this.entRentedRecordClusterMapper.findByStallId(reqOperatStall.getStallId());
+			
+			if(record != null && record.getStatus() == 0 ) {
+			userId = record.getUserId();
+			}
 		}
 
 		// 新逻辑
@@ -380,7 +390,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		reqc.setKey(rediskey);
 		reqc.setStallId(reqOperatStall.getStallId());
 		reqc.setStatus(reqOperatStall.getState());
-		reqc.setUserId(user.getId());
+		reqc.setUserId(userId != null ? userId : user.getId());
 		Boolean control = stallClient.appControl(reqc);
 		if (control == null || !control) {
 			if (this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId())) {
@@ -465,7 +475,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		ResRentUser rentUser = null;
 		Map<String, Object> param = new HashMap<>();
 		param.put("userId", user.getId());
-		param.put("entTime", 1);
+		param.put("endTime", 1);
+		param.put("flag", 0);
 		List<AuthRecord> findRecordList = this.authRecordService.findRecordList(param);
 		List<Long> preIdAuthList = findRecordList.stream().map(f -> f.getPreId()).collect(Collectors.toList());
 		List<Long> stallIdAuthList = findRecordList.stream().map(f -> f.getStallId()).collect(Collectors.toList());
@@ -476,6 +487,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			resStallList = this.stallClient.findPreStallList(map);
 		}
 		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
+		stalllist = stalllist.stream().filter(s -> s.getStallType().equals("1")).collect(Collectors.toList());
 		List<Long> preIdOwnerList = stalllist.stream().map(s -> s.getPreId()).collect(Collectors.toList());
 		List<Long> stallIdOwnerList = stalllist.stream().map(s -> s.getStallId()).collect(Collectors.toList());
 		Set<Long> preIds = new HashSet<>(preIdAuthList);
@@ -487,8 +499,15 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		List<Long> stalls = new ArrayList<>();
 		stalls.addAll(stallIdAuthList);
 		stalls.addAll(stallIdOwnerList);
-		
+		Map<String,Object> map = new HashMap<>();
+		map.put("list", stalls);
+		List<ResStall> stallList = this.stallClient.findPreStallList(map);
 		List<EntRentedRecord> records = this.recordService.findLastByStallIds(stalls);
+		Set<Object> members = this.redisService.members(RedisKey.USER_APP_SHARE_STALL.key+user.getId());
+		if(members != null && members.size() != 0) {
+			authRentStall.setShare(1);
+			this.redisService.remove(RedisKey.USER_APP_SHARE_STALL.key+user.getId());
+		}
 		Boolean isHave = false;
 		if ("0".equals(location.getSwitchFlag())) { 
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
@@ -498,6 +517,12 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				rentUserStallList = new ArrayList<>();
 				rentUserStall = new ResRentUserStall();
 				rentUserStall.setDownLockTime(record.getDownTime());
+				for (ResStall s : stallList) {
+					if(s.getId() == record.getId()) {
+						rentUserStall.setStallStatus(s.getStatus());
+						break;
+					}
+				}
 				rentUserStall.setStallId(record.getStallId());
 				rentUserStall.setUseUpLockTime(record.getLeaveTime());
 				rentUserStall.setStallName(record.getStallName());
@@ -525,6 +550,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				if(lockInfo != null) {
 					rentUserStall.setBattery(lockInfo.getElectricity());
 					rentUserStall.setParkingState(lockInfo.getParkingState());
+					rentUserStall.setGatewayStatus(lockInfo.getOnlineState());
 					if (lockInfo.getLockState() == 1) {
 						rentUserStall.setLockStatus(lockInfo.getLockState());
 					} else {
@@ -543,6 +569,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 						rentUser.setAddress(pre.getAddress());
 						rentUser.setLatitude(pre.getLatitude());
 						rentUser.setLongitude(pre.getLongitude());
+						rentUserStall.setUnderLayer(pre.getUnderLayer());
 						rentUser.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(),
 								new Double(pre.getLatitude()), new Double(pre.getLongitude())));
 						rentUserList.add(rentUser);
@@ -579,8 +606,10 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			for (EntOwnerStall enttall : stalllist) {
 				if (pre.getPreId().equals(enttall.getPreId())) {
 					rentUserStall = new ResRentUserStall();
+					rentUserStall.setStallStatus(enttall.getStatus().intValue());
 					rentUserStall.setRentMoType(enttall.getRentMoType());
 					rentUserStall.setRentOmType(enttall.getRentOmType());
+					rentUserStall.setUnderLayer(pre.getUnderLayer());
 					if (tempMap != null && !tempMap.isEmpty()) {
 						for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
 							if (info.getKey() == pre.getPreId()) {
@@ -588,6 +617,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 									if (inf.getLockCode().equals(enttall.getLockSn())) {
 										rentUserStall.setBattery(inf.getElectricity());
 										rentUserStall.setParkingState(inf.getParkingState());
+										rentUserStall.setGatewayStatus(inf.getOnlineState());
 										if (inf.getLockState() == 1) {
 											log.info(inf.getLockCode() + "===" + inf.getLockState());
 											rentUserStall.setLockStatus(inf.getLockState());
@@ -610,13 +640,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							if (enttall.getStatus().intValue() == 2) {
 								rentUserStall.setRentOmType((short) 1);
 							}
-							if (resRentedRecord.getUserId() != user.getId() && resRentedRecord.getType().equals("2")) {
-								AuthRecord re = this.authRecordService.findByUserId(resRentedRecord.getUserId(),
-										resRentedRecord.getStallId());
-								rentUserStall.setUseUserMobile(re.getMobile());
-								rentUserStall.setUseUserName(re.getUsername());
-								break;
-							}
 							switch (rentUserStall.getLockStatus()) {
 							case 1:
 								rentUserStall.setUseUpLockTime(resRentedRecord.getLeaveTime());
@@ -625,9 +648,23 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								rentUserStall.setDownLockTime(resRentedRecord.getDownTime());
 								break;
 							}
+							if (resRentedRecord.getUserId() != user.getId() && resRentedRecord.getType().intValue() == 2) {
+								AuthRecord re = this.authRecordService.findByUserId(resRentedRecord.getUserId(),
+										resRentedRecord.getStallId());
+								rentUserStall.setIsAuthUser(1);
+								rentUserStall.setIsUserRecord(1);
+								rentUserStall.setUseUserMobile(re.getMobile());
+								rentUserStall.setUseUserName(re.getUsername());
+								break;
+							}
 						}
 					}
-					rentUserStall.setIsUserRecord(1);
+					for (ResStall s : stallList) {
+						if(s.getId() == enttall.getStallId()) {
+							rentUserStall.setStallStatus(s.getStatus());
+							break;
+						}
+					}
 					rentUserStall.setUserStatus(1);
 					rentUserStall.setPreId(pre.getPreId());
 					rentUserStall.setPreName(pre.getPreName());
@@ -654,6 +691,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											if (inf.getLockCode().equals(resStall.getLockSn())) {
 												rentUserStall.setParkingState(inf.getParkingState());
 												rentUserStall.setBattery(inf.getElectricity());
+												rentUserStall.setGatewayStatus(inf.getOnlineState());
 												if (inf.getLockState() == 1) {
 													log.info(inf.getLockCode() + "===" + inf.getLockState());
 													rentUserStall.setLockStatus(inf.getLockState());
@@ -688,10 +726,17 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										rentUserStall.setDownLockTime(resRentedRecord.getDownTime());
 										break;
 									}
+									break;
+								}
+							}
+							for (ResStall s : stallList) {
+								if(s.getId() == resStall.getId()) {
+									rentUserStall.setStallStatus(s.getStatus());
+									break;
 								}
 							}
 							rentUserStall.setPreId(pre.getPreId());
-				
+							rentUserStall.setUnderLayer(pre.getUnderLayer());
 							rentUserStall.setPreName(pre.getPreName());
 							rentUserStall.setStallId(resStall.getId());
 							rentUserStall.setStallName(resStall.getStallName());
@@ -785,9 +830,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	}
 
 	@Override
-	public List<ResParkingRecord> parkingRecord(HttpServletRequest request,Integer pageNo) {
+	public List<ResParkingRecord> parkingRecord(HttpServletRequest request,Integer pageNo,Long stallId) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
-		List<EntRentedRecord> list = this.recordService.findParkingRecord(user.getId(),pageNo);
+		List<EntRentedRecord> list = this.recordService.findParkingRecord(user.getId(),pageNo,stallId);
 		List<ResParkingRecord> records = new ArrayList<>();
 		ResParkingRecord record = null;
 		for (EntRentedRecord entRentedRecord : list) {

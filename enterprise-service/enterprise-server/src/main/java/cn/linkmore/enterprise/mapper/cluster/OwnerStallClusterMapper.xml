@@ -9,6 +9,7 @@
 		<result column="gateway" jdbcType="VARCHAR" property="gateway" />
 		<result column="longitude" jdbcType="DOUBLE" property="longitude" />
 		<result column="latitude" jdbcType="DOUBLE" property="latitude" />
+		<result column="under_layer" jdbcType="VARCHAR" property="underLayer" />
 	</resultMap>
 
 	<resultMap id="StallResultMap" type="cn.linkmore.enterprise.entity.EntOwnerStall">
@@ -51,7 +52,7 @@
 	<select id="findPreByIds" resultMap="PreResultMap"
 		parameterType="java.util.Set">
 		SELECT id as pre_id,name as
-		pre_name,address,longitude,latitude,gateway
+		pre_name,address,longitude,latitude,gateway,under_layer
 		FROM v_prefecture
 		WHERE id IN
 		<foreach collection="collection" open="(" separator="," close=")"
