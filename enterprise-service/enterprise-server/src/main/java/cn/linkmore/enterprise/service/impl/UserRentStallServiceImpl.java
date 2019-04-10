@@ -37,6 +37,7 @@ import cn.linkmore.enterprise.controller.app.response.OwnerStall;
 import cn.linkmore.enterprise.controller.app.response.ResAuthRentStall;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
+import cn.linkmore.enterprise.controller.app.response.ResRentStallFlag;
 import cn.linkmore.enterprise.controller.app.response.ResRentUser;
 import cn.linkmore.enterprise.controller.app.response.ResRentUserStall;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
@@ -503,11 +504,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		map.put("list", stalls);
 		List<ResStall> stallList = this.stallClient.findPreStallList(map);
 		List<EntRentedRecord> records = this.recordService.findLastByStallIds(stalls);
-		Set<Object> members = this.redisService.members(RedisKey.USER_APP_SHARE_STALL.key+user.getId());
-		if(members != null && members.size() != 0) {
-			authRentStall.setShare(1);
-			this.redisService.remove(RedisKey.USER_APP_SHARE_STALL.key+user.getId());
-		}
 		Boolean isHave = false;
 		if ("0".equals(location.getSwitchFlag())) { 
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
@@ -678,7 +674,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					rentUserStallList.add(rentUserStall);
 				}
 			}
-			//	授权用户车位
+			//	被授权用户车位
 			for (AuthRecord authRecord : findRecordList) {
 				if (pre.getPreId().equals(authRecord.getPreId())) {
 					for (ResStall resStall : resStallList) {
@@ -853,7 +849,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	}
 
 	
-	public Boolean authFlag(HttpServletRequest request) {
+	public ResRentStallFlag authFlag(HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Boolean is = false;
 		if (user != null) {
@@ -862,8 +858,15 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				is = true;
 			}
 		}
-		log.info("用户>>>" + JSON.toJSONString(user));
-		return is;
+		ResRentStallFlag flag = new ResRentStallFlag();
+		flag.setAuthFlag(is);
+	
+		Set<Object> members = this.redisService.members(RedisKey.USER_APP_SHARE_STALL.key+user.getId());
+		if(members != null && members.size() != 0) {
+			flag.setShareFlag(true);
+			this.redisService.remove(RedisKey.USER_APP_SHARE_STALL.key+user.getId());
+		}
+		return flag;
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResAuthRentStall;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
+import cn.linkmore.enterprise.controller.app.response.ResRentStallFlag;
 import cn.linkmore.enterprise.service.UserRentStallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -136,9 +137,10 @@ public class AppUserRentStallController {
 	@ApiOperation(value = "查询用户是否有车位授权标识", notes = "查询用户是否有车位授权标识", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/auth-flag", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<Boolean> authFlag( HttpServletRequest request) {
-		Boolean is = userRentStallService.authFlag(request);
-		return ResponseEntity.success(is, request);
+	public ResponseEntity<ResRentStallFlag> authFlag( HttpServletRequest request) {
+		ResRentStallFlag flag = userRentStallService.authFlag(request);
+		
+		return ResponseEntity.success(flag, request);
 	}
 	
 	@ApiOperation(value = "查询用户可授权的车位", notes = "查询用户可授权的车位", consumes = "application/json")

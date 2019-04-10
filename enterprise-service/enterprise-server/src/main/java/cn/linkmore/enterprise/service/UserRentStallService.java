@@ -12,6 +12,7 @@ import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResAuthRentStall;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
+import cn.linkmore.enterprise.controller.app.response.ResRentStallFlag;
 import cn.linkmore.enterprise.controller.app.response.ResRentUser;
 
 /**
@@ -55,7 +56,7 @@ public interface UserRentStallService {
 	 * @param request
 	 * @return
 	 */
-	Boolean authFlag(HttpServletRequest request);
+	ResRentStallFlag authFlag(HttpServletRequest request);
 
 	ResAuthRentStall findStallList(HttpServletRequest request, ReqLocation location);
 

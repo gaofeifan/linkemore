@@ -91,7 +91,7 @@ public class ResRentUserStall {
 	@ApiModelProperty(value = "地下几层")
 	private String underLayer;
 	
-	@ApiModelProperty(value="当车位状态为使用中是 使用是否是被授权用户  0是授权用户 1被授权用户")
+	@ApiModelProperty(value="当车位状态为使用中时  使用是否是被授权用户  0是授权用户 1被授权用户")
 	private int isAuthUser = 0;
 	public String getPreName() {
 		return preName;
