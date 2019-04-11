@@ -294,12 +294,13 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			}
 		}
 		if (!isAllow) {
-			List<EntRentedRecord> re = entRentedRecordClusterMapper.findLastByStallIds(Arrays.asList(reqOperatStall.getStallId()));
-			if(re != null) {
-				List<EntRentedRecord> list = re.stream().filter( r -> r.getUserId() == user.getId()).collect(Collectors.toList());
-				if(list != null && list.size() != 0) {
-					isAllow =true;
-					
+			if(reqOperatStall.getState().intValue() == 2) {
+				List<EntRentedRecord> re = entRentedRecordClusterMapper.findLastByStallIds(Arrays.asList(reqOperatStall.getStallId()));
+				if(re != null) {
+					List<EntRentedRecord> list = re.stream().filter( r -> r.getUserId() == user.getId()).collect(Collectors.toList());
+					if(list != null && list.size() != 0) {
+						isAllow =true;
+					}
 				}
 			}
 			if(!isAllow) {
@@ -540,6 +541,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							rentUserStall.setValidity(DateUtils.convert(ownerStall.getEndTime(), DateUtils.DARW_FORMAT_TIME));
 							rentUserStall.setRentMoType(ownerStall.getRentMoType());
 							rentUserStall.setRentOmType(ownerStall.getRentOmType());
+							rentUserStall.setLockSn(ownerStall.getLockSn());
 							break;
 						}
 					}
@@ -659,6 +661,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										resRentedRecord.getStallId());
 								rentUserStall.setIsAuthUser(1);
 								rentUserStall.setIsUserRecord(1);
+								
 								rentUserStall.setUseUserMobile(re.getMobile());
 								rentUserStall.setUseUserName(re.getUsername());
 								break;
@@ -668,6 +671,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					for (ResStall s : stallList) {
 						if(s.getId() == enttall.getStallId()) {
 							rentUserStall.setStallStatus(s.getStatus());
+							rentUserStall.setLockSn(s.getLockSn());
 							break;
 						}
 					}
@@ -747,6 +751,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							rentUserStall.setStallId(resStall.getId());
 							rentUserStall.setStallName(resStall.getStallName());
 							rentUserStall.setStallStatus(resStall.getStatus().intValue());
+							rentUserStall.setLockSn(resStall.getLockSn());
 							// AuthRecord record = findRecordList.stream().filter(f -> f.getStallId() ==
 							// enttall.getStallId()).findFirst().get();
 							rentUserStall
