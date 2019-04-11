@@ -1,5 +1,9 @@
 package cn.linkmore.enterprise.controller.app.response;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -24,14 +28,26 @@ public class AuthRecordDetail {
 	@ApiModelProperty(value = "授权状态： 0授权中 1已取消 2已过期 3已失效")
 	private Short authFlag;
 	
-	@ApiModelProperty(value = "车位开始时间 格式MM月dd日 HH:mm")
+	@ApiModelProperty(value = "被授权人车位开始时间 格式MM月dd日 HH:mm")
 	private String startTime;
 
-	@ApiModelProperty(value = "车位结束时间 格式MM月dd日 HH:mm")
+	@ApiModelProperty(value = "被授权人车位结束时间 格式MM月dd日 HH:mm")
 	private String endTime;
 	
-	@ApiModelProperty(value = "车位结束时间 格式yyyy年MM月dd日 HH:mm")
+	@ApiModelProperty(value = "被授权人车位结束时间 格式yyyy年MM月dd日 HH:mm")
 	private String endTimeAll;
+	
+	@ApiModelProperty(value = "授权人车位最后使用期限")
+	private Date stallEndTime;
+	
+	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
+	public Date getStallEndTime() {
+		return stallEndTime;
+	}
+
+	public void setStallEndTime(Date stallEndTime) {
+		this.stallEndTime = stallEndTime;
+	}
 
 	public String getEndTimeAll() {
 		return endTimeAll;
