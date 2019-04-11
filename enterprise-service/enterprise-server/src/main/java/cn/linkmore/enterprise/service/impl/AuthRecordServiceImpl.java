@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 
 import cn.linkmore.account.client.UserClient;
+import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
@@ -45,6 +46,7 @@ import cn.linkmore.enterprise.service.AuthRecordService;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.factory.AppUserFactory;
 import cn.linkmore.user.factory.UserFactory;
+import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 
 /**
@@ -118,6 +120,11 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 				}
 				Integer useCount = entRentedRecordClusterMapper.findUseCount(rentRecordParam);
 				authRecord.setUseCount(useCount);
+				
+				ResUser resUser = userClient.findById(authRecord.getAuthUserId());
+				if(resUser != null) {
+					authRecord.setAuthUserName(resUser.getUsername());
+				}
 			}
 		}
 		
@@ -236,9 +243,11 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 		}
 		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
 		Set<Long> ids = new HashSet<Long>();
+		Map<Long,EntOwnerStall> map = new HashMap<Long,EntOwnerStall>();
 		if (CollectionUtils.isNotEmpty(stalllist) && stalllist.size() > 0) {
 			for (EntOwnerStall entOwnerStall : stalllist) {
 				ids.add(entOwnerStall.getStallId());
+				map.put(entOwnerStall.getStallId(), entOwnerStall);
 			}
 		}
 		
@@ -288,9 +297,12 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 						recordDetail.setEndTime(entTimeStr);
 						recordDetail.setAuthFlag(authRecord.getAuthFlag());
 						recordDetail.setEndTimeAll(sdfAll.format(authRecord.getEndTime()));
+						if(map.get(authRecord.getStallId())!=null) {
+							recordDetail.setStallEndTime(DateUtils.convert(map.get(authRecord.getStallId()).getEndTime(), null));
+						}
 						//此处需要根据车位id查询当前授权人是否拥有车位的使用权限
-						log.info("endTime = {}, currentTime={}, flag = {}",entTimeStr,sdf.format(new Date()),
-								authRecord.getEndTime().before(new Date()));
+						log.info("endTime = {}, currentTime={}, flag = {} stallEndTime ={}",entTimeStr,sdf.format(new Date()),
+								authRecord.getEndTime().before(new Date()), recordDetail.getStallEndTime());
 						if(authRecord.getEndTime().before(new Date())) {
 							recordDetail.setAuthFlag((short)2);
 						} else {
