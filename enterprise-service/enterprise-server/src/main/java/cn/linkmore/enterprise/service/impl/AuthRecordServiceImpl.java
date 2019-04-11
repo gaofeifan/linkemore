@@ -335,6 +335,4 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	public int operateSwitch(Map<String, Object> param) {
 		return this.authRecordMasterMapper.operateSwitch(param);
 	}
-	
-	
 }
