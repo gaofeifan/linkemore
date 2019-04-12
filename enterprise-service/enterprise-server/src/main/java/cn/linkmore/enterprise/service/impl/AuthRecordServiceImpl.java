@@ -274,6 +274,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			AuthRecordDetail recordDetail = null;
 			SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm");
 			SimpleDateFormat sdfAll = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+			List<Long> authIds = new ArrayList<Long>();
 			for(AuthRecordPre authPre: authRecordPreList) {
 				detailList = new ArrayList<AuthRecordDetail>();
 				for (AuthRecord authRecord : authRecordList) {
@@ -303,11 +304,12 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 						//此处需要根据车位id查询当前授权人是否拥有车位的使用权限
 						log.info("endTime = {}, currentTime={}, flag = {} stallEndTime ={}",entTimeStr,sdf.format(new Date()),
 								authRecord.getEndTime().before(new Date()), recordDetail.getStallEndTime());
-						if(authRecord.getEndTime().before(new Date())) {
+						if(authRecord.getAuthFlag() == 0 && authRecord.getEndTime().before(new Date())) {
 							recordDetail.setAuthFlag((short)2);
 						} else {
 							if(authRecord.getAuthFlag() == 0 && !ids.contains(authRecord.getStallId()) ) {
 								recordDetail.setAuthFlag((short)3);
+								authIds.add(authRecord.getId());
 							}
 						} 
 						log.info("ids = {} , stallId = {}", ids, JSON.toJSON(authRecord));
@@ -315,6 +317,11 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 					}
 				}
 				authPre.setDetailList(detailList);
+			}
+			
+			if(CollectionUtils.isNotEmpty(authIds)) {
+				int num = authRecordMasterMapper.batchUpdate(authIds);
+				log.info("update the auth_flag = 3 num = {} ids={}",num , JSON.toJSON(authIds));
 			}
 		}
 		return authRecordPreList;
@@ -346,5 +353,10 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	}
 	public int operateSwitch(Map<String, Object> param) {
 		return this.authRecordMasterMapper.operateSwitch(param);
+	}
+
+	@Override
+	public int updateOverdueStatus() {
+		return this.authRecordMasterMapper.updateOverdueStatus();
 	}
 }

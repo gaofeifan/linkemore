@@ -1,5 +1,6 @@
 package cn.linkmore.enterprise.dao.master;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -18,4 +19,14 @@ public interface AuthRecordMasterMapper {
      * @return
      */
     int operateSwitch(Map<String,Object> param);
+    /**
+     * 更新过期状态
+     * @return
+     */
+	int updateOverdueStatus();
+	/**
+	 * 更新已失效状态
+	 * @param authIds
+	 */
+	int batchUpdate(List<Long> authIds);
 }
