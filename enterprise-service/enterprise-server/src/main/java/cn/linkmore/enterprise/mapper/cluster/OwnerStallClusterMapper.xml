@@ -325,7 +325,7 @@
 			AND p.STATUS = 0
 			INNER JOIN t_user u ON u.mobile= t.mobile
 		  where NOW() BETWEEN t.start_time
-			AND t.end_time
+			AND t.end_time and t.switch_flag = 1
 			AND u.id =  #{0}
 			
 			
