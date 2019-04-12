@@ -80,7 +80,7 @@
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
 		select
 		 record.id, record.ent_id, record.ent_pre_id, record.plate_no, record.down_time, record.leave_time, record.stall_id, record.stall_name, record.pre_id, 
-          record.pre_name,en.name ent_name,u.username,record.type
+          record.pre_name,en.name ent_name,u.mobile as username,record.type
 		from t_ent_rented_record record left join t_biz_enterprise en on record.ent_id = en.id
 		left join t_user u on record.user_id= u.id
 		where 1 = 1
@@ -93,6 +93,15 @@
 		<if test="entName != null">
 			AND en.name like #{entName}
 		</if>
+		
+		<if test="plateNo != null">
+			AND record.plate_no = #{plateNo}
+		</if>
+		
+		<if test="mobile != null">
+			AND u.mobile = #{mobile}
+		</if>
+		
 		<if test="downTime!=null">
 	    <![CDATA[and down_time >= #{downTime}]]>
 	    </if> 
@@ -220,8 +229,7 @@
 		<if test="userId != null">
 			AND user_id = #{userId,jdbcType=BIGINT}
 		</if>
-    AND STATUS = 1
 	AND DATE_FORMAT(leave_time, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m')
   </select>
-
+  <!-- AND STATUS = 1 -->
 </mapper>
