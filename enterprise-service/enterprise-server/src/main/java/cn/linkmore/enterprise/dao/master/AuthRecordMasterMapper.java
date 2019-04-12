@@ -28,5 +28,5 @@ public interface AuthRecordMasterMapper {
 	 * 更新已失效状态
 	 * @param authIds
 	 */
-	int batchUpdate(List<Long> authIds);
+	int batchUpdate(List<Long> ids);
 }

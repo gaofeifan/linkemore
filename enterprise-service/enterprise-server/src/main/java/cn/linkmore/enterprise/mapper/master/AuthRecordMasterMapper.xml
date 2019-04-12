@@ -52,7 +52,7 @@
   </update>
   
   <update id="batchUpdate" parameterType="java.util.List">
-    update t_auth_record auth_flag = 3 where id in
+    update t_auth_record set auth_flag = 3 where id in
     <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
        #{id}
     </foreach>

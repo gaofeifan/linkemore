@@ -19,9 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -312,7 +309,6 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 								authIds.add(authRecord.getId());
 							}
 						} 
-						log.info("ids = {} , stallId = {}", ids, JSON.toJSON(authRecord));
 						detailList.add(recordDetail);
 					}
 				}
@@ -320,8 +316,8 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			}
 			
 			if(CollectionUtils.isNotEmpty(authIds)) {
+				log.info("update the auth_flag = 3 authIds = {}", authIds);
 				int num = authRecordMasterMapper.batchUpdate(authIds);
-				log.info("update the auth_flag = 3 num = {} ids={}",num , JSON.toJSON(authIds));
 			}
 		}
 		return authRecordPreList;
