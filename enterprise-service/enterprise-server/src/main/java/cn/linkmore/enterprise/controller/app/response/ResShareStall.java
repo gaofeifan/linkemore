@@ -14,6 +14,8 @@ public class ResShareStall {
 	@ApiModelProperty(value="路径")
 	private String image="https://oss.pabeitech.com/image/2019/04/10/275_max.png";
 
+	@ApiModelProperty(value="点击事件")
+	private String clickEvent;
 	public String getTitle() {
 		return title;
 	}
@@ -37,7 +39,12 @@ public class ResShareStall {
 	public void setImage(String image) {
 		this.image = image;
 	}
-	
-	
-	
+
+	public String getClickEvent() {
+		return clickEvent;
+	}
+
+	public void setClickEvent(String clickEvent) {
+		this.clickEvent = clickEvent;
+	}
 }

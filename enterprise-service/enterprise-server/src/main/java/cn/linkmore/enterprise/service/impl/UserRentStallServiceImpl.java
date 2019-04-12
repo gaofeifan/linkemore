@@ -63,6 +63,7 @@ import cn.linkmore.redis.RedisService;
 import cn.linkmore.user.factory.AppUserFactory;
 import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
+import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.MapUtil;
 
 @Service
@@ -105,6 +106,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			List<EntRentedRecord> recordList = this.entRentedRecordClusterMapper.findAllByUser(user.getId());
 			List<EntOwnerPre> prelist = null;
 			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(userId);
+			log.info(JsonUtil.toJson(stalllist));
 			if (stalllist == null || stalllist.size() == 0) {
 				return res;
 			}
@@ -114,6 +116,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 					ids.add(entOwnerStall.getPreId());
 				}
 				prelist = ownerStallClusterMapper.findPreByIds(ids);
+				log.info(JsonUtil.toJson(prelist));
 			}
 			if (prelist == null || prelist.size() == 0) {
 				return res;
@@ -246,6 +249,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 
 							num++;
 							ownerstalllist.add(OwnerStall);
+							log.info(JsonUtil.toJson(OwnerStall));
 						}
 					}
 					ownerpre.setStalls(ownerstalllist);
@@ -497,6 +501,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			Map<String, Object> map = new HashMap<>();
 			map.put("list", stallIdAuthList);
 			resStallList = this.stallClient.findPreStallList(map);
+			log.info(JsonUtil.toJson(resStallList));
 		}
 		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
 		stalllist = stalllist.stream().filter(s -> s.getStallType().equals("1")).collect(Collectors.toList());
@@ -513,23 +518,21 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		stalls.addAll(stallIdOwnerList);
 		Map<String,Object> map = new HashMap<>();
 		map.put("list", stalls);
-		List<ResStall> stallList = this.stallClient.findPreStallList(map);
+//		List<ResStall> stallList = this.stallClient.findPreStallList(map);
 		List<EntRentedRecord> records = this.recordService.findLastByStallIds(stalls);
+//		log.info(JsonUtil.toJson(stallList));
+		log.info(JsonUtil.toJson(stalllist));
 		Boolean isHave = false;
 		if ("0".equals(location.getSwitchFlag())) { 
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
 			if(record != null) {
 				isHave = true;
 				rentUser = new ResRentUser();
+				ResStallEntity resStallEntity = this.stallClient.findById(record.getStallId());
 				rentUserStallList = new ArrayList<>();
 				rentUserStall = new ResRentUserStall();
 				rentUserStall.setDownLockTime(record.getDownTime());
-				for (ResStall s : stallList) {
-					if(s.getId() == record.getId()) {
-						rentUserStall.setStallStatus(s.getStatus());
-						break;
-					}
-				}
+				rentUserStall.setStallStatus(resStallEntity.getStatus());
 				rentUserStall.setStallId(record.getStallId());
 				rentUserStall.setUseUpLockTime(record.getLeaveTime());
 				rentUserStall.setStallName(record.getStallName());
@@ -668,13 +671,13 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							}
 						}
 					}
-					for (ResStall s : stallList) {
-						if(s.getId() == enttall.getStallId()) {
-							rentUserStall.setStallStatus(s.getStatus());
-							rentUserStall.setLockSn(s.getLockSn());
-							break;
-						}
-					}
+//					for (ResStall s : stallList) {
+//						if(s.getId() == enttall.getStallId()) {
+							rentUserStall.setStallStatus(enttall.getStatus().intValue());
+							rentUserStall.setLockSn(enttall.getLockSn());
+//							break;
+//						}
+//					}
 					rentUserStall.setUserStatus(1);
 					rentUserStall.setPreId(pre.getPreId());
 					rentUserStall.setPreName(pre.getPreName());
@@ -739,12 +742,12 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 									break;
 								}
 							}
-							for (ResStall s : stallList) {
-								if(s.getId() == resStall.getId()) {
-									rentUserStall.setStallStatus(s.getStatus());
-									break;
-								}
-							}
+//							for (ResStall s : stallList) {
+//								if(s.getId() == resStall.getId()) {
+							rentUserStall.setStallStatus(resStall.getStatus());
+//									break;
+//								}
+//							}
 							rentUserStall.setPreId(pre.getPreId());
 							rentUserStall.setUnderLayer(pre.getUnderLayer());
 							rentUserStall.setPreName(pre.getPreName());
