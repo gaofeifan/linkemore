@@ -5,8 +5,8 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="sex" jdbcType="SMALLINT" property="sex" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="user_type" jdbcType="VARCHAR" property="userType" />

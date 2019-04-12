@@ -423,6 +423,7 @@ public class UserServiceImpl implements UserService {
 		ru.setRealname(user.getRealname());
 		ru.setAlias("u"+user.getId());
 		ru.setType(user.getType()==null?0:user.getType());
+		ru.setNickname(user.getNickname());
 		List<String> tags = new ArrayList<String>();
 		tags.add("appuser");
 		ru.setTags(tags);
@@ -558,6 +559,7 @@ public class UserServiceImpl implements UserService {
 		String key = TokenUtil.getKey(request); 
 		cn.linkmore.account.controller.app.response.ResUser ru = new cn.linkmore.account.controller.app.response.ResUser();
 		ru.setId(user.getId());
+		ru.setNickname(user.getNickname());
 		ru.setMobile(user.getMobile());
 		ru.setToken(key); 
 		ru.setRealname(user.getRealname());
@@ -936,6 +938,7 @@ public class UserServiceImpl implements UserService {
 			String key = TokenUtil.getKey(request);  
 			ru.setToken(key);  
 			cu.setId(ui.getUserId());
+			ru.setNickname(ui.getNickName());
 			cu.setOpenId(rms.getOpenid());
 			cu.setToken(key); 
 			cu.setSession(rms.getSession_key());
