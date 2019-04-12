@@ -64,6 +64,7 @@
     <if test="flag != null">
     and auth_flag = #{flag}
     </if>
+    order by stall_id asc, auth_flag asc,create_time desc
   </select>
   
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">

@@ -19,9 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -274,6 +271,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			AuthRecordDetail recordDetail = null;
 			SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm");
 			SimpleDateFormat sdfAll = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+			List<Long> authIds = new ArrayList<Long>();
 			for(AuthRecordPre authPre: authRecordPreList) {
 				detailList = new ArrayList<AuthRecordDetail>();
 				for (AuthRecord authRecord : authRecordList) {
@@ -303,18 +301,23 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 						//此处需要根据车位id查询当前授权人是否拥有车位的使用权限
 						log.info("endTime = {}, currentTime={}, flag = {} stallEndTime ={}",entTimeStr,sdf.format(new Date()),
 								authRecord.getEndTime().before(new Date()), recordDetail.getStallEndTime());
-						if(authRecord.getEndTime().before(new Date())) {
+						if(authRecord.getAuthFlag() == 0 && authRecord.getEndTime().before(new Date())) {
 							recordDetail.setAuthFlag((short)2);
 						} else {
 							if(authRecord.getAuthFlag() == 0 && !ids.contains(authRecord.getStallId()) ) {
 								recordDetail.setAuthFlag((short)3);
+								authIds.add(authRecord.getId());
 							}
 						} 
-						log.info("ids = {} , stallId = {}", ids, JSON.toJSON(authRecord));
 						detailList.add(recordDetail);
 					}
 				}
 				authPre.setDetailList(detailList);
+			}
+			
+			if(CollectionUtils.isNotEmpty(authIds)) {
+				log.info("update the auth_flag = 3 authIds = {}", authIds);
+				int num = authRecordMasterMapper.batchUpdate(authIds);
 			}
 		}
 		return authRecordPreList;
@@ -346,5 +349,10 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	}
 	public int operateSwitch(Map<String, Object> param) {
 		return this.authRecordMasterMapper.operateSwitch(param);
+	}
+
+	@Override
+	public int updateOverdueStatus() {
+		return this.authRecordMasterMapper.updateOverdueStatus();
 	}
 }

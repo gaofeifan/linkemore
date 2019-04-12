@@ -2,11 +2,7 @@ package cn.linkmore.enterprise.service;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.ibatis.annotations.Param;
-
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.controller.app.request.ReqAuthRecord;
@@ -66,5 +62,9 @@ public interface AuthRecordService {
 	public List<AuthRecord> findAuthUserIdAndStallId(Long userId, Long stallId);
 
 	Boolean shareStall(String stallIds, String mobile, HttpServletRequest request);
+	/**
+	 * 更新过期时间
+	 */
+	public int updateOverdueStatus();
 
 }
