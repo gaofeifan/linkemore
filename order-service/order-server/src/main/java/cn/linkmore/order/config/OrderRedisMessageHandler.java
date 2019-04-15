@@ -19,6 +19,8 @@ import cn.linkmore.redis.RedisNotice;
 import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.request.ReqPush;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.JsonUtil;
 
 /**
@@ -29,7 +31,7 @@ import cn.linkmore.util.JsonUtil;
  */
 @Component
 public class OrderRedisMessageHandler implements RedisMessageHandler { 
-	
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Autowired
 	private PushClient pushClient;
 	
@@ -48,7 +50,7 @@ public class OrderRedisMessageHandler implements RedisMessageHandler {
 			map.put("type", type.id);
 			map.put("content", content);
 			map.put("status", status);
-			CacheUser cu = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+token.getAccessToken());
+			CacheUser cu = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(token.getAccessToken(), null));
 			userSocketClient.push(JsonUtil.toJson(map),cu.getOpenId());
 		}else {
 			ReqPush rp = new ReqPush();

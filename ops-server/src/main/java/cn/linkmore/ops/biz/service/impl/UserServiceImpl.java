@@ -2,6 +2,9 @@ package cn.linkmore.ops.biz.service.impl;
 
 import java.util.List;
 import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResPageUser;
@@ -9,6 +12,9 @@ import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.ops.biz.service.UserService;
+import cn.linkmore.ops.request.ReqUserResetPW;
+import cn.linkmore.util.JsonUtil;
+import cn.linkmore.util.ObjectUtils;
 /**
  * 用户信息接口 实现
  * @author   GFF
@@ -17,7 +23,7 @@ import cn.linkmore.ops.biz.service.UserService;
  */
 @Service
 public class UserServiceImpl implements UserService {
-
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private UserClient client;
 
@@ -40,6 +46,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int delete(List<Long> ids) {
 		return client.delete(ids);
+	}
+
+	@Override
+	public void reset(ReqUserResetPW reset) {
+		cn.linkmore.account.request.ReqUserResetPW pw =  new cn.linkmore.account.request.ReqUserResetPW();
+		pw.setIds(reset.getIds());
+		pw.setPassword(reset.getPassword());
+		log.info(JsonUtil.toJson(pw));
+		client.reset(pw);
 	}
 	
 	

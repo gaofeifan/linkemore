@@ -38,12 +38,12 @@
       lock_status, lock_time, login_ip, 
       lock_count, login_time, status, 
       create_time, realname, ent_id, 
-      type,ent_name)
+      type,ent_name, pre_id)
     values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{lockStatus,jdbcType=INTEGER}, #{lockTime,jdbcType=TIMESTAMP}, #{loginIp,jdbcType=VARCHAR}, 
       #{lockCount,jdbcType=INTEGER}, #{loginTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{realname,jdbcType=VARCHAR}, #{entId,jdbcType=BIGINT}, 
-      #{type,jdbcType=INTEGER},#{entName,jdbcType=VARCHAR})
+      #{type,jdbcType=INTEGER},#{entName,jdbcType=VARCHAR},#{preId,jdbcType=BIGINT})
   </insert>
   <update id="update" parameterType="cn.linkmore.security.entity.Person">
     update t_sec_person
@@ -56,7 +56,13 @@
   
    <update id="updateEntId" parameterType="cn.linkmore.security.request.ReqPerson">
     update t_sec_person
-    set ent_id = #{entId,jdbcType=BIGINT},ent_name=#{username,jdbcType=VARCHAR}
+    set ent_id = #{entId,jdbcType=BIGINT},
+    
+    <if test="preId != null">
+        pre_id = #{preId,jdbcType=BIGINT},
+    </if>
+    
+    ent_name=#{username,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

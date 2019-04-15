@@ -65,8 +65,18 @@ public class ResPerson {
      * 企业名称
      */
     private String entName;
+    
+    private Long preId;
+    
+    public Long getPreId() {
+		return preId;
+	}
 
-    public String getEntName() {
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
+
+	public String getEntName() {
 		return entName;
 	}
 

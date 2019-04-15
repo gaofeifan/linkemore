@@ -164,7 +164,7 @@ public class Alipay {
 		String signType = reqMap.get("sign_type");
 		//4.
 		boolean signVerified  = false;
-		if(PayConstants.RSA.equals(signType)){
+		if(PayConstants.RSA2.equals(signType)){
 			
 			signVerified  = AlipaySignature.rsaCheckV1(reqMap, PayConstants.PUBKEY,PayConstants.CHARSET,signType);
 		}else

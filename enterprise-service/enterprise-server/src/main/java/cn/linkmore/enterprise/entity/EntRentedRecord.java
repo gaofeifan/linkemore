@@ -6,10 +6,6 @@ public class EntRentedRecord {
 	
     private Long id;
 
-    private Long entId;
-
-    private Long entPreId;
-
     private String plateNo;
 
     private Date downTime;
@@ -30,9 +26,25 @@ public class EntRentedRecord {
     
     private Long userId;
 
+    private Short type = 1;
     
+    private String username;
     
-    public Long getUserId() {
+    private String mobile;
+    /**
+     * 用户当月使用车位总次数
+     */
+    private Integer useCount;
+    
+    public Integer getUseCount() {
+		return useCount;
+	}
+
+	public void setUseCount(Integer useCount) {
+		this.useCount = useCount;
+	}
+
+	public Long getUserId() {
 		return userId;
 	}
 
@@ -54,22 +66,6 @@ public class EntRentedRecord {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getEntId() {
-        return entId;
-    }
-
-    public void setEntId(Long entId) {
-        this.entId = entId;
-    }
-
-    public Long getEntPreId() {
-        return entPreId;
-    }
-
-    public void setEntPreId(Long entPreId) {
-        this.entPreId = entPreId;
     }
     
     public String getPlateNo() {
@@ -134,6 +130,30 @@ public class EntRentedRecord {
 
 	public void setEntName(String entName) {
 		this.entName = entName;
+	}
+
+	public Short getType() {
+		return type;
+	}
+
+	public void setType(Short type) {
+		this.type = type;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
     
 }

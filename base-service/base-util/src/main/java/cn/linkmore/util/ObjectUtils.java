@@ -1,6 +1,7 @@
 package cn.linkmore.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -324,5 +325,41 @@ public class ObjectUtils {
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
 		}
 		return t;
+	}
+	
+	/**
+	 * @Description  map转bean
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public static <T> T mapToBean(Class<T> t, Map<String,Object> map) {
+		try {
+			T instance = t.newInstance();
+			org.apache.commons.beanutils.BeanUtils.populate(instance, map);
+			return instance;
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * @Description  maps转list
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public static <T> List<T> mapsToListBean(Class<T> t ,List<Map<String,Object>> maps){
+		List<T> ts = new ArrayList<>();
+		try {
+			for (Map<String, Object> map : maps) {
+				T instance = t.newInstance();
+				org.apache.commons.beanutils.BeanUtils.populate(instance, map);
+				ts.add(instance);
+			}
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return ts;
 	}
 }

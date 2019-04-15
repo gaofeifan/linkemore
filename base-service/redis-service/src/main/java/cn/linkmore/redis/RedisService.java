@@ -165,7 +165,7 @@ public class RedisService {
 	public boolean exists(final String key) {
 		return redisTemplate.hasKey(key);
 	}
-
+	
 	/**
 	 * 读取缓存
 	 * 

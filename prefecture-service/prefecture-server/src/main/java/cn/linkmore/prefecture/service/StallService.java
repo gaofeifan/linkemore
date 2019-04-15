@@ -10,6 +10,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
 import cn.linkmore.prefecture.controller.staff.request.ReqLockIntall;
 import cn.linkmore.prefecture.controller.staff.request.ReqStaffStallList;
+import cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList;
 import cn.linkmore.prefecture.controller.staff.response.ResSignalHistory;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuth;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffNewAuthPre;
@@ -17,6 +18,7 @@ import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
+import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
@@ -100,7 +102,7 @@ public interface StallService {
 	 * 
 	 * @param stall
 	 */
-	int update(ReqStall stall);
+	int update(Stall stall);
 
 	/**
 	 * 校验名称
@@ -277,11 +279,12 @@ public interface StallService {
 	
 	
 	/**
+	 * @param preId 
 	 * @Description  根据车位锁编号查询
 	 * @Author   GFF 
 	 * @Version  v2.0
 	 */
-	ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn);
+	ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn, Long preId);
 	
 	/**
 	 * @Description  查询车位锁在一定时间端内的信号强度变化
@@ -335,4 +338,45 @@ public interface StallService {
 	 * 保存并绑定
 	 */
 	void saveAndBind(ReqStall reqStall);
+	/**
+	 * @param preId 
+	 * @Description  查询锁绑定的网关
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResLockGatewayList> findLockGateways(HttpServletRequest request, String lockSn, Long preId);
+	/** 
+	 * 预约订单控制降锁
+	 * @param stall
+	 * @return
+	 */
+	Boolean controlDown(ReqOrderStall stall);
+	
+	/**
+	 * @param lockSn 
+	 * @Description  批量更新
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn);
+	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void delete(List<Long> ids);
+	/**
+	 * 预约订单控制升锁-备份
+	 * @param stallId
+	 * @param request
+	 * @return
+	 */
+	boolean upLock(Long stallId, HttpServletRequest request);
+	/** 
+	 * 预约订单控制降锁
+	 * @param stall
+	 * @return
+	 */
+	Boolean controlUp(ReqOrderStall stall);
 }

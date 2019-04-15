@@ -10,6 +10,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("车位锁信息")
 public class OwnerStall {
 	
+	@ApiModelProperty(value = "车位标识1、自有固定车位 2、授权固定车位")
+	private String stallType;
+	
 	@ApiModelProperty(value = "车位Id")
 	private Long stallId;
 	
@@ -54,6 +57,37 @@ public class OwnerStall {
 	
 	@ApiModelProperty(value = "网关状态(默认展示0  调不到锁平台时显示0) 0离线 1 在线")
 	private int gatewayStatus;
+	
+	@ApiModelProperty(value = "长租车位标识一对多标识 默认0 1开启")
+	private Short rentOmType = 0;
+	
+	@ApiModelProperty(value = "长租车位标识多对一标识 默认0 1开启")
+	private Short rentMoType = 0;
+	
+	public String getStallType() {
+		return stallType;
+	}
+
+	public void setStallType(String stallType) {
+		this.stallType = stallType;
+	}
+
+	public Short getRentOmType() {
+		return rentOmType;
+	}
+
+	public void setRentOmType(Short rentOmType) {
+		this.rentOmType = rentOmType;
+	}
+
+	public Short getRentMoType() {
+		return rentMoType;
+	}
+
+	public void setRentMoType(Short rentMoType) {
+		this.rentMoType = rentMoType;
+	}
+
 	public String getLockSn() {
 		return lockSn;
 	}

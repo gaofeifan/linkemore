@@ -29,6 +29,17 @@ public class ResCurrentOwner {
 
 	@ApiModelProperty(value="车区名称")
 	private String preName;
+	
+	@ApiModelProperty(value="长租车位是否可切换标识false：不可切换 true可切换")
+	private Boolean switchFlag = false;
+
+	public Boolean getSwitchFlag() {
+		return switchFlag;
+	}
+
+	public void setSwitchFlag(Boolean switchFlag) {
+		this.switchFlag = switchFlag;
+	}
 
 	public Boolean getStatus() {
 		return status;

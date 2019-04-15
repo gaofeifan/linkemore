@@ -3,6 +3,9 @@ package cn.linkmore.order.controller.app;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +49,8 @@ public class AppOrderController {
 	private OrdersService ordersService;
 	@Autowired
 	private RedisService redisService;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@ApiOperation(value = "预约下单", notes = "车区ID不能为空", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/create", method = RequestMethod.POST)
@@ -129,6 +134,24 @@ public class AppOrderController {
 		this.ordersService.switchStall(rs, request);
 		return ResponseEntity.success(null, request);
 	}
+	
+	//TODO
+	@ApiOperation(value = "切换车位", notes = "8005105-无空闲车位,订单已关闭；8005106-切换车位失败，若返回有车位名称则表示切换车位成功", consumes = "application/json")
+	@RequestMapping(value = "/v2.1/switch", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> switchOrderStall(@RequestParam("orderId")Long orderId, HttpServletRequest request) {
+		ResponseEntity<?> response = null;
+		try { 
+			String stallName = this.ordersService.switchOrderStall(orderId, request);
+			response = ResponseEntity.success(stallName, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	
 
 	@ApiOperation(value = "当前订单", notes = "结账离场[组织数据,计算费用，计算时长]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/current", method = RequestMethod.GET)
@@ -141,8 +164,8 @@ public class AppOrderController {
 	@ApiOperation(value = "用户已完成订单列表", notes = "订单列表[起始请从0开始每页10条记录]", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/list", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<List<ResCheckedOrder>> list(@RequestParam("start") Long start,HttpServletRequest request) {
-		List<ResCheckedOrder> orders = this.ordersService.list(start,request);
+	public ResponseEntity<List<ResCheckedOrder>> list(@RequestParam("start") Long start, @RequestParam(value = "orderFlag", defaultValue = "0", required = false) String orderFlag, HttpServletRequest request) {
+		List<ResCheckedOrder> orders = this.ordersService.list(start, orderFlag, request);
 		return ResponseEntity.success(orders, request);
 	}
 	@ApiOperation(value = "订单详情", notes = "订单详情[订单ID须为数字]", consumes = "application/json")
@@ -179,4 +202,42 @@ public class AppOrderController {
 		}
 		return response;
 	}
+	
+	@ApiOperation(value = "用户预约下单后控制降锁", notes = "8005092降锁失败，更换其他车位；,8005091降锁失败，请再试一次；", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/control-down", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> controlDown(@RequestBody ReqOrderStall ros, 
+			HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		 try {
+			 boolean flag = ordersService.controlDown(ros, request);
+			 response = ResponseEntity.success(flag, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(),  request);
+		} catch (Exception e) {
+			log.info(">>>>>>>>>>>>control exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
+	}
+	
+	@ApiOperation(value = "用户预约下单后控制升锁", notes = "8005101升锁失败，故障上报；,8005099升锁失败，请再试一次；", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/control-up", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> controlUp(@RequestBody ReqOrderStall ros, 
+			HttpServletRequest request) {
+		ResponseEntity<Boolean> response = null;
+		 try {
+			 boolean flag = ordersService.controlUp(ros, request);
+			 response = ResponseEntity.success(flag, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(),  request);
+		} catch (Exception e) {
+			log.info(">>>>>>>>>>>>control exception={}",e.getMessage());
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
+	}
+	
+	
 }

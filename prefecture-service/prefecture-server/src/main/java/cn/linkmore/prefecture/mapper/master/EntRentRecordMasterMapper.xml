@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.EntRentRecordMasterMapper">
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from t_ent_rented_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="saveSelective" parameterType="cn.linkmore.prefecture.entity.EntRentRecord">
+  	 insert into t_ent_rented_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="stallId != null">
+        stall_id,
+      </if>
+       <if test="downTime != null">
+        down_time,
+      </if>
+      <if test="leaveTime != null">
+        leave_time,
+      </if>
+       <if test="preName != null">
+        pre_name,
+      </if>
+    	<if test="preId != null">
+        pre_id,
+      </if>
+       <if test="stallName != null">
+        stall_name,
+      </if>
+       <if test="plateNo != null">
+        plate_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+       <if test="userId != null">
+        #{userId},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="stallId != null">
+        #{stallId},
+      </if>
+       <if test="downTime != null">
+        #{downTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="leaveTime != null">
+        #{leaveTime,jdbcType=TIMESTAMP},
+      </if>
+       <if test="preName != null">
+        #{preName},
+      </if>
+    	<if test="preId != null">
+        #{preId},
+      </if>
+       <if test="stallName != null">
+        #{stallName},
+      </if>
+       <if test="plateNo != null">
+        #{plateNo},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByIdSelective" parameterType="cn.linkmore.prefecture.entity.EntRentRecord">
+    update t_ent_rented_record
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>  
+      <if test="status != null">
+        status = #{status,jdbcType=BIGINT},
+      </if>      
+      <if test="plateNo != null">
+        plate_no = #{plateNo,jdbcType=BIGINT},
+      </if>
+      <if test="downTime != null">
+        down_time = #{downTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="leaveTime != null">
+        leave_time = #{leaveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stallId != null">
+        stall_id = #{stallId,jdbcType=BIGINT},
+      </if>
+      <if test="stallName != null">
+        stall_name = #{stallName,jdbcType=VARCHAR},
+      </if>
+      <if test="preId != null">
+        pre_id = #{preId,jdbcType=BIGINT},
+      </if>
+      <if test="preName != null">
+        pre_name = #{preName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateById" parameterType="cn.linkmore.prefecture.entity.EntRentRecord">
+    update t_ent_rented_record
+     set
+      plate_no = #{plateNo,jdbcType=BIGINT},
+      down_time = #{downTime,jdbcType=TIMESTAMP},
+      leave_time = #{leaveTime,jdbcType=TIMESTAMP},
+      stall_id = #{stallId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      status = #{status,jdbcType=BIGINT},
+      stall_name = #{stallName,jdbcType=VARCHAR},
+      pre_id = #{preId,jdbcType=BIGINT},
+      pre_name = #{preName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

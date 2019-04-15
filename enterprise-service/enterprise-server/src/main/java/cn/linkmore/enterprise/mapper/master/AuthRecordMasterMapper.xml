@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.master.AuthRecordMasterMapper">
+  
+  
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_auth_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="cn.linkmore.enterprise.entity.AuthRecord">
+    insert into t_auth_record (id, stall_id, stall_name, 
+      mobile, username, start_time, 
+      end_time, relation_id, relation_name, 
+      pre_id, pre_name, auth_user_id, 
+      auth_flag, create_time, update_time,user_id, switch_flag
+      )
+    values (#{id,jdbcType=BIGINT}, #{stallId,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}, 
+      #{mobile,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{relationId,jdbcType=BIGINT}, #{relationName,jdbcType=VARCHAR}, 
+      #{preId,jdbcType=BIGINT}, #{preName,jdbcType=VARCHAR}, #{authUserId,jdbcType=BIGINT}, 
+      #{authFlag,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{userId,jdbcType=BIGINT},#{switchFlag,jdbcType=SMALLINT}
+      )
+  </insert>
+ 
+  <update id="update" parameterType="cn.linkmore.enterprise.entity.AuthRecord">
+    update t_auth_record
+    set username = #{username,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      relation_id = #{relationId,jdbcType=BIGINT},
+      relation_name = #{relationName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="cancelAuth" parameterType="java.lang.Long">
+    update t_auth_record
+    set auth_flag = 1
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="operateSwitch" parameterType="java.util.HashMap">
+    update t_auth_record
+    set switch_flag = #{switchFlag, jdbcType = SMALLINT},
+    update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <update id="updateOverdueStatus">
+  	update t_auth_record set auth_flag = 2 where end_time <![CDATA[ < ]]> NOW() and auth_flag = 0
+  </update>
+  
+  <update id="batchUpdate" parameterType="java.util.List">
+    update t_auth_record set auth_flag = 3 where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach>
+  </update>
+  
+</mapper>

@@ -35,6 +35,8 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -65,10 +67,11 @@ public class NoticeServiceImpl implements NoticeService {
 	private RedisService redisService;
 	@Resource
 	private UserService userService;
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Override
 	public ResPage page(Long start, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		CacheUser ru = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 		Map<String, Object> map = new HashMap<>();
 		map.put("start", start);
 		map.put("uid", ru.getId());
@@ -103,7 +106,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public ResNotice read(Long id, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		CacheUser ru = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os")));
 		String content = "";
         Map<String,Object> map = new HashMap<>();
         map.put("nid",id);
@@ -152,7 +155,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public void delete(Long nid, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		CacheUser ru = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os")));
 		ReqNotice notice = new ReqNotice();
 		notice.setNid(nid);
 		notice.setUserId(ru.getId());
@@ -176,7 +179,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public ResNotice read(Long id, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		CacheUser ru = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os")));
 		ReqNotice no = new ReqNotice();
 		no.setNid(id);
 		no.setUserId(ru.getId());
@@ -186,7 +189,7 @@ public class NoticeServiceImpl implements NoticeService {
 	/*@Override
 	public void delete(Long nid, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		CacheUser ru = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os")));
 		ReqNotice notice = new ReqNotice();
 		notice.setNid(nid);
 		notice.setUserId(ru.getId());
@@ -301,7 +304,7 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public void updateRead(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key);
+		CacheUser ru = (CacheUser)this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os")));
 		List<Long> noticeIds = this.noticeClusterMapper.findNotReadList(ru.getId());
 		List<NoticeRead> list = new ArrayList<>();
 		NoticeRead read = null;

@@ -28,7 +28,8 @@ public class ResUser implements Serializable {
 	private Short type;
 	@ApiModelProperty(value = "极光标签")
 	private List<String> tags; 
-	
+	@ApiModelProperty(value = "昵称")
+	private String nickname;
 	@ApiModelProperty(value = "是否新用户")
 	private Short newUserFlag = 0;
 	public Long getId() {
@@ -84,6 +85,11 @@ public class ResUser implements Serializable {
 	}
 	public void setNewUserFlag(Short newUserFlag) {
 		this.newUserFlag = newUserFlag;
+	}
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	} 
-	
 }

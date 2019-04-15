@@ -422,6 +422,45 @@
       fans_status = #{fansStatus,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateIds" parameterType="java.util.List">
+      <foreach collection="list"  index="index" item="user" open="" separator=";" close=""  >
+    update t_user
+    set 
+      username = #{user.username,jdbcType=VARCHAR},
+      password = #{user.password,jdbcType=VARCHAR},
+      nickname = #{user.nickname,jdbcType=VARCHAR},
+      sex = #{user.sex,jdbcType=SMALLINT},
+      status = #{user.status,jdbcType=VARCHAR},
+      user_type = #{user.userType,jdbcType=VARCHAR},
+      enterprise_name = #{user.enterpriseName,jdbcType=VARCHAR},
+      ent_admin_name = #{user.entAdminName,jdbcType=VARCHAR},
+      industry = #{user.industry,jdbcType=VARCHAR},
+      parent_id = #{user.parentId,jdbcType=BIGINT},
+      mobile = #{user.mobile,jdbcType=VARCHAR},
+      province = #{user.province,jdbcType=VARCHAR},
+      city = #{user.city,jdbcType=VARCHAR},
+      address = #{user.address,jdbcType=VARCHAR},
+      email = #{user.email,jdbcType=VARCHAR},
+      wechat = #{user.wechat,jdbcType=VARCHAR},
+      qq = #{user.qq,jdbcType=VARCHAR},
+      icon = #{user.icon,jdbcType=VARCHAR},
+      last_login_time = #{user.lastLoginTime,jdbcType=TIMESTAMP},
+      create_time = #{user.createTime,jdbcType=TIMESTAMP},
+      update_time = #{user.updateTime,jdbcType=TIMESTAMP},
+      hobby_brand_id = #{user.hobbyBrandId,jdbcType=BIGINT},
+      is_app_register = #{user.isAppRegister,jdbcType=SMALLINT},
+      is_wechat_bind = #{user.isWechatBind,jdbcType=SMALLINT},
+      app_register_time = #{user.appRegisterTime,jdbcType=TIMESTAMP},
+      wechat_bind_time = #{user.wechatBindTime,jdbcType=TIMESTAMP},
+      type = #{user.type,jdbcType=SMALLINT},
+      login_count = #{user.loginCount,jdbcType=INTEGER},
+      order_count = #{user.orderCount,jdbcType=INTEGER},
+      complete_order_count = #{user.completeOrderCount,jdbcType=INTEGER},
+      realname = #{user.realname,jdbcType=VARCHAR},
+      fans_status = #{user.fansStatus,jdbcType=SMALLINT}
+    	where id = #{user.id,jdbcType=BIGINT}
+       </foreach>
+  </update>
   <update id="updateByColumn" parameterType="java.util.Map">
     update t_user
    		 set ${column} = #{value},
@@ -448,6 +487,13 @@
       username=#{username}, 
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updatePassword" parameterType="java.util.Map" >
+    update t_user
+    set  
+      password = #{password},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where mobile = #{mobile,jdbcType=VARCHAR}
   </update>
   <update id="orderUpdate" parameterType="java.util.Map" >
     update t_user

@@ -7,4 +7,5 @@
 	<sms tpl="SMS_140105600" id="subed_brand_coupon_notice" desc="已授权品牌送券通知"/>
 	<sms tpl="SMS_149391090" id="new_user_reg_notice" desc="新注册用户优惠券包"/>
 	<sms tpl="SMS_142951238" id="order_suspend_notice" desc="挂起订单通知"/>
+	<sms tpl="SMS_163438779" id="auth_rent_stall_notice" desc="长租车位授权通知"/>
 </config>

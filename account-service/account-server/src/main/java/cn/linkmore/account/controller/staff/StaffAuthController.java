@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.staff.request.ReqLoginPw;
 import cn.linkmore.account.controller.staff.response.ResAdmin;
 import cn.linkmore.account.service.StaffAdminUserService;
 import cn.linkmore.bean.common.ResponseEntity;
@@ -42,6 +43,15 @@ public class StaffAuthController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<ResAdmin> login(@Validated @RequestBody ReqAuthLogin rl, HttpServletRequest request) {
+		ResponseEntity<ResAdmin> response = null; 
+		ResAdmin ru = this.staffAdminUserService.login(rl,request);
+		response = ResponseEntity.success(ru, request);
+		return response;
+	}
+	@ApiOperation(value="账户密码登录",notes="账户密码登录", consumes = "application/json")
+	@RequestMapping(value = "/login-pw", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResAdmin> loginPw(@Validated @RequestBody ReqLoginPw rl, HttpServletRequest request) {
 		ResponseEntity<ResAdmin> response = null; 
 		ResAdmin ru = this.staffAdminUserService.login(rl,request);
 		response = ResponseEntity.success(ru, request);

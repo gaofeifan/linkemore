@@ -27,6 +27,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.request.ReqRentedRecord;
 import cn.linkmore.enterprise.response.ResRentedRecord;
+import cn.linkmore.ops.biz.controller.BaseController;
 import cn.linkmore.ops.ent.service.RentedRecordService;
 import cn.linkmore.ops.utils.ExcelUtil;
 
@@ -38,7 +39,7 @@ import cn.linkmore.ops.utils.ExcelUtil;
  */
 @Controller
 @RequestMapping("/admin/ent/rented-record")
-public class RentedRecordController {
+public class RentedRecordController extends BaseController{
 
 	@Resource
 	private RentedRecordService rentedRecordService;
@@ -46,6 +47,13 @@ public class RentedRecordController {
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ViewPage findList(HttpServletRequest request, ViewPageable pageable) {
+		return this.rentedRecordService.findList(request,pageable);
+	}
+	
+	@RequestMapping(value = "/mini-list", method = RequestMethod.POST)
+	@ResponseBody
+	public ViewPage miniList(HttpServletRequest request, ViewPageable pageable) {
+		pageable.setFilterJson(addJSONFilter(pageable.getFilterJson(),"preId",getPerson().getPreId()));
 		return this.rentedRecordService.findList(request,pageable);
 	}
 	

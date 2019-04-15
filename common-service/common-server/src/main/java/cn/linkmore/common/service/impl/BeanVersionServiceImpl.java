@@ -35,6 +35,8 @@ import cn.linkmore.common.response.ResVersionBean;
 import cn.linkmore.common.service.BeanVersionService;
 import cn.linkmore.common.service.CommonService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 import cn.linkmore.util.TokenUtil;
@@ -47,6 +49,7 @@ import cn.linkmore.util.TokenUtil;
 @Service
 public class BeanVersionServiceImpl implements BeanVersionService {
 
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Resource
 	private RedisService redisService;
 	@Resource
@@ -66,7 +69,7 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 	public ResVersionBean currentAppVersion(Integer appType,HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String key = TokenUtil.getKey(request);
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 		if(user != null ) {
 			ResUserStaff staff = userStaffClient.findByMobile(user.getMobile());
 			if(staff != null) {
@@ -100,7 +103,7 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 		//取出该用户最新的灰度版本
 		List<ResVersionBean> findGrayLast=null;
 		String key = TokenUtil.getKey(request);
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 		if(user != null ) {
 			map.put("userId", user.getId());
 			findGrayLast = this.baseAppVersionClusterMapper.findGrayLast(map);
@@ -138,7 +141,7 @@ public class BeanVersionServiceImpl implements BeanVersionService {
 	@Override
 	public void report(cn.linkmore.common.controller.app.request.ReqVersion vrb, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-	    CacheUser user =  (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+	    CacheUser user =  (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 		ReqVersion reqVersion = ObjectUtils.copyObject(vrb, new ReqVersion());
 		reqVersion.setUserId(user.getId());
 		boolean falg = false;

@@ -22,6 +22,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.request.ReqUserResetPW;
 import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
@@ -30,7 +31,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 
 /**
- * @author   GFF
+ * @author   GFF 
  * @Date     2018年5月22日
  * @Version  v2.0
  */
@@ -171,6 +172,19 @@ public class UserClientHystrix implements UserClient{
 	public int delete(List<Long> ids) {
 		log.info("account service int delete(List<Long> ids) hystrix");
 		return 0;
+	}
+
+
+	@Override
+	public Object reset(@RequestBody ReqUserResetPW reset) {
+		log.info("account service int reset(List<Long> ids, String password) hystrix");
+		return null;
+	}
+
+
+	@Override
+	public Long getUserIdByMobile(String mobile, String username) {
+		return null;
 	}
 	
 	

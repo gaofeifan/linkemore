@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.staff.request.ReqLoginPw;
 import cn.linkmore.account.controller.staff.response.ResAdmin;
 import cn.linkmore.account.entity.StaffAppfans;
 import cn.linkmore.account.request.ReqMessage;
@@ -38,6 +39,8 @@ import cn.linkmore.third.client.WechatMiniClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.third.response.ResMiniSession;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 @Service
@@ -60,6 +63,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private WechatMiniClient wechatMiniClient;
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	private UserFactory appUserFactory = AppUserFactory.getInstance(); 
 	@Override
 	public ResAdmin login(ReqAuthLogin rl, HttpServletRequest request) {
 		if(!("6699".equals(rl.getCode()))) {
@@ -268,4 +272,13 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		this.staffAppfansService.insertSelective(staffAppfans);
 		return session.getOpenid();
 	}
+
+	@Override
+	public ResAdmin login(ReqLoginPw pw, HttpServletRequest request) {
+		
+//		this.staffAdminUserClient.findMobile(mobile)
+		return null;
+	}
+	
+	
 }

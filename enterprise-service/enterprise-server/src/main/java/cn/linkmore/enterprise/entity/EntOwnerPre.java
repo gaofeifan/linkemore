@@ -15,6 +15,8 @@ public class EntOwnerPre {
 	private Double latitude;
 	
 	private String gateway;
+	
+	private String underLayer;
 
 	public Long getPreId() {
 		return preId;
@@ -62,6 +64,14 @@ public class EntOwnerPre {
 
 	public void setGateway(String gateway) {
 		this.gateway = gateway;
+	}
+
+	public String getUnderLayer() {
+		return underLayer;
+	}
+
+	public void setUnderLayer(String underLayer) {
+		this.underLayer = underLayer;
 	}
 	
 	

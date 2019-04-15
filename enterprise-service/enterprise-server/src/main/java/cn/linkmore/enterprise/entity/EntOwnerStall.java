@@ -2,14 +2,12 @@ package cn.linkmore.enterprise.entity;
 
 
 public class EntOwnerStall {
+	//1代表自有车位 2代表授权车位
+	private String stallType;
 	
 	private Long preId;
 	
 	private Long stallId;
-	
-	private Long entId;
-	
-	private Long entPreId;
 	
 	private String preName;
 	
@@ -37,24 +35,32 @@ public class EntOwnerStall {
 	
 	private Long userId;
 	
-	private Long companyId;
+	private Short rentOmType = 0;
 	
-	private String companyName;
-
-	public Long getEntId() {
-		return entId;
+	private Short rentMoType = 0;
+	
+	public String getStallType() {
+		return stallType;
 	}
 
-	public void setEntId(Long entId) {
-		this.entId = entId;
+	public void setStallType(String stallType) {
+		this.stallType = stallType;
 	}
 
-	public Long getEntPreId() {
-		return entPreId;
+	public Short getRentOmType() {
+		return rentOmType;
 	}
 
-	public void setEntPreId(Long entPreId) {
-		this.entPreId = entPreId;
+	public void setRentOmType(Short rentOmType) {
+		this.rentOmType = rentOmType;
+	}
+
+	public Short getRentMoType() {
+		return rentMoType;
+	}
+
+	public void setRentMoType(Short rentMoType) {
+		this.rentMoType = rentMoType;
 	}
 
 	public String getPreName() {
@@ -177,20 +183,4 @@ public class EntOwnerStall {
 		this.userId = userId;
 	}
 
-	public Long getCompanyId() {
-		return companyId;
-	}
-
-	public void setCompanyId(Long companyId) {
-		this.companyId = companyId;
-	}
-
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-	
 }

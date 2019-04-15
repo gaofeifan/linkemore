@@ -101,17 +101,11 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 		return this.entRentUserMasterMapper.save(record);
 	}
 
-	/* (non-Javadoc)
-	 * @see cn.linkmore.enterprise.service.EntRentUserService#deleteEntRentUser(java.lang.Long)
-	 */
 	@Override
 	public int deleteEntRentUser(Long id) {
 		return this.entRentUserMasterMapper.deleteById(id);
 	}
 
-	/* (non-Javadoc)
-	 * @see cn.linkmore.enterprise.service.EntRentUserService#updateEntRentUser(java.lang.Long, java.lang.String, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public int updateEntRentUser(Long id, String mobile, String realname, String plate) {
 		EntRentUser record = new EntRentUser();
@@ -269,14 +263,6 @@ public class EntRentUserServiceImpl implements EntRentUserService {
 				}
 			}
 		}
-		/*logger.info("company param = {}",JSON.toJSON(param));
-		List<EntRentUser> oldRentUserList = entRentUserClusterMapper.findComUserList(param);
-		logger.info("company oldRentUserList = {}",JSON.toJSON(oldRentUserList));
-		Boolean flag = false;
-		if(CollectionUtils.isNotEmpty(oldRentUserList)) {
-			flag = true;
-		}
-		logger.info("company flag = {}",JSON.toJSON(flag));*/
 		return flag;
 	}
 

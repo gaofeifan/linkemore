@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class DateUtils {
 
+	public static final String DARW_FORMAT_TIME = "yyyy-MM-dd hh:mm:ss";
 	/**
 	 * 获取开始日期和结束日期之间的日期
 	 * 
@@ -304,18 +305,18 @@ public class DateUtils {
 		long min = diff % nd % nh / nm;
 		// 计算差多少秒//输出结果
 		long sec = diff % nd % nh % nm / ns;
-		if (day != 0) {
-			sb.append(day).append("天");
-		}
+//		if (day != 0) {
+//			sb.append(day).append("天");
+//		}
 		if (hour != 0) {
-			sb.append(hour).append("时");
+			sb.append(day*24 +hour).append("小时");
 		}
 		if (min != 0) {
-			sb.append(min).append("分");
+			sb.append(min).append("分钟");
 		}
-		if (sec != 0) {
-			sb.append(sec).append("秒");
-		}
+//		if (sec != 0) {
+//			sb.append(sec).append("豪秒");
+//		}
 		return sb.toString();
 	}
 

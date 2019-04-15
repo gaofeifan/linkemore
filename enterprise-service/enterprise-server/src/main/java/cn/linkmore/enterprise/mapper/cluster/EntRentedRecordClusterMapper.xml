@@ -3,8 +3,6 @@
 <mapper namespace="cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntRentedRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="ent_id" jdbcType="BIGINT" property="entId" />
-    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
     <result column="plate_no" jdbcType="BIGINT" property="plateNo" />
     <result column="down_time" jdbcType="TIMESTAMP" property="downTime" />
     <result column="leave_time" jdbcType="TIMESTAMP" property="leaveTime" />
@@ -15,6 +13,9 @@
     <result column="status" jdbcType="BIGINT" property="status" />
     <result column="pre_name" jdbcType="VARCHAR" property="preName" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
   </resultMap>
   
    <resultMap id="ExcelResultMap" type="cn.linkmore.enterprise.response.ResRentedRecord">
@@ -27,8 +28,8 @@
     <result column="status" jdbcType="BIGINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, ent_id,user_id,status,ent_pre_id, plate_no, down_time, leave_time, stall_id, stall_name, pre_id, 
-    pre_name
+    id, user_id,status, plate_no, down_time, leave_time, stall_id, stall_name, pre_id, 
+    pre_name,type
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -50,7 +51,16 @@
     <include refid="Base_Column_List" />
     from t_ent_rented_record
     where user_id = #{userId,jdbcType=BIGINT}
-    and status = 0
+    and status = 0 order by id desc limit 0,1
+  </select>
+  
+  <select id="findByUserIdAndStallId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rented_record
+    where user_id = #{userId,jdbcType=BIGINT}
+    and stall_id = #{stallId,jdbcType=BIGINT}
+    and status = 0 order by id desc limit 0,1
   </select>
   
   <select id="findUsingRecord" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
@@ -69,16 +79,29 @@
   
   <select id="findPage" parameterType="java.util.HashMap" resultMap="BaseResultMap">
 		select
-		  record.id, record.ent_id, record.ent_pre_id, record.plate_no, record.down_time, record.leave_time, record.stall_id, record.stall_name, record.pre_id, 
-          record.pre_name,en.name ent_name
+		 record.id, record.ent_id, record.ent_pre_id, record.plate_no, record.down_time, record.leave_time, record.stall_id, record.stall_name, record.pre_id, 
+          record.pre_name,en.name ent_name,u.mobile as username,record.type
 		from t_ent_rented_record record left join t_biz_enterprise en on record.ent_id = en.id
+		left join t_user u on record.user_id= u.id
 		where 1 = 1
 		<if test="preName != null">
 			AND pre_name like #{preName}
 		</if>
+		<if test="preId != null">
+			AND record.pre_id = #{preId}
+		</if>
 		<if test="entName != null">
 			AND en.name like #{entName}
 		</if>
+		
+		<if test="plateNo != null">
+			AND record.plate_no = #{plateNo}
+		</if>
+		
+		<if test="mobile != null">
+			AND u.mobile = #{mobile}
+		</if>
+		
 		<if test="downTime!=null">
 	    <![CDATA[and down_time >= #{downTime}]]>
 	    </if> 
@@ -104,6 +127,9 @@
 		<if test="entName != null">
 			AND en.name like #{entName}
 		</if>
+		<if test="preId != null">
+			AND record.pre_id = #{preId}
+		</if>
 		<if test="downTime!=null">
 	    <![CDATA[and down_time >= #{downTime}]]>
 	    </if> 
@@ -126,4 +152,84 @@
 	    </if> 
 	    order by down_time desc
 	</select>
+	
+	<select id="findAllByUser" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rented_record
+    where user_id = #{userId,jdbcType=BIGINT}
+    and status = 0 
+  </select>
+	<select id="findParkingRecord"  resultMap="BaseResultMap">
+    select 
+	 er.id, er.user_id,er.status, er.plate_no, er.down_time, er.leave_time, er.stall_id, er.stall_name, er.pre_id, 
+    er.pre_name,er.type,u.username,u.mobile
+    from t_ent_rented_record er
+    left join t_user u on er.user_id = u.id
+    where er.user_id = #{id} and er.status = 1
+  	 and er.stall_id = #{stallId}
+    order by er.id desc
+   limit #{pageNo},10
+  </select>
+  <select id="findLastByStallIds" parameterType="java.util.List" resultMap="BaseResultMap">
+	  select 
+	  <include refid="Base_Column_List" /> 
+	  from (
+		 select 
+		 <include refid="Base_Column_List" /> 
+		 from
+		 t_ent_rented_record
+	     where stall_id in
+	     <foreach collection="list"  index="index" item="stallId" open="(" separator="," close=")"  >
+		 	#{stallId} 
+	  	 </foreach>
+		  order by id desc 
+		  limit 111111111111
+	  ) re 
+	  GROUP BY stall_id 
+  </select>
+  <!-- 查询被授权用户完整使用车位次数 -->
+  <select id="findUseCount" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+    select 
+    count(1)
+    from t_ent_rented_record
+     where 1=1
+    	<if test="stallId != null">
+			AND stall_id = #{stallId,jdbcType=BIGINT}
+		</if>
+		<if test="userId != null">
+			AND user_id = #{userId,jdbcType=BIGINT}
+		</if>
+    and type=2 and status = 1
+  </select>
+  <!-- 查询被授权用户最近使用记录,不包括失败记录 -->
+  <select id="findLastByUserIdAndStallId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ent_rented_record
+    where 1=1
+   	<if test="stallId != null">
+		AND stall_id = #{stallId,jdbcType=BIGINT}
+	</if>
+	<if test="userId != null">
+		AND user_id = #{userId,jdbcType=BIGINT}
+	</if>
+    and status != 2 and type=2 order by id desc limit 0,1
+  </select>
+  
+  <!-- 查询用户当月使用车位次数 -->
+  <select id="findUseCountByMonth" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+    select 
+    count(1)
+    from t_ent_rented_record
+     where 1=1
+    	<if test="stallId != null">
+			AND stall_id = #{stallId,jdbcType=BIGINT}
+		</if>
+		<if test="userId != null">
+			AND user_id = #{userId,jdbcType=BIGINT}
+		</if>
+	AND DATE_FORMAT(leave_time, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m')
+  </select>
+  <!-- AND STATUS = 1 -->
 </mapper>

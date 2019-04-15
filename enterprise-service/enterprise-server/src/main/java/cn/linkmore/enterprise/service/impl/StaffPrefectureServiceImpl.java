@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -52,6 +53,8 @@ import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.request.ReqPush;
 import cn.linkmore.third.request.ReqSms;
+import cn.linkmore.user.factory.StaffUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.HttpUtil;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -61,7 +64,7 @@ import cn.linkmore.util.TokenUtil;
 public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
+	private UserFactory staffUserFactory = StaffUserFactory.getInstance();
 	@Autowired
 	private RedisLock redisLock;
 	@Autowired
@@ -75,7 +78,6 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Autowired
 	private SmsClient smsClient;
 
-	
 	@Autowired
 	private PrefectureClient prefectureClient;
 
@@ -97,6 +99,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	@Autowired
 	private PushClient pushClient;
 
+	private ConcurrentHashMap<Long, String> mapOs = new ConcurrentHashMap<>();
 	private static final int TIMEOUT = 30 * 1000;
 
 	/**
@@ -442,7 +445,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 					String content = (Type ==1?"订单已被管理员挂起":"订单已被管理员关闭");
 					PushType type = (Type ==1?PushType.ORDER_STAFF_SUSPEND_NOTICE:PushType.ORDER_STAFF_CLOSED_NOTICE);
 					String bool = "true";
-					Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + orders.getUserId().toString());
+					Token token = (Token) redisService.get(staffUserFactory.createUserIdRedisKey(orders.getUserId(), "1"));
 
 					ReqPush rp = new ReqPush();
 					rp.setAlias(orders.getUserId().toString());

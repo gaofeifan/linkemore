@@ -52,6 +52,7 @@ import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.coupon.client.CouponClient;
+import cn.linkmore.coupon.request.ReqCouponPay;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandStall;
 import cn.linkmore.notice.client.UserSocketClient;
@@ -89,6 +90,8 @@ import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
 import cn.linkmore.order.service.OrdersService;
+import cn.linkmore.order.service.impl.PayServiceImpl.ProduceCheckBookingThread;
+import cn.linkmore.order.service.impl.PayServiceImpl.PushThread;
 import cn.linkmore.prefecture.client.EntBrandPreClient;
 import cn.linkmore.prefecture.client.EntBrandUserClient;
 import cn.linkmore.prefecture.client.FeignLockClient;
@@ -104,6 +107,8 @@ import cn.linkmore.redis.RedisService;
 import cn.linkmore.third.client.DockingClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.request.ReqPush;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
@@ -117,7 +122,7 @@ import cn.linkmore.util.TokenUtil;
  */
 @Service
 public class OrdersServiceImpl implements OrdersService {
-
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -277,7 +282,7 @@ public class OrdersServiceImpl implements OrdersService {
 	}
 
 	public void create(ReqBooking rb, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("create order ing rb:{},cu:{}", JsonUtil.toJson(rb), JsonUtil.toJson(cu));
 		Thread thread = new OrderThread(rb, cu);
 		thread.start();
@@ -731,7 +736,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public ResOrderDetail detail(Long id, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResUserOrder order = this.ordersClusterMapper.findDetail(id);
 		if (order.getUserId().intValue() != cu.getId().intValue()) {
 			return null;
@@ -799,7 +804,7 @@ public class OrdersServiceImpl implements OrdersService {
 			map.put("type", type.id);
 			map.put("content", content);
 			map.put("status", status);
-			CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
+			CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(token.getAccessToken(),null) );
 			userSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
 		} else {
 			ReqPush rp = new ReqPush();
@@ -875,7 +880,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public void down(ReqOrderStall ros, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Thread thread = new DownThread(ros, cu);
 		thread.start();
 	}
@@ -1025,18 +1030,25 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public void switchStall(ReqSwitch rs, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Thread thread = new SwitchThread(rs, cu);
 		thread.start();
 	}
 
 	@Override
-	public List<ResCheckedOrder> list(Long start, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+	public List<ResCheckedOrder> list(Long start, String orderFlag ,HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("userId", cu.getId());
 		param.put("start", start);
-		List<ResUserOrder> list = this.ordersClusterMapper.findUserList(param);
+		List<ResUserOrder> list = null;
+		log.info("orderFlag = {}", orderFlag);
+		if(orderFlag!= null && "1".equals(orderFlag)) {
+			list = this.ordersClusterMapper.findUserList(param);
+		}else {
+			list = this.ordersClusterMapper.findFinishedUserList(param);
+		}
+		//List<ResUserOrder> list = this.ordersClusterMapper.findUserList(param);
 		List<ResCheckedOrder> res = new ArrayList<ResCheckedOrder>();
 		ResCheckedOrder ro = null;
 		for (ResUserOrder ruo : list) {
@@ -1049,7 +1061,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public ResOrder current(HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("..........current order user :{}", JsonUtil.toJson(cu));
 		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId()); // 查找最新
 		if (orders == null) {
@@ -1104,14 +1116,16 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			if(orders.getLockDownStatus() != null && orders.getLockDownStatus().intValue() == 1) {
 				ro.setCancelFlag((short)2);
+				ro.setDownFlag((short)1);
 				log.info("..........current order lock down success");
 			} else {
 				//根据车位锁编号判断车锁状态是否为降下
 				Map<String,Object> lockParam = stallClient.watch(orders.getStallId());
 				log.info("..........current order lock down failed response result lock-param = {}", JSON.toJSON(lockParam));
-				if("200".equals(String.valueOf(lockParam.get("code"))) &&
+				if(lockParam != null && !lockParam.isEmpty() && "200".equals(String.valueOf(lockParam.get("code"))) &&
 						Integer.valueOf(lockParam.get("status").toString()) == LockStatus.DOWN.status) {
 					ro.setCancelFlag((short)2);
+					ro.setDownFlag((short)1);
 				}
 			}
 			long beginTime = orders.getBeginTime().getTime();
@@ -1140,6 +1154,7 @@ public class OrdersServiceImpl implements OrdersService {
 			if(orders.getStatus() == OrderStatus.SUSPENDED.value) {
 				//当订单处于挂起状态时，直接结账离场
 				ro.setCancelFlag((short)2);
+				ro.setDownFlag((short)2);
 			}
 			log.info("..........current order {}", JSON.toJSON(ro));
 		}
@@ -1154,7 +1169,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public Integer downResult(HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResUserOrder orders = this.ordersClusterMapper.findUserLatest(cu.getId());
 		Integer count = 0;
 		Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + orders.getId());
@@ -1217,7 +1232,7 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public void brandCreate(ReqBrandBooking rb, HttpServletRequest request) {
 		log.info("brand order :{}", JsonUtil.toJson(rb));
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info(" order user is {}", JsonUtil.toJson(cu));
 		ResBrandPre brand = entBrandPreClient.findById(rb.getBrandId());
 		if (brand == null) {
@@ -1688,7 +1703,7 @@ public class OrdersServiceImpl implements OrdersService {
 
 	@Override
 	public void appoint(ReqStallBooking rsb, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("choose stall request param :{} cu:{}", JsonUtil.toJson(rsb), JsonUtil.toJson(cu));
 		if(cu != null) {
 			// 争抢
@@ -1701,7 +1716,7 @@ public class OrdersServiceImpl implements OrdersService {
 				log.info("用户争抢锁异常信息{}",e.getMessage());
 			}
 			if (!have) {
-				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+				throw new BusinessException(StatusEnum.APPOINT_FAIL_CHECK);
 			}else {
 				Thread thread = new StallOrderThread(rsb, cu);
 				thread.start();
@@ -1780,7 +1795,7 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	@Transactional(rollbackFor = RuntimeException.class)
 	public void cancel(Long orderId, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Orders order = this.ordersClusterMapper.findById(orderId);
 		log.info("...........cancel order :{},cu:{}", JsonUtil.toJson(order), JsonUtil.toJson(cu));
 		//判断订单是否属于当前登录用户
@@ -2207,7 +2222,7 @@ public class OrdersServiceImpl implements OrdersService {
 	@Override
 	public ResOrder downAppoint(ReqStallBooking rsb, HttpServletRequest request) {
 		ResOrder ro = null;
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("down appoint request param :{} cu:{}", JsonUtil.toJson(rsb), JsonUtil.toJson(cu));
 		ResStallEntity stall = this.stallClient.findById(rsb.getStallId());
 		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
@@ -2273,6 +2288,235 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 		}
 		return ro;
+	}
+
+	@Override
+	public boolean controlDown(ReqOrderStall ros, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		if (cu == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
+		log.info("............control down order{}", JSON.toJSON(order));
+		Boolean authStatus = ros.getStallId().intValue() == order.getStallId()
+				&& order.getStatus() == OrderStatus.UNPAID.value
+				&& order.getUserId().longValue() == cu.getId().longValue();
+		if (authStatus) {
+			cn.linkmore.prefecture.request.ReqOrderStall stall = new cn.linkmore.prefecture.request.ReqOrderStall();
+			stall.setOrderId(order.getId());
+			stall.setStallId(order.getStallId());
+			stall.setUserId(cu.getId());
+			
+			/*if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId())) {
+				Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId());
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId(),
+						new Integer(count.toString()) + 1, ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+			} else {
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId(), 1,
+						ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+			}*/
+			
+			Boolean downStatus = this.stallClient.controlDown(stall);
+			
+			/*Boolean switchStatus = false;
+			if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId())) {
+				Object count = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId());
+				log.info("downMsgPush failed times = {}",count.toString());
+				if (Integer.valueOf(count.toString()) > 1) {
+					switchStatus = true;
+				}
+				downStatus = false;
+			}*/
+			
+			log.info("downing msg..................orderId:{} downStatus:{}", order.getId(), downStatus);
+			if(!downStatus) {
+				if(this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key+ros.getOrderId())) {
+					Object object = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key+ros.getOrderId());
+					log.info("down flag reason = {}", StatusEnum.get((int)object));
+					throw new BusinessException(StatusEnum.get((int)object));
+				}else {
+					log.info("....................the server is unconnecting");
+					this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + ros.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_RETRY.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+				}
+			}
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("lockDownStatus", downStatus ? OperateStatus.SUCCESS.status : OperateStatus.FAILURE.status);
+			param.put("lockDownTime", new Date());
+			param.put("id", order.getId());
+			this.orderMasterMapper.updateLockStatus(param);
+			return downStatus;
+			/*if (switchStatus && !downStatus) {
+				Thread thread = new PushThread(order.getUserId().toString(), "预约切换通知", "车位锁降下失败建议切换车位",
+						PushType.ORDER_SWITCH_STATUS_NOTICE, true);
+				thread.start();
+			} else {
+				Thread thread = new PushThread(order.getUserId().toString(), "预约降锁通知", downStatus ? "车位锁降下成功" : "车位锁降下失败",
+						PushType.LOCK_DOWN_NOTICE, downStatus);
+				thread.start();
+			}*/
+		}
+		return false;
+	}
+
+	@Override
+	public String switchOrderStall(Long orderId, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		ResUserOrder order = this.ordersClusterMapper.findDetail(orderId);
+		Boolean flag = false;
+		String stallName = null;
+		if (order.getStatus().intValue() == OrderStatus.UNPAID.value
+				&& cu.getId().intValue() == order.getUserId().intValue()) {
+			Long count = 0L;
+			
+			Integer switchCount = 0;
+			Object o = this.redisService.get(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId() + order.getUserId());
+			if (o != null) {
+				switchCount = new Integer(o.toString());
+			}
+			log.info("switch stall count ={} ", switchCount);
+			
+			if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId() + order.getUserId())) {
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId() + order.getUserId(),
+						new Integer(switchCount.toString()) + 1, ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+			} else {
+				this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + order.getId() + order.getUserId(), 1,
+						ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+			}
+			
+			count = prefectureClient.findByGroupId(order.getStallId(), order.getPreId());
+			
+			log.info("get the group free stall count ={} ", count);
+			
+			if (count.intValue() <= 0 || switchCount > 1) {
+				Map<String, Object> param = new HashMap<String, Object>();
+				Date current = new Date();
+				param.put("id", order.getId());
+				param.put("endTime", current);
+				param.put("updateTime", current);
+				param.put("statusTime", current);
+				param.put("statusHistory", OrderStatusHistory.CLOSED.code);
+				param.put("status", OrderStatus.CLOSED.value);
+				this.orderMasterMapper.updateClose(param);
+				//new CancelStallThread(order.getStallId()).start();
+				stallClient.close(order.getStallId());
+				// 关闭订单发送优惠券功能
+				couponClient.send(cu.getId());
+				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key + orderId.longValue(),
+						SwitchResult.CLOSED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
+				throw new BusinessException(StatusEnum.NO_FREE_STALL_CLOSE);
+				/*Thread thread = new PushThread(order.getUserId().toString(), "订单通知", "无空闲车位,订单已关闭",
+						PushType.ORDER_AUTO_CLOSE_NOTICE, true);
+				thread.start();*/
+			} else {
+				Object sn = null;
+				sn = prefectureClient.nearFreeStallLockSn(order.getStallId(), order.getPreId());
+				log.info("get switch stall sn:{}", sn);
+				if (sn != null) {
+					ResStallEntity stall = this.stallClient.findByLock(sn.toString().trim());
+					log.info("switch stall:{}", JsonUtil.toJson(stall));
+					if (stall.getStatus().intValue() == StallStatus.FREE.status) {
+						//Thread thread = new OfflieStallThread(order.getStallId());
+						//order.setStallId(stall.getId());
+						//order.setStallName(stall.getStallName());
+						redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + order.getPreId(), sn);
+						Map<String, Object> param = new HashMap<String, Object>();
+						param.put("id", order.getId());
+						param.put("stallId", stall.getId());
+						param.put("stallName", stall.getStallName());
+						param.put("switchTime", new Date());
+						param.put("switchStatus", 1);
+						this.orderMasterMapper.updateSwitch(param);
+						this.stallClient.order(stall.getId());
+						//thread.start();
+						stallClient.close(order.getStallId());
+						stallName = stall.getStallName();
+						flag = true;
+						
+					}
+				}
+				/*Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知", flag ? "车位切换成功" : "车位切换失败",
+						PushType.ORDER_SWITCH_RESULT_NOTICE, flag);
+				thread.start();*/
+				this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key + orderId.longValue(),
+						flag ? SwitchResult.SUCCESS.value : SwitchResult.FAILED.value,
+						ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
+				
+				if(!flag) {
+					throw new BusinessException(StatusEnum.SWITCH_STALL_FAILED);
+				}
+			}
+		} else {
+			/*Thread thread = new PushThread(order.getUserId().toString(), "车位切换通知", "车位切换失败",
+					PushType.ORDER_SWITCH_RESULT_NOTICE, false);
+			thread.start();*/
+			this.redisService.set(RedisKey.ORDER_SWITCH_RESULT.key + orderId.longValue(),
+					SwitchResult.FAILED.value, ExpiredTime.ORDER_SWITCH_RESULT_TIME.time);
+			throw new BusinessException(StatusEnum.SWITCH_STALL_FAILED);
+		}
+		
+		if(stallName == null) {
+			throw new BusinessException(StatusEnum.SWITCH_STALL_FAILED);
+		}
+		return stallName;
+	}
+
+	@Override
+	public boolean controlUp(ReqOrderStall ros, HttpServletRequest request) {
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		if (cu == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		ResUserOrder order = this.ordersClusterMapper.findDetail(ros.getOrderId());
+		log.info("............control up order{}", JSON.toJSON(order));
+		Boolean authStatus = ros.getStallId().intValue() == order.getStallId()
+				&& order.getUserId().longValue() == cu.getId().longValue();
+		if (authStatus) {
+			cn.linkmore.prefecture.request.ReqOrderStall stall = new cn.linkmore.prefecture.request.ReqOrderStall();
+			stall.setOrderId(order.getId());
+			stall.setStallId(order.getStallId());
+			stall.setUserId(cu.getId());
+			
+			Boolean upStatus = this.stallClient.controlUp(stall);
+			
+			log.info("uping msg..................orderId:{} upStatus:{}", order.getId(), upStatus);
+			if(!upStatus) {
+				if(this.redisService.exists(RedisKey.ORDER_STALL_UP_FAILED.key+ros.getOrderId())) {
+					Object object = this.redisService.get(RedisKey.ORDER_STALL_UP_FAILED.key+ros.getOrderId());
+					log.info("up flag reason = {}", StatusEnum.get((int)object));
+					throw new BusinessException(StatusEnum.get((int)object));
+				}else {
+					log.info("....................the server is unconnecting");
+					this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key + ros.getOrderId(), StatusEnum.UP_LOCK_FAIL_RETRY_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					throw new BusinessException(StatusEnum.UP_LOCK_FAIL_RETRY_OWNER);
+				}
+			}
+			Date current = new Date();
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", order.getId());
+			param.put("status", OrderStatus.COMPLETED.value);
+			param.put("updateTime", current);
+			param.put("endTime", current);
+			param.put("payTime", current);
+			//param.put("tradeId", payTradeRecord.getId());
+			this.orderMasterMapper.updatePayment(param);
+			// 3.更新优惠券信息
+			if (null != order.getCouponId()) {
+				ReqCouponPay rcp = new ReqCouponPay();
+				rcp.setCouponId(order.getCouponId());
+				rcp.setOrderAmount(order.getTotalAmount());
+				rcp.setUsedAmount(order.getCouponAmount());
+				this.couponClient.pay(rcp);
+			}
+			this.userClient.checkout(order.getUserId());
+			// 结账调用新版推送消息
+			/*Thread thread = new ProduceCheckBookingThread(order);
+			thread.start();
+			thread = new PushThread(order.getUserId().toString(), "订单支付通知", "支付成功", PushType.ORDER_COMPLETE_NOTICE, true);
+			thread.start();*/
+			return upStatus;
+		}
+		return false;
 	}
 	
 }

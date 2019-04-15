@@ -3,6 +3,7 @@ package cn.linkmore.enterprise.dao.master;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 /**
@@ -14,8 +15,6 @@ import cn.linkmore.enterprise.entity.EntRentedRecord;
 @Mapper
 public interface EntRentedRecordMasterMapper {
     int deleteById(Long id);
-
-    int save(EntRentedRecord record);
 
     int saveSelective(EntRentedRecord record);
 
@@ -31,5 +30,7 @@ public interface EntRentedRecordMasterMapper {
 	void updateStatus(Map<String, Object> map);
 	
 	void updateRentUserStatus(Map<String, Object> map);
+
+	void updateType(@Param("id")Long id, @Param("type")Short type);
 	
 }

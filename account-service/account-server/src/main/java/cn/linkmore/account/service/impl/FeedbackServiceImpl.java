@@ -26,6 +26,8 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.TokenUtil;
 /**
@@ -43,7 +45,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 	private FeedbackMasterMapper feedbackMasterMapper;
 	@Resource
 	private RedisService redisService;
-	
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
 		Map<String,Object> param = new HashMap<String,Object>(); 
@@ -88,7 +90,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 	@Override
 	public void save(String content, HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key+key); 
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(key, request.getHeader("os"))); 
 		if(user == null) {
 			throw new RuntimeException(StatusEnum.USER_APP_NO_LOGIN.label);
 		}

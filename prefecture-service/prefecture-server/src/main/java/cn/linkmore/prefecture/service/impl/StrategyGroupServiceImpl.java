@@ -2,17 +2,23 @@ package cn.linkmore.prefecture.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.view.Tree;
 import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
@@ -34,6 +40,7 @@ import cn.linkmore.prefecture.response.ResStrategyGroup;
 import cn.linkmore.prefecture.response.ResStrategyGroupArea;
 import cn.linkmore.prefecture.response.ResStrategyGroupDetail;
 import cn.linkmore.prefecture.service.StrategyGroupService;
+import cn.linkmore.redis.RedisService;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
 @Service
@@ -57,6 +64,11 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	
 	@Autowired
 	private PrefectureClusterMapper prefectureClusterMapper;
+	
+	@Autowired
+	private RedisService redisService;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public int save(ReqStrategyGroup reqStrategyGroup) {
@@ -400,6 +412,137 @@ public class StrategyGroupServiceImpl implements StrategyGroupService {
 	@Override
 	public List<ResStrategyGroup> findList(Map<String, Object> map) {
 		return strategyGroupClusterMapper.findList(map);
+	}
+
+	@Override
+	public Long findFreeStall(Long stallId, Long preId) {
+		StrategyGroupDetail strategyGroupDetail = strategyGroupDetailClusterMapper.findByStallId(stallId);
+		Set<Object> lockSnList = null;
+		Map<Long, Set<Object>> map = new HashMap<Long, Set<Object>>();
+		Set<Object> sns = null;
+		Long freeStall = 0L;
+		if(strategyGroupDetail != null) {
+			lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + preId);
+			//List<StrategyGroupDetail> groupDetailList = strategyGroupDetailClusterMapper.findPreGroupDetailList(preId);
+			List<StrategyGroupDetail> groupDetailList = strategyGroupDetailClusterMapper.findList(strategyGroupDetail.getStrategyGroupId());
+			if (CollectionUtils.isNotEmpty(groupDetailList)) {
+				for (StrategyGroupDetail groupDetail : groupDetailList) {
+					Long preGroupId = groupDetail.getStrategyGroupId();
+					if (lockSnList.contains(groupDetail.getLockSn()) && !this.redisService
+							.exists(RedisKey.PREFECTURE_BUSY_STALL.key + groupDetail.getLockSn())) {
+						sns = map.get(preGroupId);
+						if (sns == null) {
+							sns = new HashSet<>();
+							map.put(preGroupId, sns);
+						}
+						sns.add(groupDetail.getLockSn());
+					}
+				}
+			}
+			log.info("..........find pre detail free map{}", JSON.toJSON(map));
+			
+			if (map.get(strategyGroupDetail.getStrategyGroupId()) != null) {
+				freeStall = Long.valueOf((map.get(strategyGroupDetail.getStrategyGroupId()).size()));
+			}
+		}
+		return freeStall;
+	}
+
+	@Override
+	public String nearFreeStallLockSn(Long stallId, Long preId) {
+		Set<Object> lockSnList = null;
+		Set<Object> sns = new HashSet<>();
+		String chooseLockSn = null;
+		int currentNum = 1;
+		int currentRange = 1;
+		StrategyGroupDetail strategyGroupDetail = strategyGroupDetailClusterMapper.findByStallId(stallId);
+		List<StrategyGroupDetail> groupDetailList = null;
+		Map<Integer,Object> detailMap = new HashMap<Integer, Object>();
+		if(strategyGroupDetail != null) {
+			lockSnList = this.redisService.members(RedisKey.PREFECTURE_FREE_STALL.key + preId);
+			groupDetailList = strategyGroupDetailClusterMapper.findList(strategyGroupDetail.getStrategyGroupId());
+			if (CollectionUtils.isNotEmpty(groupDetailList)) {
+				for (StrategyGroupDetail groupDetail : groupDetailList) {
+					if (lockSnList.contains(groupDetail.getLockSn()) && !this.redisService
+							.exists(RedisKey.PREFECTURE_BUSY_STALL.key + groupDetail.getLockSn())) {
+						sns.add(groupDetail.getLockSn());
+					}
+				}
+			}
+			log.info("..........find pre detail free sns{}", JSON.toJSON(sns));
+			
+			if(CollectionUtils.isNotEmpty(groupDetailList)) {
+				int num = 1;
+				for(StrategyGroupDetail detail: groupDetailList) {
+					if(stallId.equals(detail.getStallId())) {
+						currentNum = num;
+						log.info("current stall location in {}", currentNum);
+					}
+					detailMap.put(num, detail.getLockSn());
+					num++;
+				}
+				log.info("..........find pre detail detailMap{}", JSON.toJSON(detailMap));
+			}
+			
+			if(CollectionUtils.isNotEmpty(groupDetailList) && CollectionUtils.isNotEmpty(sns)) {
+				chooseLockSn = getMoreNear(sns, detailMap, currentNum , currentRange);
+			}
+		}
+		return chooseLockSn;
+	}
+	
+	public String getMoreNear(Set<Object> lockSnList, Map<Integer, Object> map, int currentNum, int currentRange){
+		log.info("currentNum :{}, currentRange:{} map:{}" ,currentNum ,currentRange,JSON.toJSON(map));
+		String chooseLockSn = null;
+		List<Integer> intList = new ArrayList<Integer>();
+		if(currentNum + currentRange <= map.size()) {
+			for(int j = currentNum + 1; j <= currentNum + currentRange; j++) {
+				intList.add(j);
+			}
+			
+			if(currentRange < currentNum) {
+				for(int j = currentNum - currentRange; j < currentNum; j++) {
+					intList.add(j);
+				}
+			}else {
+				for(int j = 1; j < currentNum; j++) {
+					intList.add(j);
+				}
+			}
+			log.info("currentNum < max intList = {}",JSON.toJSON(intList));
+			
+			for(int num: intList) {
+				String lockSn =  (String) map.get(num);
+				if(lockSnList.contains(lockSn)) {
+					//找到空闲车位
+					chooseLockSn = lockSn;
+					log.info("currentNum < max find the choose LockSn = {} ", chooseLockSn);
+					break;
+				}
+			}
+			
+			if(chooseLockSn == null) {
+				chooseLockSn = getMoreNear(lockSnList, map, currentNum, ++currentRange);
+			}
+		}else if(currentNum == map.size()){
+			for(int j = currentNum - 1; j > 0; j--) {
+				intList.add(j);
+			}
+			
+			log.info("currentNum is max = {}",JSON.toJSON(intList));
+			for(Integer num: intList) {
+				String lockSn = (String) map.get(num);
+				if(lockSnList.contains(lockSn)) {
+					//找到空闲车位
+					chooseLockSn = lockSn;
+					log.info("currentNum is max find the choose LockSn = {} ", chooseLockSn);
+					break;
+				}
+			}
+		}
+		
+		log.info("getMoreNear = {}", chooseLockSn);
+		return chooseLockSn;
 	}
 
 }

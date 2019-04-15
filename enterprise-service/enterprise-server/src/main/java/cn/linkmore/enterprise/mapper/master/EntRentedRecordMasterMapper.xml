@@ -1,128 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper">
-  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.EntRentedRecord">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="ent_id" jdbcType="BIGINT" property="entId" />
-    <result column="ent_pre_id" jdbcType="BIGINT" property="entPreId" />
-    <result column="plate_no" jdbcType="BIGINT" property="plateNo" />
-    <result column="down_time" jdbcType="TIMESTAMP" property="downTime" />
-    <result column="leave_time" jdbcType="TIMESTAMP" property="leaveTime" />
-    <result column="stall_id" jdbcType="BIGINT" property="stallId" />
-    <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
-    <result column="pre_id" jdbcType="BIGINT" property="preId" />
-    <result column="user_id" jdbcType="BIGINT" property="userId" />
-    <result column="status" jdbcType="BIGINT" property="status" />
-    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, ent_id, ent_pre_id, plate_no,status,user_id,down_time, leave_time, stall_id, stall_name, pre_id, 
-    pre_name
-  </sql>
+  
   <delete id="deleteById" parameterType="java.lang.Long">
     delete from t_ent_rented_record
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="save" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
-    insert into t_ent_rented_record (id, ent_id, ent_pre_id, 
-      plate_no, down_time, leave_time, user_id,status,
-      stall_id, stall_name, pre_id,
-      pre_name)
-    values (#{id,jdbcType=BIGINT}, #{entId,jdbcType=BIGINT},#{userId,jdbcType=BIGINT},#{status,jdbcType=BIGINT},#{entPreId,jdbcType=BIGINT}, 
-      #{plateNo,jdbcType=BIGINT}, #{downTime,jdbcType=TIMESTAMP}, #{leaveTime,jdbcType=TIMESTAMP},
-      #{stallId,jdbcType=BIGINT}, #{stallName,jdbcType=VARCHAR}, #{preId,jdbcType=BIGINT},
-      #{preName,jdbcType=VARCHAR})
-  </insert>
-  <insert id="saveSelectiveTamp" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
-    insert into t_ent_rented_record
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="entId != null">
-        ent_id,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="entPreId != null">
-        ent_pre_id,
-      </if>
-      <if test="plateNo != null">
-        plate_no,
-      </if>
-      <if test="downTime != null">
-        down_time,
-      </if>
-      <if test="leaveTime != null">
-        leave_time,
-      </if>
-      <if test="stallId != null">
-        stall_id,
-      </if>
-      <if test="stallName != null">
-        stall_name,
-      </if>
-      <if test="preId != null">
-        pre_id,
-      </if>
-      <if test="preName != null">
-        pre_name,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="entId != null">
-        #{entId,jdbcType=BIGINT},
-      </if>
-       <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=BIGINT},
-      </if>
-      <if test="entPreId != null">
-        #{entPreId,jdbcType=BIGINT},
-      </if>
-      <if test="plateNo != null">
-        #{plateNo,jdbcType=BIGINT},
-      </if>
-      <if test="downTime != null">
-        #{downTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="leaveTime != null">
-        #{leaveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="stallId != null">
-        #{stallId,jdbcType=BIGINT},
-      </if>
-      <if test="stallName != null">
-        #{stallName,jdbcType=VARCHAR},
-      </if>
-      <if test="preId != null">
-        #{preId,jdbcType=BIGINT},
-      </if>
-      <if test="preName != null">
-        #{preName,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  
-  
-  
   
   <insert id="saveSelective" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
   	 insert into t_ent_rented_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
 		
-      <if test="entId != null">
-        ent_id,
-      </if>
       <if test="userId != null">
         user_id,
       </if>
@@ -150,14 +38,8 @@
        <if test="plateNo != null">
         plate_no,
       </if>
-      <if test="entPreId != null">
-        ent_pre_id,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="entId != null">
-        #{entId},
-      </if>
        <if test="userId != null">
         #{userId},
       </if>
@@ -185,21 +67,12 @@
        <if test="plateNo != null">
         #{plateNo},
       </if>
-      <if test="entPreId != null">
-        #{entPreId},
-      </if>
     </trim>
   </insert>
   
   <update id="updateByIdSelective" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
     update t_ent_rented_record
     <set>
-      <if test="entId != null">
-        ent_id = #{entId,jdbcType=BIGINT},
-      </if>
-      <if test="entPreId != null">
-        ent_pre_id = #{entPreId,jdbcType=BIGINT},
-      </if>
       <if test="userId != null">
         user_id = #{userId,jdbcType=BIGINT},
       </if>  
@@ -232,8 +105,7 @@
   </update>
   <update id="updateById" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
     update t_ent_rented_record
-     set ent_id = #{entId,jdbcType=BIGINT},
-      ent_pre_id = #{entPreId,jdbcType=BIGINT},
+     set 
       plate_no = #{plateNo,jdbcType=BIGINT},
       down_time = #{downTime,jdbcType=TIMESTAMP},
       leave_time = #{leaveTime,jdbcType=TIMESTAMP},
@@ -259,5 +131,9 @@
   <update id="updateRentUserStatus" parameterType="java.util.Map">
     update t_ent_rented_record set status = 3
     where  stall_id = #{stallId,jdbcType=BIGINT} and status = 0
+  </update>
+  <update id="updateType">
+    update t_ent_rented_record set type = #{type}
+    where  id = #{id}
   </update>
 </mapper>

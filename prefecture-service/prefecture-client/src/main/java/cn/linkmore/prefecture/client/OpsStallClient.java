@@ -95,4 +95,8 @@ public interface OpsStallClient {
 	@RequestMapping(value = "/v2.0/find-stall-list", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResStall> findStallList(@RequestBody Map<String, Object> param);
+
+	@RequestMapping(value = "/v2.0/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public void delete(@RequestBody List<Long> ids);
 }

@@ -2,6 +2,7 @@ package cn.linkmore.ops.shiro;
 
 import java.util.Date;
 import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
@@ -11,6 +12,7 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -19,7 +21,9 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.ops.security.service.MenuService;
 import cn.linkmore.ops.security.service.PageElementService;
 import cn.linkmore.ops.security.service.PersonService;
@@ -54,9 +58,13 @@ public class AuthenticationRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(org.apache.shiro.authc.AuthenticationToken token) {
-		AuthenticationToken authenticationToken = (AuthenticationToken) token;
+		//System.out.println("doGetAuthenticationInfo");
+		//AuthenticationToken authenticationToken = (AuthenticationToken) token;
+		 UsernamePasswordToken authenticationToken=(UsernamePasswordToken) token;
+		 
 		String username = authenticationToken.getUsername();
-		String password = new String(authenticationToken.getPassword()); 
+		String password = new String(authenticationToken.getPassword());
+		//System.out.printf("doGetAuthenticationInfo={%s,%s}\n",username,password);
 		String ip = authenticationToken.getHost();
 		if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
 			ResPerson person = this.personService.findByUsername(username); 
@@ -111,7 +119,12 @@ public class AuthenticationRealm extends AuthorizingRealm {
 				e.printStackTrace();
 			}
 			Subject currentPerson = SecurityUtils.getSubject();
+	
+			if(person.getPreId()==null) {
+				person.setPreId(0L);
+			}
 			currentPerson.getSession().setAttribute("person", person);
+			currentPerson.getSession().setTimeout(8*60*60*1000);
 			log.info("session {}",JSON.toJSON(currentPerson.getSession().getAttribute("person")));
 			this.menuService.cachePersonAuthList(); 
 			

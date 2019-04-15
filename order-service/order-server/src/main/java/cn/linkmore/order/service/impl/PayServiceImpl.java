@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -96,6 +97,8 @@ import cn.linkmore.third.request.ReqWechatMiniOrder;
 import cn.linkmore.third.response.ResAppWechatOrder;
 import cn.linkmore.third.response.ResLoongPay;
 import cn.linkmore.third.response.ResWechatMiniOrder;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 import cn.linkmore.util.XMLUtil;
@@ -109,8 +112,12 @@ import cn.linkmore.util.XMLUtil;
  */
 @Service
 public class PayServiceImpl implements PayService {
+	
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private static ConcurrentHashMap<Long, String> headerOs = new ConcurrentHashMap<>();
 
 	@Autowired
 	private BaseConfig baseConfig;
@@ -193,12 +200,11 @@ public class PayServiceImpl implements PayService {
 	@Resource
 	private OpsEntUserPlateClient userPlateClient; 
 
-	
 	private static final List<String> loongpay = Arrays.asList("USRMSG","ACCDATE","INSTALLNUM","ERRMSG","USRINFO");
 	
 	@Override
 	public ResPayCheckout checkout(Long orderId, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResUserOrder order = this.ordersClusterMapper.findUserLatest(cu.getId());
 		if (!(order.getStatus().intValue() == OrderStatus.UNPAID.value
 				|| order.getStatus().intValue() == OrderStatus.SUSPENDED.value)) {
@@ -348,7 +354,7 @@ public class PayServiceImpl implements PayService {
 	@Override
 	@Transactional(rollbackFor = RuntimeException.class)
 	public ResPayConfirm confirm(ReqPayConfirm roc, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResOrderConfirm confirm = null;
 		ResCoupon coupon = null;
 		if (roc.getCouponId() != null) {
@@ -377,9 +383,8 @@ public class PayServiceImpl implements PayService {
 		log.info(">>>>>>>>>>>>>>>>>>>>>>>>confirm order:{} fee:{}",JSON.toJSON(order), JSON.toJSON(rm));
 		String totalStr = rm.get("totalAmount").toString();
 		*/
-		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Map<String, Object> param = new HashMap<String,Object>();
+		Map<String, Object> param = new HashMap<String,Object>(); 
 		param.put("stallId", order.getStallId());
 		param.put("plateNo", order.getPlateNo());
 		param.put("startTime", sdf.format(order.getCreateTime()));
@@ -520,6 +525,7 @@ public class PayServiceImpl implements PayService {
 			order.setPayType(orderPayType);
 			order.setEndTime(endTime);
 			this.updateConfirm(order);
+			this.putOs(request, order.getUserId());
 			// 支付宝 支付
 			if (roc.getPayType() == TradePayType.ALIPAY.type) {
 				ReqAppAlipay alipay = new ReqAppAlipay();
@@ -871,14 +877,25 @@ public class PayServiceImpl implements PayService {
 	}
 
 	private void send(String uid, String title, String content, PushType type, Boolean status) {
-		Token token = (Token) this.redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
+		String os = headerOs.get(Long.decode(uid));
+		Token token = null;
+		if(os ==  null) {
+			os = "0";
+			token = (Token) this.redisService.get(appUserFactory.createUserIdRedisKey(Long.decode(uid), os));
+			if(token == null) {
+				token = (Token) this.redisService.get(appUserFactory.createUserIdRedisKey(Long.decode(uid), "1"));
+			}
+		}else {
+			token = (Token) this.redisService.get(appUserFactory.createUserIdRedisKey(Long.decode(uid), os));
+		}
+		headerOs.remove(Long.decode(uid));
 		if (token.getClient().intValue() == ClientSource.WXAPP.source) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("title", title);
 			map.put("type", type.id);
 			map.put("content", content);
 			map.put("status", status);
-			CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
+			CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(token.getAccessToken(),null));
 			userSocketClient.push(JsonUtil.toJson(map), cu.getOpenId());
 		} else {
 			ReqPush rp = new ReqPush();
@@ -938,7 +955,7 @@ public class PayServiceImpl implements PayService {
 
 	@Override
 	public ResOrderDetail verify(Long orderId, HttpServletRequest request) {
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		ResUserOrder order = this.ordersClusterMapper.findUserLatest(cu.getId());
 		Boolean flag = false;
 
@@ -1033,6 +1050,12 @@ public class PayServiceImpl implements PayService {
 		return flag;
 	}
 
+	private void putOs(HttpServletRequest request,Long uid) {
+		String os = request.getHeader("os");
+		os = os == null ? "0" : os;
+		headerOs.put(uid, os);
+	}
+	
 	private Boolean wechatMini(String json) {
 		Boolean flag = false;
 		flag = this.wechatMiniClient.verify(json);

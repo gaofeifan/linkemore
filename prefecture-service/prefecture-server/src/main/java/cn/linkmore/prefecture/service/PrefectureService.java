@@ -11,13 +11,18 @@ import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResAppointGroupDetail;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
+import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResStallInfo;
+import cn.linkmore.prefecture.controller.staff.response.ResGateway;
+import cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
+import cn.linkmore.prefecture.response.ResGatewayDetails;
+import cn.linkmore.prefecture.response.ResGatewayGroup;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreList;
@@ -29,6 +34,11 @@ import cn.linkmore.prefecture.response.ResPrefectureDetail;
  * @author jiaohanbin
  * @version 2.0
  *
+ */
+/**
+ * @author   GFF
+ * @Date     2019年2月19日
+ * @Version  v2.0
  */
 public interface PrefectureService {
 
@@ -158,12 +168,78 @@ public interface PrefectureService {
 	ResGroupStrategy findGroupStrategy(Long groupId, HttpServletRequest request);
 
 	Boolean checkPlate(Long plateId, HttpServletRequest request);
+
 	/**
-	 * 预约时查看车区内车位详情
-	 * @param reqBooking
-	 * @param request
-	 * @return
+	 * @Description  绑定网关
+	 * @Author   GFF 
+	 * @Version  v2.0
 	 */
-	ResAppointGroupDetail findAppointGroupDetail(ReqBooking reqBooking, HttpServletRequest request);
+	Boolean bindGroup(Long preId, String serialNumber, HttpServletRequest request);
+
+	/**
+	 * @Description  接触绑定
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean unBindGroup(String groupCode, String serialNumber, HttpServletRequest request);
+
+	/**
+	 * @Description  查询车区网关list
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResGateway> findGatewayGroup(Long preId, HttpServletRequest request);
+
+	/**
+	 * @Description  查询网关(扫一扫)
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	cn.linkmore.prefecture.controller.staff.response.ResGatewayDetails getGatewayDetails(String serialNumber, HttpServletRequest request);
+
+	/**
+	 * @param serialNumber 
+	 * @Description  加载锁
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean loadLock(HttpServletRequest request, String serialNumber);
+
+	/**
+	 * @Description  重启网关
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean restartGateway(HttpServletRequest request, String serialNumber);
+
+	/**
+	 * @Description  解除绑定锁
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean unBindLock(String lockSn, String serialNumber, HttpServletRequest request);
+
+	/**
+	 * @Description  删除锁
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean removeLock(String serialNumber, HttpServletRequest request);
+	
+	
+	/**
+	 * @Description  第三方车区列表
+	 * @Author   c.l 
+	 * @Version  v1.0
+	 */
+	List<ResOpenPres>	openPres(HttpServletRequest request);
+
+	/**
+	 * @Description  确认绑定
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	Boolean confirm(String serialNumber, HttpServletRequest request);
+
 
 }

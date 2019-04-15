@@ -12,6 +12,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPubSub;
+
 /**
  * Service - Redis同步锁
  * @author changlei
@@ -113,6 +116,4 @@ public class RedisLock {
         	}
         }
 	}
-	
-	
 }

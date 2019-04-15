@@ -1,5 +1,8 @@
 package cn.linkmore.prefecture.controller.staff.response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -62,7 +65,8 @@ public class ResStaffStallSn {
 	
 	@ApiModelProperty(value="1 未绑定 2已绑定")
 	private int bindStata = 1;
-	
+	@ApiModelProperty(value="车位锁绑定的网关")
+	private List<ResLockGatewayList> gatewayList = new ArrayList<>();
 	public String getStallSn() {
 		return stallSn;
 	}
@@ -217,4 +221,13 @@ public class ResStaffStallSn {
 	public void setBindStata(int bindStata) {
 		this.bindStata = bindStata;
 	}
+
+	public List<ResLockGatewayList> getGatewayList() {
+		return gatewayList;
+	}
+
+	public void setGatewayList(List<ResLockGatewayList> gatewayList) {
+		this.gatewayList = gatewayList;
+	}
+	
 }

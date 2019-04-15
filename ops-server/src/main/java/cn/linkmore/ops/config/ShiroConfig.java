@@ -1,13 +1,13 @@
 package cn.linkmore.ops.config;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
+
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
+
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.slf4j.Logger;
@@ -18,6 +18,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
+
 import cn.linkmore.ops.shiro.AuthenticationFilter;
 import cn.linkmore.ops.shiro.AuthenticationRealm;
 import cn.linkmore.ops.shiro.FilterChainService;
@@ -54,32 +55,60 @@ public class ShiroConfig {
 	public AuthenticationFilter authenticationFilter(){
 		return new AuthenticationFilter();
 	}
-	 
+	 /*
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager securityManager,@Qualifier("authenticationFilter") AuthenticationFilter authenticationFilter,@Qualifier("filterChainService")FilterChainService filterChainService) throws Exception{
 		ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
 		bean.setSecurityManager(securityManager);
-		bean.setLoginUrl("/admin/auth/login");   
-		bean.setSuccessUrl("/admin/auth/login");
-		bean.setUnauthorizedUrl("/admin/auth/403"); 
-		Map<String, Filter>filters = new HashMap<String,Filter>(); 
-		filters.put("authc", authenticationFilter);
-		filters.put("anon", new AnonymousFilter());
+		bean.setLoginUrl("/admin/auth/login");
+		//bean.setSuccessUrl("https://api.linkmoreparking.cn/admin/auth/login");
+		bean.setUnauthorizedUrl("/admin/auth/403");
+		Map<String, Filter>filters = new HashMap<String,Filter>();
+		//filters.put("authc", authenticationFilter);
+		//filters.put("anon", new AnonymousFilter());
 		bean.setFilters(filters);
-		Map<String, String> chains = new HashMap<String,String>(); 
-		chains.put("/admin/auth/**", "authc");  
-		chains.put("/admin/anon/**", "anon");  
+		Map<String, String> chains = new HashMap<String,String>();
+		chains.put("/admin/auth/login", "anon");
+		
+		chains.put("/admin/auth/**", "authc");
+		chains.put("/admin/anon/**", "anon");
 		chains.put("/admin/frame/**", "authc");
+		
 		Map<String,String> map = filterChainService.getFilterChainMap();
 		Set<String> keys = map.keySet();
 		for(String key:keys) {
 			chains.put(key, map.get(key));
-		} 
-		chains.put("/admin/**", "authc"); 
+		}
+		chains.put("/admin/**", "authc");
 		bean.setFilterChainDefinitionMap(chains);
 		return bean;
 	}
+	*/
+	@Bean(name = "shiroFilter")
+	public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager securityManager,@Qualifier("authenticationFilter") AuthenticationFilter authenticationFilter,@Qualifier("filterChainService")FilterChainService filterChainService) throws Exception{
+		ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
+		
+		Map<String, Filter> filters = bean.getFilters();//获取filters
+		filters.put("authc", new ShiroLoginFilter());//将自定义 的FormAuthenticationFilter注入shiroFilter中
+		
+		bean.setSecurityManager(securityManager);
+		bean.setLoginUrl("/admin/auth/login");
+		bean.setUnauthorizedUrl("/admin/auth/403");
+		/*
+		Map<String, Filter>filters = new HashMap<String,Filter>();
+		filters.put("authc", authenticationFilter);
+		filters.put("anon", new AnonymousFilter());
+		bean.setFilters(filters);
+		*/
+		Map<String, String> chains = new LinkedHashMap<String,String>();
+		chains.put("/admin/auth/login", "anon");
+		chains.put("/admin/anon/**", "anon");
+		chains.put("/admin/**", "authc");
+		
+		bean.setFilterChainDefinitionMap(chains);
+		return bean;
 	
+	}
 	 
 	@Bean(name="securityManager")
 	public DefaultWebSecurityManager securityManager(@Qualifier("authenticationRealm") AuthenticationRealm authenticationRealm,@Qualifier("cacheManager") EhCacheManager cacheManager) {

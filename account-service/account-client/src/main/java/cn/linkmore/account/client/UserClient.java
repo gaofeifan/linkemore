@@ -19,6 +19,7 @@ import cn.linkmore.account.request.ReqUpdateNickname;
 import cn.linkmore.account.request.ReqUpdateSex;
 import cn.linkmore.account.request.ReqUpdateVehicle;
 import cn.linkmore.account.request.ReqUserAppfans;
+import cn.linkmore.account.request.ReqUserResetPW;
 import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserDetails;
@@ -195,5 +196,13 @@ public interface UserClient {
 	@RequestMapping(value = "/by-all", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ResUser> findAll();
+
+	@RequestMapping(value = "/reset", method = RequestMethod.PUT)
+	@ResponseBody
+	public Object reset(@RequestBody ReqUserResetPW reset);
+
+	@RequestMapping(value = "/by-mobile-username", method = RequestMethod.GET)
+	@ResponseBody
+	public Long getUserIdByMobile(@RequestParam("mobile") String mobile,@RequestParam("username")  String username);
 
 }

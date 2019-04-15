@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -43,10 +45,9 @@ import cn.linkmore.common.client.CityClient;
 import cn.linkmore.common.response.ResBaseDict;
 import cn.linkmore.common.response.ResCity;
 import cn.linkmore.enterprise.response.ResEntExcStallStatus;
-import cn.linkmore.enterprise.response.ResEntRentUser;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
 import cn.linkmore.enterprise.response.ResEntStaff;
-import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.enterprise.response.ResFixedPlate;
 import cn.linkmore.notice.client.EntSocketClient;
 import cn.linkmore.notice.client.UserSocketClient;
 import cn.linkmore.order.client.EntOrderClient;
@@ -59,6 +60,7 @@ import cn.linkmore.prefecture.client.EntRentedRecordClient;
 import cn.linkmore.prefecture.client.EntStaffClient;
 import cn.linkmore.prefecture.client.FeignEnterpriseClient;
 import cn.linkmore.prefecture.client.FeignStallExcStatusClient;
+import cn.linkmore.prefecture.client.FixedPlateClient;
 import cn.linkmore.prefecture.client.OpsRentUserClient;
 import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.controller.staff.request.ReqAssignStall;
@@ -72,6 +74,7 @@ import cn.linkmore.prefecture.controller.staff.response.ResStaffPreList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
+import cn.linkmore.prefecture.core.lock.LockFactory;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthCityClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
@@ -100,6 +103,7 @@ import cn.linkmore.prefecture.response.ResAdminAuthPre;
 import cn.linkmore.prefecture.response.ResAdminAuthStall;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.prefecture.response.ResAdminUserAuth;
+import cn.linkmore.prefecture.response.ResLockGatewayList;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockMessage;
 import cn.linkmore.prefecture.response.ResPre;
@@ -122,6 +126,9 @@ import cn.linkmore.task.TaskPool;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SendClient;
 import cn.linkmore.third.request.ReqPush;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.StaffUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.JsonUtil;
@@ -139,7 +146,6 @@ import cn.linkmore.util.TokenUtil;
 public class StallServiceImpl implements StallService {
 	@Autowired
 	private AdminAuthStallMasterMapper AdminAuthStallMasterMapper;
-	
 	@Autowired
 	private AdminAuthPreMasterMapper adminAuthPreMasterMapper;
 	@Autowired
@@ -205,11 +211,17 @@ public class StallServiceImpl implements StallService {
 	@Autowired
 	private BaseDictClient baseDictClient;
 	@Autowired
+	private FixedPlateClient fixedPlateClient;
+	
+	private ConcurrentHashMap<Long, String> osMap = new ConcurrentHashMap<>();
+	@Autowired
 	private StallOperateLogService stallOperateLogService;
 	private static final String DOWN_CAUSE = "cause_down";
 	private static final String BATTERY = "battery-change";
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
+	private UserFactory staffUserFactory = StaffUserFactory.getInstance();
+	private LockFactory lockFactory = LockFactory.getInstance();
 	@Override
 	public void order(Long id) {
 		Stall stall = new Stall();
@@ -396,6 +408,7 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
+	@Transactional()
 	public void install(ReqLockIntall reqLockIntall,HttpServletRequest request) {
 		CacheUser cu = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
@@ -404,7 +417,6 @@ public class StallServiceImpl implements StallService {
 		Date now = new Date();
 	    StallLock stallLock = new StallLock();
 	    Stall stall = new Stall();
-
 	    stallLock =	stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
 	    stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
 //		Stall stallName = stallClusterMapper.findByLockName(reqLockIntall.getStallName());
@@ -534,11 +546,9 @@ public class StallServiceImpl implements StallService {
 				stallLock.setBindTime(new Date());
 				stallLockMasterMapper.save(stallLock);
 				stallLockMasterMapper.updateBind(stallLock);
-				
 				stallName.setLockSn(reqLockIntall.getLockSn());
 				stallName.setLockId(stallLock.getId());
 				this.stallMasterMapper.update(stallName);
-				
 			}
 		//	安装数else {
 	    //验证
@@ -551,14 +561,13 @@ public class StallServiceImpl implements StallService {
 	}else {
 		 stallLock = new StallLock();
 	     stall = new Stall();
-		
 		// 插入锁
 		stallLock.setCreateTime(now);
 		stallLock.setSn(reqLockIntall.getLockSn());
 		stallLock.setCreateUserName(adminUser.getRealname());
 		stallLock.setCreateUserId(adminUser.getId());
 		stallLockMasterMapper.save(stallLock);
-		stallLock = stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
+//		stallLock = stallLockClusterMapper.findBySn(reqLockIntall.getLockSn());
 
 		// 插入新车位并绑定
 		stall.setStallName(reqLockIntall.getStallName());
@@ -580,13 +589,13 @@ public class StallServiceImpl implements StallService {
 		
 		// 插入车位
 		this.stallMasterMapper.save(stall);
-		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
-		ResLockInfo info = this.lockTools.lockInfo(reqLockIntall.getLockSn());
-		if(info != null) {
-			stallLock.setBattery(info.getElectricity());
-			stallLock.setModel(info.getModel());
-			stallLock.setVersion(info.getVersion());
-		}
+//		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
+//		ResLockInfo info = this.lockTools.lockInfo(reqLockIntall.getLockSn());
+//		if(info != null) {
+//			stallLock.setBattery(info.getElectricity());
+//			stallLock.setModel(info.getModel());
+//			stallLock.setVersion(info.getVersion());
+//		}
 		//更新锁
 		stallLock.setBindTime(now);
 		stallLock.setStallId(stall.getId());
@@ -619,15 +628,6 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public int update(ReqStall reqStall) {
-		Date now = new Date();
-		reqStall.setUpdateTime(now);
-		Stall stall = new Stall();
-		stall = ObjectUtils.copyObject(reqStall, stall);
-		return stallMasterMapper.update(stall);
-	}
-
-	@Override
 	public int check(ReqCheck reqCheck) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("stallName", reqCheck.getProperty());
@@ -654,7 +654,6 @@ public class StallServiceImpl implements StallService {
 		StallLock stallLock = new StallLock();
 		stallLock = ObjectUtils.copyObject(lock, stallLock);
 		stallLockMasterMapper.updateBind(stallLock);
-
 		Stall sta = new Stall();
 		sta = ObjectUtils.copyObject(stall, sta);
 		log.info("{}:{}>>{},返回结果{}", "绑定车位锁", "车位(" + stall.getStallName() + "),车位锁(" + sn + ")", "绑定成功", 200);
@@ -830,6 +829,7 @@ public class StallServiceImpl implements StallService {
 					int code = res.getCode();
 					stopwatch.stop();
 					log.info("<<<<<<<<<using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+					osMap.put(Long.decode(uid), reqc.getOs());
 					sendMsg(uid, reqc.getStatus(), code);
 					String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqc.getStallId();
 					EntRentRecord record = entRentedRecordClusterMapper.findByUser(Long.valueOf(uid));
@@ -1012,7 +1012,7 @@ public class StallServiceImpl implements StallService {
 		String content = "车位锁" + (lockstatus == 1 ? "降下" : "升起") + (code == 200 ? "成功 " : "失败");
 		PushType type = PushType.LOCK_CONTROL_NOTICE;
 		String bool = (code == 200 ? "true" : "false");
-		Token token = (Token) redisService.get(RedisKey.USER_APP_AUTH_TOKEN.key + uid.toString());
+		Token token = (Token) redisService.get(appUserFactory.createUserIdRedisKey(Long.decode(uid), osMap.get(uid)));
 		log.info("send>>>" + JsonUtil.toJson(token));
 		if (token != null) {
 			if (token.getClient().intValue() == ClientSource.WXAPP.source) {
@@ -1022,7 +1022,7 @@ public class StallServiceImpl implements StallService {
 				map.put("type", type);
 				map.put("content", content);
 				map.put("code", bool);
-				CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + token.getAccessToken());
+				CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(token.getAccessToken(),null) );
 				//userSocketClient.push(content, cu.getOpenId());
 				log.info("openid>>>" + cu.getOpenId());
 				System.out.println(JsonUtil.toJson(map));
@@ -1523,7 +1523,6 @@ public class StallServiceImpl implements StallService {
 				PushType type = PushType.LOCK_CONTROL_NOTICE;
 				String bool = (code == 200 ? "true" : "false");
 				Token token = (Token) redisService.get(RedisKey.STAFF_STAFF_AUTH_TOKEN.key + uid.toString());
-
 				log.info("sendMsgT   send>>>" + uid+"--content");
 				ReqPush rp = new ReqPush();
 				rp.setAlias(uid);
@@ -1617,7 +1616,7 @@ public class StallServiceImpl implements StallService {
 					detail.setPlate(resUserOrder.getPlateNo());
 				}
 				}
-				if(stall.getType() == 2) {
+				if(stall.getType() == 2) {/*
 					Map<String,Object> map = new HashMap<String, Object>();
 					map.put("validTime", 1);
 					List<ResEntRentUser> rentUsers = opsRentUserClient.findAll(map);
@@ -1653,6 +1652,22 @@ public class StallServiceImpl implements StallService {
 							detail.setDownTime(record.getDownTime());
 						}
 					}
+				*/
+				ResFixedPlate fixedPlate = fixedPlateClient.findPlateNosByStallId(stall.getId());
+				log.info("...........manage........stallName = {} , plateNos = {}", stall.getStallName(), JSON.toJSON(fixedPlate));
+				if(fixedPlate != null) {
+					detail.setPlate(fixedPlate.getPlates());
+					if(StringUtils.isNotEmpty(fixedPlate.getMobile())) {
+						detail.setMobile(fixedPlate.getMobile());
+					}
+				}
+				if (stall.getStatus() == 2) {
+					ResEntRentedRecord record = this.entRentedRecordClient.findLastPlateNumber(stall.getId());
+					if (record != null && record.getDownTime() != null) {
+						detail.setDownTime(record.getDownTime());
+					}
+				}
+				
 				}
 			}
 			// 指定车位锁
@@ -1812,7 +1827,7 @@ public class StallServiceImpl implements StallService {
 	}
 
 	@Override
-	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn) {
+	public ResStaffStallSn findStaffStallSn(HttpServletRequest request, String sn, Long preId) {
 		ResStaffStallSn stallSn = new ResStaffStallSn();
 		if(sn.contains("0000")) {
 			sn = sn.substring(4).toUpperCase();
@@ -1846,6 +1861,21 @@ public class StallServiceImpl implements StallService {
 			stallSn.setModel(lock.getModel());
 			stallSn.setVersion(lock.getVersion());
 			Stall stall = this.stallClusterMapper.findByLockSn(sn);
+			ResPrefectureDetail detail = null;
+			if(preId != null) {
+				detail = this.prefectureService.findById(preId);
+				List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(stallSn.getStallSn(),detail.getGateway());
+				cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList rgl = null;
+				if(gatewayList != null) {
+					for (ResLockGatewayList resLockGatewayList : gatewayList) {
+						if(resLockGatewayList.getBindFlag().equals("1")) {
+							rgl = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getGatewaySerialNumber());
+							rgl.setBindFlag(resLockGatewayList.getBindFlag());
+							stallSn.getGatewayList().add(rgl);
+						}
+					}
+				}
+			}
 			StallLock stallLock = this.stallLockClusterMapper.findBySn(sn);
 			if(stallLock != null && stallLock.getStallId() != null){
 				stallSn.setInstallStatus((short)1);
@@ -1853,11 +1883,14 @@ public class StallServiceImpl implements StallService {
 			if(stall != null && stallLock.getStallId() != null) {
 				stallSn.setStallId(stall.getId());
 				stallSn.setStallStatus(stall.getStatus().shortValue());
-				ResPrefectureDetail detail = this.prefectureService.findById(stall.getPreId());
+				if(detail == null) {
+					detail = this.prefectureService.findById(stall.getPreId());
+				}
 				ResCity resCity = this.cityClient.getById(detail.getCityId());
 				if(resCity != null) {
 					stallSn.setCityName(resCity.getCityName());
 				}
+				detail = this.prefectureService.findById(stall.getPreId());
 				stallSn.setPreName(detail.getName());
 				stallSn.setPreId(detail.getId());
 				stallSn.setCityId(detail.getCityId());
@@ -1930,7 +1963,7 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean control(Long stallId, HttpServletRequest request) {
 		boolean flag = false;
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -1950,7 +1983,7 @@ public class StallServiceImpl implements StallService {
 					log.info("用户争抢锁异常信息{}",e.getMessage());
 				}
 				if (!have) {
-					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+					throw new BusinessException(StatusEnum.APPOINT_FAIL_CHECK);
 				}
 				// 放入缓存
 				String rediskey = RedisKey.ACTION_STALL_DOING.key + stallId;
@@ -2001,7 +2034,7 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean controlLock(Long stallId, HttpServletRequest request) {
 		boolean flag = false;
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -2038,7 +2071,7 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public boolean verify(Long stallId, HttpServletRequest request) {
 		boolean flag = false;
-		CacheUser user = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + TokenUtil.getKey(request));
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if (user == null) {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
@@ -2087,9 +2120,14 @@ public class StallServiceImpl implements StallService {
 		} else if (reqc.getStatus() == 2) {
 			res = lockTools.upLockMes(stall.getLockSn());
 		}
-		log.info("降锁返回结果"+JsonUtil.toJson(res));
+		log.info("操作{}返回结果{}",reqc.getStatus() == 1 ? "降锁" : "升锁" , JsonUtil.toJson(res));
 		int code = res.getCode();
-		EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
+		//EntRentRecord record = entRentedRecordClusterMapper.findByUser(reqc.getUserId());
+		Map<String,Long> param = new HashMap<String,Long>();
+		param.put("userId", reqc.getUserId());
+		param.put("stallId", reqc.getStallId());		
+		EntRentRecord record = entRentedRecordClusterMapper.findByUserIdAndStallId(param);
+
 		boolean falg = false;
 		if (code == 200) {
 			if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
@@ -2110,6 +2148,12 @@ public class StallServiceImpl implements StallService {
 					up.setId(record.getId());
 					entRentedRecordMasterMapper.updateByIdSelective(up);
 				}
+				
+				//若为多对一标识，若当前车位有他人使用记录，升锁则结束他人记录
+				//若为多对一标识，若当前车位没有他人使用记录，升锁则结束自己记录
+				//若为一对多标识，升锁则结束当前自己的记录
+				
+				
 			} else {
 				log.info("<<<<<<<<<down success>>>>>>>>>");
 			}
@@ -2158,5 +2202,129 @@ public class StallServiceImpl implements StallService {
 		}
 		return falg;
 	}
+
+	@Override
+	public List<cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList> findLockGateways(
+			HttpServletRequest request, String lockSn, Long preId) {
+		ResPrefectureDetail detail = this.prefectureService.findById(preId);
+		List<ResLockGatewayList> gatewayList = lockFactory.getLock().getLockGatewayList(lockSn,detail.getGateway());
+		List<cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList> list =new ArrayList<>();
+		cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList gateway = null;
+		for (ResLockGatewayList resLockGatewayList : gatewayList) {
+			gateway = new cn.linkmore.prefecture.controller.staff.response.ResLockGatewayList(resLockGatewayList.getGatewaySerialNumber());
+			gateway.setBindFlag(resLockGatewayList.getBindFlag());
+			list.add(gateway);
+		}
+		return list;
+	}
 	
+	public Boolean controlDown(ReqOrderStall reqOrderStall) {
+		Boolean flag = false;
+		Stall stall = stallClusterMapper.findById(reqOrderStall.getStallId());
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("<<<<<<<<<stall control down>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			ResLockMessage res = null;
+			// 1 降下
+			Stopwatch stopwatch = Stopwatch.createStarted();
+			res = lockTools.downLockMes(stall.getLockSn());
+			if (res != null) {
+				log.info("<<<<<<<<<stall control down respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+				int code = res.getCode();
+				stopwatch.stop();
+				log.info("<<<<<<<<<stall control down using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+				if (code == 200) {
+					flag = true;
+					log.info("downing.....................success");
+					stall.setLockStatus(LockStatus.DOWN.status);
+					stallMasterMapper.lockdown(stall);
+					this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqOrderStall.getOrderId());
+					// 去掉空闲车位
+					this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+				} else if (code == 500) {
+					if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqOrderStall.getOrderId())) {
+						//throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+						this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					} else {
+						//throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+						this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqOrderStall.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_RETRY.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					}
+				} else{
+					//throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);					
+					this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+				}
+			}
+		}else {
+			//throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHECK);
+			this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+		}
+		log.info("<<<<<<<<<stall control down flag>>>>>>>>> = {}", flag);
+		return flag;
+	}
+
+	@Override
+	public Boolean editLockBindGateway(HttpServletRequest request, String serialNumbers, String lockSn) {
+		Boolean gateway = this.lockFactory.getLock().batchBindGateway(lockSn, serialNumbers);
+		return gateway;
+	}
+
+	@Override
+	public void delete(List<Long> ids) {
+		this.stallMasterMapper.deleteIds(ids);
+	}
+	
+	public int update(Stall stall) {
+		stall.setUpdateTime(new Date());
+		return stallMasterMapper.update(stall);
+	}
+
+	@Override
+	public boolean upLock(Long stallId, HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Boolean controlUp(ReqOrderStall reqOrderStall) {
+		Boolean flag = false;
+		Stall stall = stallClusterMapper.findById(reqOrderStall.getStallId());
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("<<<<<<<<<stall control up>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			ResLockMessage res = null;
+			// 1 降下
+			Stopwatch stopwatch = Stopwatch.createStarted();
+			res = lockTools.upLockMes(stall.getLockSn());
+			if (res != null) {
+				log.info("<<<<<<<<<stall control up respose>>>>>>>>>" + res.getMessage() + "<<<code>>>" + res.getCode());
+				int code = res.getCode();
+				stopwatch.stop();
+				log.info("<<<<<<<<<stall control up using time>>>>>>>>>" + String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)));
+				if (code == 200) {
+					flag = true;
+					log.info("uping.....................success");
+					stall.setStatus(StallStatus.FREE.status);
+					stall.setLockStatus(LockStatus.UP.status);
+					stall.setBindOrderStatus((short) BindOrderStatus.FREE.status);
+					stallMasterMapper.lockdown(stall);
+					this.redisService.remove(RedisKey.ORDER_STALL_UP_FAILED.key + reqOrderStall.getOrderId());
+					this.redisService.remove(RedisKey.PREFECTURE_BUSY_STALL.key + stall.getLockSn());
+					this.redisService.add(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+				} else if (code == 500) {
+					if (this.redisService.exists(RedisKey.ORDER_STALL_UP_FAILED.key + reqOrderStall.getOrderId())) {
+						//升锁第二次失败，故障上报
+						this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					} else {
+						//升锁第一次失败，再升一次
+						this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key + reqOrderStall.getOrderId(), StatusEnum.UP_LOCK_FAIL_RETRY_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					}
+				} else{
+					//网关问题，升锁失败，故障上报
+					this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+				}
+			}
+		}else {
+			this.redisService.set(RedisKey.ORDER_STALL_UP_FAILED.key+reqOrderStall.getOrderId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+		}
+		log.info("<<<<<<<<<stall control up flag>>>>>>>>> = {}", flag);
+		return flag;
+	}
 }

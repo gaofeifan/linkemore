@@ -6,6 +6,7 @@ import cn.linkmore.account.response.ResPageUser;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.ops.request.ReqUserResetPW;
 
 /**
  * 用户信息接口
@@ -36,5 +37,12 @@ public interface UserService {
 	 * @param ids
 	 */
 	int delete(List<Long> ids);
+
+	/**
+	 * @Description  重置密码
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	void reset(ReqUserResetPW reset);
 
 }

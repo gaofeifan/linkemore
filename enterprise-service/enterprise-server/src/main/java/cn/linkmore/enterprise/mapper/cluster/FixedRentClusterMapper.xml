@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.enterprise.dao.cluster.FixedRentClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.enterprise.entity.FixedRent">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="ent_id" jdbcType="BIGINT" property="entId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="pre_name" jdbcType="VARCHAR" property="preName" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  
+  <resultMap id="ResultMap" type="cn.linkmore.enterprise.response.ResFixedRentStall">
+     <result column="fixed_id" jdbcType="BIGINT" property="fixedId" />
+     <result column="stall_id" jdbcType="BIGINT" property="stallId" />
+     <result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+     <result column="plate_nos" jdbcType="VARCHAR" property="plateNos" />
+	 <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+	 <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+	 <result column="lock_sn" jdbcType="VARCHAR" property="lockSN" />
+     <result column="lock_state" jdbcType="BIGINT" property="lockState" />
+     <result column="stall_state" jdbcType="BIGINT" property="stallState" />
+     <result column="fixed_state" jdbcType="BIGINT" property="fixedState" />
+  </resultMap>
+
+  <resultMap id="ResultStallMap" type="cn.linkmore.enterprise.response.ResStall">
+ 	<id column="id" jdbcType="BIGINT" property="id" />
+  	<result column="stall_name" jdbcType="VARCHAR" property="stallName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, start_time, end_time, mobile, ent_id, pre_id, pre_name, create_user_id, create_time, 
+    update_user_id, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+	    fr.id, fr.start_time, fr.end_time, fr.mobile, fr.ent_id, fr.pre_id, fr.pre_name, fr.create_user_id, fr.create_time, 
+	    fr.update_user_id, fr.update_time,spc.username as create_user_name,spu.username as update_user_name
+    from t_fixed_rent fr
+    left join t_sec_person spc on fr.create_user_id=spc.id
+    left join t_sec_person spu on fr.update_user_id=spu.id
+    where fr.id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="findPage" parameterType="java.util.HashMap" resultMap="ResultMap">
+	
+	SELECT tr.id as fixed_id,vs.id as stall_id,vs.stall_name,
+	(SELECT GROUP_CONCAT(CONCAT('',plate_no,'')) FROM  t_fixed_plate where fixed_id=tr.id ) as plate_nos,
+	tr.start_time,tr.end_time,vs.lock_sn,vs.status as stall_state,ifnull(tr.status,0) as fixed_state
+	FROM v_stall vs
+	left join ( select  ts.stall_id,ts.status,tr.id,tr.start_time,tr.end_time,tr.ent_id from t_fixed_stall ts 
+	  			inner join t_fixed_rent tr on tr.id=ts.fixed_id and tr.end_time &gt;= now()
+			  ) as tr on  vs.id=tr.stall_id
+	where vs.status in (1,2)
+
+    <if test="preId != null">
+   		AND vs.pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+    <if test="stallId != null">
+   		AND vs.id =  #{stallId,jdbcType=BIGINT}
+    </if>
+    <if test="stallName != null">
+   		AND vs.stall_name =  #{stallName,jdbcType=VARCHAR}
+    </if>
+	<if test="entId != null">
+   		AND tr.ent_id =  #{entId,jdbcType=BIGINT}
+    </if>
+	<if test="plateNo != null">
+    	AND tr.id in (select fixed_id from t_fixed_plate where plate_no like #{plateNo,jdbcType=VARCHAR} )
+    </if>
+    <if test="startTime != null">
+   		AND tr.end_time &gt;=  #{startTime}
+    </if>
+    <if test="endTime != null">
+   		AND tr.end_time &lt;=  #{endTime}
+    </if>
+
+	<if test="property==null">
+    order by vs.stall_name asc
+    </if>
+    <if test="property!=null">
+    order by  ${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	SELECT count(1) FROM v_stall vs
+	left join ( select  ts.stall_id,ts.status,tr.id,tr.start_time,tr.end_time,tr.ent_id from t_fixed_stall ts 
+	  			inner join t_fixed_rent tr on tr.id=ts.fixed_id and tr.end_time &gt;= now()
+			  ) as tr on  vs.id=tr.stall_id
+	where vs.status in (1,2)
+	
+    <if test="preId != null">
+   		AND vs.pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+    <if test="stallId != null">
+   		AND vs.id =  #{stallId,jdbcType=BIGINT}
+    </if>
+    <if test="stallName != null">
+   		AND vs.stall_name =  #{stallName,jdbcType=VARCHAR}
+    </if>
+	<if test="entId != null">
+   		AND tr.ent_id =  #{entId,jdbcType=BIGINT}
+    </if>
+	<if test="plateNo != null">
+    	AND tr.id in (select fixed_id from t_fixed_plate where plate_no like #{plateNo,jdbcType=VARCHAR} )
+    </if>
+    <if test="startTime != null">
+   		AND tr.end_time &gt;=  #{startTime}
+    </if>
+    <if test="endTime != null">
+   		AND tr.end_time &lt;=  #{endTime}
+    </if>
+	
+  </select>
+  
+  <select id="stallList" parameterType="java.util.HashMap" resultMap="ResultStallMap">
+  	SELECT id,stall_name FROM v_stall
+  	where 1=1 and status in (1,2)
+  	<if test="preId != null">
+   	AND pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+    <if test="status != null">
+   	AND status = #{status,jdbcType=BIGINT}
+    </if>
+  	
+  	ORDER BY stall_name ASC
+  </select>
+
+  <select id="freeStallList" parameterType="java.util.HashMap" resultMap="ResultStallMap">
+  	SELECT vs.id,vs.stall_name FROM v_stall vs 
+	LEFT JOIN t_fixed_stall fs on vs.id=fs.stall_id
+	LEFT JOIN t_fixed_rent fr on fs.fixed_id=fr.id  and fr.end_time &gt;= now()
+	<if test="preId != null">
+   	AND fr.pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+	WHERE fs.id is null and vs.type=2 and vs.status in (1,2)
+	<if test="preId != null">
+   	AND vs.pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+    ORDER BY vs.stall_name ASC
+  </select>
+  
+  
+</mapper>

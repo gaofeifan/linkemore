@@ -90,10 +90,11 @@ public interface OrdersService {
 	/**
 	 * 订单列表
 	 * @param start 
+	 * @param orderFlag 
 	 * @param request
 	 * @return
 	 */
-	List<ResCheckedOrder> list(Long start, HttpServletRequest request);
+	List<ResCheckedOrder> list(Long start, String orderFlag, HttpServletRequest request);
 
 	/**
 	 * 当前订单
@@ -268,5 +269,26 @@ public interface OrdersService {
 	void cancel(Long orderId, HttpServletRequest request);
 
 	ResOrder downAppoint(ReqStallBooking rsb, HttpServletRequest request);
+	/**
+	 * 控制降锁
+	 * @param ros
+	 * @param request
+	 * @return
+	 */
+	boolean controlDown(ReqOrderStall ros, HttpServletRequest request);
+	/**
+	 * 切换车位
+	 * @param orderId
+	 * @param request
+	 * @return
+	 */
+	String switchOrderStall(Long orderId, HttpServletRequest request);
+	/**
+	 * 控制升锁
+	 * @param ros
+	 * @param request
+	 * @return
+	 */
+	boolean controlUp(ReqOrderStall ros, HttpServletRequest request);
 		
 }

@@ -16,6 +16,7 @@
     <result column="ent_id" jdbcType="BIGINT" property="entId" />
     <result column="ent_name" jdbcType="VARCHAR" property="entName" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, username, password, lock_status, lock_time, login_ip, lock_count, login_time, 
@@ -30,7 +31,7 @@
   
   <select id="findByUsername" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select id,type, username,realname, password, lock_status, lock_time, login_ip, lock_count, login_time, create_time,
-    status,ent_id ,ent_name
+    status,ent_id ,ent_name, pre_id
     from t_sec_person
     where username = #{username,jdbcType=VARCHAR} limit 0,1
   </select>

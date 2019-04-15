@@ -81,4 +81,11 @@ public interface UserClusterMapper {
 	 */
 	List<ResUser> findAll();
 
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResUser> findByIds(List<Long> ids);
+
 }

@@ -1,9 +1,7 @@
 package cn.linkmore.prefecture.controller.app;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +12,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
-import cn.linkmore.prefecture.controller.app.response.ResAppointGroupDetail;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
+import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.controller.app.response.ResPrefectureList;
@@ -174,25 +171,7 @@ public class AppPrefectureController {
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
 		}
 		return response;
-	} 
-	
-	
-	@ApiOperation(value = "车区预约分组详情信息", notes = "根据车区分组ID查看分组计费策略详情", consumes = "application/json")
-	@RequestMapping(value = "/v2.0/appoint_group_detail", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<ResAppointGroupDetail> findAppointGroupDetail(@Validated @RequestBody ReqBooking reqBooking, HttpServletRequest request) {
-		ResponseEntity<ResAppointGroupDetail> response = null;
-		try { 
-			ResAppointGroupDetail groupDetail = this.prefectureService.findAppointGroupDetail(reqBooking, request);
-			response = ResponseEntity.success(groupDetail, request);
-		} catch (BusinessException e) {
-			response = ResponseEntity.fail( e.getStatusEnum(),  request);
-		} catch (Exception e) { 
-			log.info(">>>>>>>>>>>>appoint_group_detail exception={} ,stack:{}",e.getMessage(),e.getStackTrace());
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
-	} 
+	}
 	
 	@ApiOperation(value = "增加数据埋点", notes = "蓝牙降锁增加数据埋点", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/bluetooth", method = RequestMethod.GET)
@@ -225,5 +204,23 @@ public class AppPrefectureController {
 		}
 		return response;
 	} 
+	
+	
+	@ApiOperation(value = "第三方车区列表", notes = "根据用户获取第三方车区列表", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/open-list", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResOpenPres>> openPres( HttpServletRequest request) {
+		ResponseEntity<List<ResOpenPres>> response = null;
+		try { 
+			List<ResOpenPres> list = this.prefectureService.openPres(request);
+			response = ResponseEntity.success(list, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
+	
 	
 }

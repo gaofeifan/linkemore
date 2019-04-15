@@ -17,11 +17,13 @@ import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.user.factory.AppUserFactory;
+import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.JsonUtil;
 import cn.linkmore.util.TokenUtil;
 
 public class TokenFilter extends ZuulFilter {
-
+	private UserFactory appUserFactory = AppUserFactory.getInstance();
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	private static final String API_APP_PATH = "/app/";
 	private static final String API_ENT_PATH = "/ent/";
@@ -49,13 +51,23 @@ public class TokenFilter extends ZuulFilter {
 			add("/app/exception-logs/v2.0/upload");
 			add("/app/auth/v2.0/wechat");
 			add("/app/auth/v2.0/send");
+			add("/app/auth/v2.0/send-pw");
+			add("/app/auth/v2.0/auth-is-new");
+			add("/app/auth/v2.0/login-pw");
+			add("/app/auth/v2.0/register");
+			add("/app/auth/v2.0/auth-code");
+			add("/app/auth/v2.0/edit-pw");
 
 			add("/enterprise/ent/version/current");
 			add("/enterprise/ent/auth/login");
 			add("/enterprise/ent/auth/send");
 			add("/feign/stall/exc/stall-exc-cause");
 			
+			add("/open/auth/token");
+			add("/open/auth/t");
+			
 			add("/app/prefectures/v2.0/map/near-list");
+			add("/app/prefectures/open-list");
 			add("/app/prefectures/v2.0/map/list");
 			add("/app/prefectures/v2.0/free/list");
 			add("/app/prefectures/v2.0/strategy");
@@ -90,6 +102,9 @@ public class TokenFilter extends ZuulFilter {
 			add("/staff/auth/login");  
 			add("/staff/vehicle-brands");  
 			add("/staff/auth/check-mobile");  
+			
+			add("/open/auth/token");
+			add("/open/auth/t");
 			
 			add("/h5/");
 			add("/h5/a");
@@ -139,7 +154,7 @@ public class TokenFilter extends ZuulFilter {
 		String key = TokenUtil.getKey(request);
 		log.info("ip:{},token:{}", ip, key);
 		log.info(uri);
-		CacheUser cu = (CacheUser) this.redisService.get(RedisKey.USER_APP_AUTH_USER.key + key);
+		CacheUser cu = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		log.info("json:{}", JsonUtil.toJson(cu));
 		if (url.contains(SWAGGER_PATH) || (openResources.contains(uri) || cu != null)) {
 			ctx.setSendZuulResponse(true);
