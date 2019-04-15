@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.staff.request.ReqLoginPw;
 import cn.linkmore.account.controller.staff.response.ResAdmin;
 import cn.linkmore.account.entity.StaffAppfans;
 import cn.linkmore.account.request.ReqMessage;
@@ -271,4 +272,13 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		this.staffAppfansService.insertSelective(staffAppfans);
 		return session.getOpenid();
 	}
+
+	@Override
+	public ResAdmin login(ReqLoginPw pw, HttpServletRequest request) {
+		
+//		this.staffAdminUserClient.findMobile(mobile)
+		return null;
+	}
+	
+	
 }
