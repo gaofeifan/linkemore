@@ -1,5 +1,6 @@
 package cn.linkmore.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,18 +12,21 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class OpenTokenUtil {
 
-	static String Secret = "123456789123456789";
-	private static final long EXPIRE_TIME = 48 * 60 * 1000;
+	static String Secret = "8c563ca518f74433a631e8f6c3077f91";
+	private static final long EXPIRE_TIME = 48 * 60 * 60 * 1000;
 
 	public static String createToken() throws Exception {
 		long now = System.currentTimeMillis();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println(sdf.format(new Date()));
 		Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+		System.out.println(sdf.format(date));
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("alg", "HS256");
 		map.put("typ", "JWT");
 		String token = JWT.create().withHeader(map)
-				.withClaim("uid", "2009")
-				.withClaim("mobile", "18514410536")
+				.withClaim("uid", "linkmore2019")
+				.withClaim("mobile", "18514410532")
 			    .withClaim("plates", "[京M92977,京Z63692]").withExpiresAt(date).withIssuedAt(new Date(now))
 				.sign(Algorithm.HMAC256(Secret));
 		return token;

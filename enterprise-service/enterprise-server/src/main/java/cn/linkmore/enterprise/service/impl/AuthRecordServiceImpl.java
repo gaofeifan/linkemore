@@ -19,8 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.linkmore.account.client.UserClient;
 import cn.linkmore.account.response.ResUser;
+import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
@@ -41,6 +45,8 @@ import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.service.AuthRecordService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.third.client.SmsClient;
+import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.user.factory.AppUserFactory;
 import cn.linkmore.user.factory.UserFactory;
 import cn.linkmore.util.DateUtils;
@@ -75,6 +81,9 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	
 	@Autowired
 	private RedisService redisService;
+	
+	@Autowired
+	private SmsClient smsClient;
 
 	@Override
 	public ViewPage findPage(ViewPageable pageable) {
@@ -175,8 +184,15 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 					if(authRecord.getStartTime().after(authRecord.getEndTime())) {
 						throw new BusinessException(StatusEnum.AUTH_RECORD_STARTAFTEREND);
 					}
+					
 					authRecordMasterMapper.save(authRecord);
 					flag = true;
+					if(flag) {
+						ReqSms sms = new ReqSms();
+						sms.setMobile(record.getMobile());
+						sms.setSt(Constants.SmsTemplate.AUTH_RENT_STALL_NOTICE);
+						smsClient.send(sms);
+					}
 				} catch (ParseException e) {
 					flag = false;
 					e.printStackTrace();
@@ -244,10 +260,12 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 		if (CollectionUtils.isNotEmpty(stalllist) && stalllist.size() > 0) {
 			for (EntOwnerStall entOwnerStall : stalllist) {
 				ids.add(entOwnerStall.getStallId());
-				map.put(entOwnerStall.getStallId(), entOwnerStall);
+				if("1".equals(entOwnerStall.getStallType())) {
+					map.put(entOwnerStall.getStallId(), entOwnerStall);
+				}
 			}
 		}
-		
+		log.info("auth stall map = {}",JSON.toJSON(map));
 		List<AuthRecordPre> authRecordPreList = null;
 		AuthRecordPre authRecordPre = null;
 		param.put("authUserId", user.getId());
@@ -299,8 +317,6 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 							recordDetail.setStallEndTime(DateUtils.convert(map.get(authRecord.getStallId()).getEndTime(), null));
 						}
 						//此处需要根据车位id查询当前授权人是否拥有车位的使用权限
-						log.info("endTime = {}, currentTime={}, flag = {} stallEndTime ={}",entTimeStr,sdf.format(new Date()),
-								authRecord.getEndTime().before(new Date()), recordDetail.getStallEndTime());
 						if(authRecord.getAuthFlag() == 0 && authRecord.getEndTime().before(new Date())) {
 							recordDetail.setAuthFlag((short)2);
 						} else {
