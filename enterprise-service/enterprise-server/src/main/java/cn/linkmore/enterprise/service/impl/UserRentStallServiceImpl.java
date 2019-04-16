@@ -302,7 +302,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			if(reqOperatStall.getState().intValue() == 2) {
 				List<EntRentedRecord> re = entRentedRecordClusterMapper.findLastByStallIds(Arrays.asList(reqOperatStall.getStallId()));
 				if(re != null) {
-					List<EntRentedRecord> list = re.stream().filter( r -> r.getUserId() == user.getId()).collect(Collectors.toList());
+					List<EntRentedRecord> list = re.stream().filter( r -> r.getUserId().equals(user.getId())).collect(Collectors.toList());
 					if(list != null && list.size() != 0) {
 						isAllow =true;
 					}
