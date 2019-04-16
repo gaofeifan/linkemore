@@ -30,11 +30,13 @@
     from t_auth_record
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <!-- 已过期的情况下 -->
+  <!-- and end_time >= now() -->
   <select id="findByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_auth_record
-    where user_id = #{userId} and stall_id = #{stallId}  and end_time >= now()
+    where user_id = #{userId} and stall_id = #{stallId}  order by id desc
     limit 0,1
   </select>
   <select id="findAuthUserIdAndStallId" parameterType="java.lang.Long" resultMap="BaseResultMap">
