@@ -10,17 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.linkmore.bean.common.Constants.ExpiredTime;
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
@@ -33,9 +29,11 @@ import cn.linkmore.enterprise.controller.app.request.ReqWatchStatus;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.OwnerStall;
+import cn.linkmore.enterprise.dao.cluster.AuthRecordClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
 import cn.linkmore.enterprise.dao.cluster.OwnerStallClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
+import cn.linkmore.enterprise.entity.AuthRecord;
 import cn.linkmore.enterprise.entity.EntOwnerPre;
 import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntRentedRecord;
@@ -63,6 +61,9 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 
 	@Autowired
 	private OwnerStallClusterMapper ownerStallClusterMapper;
+	
+	@Autowired
+	private AuthRecordClusterMapper authRecordClusterMapper;
 
 	@Autowired
 	private EntRentedRecordMasterMapper entRentedRecordMasterMapper;
@@ -361,8 +362,12 @@ public class OwnerStallServiceImpl implements OwnerStallService {
 			Integer using = entRentedRecordClusterMapper.findUsingRecord(pam);
 			log.info("用户=======>" + using);
 			if (using > 0) {
-				this.redisService.remove(robkey);
-				throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+				//被授权用户使用时 授权用户可以操作
+				List<AuthRecord> records = this.authRecordClusterMapper.findAuthUserIdAndStallId(reqToothAuth.getUserId(),reqToothAuth.getStallId());
+				if(CollectionUtils.isEmpty(records)) {
+					this.redisService.remove(robkey);
+					throw new BusinessException(StatusEnum.STALL_AlREADY_CONTROL);
+				}
 			}
 		}
 	}
