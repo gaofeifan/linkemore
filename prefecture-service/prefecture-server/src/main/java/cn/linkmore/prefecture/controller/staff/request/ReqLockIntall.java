@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.controller.staff.request;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -11,8 +13,10 @@ public class ReqLockIntall {
 	@ApiModelProperty("分区")
 	String  areaName;
 	@ApiModelProperty("车位号")
+	@NotBlank(message="车位号不能为空")
 	String stallName;
 	@ApiModelProperty("序列号")
+	@NotBlank(message="车位锁编号不能为空")
 	String lockSn;
 
 	public Long getPreId() {

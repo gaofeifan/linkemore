@@ -132,6 +132,36 @@ public class StaffStallController {
 		}
 		return response;
 	}
+	@ApiOperation(value = "地锁安装2.0.1", notes = "地锁安装")
+	@RequestMapping(value = "/v2.0.1/installLock", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> installLockTwo(HttpServletRequest request, @Validated @RequestBody ReqLockIntall reqLockIntall) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			this.stallService.installLock(reqLockIntall,request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	@ApiOperation(value = "删除车位锁", notes = "删除车位锁")
+	@RequestMapping(value = "/remove-stall-lock", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> removeStallLock(HttpServletRequest request, @ApiParam(value="车位id",required=true) @NotBlank(message="车位id不能为空") @RequestParam(value = "stallId",required= true) Long stallId ) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			this.stallService.removeStallLock(stallId,request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
 	
 	@ApiOperation(value = "获取最新人员的权限", notes = "获取最新人员的权限")
 	@RequestMapping(value = "/find-new-auth", method = RequestMethod.GET)

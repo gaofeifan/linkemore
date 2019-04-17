@@ -95,5 +95,12 @@ public interface AdminUserService {
 	 * @Version  v2.0
 	 */
 	ResAdmin authLogin(String mobile);
+	
+	
+	ResAdmin findAccountName(String accountName);
+	
+	void updateMobile(Long id, String mobile);
+	
+	void updatePw(Long id, String pw);
 
 }

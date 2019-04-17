@@ -20,7 +20,7 @@ public class CacheUser implements Serializable {
 	private Short client;
 	private String session;
 	private String appId;
-	
+	private String account;
 	
 	
 	/**
@@ -70,6 +70,12 @@ public class CacheUser implements Serializable {
 	}
 	public void setSession(String session) {
 		this.session = session;
+	}
+	public String getAccount() {
+		return account;
+	}
+	public void setAccount(String account) {
+		this.account = account;
 	}
 	 
 }

@@ -1338,6 +1338,9 @@ class UUIDTool{
 class Md5PW{
 	private static final String LINKEMORE = "LINKEMORE";
 	public static String md5(String mobile ,String password) {
+		if(mobile == null) {
+			mobile = "";
+		}
 		String hex = DigestUtils.md5Hex(LINKEMORE+mobile+password);
 		return hex;
 	}

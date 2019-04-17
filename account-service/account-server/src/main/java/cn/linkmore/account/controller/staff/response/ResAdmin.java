@@ -19,6 +19,11 @@ public class ResAdmin {
 	@ApiModelProperty(value = "运营是否可以查看 true 展开  false 不展开")
 	private Boolean isOperation = false;
 	
+	@ApiModelProperty(value = "是否有删除权限 true是false否")
+	private Short gatewayDelete;
+	@ApiModelProperty(value = "账户名称")
+	private String accountName;
+	
 	public Long getId() {
 		return id;
 	}
@@ -61,4 +66,17 @@ public class ResAdmin {
 	public void setIsOperation(Boolean isOperation) {
 		this.isOperation = isOperation;
 	}
+	public Short getGatewayDelete() {
+		return gatewayDelete;
+	}
+	public void setGatewayDelete(Short gatewayDelete) {
+		this.gatewayDelete = gatewayDelete;
+	}
+	public String getAccountName() {
+		return accountName;
+	}
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+	
 }

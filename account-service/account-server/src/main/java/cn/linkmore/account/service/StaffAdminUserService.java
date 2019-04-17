@@ -2,10 +2,16 @@ package cn.linkmore.account.service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.linkmore.account.controller.app.request.ReqAuthEditPW;
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.app.request.ReqEditPWAuth;
+import cn.linkmore.account.controller.app.request.ReqReset;
+import cn.linkmore.account.controller.staff.request.ReqEditPw;
+import cn.linkmore.account.controller.staff.request.ReqEditPwAuth;
 import cn.linkmore.account.controller.staff.request.ReqLoginPw;
 import cn.linkmore.account.controller.staff.response.ResAdmin;
+import cn.linkmore.account.controller.staff.response.ResCheckAccount;
 
 
 
@@ -59,6 +65,21 @@ public interface StaffAdminUserService {
 	 * @Version  v2.0
 	 */
 	ResAdmin login(ReqLoginPw rl, HttpServletRequest request);
+
+	boolean bindMobile(String mobile, HttpServletRequest request);
+
+	ResCheckAccount checkAccount(String account);
+
+	String sendReset(HttpServletRequest request, String account);
+
+	void reset(HttpServletRequest request, ReqReset reset);
+
+	boolean authCode(HttpServletRequest request, String account, String code);
+
+	boolean editMobile(String mobile, HttpServletRequest request, String code);
+
+	String editPWAuth(ReqEditPwAuth pwAuth);
+
 
 
 }

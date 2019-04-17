@@ -163,7 +163,7 @@ public class AppMiniController {
 			Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
 			cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64.decodeBase64(sessionKey), "AES"), params);
 
-			return new String(PKCS7Encoder.decode(cipher.doFinal(Base64.decodeBase64(encryptedData))),
+			return new String(PKCS7Encoder.decode(cipher.doFinal(Base64 .decodeBase64(encryptedData))),
 					StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			throw new RuntimeException("AES解密失败", e);

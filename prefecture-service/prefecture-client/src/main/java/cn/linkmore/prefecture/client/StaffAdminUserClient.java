@@ -32,6 +32,10 @@ public interface StaffAdminUserClient {
 	@RequestMapping(value="/by-mobile",method=RequestMethod.GET)
 	@ResponseBody
 	public ResAdminUser findMobile(@RequestParam("mobile") String mobile);
+	
+	@RequestMapping(value="/by-account",method=RequestMethod.GET)
+	@ResponseBody
+	public ResAdmin findAccountName(@RequestParam("accountName") String accountName);
 
 	@RequestMapping(value="/login-time",method=RequestMethod.PUT)
 	@ResponseBody
@@ -44,5 +48,13 @@ public interface StaffAdminUserClient {
 	@RequestMapping(value = "/by-id", method = RequestMethod.GET)
 	@ResponseBody
 	public ResAdminUser findById(@RequestParam("id")Long id);
+
+	@RequestMapping(value = "/mobile", method = RequestMethod.PUT)
+	@ResponseBody
+	public void updateMobile(@RequestParam("id")Long id, @RequestParam("mobile")String mobile);
+
+	@RequestMapping(value = "/pw", method = RequestMethod.PUT)
+	@ResponseBody
+	public void updatePw(@RequestParam("id")Long id, @RequestParam("pw")String pw);
 	
 }

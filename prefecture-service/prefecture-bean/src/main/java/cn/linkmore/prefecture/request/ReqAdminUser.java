@@ -21,6 +21,12 @@ public class ReqAdminUser {
     private Date loginTime;
 
     private Short status;
+    
+    private String accountName;
+    
+    private String password;
+    
+    private Short gatewayDelete = 0;
 
     public Long getId() {
         return id;
@@ -77,4 +83,28 @@ public class ReqAdminUser {
     public void setStatus(Short status) {
         this.status = status;
     }
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Short getGatewayDelete() {
+		return gatewayDelete;
+	}
+
+	public void setGatewayDelete(Short gatewayDelete) {
+		this.gatewayDelete = gatewayDelete;
+	}
 }

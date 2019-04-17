@@ -27,6 +27,12 @@ public class ResAdmin {
 	private Short status;
 
 	private String code;
+	
+    private String accountName;
+    
+    private Short gatewayDelete;
+    
+    private String password;
 
 	private Boolean isOperate = false;
 
@@ -110,6 +116,30 @@ public class ResAdmin {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public Short getGatewayDelete() {
+		return gatewayDelete;
+	}
+
+	public void setGatewayDelete(Short gatewayDelete) {
+		this.gatewayDelete = gatewayDelete;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 	

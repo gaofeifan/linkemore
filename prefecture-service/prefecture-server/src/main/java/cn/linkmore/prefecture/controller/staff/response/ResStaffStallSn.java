@@ -65,6 +65,8 @@ public class ResStaffStallSn {
 	
 	@ApiModelProperty(value="1 未绑定 2已绑定")
 	private int bindStata = 1;
+	@ApiModelProperty(value="是否具有删除权限")
+	private short gatewayDelete = 0;
 	@ApiModelProperty(value="车位锁绑定的网关")
 	private List<ResLockGatewayList> gatewayList = new ArrayList<>();
 	public String getStallSn() {
@@ -228,6 +230,14 @@ public class ResStaffStallSn {
 
 	public void setGatewayList(List<ResLockGatewayList> gatewayList) {
 		this.gatewayList = gatewayList;
+	}
+
+	public short getGatewayDelete() {
+		return gatewayDelete;
+	}
+
+	public void setGatewayDelete(short gatewayDelete) {
+		this.gatewayDelete = gatewayDelete;
 	}
 	
 }

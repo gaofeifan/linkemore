@@ -28,11 +28,21 @@ public class StaffAdminUserController {
 	public ResAdminUser findMobile(@RequestParam("mobile") String mobile) {
 		return this.adminUserService.findMobile(mobile);
 	}
+	@RequestMapping(value="/by-account",method=RequestMethod.GET)
+	@ResponseBody
+	public ResAdmin findAccountName(@RequestParam("accountName") String accountName) {
+		return this.adminUserService.findAccountName(accountName);
+	}
 	
 	@RequestMapping(value="/login-time",method=RequestMethod.PUT)
 	@ResponseBody
 	public void updateLoginTime(@RequestParam("id") Long id) {
 		this.adminUserService.updateLoginTime(id);
+	}
+	@RequestMapping(value = "/mobile", method = RequestMethod.PUT)
+	@ResponseBody
+	public void updateMobile(@RequestParam("id")Long id, @RequestParam("mobile")String mobile) {
+		this.adminUserService.updateMobile(id,mobile);
 	}
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
@@ -45,5 +55,11 @@ public class StaffAdminUserController {
 	@ResponseBody
 	public ResAdminUser findById(@RequestParam("id")Long id) {
 		return this.adminUserService.find(id);
+	}
+	
+	@RequestMapping(value = "/pw", method = RequestMethod.PUT)
+	@ResponseBody
+	public void updatePw(@RequestParam("id")Long id, @RequestParam("pw")String pw) {
+		this.adminUserService.updatePw(id,pw);
 	}
 }

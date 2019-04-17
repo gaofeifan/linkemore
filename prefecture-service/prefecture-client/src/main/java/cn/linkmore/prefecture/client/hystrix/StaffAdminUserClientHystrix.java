@@ -30,6 +30,21 @@ public class StaffAdminUserClientHystrix implements StaffAdminUserClient {
 		log.info(" ResAdminUser findById(Long id) hystrix");
 		return null;
 	}
+	@Override
+	public ResAdmin findAccountName(String accountName) {
+		log.info(" ResAdminUser findAccountName(String accountName) hystrix");
+		return null;
+	}
+	@Override
+	public void updateMobile(Long id, String mobile) {
+		log.info(" updateMobile(Long id, String mobile) hystrix");
+		
+	}
+	@Override
+	public void updatePw(Long id, String pw) {
+		log.info(" updatePw(Long id, String pw) hystrix");
+		
+	}
 	
 	
 	

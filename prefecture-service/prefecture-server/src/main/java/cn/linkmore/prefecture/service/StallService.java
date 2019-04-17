@@ -379,4 +379,7 @@ public interface StallService {
 	 * @return
 	 */
 	Boolean controlUp(ReqOrderStall stall);
+
+	Boolean installLock(ReqLockIntall reqLockIntall, HttpServletRequest request);
+	void removeStallLock(Long stallId, HttpServletRequest request);
 }

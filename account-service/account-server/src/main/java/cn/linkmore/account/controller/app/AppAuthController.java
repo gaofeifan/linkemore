@@ -149,6 +149,7 @@ public class AppAuthController {
 		response = ResponseEntity.success(boolean1, request);
 		return response;
 	}
+	
 	@ApiOperation(value="修改密码-发送短信验证码",notes="修改密码-发送短信验证码", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/send-pw", method = RequestMethod.POST)
 	@ResponseBody
