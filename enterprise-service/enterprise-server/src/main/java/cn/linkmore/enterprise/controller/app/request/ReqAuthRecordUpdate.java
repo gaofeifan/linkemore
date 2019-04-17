@@ -12,11 +12,11 @@ public class ReqAuthRecordUpdate {
 	@ApiModelProperty("用户名称")
     private String username;
 	
-	@ApiModelProperty("开始时间格式 yyyy/MM/dd hh:mm")
+	@ApiModelProperty("开始时间格式 yyyy/MM/dd HH:mm")
 	@NotNull(message="开始时间不能为空")
     private String startTime;
 	
-	@ApiModelProperty("结束时间格式 yyyy/MM/dd hh:mm")
+	@ApiModelProperty("结束时间格式 yyyy/MM/dd HH:mm")
 	@NotNull(message="结束时间不能为空")
     private String endTime;
 	
