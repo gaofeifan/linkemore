@@ -78,7 +78,7 @@ public class ResParkingRecord {
 		this.stallAuthType = stallAuthType;
 	}
 
-	@JsonFormat(pattern="MM月dd日 hh:mm",timezone="GMT+8")
+	@JsonFormat(pattern="MM月dd日 HH:mm",timezone="GMT+8")
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -87,7 +87,7 @@ public class ResParkingRecord {
 		this.startTime = startTime;
 	}
 
-	@JsonFormat(pattern="MM月dd日 hh:mm",timezone="GMT+8")
+	@JsonFormat(pattern="MM月dd日 HH:mm",timezone="GMT+8")
 	public Date getEndTime() {
 		return endTime;
 	}
