@@ -302,7 +302,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			if(reqOperatStall.getState().intValue() == 2) {
 				List<EntRentedRecord> re = entRentedRecordClusterMapper.findLastByStallIds(Arrays.asList(reqOperatStall.getStallId()));
 				if(re != null) {
-					List<EntRentedRecord> list = re.stream().filter( r -> r.getUserId().equals(user.getId()) ).collect(Collectors.toList());
+					List<EntRentedRecord> list = re.stream().filter( r -> r.getUserId().equals(user.getId())).collect(Collectors.toList());
 					if(list != null && list.size() != 0) {
 						isAllow =true;
 					}
@@ -496,6 +496,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		param.put("flag", 0);
 		List<AuthRecord> findRecordList = this.authRecordService.findRecordList(param);
 		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
+		log.info("被授权记录={} 自有可用车位数={}",JSON.toJSON(findRecordList), stalllist.size());
 		if((stalllist == null || stalllist.size() == 0) && (findRecordList == null || findRecordList.size() == 0)) {
 			return authRentStall;
 		}
@@ -577,9 +578,18 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							}
 						}
 					}
-				}else if(stallIdAuthList.contains(record.getStallId())) {
+				}else if(stallIdAuthList != null && stallIdAuthList.contains(record.getStallId())) {
+					//此处若授权记录超过当前时间则过期，会出现空指针异常
 					AuthRecord authRecord = this.authRecordService.findByUserId(user.getId(), record.getStallId());
 					rentUserStall.setValidity(authRecord.getEndTime());
+				}else {
+					AuthRecord authRecord = this.authRecordService.findByUserId(user.getId(), record.getStallId());
+					if(authRecord != null) {
+						rentUserStall.setValidity(authRecord.getEndTime());
+					}else {
+						rentUserStall.setValidity(new Date());
+					}
+					
 				}
 				rentUserStall.setPreId(record.getPreId());
 				rentUserStall.setPreName(record.getPreName());

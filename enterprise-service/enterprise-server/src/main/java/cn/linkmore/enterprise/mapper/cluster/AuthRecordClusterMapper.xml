@@ -36,6 +36,8 @@
     from t_auth_record
     where auth_user_id = #{authUserId,jdbcType=BIGINT} 
   </select>
+  <!-- 已过期的情况下 -->
+  <!-- and end_time >= now() -->
   <select id="findByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -61,11 +63,14 @@
     <if test="userId!=null">  
     and user_id = #{userId,jdbcType=BIGINT}
     </if> 
+    <if test="stallId!=null">  
+    and stall_id = #{stallId,jdbcType=BIGINT}
+    </if> 
     <if test="preId!=null">  
     and pre_id like #{preId,jdbcType=BIGINT}
     </if> 
-    <if test="endTime!=null">  
-    and end_time >= now()
+    <if test="endTime!=null"> 
+    and NOW() BETWEEN start_time AND end_time 
     </if> 
     <if test="flag != null">
     and auth_flag = #{flag}

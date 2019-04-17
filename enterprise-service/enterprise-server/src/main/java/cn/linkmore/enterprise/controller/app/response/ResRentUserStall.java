@@ -156,7 +156,7 @@ public class ResRentUserStall {
 		this.unusualBattery = unusualBattery;
 	}
 
-	@JsonFormat(pattern="yy-MM-dd hh:mm",timezone="GMT+8")
+	@JsonFormat(pattern="yy-MM-dd HH:mm",timezone="GMT+8")
 	public Date getUseUpLockTime() {
 		return useUpLockTime;
 	}
@@ -165,7 +165,7 @@ public class ResRentUserStall {
 		this.useUpLockTime = useUpLockTime;
 	}
 
-	@JsonFormat(pattern="yy-MM-dd hh:mm",timezone="GMT+8")
+	@JsonFormat(pattern="yy-MM-dd HH:mm",timezone="GMT+8")
 	public Date getDownLockTime() {
 		return downLockTime;
 	}

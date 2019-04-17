@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>  
-	<sms tpl="SMS_52350243" id="user_app_login_code" desc="登录验证码"/> 
-	<sms tpl="SMS_77145014" id="share_coupon_notice" desc="常规发送停车券和分享领券"/>
-	<sms tpl="SMS_139225782" id="order_closed_coupon_notice" desc="无车位订单关闭通知"/>
-	<sms tpl="SMS_140110591" id="unsub_brand_coupon_notice" desc="未授权品牌送券通知"/>
-	<sms tpl="SMS_140105600" id="subed_brand_coupon_notice" desc="已授权品牌送券通知"/>
-	<sms tpl="SMS_149391090" id="new_user_reg_notice" desc="新注册用户优惠券包"/>
-	<sms tpl="SMS_142951238" id="order_suspend_notice" desc="挂起订单通知"/>
-	<sms tpl="SMS_163438779" id="auth_rent_stall_notice" desc="长租车位授权通知"/>
+	<sms tpl="SMS_163625172" id="user_app_login_code" desc="登录验证码"/> 
+	<sms tpl="SMS_163620315" id="share_coupon_notice" desc="常规发送停车券和分享领券"/>
+	<sms tpl="SMS_163620317" id="order_closed_coupon_notice" desc="无车位订单关闭通知"/>
+	<sms tpl="SMS_163620321" id="unsub_brand_coupon_notice" desc="未授权品牌送券通知"/>
+	<sms tpl="SMS_163625180" id="subed_brand_coupon_notice" desc="已授权品牌送券通知"/>
+	<sms tpl="SMS_163625181" id="new_user_reg_notice" desc="新注册用户优惠券包"/>
+	<sms tpl="SMS_163625629" id="order_suspend_notice" desc="挂起订单通知"/>
+	<sms tpl="SMS_163625734" id="auth_rent_stall_notice" desc="长租车位授权通知"/>
 </config>

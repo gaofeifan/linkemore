@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class DateUtils {
 
-	public static final String DARW_FORMAT_TIME = "yyyy-MM-dd hh:mm:ss";
+	public static final String DARW_FORMAT_TIME = "yyyy-MM-dd HH:mm:ss";
 	/**
 	 * 获取开始日期和结束日期之间的日期
 	 * 

@@ -135,9 +135,7 @@
   	
   	ORDER BY stall_name ASC
   </select>
-
-  <select id="freeStallList" parameterType="java.util.HashMap" resultMap="ResultStallMap">
-  	SELECT vs.id,vs.stall_name FROM v_stall vs 
+  <!-- SELECT vs.id,vs.stall_name FROM v_stall vs 
 	LEFT JOIN t_fixed_stall fs on vs.id=fs.stall_id
 	LEFT JOIN t_fixed_rent fr on fs.fixed_id=fr.id  and fr.end_time &gt;= now()
 	<if test="preId != null">
@@ -148,6 +146,22 @@
    	AND vs.pre_id = #{preId,jdbcType=BIGINT}
     </if>
     ORDER BY vs.stall_name ASC
+    -->
+  <select id="freeStallList" parameterType="java.util.HashMap" resultMap="ResultStallMap">
+    
+    select vs.id,vs.stall_name from v_stall vs where vs.type= 2 and vs.status in(1,2) 
+    <if test="preId != null">
+   	AND vs.pre_id = #{preId,jdbcType=BIGINT}
+    </if>
+    and vs.id not in(
+		select fs.stall_id from t_fixed_stall fs left join t_fixed_rent fr 
+		on fs.fixed_id=fr.id 
+		where  now() BETWEEN fr.start_time and fr.end_time 
+		<if test="preId != null">
+	   	AND fr.pre_id = #{preId,jdbcType=BIGINT}
+	    </if>
+	) ORDER BY vs.stall_name ASC
+    
   </select>
   
   
