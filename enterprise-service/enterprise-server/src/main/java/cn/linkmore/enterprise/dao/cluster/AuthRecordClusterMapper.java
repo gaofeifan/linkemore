@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import cn.linkmore.enterprise.entity.AuthRecord;
+import cn.linkmore.enterprise.entity.EntRentedRecord;
 @Mapper
 public interface AuthRecordClusterMapper {
 	/**
@@ -36,6 +37,7 @@ public interface AuthRecordClusterMapper {
 	AuthRecord findByUserId(@Param("userId")Long userId, @Param("stallId")Long stallId);
 	
 	public List<AuthRecord> findAuthUserIdAndStallId(@Param("userId")Long userId, @Param("stallId")Long stallId);
+	List<EntRentedRecord> findAuthRecordByAuthUserId(Long authUserId);
 
     
 }

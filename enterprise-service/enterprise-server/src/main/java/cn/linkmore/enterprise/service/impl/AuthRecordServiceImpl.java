@@ -371,4 +371,11 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	public int updateOverdueStatus() {
 		return this.authRecordMasterMapper.updateOverdueStatus();
 	}
+
+	@Override
+	public List<EntRentedRecord> findAuthRecordByAuthUserId(Long id) {
+		return this.authRecordClusterMapper.findAuthRecordByAuthUserId(id);
+	}
+	
+	
 }

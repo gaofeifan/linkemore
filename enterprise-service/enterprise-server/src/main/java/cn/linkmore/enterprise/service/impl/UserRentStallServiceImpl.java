@@ -302,7 +302,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			if(reqOperatStall.getState().intValue() == 2) {
 				List<EntRentedRecord> re = entRentedRecordClusterMapper.findLastByStallIds(Arrays.asList(reqOperatStall.getStallId()));
 				if(re != null) {
-					List<EntRentedRecord> list = re.stream().filter( r -> r.getUserId() == user.getId()).collect(Collectors.toList());
+					List<EntRentedRecord> list = re.stream().filter( r -> r.getUserId().equals(user.getId()) ).collect(Collectors.toList());
 					if(list != null && list.size() != 0) {
 						isAllow =true;
 					}
@@ -879,7 +879,15 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public List<ResParkingRecord> parkingRecord(HttpServletRequest request,Integer pageNo,Long stallId) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
-		List<EntRentedRecord> list = this.recordService.findParkingRecord(user.getId(),pageNo,stallId);
+		List<EntRentedRecord> authUserId = authRecordService.findAuthRecordByAuthUserId(user.getId());
+		List<Long> collect = authUserId.stream().map(auth -> auth.getUserId()).collect(Collectors.toList());
+		if(collect != null && collect.size() != 0) {
+			collect.add(user.getId());
+		}else {
+			collect = new ArrayList<>();
+			collect.add(user.getId());
+		}
+		List<EntRentedRecord> list = this.recordService.findParkingRecord(collect,pageNo,stallId);
 		List<ResParkingRecord> records = new ArrayList<>();
 		ResParkingRecord record = null;
 		for (EntRentedRecord entRentedRecord : list) {
@@ -893,6 +901,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			record.setStallAuthType(entRentedRecord.getType());
 			record.setStallName(entRentedRecord.getStallName());
 			record.setStallId(entRentedRecord.getStallId());
+			if(entRentedRecord.getLeaveTime() == null) {
+				entRentedRecord.setLeaveTime(new Date());
+			}
 			record.setServiceTime(DateUtils.getDurationDetail(entRentedRecord.getLeaveTime(), entRentedRecord.getDownTime()));
 			records.add(record);
 		}

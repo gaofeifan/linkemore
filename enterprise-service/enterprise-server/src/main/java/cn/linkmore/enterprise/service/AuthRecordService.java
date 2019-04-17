@@ -9,6 +9,7 @@ import cn.linkmore.enterprise.controller.app.request.ReqAuthRecord;
 import cn.linkmore.enterprise.controller.app.request.ReqAuthRecordUpdate;
 import cn.linkmore.enterprise.controller.app.response.AuthRecordPre;
 import cn.linkmore.enterprise.entity.AuthRecord;
+import cn.linkmore.enterprise.entity.EntRentedRecord;
 
 public interface AuthRecordService {
 	/**
@@ -66,5 +67,7 @@ public interface AuthRecordService {
 	 * 更新过期时间
 	 */
 	public int updateOverdueStatus();
+
+	public List<EntRentedRecord> findAuthRecordByAuthUserId(Long id);
 
 }
