@@ -156,6 +156,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		AuthRecord authRecord = null;
+		Map<String,Object> param = new HashMap<String,Object>();
 		if(StringUtils.isNotBlank(record.getStallIds())) {
 			String [] ids = record.getStallIds().split(",");
 			String [] stallNames = record.getStallNames().split(",");
@@ -163,6 +164,14 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			for(String stallId: ids) {
 				try {
 					Long userId = this.userClient.getUserIdByMobile(record.getMobile(),record.getUsername());
+					param.put("userId", userId);
+					param.put("stallId", stallId);
+					param.put("endTime", 1);
+					param.put("flag", 0);
+					List<AuthRecord> authRecordList = authRecordClusterMapper.findRecordList(param);
+					if(CollectionUtils.isNotEmpty(authRecordList)) {
+						throw new BusinessException(StatusEnum.EXIST_AUTH_RECORD_LIST);
+					}
 					authRecord = new AuthRecord();
 					authRecord.setStallId(Long.valueOf(stallId));
 					authRecord.setStallName(stallNames[i]);
@@ -189,6 +198,9 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 					flag = true;
 					if(flag) {
 						ReqSms sms = new ReqSms();
+						Map<String, String> smsParam = new HashMap<String, String>();
+						smsParam.put("mobile", user.getMobile());
+						sms.setParam(smsParam);
 						sms.setMobile(record.getMobile());
 						sms.setSt(Constants.SmsTemplate.AUTH_RENT_STALL_NOTICE);
 						smsClient.send(sms);

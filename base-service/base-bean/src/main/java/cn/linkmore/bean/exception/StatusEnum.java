@@ -154,7 +154,8 @@ public enum StatusEnum {
 	NO_FREE_STALL_CLOSE(8005105,"无空闲车位，订单已关闭"),
 	SWITCH_STALL_FAILED(8005106,"切换车位失败"),
 	
-	AUTH_RECORD_STARTAFTEREND(9000001,"授权开始时间大于结束时间")
+	AUTH_RECORD_STARTAFTEREND(9000001,"授权开始时间大于结束时间"),
+	EXIST_AUTH_RECORD_LIST(9000002,"用户已有该车位使用权限")
 	;
 
 	

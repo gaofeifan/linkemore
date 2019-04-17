@@ -57,6 +57,9 @@
     <if test="userId!=null">  
     and user_id = #{userId,jdbcType=BIGINT}
     </if> 
+    <if test="stallId!=null">  
+    and stall_id = #{stallId,jdbcType=BIGINT}
+    </if> 
     <if test="preId!=null">  
     and pre_id like #{preId,jdbcType=BIGINT}
     </if> 

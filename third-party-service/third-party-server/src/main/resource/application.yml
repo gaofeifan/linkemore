@@ -268,10 +268,14 @@ app-wechat:
     
 #阿里短信配置
 sms:
-  region-id: cn-hangzhou
-  access-key: LTAIlCbJXIQWCNnl
-  access-secret: bxwgOMs072cnOiZjsetF9cd740CD1e
-  endpoint-name: cn-hangzhou
+  #region-id: cn-hangzhou
+  #access-key: LTAIlCbJXIQWCNnl
+  #access-secret: bxwgOMs072cnOiZjsetF9cd740CD1e
+  #endpoint-name: cn-hangzhou
+  region-id: cn-beijing
+  access-key: LTAI1icgDrn8Xsrd
+  access-secret: K3UMWWYGPWOwGHlUAaH24o1G4ab0tt
+  endpoint-name: cn-beijing
   sign-name: 凌猫停车
     
 #小程序配置
