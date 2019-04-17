@@ -199,7 +199,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 					if(flag) {
 						ReqSms sms = new ReqSms();
 						Map<String, String> smsParam = new HashMap<String, String>();
-						smsParam.put("mobile", user.getMobile());
+						smsParam.put("tel", user.getMobile());
 						sms.setParam(smsParam);
 						sms.setMobile(record.getMobile());
 						sms.setSt(Constants.SmsTemplate.AUTH_RENT_STALL_NOTICE);
