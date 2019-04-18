@@ -68,6 +68,6 @@ public interface AuthRecordService {
 	 */
 	public int updateOverdueStatus();
 
-	public List<EntRentedRecord> findAuthRecordByAuthUserId(Long id);
+	public List<AuthRecord> findAuthRecordByAuthUserId(Long id);
 
 }
