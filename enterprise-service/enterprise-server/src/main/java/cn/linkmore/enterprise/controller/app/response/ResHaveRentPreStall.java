@@ -60,14 +60,8 @@ public class ResHaveRentPreStall {
 	/**
 	 *  用户状态 0 授权人 1 被授权人
 	 */ 
-	@ApiModelProperty(value="用户状态 1 授权人 0 被授权人 ")
+	@ApiModelProperty(value="用户状态 1 授权人展示车位使用记录 0 被授权人不展示车位使用记录 ")
 	private int userStatus=0;
-	
-	/**
-	 *  是否显示使用记录 0 显示 1不 显示
-	 */ 
-	@ApiModelProperty(value="是否显示使用记录 0 显示 1不 显示 ")
-	private int isUserRecord=0;
 	
 	/**
 	 *  当前是否有用户使用 0有 1无
@@ -204,14 +198,6 @@ public class ResHaveRentPreStall {
 
 	public void setUserStatus(int userStatus) {
 		this.userStatus = userStatus;
-	}
-
-	public int getIsUserRecord() {
-		return isUserRecord;
-	}
-
-	public void setIsUserRecord(int isUserRecord) {
-		this.isUserRecord = isUserRecord;
 	}
 
 	public int getIsUserUse() {

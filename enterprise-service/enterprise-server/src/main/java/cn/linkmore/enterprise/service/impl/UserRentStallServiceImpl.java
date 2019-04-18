@@ -1139,8 +1139,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 						if("1".equals(enttall.getStallType())) {
 							//用户状态 1 授权人 0 被授权人
 							rentUserStall.setUserStatus(1);
-							//展示操作记录
-							rentUserStall.setIsUserRecord(1);
 						}
 						rentUserStallList.add(rentUserStall);
 					}

@@ -64,7 +64,7 @@ public class ResRentUserStall {
 	/**
 	 *  用户状态 0 授权人 1 被授权人
 	 */ 
-	@ApiModelProperty(value="用户状态 1 授权人 0 被授权人 ")
+	@ApiModelProperty(value="用户状态 1 授权人展示车位使用记录 0 被授权人不展示车位使用记录 ")
 	private int userStatus=0;
 	
 	/**
