@@ -892,7 +892,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 
 	@Override
 	public List<ResParkingRecord> parkingRecord(HttpServletRequest request,Integer pageNo,Long stallId) {
-		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		/*CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		List<AuthRecord> authRecordList = authRecordService.findAuthRecordByAuthUserId(user.getId());
 		List<Long> collect = authRecordList.stream().map(auth -> auth.getUserId()).collect(Collectors.toList());
 		if(collect != null && collect.size() != 0) {
@@ -900,8 +900,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		}else {
 			collect = new ArrayList<>();
 			collect.add(user.getId());
-		}
-		List<EntRentedRecord> list = this.recordService.findParkingRecord(collect,pageNo,stallId);
+		}*/
+		List<EntRentedRecord> list = this.recordService.findParkingRecord(pageNo,stallId);
 		List<ResParkingRecord> records = new ArrayList<>();
 		ResParkingRecord record = null;
 		for (EntRentedRecord entRentedRecord : list) {

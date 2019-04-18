@@ -27,6 +27,6 @@ public interface RentedRecordService {
 
 	List<EntRentedRecord> findLastByStallIds(List<Long> stalls);
 
-	List<EntRentedRecord> findParkingRecord(List<Long> ids, Integer pageNo, Long stallId);
+	List<EntRentedRecord> findParkingRecord(Integer pageNo, Long stallId);
 
 }
