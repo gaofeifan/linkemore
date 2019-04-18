@@ -1113,6 +1113,15 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 									rentUserStall.setDownLockTime(resRentedRecord.getDownTime());
 									break;
 								}
+								
+								if(enttall.getStatus().intValue() == 2) {
+									if(resRentedRecord.getUserId() == user.getId()) {
+										rentUserStall.setIsSelfUser(0);
+									}else {
+										rentUserStall.setIsSelfUser(1);
+									}
+								}
+								
 								if ("1".equals(enttall.getStallType()) && resRentedRecord.getUserId() != user.getId()
 										&& resRentedRecord.getType().intValue() == 2
 										&& enttall.getStatus().intValue() == 2) {
