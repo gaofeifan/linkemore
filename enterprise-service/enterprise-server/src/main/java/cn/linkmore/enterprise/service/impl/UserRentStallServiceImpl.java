@@ -293,14 +293,14 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				newrecord.setDownTime(new Date());
 				newrecord.setPreId(entOwnerStall.getPreId());
 				newrecord.setStallName(entOwnerStall.getStallName());
-				// newrecord.setEntId(entOwnerStall.getEntId());
 				newrecord.setPreName(entOwnerStall.getPreName());
-				// newrecord.setEntPreId(entOwnerStall.getEntPreId());
 				newrecord.setPlateNo(entOwnerStall.getPlate());
+				newrecord.setType(new Short(entOwnerStall.getStallType()));
 				isAllow = true;
 				break;
 			}
 		}
+		//处理授权用户车位失效后无法升锁问题
 		if (!isAllow) {
 			if(reqOperatStall.getState().intValue() == 2) {
 				List<EntRentedRecord> re = entRentedRecordClusterMapper.findLastByStallIds(Arrays.asList(reqOperatStall.getStallId()));
