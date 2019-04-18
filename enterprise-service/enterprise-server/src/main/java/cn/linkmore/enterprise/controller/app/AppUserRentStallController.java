@@ -26,6 +26,7 @@ import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResAuthRentStall;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
+import cn.linkmore.enterprise.controller.app.response.ResHaveRentList;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
 import cn.linkmore.enterprise.controller.app.response.ResRentStallFlag;
 import cn.linkmore.enterprise.service.UserRentStallService;
@@ -151,5 +152,23 @@ public class AppUserRentStallController {
 		List<OwnerPre> ownerPreList = userRentStallService.authStall(request);
 		return ResponseEntity.success(ownerPreList, request);
 	}
+	
+	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
+	@RequestMapping(value = "/v2.0.2/list", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResHaveRentList> rentStallList(@Validated  @RequestBody ReqLocation  location,HttpServletRequest request) {
+		ResponseEntity<ResHaveRentList> response = null;
+		 try {
+			 ResHaveRentList stallList = userRentStallService.findRentStallList(request,location);
+			 response = ResponseEntity.success(stallList, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			log.info("exception = {} stack = {}",e.getMessage(),e.getStackTrace());
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
+	}
+	
 	
 }

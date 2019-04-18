@@ -564,6 +564,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				rentUserStall.setStallId(record.getStallId());
 				rentUserStall.setUseUpLockTime(record.getLeaveTime());
 				rentUserStall.setStallName(record.getStallName());
+				rentUserStall.setLockSn(resStallEntity.getLockSn());
 				if(stallIdOwnerList.contains(rentUserStall.getStallId())) {
 					rentUserStall.setIsUserRecord(1);
 					rentUserStall.setUserStatus(1);
@@ -889,7 +890,15 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public List<ResParkingRecord> parkingRecord(HttpServletRequest request,Integer pageNo,Long stallId) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
-		List<EntRentedRecord> list = this.recordService.findParkingRecord(user.getId(),pageNo,stallId);
+		List<EntRentedRecord> authUserId = authRecordService.findAuthRecordByAuthUserId(user.getId());
+		List<Long> collect = authUserId.stream().map(auth -> auth.getUserId()).collect(Collectors.toList());
+		if(collect != null && collect.size() != 0) {
+			collect.add(user.getId());
+		}else {
+			collect = new ArrayList<>();
+			collect.add(user.getId());
+		}
+		List<EntRentedRecord> list = this.recordService.findParkingRecord(collect,pageNo,stallId);
 		List<ResParkingRecord> records = new ArrayList<>();
 		ResParkingRecord record = null;
 		for (EntRentedRecord entRentedRecord : list) {
@@ -903,6 +912,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			record.setStallAuthType(entRentedRecord.getType());
 			record.setStallName(entRentedRecord.getStallName());
 			record.setStallId(entRentedRecord.getStallId());
+			if(entRentedRecord.getLeaveTime() == null) {
+				entRentedRecord.setLeaveTime(new Date());
+			}
 			record.setServiceTime(DateUtils.getDurationDetail(entRentedRecord.getLeaveTime(), entRentedRecord.getDownTime()));
 			records.add(record);
 		}
@@ -988,6 +1000,288 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public ResHaveRentList findRentStallList(HttpServletRequest request, ReqLocation location) {
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		ResHaveRentList authRentStall = new ResHaveRentList();
+		List<ResHaveRentPre> rentUserList = new ArrayList<ResHaveRentPre>();
+		List<ResHaveRentPreStall> rentUserStallList = null;
+		ResHaveRentPreStall rentUserStall = null;
+		ResHaveRentPre rentUser = null;
+		List<EntOwnerStall> authStallList = new ArrayList<EntOwnerStall>();
+		List<EntOwnerStall> ownerStallList = new ArrayList<EntOwnerStall>();
+		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
+		log.info("v2.0.0.2 userId = {} stalllist={}", user.getId() , stalllist.size());
+		if (CollectionUtils.isEmpty(stalllist)) {
+			return authRentStall;
+		}
+		authStallList = stalllist.stream().filter(s -> s.getStallType().equals("2")).collect(Collectors.toList());
+		ownerStallList = stalllist.stream().filter(s -> s.getStallType().equals("1")).collect(Collectors.toList());
+
+		List<Long> preIdAuthList = null;
+		List<Long> stallIdAuthList = null;
+		List<ResStall> resStallList = null;
+		Set<Long> preIds = new HashSet<>();
+		List<Long> stallIds = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(authStallList)) {
+			preIdAuthList = authStallList.stream().map(f -> f.getPreId()).collect(Collectors.toList());
+			stallIdAuthList = authStallList.stream().map(f -> f.getStallId()).collect(Collectors.toList());
+			if (CollectionUtils.isNotEmpty(preIdAuthList)) {
+				preIds.addAll(preIdAuthList);
+			}
+			if (CollectionUtils.isNotEmpty(stallIdAuthList)) {
+				stallIds.addAll(stallIdAuthList);
+			}
+			if (CollectionUtils.isNotEmpty(stallIdAuthList)) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("list", stallIdAuthList);
+				resStallList = this.stallClient.findPreStallList(map);
+				log.info("被授权车位列表 ={}", JsonUtil.toJson(resStallList));
+			}
+		}
+		List<Long> preIdOwnerList = null;
+		List<Long> stallIdOwnerList = null;
+		if (CollectionUtils.isNotEmpty(ownerStallList)) {
+			preIdOwnerList = ownerStallList.stream().map(s -> s.getPreId()).collect(Collectors.toList());
+			if (CollectionUtils.isNotEmpty(preIdOwnerList)) {
+				preIds.addAll(preIdOwnerList);
+			}
+			stallIdOwnerList = ownerStallList.stream().map(s -> s.getStallId()).collect(Collectors.toList());
+			if (CollectionUtils.isNotEmpty(stallIdOwnerList)) {
+				stallIds.addAll(stallIdOwnerList);
+			}
+		}
+		
+		//所拥有的所有车区信息
+		List<EntOwnerPre> preList = ownerStallClusterMapper.findPreByIds(preIds);
+		List<String> gateways = preList.stream().map(pre -> pre.getGateway()).collect(Collectors.toList());
+		List<ResLockInfos> lockInfos = this.feignLockClient.lockLists(gateways);
+		Map<Long, List<ResLockInfo>> tempMap = new HashMap<>();
+		for (ResLockInfos info : lockInfos) {
+			for (EntOwnerPre resPre : preList) {
+				if (resPre.getGateway().equals(info.getGroupId())) {
+					tempMap.put(resPre.getPreId(), info.getInfos());
+					break;
+				}
+			}
+		}
+		
+		//当前所有车位长租使用记录列表
+		Map<String, Object> map = new HashMap<>();
+		map.put("list", stallIds);
+		List<EntRentedRecord> records = this.recordService.findLastByStallIds(stallIds);
+		log.info("rent record list = {}",JSON.toJSON(records));
+		
+		/*if ("0".equals(location.getSwitchFlag())) {
+			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
+			if (record != null) {
+				rentUser = new ResHaveRentPre();
+				ResStallEntity resStallEntity = this.stallClient.findById(record.getStallId());
+				rentUserStallList = new ArrayList<>();
+				rentUserStall = new ResHaveRentPreStall();
+				rentUserStall.setDownLockTime(record.getDownTime());
+				rentUserStall.setStallStatus(resStallEntity.getStatus());
+				rentUserStall.setStallId(record.getStallId());
+				rentUserStall.setUseUpLockTime(record.getLeaveTime());
+				rentUserStall.setStallName(record.getStallName());
+				rentUserStall.setPreId(record.getPreId());
+				rentUserStall.setPreName(record.getPreName());
+				rentUserStall.setLockSn(resStallEntity.getLockSn());
+				rentUserStall.setStallStatus(resStallEntity.getStatus().intValue());
+				if (stallIdOwnerList.contains(rentUserStall.getStallId())) {
+					rentUserStall.setIsUserRecord(1);
+					rentUserStall.setUserStatus(1);
+					if (CollectionUtils.isEmpty(stalllist)) {
+						for (EntOwnerStall ownerStall : stalllist) {
+							if (ownerStall.getStallId().equals(record.getStallId())) {
+								rentUserStall.setValidity(
+										DateUtils.convert(ownerStall.getEndTime(), DateUtils.DARW_FORMAT_TIME));
+								rentUserStall.setLockSn(ownerStall.getLockSn());
+								break;
+							}
+						}
+					}
+				} else if (stallIdAuthList != null && stallIdAuthList.contains(record.getStallId())) {
+					// 此处若授权记录超过当前时间则过期，会出现空指针异常
+					AuthRecord authRecord = this.authRecordService.findByUserId(user.getId(), record.getStallId());
+					rentUserStall.setValidity(authRecord.getEndTime());
+				} else {
+					AuthRecord authRecord = this.authRecordService.findByUserId(user.getId(), record.getStallId());
+					if (authRecord != null) {
+						rentUserStall.setValidity(authRecord.getEndTime());
+					} else {
+						rentUserStall.setValidity(new Date());
+					}
+				}
+				ResLockInfo lockInfo = this.feignLockClient.lockInfo(resStallEntity.getLockSn());
+				if (lockInfo != null) {
+					rentUserStall.setBattery(lockInfo.getElectricity());
+					rentUserStall.setParkingState(lockInfo.getParkingState());
+					rentUserStall.setGatewayStatus(lockInfo.getOnlineState());
+					if (lockInfo.getLockState() == 1) {
+						rentUserStall.setLockStatus(lockInfo.getLockState());
+					} else {
+						rentUserStall.setLockStatus(2);
+					}
+				}
+				for (EntOwnerPre pre : preList) {
+					if (pre.getPreId() == rentUserStall.getPreId()) {
+						rentUser = new ResHaveRentPre();
+						rentUser.setPreId(pre.getPreId());
+						rentUser.setPreName(pre.getPreName());
+						rentUser.setAddress(pre.getAddress());
+						rentUser.setLatitude(pre.getLatitude());
+						rentUser.setLongitude(pre.getLongitude());
+						rentUserStall.setUnderLayer(pre.getUnderLayer());
+						rentUser.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(),
+								new Double(pre.getLatitude()), new Double(pre.getLongitude())));
+						rentUserList.add(rentUser);
+					}
+				}
+				rentUserStallList.add(rentUserStall);
+				rentUser.setRentPreStalls(rentUserStallList);
+				authRentStall.setRentPres(rentUserList);
+				return authRentStall;
+			}
+		}*/
+		
+		for (EntOwnerPre pre : preList) {
+			rentUser = new ResHaveRentPre();
+			rentUser.setPreId(pre.getPreId());
+			rentUser.setPreName(pre.getPreName());
+			rentUser.setAddress(pre.getAddress());
+			rentUser.setLatitude(pre.getLatitude());
+			rentUser.setLongitude(pre.getLongitude());
+			rentUser.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(),
+					new Double(pre.getLatitude()), new Double(pre.getLongitude())));
+			rentUserStallList = new ArrayList<>();
+			// 自有长租用户车位
+			if (CollectionUtils.isNotEmpty(ownerStallList)) {
+				for (EntOwnerStall enttall : ownerStallList) {
+					if (pre.getPreId().equals(enttall.getPreId())) {
+						rentUserStall = new ResHaveRentPreStall();
+						rentUserStall.setStallStatus(enttall.getStatus().intValue());
+						rentUserStall.setUnderLayer(pre.getUnderLayer());
+						rentUserStall.setStallStatus(enttall.getStatus().intValue());
+						rentUserStall.setLockSn(enttall.getLockSn());
+						if (tempMap != null && !tempMap.isEmpty()) {
+							for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
+								if (info.getKey() == pre.getPreId()) {
+									for (ResLockInfo inf : info.getValue()) {
+										if (inf.getLockCode().equals(enttall.getLockSn())) {
+											rentUserStall.setBattery(inf.getElectricity());
+											rentUserStall.setParkingState(inf.getParkingState());
+											rentUserStall.setGatewayStatus(inf.getOnlineState());
+											if (inf.getLockState() == 1) {
+												log.info(inf.getLockCode() + "===" + inf.getLockState());
+												rentUserStall.setLockStatus(inf.getLockState());
+											} else {
+												rentUserStall.setLockStatus(2);
+											}
+											break;
+										}
+									}
+								}
+							}
+						}
+
+						for (EntRentedRecord resRentedRecord : records) {
+							if (resRentedRecord.getStallId().equals(enttall.getStallId())) {
+								switch (rentUserStall.getLockStatus()) {
+								case 1:
+									rentUserStall.setUseUpLockTime(resRentedRecord.getLeaveTime());
+									break;
+								case 2:
+									rentUserStall.setDownLockTime(resRentedRecord.getDownTime());
+									break;
+								}
+								if (resRentedRecord.getUserId() != user.getId()
+										&& resRentedRecord.getType().intValue() == 2
+										&& enttall.getStatus().intValue() == 2) {
+									AuthRecord re = this.authRecordService.findByUserId(resRentedRecord.getUserId(),
+											resRentedRecord.getStallId());
+									rentUserStall.setIsAuthUser(1);
+									rentUserStall.setIsUserRecord(1);
+									rentUserStall.setUseUserMobile(re.getMobile());
+									rentUserStall.setUseUserName(re.getUsername());
+									break;
+								}
+							}
+						}
+						rentUserStall.setUserStatus(1);
+						rentUserStall.setPreId(pre.getPreId());
+						rentUserStall.setPreName(pre.getPreName());
+						rentUserStall.setStallId(enttall.getStallId());
+						rentUserStall.setStallName(enttall.getStallName());
+						rentUserStall.setStallStatus(enttall.getStatus().intValue());
+						rentUserStall.setValidity(DateUtils.convert(enttall.getEndTime(), DateUtils.DARW_FORMAT_TIME));
+						rentUserStallList.add(rentUserStall);
+					}
+				}
+			}
+			if (CollectionUtils.isNotEmpty(authStallList)) {
+				// 被授权用户车位
+				for (EntOwnerStall authRecord : authStallList) {
+					if (pre.getPreId().equals(authRecord.getPreId())) {
+						for (ResStall resStall : resStallList) {
+							if (resStall.getId().equals(authRecord.getStallId())) {
+								rentUserStall = new ResHaveRentPreStall();
+								if (tempMap != null && !tempMap.isEmpty()) {
+									for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
+										if (info.getKey() == pre.getPreId()) {
+											for (ResLockInfo inf : info.getValue()) {
+												if (inf.getLockCode().equals(resStall.getLockSn())) {
+													rentUserStall.setParkingState(inf.getParkingState());
+													rentUserStall.setBattery(inf.getElectricity());
+													rentUserStall.setGatewayStatus(inf.getOnlineState());
+													if (inf.getLockState() == 1) {
+														log.info(inf.getLockCode() + "===" + inf.getLockState());
+														rentUserStall.setLockStatus(inf.getLockState());
+													} else {
+														rentUserStall.setLockStatus(2);
+													}
+													break;
+												}
+											}
+										}
+									}
+								}
+								for (EntRentedRecord resRentedRecord : records) {
+									if (resRentedRecord.getStallId().equals(resStall.getId())) {
+										switch (rentUserStall.getLockStatus()) {
+										case 1:
+											rentUserStall.setUseUpLockTime(resRentedRecord.getLeaveTime());
+											break;
+										case 2:
+											rentUserStall.setDownLockTime(resRentedRecord.getDownTime());
+											break;
+										}
+										break;
+									}
+								}
+								rentUserStall.setStallStatus(resStall.getStatus());
+								rentUserStall.setPreId(pre.getPreId());
+								rentUserStall.setUnderLayer(pre.getUnderLayer());
+								rentUserStall.setPreName(pre.getPreName());
+								rentUserStall.setStallId(resStall.getId());
+								rentUserStall.setStallName(resStall.getStallName());
+								rentUserStall.setStallStatus(resStall.getStatus().intValue());
+								rentUserStall.setLockSn(resStall.getLockSn());
+								rentUserStall.setValidity(
+										DateUtils.convert(authRecord.getEndTime(), DateUtils.DARW_FORMAT_TIME));
+								rentUserStallList.add(rentUserStall);
+							}
+						}
+					}
+				}
+			}
+			rentUser.setRentPreStalls(rentUserStallList);
+		}
+		rentUserList.add(rentUser);
+		authRentStall.setRentPres(rentUserList);
+		return authRentStall;
 	}
 	
 }
