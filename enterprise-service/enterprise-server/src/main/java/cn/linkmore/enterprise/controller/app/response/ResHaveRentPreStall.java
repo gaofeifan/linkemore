@@ -92,6 +92,18 @@ public class ResHaveRentPreStall {
 	
 	@ApiModelProperty(value="当车位状态为使用中时  使用是否是被授权用户  0是授权用户 1被授权用户")
 	private int isAuthUser = 0;
+	
+	@ApiModelProperty(value="当车位状态为使用中时  使用是否是自用  0是自用 1他用")
+	private int isSelfUser = 0;
+	
+	public int getIsSelfUser() {
+		return isSelfUser;
+	}
+
+	public void setIsSelfUser(int isSelfUser) {
+		this.isSelfUser = isSelfUser;
+	}
+
 	public String getPreName() {
 		return preName;
 	}

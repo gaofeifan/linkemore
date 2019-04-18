@@ -128,7 +128,6 @@ public class ResRentUserStall {
 		this.stallId = stallId;
 	}
 
-	@JsonFormat(pattern="yy-MM-dd",timezone="GMT+8")
 	public Date getValidity() {
 		return validity;
 	}
