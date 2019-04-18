@@ -568,7 +568,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				rentUserStall.setUseUpLockTime(record.getLeaveTime());
 				rentUserStall.setStallName(record.getStallName());
 				rentUserStall.setLockSn(resStallEntity.getLockSn());
-				if(stallIdOwnerList.contains(rentUserStall.getStallId())) {
+				if(stallIdOwnerList!=null && stallIdOwnerList.contains(rentUserStall.getStallId())) {
 					rentUserStall.setIsUserRecord(1);
 					rentUserStall.setUserStatus(1);
 					if(stalllist != null && stalllist.size() != 0) {
