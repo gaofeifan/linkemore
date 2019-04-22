@@ -158,7 +158,6 @@ public class ResHaveRentPreStall {
 		this.unusualBattery = unusualBattery;
 	}
 
-	@JsonFormat(pattern="yy-MM-dd HH:mm",timezone="GMT+8")
 	public Date getUseUpLockTime() {
 		return useUpLockTime;
 	}
@@ -167,7 +166,6 @@ public class ResHaveRentPreStall {
 		this.useUpLockTime = useUpLockTime;
 	}
 
-	@JsonFormat(pattern="yy-MM-dd HH:mm",timezone="GMT+8")
 	public Date getDownLockTime() {
 		return downLockTime;
 	}
@@ -266,5 +264,4 @@ public class ResHaveRentPreStall {
 		this.lockSn = lockSn;
 	}
 
-	
 }
