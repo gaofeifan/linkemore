@@ -11,9 +11,6 @@ public class ResHaveRentList {
 	@ApiModelProperty(value = "可用车位数量")
 	private int num = 0;
 	
-	@ApiModelProperty(value = "分享标识 0默认 不提示分享车位,1提示分享车位",required=false)
-	private int share = 0;
-
 	@ApiModelProperty(value = "长租车区列表")
 	private List<ResHaveRentPre> rentPres;
 	
@@ -32,14 +29,6 @@ public class ResHaveRentList {
 
 	public void setNum(int num) {
 		this.num = num;
-	}
-
-	public int getShare() {
-		return share;
-	}
-
-	public void setShare(int share) {
-		this.share = share;
 	}
 
 	public List<ResHaveRentPre> getRentPres() {
