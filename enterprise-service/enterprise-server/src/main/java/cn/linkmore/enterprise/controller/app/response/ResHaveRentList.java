@@ -14,7 +14,7 @@ public class ResHaveRentList {
 	@ApiModelProperty(value = "分享标识 0默认 不提示分享车位,1提示分享车位",required=false)
 	private int share = 0;
 
-	@ApiModelProperty(value = "用户车区数据集")
+	@ApiModelProperty(value = "长租车区列表")
 	private List<ResHaveRentPre> rentPres;
 	
 	public int getNum() {

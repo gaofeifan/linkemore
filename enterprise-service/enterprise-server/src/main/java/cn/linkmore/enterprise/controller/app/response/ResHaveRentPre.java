@@ -25,7 +25,7 @@ public class ResHaveRentPre {
 	@ApiModelProperty(value = "距离")
 	private String distance;
 
-	@ApiModelProperty(value = "长租车位")
+	@ApiModelProperty(value = "长租车位列表")
 	private List<ResHaveRentPreStall> rentPreStalls = null;
 
 	public Long getPreId() {
