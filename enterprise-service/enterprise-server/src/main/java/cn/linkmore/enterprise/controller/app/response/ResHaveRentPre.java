@@ -4,7 +4,7 @@ import java.util.List;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-@ApiModel("长租车区信息")
+@ApiModel("长租车区信息-最新版")
 public class ResHaveRentPre {
 
 	@ApiModelProperty(value = "车区id")
