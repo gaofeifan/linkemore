@@ -1,9 +1,6 @@
 package cn.linkmore.enterprise.controller.app.response;
 
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 @ApiModel("长租车位信息-最新版")
@@ -130,7 +127,6 @@ public class ResHaveRentPreStall {
 		this.stallId = stallId;
 	}
 
-	@JsonFormat(pattern="yy-MM-dd",timezone="GMT+8")
 	public Date getValidity() {
 		return validity;
 	}
