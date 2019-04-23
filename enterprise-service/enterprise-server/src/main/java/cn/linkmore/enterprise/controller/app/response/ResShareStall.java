@@ -12,7 +12,7 @@ public class ResShareStall {
 	private String describe = "您的朋友分享给您一个长租车位，查看一下";
 	
 	@ApiModelProperty(value="路径")
-	private String image="https://oss.pabeitech.com/image/2019/04/10/275_max.png";
+	private String image="https://oss.pabeitech.com/image/2019/04/23/276_max.jpg";
 
 	@ApiModelProperty(value="点击事件")
 	private String clickEvent;
