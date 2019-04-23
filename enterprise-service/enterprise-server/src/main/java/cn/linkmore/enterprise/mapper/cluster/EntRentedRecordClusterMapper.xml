@@ -163,7 +163,7 @@
 	<select id="findParkingRecord"  resultMap="BaseResultMap">
     select 
 	 er.id, er.user_id,er.status, er.plate_no, er.down_time, er.leave_time, er.stall_id, er.stall_name, er.pre_id, 
-    er.pre_name,er.type,u.username,u.mobile
+    er.pre_name,er.type,u.nickname as username,u.mobile
     from t_ent_rented_record er
     left join t_user u on er.user_id = u.id
     where er.status = 1
