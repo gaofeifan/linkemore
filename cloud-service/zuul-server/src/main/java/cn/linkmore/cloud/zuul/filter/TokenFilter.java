@@ -102,6 +102,12 @@ public class TokenFilter extends ZuulFilter {
 			add("/staff/auth/login");  
 			add("/staff/vehicle-brands");  
 			add("/staff/auth/check-mobile");  
+			add("/staff/auth/login-pw");  
+			add("/staff/auth/send-reset");  
+			add("/staff/auth/v2.0/edit-pw-auth");  
+			add("/staff/auth/auth-code");  
+			add("/staff/auth/check-account");  
+			add("/staff/auth/reset");  
 			
 			add("/open/auth/token");
 			add("/open/auth/t");

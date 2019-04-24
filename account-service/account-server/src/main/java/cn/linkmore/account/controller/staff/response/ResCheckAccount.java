@@ -35,4 +35,14 @@ public class ResCheckAccount {
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
 	}
+
+	public short getBindStatus() {
+		return bindStatus;
+	}
+
+	public void setBindStatus(short bindStatus) {
+		this.bindStatus = bindStatus;
+	}
+	
+	
 }

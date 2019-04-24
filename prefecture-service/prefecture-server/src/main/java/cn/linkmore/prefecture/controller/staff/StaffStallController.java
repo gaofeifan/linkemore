@@ -65,7 +65,6 @@ public class StaffStallController {
 	
 	@RequestMapping(value="/stall-detail",method=RequestMethod.GET)
 	@ResponseBody
-	
 	@ApiOperation(value = "车位详情", notes = "车位详情", consumes = "application/json")
 	public ResponseEntity<ResStaffStallDetail> findStaffStallDetails(HttpServletRequest request,  @ApiParam("车位id") @NotNull(message="车位id不能为空") @RequestParam("stallId") Long stallId) {
 		ResStaffStallDetail detail = this.stallService.findStaffStallDetails(request,stallId);
@@ -150,7 +149,7 @@ public class StaffStallController {
 	@ApiOperation(value = "删除车位锁", notes = "删除车位锁")
 	@RequestMapping(value = "/remove-stall-lock", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> removeStallLock(HttpServletRequest request, @ApiParam(value="车位id",required=true) @NotBlank(message="车位id不能为空") @RequestParam(value = "stallId",required= true) Long stallId ) {
+	public ResponseEntity<?> removeStallLock(HttpServletRequest request, @ApiParam(value="车位id",required=true) @NotNull(message="车位id不能为空") @RequestParam(value = "stallId",required= true) Long stallId ) {
 		ResponseEntity<Boolean> response = null;
 		try {
 			this.stallService.removeStallLock(stallId,request);

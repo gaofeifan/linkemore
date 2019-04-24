@@ -75,6 +75,7 @@ import cn.linkmore.prefecture.controller.staff.response.ResStaffStallDetail;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallList;
 import cn.linkmore.prefecture.controller.staff.response.ResStaffStallSn;
 import cn.linkmore.prefecture.core.lock.LockFactory;
+import cn.linkmore.prefecture.core.lock.LockService;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthCityClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthPreClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.AdminAuthStallClusterMapper;
@@ -212,7 +213,6 @@ public class StallServiceImpl implements StallService {
 	private BaseDictClient baseDictClient;
 	@Autowired
 	private FixedPlateClient fixedPlateClient;
-	
 	private ConcurrentHashMap<Long, String> osMap = new ConcurrentHashMap<>();
 	@Autowired
 	private StallOperateLogService stallOperateLogService;
@@ -1427,7 +1427,7 @@ public class StallServiceImpl implements StallService {
 	/**
 	 * 管理版锁操作
 	 */
-	@Override
+	/*@Override
 	public void operating(ReqControlLock reqc) {
 		TaskPool.getInstance().task(new Runnable() {
 			@Override
@@ -1454,9 +1454,9 @@ public class StallServiceImpl implements StallService {
 						}else if(stall.getType() == 2) {
 							if(reqc.getStatus() == 1) {
 								stall.setLockStatus(2);
-								if (stall.getStatus() != 4) {
-									stall.setStatus(2);
-								}
+//								if (stall.getStatus() != 4) {
+//									stall.setStatus(2);
+//								}
 							} else if (reqc.getStatus() == 2) {
 								if (stall.getStatus() != 4) {
 									stall.setStatus(1);
@@ -1482,12 +1482,125 @@ public class StallServiceImpl implements StallService {
 		
 			});
 		
+	}*/
+	/**
+	 * 管理版锁操作
+	 */
+	@Override
+	public void operating(ReqControlLock reqc) {
+		boolean flag = false;
+		String uid = String.valueOf(redisService.get(reqc.getKey()));
+		Stall stall = stallClusterMapper.findById(reqc.getStallId());
+		if (stall != null && StringUtils.isNotBlank(stall.getLockSn())) {
+			log.info("operating············name:{},··········sn:{},··········uid:{}", stall.getStallName(),
+					stall.getLockSn(), uid);
+			// 争抢
+			String robkey = RedisKey.ROB_STALL_ISHAVE.key + reqc.getStallId();
+			/*
+			Boolean have = true;
+			try {
+				have = this.redisLock.getLock(robkey, reqc.getUserId());
+				log.info("用户=======>" + reqc.getUserId() + (have == true ? "已抢到" : "未抢到") + "锁" + robkey);
+			} catch (Exception e) {
+				log.info("用户争抢锁异常信息{}",e.getMessage());
+			}
+			if (!have) {
+				throw new BusinessException(StatusEnum.APPOINT_FAIL_CHECK);
+			}
+			// 放入缓存
+			String rediskey = RedisKey.ACTION_STALL_DOING.key + reqc.getStallId();
+			this.redisService.set(rediskey, reqc.getUserId(), ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+			log.info("用户>>>" + reqc.getUserId() + "缓存>>>" + rediskey);
+			log.info("用户>>>" + reqc.getUserId() + "调用>>>" + reqc.getStallId());
+			log.info("<<<<<<<<<controling>>>>>>>>>>>>name:{},sn:{}", stall.getStallName(), stall.getLockSn());
+			
+			// 1 降下
+			Stopwatch stopwatch = Stopwatch.createStarted();*/
+			ResLockMessage res = null;
+			// 1 降下 2 升起
+			if (reqc.getStatus() == 1) {
+				res = lockTools.downLockMes(stall.getLockSn());
+			} else if (reqc.getStatus() == 2) {
+				res = lockTools.upLockMes(stall.getLockSn());
+			}
+			int code = res.getCode();
+			log.info(" operating··············" + res + " code·············" + code);
+//			stopwatch.stop();
+			redisService.remove(robkey);
+			if (code == 200) {
+				flag = true;
+				//去掉空闲车位
+//				redisService.remove(rediskey);
+				this.redisService.remove(RedisKey.PREFECTURE_FREE_STALL.key + stall.getPreId(), stall.getLockSn());
+				this.redisService.remove(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqc.getStallId() + reqc.getUserId());
+				if(stall.getType() == 1) {
+					redisService.remove(reqc.getKey());
+					stall.setLockStatus(reqc.getStatus() == 1 ? 2 : 1);
+					stallMasterMapper.lockdown(stall);
+				}else if(stall.getType() == 2) {
+					if(reqc.getStatus() == 1) {
+						stall.setLockStatus(2);
+//								if (stall.getStatus() != 4) {
+//									stall.setStatus(2);
+//								}
+					} else if (reqc.getStatus() == 2) {
+						if (stall.getStatus() != 4) {
+							stall.setStatus(1);
+						}
+						stall.setLockStatus(1);
+					}
+				}
+				stallMasterMapper.lockdown(stall);
+				if (reqc.getStatus() == 1) {
+					downLock(reqc.getStallId(), 1,reqc.getType());
+				}
+				
+			}else if(code == 500){
+				if (reqc.getStatus() == 1) {
+					downLock(reqc.getStallId(), 0,reqc.getType());
+				}
+				if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqc.getStallId() + reqc.getUserId())) {
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+				} else {
+					this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqc.getStallId() + reqc.getUserId(), 1,
+							ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
+					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+				}
+				
+			}else {
+				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+			}
+			sendMsgT(uid, reqc.getStatus(), code);
+		}
+		//解锁
+		redisLock.unlock1(reqc.getRobkey());
 	}
 	
 	/**
 	 * 管理版锁操作
 	 */
 	@Override
+	public void operatingsn(ReqControlLock reqc) {
+		String uid = String.valueOf(redisService.get(reqc.getKey()));
+		
+		if (reqc != null && StringUtils.isNotBlank(reqc.getLockSn())) {
+			log.info("operating··········sn:{},··········uid:{}", reqc.getLockSn(), uid);
+			Boolean res = null;
+			// 1 降下 2 升起
+			if (reqc.getStatus() == 1) {
+				res = lockTools.downLock(reqc.getLockSn());
+			} else if (reqc.getStatus() == 2) {
+				res = lockTools.upLock(reqc.getLockSn());
+			}
+			int code = res == false ? 500:200;
+			if (code == 200) {
+				redisService.remove(reqc.getKey());
+			}
+			log.info(" operating··············" + res + " code·············" + code);
+			sendMsgT(uid, reqc.getStatus(), code);
+		}
+	}
+/*	@Override
 	public void operatingsn(ReqControlLock reqc) {
 		TaskPool.getInstance().task(new Runnable() {
 			@Override
@@ -1513,7 +1626,7 @@ public class StallServiceImpl implements StallService {
 			}
 		});
 	}
-
+*/
 	void sendMsgT(String uid, Integer lockstatus, int code) {
 		TaskPool.getInstance().task(new Runnable() {
 			@Override
@@ -1840,7 +1953,9 @@ public class StallServiceImpl implements StallService {
 			CacheUser cu = (CacheUser) this.redisService
 					.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 			ResAdminUser user = this.adminUserService.find(cu.getId());
-			stallSn.setGatewayDelete(user.getGatewayDelete());
+			if(user != null && user.getGatewayDelete() != null) {
+				stallSn.setGatewayDelete(user.getGatewayDelete());
+			}
 		}
 		if(lock != null) {
 			stallSn.setBindStata(2);
@@ -2447,6 +2562,7 @@ public class StallServiceImpl implements StallService {
 		if(stall.getStatus() != 4) {
 			throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
 		}
+//		this.stallMasterMapper.delete(stall.getId());
 		stallLockMasterMapper.delete(stall.getLockId());
 		lockFactory.getLock().removeLock(stall.getLockSn());
 		stall.setLockId(null);

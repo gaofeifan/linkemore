@@ -29,4 +29,6 @@ public interface RentedRecordService {
 
 	List<EntRentedRecord> findParkingRecord(List<Long> collect, Integer pageNo, Long stallId);
 
+	void updateRecordBatch(List<EntRentedRecord> chengsRecord);
+
 }

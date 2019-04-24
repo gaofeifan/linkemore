@@ -19,4 +19,6 @@ public interface AdminAuthClusterMapper {
 
 	ResAdminAuth findById(Long id);
 
+	List<ResAdminAuth> findUserAuthByUserId(Long id);
+
 }

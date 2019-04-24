@@ -66,7 +66,7 @@ public interface StaffAdminUserService {
 	 */
 	ResAdmin login(ReqLoginPw rl, HttpServletRequest request);
 
-	boolean bindMobile(String mobile, HttpServletRequest request);
+	boolean bindMobile(String mobile, HttpServletRequest request, String code);
 
 	ResCheckAccount checkAccount(String account);
 

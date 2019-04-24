@@ -70,7 +70,7 @@ public class ResRentUserStall {
 	/**
 	 *  是否显示使用记录 0 显示 1不 显示
 	 */ 
-	@ApiModelProperty(value="是否显示使用记录 0 显示 1不 显示 ")
+	@ApiModelProperty(value="是否显示使用记录 1 显示 0不显示 ")
 	private int isUserRecord=0;
 	
 	/**

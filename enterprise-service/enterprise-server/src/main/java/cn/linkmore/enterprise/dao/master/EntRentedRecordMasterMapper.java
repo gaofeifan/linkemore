@@ -1,5 +1,6 @@
 package cn.linkmore.enterprise.dao.master;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -32,5 +33,7 @@ public interface EntRentedRecordMasterMapper {
 	void updateRentUserStatus(Map<String, Object> map);
 
 	void updateType(@Param("id")Long id, @Param("type")Short type);
+
+	void updateRecordBatch(List<EntRentedRecord> chengsRecord);
 	
 }

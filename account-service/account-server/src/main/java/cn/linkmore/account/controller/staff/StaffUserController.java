@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.account.service.StaffAdminUserService;
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -42,10 +43,24 @@ public class StaffUserController {
 			@ApiParam("手机号") 
 			@NotBlank(message="手机号不能为空") 
 			@Pattern(regexp="^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(16[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|(19[0-9]{1}))+\\d{8})$", message="无效手机号") 
-	        @RequestParam("mobile") String mobile, HttpServletRequest request){
+	        @RequestParam("mobile") String mobile, HttpServletRequest request,
+	        @ApiParam("验证码") 
+			@NotBlank(message="验证码不能为空") 
+			@Size(min=4, max=4,message="验证码长度为4位有效字符串") 
+	        @RequestParam("code") String code
+			){
 		ResponseEntity<Boolean> response = null; 
-		boolean flag = this.staffAdminUserService.bindMobile(mobile,request);
-		response = ResponseEntity.success(flag, request);
+		try {
+			boolean flag = this.staffAdminUserService.bindMobile(mobile,request,code);
+			response = ResponseEntity.success(flag, request);
+		} catch (Exception e) {
+			if(e instanceof BusinessException) {
+				BusinessException be =(BusinessException)e;
+				return ResponseEntity.fail(be.getStatusEnum(), request);
+			}else {
+				return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
+			}
+		}
 		return response;
 	}
 	@ApiOperation(value="更换手机号",notes="更换手机号", consumes = "application/json")
@@ -59,12 +74,22 @@ public class StaffUserController {
 			HttpServletRequest request,
 			@NotBlank(message="验证码不能为空") 
 			@ApiParam(value="code",required=true)
-			@Size(min=4, max=4,message="验证码长度为4位有效字符串")  
+			@Size(min=4, max=4,message="验证码长度为4位有效字符串")  @RequestParam("code") 
 			String code
 			){
 		ResponseEntity<Boolean> response = null; 
-		boolean flag = this.staffAdminUserService.editMobile(mobile,request,code);
-		response = ResponseEntity.success(flag, request);
+		try {
+			boolean flag = this.staffAdminUserService.editMobile(mobile,request,code);
+			response = ResponseEntity.success(flag, request);
+		} catch (Exception e) {
+			if(e instanceof BusinessException) {
+				BusinessException be =(BusinessException)e;
+				return ResponseEntity.fail(be.getStatusEnum(), request);
+			}else {
+				return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
+			}
+		}
 		return response;
 	}
+	
 }

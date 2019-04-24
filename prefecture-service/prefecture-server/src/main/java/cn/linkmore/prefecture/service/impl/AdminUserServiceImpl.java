@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 	
 
 	private static final String ADMIN = "admin-";
+	private static final String ADMIN_ALL = "admin-all";
+	private static final String ADMIN_ENT = "admin-ent";
 	/*
 	 * 管理员列表
 	 */
@@ -102,6 +105,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 		admin.setUpdateTime(new Date());
 		AdminUser adminUser = new AdminUser();
 		adminUser = ObjectUtils.copyObject(admin, adminUser);
+		adminUser.setPassword(Md5PW.md5(adminUser.getCellphone(), adminUser.getPassword()));
 		return this.adminUserMasterMapper.save(adminUser);
 	}
 	
@@ -110,6 +114,13 @@ public class AdminUserServiceImpl implements AdminUserService {
 		admin.setUpdateTime(new Date());
 		AdminUser adminUser = new AdminUser();
 		adminUser = ObjectUtils.copyObject(admin, adminUser);
+		ResAdminUser user = this.find(admin.getId());
+		if(org.apache.commons.lang3.StringUtils.isNoneBlank(adminUser.getPassword())) {
+			if(org.apache.commons.lang3.StringUtils.isNoneBlank(user.getPassword()) && !user.getPassword().equals(adminUser.getPassword())) {
+				adminUser.setPassword(Md5PW.md5(adminUser.getCellphone(), adminUser.getPassword()));
+			}
+		}
+		
 		return this.adminUserMasterMapper.update(adminUser);
 	}
 	/*
@@ -221,17 +232,18 @@ public class AdminUserServiceImpl implements AdminUserService {
 			admin.setGatewayDelete(user.getGatewayDelete());
 			admin.setUpdateTime(user.getUpdateTime());
 			admin.setStatus(user.getStatus());
-			Map<String, Object> map = new HashMap<>();
-			List<ResAdminAuth> list = this.adminAuthClusterMapper.findList(map);
-			this.adminUserAuthClusterMapper.findList(map);
-			for (ResAdminAuth resAdminAuth : list) {
-				if(resAdminAuth.getCode()!= null && resAdminAuth.getCode().contains(ADMIN)) {
-					admin.setIsOperate(true);
-					if(resAdminAuth.getCode().equals(ResAdmin.ADMIN_ALL)) {
-						admin.setType(ResAdmin.ADMIN_ALL);
-						admin.setCode(ResAdmin.ADMIN_ALL_CODE);
-					}
-				}
+			List<ResAdminAuth> list = this.adminAuthClusterMapper.findUserAuthByUserId(user.getId());
+			admin.setType("2");
+			admin.setCode(ADMIN_ENT);
+			if(list != null && list.size() != 0) {
+				 ResAdminAuth adminAuth = list.get(list.size()-1);
+				 if( adminAuth.getCode()!= null) {
+					 admin.setIsOperate(true);
+					 if( adminAuth.getCode().equals(ADMIN_ALL) ) {
+						 admin.setCode(ADMIN_ALL);
+						 admin.setType("1");
+					 }
+				 }
 			}
 			return admin;
 		}
@@ -241,6 +253,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 	@Override
 	public ResAdmin findAccountName(String accountName) {
 		ResAdminUser user = this.adminUserClusterMapper.findAccountName(accountName);
+		if(user == null) {
+			return null;
+		}
 		ResAdmin admin = new ResAdmin();
 		admin.setId(user.getId());
 		admin.setCellphone(user.getCellphone());
@@ -279,4 +294,14 @@ public class AdminUserServiceImpl implements AdminUserService {
 	
 	
 	
+}
+class Md5PW{
+	private static final String LINKEMORE = "LINKEMORE";
+	public static String md5(String mobile ,String password) {
+		if(mobile == null) {
+			mobile = "";
+		}
+		String hex = DigestUtils.md5Hex(LINKEMORE+mobile+password);
+		return hex;
+	}
 }

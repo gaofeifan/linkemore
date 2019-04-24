@@ -13,8 +13,8 @@ import io.swagger.annotations.ApiParam;
 
 @ApiModel("重置密码")
 public class ReqReset {
-	@NotBlank(message="账号不能为空") 
-	@ApiModelProperty(value="account")
+//	@NotBlank(message="账号不能为空") 
+	@ApiModelProperty(value="account",required=false)
 	private String account;
 	@NotBlank(message="token不能为空") 
 	@Size(min=32, max=32,message="token长度为32位有效字符串")  

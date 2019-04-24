@@ -27,8 +27,10 @@ import cn.linkmore.enterprise.controller.staff.request.SraffReqConStallSn;
 import cn.linkmore.enterprise.controller.staff.request.StallOnLineRequest;
 import cn.linkmore.enterprise.controller.staff.request.StallOperateRequestBean;
 import cn.linkmore.enterprise.dao.cluster.BaseDictMapper;
+import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
 import cn.linkmore.enterprise.entity.BaseDict;
+import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.entity.StallOperateLog;
 import cn.linkmore.enterprise.service.StaffPrefectureService;
 import cn.linkmore.order.client.OrderClient;
@@ -67,6 +69,8 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	private UserFactory staffUserFactory = StaffUserFactory.getInstance();
 	@Autowired
 	private RedisLock redisLock;
+	@Autowired
+	private EntRentedRecordClusterMapper entRentedRecordClusterMapper;
 	@Autowired
 	private EntRentedRecordMasterMapper rentedRecordMasterMapper;
 	@Autowired
@@ -136,10 +140,15 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		reqc.setRobkey(robkey);
 		reqc.setType(stall.getType());
 		stallClient.managerlock(reqc);
-		if(stall.getType() == 2 && reqOperatStall.getState() == 2) {
-			Map<String, Object> map = new HashMap<>();
-			map.put("stallId", reqc.getStallId());
-			rentedRecordMasterMapper.updateRentUserStatus(map );
+		if(/*stall.getType() == 2 &&遗弃 新需求所有人员升锁关闭用户使用记录 */reqOperatStall.getState().intValue() == 2) {
+//			Map<String, Object> map = new HashMap<>();
+//			map.put("stallId", reqc.getStallId());
+//			rentedRecordMasterMapper.updateRentUserStatus(map );
+			EntRentedRecord record = this.entRentedRecordClusterMapper.findByStallId(reqc.getStallId());
+			if(record.getStatus().intValue() != 1) {
+				record.setStatus(1L);
+				this.rentedRecordMasterMapper.updateById(record);
+			}
 		}
 	}
 

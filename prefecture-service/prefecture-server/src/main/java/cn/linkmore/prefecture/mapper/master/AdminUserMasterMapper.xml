@@ -44,7 +44,7 @@
   <update id="updateMobile" >
     update t_admin_user
     set 
-      mobile = #{mobile}
+      cellphone = #{mobile}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updatePw" >

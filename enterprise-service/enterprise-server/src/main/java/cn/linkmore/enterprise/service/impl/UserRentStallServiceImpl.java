@@ -485,6 +485,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public ResAuthRentStall findStallList(HttpServletRequest request, ReqLocation location) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		List<EntRentedRecord> chengsRecord = new ArrayList<>();
 		ResAuthRentStall authRentStall = new ResAuthRentStall();
 		List<ResRentUser> rentUserList = new ArrayList<>();
 		List<ResRentUserStall> rentUserStallList = null;
@@ -551,7 +552,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 //		log.info(JsonUtil.toJson(stallList));
 		log.info(JsonUtil.toJson(stalllist));
 		Boolean isHave = false;
-		if ("0".equals(location.getSwitchFlag())) { 
+		if ("0".equals(location.getSwitchFlag())) {
 			EntRentedRecord record = entRentedRecordClusterMapper.findByUser(user.getId());
 			if(record != null) {
 				isHave = true;
@@ -632,6 +633,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				return authRentStall;
 			}
 		}
+		
 		authRentStall.setIsHave(isHave);
 		for (ResLockInfos info : lockInfos) {
 			for (EntOwnerPre resPre : preList) {
@@ -685,11 +687,19 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 //					if (enttall.getStatus() == 2) {
 //						rentUserStall.setIsUserUse(1);
 //					}
-					
+//					int stallStatus = 1;
 					for (EntRentedRecord resRentedRecord : records) {
 						if (resRentedRecord.getStallId().equals(enttall.getStallId())) {
 							if (enttall.getStatus().intValue() == 2) {
 								rentUserStall.setRentOmType((short) 1);
+								if(rentUserStall.getLockStatus() == 1) {
+									if(resRentedRecord.getStatus().intValue() != 1 ) {
+										resRentedRecord.setStatus(1l);
+										resRentedRecord.setLeaveTime(new Date());
+										rentUserStall.setStallStatus(1);
+										chengsRecord.add(resRentedRecord);
+									}
+								}
 							}
 							switch (rentUserStall.getLockStatus()) {
 							case 1:
@@ -698,6 +708,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							case 2:
 								rentUserStall.setDownLockTime(resRentedRecord.getDownTime());
 								break;
+							}
+							if(enttall.getLockStatus().longValue() == 1) {
+								rentUserStall.setLockStatus(1);
 							}
 							if (resRentedRecord.getUserId() != user.getId() && resRentedRecord.getType().intValue() == 2 &&enttall.getStatus().intValue() == 2) {
 								AuthRecord re = this.authRecordService.findByUserId(resRentedRecord.getUserId(),
@@ -763,6 +776,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 //							if (resStall.getStatus() == 2) {
 //								rentUserStall.setIsUserUse(1);
 //							}
+							rentUserStall.setStallStatus(resStall.getStatus().intValue());
 							for (EntRentedRecord resRentedRecord : records) {
 								if (resRentedRecord.getStallId().equals(resStall.getId())) {
 									/*if (resRentedRecord.getUserId() != user.getId()
@@ -773,6 +787,14 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										rentUserStall.setUseUserName(re.getUsername());
 										break;
 									}*/
+									if(rentUserStall.getLockStatus() == 1) {
+										if(resRentedRecord.getStatus().intValue() != 1 ) {
+											resRentedRecord.setStatus(1l);
+											resRentedRecord.setLeaveTime(new Date());
+											rentUserStall.setStallStatus(1);
+											chengsRecord.add(resRentedRecord);
+										}
+									}
 									switch (rentUserStall.getLockStatus()) {
 									case 1:
 										rentUserStall.setUseUpLockTime(resRentedRecord.getLeaveTime());
@@ -795,7 +817,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							rentUserStall.setPreName(pre.getPreName());
 							rentUserStall.setStallId(resStall.getId());
 							rentUserStall.setStallName(resStall.getStallName());
-							rentUserStall.setStallStatus(resStall.getStatus().intValue());
+							
 							rentUserStall.setLockSn(resStall.getLockSn());
 							// AuthRecord record = findRecordList.stream().filter(f -> f.getStallId() ==
 							// enttall.getStallId()).findFirst().get();
@@ -865,7 +887,12 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		// }
 		// });
 		authRentStall.setRentUsers(rentUserList);
+		updateRecord(chengsRecord);
 		return authRentStall;
+	}
+
+	private void updateRecord(List<EntRentedRecord> chengsRecord) {
+		this.recordService.updateRecordBatch(chengsRecord);
 	}
 
 	@Override
