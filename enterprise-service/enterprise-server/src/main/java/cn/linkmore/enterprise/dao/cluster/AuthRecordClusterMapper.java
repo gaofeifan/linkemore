@@ -37,7 +37,8 @@ public interface AuthRecordClusterMapper {
 	AuthRecord findByUserId(@Param("userId")Long userId, @Param("stallId")Long stallId);
 	
 	public List<AuthRecord> findAuthUserIdAndStallId(@Param("userId")Long userId, @Param("stallId")Long stallId);
-	List<EntRentedRecord> findAuthRecordByAuthUserId(Long authUserId);
+	
+	public List<AuthRecord> findAuthRecordByAuthUserId(Long authUserId);
 
     
 }

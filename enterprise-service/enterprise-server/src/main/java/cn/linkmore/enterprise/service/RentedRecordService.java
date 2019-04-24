@@ -27,8 +27,8 @@ public interface RentedRecordService {
 
 	List<EntRentedRecord> findLastByStallIds(List<Long> stalls);
 
-	List<EntRentedRecord> findParkingRecord(List<Long> collect, Integer pageNo, Long stallId);
 
 	void updateRecordBatch(List<EntRentedRecord> chengsRecord);
+	List<EntRentedRecord> findParkingRecord(Integer pageNo, Long stallId);
 
 }

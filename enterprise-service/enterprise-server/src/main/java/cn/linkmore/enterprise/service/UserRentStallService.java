@@ -1,19 +1,16 @@
 package cn.linkmore.enterprise.service;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
-import cn.linkmore.enterprise.controller.app.request.ReqConStall;
 import cn.linkmore.enterprise.controller.app.request.ReqLocation;
 import cn.linkmore.enterprise.controller.app.request.ReqUserRentStall;
 import cn.linkmore.enterprise.controller.app.response.OwnerPre;
 import cn.linkmore.enterprise.controller.app.response.OwnerRes;
 import cn.linkmore.enterprise.controller.app.response.ResAuthRentStall;
 import cn.linkmore.enterprise.controller.app.response.ResCurrentOwner;
+import cn.linkmore.enterprise.controller.app.response.ResHaveRentList;
 import cn.linkmore.enterprise.controller.app.response.ResParkingRecord;
 import cn.linkmore.enterprise.controller.app.response.ResRentStallFlag;
-import cn.linkmore.enterprise.controller.app.response.ResRentUser;
 
 /**
  * 用户长租车位
@@ -65,5 +62,7 @@ public interface UserRentStallService {
 	List<ResParkingRecord> parkingRecord(HttpServletRequest request, Integer pageNo, Long stallId);
 
 	List<OwnerPre> authStall(HttpServletRequest request);
+
+	ResHaveRentList findRentStallList(HttpServletRequest request, ReqLocation location);
 
 }

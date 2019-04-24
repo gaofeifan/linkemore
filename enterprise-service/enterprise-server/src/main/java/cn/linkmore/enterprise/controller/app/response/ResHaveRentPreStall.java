@@ -1,12 +1,10 @@
 package cn.linkmore.enterprise.controller.app.response;
 
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-public class ResRentUserStall {
+@ApiModel("长租车位信息-最新版")
+public class ResHaveRentPreStall {
 
 	@ApiModelProperty(value="车区名称")
 	private String preName;
@@ -26,11 +24,6 @@ public class ResRentUserStall {
 	@ApiModelProperty(value="电池电量")
 	private int battery;
 	
-	@ApiModelProperty(value = "长租车位标识一对多标识 默认0 1开启")
-	private Short rentOmType = 0;
-	
-	@ApiModelProperty(value = "长租车位标识多对一标识 默认0 1开启")
-	private Short rentMoType = 0;
 	/**
 	 * 车位状态   0 上方无车 1 上方有车 ，其他值 表示未知
 	 */ 
@@ -68,12 +61,6 @@ public class ResRentUserStall {
 	private int userStatus=0;
 	
 	/**
-	 *  是否显示使用记录 0 显示 1不 显示
-	 */ 
-	@ApiModelProperty(value="是否显示使用记录 0 不显示 1显示 ")
-	private int isUserRecord=0;
-	
-	/**
 	 *  当前是否有用户使用 0有 1无
 	 */ 
 	@ApiModelProperty(value="当前是否有用户使用 0无 1有 ")
@@ -96,6 +83,18 @@ public class ResRentUserStall {
 	
 	@ApiModelProperty(value="当车位状态为使用中时  使用是否是被授权用户  0是授权用户 1被授权用户")
 	private int isAuthUser = 0;
+	
+	@ApiModelProperty(value="当车位状态为使用中时  使用是否是自用  0是自用 1他用")
+	private int isSelfUser = 0;
+	
+	public int getIsSelfUser() {
+		return isSelfUser;
+	}
+
+	public void setIsSelfUser(int isSelfUser) {
+		this.isSelfUser = isSelfUser;
+	}
+
 	public String getPreName() {
 		return preName;
 	}
@@ -155,7 +154,6 @@ public class ResRentUserStall {
 		this.unusualBattery = unusualBattery;
 	}
 
-	@JsonFormat(pattern="yy-MM-dd HH:mm",timezone="GMT+8")
 	public Date getUseUpLockTime() {
 		return useUpLockTime;
 	}
@@ -164,7 +162,6 @@ public class ResRentUserStall {
 		this.useUpLockTime = useUpLockTime;
 	}
 
-	@JsonFormat(pattern="yy-MM-dd HH:mm",timezone="GMT+8")
 	public Date getDownLockTime() {
 		return downLockTime;
 	}
@@ -195,14 +192,6 @@ public class ResRentUserStall {
 
 	public void setUserStatus(int userStatus) {
 		this.userStatus = userStatus;
-	}
-
-	public int getIsUserRecord() {
-		return isUserRecord;
-	}
-
-	public void setIsUserRecord(int isUserRecord) {
-		this.isUserRecord = isUserRecord;
 	}
 
 	public int getIsUserUse() {
@@ -239,22 +228,6 @@ public class ResRentUserStall {
 		this.parkingState = parkingState;
 	}
 
-	public Short getRentMoType() {
-		return rentMoType;
-	}
-
-	public void setRentMoType(Short rentMoType) {
-		this.rentMoType = rentMoType;
-	}
-
-	public Short getRentOmType() {
-		return rentOmType;
-	}
-
-	public void setRentOmType(Short rentOmType) {
-		this.rentOmType = rentOmType;
-	}
-
 	public int getGatewayStatus() {
 		return gatewayStatus;
 	}
@@ -287,5 +260,4 @@ public class ResRentUserStall {
 		this.lockSn = lockSn;
 	}
 
-	
 }

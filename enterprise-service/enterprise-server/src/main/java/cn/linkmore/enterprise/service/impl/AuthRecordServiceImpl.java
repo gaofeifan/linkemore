@@ -385,7 +385,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 	}
 
 	@Override
-	public List<EntRentedRecord> findAuthRecordByAuthUserId(Long id) {
+	public List<AuthRecord> findAuthRecordByAuthUserId(Long id) {
 		return this.authRecordClusterMapper.findAuthRecordByAuthUserId(id);
 	}
 	

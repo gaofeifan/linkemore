@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 
 import cn.linkmore.third.response.ResLocate;
@@ -22,11 +23,12 @@ import cn.linkmore.util.JsonUtil;
  */
 @Service
 public class LocateServiceImpl implements LocateService {
-	private static final String LOCATE_URL = "http://apis.map.qq.com/ws/geocoder/v1/";
+	private static final String LOCATE_URL = "https://apis.map.qq.com/ws/geocoder/v1/";
 	private static int COUNT = 0;
-	private static final String[] KEYS = { "XAOBZ-GSILF-MLMJY-J2NNW-7VF55-CABCP", "2BOBZ-ZXSKD-YNH4N-HQKWH-W5CVZ-DYFUL",
-			"XVHBZ-PG7WP-T7JDF-LIHON-SCAY3-IZFBP", "SFPBZ-K5J3X-TGN4X-ZQBTW-UVVHK-4CBHP",
-			"RBZBZ-BD4WD-NNV4Z-HLC7N-6RWVS-CFFKJ", "QY2BZ-5NR3X-H6F43-7RADN-WBJTH-E6B67" };
+	private static final String[] KEYS = { 
+			"HZLBZ-W4CEI-OABGH-5SA7T-VS7G2-TNF5K", "I2LBZ-7P7L4-T3IUX-X447A-LJGXH-QHBZW",
+			"DJTBZ-S2Z6X-Y2N4B-ZZYM2-FECFH-BOBOE", "UUGBZ-WHBL4-D3KUY-X5YPO-576XF-WZFBO",
+			"LACBZ-ORVEX-J7E42-T2GTH-LIA3S-X5B2P" };
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	/**
@@ -37,7 +39,7 @@ public class LocateServiceImpl implements LocateService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public  ResLocate getInfo(String longitude,String latitude) {
-		log.info("locate service get info longitude:{},latitude:{}",longitude,latitude);
+		log.info("------------------locate service get info longitude:{},latitude:{}",longitude,latitude);
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("location", latitude + "," + longitude);
 		String key = KEYS[COUNT++ % KEYS.length];
@@ -46,8 +48,9 @@ public class LocateServiceImpl implements LocateService {
 		try { 
 			Map<String,Object> object = null;
 			res = new ResLocate();
+			log.info("------------------locate param :{}",JSON.toJSON(parameters));
 			String result = HttpUtil.sendGet(LOCATE_URL, parameters) ; 
-			log.info("locate result:{}",result);
+			log.info("------------------locate result:{}",result);
 			Map<String,String> address = null;
 			Map<String,Object> info = null;
 			Map<String, Object> map = JsonUtil.toObject(result, Map.class);

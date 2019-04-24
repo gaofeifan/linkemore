@@ -327,14 +327,24 @@ oss:
   
 #银联支付配置
 union-pay: 
+  #union-service-url: https://gateway.95516.com 
+  #mer-id: 852331048169971
+  #cert-path: cert/linkmore.pfx
+  #cert-pwd: P151229
+  #cert-type: PKCS12
+  #encrypt-cert-path: cert/linkmore.cer
+  #middle-cert-path: cert/acp_test_middle.cer
+  #root-cert-path: cert/acp_test_root.cer 
+  #online: true 
+  
   union-service-url: https://gateway.95516.com 
-  mer-id: 852331048169971
-  cert-path: cert/linkmore.pfx
+  mer-id: 898110275230264
+  cert-path: cert/linkmoretech.pfx
   cert-pwd: P151229
   cert-type: PKCS12
-  encrypt-cert-path: cert/linkmore.cer
-  middle-cert-path: cert/acp_test_middle.cer
-  root-cert-path: cert/acp_test_root.cer 
+  encrypt-cert-path: cert/linkmoretech.cer
+  middle-cert-path: cert/acp_prod_middle.cer
+  root-cert-path: cert/acp_prod_root.cer 
   online: true 
 
 loong-pay: 

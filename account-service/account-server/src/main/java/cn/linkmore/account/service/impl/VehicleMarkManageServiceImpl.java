@@ -110,7 +110,7 @@ public class VehicleMarkManageServiceImpl implements VehicleMarkManageService {
 					}
 					param.put("plate", null);
 					existFalg = opsRentUserClient.checkExist(param);
-					logger.info("------------current plate have the rent privilage---------->>>>>> {}", existFalg);
+					logger.info("------------current plate have the rent privilage------param：{}-------{}", JSON.toJSON(param), existFalg);
 				
 					userGroupInputService.syncByUserIdAndPlate(user.getId(), bean.getVehMark());
 				}

@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import cn.linkmore.third.config.UnionPayConfig;
 import cn.linkmore.third.pay.PayConstants;
 import cn.linkmore.third.request.ReqApplePay; 
@@ -28,7 +27,9 @@ public class Unionpay {
 		map.put("txnType", "01");//可以按照规范修改应答码
 		map.put("channelType", "08"); 
 		map.put("txnSubType", "01");
-		map.put("bizType", "000802");
+		//此处不一致 旧的为008002
+		//map.put("bizType", "000802");
+		map.put("bizType", "000201");
 		map.put("accessType", "0");
 		map.put("merId", unionpayConfig.getMerId());
 		map.put("backUrl", PayConstants.getOrderAsyncApplePayUrl());
@@ -43,6 +44,21 @@ public class Unionpay {
 		if(respData!=null){
 			tn = respData.get("tn");
 		}
+		/*if(!respData.isEmpty()){
+			if(AcpService.validate(respData,"UTF-8")){
+				LogUtil.writeLog("验证签名成功");
+				String respCode = respData.get("respCode") ;
+				if(("00").equals(respCode)){
+					tn = respData.get("tn");
+				}
+			}else{
+				LogUtil.writeErrorLog("验证签名失败");
+			}
+		}else{
+			//未返回正确的http状态
+			LogUtil.writeErrorLog("未获取到返回报文或返回http状态码非200");
+		}*/
+		
 		return tn;
 	} 
 //	
