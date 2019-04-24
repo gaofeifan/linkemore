@@ -114,7 +114,7 @@ public class ReqPrefectureEntity {
     /**
      * 专区类型(0普通，1奥迪内部定制专区)
      */
-    private Short type;
+    private Short type = 0;
     /**
      * 企业id
      */
