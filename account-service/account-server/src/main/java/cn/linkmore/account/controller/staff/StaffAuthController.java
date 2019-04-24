@@ -65,8 +65,18 @@ public class StaffAuthController {
 	@ResponseBody
 	public ResponseEntity<ResAdmin> loginPw(@Validated @RequestBody ReqLoginPw rl, HttpServletRequest request) {
 		ResponseEntity<ResAdmin> response = null; 
-		ResAdmin ru = this.staffAdminUserService.login(rl,request);
-		response = ResponseEntity.success(ru, request);
+		ResAdmin ru;
+		try {
+			ru = this.staffAdminUserService.login(rl,request);
+			response = ResponseEntity.success(ru, request);
+		} catch (Exception e) {
+			if(e instanceof BusinessException) {
+				BusinessException be =(BusinessException)e;
+				return ResponseEntity.fail(be.getStatusEnum(), request);
+			}else {
+				return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
+			}
+		}
 		return response;
 	}
 	

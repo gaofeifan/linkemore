@@ -105,7 +105,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 		admin.setUpdateTime(new Date());
 		AdminUser adminUser = new AdminUser();
 		adminUser = ObjectUtils.copyObject(admin, adminUser);
-		adminUser.setPassword(Md5PW.md5(adminUser.getCellphone(), adminUser.getPassword()));
+		adminUser.setPassword(Md5PW.md5(null, admin.getPassword()));
 		return this.adminUserMasterMapper.save(adminUser);
 	}
 	
@@ -117,7 +117,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 		ResAdminUser user = this.find(admin.getId());
 		if(org.apache.commons.lang3.StringUtils.isNoneBlank(adminUser.getPassword())) {
 			if(org.apache.commons.lang3.StringUtils.isNoneBlank(user.getPassword()) && !user.getPassword().equals(adminUser.getPassword())) {
-				adminUser.setPassword(Md5PW.md5(adminUser.getCellphone(), adminUser.getPassword()));
+				adminUser.setPassword(Md5PW.md5(null, adminUser.getPassword()));
 			}
 		}
 		
