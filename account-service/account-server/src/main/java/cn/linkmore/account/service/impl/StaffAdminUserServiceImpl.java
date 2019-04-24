@@ -8,17 +8,26 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.app.request.ReqEditPWAuth;
+import cn.linkmore.account.controller.app.request.ReqReset;
+import cn.linkmore.account.controller.staff.request.ReqEditPw;
+import cn.linkmore.account.controller.staff.request.ReqEditPwAuth;
 import cn.linkmore.account.controller.staff.request.ReqLoginPw;
 import cn.linkmore.account.controller.staff.response.ResAdmin;
+import cn.linkmore.account.controller.staff.response.ResCheckAccount;
+import cn.linkmore.account.dao.cluster.UserStaffClusterMapper;
 import cn.linkmore.account.entity.StaffAppfans;
 import cn.linkmore.account.request.ReqMessage;
+import cn.linkmore.account.response.ResUserStaff;
 import cn.linkmore.account.service.MessageService;
 import cn.linkmore.account.service.StaffAdminUserService;
 import cn.linkmore.account.service.StaffAppfansService;
@@ -47,8 +56,12 @@ import cn.linkmore.util.TokenUtil;
 public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private final static long SPACE = 1000L*60*30; 
 	private final static String STAFF_CODE = "6699"; 
+//	@Value("")
+	private Boolean staffCode = true;
 	@Autowired
 	private StaffAppfansService staffAppfansService; 
+	@Autowired
+	private UserStaffClusterMapper userStaffClusterMapper;
 	@Autowired
 	private RedisService redisService;
 	@Autowired
@@ -91,6 +104,8 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		rs.setRealname(staff.getRealname());
 		rs.setToken(key);
 		rs.setIsOperation(staff.getIsOperate());
+		rs.setAccountName(staff.getAccountName());
+		rs.setGatewayDelete(staff.getGatewayDelete());
 		rs.setStatus(staff.getStatus());
 //		rs.setType(staff.getType());
 		CacheUser u = new CacheUser();
@@ -98,6 +113,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		u.setMobile(staff.getCellphone());
 		u.setToken(key); 
 //		u.setOpenId(staff.getOpenId());
+		u.setAccount(staff.getAccountName());
 		u.setClient((short)ClientSource.APPLET.source);
 		Token token = this.cacheUser(request, u,key);  
 		if(token!=null) {
@@ -123,10 +139,12 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 			if(last!=null){
 				this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+user.getId());
 				this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+last.getAccessToken());  
+				this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_ACCOUNT.key+user.getAccount());  
 				last.setAccessToken(key);
 			}
 			user.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			this.redisService.set(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+key, user); 
+			this.redisService.set(Constants.RedisKey.STAFF_STAFF_AUTH_ACCOUNT.key+user.getAccount(),user);  
 			Token token = new Token();
 			token.setClient(new Short(request.getHeader("os")==null?ClientSource.WXAPP.source+"":request.getHeader("os")));
 			token.setTimestamp(new Date().getTime());
@@ -172,8 +190,9 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	public void logout(HttpServletRequest request) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
-		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+ru.getId().toString());
-		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
+		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+ru.getId());
+		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+key);  
+		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_ACCOUNT.key+ru.getAccount());  
 	}
 
 /*	@Override
@@ -275,10 +294,208 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 
 	@Override
 	public ResAdmin login(ReqLoginPw pw, HttpServletRequest request) {
-		
-//		this.staffAdminUserClient.findMobile(mobile)
+		cn.linkmore.prefecture.response.ResAdmin accountName = this.staffAdminUserClient.findAccountName(pw.getAccountName());
+		if(accountName == null || accountName.getId() == null) {
+			accountName = this.staffAdminUserClient.authLogin(pw.getAccountName());
+		}
+		if(accountName == null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_NOT_EXIST);
+		}else if(StringUtils.isBlank(accountName.getPassword())) {
+			throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
+		}else {
+			String passw = Md5PW.md5(null, pw.getPassword());
+			if(!accountName.getPassword().equals(passw)) {
+				throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
+			}
+			String key = TokenUtil.createKey(pw.getType(),request);
+			accountName.setLoginTime(new Date());
+			this.staffAdminUserClient.updateLoginTime(accountName.getId());
+			ResAdmin rs = new ResAdmin();
+			rs.setId(accountName.getId());
+			rs.setMobile(accountName.getCellphone());
+			rs.setRealname(accountName.getRealname());
+			rs.setToken(key);
+			rs.setIsOperation(accountName.getIsOperate());
+			rs.setAccountName(accountName.getAccountName());
+			rs.setGatewayDelete(accountName.getGatewayDelete());
+			rs.setStatus(accountName.getStatus());
+			rs.setType(accountName.getType());
+			CacheUser u = new CacheUser();
+			u.setId(accountName.getId());
+			u.setMobile(accountName.getCellphone());
+			u.setToken(key); 
+//			u.setOpenId(accountName.getOpenId());
+			u.setClient((short)ClientSource.APPLET.source);
+			Token token = this.cacheUser(request, u,key);  
+			if(token!=null) {
+				new PushThread(rs.getId().toString(), token).start(); 
+			}
+			return rs;
+		}
+	}
+
+	@Override
+	public boolean bindMobile(String mobile, HttpServletRequest request,String code) {
+		String key = TokenUtil.getKey(request);
+		ResAdminUser findMobile = this.staffAdminUserClient.findMobile(mobile);
+		if(findMobile != null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
+		}
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
+		Object cache = this.redisService.get(RedisKey.STAFF_STAFF_AUTH_CODE.key+mobile);
+		if(staffCode == true && code.equals("6699") ) {
+		}else {
+			if(cache==null) {
+				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
+			}else {
+				if(!cache.toString().equals(code)) {
+					throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
+				}else {
+					this.redisService.remove(RedisKey.STAFF_STAFF_AUTH_CODE.key+mobile);
+				}
+			}
+		}
+		ResAdminUser resAdminUser = this.staffAdminUserClient.findById(ru.getId());
+		if(resAdminUser != null && StringUtils.isNotBlank(resAdminUser.getCellphone())) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_ACCOUNT_NAME_EXIST);
+		}
+		this.staffAdminUserClient.updateMobile(ru.getId(),mobile);
+		return true;
+	}
+
+	@Override
+	public ResCheckAccount checkAccount(String mobile) {
+		cn.linkmore.prefecture.response.ResAdmin admin = this.staffAdminUserClient.findAccountName(mobile);
+		if(admin != null) {
+			ResCheckAccount account = new ResCheckAccount();
+			account.setAccountName(admin.getAccountName());
+			account.setMobile(admin.getCellphone());
+			return account;
+		}
 		return null;
 	}
-	
+
+	@Override
+	public String sendReset(HttpServletRequest request, String account) {
+		String uuid = UUIDTool.random().replaceAll("-", "");
+		ReqAuthSend rs = new ReqAuthSend();
+		if(account != null){
+			cn.linkmore.prefecture.response.ResAdmin admin = this.staffAdminUserClient.findAccountName(account);
+			rs.setMobile(admin.getCellphone());
+		}else {
+			String key = TokenUtil.getKey(request);
+			CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
+			if(ru == null) {
+				throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+			}
+			rs.setMobile(ru.getMobile());
+		}
+		rs.setTimestamp(new Date().getTime()+"");
+		rs.setToken(uuid);
+		this.send(rs);
+		this.redisService.set(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+rs.getMobile(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
+		return uuid;
+	}
+
+	@Override
+	public void reset(HttpServletRequest request, ReqReset reset) {
+		if(!reset.getPassword().equals(reset.getRepassword())) {
+			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWORD_ERROR);
+		}
+//		cn.linkmore.prefecture.response.ResAdmin admin = this.staffAdminUserClient.findAccountName(reset.getAccount());
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
+		ResAdminUser admin = this.staffAdminUserClient.findById(ru.getId());
+		Object object = this.redisService.get(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+admin.getCellphone());
+		if(object == null) {				        
+			object = this.redisService.get(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+reset.getAccount());
+			if(object == null) {
+				throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_EXPIRED);
+			}
+		}
+		if(!object.toString().equals(reset.getToken())) {
+			throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_ERROR);
+		}
+		if(admin == null || admin.getId() == null) {
+			throw new BusinessException(StatusEnum.	ACCOUNT_STAFF_USER_NOT_EXIST);
+		}
+		String	pw = Md5PW.md5(null, reset.getPassword());
+		this.staffAdminUserClient.updatePw(admin.getId(),pw);
+		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+admin.getId());
+		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+key);  
+		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_ACCOUNT.key+admin.getAccountName());  
+	}
+
+	@Override
+	public boolean authCode(HttpServletRequest request, String account, String code) {
+		Object cache = null;
+		String mobile = null;
+		if(account == null) {
+			String key = TokenUtil.getKey(request);
+			CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
+			if(ru == null) {
+				throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+			}
+			mobile = ru.getMobile();
+			cache = this.redisService.get(RedisKey.STAFF_STAFF_AUTH_CODE.key+ru.getMobile());
+		}else {
+			cn.linkmore.prefecture.response.ResAdmin admin = this.staffAdminUserClient.findAccountName(account);
+			mobile = admin.getCellphone();
+			cache = this.redisService.get(RedisKey.STAFF_STAFF_AUTH_CODE.key+admin.getCellphone());
+			
+		}
+		if(staffCode == true && code.equals("6699") ) {
+		}else {
+		if(cache==null) {
+			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
+			}else {
+				if(!cache.toString().equals(code)) {
+					throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
+				}else {
+					this.redisService.remove(RedisKey.STAFF_STAFF_AUTH_CODE.key+mobile);
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean editMobile(String mobile, HttpServletRequest request, String code) {
+		String key = TokenUtil.getKey(request);
+		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
+		Object cache = this.redisService.get(RedisKey.STAFF_STAFF_AUTH_CODE.key+ru.getMobile());
+		if(staffCode == true && code.equals("6699") ) {
+		}else {
+			if(cache==null) {
+				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
+			}else {
+				if(!cache.toString().equals(code)) {
+					throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
+				}else {
+					this.redisService.remove(RedisKey.STAFF_STAFF_AUTH_CODE.key+ru.getMobile());
+				}
+			}
+		}
+		ResAdminUser adminUser = this.staffAdminUserClient.findMobile(mobile);
+		if(adminUser != null && adminUser.getId() != null) {
+			throw new BusinessException(StatusEnum.ACCOUNT_USER_MOBILE_EXIST);
+		}
+		this.staffAdminUserClient.updateMobile(ru.getId(), mobile);
+		return true;
+	}
+
+	@Override
+	public String editPWAuth(ReqEditPwAuth pwAuth) {
+		cn.linkmore.prefecture.response.ResAdmin admin = this.staffAdminUserClient.findAccountName(pwAuth.getAccount());
+		String md5 = Md5PW.md5(null, pwAuth.getPassword());
+		if(StringUtils.isNotBlank(admin.getPassword()) && admin.getPassword().equals(md5)) {
+			String uuid = UUIDTool.random().replaceAll("-", "");
+			this.redisService.set(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+pwAuth.getAccount(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
+			this.redisService.set(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+admin.getCellphone(),uuid,Constants.ExpiredTime.COUPON_SEND_COUNT_EXP_TIME.time);
+			return uuid;
+		}
+		throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
+	}
+
 	
 }

@@ -1,6 +1,5 @@
 package cn.linkmore.enterprise.service.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,7 @@ import cn.linkmore.bean.view.ViewFilter;
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
+import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.request.ReqRentedRecord;
 import cn.linkmore.enterprise.response.ResRentedRecord;
@@ -31,7 +31,8 @@ public class RentedRecordServiceImpl implements RentedRecordService {
 
 	@Resource
 	private EntRentedRecordClusterMapper entRentedRecordClusterMapper;
-	
+	@Resource
+	private EntRentedRecordMasterMapper entRentedRecordMasterMapper; 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
@@ -85,6 +86,11 @@ public class RentedRecordServiceImpl implements RentedRecordService {
 		}
 		pageNo = pageNo*10-10;
 		return this.entRentedRecordClusterMapper.findParkingRecord(pageNo,stallId);
+	}
+
+	@Override
+	public void updateRecordBatch(List<EntRentedRecord> changesRecord) {
+		this.entRentedRecordMasterMapper.updateRecordBatch(changesRecord);
 	}
 
 	

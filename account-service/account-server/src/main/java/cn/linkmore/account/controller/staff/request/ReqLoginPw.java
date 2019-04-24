@@ -10,8 +10,9 @@ public class ReqLoginPw {
 	private String accountName;
 	
 	@ApiModelProperty(value="密码")
-	private String passwrod;
-
+	private String password;
+	@ApiModelProperty(value="swagger登录不需要传参 ,其他方式传 1 ",required=false)
+	private Short type;
 	public String getAccountName() {
 		return accountName;
 	}
@@ -20,11 +21,19 @@ public class ReqLoginPw {
 		this.accountName = accountName;
 	}
 
-	public String getPasswrod() {
-		return passwrod;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setPasswrod(String passwrod) {
-		this.passwrod = passwrod;
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Short getType() {
+		return type;
+	}
+
+	public void setType(Short type) {
+		this.type = type;
 	}
 }

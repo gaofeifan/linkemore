@@ -1,11 +1,14 @@
 package cn.linkmore.account.controller.staff;
 
+import java.util.concurrent.CountDownLatch;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +17,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.account.controller.app.request.ReqAuthEditPW;
 import cn.linkmore.account.controller.app.request.ReqAuthLogin;
 import cn.linkmore.account.controller.app.request.ReqAuthSend;
+import cn.linkmore.account.controller.app.request.ReqEditPWAuth;
+import cn.linkmore.account.controller.app.request.ReqReset;
+import cn.linkmore.account.controller.staff.request.ReqEditPw;
+import cn.linkmore.account.controller.staff.request.ReqEditPwAuth;
 import cn.linkmore.account.controller.staff.request.ReqLoginPw;
 import cn.linkmore.account.controller.staff.response.ResAdmin;
+import cn.linkmore.account.controller.staff.response.ResCheckAccount;
 import cn.linkmore.account.service.StaffAdminUserService;
 import cn.linkmore.bean.common.ResponseEntity;
+import cn.linkmore.bean.exception.BusinessException;
+import cn.linkmore.bean.exception.StatusEnum;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -115,8 +127,123 @@ public class StaffAuthController {
 	@ResponseBody
 	public ResponseEntity<?> send(@Validated @RequestBody ReqAuthSend rs, HttpServletRequest request){
 		ResponseEntity<?> response = null; 
-		this.staffAdminUserService.send(rs);
+		try {
+			this.staffAdminUserService.send(rs);
+		} catch (Exception e) {
+			if(e instanceof BusinessException) {
+				BusinessException be =(BusinessException)e;
+				return ResponseEntity.fail(be.getStatusEnum(), request);
+			}else {
+				return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
+			}
+		}
 		response = ResponseEntity.success(null, request);
 		return response;
 	}
+	
+	@ApiOperation(value="验证账号是否存在",notes="验证账号是否存在", consumes = "application/json")
+	@RequestMapping(value = "/check-account", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<ResCheckAccount> checkAccount(HttpServletRequest request,@NotBlank(message="账号不能为空") 
+	@ApiParam(value="账号",required=true) @RequestParam("account") String account) {
+		ResponseEntity<ResCheckAccount> response = null;
+		ResCheckAccount a;
+		try {
+			a = this.staffAdminUserService.checkAccount(account);
+		} catch (Exception e) {
+			if(e instanceof BusinessException) {
+				BusinessException be =(BusinessException)e;
+				return ResponseEntity.fail(be.getStatusEnum(), request);
+			}else {
+				return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
+			}
+		}
+		response = ResponseEntity.success(a, request);
+		return response;
+	}
+	@ApiOperation(value="重置密码-发送短信",notes="重置密码-发送短信", consumes = "application/json")
+	@RequestMapping(value = "/send-reset", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> sendReset(HttpServletRequest request,
+	@ApiParam(value="账号/手机号(为空即可)",required=false) @RequestParam(value="account",required=false)String account) {
+		ResponseEntity<?> response = null;
+		String token;
+		try {
+			token = this.staffAdminUserService.sendReset(request,account);
+			response = ResponseEntity.success(token, request);
+		} catch (Exception e) {
+			if(e instanceof BusinessException) {
+				BusinessException be =(BusinessException)e;
+				return ResponseEntity.fail(be.getStatusEnum(), request);
+			}else {
+				return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
+			}
+		}
+		return response;
+	}
+	@ApiOperation(value="认证验证码",notes="认证验证码", consumes = "application/json")
+	@RequestMapping(value = "/auth-code", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> authCode(HttpServletRequest request,
+	@ApiParam(value="账号/手机号",required=false) @RequestParam(value="account",required=false)
+	String account,
+	@ApiParam(value="验证码",required=true)@RequestParam("code")
+	@Range(min=1000, max=9999,message="验证码是4位有效数字")
+	@NotBlank(message="验证码不能为空") 
+	 String code) {
+		ResponseEntity<Boolean> response = null;
+		boolean token;
+		try {
+			token = this.staffAdminUserService.authCode(request,account,code);
+			response = ResponseEntity.success(token, request);
+		} catch (Exception e) {
+			if(e instanceof BusinessException) {
+				BusinessException be =(BusinessException)e;
+				return ResponseEntity.fail(be.getStatusEnum(), request);
+			}else {
+				return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
+			}
+		}
+		return response;
+	}
+	
+	
+	@ApiOperation(value="重置密码",notes="重置密码", consumes = "application/json")
+	@RequestMapping(value = "/reset", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> reset(HttpServletRequest request,@Validated @RequestBody ReqReset reset) {
+		try {
+			this.staffAdminUserService.reset(request,reset);
+			return ResponseEntity.success(true,request);
+		} catch (Exception e) {
+			if(e instanceof BusinessException) {
+				BusinessException be =(BusinessException)e;
+				return ResponseEntity.fail(be.getStatusEnum(), request);
+			}else {
+				return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
+			}
+		}
+	}
+	
+	@ApiOperation(value="修改密码-原密码认证",notes="修改密码-原密码认证", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/edit-pw-auth", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> editPWAuth(HttpServletRequest request,@Validated @RequestBody ReqEditPwAuth pwAuth){
+		ResponseEntity<String> response = null; 
+		String token;
+		try {
+			token = this.staffAdminUserService.editPWAuth(pwAuth);
+			response = ResponseEntity.success(token, request);
+		} catch (Exception e) {
+			if(e instanceof BusinessException) {
+				BusinessException be =(BusinessException)e;
+				return ResponseEntity.fail(be.getStatusEnum(), request);
+			}else {
+				return ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION.code, e.getMessage(), request);
+			}
+		}
+		return response;
+	}
+	
+	
 }

@@ -65,7 +65,6 @@ public class StaffStallController {
 	
 	@RequestMapping(value="/stall-detail",method=RequestMethod.GET)
 	@ResponseBody
-	
 	@ApiOperation(value = "车位详情", notes = "车位详情", consumes = "application/json")
 	public ResponseEntity<ResStaffStallDetail> findStaffStallDetails(HttpServletRequest request,  @ApiParam("车位id") @NotNull(message="车位id不能为空") @RequestParam("stallId") Long stallId) {
 		ResStaffStallDetail detail = this.stallService.findStaffStallDetails(request,stallId);
@@ -124,6 +123,36 @@ public class StaffStallController {
 		ResponseEntity<Boolean> response = null;
 		try {
 			this.stallService.install(reqLockIntall,request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	@ApiOperation(value = "地锁安装2.0.1", notes = "地锁安装")
+	@RequestMapping(value = "/v2.0.1/installLock", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> installLockTwo(HttpServletRequest request, @Validated @RequestBody ReqLockIntall reqLockIntall) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			this.stallService.installLock(reqLockIntall,request);
+			response = ResponseEntity.success(true, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
+	@ApiOperation(value = "删除车位锁", notes = "删除车位锁")
+	@RequestMapping(value = "/remove-stall-lock", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> removeStallLock(HttpServletRequest request, @ApiParam(value="车位id",required=true) @NotNull(message="车位id不能为空") @RequestParam(value = "stallId",required= true) Long stallId ) {
+		ResponseEntity<Boolean> response = null;
+		try {
+			this.stallService.removeStallLock(stallId,request);
 			response = ResponseEntity.success(true, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);

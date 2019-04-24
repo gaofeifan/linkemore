@@ -3,6 +3,8 @@ package cn.linkmore.prefecture.dao.cluster;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
+
+import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminUser;
 
 @Mapper
@@ -19,5 +21,7 @@ public interface AdminUserClusterMapper {
 	List<ResAdminUser> findAll();
 
 	ResAdminUser findByMobile(String mobile);
+
+	ResAdminUser findAccountName(String accountName);
 	
 }

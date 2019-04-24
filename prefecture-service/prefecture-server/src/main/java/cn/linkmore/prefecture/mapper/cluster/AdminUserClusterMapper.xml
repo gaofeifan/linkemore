@@ -3,27 +3,36 @@
 <mapper namespace="cn.linkmore.prefecture.dao.cluster.AdminUserClusterMapper">
   <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.response.ResAdminUser">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
     <result column="cellphone" jdbcType="VARCHAR" property="cellphone" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
     <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="gateway_delete" jdbcType="SMALLINT" property="gatewayDelete" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, cellphone, realname, create_time, update_time, login_time, status
+    id, cellphone, realname, create_time, update_time, login_time, status,account_name,gateway_delete,password
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_admin_user
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT} and status = 1
   </select>
   <select id="findByMobile" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_admin_user
-    where cellphone = #{mobile}
+    where cellphone = #{mobile}  and status = 1
+  </select>
+  <select id="findAccountName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_admin_user
+    where account_name = #{accountName} and status = 1
   </select>
   <select id="findAll"  resultMap="BaseResultMap">
     select 

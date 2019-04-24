@@ -18,10 +18,21 @@
     from t_admin_auth
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findUserAuthByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  
+    select 
+	aa.id,aa.name,aa.code,aa.status,aa.create_time,aa.update_time
+	    from t_admin_user_auth ua
+	LEFT JOIN t_admin_auth  aa on aa.id = ua.auth_id
+	    where 1=1 and aa.status = 1
+	    
+	    and ua.user_id =#{userId}
+	ORDER BY update_time DESC
+  </select>
   
    <select id="findList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
   	select 
-  	<include refid="Base_Column_List" />
+  <include refid="Base_Column_List" />
     from t_admin_auth 
     where 1 = 1
     <if test="name!=null">  

@@ -19,6 +19,12 @@ public class ResAdminUser {
     private Date updateTime;
 
     private Date loginTime;
+    
+    private String accountName;
+    
+    private Short gatewayDelete;
+    
+    private String password;
 
     private Short status;
     
@@ -78,5 +84,27 @@ public class ResAdminUser {
         this.status = status;
     }
 
-    
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public Short getGatewayDelete() {
+		return gatewayDelete;
+	}
+
+	public void setGatewayDelete(Short gatewayDelete) {
+		this.gatewayDelete = gatewayDelete;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }

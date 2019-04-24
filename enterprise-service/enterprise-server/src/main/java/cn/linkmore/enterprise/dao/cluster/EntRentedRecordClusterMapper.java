@@ -102,4 +102,5 @@ public interface EntRentedRecordClusterMapper {
 	 * @Version  v2.0
 	 */
 	Integer findUseCountByMonth(Map<String, Long> param);
+	
 }
