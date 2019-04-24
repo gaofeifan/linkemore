@@ -488,7 +488,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	@Override
 	public ResAuthRentStall findStallList(HttpServletRequest request, ReqLocation location) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
-		List<EntRentedRecord> chengsRecord = new ArrayList<>();
+		final List<EntRentedRecord> changesRecord = new ArrayList<>();
 		ResAuthRentStall authRentStall = new ResAuthRentStall();
 		List<ResRentUser> rentUserList = new ArrayList<>();
 		List<ResRentUserStall> rentUserStallList = null;
@@ -696,14 +696,14 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 						if (resRentedRecord.getStallId().equals(enttall.getStallId())) {
 							if (enttall.getStatus().intValue() == 2) {
 								rentUserStall.setRentOmType((short) 1);
-								if(rentUserStall.getLockStatus() == 1) {
-									if(resRentedRecord.getStatus().intValue() != 1 ) {
-										resRentedRecord.setStatus(1l);
-										resRentedRecord.setLeaveTime(new Date());
-										rentUserStall.setStallStatus(1);
-										chengsRecord.add(resRentedRecord);
-									}
-								}
+//								if(rentUserStall.getLockStatus() == 1) {
+//									if(resRentedRecord.getStatus().intValue() != 1 ) {
+//										resRentedRecord.setStatus(1l);
+//										resRentedRecord.setLeaveTime(new Date());
+//										rentUserStall.setStallStatus(1);
+////										chengsRecord.add(resRentedRecord);
+//									}
+//								}
 							}
 							switch (rentUserStall.getLockStatus()) {
 							case 1:
@@ -792,12 +792,12 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										break;
 									}*/
 									if(rentUserStall.getLockStatus() == 1) {
-										if(resRentedRecord.getStatus().intValue() != 1 ) {
-											resRentedRecord.setStatus(1l);
-											resRentedRecord.setLeaveTime(new Date());
-											rentUserStall.setStallStatus(1);
-											chengsRecord.add(resRentedRecord);
-										}
+//										if(resRentedRecord.getStatus().intValue() != 1 ) {
+//											resRentedRecord.setStatus(1l);
+//											resRentedRecord.setLeaveTime(new Date());
+//											rentUserStall.setStallStatus(1);
+//											chengsRecord.add(resRentedRecord);
+//										}
 									}
 									switch (rentUserStall.getLockStatus()) {
 									case 1:
@@ -891,7 +891,10 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		// }
 		// });
 		authRentStall.setRentUsers(rentUserList);
-		updateRecord(chengsRecord);
+//		new Thread(()->{
+//			updateRecord(changesRecord);
+//			},
+//		"批量更新用户使用记录线程"+Thread.currentThread().getName()); 
 		return authRentStall;
 	}
 

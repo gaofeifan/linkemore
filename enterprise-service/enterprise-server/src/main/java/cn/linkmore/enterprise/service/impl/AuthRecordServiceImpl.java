@@ -45,6 +45,7 @@ import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.service.AuthRecordService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.task.TaskPool;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.user.factory.AppUserFactory;
@@ -196,6 +197,7 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 					
 					authRecordMasterMapper.save(authRecord);
 					flag = true;
+					
 					if(flag) {
 						ReqSms sms = new ReqSms();
 						Map<String, String> smsParam = new HashMap<String, String>();
@@ -212,6 +214,12 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 				}
 				i++;
 			}
+			TaskPool.getInstance().task(new Runnable() {
+				@Override
+				public void run() {
+					shareStall(record.getStallIds(), record.getMobile(), request);
+				}
+			});
 		}
 		return flag;
 	}
@@ -253,7 +261,14 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
 		}
 		int num = authRecordMasterMapper.cancelAuth(id);
+		
 		if(num == 1) {
+			TaskPool.getInstance().task(new Runnable() {
+				@Override
+				public void run() {
+					cancelShare(id);
+				}
+			});
 			flag = true;
 		}
 		return flag;
@@ -373,6 +388,21 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 			}
 		}
 		this.redisService.add(RedisKey.USER_APP_SHARE_STALL.key+userId, s);
+		return true;
+	}
+	
+	public Boolean cancelShare(Long id) {
+		AuthRecord record = this.authRecordClusterMapper.findById(id);
+		record.getMobile();
+		Long mobile = this.userClient.getUserIdByMobile(record.getMobile());
+		if(mobile == null) {
+			return false;
+		}
+		Set<Object> members = this.redisService.members(RedisKey.USER_APP_SHARE_STALL.key+mobile);
+		if(members.contains(record.getStallId())) {
+			members.remove(record.getStallId());
+			this.redisService.add(RedisKey.USER_APP_SHARE_STALL.key+members, members);
+		}
 		return true;
 	}
 	public int operateSwitch(Map<String, Object> param) {

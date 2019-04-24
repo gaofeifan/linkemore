@@ -89,8 +89,8 @@ public class RentedRecordServiceImpl implements RentedRecordService {
 	}
 
 	@Override
-	public void updateRecordBatch(List<EntRentedRecord> chengsRecord) {
-		this.entRentedRecordMasterMapper.updateRecordBatch(chengsRecord);
+	public void updateRecordBatch(List<EntRentedRecord> changesRecord) {
+		this.entRentedRecordMasterMapper.updateRecordBatch(changesRecord);
 	}
 
 	

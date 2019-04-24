@@ -106,7 +106,7 @@ public class AppAuthRecordController {
 	@ResponseBody
 	public ResponseEntity<ResShareStall> shareStall(@RequestParam(value="stallIds", required=true) String stallIds,@RequestParam(value="mobile",required=true)String mobile ,HttpServletRequest request) {
 		try {
-			Boolean control = authRecordService.shareStall(stallIds,mobile, request);
+//			Boolean control = authRecordService.shareStall(stallIds,mobile, request);
 			return ResponseEntity.success(new ResShareStall(), request);
 		} catch (BusinessException e) {
 			return ResponseEntity.fail( e.getStatusEnum(),  request);
