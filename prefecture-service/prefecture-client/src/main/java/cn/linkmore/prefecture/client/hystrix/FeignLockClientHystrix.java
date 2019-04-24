@@ -1,5 +1,6 @@
 package cn.linkmore.prefecture.client.hystrix;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class FeignLockClientHystrix implements FeignLockClient {
 	@Override
 	public List<ResLockInfos> lockLists(List<String> lockSns) {
 		log.info("Hystrix ResLockMessage lockLists(List<String> lockSns) ");
-		return null;
+		return new ArrayList<ResLockInfos>();
 	}
 	
 	

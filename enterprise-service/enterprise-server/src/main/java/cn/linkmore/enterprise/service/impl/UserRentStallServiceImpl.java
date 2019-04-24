@@ -1148,7 +1148,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								}
 								
 								if(enttall.getStatus().intValue() == 2) {
-									if(resRentedRecord.getUserId() == user.getId()) {
+									log.info("record userId = {} login userId= {} boolean1 = {} boolean2={}",resRentedRecord.getUserId(), user.getId(), resRentedRecord.getUserId() == user.getId(),resRentedRecord.getUserId().equals(user.getId()));
+									if(resRentedRecord.getUserId().equals(user.getId())) {
 										rentUserStall.setIsSelfUser(0);
 									}else {
 										rentUserStall.setIsSelfUser(1);
