@@ -17,6 +17,26 @@ public class EntOwnerPre {
 	private String gateway;
 	
 	private String underLayer;
+	
+	private String guideImage;
+	
+	private String guideRemark;
+
+	public String getGuideImage() {
+		return guideImage;
+	}
+
+	public void setGuideImage(String guideImage) {
+		this.guideImage = guideImage;
+	}
+
+	public String getGuideRemark() {
+		return guideRemark;
+	}
+
+	public void setGuideRemark(String guideRemark) {
+		this.guideRemark = guideRemark;
+	}
 
 	public Long getPreId() {
 		return preId;
