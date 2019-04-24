@@ -24,9 +24,31 @@ public class ResHaveRentPre {
 	
 	@ApiModelProperty(value = "距离")
 	private String distance;
+	
+	@ApiModelProperty(value = "车位导航图")
+	private String guideImage;
+	
+	@ApiModelProperty(value = "车位导航说明")
+	private String guideRemark;
 
 	@ApiModelProperty(value = "长租车位列表")
 	private List<ResHaveRentPreStall> rentPreStalls = null;
+
+	public String getGuideImage() {
+		return guideImage;
+	}
+
+	public void setGuideImage(String guideImage) {
+		this.guideImage = guideImage;
+	}
+
+	public String getGuideRemark() {
+		return guideRemark;
+	}
+
+	public void setGuideRemark(String guideRemark) {
+		this.guideRemark = guideRemark;
+	}
 
 	public Long getPreId() {
 		return preId;

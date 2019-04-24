@@ -73,6 +73,15 @@ public class ResOrder {
 	private Short orderSource = 1;
 	@ApiModelProperty(value = "降锁状态[0已预约,1已降锁,2已挂起去结账]")
 	private Short downFlag = 0;
+	@ApiModelProperty(value = "车位所在层")
+	private String underLayer;
+	
+	public String getUnderLayer() {
+		return underLayer;
+	}
+	public void setUnderLayer(String underLayer) {
+		this.underLayer = underLayer;
+	}
 	public Long getId() {
 		return id;
 	}
