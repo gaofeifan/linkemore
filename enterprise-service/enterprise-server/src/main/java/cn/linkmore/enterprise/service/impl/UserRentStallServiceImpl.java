@@ -1052,6 +1052,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			rentUser.setLongitude(pre.getLongitude());
 			rentUser.setGuideImage(pre.getGuideImage());
 			rentUser.setGuideRemark(pre.getGuideRemark());
+			rentUser.setPathFlag(pre.getPathFlag());
 			rentUser.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(),
 					new Double(pre.getLatitude()), new Double(pre.getLongitude())));
 			rentUserStallList = new ArrayList<>();

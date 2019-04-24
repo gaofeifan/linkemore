@@ -31,8 +31,7 @@
 		<result column="limit_status" jdbcType="SMALLINT" property="limitStatus" />
 		<result column="gateway" jdbcType="VARCHAR" property="gateway" />
 		<!-- 新增字段 -->
-		<result column="strategy_description" jdbcType="VARCHAR"
-			property="strategyDescription" />
+		<result column="strategy_description" jdbcType="VARCHAR" property="strategyDescription" />
 		<result column="runtime" jdbcType="INTEGER" property="runtime" />
 		<result column="increase" jdbcType="VARCHAR" property="increase" />
 		<result column="month_rent" jdbcType="INTEGER" property="monthRent" />
@@ -46,6 +45,8 @@
 		<result column="under_layer" jdbcType="VARCHAR" property="underLayer" />
 		<result column="total_stall_num" jdbcType="INTEGER" property="totalStallNum" />
 		<result column="pre_type" jdbcType="SMALLINT" property="preType" />
+		
+		<result column="path_flag" property="pathFlag" jdbcType="SMALLINT" />
 	</resultMap>
 
 	<resultMap id="ResPrefectureMap"
@@ -113,16 +114,13 @@
 		<result column="base_price" property="basePrice" jdbcType="DECIMAL" />
 		<result column="timely_long" property="timelyLong" jdbcType="INTEGER" />
 		<result column="first_hour" property="firstHour" jdbcType="DECIMAL" />
-		<result column="night_timely_long" property="nightTimelyLong"
-			jdbcType="INTEGER" />
+		<result column="night_timely_long" property="nightTimelyLong" jdbcType="INTEGER" />
 		<result column="night_price" property="nightPrice" jdbcType="DECIMAL" />
 		<result column="timely_unit" property="timelyUnit" jdbcType="CHAR" />
 		<result column="type" property="type" jdbcType="SMALLINT" />
 		<result column="version" property="version" jdbcType="VARCHAR" />
-		<result column="create_user_name" property="createUserName"
-			jdbcType="VARCHAR" />
-		<result column="create_ent_name" property="createEntName"
-			jdbcType="VARCHAR" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="create_ent_name" property="createEntName" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -135,7 +133,7 @@
 		strategy_description, runtime, increase, month_rent, version,
 		create_user_id, business_time,
 		grid_x, grid_y, region, under_layer, total_stall_num, pre_type,
-		create_ent_id,create_ent_name
+		create_ent_id,create_ent_name, path_flag
 	</sql>
 	<select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
 		select

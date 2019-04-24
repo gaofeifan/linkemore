@@ -30,9 +30,20 @@ public class ResHaveRentPre {
 	
 	@ApiModelProperty(value = "车位导航说明")
 	private String guideRemark;
+	
+	@ApiModelProperty(value = "路径规划标识默认为0禁用 展示车位在哪、启用 为1展示最新的路径规划")
+	private Short pathFlag = 0;
 
 	@ApiModelProperty(value = "长租车位列表")
 	private List<ResHaveRentPreStall> rentPreStalls = null;
+
+	public Short getPathFlag() {
+		return pathFlag;
+	}
+
+	public void setPathFlag(Short pathFlag) {
+		this.pathFlag = pathFlag;
+	}
 
 	public String getGuideImage() {
 		return guideImage;

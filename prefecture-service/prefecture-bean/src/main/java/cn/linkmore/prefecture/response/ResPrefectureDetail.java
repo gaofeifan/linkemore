@@ -197,7 +197,18 @@ public class ResPrefectureDetail {
      */
     private String createEntName;
     
-    public Long getCreateEntId() {
+    /**
+     * 路径规划标识(0禁用，1开启)
+     */
+    private Short pathFlag;
+    
+    public Short getPathFlag() {
+		return pathFlag;
+	}
+	public void setPathFlag(Short pathFlag) {
+		this.pathFlag = pathFlag;
+	}
+	public Long getCreateEntId() {
 		return createEntId;
 	}
 	public void setCreateEntId(Long createEntId) {
