@@ -200,7 +200,17 @@ public class ReqPrefectureEntity {
      */
     private String createEntName;
     
-    public String getCreateEntName() {
+    private Short pathFlag;
+    
+    public Short getPathFlag() {
+		return pathFlag;
+	}
+
+	public void setPathFlag(Short pathFlag) {
+		this.pathFlag = pathFlag;
+	}
+
+	public String getCreateEntName() {
 		return createEntName;
 	}
 

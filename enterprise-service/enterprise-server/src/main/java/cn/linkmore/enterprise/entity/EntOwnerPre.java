@@ -21,6 +21,16 @@ public class EntOwnerPre {
 	private String guideImage;
 	
 	private String guideRemark;
+	
+	private Short pathFlag = 0;
+
+	public Short getPathFlag() {
+		return pathFlag;
+	}
+
+	public void setPathFlag(Short pathFlag) {
+		this.pathFlag = pathFlag;
+	}
 
 	public String getGuideImage() {
 		return guideImage;
