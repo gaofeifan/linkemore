@@ -75,7 +75,15 @@ public class ResOrder {
 	private Short downFlag = 0;
 	@ApiModelProperty(value = "车位所在层")
 	private String underLayer;
+	@ApiModelProperty(value = "路径规划标识默认为0禁用 展示车位在哪、启用 为1展示最新的路径规划")
+	private Short planFlag = 0;
 	
+	public Short getPlanFlag() {
+		return planFlag;
+	}
+	public void setPlanFlag(Short planFlag) {
+		this.planFlag = planFlag;
+	}
 	public String getUnderLayer() {
 		return underLayer;
 	}
