@@ -1487,7 +1487,7 @@ public class StallServiceImpl implements StallService {
 	 * 管理版锁操作
 	 */
 	@Override
-	public void operating(ReqControlLock reqc) {
+	public Boolean operating(ReqControlLock reqc) {
 		boolean flag = false;
 		String uid = String.valueOf(redisService.get(reqc.getKey()));
 		Stall stall = stallClusterMapper.findById(reqc.getStallId());
@@ -1550,37 +1550,54 @@ public class StallServiceImpl implements StallService {
 						stall.setLockStatus(1);
 					}
 				}
+				flag = true;
 				stallMasterMapper.lockdown(stall);
 				if (reqc.getStatus() == 1) {
 					downLock(reqc.getStallId(), 1,reqc.getType());
 				}
-				
-			}else if(code == 500){
-				if (reqc.getStatus() == 1) {
-					downLock(reqc.getStallId(), 0,reqc.getType());
+				if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
+					this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus());
 				}
-				if (this.redisService.exists(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqc.getStallId() + reqc.getUserId())) {
-					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
-				} else {
-					this.redisService.set(RedisKey.ORDER_STALL_DOWN_FAILED.key + reqc.getStallId() + reqc.getUserId(), 1,
-							ExpiredTime.STALL_DOWN_FAIL_EXP_TIME.time);
-					throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY);
+				if(this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId())) {
+					this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId());
 				}
-				
+			}else if(code == 500) {
+				if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
+					if(reqc.getStatus() == 1) {
+						this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+					}else if(reqc.getStatus() == 2){
+						this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+					}
+					redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus());
+				}else {
+					redisService.set(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus(),"",ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+					if(reqc.getStatus() == 1) {
+//						throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY_OWNER);
+						this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.DOWN_LOCK_FAIL_RETRY_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+					}else if(reqc.getStatus() == 2){
+						this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.UP_LOCK_FAIL_RETRY_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+//						throw new BusinessException(StatusEnum.UP_LOCK_FAIL_RETRY_OWNER);
+					}
+				}
 			}else {
-				throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_CHANGE);
+				if(reqc.getStatus() == 1) {
+					this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.DOWN_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+				}else if(reqc.getStatus() == 2){
+					this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+				}
 			}
-			sendMsgT(uid, reqc.getStatus(), code);
 		}
 		//解锁
 		redisLock.unlock1(reqc.getRobkey());
+		return flag;
 	}
 	
 	/**
 	 * 管理版锁操作
 	 */
 	@Override
-	public void operatingsn(ReqControlLock reqc) {
+	public Boolean operatingsn(ReqControlLock reqc) {
+		boolean flag = false;
 		String uid = String.valueOf(redisService.get(reqc.getKey()));
 		
 		if (reqc != null && StringUtils.isNotBlank(reqc.getLockSn())) {
@@ -1594,11 +1611,46 @@ public class StallServiceImpl implements StallService {
 			}
 			int code = res == false ? 500:200;
 			if (code == 200) {
+				if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getLockSn() + reqc.getUserId() +reqc.getStatus())) {
+					this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getLockSn() + reqc.getUserId() +reqc.getStatus());
+				}
+				if(this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getLockSn())) {
+					this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getLockSn());
+				}
 				redisService.remove(reqc.getKey());
+				flag = true;
+			}else{
+					if(code == 500) {
+						if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getLockSn() + reqc.getUserId() +reqc.getStatus())) {
+							if(reqc.getStatus() == 1) {
+								this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getLockSn(), StatusEnum.DOWN_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+							}else if(reqc.getStatus() == 2){
+								this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getLockSn(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+							}
+							redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getLockSn() + reqc.getUserId() +reqc.getStatus());
+						}else {
+							redisService.set(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getLockSn() + reqc.getUserId() +reqc.getStatus(),"",ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+							if(reqc.getStatus() == 1) {
+//								throw new BusinessException(StatusEnum.DOWN_LOCK_FAIL_RETRY_OWNER);
+								this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getLockSn(), StatusEnum.DOWN_LOCK_FAIL_RETRY_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+							}else if(reqc.getStatus() == 2){
+								this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getLockSn(), StatusEnum.UP_LOCK_FAIL_RETRY_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+//								throw new BusinessException(StatusEnum.UP_LOCK_FAIL_RETRY_OWNER);
+							}
+						}
+					}else {
+						if(reqc.getStatus() == 1) {
+							this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getLockSn(), StatusEnum.DOWN_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+						}else if(reqc.getStatus() == 2){
+							this.redisService.set(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getLockSn(), StatusEnum.UP_LOCK_FAIL_CHANGE_OWNER.code,ExpiredTime.STALL_LOCK_BOOKING_EXP_TIME.time);
+						}
+					}
 			}
-			log.info(" operating··············" + res + " code·············" + code);
-			sendMsgT(uid, reqc.getStatus(), code);
+			
+//			log.info(" operating··············" + res + " code·············" + code);
+//			sendMsgT(uid, reqc.getStatus(), code);
 		}
+		return flag;
 	}
 /*	@Override
 	public void operatingsn(ReqControlLock reqc) {

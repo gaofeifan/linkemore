@@ -133,9 +133,9 @@ public class FeignStallController {
 	 *            Long
 	 */
 	@RequestMapping(value = "/v2.0/operatelock", method = RequestMethod.POST)
-	public void managerlock(@RequestBody   ReqControlLock  reqc) {
+	public Boolean managerlock(@RequestBody   ReqControlLock  reqc) {
 		log.info("managerlock:{} .......................................",reqc.getStallId());
-		this.stallService.operating(reqc);
+		return this.stallService.operating(reqc);
 	}
 	
 	/**
@@ -145,9 +145,9 @@ public class FeignStallController {
 	 *            Long
 	 */
 	@RequestMapping(value = "/v2.0/operatelockSn", method = RequestMethod.POST)
-	public void managerlockSn(@RequestBody   ReqControlLock  reqc) {
+	public Boolean managerlockSn(@RequestBody   ReqControlLock  reqc) {
 		log.info("managerlock:{} .......................................",reqc.getLockSn());
-		this.stallService.operatingsn(reqc);
+		return this.stallService.operatingsn(reqc);
 	}
 	
 	/**

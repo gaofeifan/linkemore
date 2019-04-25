@@ -47,9 +47,10 @@ public class StaffPrefectureController {
 			HttpServletRequest request) {
 		ResponseEntity<Boolean> response = null;
 		try {
-			staffPrefectureService.control(reqConStall, request);
-			response = ResponseEntity.success(true, request);
+			Boolean control = staffPrefectureService.control(reqConStall, request);
+			response = ResponseEntity.success(control, request);
 		} catch (BusinessException e) {
+			
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) {
 			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
@@ -64,8 +65,8 @@ public class StaffPrefectureController {
 			HttpServletRequest request) {
 		ResponseEntity<Boolean> response = null;
 		try {
-			staffPrefectureService.controlSn(reqConStallSn, request);
-			response = ResponseEntity.success(true, request);
+			Boolean sn = staffPrefectureService.controlSn(reqConStallSn, request);
+			response = ResponseEntity.success(sn, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail(e.getStatusEnum(), request);
 		} catch (Exception e) {

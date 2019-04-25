@@ -110,7 +110,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 	 * 升锁与降锁
 	 */
 	@Override
-	public void control(SraffReqConStall reqOperatStall, HttpServletRequest request) {
+	public Boolean control(SraffReqConStall reqOperatStall, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 
@@ -139,7 +139,14 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		reqc.setKey(reskey + userid);
 		reqc.setRobkey(robkey);
 		reqc.setType(stall.getType());
-		stallClient.managerlock(reqc);
+		Boolean flag = stallClient.managerlock(reqc);
+		if(flag == null || !flag) {
+			if (this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId())) {
+				Object object = this.redisService.get(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId());
+				this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId());
+				throw new BusinessException(StatusEnum.get((int) object));
+			}
+		}
 		if(/*stall.getType() == 2 &&遗弃 新需求所有人员升锁关闭用户使用记录 */reqOperatStall.getState().intValue() == 2) {
 //			Map<String, Object> map = new HashMap<>();
 //			map.put("stallId", reqc.getStallId());
@@ -150,10 +157,11 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 				this.rentedRecordMasterMapper.updateById(record);
 			}
 		}
+		return flag;
 	}
 
 	@Override
-	public void controlSn(SraffReqConStallSn reqOperatStallSn, HttpServletRequest request) {
+	public Boolean controlSn(SraffReqConStallSn reqOperatStallSn, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService
 				.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 		if (user == null) {
@@ -168,7 +176,15 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		reqc.setStatus(reqOperatStallSn.getState());
 		reqc.setKey(reskey + userid);
 		reqc.setLockSn(reqOperatStallSn.getLockSn());
-		stallClient.managerlockSn(reqc);
+		Boolean flag = stallClient.managerlockSn(reqc);
+		if(flag == null || !flag) {
+			if (this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getLockSn())) {
+				Object object = this.redisService.get(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getLockSn());
+				this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getLockSn());
+				throw new BusinessException(StatusEnum.get((int) object));
+			}
+		}
+		return flag;
 	}
 	
 	/**

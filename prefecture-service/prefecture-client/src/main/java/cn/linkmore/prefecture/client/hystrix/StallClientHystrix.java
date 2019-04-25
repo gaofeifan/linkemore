@@ -197,8 +197,9 @@ public class StallClientHystrix implements StallClient {
 	}
 
 	@Override
-	public void managerlock(ReqControlLock reqc) {
+	public Boolean managerlock(ReqControlLock reqc) {
 		log.info("prefecture service void managerlock(ReqControlLock reqc)  hystrix");
+		return null;
 	}
 
 	@Override
@@ -208,8 +209,9 @@ public class StallClientHystrix implements StallClient {
 	}
 	
 	@Override
-	public void managerlockSn(ReqControlLock reqc) {
+	public Boolean managerlockSn(ReqControlLock reqc) {
 		log.info("prefecture service int managerlockSn(ReqControlLock reqc) hystrix");
+		return null;
 	}
 
 	@Override

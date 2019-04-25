@@ -170,14 +170,14 @@ public interface StallService {
 	 * @param 
 	 * @return
 	 */
-	void operating (ReqControlLock  reqc);
+	Boolean operating (ReqControlLock  reqc);
 	
 	/**
 	 * 管理版控制车位锁
 	 * @param 
 	 * @return
 	 */
-	void operatingsn (ReqControlLock  reqc);
+	Boolean operatingsn (ReqControlLock  reqc);
 	
 	/**
 	 * 查看车位锁状态

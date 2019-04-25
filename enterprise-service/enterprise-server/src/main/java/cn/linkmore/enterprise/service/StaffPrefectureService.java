@@ -24,10 +24,10 @@ public interface StaffPrefectureService {
 	 * @param bean
 	 * @return
 	 */
-	void  control(SraffReqConStall reqOperatStall,HttpServletRequest request);
+	Boolean  control(SraffReqConStall reqOperatStall,HttpServletRequest request);
 	
 	
-	void  controlSn(SraffReqConStallSn reqOperatStallSn,HttpServletRequest request);
+	Boolean  controlSn(SraffReqConStallSn reqOperatStallSn,HttpServletRequest request);
 	
 	/**
 	 * 释放车位
