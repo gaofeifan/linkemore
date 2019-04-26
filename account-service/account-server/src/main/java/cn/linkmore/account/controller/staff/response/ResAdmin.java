@@ -15,7 +15,7 @@ public class ResAdmin {
 	@ApiModelProperty(value = "状态,0禁用，1启用")
 	private Short status;
 	@ApiModelProperty(value = "角色类型 1  超级管理员 （具有维护模块）2物业版管理员(不具有)  ")
-	private String type;
+	private String type = "2";
 	@ApiModelProperty(value = "运营是否可以查看 true 展开  false 不展开")
 	private Boolean isOperation = false;
 	

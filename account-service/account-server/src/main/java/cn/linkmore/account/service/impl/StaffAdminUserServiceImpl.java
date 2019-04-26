@@ -107,7 +107,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		rs.setAccountName(staff.getAccountName());
 		rs.setGatewayDelete(staff.getGatewayDelete());
 		rs.setStatus(staff.getStatus());
-//		rs.setType(staff.getType());
+		rs.setType(staff.getType());
 		CacheUser u = new CacheUser();
 		u.setId(staff.getId());
 		u.setMobile(staff.getCellphone());
