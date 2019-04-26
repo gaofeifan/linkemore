@@ -407,8 +407,10 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
 		ResAdminUser admin = this.staffAdminUserClient.findById(ru.getId());
 		Object object = this.redisService.get(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+admin.getCellphone());
-		if(object == null) {				        
-			object = this.redisService.get(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+reset.getAccount());
+		if(object == null ) {				        
+			if(StringUtils.isNotBlank(admin.getAccountName())) {
+				object = this.redisService.get(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+reset.getAccount());
+			}
 			if(object == null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_EXPIRED);
 			}
@@ -423,7 +425,9 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		this.staffAdminUserClient.updatePw(admin.getId(),pw);
 		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+admin.getId());
 		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+key);  
-		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_ACCOUNT.key+admin.getAccountName());  
+		if(StringUtils.isNotBlank(admin.getAccountName())) {
+			this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_ACCOUNT.key+admin.getAccountName());  
+		}
 	}
 
 	@Override

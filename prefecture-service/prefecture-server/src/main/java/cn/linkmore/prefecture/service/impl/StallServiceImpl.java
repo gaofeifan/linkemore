@@ -1558,9 +1558,6 @@ public class StallServiceImpl implements StallService {
 				if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
 					this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus());
 				}
-				if(this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId())) {
-					this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key+reqc.getStallId());
-				}
 			}else if(code == 500) {
 				if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
 					if(reqc.getStatus() == 1) {

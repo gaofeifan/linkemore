@@ -143,11 +143,11 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		if(flag == null || !flag) {
 			if (this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId())) {
 				Object object = this.redisService.get(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId());
-				this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId());
+//				this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId());
 				throw new BusinessException(StatusEnum.get((int) object));
 			}
 		}
-		if(/*stall.getType() == 2 &&遗弃 新需求所有人员升锁关闭用户使用记录 */reqOperatStall.getState().intValue() == 2) {
+		if(/*stall.getType() == 2 &&遗弃 新需求所有人员升锁关闭用户使用记录 */flag && reqOperatStall.getState().intValue() == 2) {
 //			Map<String, Object> map = new HashMap<>();
 //			map.put("stallId", reqc.getStallId());
 //			rentedRecordMasterMapper.updateRentUserStatus(map );
