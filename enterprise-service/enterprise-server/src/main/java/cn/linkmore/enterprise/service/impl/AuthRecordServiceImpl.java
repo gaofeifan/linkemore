@@ -45,6 +45,7 @@ import cn.linkmore.enterprise.entity.EntOwnerStall;
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.service.AuthRecordService;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.task.TaskPool;
 import cn.linkmore.third.client.SmsClient;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.user.factory.AppUserFactory;
@@ -212,6 +213,12 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 				}
 				i++;
 			}
+			TaskPool.getInstance().task(new Runnable() {
+				@Override
+				public void run() {
+					shareStall(record.getStallIds(), record.getMobile(), request);
+				}
+			});
 		}
 		return flag;
 	}
@@ -255,8 +262,29 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 		int num = authRecordMasterMapper.cancelAuth(id);
 		if(num == 1) {
 			flag = true;
+			TaskPool.getInstance().task(new Runnable() {
+				@Override
+				public void run() {
+					cancalShare(id);
+				}
+
+				
+			});
 		}
 		return flag;
+	}
+	private void cancalShare(Long id) {
+		AuthRecord authRecord = this.authRecordClusterMapper.findById(id);
+		if(authRecord != null) {
+			Set<Object> members = this.redisService.members(RedisKey.USER_APP_SHARE_STALL.key+authRecord.getUserId());
+			if(members != null && members.contains(authRecord.getStallId())) {
+				members.remove(authRecord.getStallId());
+			}
+			this.redisService.remove(RedisKey.USER_APP_SHARE_STALL.key+authRecord.getUserId());
+			if(members != null && members.size() != 0) {
+				this.redisService.addAll(RedisKey.USER_APP_SHARE_STALL.key+authRecord.getUserId(),members);
+			}
+		}
 	}
 
 	@Override
