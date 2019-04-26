@@ -47,6 +47,8 @@
     
     <result column="create_ent_id" jdbcType="BIGINT" property="createEntId" />
     <result column="create_ent_name" jdbcType="VARCHAR" property="createEntName" />
+    
+    <result column="path_flag" jdbcType="SMALLINT" property="pathFlag" />
   </resultMap>
   
   <delete id="delete" parameterType="java.util.List" >
@@ -69,7 +71,7 @@
       limit_status,gateway ,strategy_description,
       runtime, increase, month_rent, version, create_user_id, 
       create_user_name, business_time, grid_x, grid_y, 
-      region, under_layer, total_stall_num, pre_type, create_ent_id, create_ent_name)
+      region, under_layer, total_stall_num, pre_type, create_ent_id, create_ent_name,path_flag)
     values (#{id,jdbcType=BIGINT}, #{strategyId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR}, #{districtId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=DECIMAL}, #{longitude,jdbcType=DECIMAL}, #{routeGuidance,jdbcType=VARCHAR}, 
@@ -85,7 +87,7 @@
       #{createUserId,jdbcType=BIGINT},#{createUserName,jdbcType=VARCHAR},#{businessTime,jdbcType=VARCHAR},
       #{gridX,jdbcType=INTEGER}, #{gridY,jdbcType=INTEGER},#{region,jdbcType=VARCHAR},#{underLayer,jdbcType=VARCHAR},
       #{totalStallNum,jdbcType=INTEGER},#{preType,jdbcType=SMALLINT},#{createEntId,jdbcType=BIGINT},
-      #{createEntName,jdbcType=VARCHAR}
+      #{createEntName,jdbcType=VARCHAR},#{pathFlag,jdbcType=SMALLINT}
       )
   </insert>
   
@@ -120,6 +122,9 @@
       
       <if test="limitStatus != null">
         limit_status = #{limitStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="pathFlag != null">
+        path_flag = #{pathFlag,jdbcType=SMALLINT},
       </if>
       
       gateway = #{gateway,jdbcType=VARCHAR},

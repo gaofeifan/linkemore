@@ -708,9 +708,10 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										resRentedRecord.getStallId());
 								rentUserStall.setIsAuthUser(1);
 								rentUserStall.setIsUserRecord(1);
-								
-								rentUserStall.setUseUserMobile(re.getMobile());
-								rentUserStall.setUseUserName(re.getUsername());
+								if(re != null){
+									rentUserStall.setUseUserMobile(re.getMobile());
+									rentUserStall.setUseUserName(re.getUsername());
+								}
 								break;
 							}
 						}

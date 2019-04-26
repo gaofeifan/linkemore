@@ -114,7 +114,7 @@ public class ReqPrefectureEntity {
     /**
      * 专区类型(0普通，1奥迪内部定制专区)
      */
-    private Short type;
+    private Short type = 0;
     /**
      * 企业id
      */
@@ -199,6 +199,18 @@ public class ReqPrefectureEntity {
      * 创建商家名称
      */
     private String createEntName;
+    
+    /**
+     * 路径规划标识(0禁用，1开启)
+     */
+    private Short pathFlag;
+    
+    public Short getPathFlag() {
+		return pathFlag;
+	}
+	public void setPathFlag(Short pathFlag) {
+		this.pathFlag = pathFlag;
+	}
     
     public String getCreateEntName() {
 		return createEntName;
