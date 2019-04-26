@@ -29,6 +29,7 @@ public class ExceptionHandle {
 	private static final String API_APP_PATH="/app/";
 	private static final String API_OPS_PATH="/ops/";
 	private static final String API_FEIGN_PATH="/feign/"; 
+	private static final String API_STAFF_PATH="/staff/"; 
 	
 	private static final String BUSINESS = "business";
 	private static final String FEIGN = "feign";
@@ -201,6 +202,8 @@ public class ExceptionHandle {
 			if(uri.indexOf(API_FEIGN_PATH)==0) {
 				return this.feignHandle(e, request, response);
 			}else if(uri.indexOf(API_APP_PATH)==0) {
+				return this.appHandle(e, request, response);
+			}else if(uri.indexOf(API_STAFF_PATH)==0) {
 				return this.appHandle(e, request, response);
 			}else if(uri.indexOf(API_OPS_PATH)==0) {
 				return this.opsHandle(e, request, response);
