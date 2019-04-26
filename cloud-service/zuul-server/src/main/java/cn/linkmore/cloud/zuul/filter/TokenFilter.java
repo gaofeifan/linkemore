@@ -63,6 +63,7 @@ public class TokenFilter extends ZuulFilter {
 			add("/enterprise/ent/auth/send");
 			add("/feign/stall/exc/stall-exc-cause");
 			
+			add("/open/auth/access-token");
 			add("/open/auth/token");
 			add("/open/auth/t");
 			

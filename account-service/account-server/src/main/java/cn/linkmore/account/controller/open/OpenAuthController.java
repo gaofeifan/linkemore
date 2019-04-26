@@ -58,6 +58,23 @@ public class OpenAuthController {
 		}
 		return response;
 	}
+	
+	@ApiOperation(value = "开放授权功能", notes = "token", consumes = "application/json")
+	@RequestMapping(value = "/access-token", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResOpenAuth> accessToken(@Validated @RequestBody ReqOpenAuth reqOpenAuth,
+			HttpServletRequest request) {
+		ResponseEntity<ResOpenAuth> response = null;
+		try {
+			ResOpenAuth resOpenAuth = openAuthService.getAccessToken(reqOpenAuth);
+			response = ResponseEntity.success(resOpenAuth, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail(e.getStatusEnum(), request);
+		} catch (Exception e) {
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	}
 
 	@RequestMapping(value = "/t", method = RequestMethod.POST)
 	@ResponseBody

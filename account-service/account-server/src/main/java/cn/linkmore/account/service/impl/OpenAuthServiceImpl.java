@@ -197,4 +197,69 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 
 	}
 
+	@Override
+	public ResOpenAuth getAccessToken(ReqOpenAuth reqOpenAuth) {
+		String secret = String.valueOf(openSecret.getSecrets().get(reqOpenAuth.getAppid()));
+		Map<String, Claim> token = null;
+		log.info("request param = {}, secret = {}", JSON.toJSON(reqOpenAuth), secret);
+		if (secret == null) {
+			throw new BusinessException(StatusEnum.OPENAPI_APPID_ERROR);
+		}
+		try {
+			token = OpenTokenUtil.verifyToken(reqOpenAuth.getToken(), secret);
+		} catch (Exception e) {
+			throw new BusinessException(StatusEnum.OPENAPI_SIGN_ERROR);
+		}
+		String key = UUID.randomUUID().toString().replaceAll("-", "");
+		String uid = token.get("uid").asString();
+		String mobile = token.get("mobile").asString();
+		//String plates = token.get("plates").asString();
+		log.info("response result uid = {}, mobile = {} ", uid, mobile);
+		// 查询登陆用户
+		ResUser user = this.userClusterMapper.findByMobile(uid);
+		if (user == null) {
+			user = new ResUser();
+			user.setMobile(mobile);
+			user.setUsername(uid);
+			user.setPassword("");
+			user.setUserType("3");
+			user.setStatus("1");
+			user.setLastLoginTime(new Date());
+			user.setCreateTime(new Date());
+			user.setUpdateTime(new Date());
+			user.setIsAppRegister((short) 2);
+			user.setAppRegisterTime(new Date());
+			user.setIsWechatBind((short) 0);
+			user.setFansStatus((short) 0);
+			this.userMasterMapper.save(user);
+		} else {
+			user.setLastLoginTime(new Date());
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", user.getId());
+			param.put("lastLoginTime", new Date());
+			param.put("updateTime", new Date());
+			this.userMasterMapper.updateLoginTime(param);
+			this.updateFansStatus((short) 0, user.getId());
+		}
+
+		// 解析用户传递参数，若包含车牌，则初始化凌猫系统中
+		/*if (plates.startsWith("[")) {
+			plates = plates.substring(1);
+		}
+		if (plates.endsWith("]")) {
+			plates = plates.substring(0, plates.length() - 1);
+		}
+
+		syncUserPlate(plates, user.getId());*/
+
+		// 放入redis中 返回key
+		CacheUser u = new CacheUser();
+		u.setId(user.getId());
+		u.setAppId(reqOpenAuth.getAppid());
+		u.setMobile(user.getMobile());
+		u.setToken(key);
+		cacheOpenUse(u);
+		return new ResOpenAuth(key);
+	}
+
 }
