@@ -251,11 +251,11 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private String getAppSmsCode(String mobile){ 
 		Object cache = this.redisService.get(RedisKey.USER_APP_AUTH_CODE.key+mobile);
 		String code = null;
-		if(cache==null){
-			code = String.valueOf(Math.round(Math.random() * 8999 + 1000)); 
-		}else{
-			code = cache.toString(); 
-		} 
+//		if(cache==null){
+		code = String.valueOf(Math.round(Math.random() * 8999 + 1000)); 
+//		}else{
+//			code = cache.toString(); 
+//		} 
 		return code;
 	}
 

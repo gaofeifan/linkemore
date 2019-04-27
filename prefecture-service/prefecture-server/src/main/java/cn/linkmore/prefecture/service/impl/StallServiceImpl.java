@@ -1999,6 +1999,7 @@ public class StallServiceImpl implements StallService {
 		Stall stall = this.stallClusterMapper.findByLockSn(sn);
 		if(stall != null) {
 			stallSn.setStallId(stall.getId());
+			stallSn.setAreaName(stall.getAreaName());
 			CacheUser cu = (CacheUser) this.redisService
 					.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
 			ResAdminUser user = this.adminUserService.find(cu.getId());

@@ -24,6 +24,9 @@ public class ResStaffStallSn {
 	@ApiModelProperty(value="版本")
 	private String version;
 	
+	@ApiModelProperty("分区")
+	private String  areaName;
+	
 	@ApiModelProperty(value="车位锁状态 1 升起  2 降下 3 未知")
 	private Integer stallLockStatus;
 
@@ -239,5 +242,12 @@ public class ResStaffStallSn {
 	public void setGatewayDelete(short gatewayDelete) {
 		this.gatewayDelete = gatewayDelete;
 	}
-	
+
+	public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
 }
