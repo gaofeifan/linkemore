@@ -47,6 +47,8 @@
     
     <result column="create_ent_id" jdbcType="BIGINT" property="createEntId" />
     <result column="create_ent_name" jdbcType="VARCHAR" property="createEntName" />
+    
+    <result column="path_flag" jdbcType="SMALLINT" property="pathFlag" />
   </resultMap>
   
   <delete id="delete" parameterType="java.util.List" >
@@ -124,6 +126,7 @@
       <if test="pathFlag != null">
         path_flag = #{pathFlag,jdbcType=SMALLINT},
       </if>
+
       gateway = #{gateway,jdbcType=VARCHAR},
       
       strategy_description = #{strategyDescription,jdbcType=VARCHAR},

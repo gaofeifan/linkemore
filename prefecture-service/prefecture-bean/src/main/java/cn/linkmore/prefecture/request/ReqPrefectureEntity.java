@@ -200,17 +200,19 @@ public class ReqPrefectureEntity {
      */
     private String createEntName;
     
-    private Short pathFlag;
+    /**
+     * 路径规划标识(0禁用，1开启)
+     */
+    private Short pathFlag = 0;
     
     public Short getPathFlag() {
 		return pathFlag;
 	}
-
 	public void setPathFlag(Short pathFlag) {
 		this.pathFlag = pathFlag;
 	}
-
-	public String getCreateEntName() {
+    
+    public String getCreateEntName() {
 		return createEntName;
 	}
 

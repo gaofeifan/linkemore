@@ -672,6 +672,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							if (info.getKey() == pre.getPreId()) {
 								for (ResLockInfo inf : info.getValue()) {
 									if (inf.getLockCode().equals(enttall.getLockSn())) {
+										log.info("inf = {}",JSON.toJSON(inf));
 										rentUserStall.setBattery(inf.getElectricity());
 										rentUserStall.setParkingState(inf.getParkingState());
 										rentUserStall.setGatewayStatus(inf.getOnlineState());
@@ -721,11 +722,11 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										resRentedRecord.getStallId());
 								rentUserStall.setIsAuthUser(1);
 								rentUserStall.setIsUserRecord(1);
-								if(re != null) {
+
+								if(re != null){
 									rentUserStall.setUseUserMobile(re.getMobile());
 									rentUserStall.setUseUserName(re.getUsername());
 								}
-								
 								break;
 							}
 						}
@@ -1150,7 +1151,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								}
 								
 								if(enttall.getStatus().intValue() == 2) {
-									log.info("record userId = {} login userId= {} boolean1 = {} boolean2={}",resRentedRecord.getUserId(), user.getId(), resRentedRecord.getUserId() == user.getId(),resRentedRecord.getUserId().equals(user.getId()));
 									if(resRentedRecord.getUserId().equals(user.getId())) {
 										rentUserStall.setIsSelfUser(0);
 									}else {

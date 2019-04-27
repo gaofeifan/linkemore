@@ -209,8 +209,8 @@ public class Prefecture {
 	public void setPathFlag(Short pathFlag) {
 		this.pathFlag = pathFlag;
 	}
-
-	public String getCreateEntName() {
+    
+    public String getCreateEntName() {
 		return createEntName;
 	}
 
