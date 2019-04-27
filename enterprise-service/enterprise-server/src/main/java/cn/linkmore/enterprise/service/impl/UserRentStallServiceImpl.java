@@ -670,6 +670,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							if (info.getKey() == pre.getPreId()) {
 								for (ResLockInfo inf : info.getValue()) {
 									if (inf.getLockCode().equals(enttall.getLockSn())) {
+										log.info("inf = {}",JSON.toJSON(inf));
 										rentUserStall.setBattery(inf.getElectricity());
 										rentUserStall.setParkingState(inf.getParkingState());
 										rentUserStall.setGatewayStatus(inf.getOnlineState());

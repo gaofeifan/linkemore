@@ -203,7 +203,7 @@ public class ReqPrefectureEntity {
     /**
      * 路径规划标识(0禁用，1开启)
      */
-    private Short pathFlag;
+    private Short pathFlag = 0;
     
     public Short getPathFlag() {
 		return pathFlag;
