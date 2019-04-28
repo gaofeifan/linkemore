@@ -326,7 +326,7 @@
 			INNER JOIN t_user u ON u.mobile= t.mobile
 		  where NOW() BETWEEN t.start_time
 			AND t.end_time and t.switch_flag = 1 and t.auth_flag = 0
-			AND u.id =  #{0}
+			AND t.user_id =  #{0}
 			
 			
 	</select>
