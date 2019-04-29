@@ -122,7 +122,11 @@ public class TokenFilter extends ZuulFilter {
 			add("/h5/notify");
 			add("/h5/notify.do");
 	
-			add("/attach/image_upload"); 
+			add("/attach/image_upload");
+			
+			add("/open/auth/main");
+			add("/open/auth/backUri");
+			add("/open/auth/redirect");
 		}
 	};
 
