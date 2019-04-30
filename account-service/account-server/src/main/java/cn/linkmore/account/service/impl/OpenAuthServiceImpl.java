@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.interfaces.Claim;
 import cn.linkmore.account.controller.open.requset.ReqOpenAuth;
+import cn.linkmore.account.controller.open.requset.ReqOpenUser;
 import cn.linkmore.account.controller.open.response.ResOpenAuth;
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
@@ -120,6 +121,52 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 		return new ResOpenAuth(key);
 	}
 
+	@Override
+	public String getToken(ReqOpenUser reqOpenUser) {
+		//ResUser user = this.userClusterMapper.findByMobile(reqOpenUser.getPhone());
+		ResUser user = this.userClusterMapper.findByMobile(reqOpenUser.getAccountName());
+		if (user == null) {
+			user = new ResUser();
+			user.setMobile(reqOpenUser.getPhone());
+			user.setUsername(reqOpenUser.getAccountName());
+			user.setNickname(reqOpenUser.getNickName());
+			user.setPassword("");
+			user.setUserType("4");
+			user.setStatus("1");
+			user.setSex(reqOpenUser.getSex());
+			user.setIcon(reqOpenUser.getIcon());
+			user.setLastLoginTime(new Date());
+			user.setCreateTime(new Date());
+			user.setUpdateTime(new Date());
+			user.setIsAppRegister((short) 2);
+			user.setAppRegisterTime(new Date());
+			user.setIsWechatBind((short) 0);
+			user.setFansStatus((short) 0);
+			this.userMasterMapper.save(user);
+		} else {
+			user.setLastLoginTime(new Date());
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", user.getId());
+			param.put("lastLoginTime", new Date());
+			param.put("updateTime", new Date());
+			this.userMasterMapper.updateLoginTime(param);
+			this.updateFansStatus((short) 0, user.getId());
+		}
+		// 放入redis中 返回key
+		String key = UUID.randomUUID().toString().replaceAll("-", "");
+		
+		CacheUser u = new CacheUser();
+		u.setId(user.getId());
+		u.setAppId("appid");
+		u.setMobile(user.getMobile());
+		u.setToken(key);
+		cacheOpenUse2(u);
+		
+
+		return key;
+	}
+	
+	
 	private void syncUserPlate(String plates, Long userId) {
 		List<VehicleMarkManage> plateList = this.vehicleMarkManageClusterMapper.findByUserId(userId);
 		List<VehicleMarkManage> initPlateList = new ArrayList<VehicleMarkManage>();
@@ -196,5 +243,21 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 		this.redisService.set(RedisKey.USER_APP_AUTH_OPEN.key + user.getMobile(), user.getToken());
 
 	}
+	
+	void cacheOpenUse2(CacheUser user) {
+		String os = "3";
+		user.setClient(new Short(os));
+
+		// 删除旧缓存
+		String oldTokenKey = String.valueOf((this.redisService.get(RedisKey.USER_APP_AUTH_OPEN.key + user.getMobile())));
+		this.redisService.remove(appUserFactory.createTokenRedisKey(oldTokenKey, os));
+
+		// 插入缓存
+		user.setClient(new Short(os));
+		this.redisService.set(appUserFactory.createTokenRedisKey(user.getToken(), os), user, 60 * 60 * 24 * 2);
+		this.redisService.set(RedisKey.USER_APP_AUTH_OPEN.key + user.getMobile(), user.getToken());
+
+	}
+
 
 }
