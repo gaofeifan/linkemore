@@ -106,7 +106,7 @@ public class OpenAuthController {
 	public  final String appKey = "4793a6be-ff28-44e1-8ad9-1455bc34667a";
 	public  final String secretKey = "JTWEznLfDb1zrAeJO9OK/WmQoAQ+8hshR1E86WVP9mpsYNnKoMs2kq6Fayq+N9R5d6IiU8SeFIH+sxtR+SL5qg==";
 	public  final String redirectUri="https://api.linkmoreparking.com/api/account/open/auth/redirect";
-	public  final String backUri="https://web-blue.linkmoreparking.cn/#/";
+	public  final String backUri="https://web-blue.linkmoretech.cn/#/";
 	
 	
 	public  final String codePath="/evh/oauth2/authorize";
