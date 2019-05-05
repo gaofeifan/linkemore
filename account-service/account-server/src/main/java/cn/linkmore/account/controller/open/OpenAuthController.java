@@ -196,8 +196,10 @@ public class OpenAuthController {
 		}
 		System.out.println("请求参数");
 		Map<String,String[]> paramMap=request.getParameterMap();
-		for(Map.Entry<String,String[]> entry :paramMap.entrySet()){
-			System.out.println(entry.getKey()+":"+Arrays.toString(entry.getValue()) );
+		if(paramMap!=null) {
+			for(Map.Entry<String,String[]> entry :paramMap.entrySet()){
+				System.out.println(entry.getKey()+":"+Arrays.toString(entry.getValue()) );
+			}
 		}
 		System.out.println("");
 		if(request.getHeader("Cookie")!=null) {
