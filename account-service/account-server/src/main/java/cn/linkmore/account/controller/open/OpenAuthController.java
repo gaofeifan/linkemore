@@ -194,6 +194,9 @@ public class OpenAuthController {
 			String name = enu.nextElement();
 			System.out.println(name+":"+request.getHeader(name));
 		}
+		if(request.getHeader("Cookie")!=null) {
+			response.addHeader("Cookie", request.getHeader("Cookie"));
+		}
 		String url=baseUri+codePath+"?client_id="+appKey+"&response_type=code&redirect_uri="+redirectUri+"&scope=basic&state="+System.currentTimeMillis();
 		try {
 			response.sendRedirect(url);
