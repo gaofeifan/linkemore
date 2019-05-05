@@ -2,10 +2,12 @@ package cn.linkmore.account.controller.open;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -186,6 +188,12 @@ public class OpenAuthController {
 	 */
 	@RequestMapping(value = "/index")
 	public void main(HttpServletRequest request,HttpServletResponse response) {
+		//打印请求头内容
+		System.out.println("请求头");
+		for(Enumeration<String> enu = request.getHeaderNames();enu.hasMoreElements();){
+			String name = enu.nextElement();
+			System.out.println(name+":"+request.getHeader(name));
+		}
 		String url=baseUri+codePath+"?client_id="+appKey+"&response_type=code&redirect_uri="+redirectUri+"&scope=basic&state="+System.currentTimeMillis();
 		try {
 			response.sendRedirect(url);
