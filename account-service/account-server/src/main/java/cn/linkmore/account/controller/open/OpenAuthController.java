@@ -1,13 +1,13 @@
 package cn.linkmore.account.controller.open;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -194,6 +194,12 @@ public class OpenAuthController {
 			String name = enu.nextElement();
 			System.out.println(name+":"+request.getHeader(name));
 		}
+		System.out.println("请求参数");
+		Map<String,String[]> paramMap=request.getParameterMap();
+		for(Map.Entry<String,String[]> entry :paramMap.entrySet()){
+			System.out.println(entry.getKey()+":"+Arrays.toString(entry.getValue()) );
+		}
+		System.out.println("");
 		if(request.getHeader("Cookie")!=null) {
 			response.addHeader("Cookie", request.getHeader("Cookie"));
 		}
