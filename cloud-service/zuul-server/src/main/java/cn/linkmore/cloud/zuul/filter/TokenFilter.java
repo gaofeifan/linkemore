@@ -131,7 +131,7 @@ public class TokenFilter extends ZuulFilter {
 	
 			add("/attach/image_upload");
 			
-			add("/open/auth/main");
+			add("/open/auth/index");
 			add("/open/auth/backUri");
 			add("/open/auth/redirect");
 		}
