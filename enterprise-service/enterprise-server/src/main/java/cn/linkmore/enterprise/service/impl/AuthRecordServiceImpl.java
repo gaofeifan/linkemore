@@ -270,8 +270,29 @@ public class AuthRecordServiceImpl implements AuthRecordService {
 				}
 			});
 			flag = true;
+			TaskPool.getInstance().task(new Runnable() {
+				@Override
+				public void run() {
+					cancalShare(id);
+				}
+
+				
+			});
 		}
 		return flag;
+	}
+	private void cancalShare(Long id) {
+		AuthRecord authRecord = this.authRecordClusterMapper.findById(id);
+		if(authRecord != null) {
+			Set<Object> members = this.redisService.members(RedisKey.USER_APP_SHARE_STALL.key+authRecord.getUserId());
+			if(members != null && members.contains(authRecord.getStallId())) {
+				members.remove(authRecord.getStallId());
+			}
+			this.redisService.remove(RedisKey.USER_APP_SHARE_STALL.key+authRecord.getUserId());
+			if(members != null && members.size() != 0) {
+				this.redisService.addAll(RedisKey.USER_APP_SHARE_STALL.key+authRecord.getUserId(),members);
+			}
+		}
 	}
 
 	@Override

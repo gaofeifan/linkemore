@@ -1109,7 +1109,7 @@ public class OrdersServiceImpl implements OrdersService {
 				ro.setGuideImage(pre.getRouteGuidance());
 				ro.setGuideRemark(pre.getRouteDescription());
 				ro.setUnderLayer(pre.getUnderLayer());
-				ro.setPlanFlag(pre.getPathFlag());
+				ro.setPathFlag(pre.getPathFlag());
 			}
 			ResStallEntity stall = this.stallClient.findById(ro.getStallId());
 			if (stall != null) {

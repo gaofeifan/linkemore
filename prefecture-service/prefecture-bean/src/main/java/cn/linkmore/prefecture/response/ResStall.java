@@ -1,4 +1,7 @@
 package cn.linkmore.prefecture.response;
+
+import java.util.Date;
+
 /**
  * 响应-APP车位信息
  * @author jiaohanbin
@@ -34,6 +37,8 @@ public class ResStall {
 	 * 车区id
 	 */
 	private Long preId;
+	
+	private Date endTime;
 	
 	private Integer bindOrderStatus;
 	/**
@@ -105,6 +110,12 @@ public class ResStall {
 	}
 	public void setAreaName(String areaName) {
 		this.areaName = areaName;
+	}
+	public Date getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 	
 }

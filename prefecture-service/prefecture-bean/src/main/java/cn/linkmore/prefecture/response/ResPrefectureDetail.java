@@ -208,7 +208,8 @@ public class ResPrefectureDetail {
 	public void setPathFlag(Short pathFlag) {
 		this.pathFlag = pathFlag;
 	}
-	public Long getCreateEntId() {
+
+    public Long getCreateEntId() {
 		return createEntId;
 	}
 	public void setCreateEntId(Long createEntId) {

@@ -63,6 +63,7 @@ public class TokenFilter extends ZuulFilter {
 			add("/enterprise/ent/auth/send");
 			add("/feign/stall/exc/stall-exc-cause");
 			
+			add("/open/auth/access-token");
 			add("/open/auth/token");
 			add("/open/auth/t");
 			
@@ -128,7 +129,11 @@ public class TokenFilter extends ZuulFilter {
 			add("/h5/notify");
 			add("/h5/notify.do");
 	
-			add("/attach/image_upload"); 
+			add("/attach/image_upload");
+			
+			add("/open/auth/main");
+			add("/open/auth/backUri");
+			add("/open/auth/redirect");
 		}
 	};
 

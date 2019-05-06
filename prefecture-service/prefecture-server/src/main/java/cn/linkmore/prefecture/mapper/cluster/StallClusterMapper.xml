@@ -59,6 +59,7 @@
     <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
     <result column="area_name" jdbcType="VARCHAR" property="areaName" />
     <result column="bind_order_status" jdbcType="INTEGER" property="bindOrderStatus" />
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
   
   <sql id="Base_Column_List">
@@ -168,7 +169,7 @@
   </select>
   
   <select id="findPreStallList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
-  	select id, stall_name, pre_id,lock_sn, status, type,lock_status,bind_order_status
+  	select id, stall_name, pre_id,lock_sn, status, type,lock_status,bind_order_status,end_time
 	from v_stall 
 	<where>
 	   <if test="list != null">

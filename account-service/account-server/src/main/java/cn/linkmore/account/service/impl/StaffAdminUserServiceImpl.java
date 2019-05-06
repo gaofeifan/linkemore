@@ -55,9 +55,10 @@ import cn.linkmore.util.TokenUtil;
 @Service
 public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	private final static long SPACE = 1000L*60*30; 
-	private final static String STAFF_CODE = "6699"; 
-//	@Value("")
-	private Boolean staffCode = true;
+	@Value("${staff.code}")
+	private String STAFF_CODE = "6699"; 
+	@Value("${staff.auth-code}")
+	private Boolean staffCode = false;
 	@Autowired
 	private StaffAppfansService staffAppfansService; 
 	@Autowired
@@ -343,7 +344,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		}
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
 		Object cache = this.redisService.get(RedisKey.STAFF_STAFF_AUTH_CODE.key+mobile);
-		if(staffCode == true && code.equals("6699") ) {
+		if(staffCode && code.equals("6699") ) {
 		}else {
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
@@ -475,7 +476,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 			cache = this.redisService.get(RedisKey.STAFF_STAFF_AUTH_CODE.key+admin.getCellphone());
 			
 		}
-		if(staffCode == true && code.equals("6699") ) {
+		if(staffCode&& code.equals("6699") ) {
 		}else {
 		if(cache==null) {
 			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED); 

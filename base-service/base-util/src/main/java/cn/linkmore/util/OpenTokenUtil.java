@@ -12,7 +12,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class OpenTokenUtil {
 
-	static String Secret = "8c563ca518f74433a631e8f6c3077f91";
+	//static String Secret = "8c563ca518f74433a631e8f6c3077f91";
+	static String Secret = "123456789123456789";
 	private static final long EXPIRE_TIME = 48 * 60 * 60 * 1000;
 
 	public static String createToken() throws Exception {
@@ -31,6 +32,23 @@ public class OpenTokenUtil {
 				.sign(Algorithm.HMAC256(Secret));
 		return token;
 	}
+	
+	public static String createLdToken() throws Exception {
+		long now = System.currentTimeMillis();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println(sdf.format(new Date()));
+		Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+		System.out.println(sdf.format(date));
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("alg", "HS256");
+		map.put("typ", "JWT");
+		String token = JWT.create().withHeader(map)
+				.withClaim("uid", "linkmore2018")
+				.withClaim("mobile", "18514410532")
+			    .withExpiresAt(date).withIssuedAt(new Date(now))
+				.sign(Algorithm.HMAC256(Secret));
+		return token;
+	}
 
 	// 解析token
 	public static Map<String, Claim> verifyToken(String token, String secret) throws Exception {
@@ -44,7 +62,8 @@ public class OpenTokenUtil {
 	}
 
 	public static void main(String[] args) {
-		try {
+		//上海德比
+		/*try {
 			String token = createToken();
 			System.out.println(token);
 			Map<String, Claim> map = verifyToken(token, Secret);
@@ -66,7 +85,18 @@ public class OpenTokenUtil {
 	        }
 		} catch (Exception e) {
 			e.printStackTrace();
+		}*/
+		//北京蓝黛
+		try {
+			String token = createLdToken();
+			System.out.println(token);
+			Map<String, Claim> map = verifyToken(token, Secret);
+			System.out.println(map.get("uid").asString());
+			System.out.println(map.get("mobile").asString());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 	}
 
 }
