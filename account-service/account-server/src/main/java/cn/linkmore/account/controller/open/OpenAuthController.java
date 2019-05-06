@@ -1,6 +1,7 @@
 package cn.linkmore.account.controller.open;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Enumeration;
@@ -75,23 +76,6 @@ public class OpenAuthController {
 		}
 		return response;
 	}
-	
-	@ApiOperation(value = "开放授权功能", notes = "token", consumes = "application/json")
-	@RequestMapping(value = "/access-token", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<ResOpenAuth> accessToken(@Validated @RequestBody ReqOpenAuth reqOpenAuth,
-			HttpServletRequest request) {
-		ResponseEntity<ResOpenAuth> response = null;
-		try {
-			ResOpenAuth resOpenAuth = openAuthService.getAccessToken(reqOpenAuth);
-			response = ResponseEntity.success(resOpenAuth, request);
-		} catch (BusinessException e) {
-			response = ResponseEntity.fail(e.getStatusEnum(), request);
-		} catch (Exception e) {
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		return response;
-	}
 
 	@RequestMapping(value = "/t", method = RequestMethod.POST)
 	@ResponseBody
@@ -119,7 +103,8 @@ public class OpenAuthController {
 */
 	//正式环境
 	
-	public  final String baseUri="http://guomaofuwu.zuolin.com";
+	//public  final String baseUri="http://guomaofuwu.zuolin.com";
+	public  final String baseUri="https://core.zuolin.com";
 	public  final String appKey = "4793a6be-ff28-44e1-8ad9-1455bc34667a";
 	public  final String secretKey = "JTWEznLfDb1zrAeJO9OK/WmQoAQ+8hshR1E86WVP9mpsYNnKoMs2kq6Fayq+N9R5d6IiU8SeFIH+sxtR+SL5qg==";
 	public  final String redirectUri="https://api.linkmoreparking.com/api/account/open/auth/redirect";
@@ -223,8 +208,14 @@ public class OpenAuthController {
 			response.addHeader("Cookie", request.getHeader("Cookie"));
 		}
 		String url=baseUri+codePath+"?client_id="+appKey+"&response_type=code&redirect_uri="+redirectUri+"&scope=basic&state="+System.currentTimeMillis();
+		String html="<script language=\"javascript\" type=\"text/javascript\">window.location.href=\"" + url + "\"</script>";
+		
 		try {
-			response.sendRedirect(url);
+			response.setHeader("content-type", "text/html;charset=UTF-8");
+			OutputStream out = response.getOutputStream();  
+			out.write(html.getBytes("UTF-8")); 
+
+			//response.sendRedirect(url);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
