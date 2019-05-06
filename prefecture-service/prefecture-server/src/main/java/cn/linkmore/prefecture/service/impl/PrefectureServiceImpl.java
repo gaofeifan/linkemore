@@ -1373,7 +1373,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<ResEntranceType> entranceList(Long preId, HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		if(user==  null ) {
-			//throw new BusinessException(StatusEnum.UNAUTHORIZED);
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
 		}
 		List<String> entranceDetailList = null;
 		List<ResEntranceType> entTypeList = new ArrayList<ResEntranceType>();
