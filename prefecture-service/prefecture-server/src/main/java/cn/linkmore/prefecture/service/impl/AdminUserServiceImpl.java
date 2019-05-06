@@ -119,11 +119,12 @@ public class AdminUserServiceImpl implements AdminUserService {
 		adminUser = ObjectUtils.copyObject(admin, adminUser);
 		ResAdminUser user = this.find(admin.getId());
 		if(org.apache.commons.lang3.StringUtils.isNoneBlank(adminUser.getPassword())) {
-			if(org.apache.commons.lang3.StringUtils.isNoneBlank(user.getPassword()) && !user.getPassword().equals(adminUser.getPassword())) {
+			if(org.apache.commons.lang3.StringUtils.isBlank(user.getPassword())) {
+				adminUser.setPassword(Md5PW.md5(null, adminUser.getPassword()));
+			}else if(!user.getPassword().equals(adminUser.getPassword())) {
 				adminUser.setPassword(Md5PW.md5(null, adminUser.getPassword()));
 			}
 		}
-		
 		return this.adminUserMasterMapper.update(adminUser);
 	}
 	/*
