@@ -12,6 +12,8 @@ public class ResStaffStallDetail {
 
 	@ApiModelProperty("车位名称 (车位编号)")
 	public String stallName;
+	@ApiModelProperty("分区")
+	public String areaName;
 	
 	@ApiModelProperty("锁编号(序列号)")
 	public String lockSn;
@@ -230,4 +232,12 @@ public class ResStaffStallDetail {
 	public void setOrderId(Long orderId) {
 		this.orderId = orderId;
 	}
+	public String getAreaName() {
+		return areaName;
+	}
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+	
+	
 }

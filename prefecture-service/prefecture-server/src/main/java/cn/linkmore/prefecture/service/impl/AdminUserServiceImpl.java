@@ -54,8 +54,11 @@ public class AdminUserServiceImpl implements AdminUserService {
 	
 
 	private static final String ADMIN = "admin-";
+	private static final String ADMIN_STALL = "admin-stall";
 	private static final String ADMIN_ALL = "admin-all";
+	private static final String ADMIN_ORDER = "admin-order";
 	private static final String ADMIN_ENT = "admin-ent";
+	private static final String ADMIN_MANAGE = "admin-manage";
 	/*
 	 * 管理员列表
 	 */
@@ -234,14 +237,22 @@ public class AdminUserServiceImpl implements AdminUserService {
 			admin.setStatus(user.getStatus());
 			List<ResAdminAuth> list = this.adminAuthClusterMapper.findUserAuthByUserId(user.getId());
 			admin.setType("2");
-			admin.setCode(ADMIN_ENT);
+			admin.setCode(ADMIN_STALL);
 			if(list != null && list.size() != 0) {
 				 ResAdminAuth adminAuth = list.get(list.size()-1);
 				 if( adminAuth.getCode()!= null) {
-					 admin.setIsOperate(true);
-					 if( adminAuth.getCode().equals(ADMIN_ALL) ) {
+					 if( adminAuth.getCode().trim().equals(ADMIN_ALL) ) {
+						 admin.setIsOperate(true);
 						 admin.setCode(ADMIN_ALL);
 						 admin.setType("1");
+					 }else if( adminAuth.getCode().trim().equals(ADMIN_ORDER)) {
+						 admin.setIsOperate(true);
+						 admin.setCode(ADMIN_ORDER);
+					 }else if(adminAuth.getCode().trim().equals(ADMIN_MANAGE)) {
+						 admin.setType("1"); 
+						 admin.setCode(ADMIN_MANAGE);
+					 }else {
+						 
 					 }
 				 }
 			}
@@ -267,17 +278,27 @@ public class AdminUserServiceImpl implements AdminUserService {
 		admin.setGatewayDelete(user.getGatewayDelete());
 		admin.setUpdateTime(user.getUpdateTime());
 		admin.setStatus(user.getStatus());
-		Map<String, Object> map = new HashMap<>();
-		List<ResAdminAuth> list = this.adminAuthClusterMapper.findList(map);
-		this.adminUserAuthClusterMapper.findList(map);
-		for (ResAdminAuth resAdminAuth : list) {
-			if(resAdminAuth.getCode()!= null && resAdminAuth.getCode().contains(ADMIN)) {
-				admin.setIsOperate(true);
-				if(resAdminAuth.getCode().equals(ResAdmin.ADMIN_ALL)) {
-					admin.setType(ResAdmin.ADMIN_ALL);
-					admin.setCode(ResAdmin.ADMIN_ALL_CODE);
-				}
-			}
+		List<ResAdminAuth> list = this.adminAuthClusterMapper.findUserAuthByUserId(user.getId());
+		admin.setType("2");
+		admin.setCode(ADMIN_STALL);
+//		this.adminUserAuthClusterMapper.findList(map);
+		if(list != null && list.size() != 0) {
+			 ResAdminAuth adminAuth = list.get(list.size()-1);
+			 if( adminAuth.getCode()!= null) {
+				 if( adminAuth.getCode().trim().equals(ADMIN_ALL) ) {
+					 admin.setIsOperate(true);
+					 admin.setCode(ADMIN_ALL);
+					 admin.setType("1");
+				 }else if( adminAuth.getCode().trim().equals(ADMIN_ORDER)) {
+					 admin.setIsOperate(true);
+					 admin.setCode(ADMIN_ORDER);
+				 }else if(adminAuth.getCode().trim().equals(ADMIN_MANAGE)) {
+					 admin.setType("1"); 
+					 admin.setCode(ADMIN_MANAGE);
+				 }else {
+					 
+				 }
+			 }
 		}
 		return admin;
 	}
@@ -293,6 +314,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 	}     
 	
 	
+	public static void main(String[] args) {
+		System.out.println(new Date().getTime());
+		
+	}
 	
 }
 class Md5PW{

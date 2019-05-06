@@ -402,9 +402,34 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		if(!reset.getPassword().equals(reset.getRepassword())) {
 			throw new BusinessException(StatusEnum.ACCOUNT_RE_PASSWORD_ERROR);
 		}
-//		cn.linkmore.prefecture.response.ResAdmin admin = this.staffAdminUserClient.findAccountName(reset.getAccount());
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
+		if(ru == null) {
+			cn.linkmore.prefecture.response.ResAdmin admin = this.staffAdminUserClient.findAccountName(reset.getAccount());
+			Object object = this.redisService.get(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+admin.getCellphone());
+			if(object == null ) {				        
+				if(StringUtils.isNotBlank(admin.getAccountName())) {
+					object = this.redisService.get(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+reset.getAccount());
+				}
+				if(object == null) {
+					throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_EXPIRED);
+				}
+			}
+			if(!object.toString().equals(reset.getToken())) {
+				throw new BusinessException(StatusEnum.USER_APP_SMS_CODE_ERROR);
+			}
+			if(admin == null || admin.getId() == null) {
+				throw new BusinessException(StatusEnum.	ACCOUNT_STAFF_USER_NOT_EXIST);
+			}
+			String	pw = Md5PW.md5(null, reset.getPassword());
+			this.staffAdminUserClient.updatePw(admin.getId(),pw);
+			this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+admin.getId());
+			this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+key);  
+			this.redisService.remove(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+admin.getCellphone());
+			if(StringUtils.isNotBlank(admin.getAccountName())) {
+				this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_ACCOUNT.key+admin.getAccountName());  
+			}
+		}else {
 		ResAdminUser admin = this.staffAdminUserClient.findById(ru.getId());
 		Object object = this.redisService.get(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+admin.getCellphone());
 		if(object == null ) {				        
@@ -425,8 +450,10 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		this.staffAdminUserClient.updatePw(admin.getId(),pw);
 		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_TOKEN.key+admin.getId());
 		this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_USER.key+key);  
+		this.redisService.remove(RedisKey.USER_STAFF_AUTH_EDIT_PW.key+admin.getCellphone());
 		if(StringUtils.isNotBlank(admin.getAccountName())) {
 			this.redisService.remove(Constants.RedisKey.STAFF_STAFF_AUTH_ACCOUNT.key+admin.getAccountName());  
+		}
 		}
 	}
 
@@ -451,7 +478,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 		if(staffCode == true && code.equals("6699") ) {
 		}else {
 		if(cache==null) {
-			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
+			throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED); 
 			}else {
 				if(!cache.toString().equals(code)) {
 					throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
@@ -467,8 +494,8 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 	public boolean editMobile(String mobile, HttpServletRequest request, String code) {
 		String key = TokenUtil.getKey(request);
 		CacheUser ru = (CacheUser)this.redisService.get(RedisKey.STAFF_STAFF_AUTH_USER.key+key); 
-		Object cache = this.redisService.get(RedisKey.STAFF_STAFF_AUTH_CODE.key+ru.getMobile());
-		if(staffCode == true && code.equals("6699") ) {
+		Object cache = this.redisService.get(RedisKey.STAFF_STAFF_AUTH_CODE.key+mobile);
+		if(staffCode&& code.equals("6699") ) {
 		}else {
 			if(cache==null) {
 				throw new BusinessException(StatusEnum.USER_APP_SMS_EXPIRED);
@@ -476,7 +503,7 @@ public class StaffAdminUserServiceImpl implements StaffAdminUserService {
 				if(!cache.toString().equals(code)) {
 					throw new BusinessException(StatusEnum.USER_APP_SMS_ERROR);
 				}else {
-					this.redisService.remove(RedisKey.STAFF_STAFF_AUTH_CODE.key+ru.getMobile());
+					this.redisService.remove(RedisKey.STAFF_STAFF_AUTH_CODE.key+mobile);	
 				}
 			}
 		}

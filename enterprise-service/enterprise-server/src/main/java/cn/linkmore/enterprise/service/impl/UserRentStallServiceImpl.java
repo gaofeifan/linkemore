@@ -696,14 +696,14 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 						if (resRentedRecord.getStallId().equals(enttall.getStallId())) {
 							if (enttall.getStatus().intValue() == 2) {
 								rentUserStall.setRentOmType((short) 1);
-//								if(rentUserStall.getLockStatus() == 1) {
-//									if(resRentedRecord.getStatus().intValue() != 1 ) {
-//										resRentedRecord.setStatus(1l);
-//										resRentedRecord.setLeaveTime(new Date());
-//										rentUserStall.setStallStatus(1);
-////										chengsRecord.add(resRentedRecord);
-//									}
-//								}
+								if(rentUserStall.getLockStatus() == 1) {
+									if(resRentedRecord.getStatus().intValue() != 1 ) {
+										resRentedRecord.setStatus(1l);
+										resRentedRecord.setLeaveTime(new Date());
+										rentUserStall.setStallStatus(1);
+										changesRecord.add(resRentedRecord);
+									}
+								}
 							}
 							switch (rentUserStall.getLockStatus()) {
 							case 1:
@@ -794,12 +794,12 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 										break;
 									}*/
 									if(rentUserStall.getLockStatus() == 1) {
-//										if(resRentedRecord.getStatus().intValue() != 1 ) {
-//											resRentedRecord.setStatus(1l);
-//											resRentedRecord.setLeaveTime(new Date());
-//											rentUserStall.setStallStatus(1);
-//											chengsRecord.add(resRentedRecord);
-//										}
+										if(resRentedRecord.getStatus().intValue() != 1 ) {
+											resRentedRecord.setStatus(1l);
+											resRentedRecord.setLeaveTime(new Date());
+											rentUserStall.setStallStatus(1);
+											changesRecord.add(resRentedRecord);
+										}
 									}
 									switch (rentUserStall.getLockStatus()) {
 									case 1:
@@ -893,10 +893,12 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		// }
 		// });
 		authRentStall.setRentUsers(rentUserList);
-//		new Thread(()->{
-//			updateRecord(changesRecord);
-//			},
-//		"批量更新用户使用记录线程"+Thread.currentThread().getName()); 
+		new Thread(()->{
+			if(rentUserList!= null && rentUserList.size() != 0) {
+				updateRecord(changesRecord);
+			}
+			},
+		"批量更新用户使用记录线程"+Thread.currentThread().getName()); 
 		return authRentStall;
 	}
 

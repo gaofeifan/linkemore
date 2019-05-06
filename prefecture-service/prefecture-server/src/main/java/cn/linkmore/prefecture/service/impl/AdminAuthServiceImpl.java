@@ -305,7 +305,11 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", id);
 		List<ResAdminAuthPre> list = this.adminAuthPreClusterMapper.findListRes(map);
+		if(list == null || list.size() == 0) {
+			return new ArrayList<ResPre>();
+		}
 		List<Long> collect = list.stream().map(p -> p.getPreId()).collect(Collectors.toList());
+		
 		List<ResPre> pres = this.prefectureClusterMapper.findByIds(collect);
 		return pres;
 	}

@@ -996,10 +996,12 @@ public class StallServiceImpl implements StallService {
 		switch (type) {
 		case 0:
 			ResUserOrder latest = this.entOrderClient.findStallLatest(stallId);
-			Map<String,Object> param = new HashMap<>();
-			param.put( "lockDownStatus",status);
-			param.put("lockDownTime", new Date());
-			param.put("orderId", latest.getId());
+			if(latest != null) {
+				Map<String,Object> param = new HashMap<>();
+				param.put( "lockDownStatus",status);
+				param.put("lockDownTime", new Date());
+				param.put("orderId", latest.getId());
+			}
 			break;
 		case 2:
 			this.entRentedRecordClient.updateDownTime(stallId);
@@ -1707,6 +1709,7 @@ public class StallServiceImpl implements StallService {
 		}
 		ResStaffStallDetail detail = new ResStaffStallDetail();
 		Stall stall = this.stallClusterMapper.findById(stallId);
+		detail.setAreaName(stall.getAreaName());
 		ResLockInfo lockBean = this.lockTools.lockInfo(stall.getLockSn());
 		List<ResBaseDict> baseDict = this.baseDictClient.findList(DOWN_CAUSE);
 		detail.setStallId(stall.getId());

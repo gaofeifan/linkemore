@@ -152,7 +152,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 //			map.put("stallId", reqc.getStallId());
 //			rentedRecordMasterMapper.updateRentUserStatus(map );
 			EntRentedRecord record = this.entRentedRecordClusterMapper.findByStallId(reqc.getStallId());
-			if(record.getStatus().intValue() != 1) {
+			if(record != null && record.getStatus().intValue() != 1) {
 				record.setStatus(1L);
 				this.rentedRecordMasterMapper.updateById(record);
 			}

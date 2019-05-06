@@ -42,13 +42,16 @@ public class CityServiceImpl implements CityService {
 		logger.info(JsonUtil.toJson(cu));
 		List<ResStaffCity> map = this.adminAuthClient.findStaffCitysByAdminId(cu.getId());
 		List<ResCity> citys = new ArrayList<>();
-		if(map == null) {
+		if(map == null ||map.size() == 0) {
 			return citys;
 		}
 		List<cn.linkmore.common.response.ResCity> list = this.cityClient.findSelectList();
 		logger.info(JsonUtil.toJson(list));
 		ResCity city = null;
 		List<ResPre> pres = this.adminAuthClient.findStaffPreByAdminId(cu.getId());
+		if(pres == null || pres.size() == 0) {
+			return citys;
+		}
 		for (ResStaffCity entry : map) {
 			for (cn.linkmore.common.response.ResCity resCity : list) {
 				if(resCity.getId().equals(entry.getCityId())){

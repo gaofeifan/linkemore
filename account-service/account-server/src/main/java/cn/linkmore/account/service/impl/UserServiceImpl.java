@@ -44,6 +44,7 @@ import cn.linkmore.account.entity.UserAppfans;
 import cn.linkmore.account.entity.UserInfo;
 import cn.linkmore.account.entity.UserVechicle;
 import cn.linkmore.account.entity.WechatFans;
+import cn.linkmore.account.request.ReqMessage;
 import cn.linkmore.account.request.ReqUpdateMobile;
 import cn.linkmore.account.request.ReqUserAppfans;
 import cn.linkmore.account.response.ResPageUser;
@@ -51,6 +52,7 @@ import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.response.ResUserAppfans;
 import cn.linkmore.account.response.ResUserDetails;
 import cn.linkmore.account.response.ResUserStaff;
+import cn.linkmore.account.service.MessageService;
 import cn.linkmore.account.service.UserService;
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.ClientSource;
@@ -66,6 +68,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.redis.RedisService;
+import cn.linkmore.task.TaskPool;
 import cn.linkmore.third.client.AppWechatClient;
 import cn.linkmore.third.client.PushClient;
 import cn.linkmore.third.client.SmsClient;
@@ -96,6 +99,8 @@ public class UserServiceImpl implements UserService {
 	
 	private final static long SPACE = 1000L*60*30; 
 	public static final String CAR_BRAND_LIST = "CAR_BRAND_LIST";
+	@Autowired
+	private MessageService messageService;
 	@Autowired
 	private AppWechatClient appWechatClient;
 	@Autowired
@@ -676,6 +681,18 @@ public class UserServiceImpl implements UserService {
 		if(success){ 
 			this.redisService.set(RedisKey.USER_APP_AUTH_CODE.key+rs.getMobile(), code, 60*10); 
 			this.redisService.set(RedisKey.USER_APP_AUTH_MOBILE.key+rs.getMobile(), rs.getMobile(),1);
+			TaskPool.getInstance().task(new Runnable() {
+				@Override
+				public void run() {
+					ReqMessage msg = new ReqMessage();
+					msg.setCreateTime(new Date());
+					msg.setMessageType(Constants.MessageType.LOGIN.type);
+					msg.setMobile(rs.getMobile());
+					msg.setTemplate("SMS_63275171");
+					msg.setParameter(JsonUtil.toJson(param));
+					messageService.save(msg);					
+				}
+			});
 		}else{
 			throw new BusinessException(StatusEnum.USER_APP_SMS_FAILED);
 		} 
