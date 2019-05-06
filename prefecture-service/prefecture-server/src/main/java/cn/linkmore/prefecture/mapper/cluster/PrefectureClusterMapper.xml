@@ -133,11 +133,7 @@
 		strategy_description, runtime, increase, month_rent, version,
 		create_user_id, business_time,
 		grid_x, grid_y, region, under_layer, total_stall_num, pre_type,
-<<<<<<< HEAD
 		create_ent_id,create_ent_name, path_flag
-=======
-		create_ent_id,create_ent_name,path_flag
->>>>>>> branch 'new_master' of git@192.168.1.188:linkmore-cloud/linkmore.git
 	</sql>
 	<select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
 		select

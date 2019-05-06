@@ -653,121 +653,29 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			rentUser.setDistance(MapUtil.getDistance(location.getLatitude(), location.getLongitude(),
 					new Double(pre.getLatitude()), new Double(pre.getLongitude())));
 			rentUserStallList = new ArrayList<>();
-			//	长租用户车位
-			if(stalllist != null && stalllist.size() != 0) {
-			for (EntOwnerStall enttall : stalllist) {
-				if (pre.getPreId().equals(enttall.getPreId())) {
-					rentUserStall = new ResRentUserStall();
-					rentUserStall.setStallStatus(enttall.getStatus().intValue());
-					rentUserStall.setRentMoType(enttall.getRentMoType());
-					rentUserStall.setRentOmType(enttall.getRentOmType());
-					rentUserStall.setUnderLayer(pre.getUnderLayer());
-					if (tempMap != null && !tempMap.isEmpty()) {
-						for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
-							if (info.getKey() == pre.getPreId()) {
-								for (ResLockInfo inf : info.getValue()) {
-									if (inf.getLockCode().equals(enttall.getLockSn())) {
-										rentUserStall.setBattery(inf.getElectricity());
-										rentUserStall.setParkingState(inf.getParkingState());
-										rentUserStall.setGatewayStatus(inf.getOnlineState());
-										if (inf.getLockState() == 1) {
-											log.info(inf.getLockCode() + "===" + inf.getLockState());
-											rentUserStall.setLockStatus(inf.getLockState());
-										} else {
-											rentUserStall.setLockStatus(2);
-										}
-										// rentUserStall.setGatewayStatus(inf.getOnlineState());
-										break;
-									}
-								}
-							}
-						}
-					}
-//					if (enttall.getStatus() == 2) {
-//						rentUserStall.setIsUserUse(1);
-//					}
-//					int stallStatus = 1;
-					for (EntRentedRecord resRentedRecord : records) {
-						if (resRentedRecord.getStallId().equals(enttall.getStallId())) {
-							if (enttall.getStatus().intValue() == 2) {
-								rentUserStall.setRentOmType((short) 1);
-								if(rentUserStall.getLockStatus() == 1) {
-									if(resRentedRecord.getStatus().intValue() != 1 ) {
-										resRentedRecord.setStatus(1l);
-										resRentedRecord.setLeaveTime(new Date());
-										rentUserStall.setStallStatus(1);
-										changesRecord.add(resRentedRecord);
-									}
-								}
-							}
-							switch (rentUserStall.getLockStatus()) {
-							case 1:
-								rentUserStall.setUseUpLockTime(resRentedRecord.getLeaveTime());
-								break;
-							case 2:
-								rentUserStall.setDownLockTime(resRentedRecord.getDownTime());
-								break;
-							}
-							if(enttall.getLockStatus().longValue() == 1) {
-								rentUserStall.setLockStatus(1);
-							}
-							if (resRentedRecord.getUserId() != user.getId() && resRentedRecord.getType().intValue() == 2 &&enttall.getStatus().intValue() == 2) {
-								AuthRecord re = this.authRecordService.findByUserId(resRentedRecord.getUserId(),
-										resRentedRecord.getStallId());
-								rentUserStall.setIsAuthUser(1);
-								rentUserStall.setIsUserRecord(1);
-								if(re != null) {
-									rentUserStall.setUseUserMobile(re.getMobile());
-									rentUserStall.setUseUserName(re.getUsername());
-								}
-								
-								break;
-							}
-						}
-					}
-//					for (ResStall s : stallList) {
-//						if(s.getId() == enttall.getStallId()) {
-							rentUserStall.setStallStatus(enttall.getStatus().intValue());
-							rentUserStall.setLockSn(enttall.getLockSn());
-//							break;
-//						}
-//					}
-					rentUserStall.setUserStatus(1);
-					rentUserStall.setPreId(pre.getPreId());
-					rentUserStall.setPreName(pre.getPreName());
-					rentUserStall.setStallId(enttall.getStallId());
-					rentUserStall.setStallName(enttall.getStallName());
-					rentUserStall.setStallStatus(enttall.getStatus().intValue());
-					// AuthRecord record = findRecordList.stream().filter(f -> f.getStallId() ==
-					// enttall.getStallId()).findFirst().get();
-					rentUserStall.setValidity(DateUtils.convert(enttall.getEndTime(), DateUtils.DARW_FORMAT_TIME));
-					// rentUserStall.setValidity(record.getEndTime());
-					rentUserStallList.add(rentUserStall);
-				}
-			}
-			}
-			if(findRecordList != null && findRecordList.size() != 0) {
-			//	被授权用户车位
-			for (AuthRecord authRecord : findRecordList) {
-				if (pre.getPreId().equals(authRecord.getPreId())) {
-					for (ResStall resStall : resStallList) {
-						if (resStall.getId().equals(authRecord.getStallId())) {
-							rentUserStall = new ResRentUserStall();
-							if (tempMap != null && !tempMap.isEmpty()) {
-								for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
-									if (info.getKey() == pre.getPreId()) {
-										for (ResLockInfo inf : info.getValue()) {
-											if (inf.getLockCode().equals(resStall.getLockSn())) {
-												rentUserStall.setParkingState(inf.getParkingState());
-												rentUserStall.setBattery(inf.getElectricity());
-												rentUserStall.setGatewayStatus(inf.getOnlineState());
-												if (inf.getLockState() == 1) {
-													log.info(inf.getLockCode() + "===" + inf.getLockState());
-													rentUserStall.setLockStatus(inf.getLockState());
-												} else {
-													rentUserStall.setLockStatus(2);
-												}
-												break;
+			// 长租用户车位
+			if (stalllist != null && stalllist.size() != 0) {
+				for (EntOwnerStall enttall : stalllist) {
+					if (pre.getPreId().equals(enttall.getPreId())) {
+						rentUserStall = new ResRentUserStall();
+						rentUserStall.setStallStatus(enttall.getStatus().intValue());
+						rentUserStall.setRentMoType(enttall.getRentMoType());
+						rentUserStall.setRentOmType(enttall.getRentOmType());
+						rentUserStall.setUnderLayer(pre.getUnderLayer());
+						if (tempMap != null && !tempMap.isEmpty()) {
+							for (Entry<Long, List<ResLockInfo>> info : tempMap.entrySet()) {
+								if (info.getKey() == pre.getPreId()) {
+									for (ResLockInfo inf : info.getValue()) {
+										if (inf.getLockCode().equals(enttall.getLockSn())) {
+											log.info("inf = {}", JSON.toJSON(inf));
+											rentUserStall.setBattery(inf.getElectricity());
+											rentUserStall.setParkingState(inf.getParkingState());
+											rentUserStall.setGatewayStatus(inf.getOnlineState());
+											if (inf.getLockState() == 1) {
+												log.info(inf.getLockCode() + "===" + inf.getLockState());
+												rentUserStall.setLockStatus(inf.getLockState());
+											} else {
+												rentUserStall.setLockStatus(2);
 											}
 											break;
 										}
@@ -777,9 +685,17 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 						}
 
 						for (EntRentedRecord resRentedRecord : records) {
-							if (resRentedRecord.getStallId().equals(resStall.getId())) {
-								if (resStall.getStatus().intValue() == 2) {
+							if (resRentedRecord.getStallId().equals(enttall.getStallId())) {
+								if (enttall.getStatus().intValue() == 2) {
 									rentUserStall.setRentOmType((short) 1);
+								}
+								if(rentUserStall.getLockStatus() == 1) {
+									if(resRentedRecord.getStatus().intValue() != 1 ) {
+										resRentedRecord.setStatus(1l);
+										resRentedRecord.setLeaveTime(new Date());
+										rentUserStall.setStallStatus(1);
+										changesRecord.add(resRentedRecord);
+									}
 								}
 								switch (rentUserStall.getLockStatus()) {
 								case 1:
@@ -791,7 +707,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								}
 								if (resRentedRecord.getUserId() != user.getId()
 										&& resRentedRecord.getType().intValue() == 2
-										&& resStall.getStatus().intValue() == 2) {
+										&& enttall.getStatus().intValue() == 2) {
 									AuthRecord re = this.authRecordService.findByUserId(resRentedRecord.getUserId(),
 											resRentedRecord.getStallId());
 									rentUserStall.setIsAuthUser(1);
@@ -799,38 +715,22 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 									if (re != null) {
 										rentUserStall.setUseUserMobile(re.getMobile());
 										rentUserStall.setUseUserName(re.getUsername());
-										break;
-									}
-									if(rentUserStall.getLockStatus() == 1) {
-										if(resRentedRecord.getStatus().intValue() != 1 ) {
-											resRentedRecord.setStatus(1l);
-											resRentedRecord.setLeaveTime(new Date());
-											rentUserStall.setStallStatus(1);
-											changesRecord.add(resRentedRecord);
-										}
-									}
-									switch (rentUserStall.getLockStatus()) {
-									case 1:
-										rentUserStall.setUseUpLockTime(resRentedRecord.getLeaveTime());
-										break;
-									case 2:
-										rentUserStall.setDownLockTime(resRentedRecord.getDownTime());
-										break;
 									}
 									break;
 								}
 							}
 						}
 
-						rentUserStall.setStallStatus(resStall.getStatus().intValue());
-						rentUserStall.setLockSn(resStall.getLockSn());
+						rentUserStall.setStallStatus(enttall.getStatus().intValue());
+						rentUserStall.setLockSn(enttall.getLockSn());
+
 						rentUserStall.setUserStatus(1);
 						rentUserStall.setPreId(pre.getPreId());
 						rentUserStall.setPreName(pre.getPreName());
-						rentUserStall.setStallId(resStall.getId());
-						rentUserStall.setStallName(resStall.getStallName());
-						rentUserStall.setStallStatus(resStall.getStatus().intValue());
-						rentUserStall.setValidity(DateUtils.convert(resStall.getEndTime(), DateUtils.DARW_FORMAT_TIME));
+						rentUserStall.setStallId(enttall.getStallId());
+						rentUserStall.setStallName(enttall.getStallName());
+						rentUserStall.setStallStatus(enttall.getStatus().intValue());
+						rentUserStall.setValidity(DateUtils.convert(enttall.getEndTime(), DateUtils.DARW_FORMAT_TIME));
 						rentUserStallList.add(rentUserStall);
 					}
 				}
@@ -865,6 +765,14 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 								}
 								for (EntRentedRecord resRentedRecord : records) {
 									if (resRentedRecord.getStallId().equals(resStall.getId())) {
+										if(rentUserStall.getLockStatus() == 1) {
+											if(resRentedRecord.getStatus().intValue() != 1 ) {
+												resRentedRecord.setStatus(1l);
+												resRentedRecord.setLeaveTime(new Date());
+												rentUserStall.setStallStatus(1);
+												changesRecord.add(resRentedRecord);
+											}
+										}
 										switch (rentUserStall.getLockStatus()) {
 										case 1:
 											rentUserStall.setUseUpLockTime(resRentedRecord.getLeaveTime());
@@ -895,14 +803,13 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			rentUser.setRentUserStalls(rentUserStallList);
 			rentUserList.add(rentUser);
 		}
-		}
 		authRentStall.setRentUsers(rentUserList);
 		new Thread(()->{
 			if(rentUserList!= null && rentUserList.size() != 0) {
 				updateRecord(changesRecord);
 			}
-			},
-		"批量更新用户使用记录线程"+Thread.currentThread().getName()); 
+		},
+				"批量更新用户使用记录线程"+Thread.currentThread().getName()); 
 		return authRentStall;
 	}
 
