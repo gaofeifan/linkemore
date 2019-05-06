@@ -18,6 +18,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResEntranceType;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
@@ -213,6 +214,22 @@ public class AppPrefectureController {
 		ResponseEntity<List<ResOpenPres>> response = null;
 		try { 
 			List<ResOpenPres> list = this.prefectureService.openPres(request);
+			response = ResponseEntity.success(list, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
+	
+	@ApiOperation(value = "车区入口管理", notes = "根据车区获取入口列表", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/entrance-list", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResEntranceType>> entranceList(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
+		ResponseEntity<List<ResEntranceType>> response = null;
+		try { 
+			List<ResEntranceType> list = this.prefectureService.entranceList(preId, request);
 			response = ResponseEntity.success(list, request);
 		} catch (BusinessException e) {
 			response = ResponseEntity.fail( e.getStatusEnum(),  request);

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.cluster.PrefectureEntranceClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.PrefectureEntrance">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="entrance_type" jdbcType="VARCHAR" property="entranceType" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, pre_id, entrance_type, name
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_prefecture_entrance
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findByPreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_prefecture_entrance
+    where pre_id = #{preId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT count(1) FROM v_prefecture_entrance l
+	WHERE 1 = 1 and l.pre_id = #{preId}
+  </select>
+  
+  <select id="findPage" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    SELECT l.* FROM v_prefecture_entrance l 
+	WHERE 1 = 1 and l.pre_id = #{preId}
+    <if test="property==null">  
+     	order by l.ele_name desc
+    </if>
+    <if test="property!=null">  
+   		order by  l.${property} ${direction}
+    </if>
+    limit  #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  
+</mapper>
