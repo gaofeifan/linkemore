@@ -7,6 +7,7 @@ import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,29 +94,45 @@ public class OpenAuthController {
     /*
 	public  final String baseUri="http://beta.zuolin.com";
 	public  final String appKey = "b403af14-ed87-455f-979b-4648b139fec8";
-	public  final String secretKey = "ujNuYJb2v+4PWsqnwzOMhkzwqDrJ83XolC+IjKJV+VJBi1P4OWANjkQcfDK9Qc34xupKk2lg4769Po3AtnfL8A==";
-	
-	public  final String baseUri="http://guomaofuwu.zuolin.com";
-	public  final String appKey = "4793a6be-ff28-44e1-8ad9-1455bc34667a";
-	public  final String secretKey = "JTWEznLfDb1zrAeJO9OK/WmQoAQ+8hshR1E86WVP9mpsYNnKoMs2kq6Fayq+N9R5d6IiU8SeFIH+sxtR+SL5qg==";
-	
+	public  final String secretKey = "ujNuYJb2v+4PWsqnwzOMhkzwqDrJ83XolC+IjKJV+VJBi1P4OWANjkQcfDK9Qc34xupKk2lg4769Po3AtnfL8A==";	
 	public  final String redirectUri="http://192.168.1.205:8003/open/auth/redirect";
 	public  final String backUri="https://web-blue.linkmoreparking.cn/#/";
 */
 	//正式环境
 	
 	//public  final String baseUri="http://guomaofuwu.zuolin.com";
+	/*
 	public  final String baseUri="https://core.zuolin.com";
 	public  final String appKey = "4793a6be-ff28-44e1-8ad9-1455bc34667a";
 	public  final String secretKey = "JTWEznLfDb1zrAeJO9OK/WmQoAQ+8hshR1E86WVP9mpsYNnKoMs2kq6Fayq+N9R5d6IiU8SeFIH+sxtR+SL5qg==";
 	public  final String redirectUri="https://api.linkmoreparking.com/api/account/open/auth/redirect";
-	public  final String backUri="https://web-blue.linkmoretech.cn/#/";
+	//public  final String backUri="https://web-blue.linkmoretech.cn/#/";
 	
 	
 	public  final String codePath="/evh/oauth2/authorize";
 	public  final String tokenPath="/evh/oauth2/token";
 	public  final String userInfoPath="/evh/oauth2api/trd/userInfo";
 	public  final String authInfoPath="/evh/oauth2api/trd/authenticationInfo";
+	*/
+	
+	@Value("${guomaofuwu.baseUri}")
+	public  String baseUri;
+	@Value("${guomaofuwu.appKey}")
+	public  String appKey;
+	@Value("${guomaofuwu.secretKey}")
+	public  String secretKey;	
+	@Value("${guomaofuwu.redirectUri}")
+	public  String redirectUri;		
+	@Value("${guomaofuwu.backUri}")
+	public  String backUri;		
+	@Value("${guomaofuwu.codePath}")
+	public  String codePath;
+	@Value("${guomaofuwu.tokenPath}")
+	public  String tokenPath;	
+	@Value("${guomaofuwu.userInfoPath}")
+	public  String userInfoPath;	
+	@Value("${guomaofuwu.authInfoPath}")
+	public  String authInfoPath;		
 	
 	public  String getToken(String code) {
 		Map<String,String> headers=new HashMap<String,String>();
@@ -190,6 +208,7 @@ public class OpenAuthController {
 	 */
 	@RequestMapping(value = "/index")
 	public void main(HttpServletRequest request,HttpServletResponse response) {
+		
 		//打印请求头内容
 		System.out.println("请求头");
 		for(Enumeration<String> enu = request.getHeaderNames();enu.hasMoreElements();){
@@ -203,11 +222,16 @@ public class OpenAuthController {
 				System.out.println(entry.getKey()+":"+Arrays.toString(entry.getValue()) );
 			}
 		}
+		/*
 		System.out.println("");
 		if(request.getHeader("Cookie")!=null) {
 			response.addHeader("Cookie", request.getHeader("Cookie"));
 		}
-		String url=baseUri+codePath+"?client_id="+appKey+"&response_type=code&redirect_uri="+redirectUri+"&scope=basic&state="+System.currentTimeMillis();
+		*/
+		String url=baseUri+codePath+"?client_id="+appKey
+				+"&response_type=code&scope=basic&redirect_uri="+redirectUri
+				+"&state="+UUID.randomUUID().toString().replaceAll("-", "")
+				+"#oauth2_redirect";
 		String html="<script language=\"javascript\" type=\"text/javascript\">window.location.href=\"" + url + "\"</script>";
 		
 		try {
