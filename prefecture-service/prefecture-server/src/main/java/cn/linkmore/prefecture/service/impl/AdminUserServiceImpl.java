@@ -256,8 +256,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 				for (String string : collect) {
 					if(string.equals(ADMIN_ORDER)) {
 						steta = 0;
+						break;
 					}else if(string.equals(ADMIN_MANAGE)) {
 						steta = 1;
+						break;
 					}
 				}
 				if(steta == 0) {
