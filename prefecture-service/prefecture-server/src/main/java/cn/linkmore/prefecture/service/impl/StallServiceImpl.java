@@ -2612,7 +2612,7 @@ public class StallServiceImpl implements StallService {
 		if(!checkStaffStallAuth(cu.getId(), stall.getId())) {
 			throw new BusinessException(StatusEnum.STAFF_STALL_EXISTS);
 		}
-		if(stall.getStatus() != 4) {
+		if(stall.getStatus().intValue() != 4) {
 			throw new BusinessException(StatusEnum.STALL_OPERATE_UNOFFLINE);
 		}
 //		this.stallMasterMapper.delete(stall.getId());

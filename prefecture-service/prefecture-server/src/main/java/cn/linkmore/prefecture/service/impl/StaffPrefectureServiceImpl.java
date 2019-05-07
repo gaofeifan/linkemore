@@ -69,7 +69,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		if(!stallService.checkStaffCityAuth(cu.getId(), cityId)) {
 			throw new BusinessException(StatusEnum.STAFF_CITY_EXISTS);
 		}
-		List<ResStaffPreListCount> preListCounts = new ArrayList<>();
+ 		List<ResStaffPreListCount> preListCounts = new ArrayList<>();
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", cu.getId());
 		List<AdminAuthPre> pres = this.adminAuthPreClusterMapper.findList(map);
@@ -87,13 +87,24 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		list = pre.stream().map(p -> p.getId()).collect(Collectors.toList());
 		map = new HashMap<>();
 		map.put("preIds", list);
-		map.put("type", 0);
+//		map.put("type", 0);
 		List<ResStall> stallIds = this.stallService.findStallsByPreIds(map);
 		list = stallIds.stream().map(s -> s.getId()).collect(Collectors.toList());
 		map = new HashMap<>();
 		map.put("stallIds", list);
 		List<ResPreOrderCount> preListCount = this.staffOrderClient.findPreListCount(map);
 		ResStaffPreListCount staffPre = null;
+		if(preListCount == null || preListCount.size() == 0) {
+			for (ResPre p : pre) {
+				staffPre = new ResStaffPreListCount();
+				staffPre.setPreId(p.getId());
+				staffPre.setPreName(p.getName());
+				staffPre.setDayOrder(0);
+				staffPre.setDayAmount(new BigDecimal(0));
+				preListCounts.add(staffPre);
+			}
+			return preListCounts;
+		}
 		for (ResPre resPre : pre) {
 			staffPre = new ResStaffPreListCount();
 			staffPre.setPreId(resPre.getId());
@@ -121,7 +132,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("preIds", Arrays.asList(preId));
-		map.put("type", 0);
+//		map.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(map );
 		List<Long> list = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
 		map = new HashMap<>();
@@ -137,7 +148,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 		Map<String,Object> map = new HashMap<>();
 		map.put("preIds", Arrays.asList(type.getPreId()));
-		map.put("type", 0);
+//		map.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(map);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
 		map = new HashMap<>();
@@ -154,7 +165,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 		Map<String,Object> map = new HashMap<>();
 		map.put("preIds", Arrays.asList(type.getPreId()));
-		map.put("type", 0);
+//		map.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(map);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
 		map = new HashMap<>();
@@ -171,14 +182,17 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 		Map<String,Object> map = new HashMap<>();
 		map.put("preIds", Arrays.asList(type.getPreId()));
-		map.put("type", 0);
+//		map.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(map);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
 		map = new HashMap<>();
 		map.put("stallIds", stallIds);
 		map.put("type", type.getType());
-		map = this.staffOrderClient.findAmountReportList(map);
 		ResAmountReport amountReport = new ResAmountReport();
+		if(map == stallIds || stallIds.size() == 0) {
+			return amountReport;
+		}
+		map = this.staffOrderClient.findAmountReportList(map);
 		if(map == null) {
 			return amountReport;
 		}
@@ -213,14 +227,18 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 		Map<String,Object> map = new HashMap<>();
 		map.put("preIds", Arrays.asList(type.getPreId()));
-		map.put("type", 0);
+//		map.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(map);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
 		map = new HashMap<>();
 		map.put("stallIds", stallIds);
 		map.put("type", type.getType());
-		map = this.staffOrderClient.findCarReportList(map);
 		ResCarReport carReport = new ResCarReport();
+		if(stallIds == null || stallIds.size() == 0) {
+			return carReport;
+		}
+		
+		map = this.staffOrderClient.findCarReportList(map);
 		if(map == null) {
 			return carReport;
 		}
@@ -255,14 +273,18 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("preIds", Arrays.asList(page.getPreId()));
-		param.put("type", 0);
+//		param.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(param);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
 		param = new HashMap<>();
 		param.put("now", page.getNow());
 		param.put("stallIds", stallIds);
-		List<ResTrafficFlow> flowList = this.staffOrderClient.findCarMonthList(param);
+		
 		List<cn.linkmore.prefecture.controller.staff.response.ResDayTrafficFlow> dayTFs = new ArrayList<>();
+		if(stallIds == null || stallIds.size() == 0) {
+			return dayTFs;
+		}
+		List<ResTrafficFlow> flowList = this.staffOrderClient.findCarMonthList(param);
 		if(flowList == null) {
 			return dayTFs;
 		}
@@ -290,7 +312,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("preIds", Arrays.asList(page.getPreId()));
-		param.put("type", 0);
+//		param.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(param);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
 		param = new HashMap<>();
@@ -326,7 +348,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		}
 		Map<String,Object> param = new HashMap<>();
 		param.put("preIds", Arrays.asList(preId));
-		param.put("type", 0);
+//		param.put("type", 0);
 		List<ResStall> stalls = this.stallService.findStallsByPreIds(param);
 		List<Long> stallIds = stalls.stream().map(s -> s.getId()).collect(Collectors.toList());
 		param = new HashMap<>();

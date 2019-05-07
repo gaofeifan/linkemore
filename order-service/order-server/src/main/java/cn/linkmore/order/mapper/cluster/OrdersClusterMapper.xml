@@ -397,30 +397,7 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 		IFNULL(o.actual_amount, 0.0) dayAmount
 	FROM
 		o_orders o
-<!-- 	LEFT JOIN (
-		SELECT
-			pre_id pre_id,
-			sum(actual_amount) dayAmount,
-			count(1) dayOrder
-		FROM
-			o_orders
-		WHERE
-			STATUS = 3
-		AND DATE_FORMAT(NOW(), '%Y-%m-%d') = DATE_FORMAT(end_time, '%Y-%m-%d')
-		<if test="stallIds != null">
-		   AND stall_id IN 
-		  <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")" >
-    		 #{id}
-	      </foreach>
-		</if>
-		<if test="preIds != null">
-			  AND pre_id IN 
-		  <foreach collection="preIds"  index="index" item="id" open="(" separator="," close=")" >
-    		 #{id}
-	      </foreach>
-		</if>
-		GROUP BY pre_id
-	) de ON de.pre_id = o.pre_id -->
+
 	<where>
 	 STATUS = 3
 		AND DATE_FORMAT(NOW(), '%Y-%m-%d') = DATE_FORMAT(end_time, '%Y-%m-%d')
