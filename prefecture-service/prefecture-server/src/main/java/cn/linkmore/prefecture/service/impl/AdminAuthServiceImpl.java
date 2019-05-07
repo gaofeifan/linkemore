@@ -138,6 +138,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 		admin.setUpdateTime(new Date());
 		AdminAuth adminAuth = new AdminAuth();
 		adminAuth = ObjectUtils.copyObject(admin, adminAuth);
+		adminAuth.setUpdateTime(new Date());
 		return this.adminAuthMasterMapper.update(adminAuth);
 	}
 	/*

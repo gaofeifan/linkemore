@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -239,24 +240,59 @@ public class AdminUserServiceImpl implements AdminUserService {
 			List<ResAdminAuth> list = this.adminAuthClusterMapper.findUserAuthByUserId(user.getId());
 			admin.setType("2");
 			admin.setCode(ADMIN_STALL);
-			if(list != null && list.size() != 0) {
-				 ResAdminAuth adminAuth = list.get(list.size()-1);
-				 if( adminAuth.getCode()!= null) {
-					 if( adminAuth.getCode().trim().equals(ADMIN_ALL) ) {
-						 admin.setIsOperate(true);
-						 admin.setCode(ADMIN_ALL);
-						 admin.setType("1");
-					 }else if( adminAuth.getCode().trim().equals(ADMIN_ORDER)) {
-						 admin.setIsOperate(true);
-						 admin.setCode(ADMIN_ORDER);
-					 }else if(adminAuth.getCode().trim().equals(ADMIN_MANAGE)) {
-						 admin.setType("1"); 
-						 admin.setCode(ADMIN_MANAGE);
-					 }else {
-						 
-					 }
-				 }
+			if(list == null) {
+				return admin; 
 			}
+			List<String> collect = list.stream().map(l -> l.getCode()).collect(Collectors.toList());
+			if(collect == null || collect.size() == 0) {
+				return admin;
+			}
+			if(collect.contains(ADMIN_ALL)) {
+				 admin.setIsOperate(true);
+				 admin.setCode(ADMIN_ALL);
+				 admin.setType("1");
+			}else if(collect.contains(ADMIN_ORDER) && collect.contains(ADMIN_MANAGE)) {
+				int steta = 0;
+				for (String string : collect) {
+					if(string.equals(ADMIN_ORDER)) {
+						steta = 0;
+					}else if(string.equals(ADMIN_MANAGE)) {
+						steta = 1;
+					}
+				}
+				if(steta == 0) {
+					admin.setIsOperate(true);
+					admin.setCode(ADMIN_ORDER);
+				}else if(steta == 1) {
+					 admin.setType("1"); 
+					 admin.setCode(ADMIN_MANAGE);
+				}
+			}else if(collect.contains(ADMIN_ORDER)) {
+				admin.setIsOperate(true);
+				admin.setCode(ADMIN_ORDER);
+			}else if(collect.contains(ADMIN_MANAGE)) {
+				 admin.setType("1"); 
+				 admin.setCode(ADMIN_MANAGE);
+			}
+			
+//			if(list != null && list.size() != 0) {
+//				 ResAdminAuth adminAuth = list.get(list.size()-1);
+//				 if( adminAuth.getCode()!= null) {
+//					 if( adminAuth.getCode().trim().equals(ADMIN_ALL) ) {
+//						 admin.setIsOperate(true);
+//						 admin.setCode(ADMIN_ALL);
+//						 admin.setType("1");
+//					 }else if( adminAuth.getCode().trim().equals(ADMIN_ORDER)) {
+//						 admin.setIsOperate(true);
+//						 admin.setCode(ADMIN_ORDER);
+//					 }else if(adminAuth.getCode().trim().equals(ADMIN_MANAGE)) {
+//						 admin.setType("1"); 
+//						 admin.setCode(ADMIN_MANAGE);
+//					 }else {
+//						 
+//					 }
+//				 }
+//			}
 			return admin;
 		}
 		return null;

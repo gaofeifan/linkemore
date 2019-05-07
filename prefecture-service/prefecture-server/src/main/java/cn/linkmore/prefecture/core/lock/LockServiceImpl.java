@@ -93,8 +93,11 @@ public class LockServiceImpl implements LockService{
 			if(map.get("code").toString().equals("200")) {
 				Object object = map.get("data");
 				return object;
+			}else {
+				Object object = map.get("data");
+				log.info("===================查询锁服务失败======================url");
+				throw new RuntimeException(object.toString());
 			}
-			log.info("===================查询锁服务失败======================url");
 		}
 		return null;
 	}
