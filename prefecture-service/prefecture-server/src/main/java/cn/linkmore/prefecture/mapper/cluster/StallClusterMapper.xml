@@ -59,7 +59,6 @@
     <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
     <result column="area_name" jdbcType="VARCHAR" property="areaName" />
     <result column="bind_order_status" jdbcType="INTEGER" property="bindOrderStatus" />
-        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
   
   <sql id="Base_Column_List">

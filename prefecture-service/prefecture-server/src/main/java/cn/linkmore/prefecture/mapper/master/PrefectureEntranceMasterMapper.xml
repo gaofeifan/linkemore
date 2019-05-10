@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.prefecture.dao.master.PrefectureEntranceMasterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.prefecture.entity.PrefectureEntrance">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+    <result column="entrance_type" jdbcType="VARCHAR" property="entranceType" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, pre_id, entrance_type, name
+  </sql>
+  <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from v_prefecture_entrance
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from v_prefecture_entrance
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <delete id="deleteBatch" parameterType="java.util.List">
+    delete from v_prefecture_entrance
+    where id in
+    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+       #{id}
+    </foreach> 
+  </delete>
+  
+  <insert id="save" parameterType="cn.linkmore.prefecture.entity.PrefectureEntrance">
+    insert into v_prefecture_entrance (id, pre_id, entrance_type, 
+      name)
+    values (#{id,jdbcType=BIGINT}, #{preId,jdbcType=BIGINT}, #{entranceType,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR})
+  </insert>
+ 
+  <update id="update" parameterType="cn.linkmore.prefecture.entity.PrefectureEntrance">
+    update v_prefecture_entrance
+    set pre_id = #{preId,jdbcType=BIGINT},
+      entrance_type = #{entranceType,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+</mapper>

@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -21,9 +23,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
 import cn.linkmore.account.client.UserStaffClient;
 import cn.linkmore.account.client.VehicleMarkClient;
 import cn.linkmore.account.response.ResUserStaff;
@@ -47,7 +51,7 @@ import cn.linkmore.prefecture.config.LockTools;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
-import cn.linkmore.prefecture.controller.app.response.ResAppointGroupDetail;
+import cn.linkmore.prefecture.controller.app.response.ResEntranceType;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
@@ -62,6 +66,7 @@ import cn.linkmore.prefecture.controller.staff.response.ResStallLock;
 import cn.linkmore.prefecture.core.lock.LockFactory;
 import cn.linkmore.prefecture.dao.cluster.PrefectureClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.PrefectureElementClusterMapper;
+import cn.linkmore.prefecture.dao.cluster.PrefectureEntranceClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StallClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyBaseClusterMapper;
 import cn.linkmore.prefecture.dao.cluster.StrategyGroupClusterMapper;
@@ -70,6 +75,7 @@ import cn.linkmore.prefecture.dao.master.PrefectureMasterMapper;
 import cn.linkmore.prefecture.entity.LockServerCity;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.PrefectureElement;
+import cn.linkmore.prefecture.entity.PrefectureEntrance;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.entity.StrategyGroupDetail;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -151,6 +157,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 	
 	@Autowired
 	private PrefectureElementClusterMapper prefectureElementClusterMapper;
+	
+	@Autowired
+	private PrefectureEntranceClusterMapper prefectureEntranceClusterMapper;
 
 	@Autowired
 	private LocateClient locateClient;
@@ -1359,7 +1368,36 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public Boolean confirm(String serialNumber, HttpServletRequest request) {
 		return lockFactory.getLock().confirm(serialNumber);
 	}
-	
-	
+
+	@Override
+	public List<ResEntranceType> entranceList(Long preId, HttpServletRequest request) {
+		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
+		if(user==  null ) {
+			throw new BusinessException(StatusEnum.UNAUTHORIZED);
+		}
+		List<String> entranceDetailList = null;
+		List<ResEntranceType> entTypeList = new ArrayList<ResEntranceType>();
+		ResEntranceType resEntranceType = null;
+		List<PrefectureEntrance>  list = prefectureEntranceClusterMapper.findByPreId(preId);
+		log.info("..............entrance........list.....{}",JSON.toJSON(list));
+		if(CollectionUtils.isNotEmpty(list)) {
+			Map<String, List<PrefectureEntrance>> map = list.stream().collect(Collectors.groupingBy(PrefectureEntrance::getEntranceType));
+			if(!map.isEmpty()) {
+				for(String key : map.keySet()){
+					resEntranceType = new ResEntranceType();
+					resEntranceType.setEntranceType(key);
+					entranceDetailList = new ArrayList<String>();
+					List<PrefectureEntrance> entranceList = map.get(key);
+					if(CollectionUtils.isNotEmpty(entranceList)) {
+						entranceDetailList = entranceList.stream().map(f -> f.getName()).collect(Collectors.toList());
+						resEntranceType.setEntranceDetail(entranceDetailList);
+					}
+					entTypeList.add(resEntranceType);
+				}
+			}
+		}
+		log.info("..............entrance.............{}",JSON.toJSON(entTypeList));
+		return entTypeList;
+	}
 
 }
