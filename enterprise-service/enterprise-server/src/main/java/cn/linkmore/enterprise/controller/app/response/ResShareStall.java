@@ -10,7 +10,7 @@ public class ResShareStall {
 	private String title = "凌猫停车";
 	
 	@ApiModelProperty(value="描述")
-	private String describe = "您的朋友分享给您一个长租车位，查看一下";
+	private String describe = "有好友分享给您一个长租车位，查看一下";
 	
 	@ApiModelProperty(value="路径")
 	private String image="https://oss.pabeitech.com/image/2019/04/23/276_max.jpg";
