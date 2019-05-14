@@ -11,29 +11,23 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
-import com.aliyuncs.exceptions.ClientException;
-
-import cn.linkmore.bean.common.Constants.SmsTemplate;
-import cn.linkmore.third.config.BeanFactory;
-import cn.linkmore.third.config.SmsConfig;
 import cn.linkmore.third.request.ReqSms;
 import cn.linkmore.third.service.SmsService;
-import cn.linkmore.util.JsonUtil;
 /**
  * Service实现 - 短信
  * @author liwenlong
+ * @update llh
  * @version 2.0
  *
  */
 @Service
 public class SmsServiceImpl implements SmsService {
 	private  final Logger log = LoggerFactory.getLogger(this.getClass());
-	private  static final Map<String, String> param =new HashMap<String,String>() {
+	public  static Map<String, String> idAndMessage =new HashMap<String,String>();
+	public  static final Map<String, String> idAndTpl =new HashMap<String,String>() {
 		private static final long serialVersionUID = 1L;
 		{ 
 			InputStream is = null;
@@ -44,6 +38,7 @@ public class SmsServiceImpl implements SmsService {
 				List<org.dom4j.Element> elements = document.selectNodes("/config/sms"); 
 				for (org.dom4j.Element element : elements) {
 					put(element.attributeValue("id"), element.attributeValue("tpl"));
+					idAndMessage.put(element.attributeValue("id"), element.attributeValue("message"));
 				}
 			} catch (Exception e) { 
 			} finally {
@@ -59,20 +54,13 @@ public class SmsServiceImpl implements SmsService {
 	}; 
 	
 	@Autowired
-	private BeanFactory beanFactory;
+	private SmsAliyunImpl smsAliyunImpl;
 	
 	@Autowired
-	private SmsConfig smsConfig;
+	private SmsJiujaxintongImpl smsJiujaxintongImpl;
 	
-	/**
-	 * 获取模板信息
-	 * @param id 模板ID
-	 * @return
-	 */ 
-	public String getTemplateCode(SmsTemplate st) {
-		return param.get(st.id); 
-	}
-	
+	@Value("${sms.channel}") //短信渠道  1 阿里云,2久佳信通
+	private Integer smsChannel=2;
 	
 	/**
 	 * 发送短信
@@ -81,32 +69,14 @@ public class SmsServiceImpl implements SmsService {
 	 * @param tplId 模板ID
 	 * @param param 参数
 	 * @return
-	 */  
+	 */
 	@Override
 	public boolean send(ReqSms req) {
-		boolean flag = true;
-		try {
-			IAcsClient client = beanFactory.iAcsClient(); 
-			SendSmsRequest request = new SendSmsRequest(); 
-	        request.setPhoneNumbers(req.getMobile()); 
-	        request.setSignName(smsConfig.getSignName()); 
-	        request.setTemplateCode(getTemplateCode(req.getSt())); 
-	        request.setTemplateParam(JsonUtil.toJson(req.getParam())); 
-	        SendSmsResponse response = client.getAcsResponse(request);  
-			log.info("send sms success requestId:{},req:{}",response.getRequestId(),JsonUtil.toJson(req)); 
-		} catch (ClientException e) {  
-			log.info("send sms failure");
-			StringBuffer sb = new StringBuffer();
-			StackTraceElement[] stacks = e.getStackTrace();  
-	        for (int i = 0; i < stacks.length; i++) {  
-	            StackTraceElement element = stacks[i];  
-	            sb.append(element.toString() + "\n");  
-	        }   
-			log.info(sb.toString()); 
-			flag = false;
+		if(smsChannel==1) {
+			return smsAliyunImpl.send(req);
+		}else {
+			return smsJiujaxintongImpl.send(req);
 		}
-		return flag;
 	}
-
 	
 }

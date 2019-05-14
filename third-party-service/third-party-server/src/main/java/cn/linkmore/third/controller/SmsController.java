@@ -1,5 +1,7 @@
 package cn.linkmore.third.controller;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +34,14 @@ public class SmsController {
 	@ResponseBody
 	public Boolean sendtest() {
 		ReqSms req = new ReqSms();
-		req.setMobile("18310151716");
-		req.setSt(Constants.SmsTemplate.ORDER_SUSPEND_NOTICE);
+		//req.setMobile("18310151716");
+		req.setMobile("13718285317");
+		req.setParam(new HashMap<String,String>());
+		req.getParam().put("enterprise", "凌猫");
+		req.getParam().put("money", "1亿");
+		//req.setSt(Constants.SmsTemplate.ORDER_SUSPEND_NOTICE);
+		req.setSt(Constants.SmsTemplate.SHARE_COUPON_NOTICE);
+		
 		return this.smsService.send(req);
 	}
 }

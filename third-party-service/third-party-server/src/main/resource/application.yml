@@ -277,7 +277,15 @@ sms:
   access-secret: K3UMWWYGPWOwGHlUAaH24o1G4ab0tt
   endpoint-name: cn-beijing
   sign-name: 凌猫停车
-    
+  #渠道 1阿里云,2久佳信通
+  channel: 2
+#久佳信通短信配置
+jiujaxintongsms:
+  uri-send: http://ah.jj-mob.com:8000/v2/sms/send
+  account: lmhy01
+  password: q1E00h7E
+  #account: lmyx01
+  #password: c8yyY6d1
 #小程序配置
 wechat-mini:  
   app-id: wx62db01dddd56972f
