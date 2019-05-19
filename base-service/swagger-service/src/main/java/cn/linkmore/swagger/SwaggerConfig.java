@@ -27,7 +27,7 @@ public class SwaggerConfig {
 	private String title = "应用接口";
 	private String description = "本文档 完全基于RESTful接口说明";
 	private String version = "2.0";
-	private String serviceUrl = "http://www.linkmoreparking.com";
+	private String serviceUrl = "http://www.linkmoretech.cn";
 	private String contact = "凌猫停车"; 
 	private String basePackage = "";
 	private static final Logger log = LoggerFactory.getLogger(SwaggerConfig.class);

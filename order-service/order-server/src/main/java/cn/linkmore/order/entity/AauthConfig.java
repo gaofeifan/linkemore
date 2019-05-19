@@ -15,7 +15,8 @@ public class AauthConfig {
 	/*"redirect:http://order.linkmoreparking.cn/?&preid=%s&openid=%s&type=%s";*/
 	/*"redirect:http://deal.linkmoreparking.cn/?&preid=%s&openid=%s&type=%s";*/
 	//private static final String H5_INDEX ="redirect:http://order.linkmoreparking.cn?preid=%s&openid=%s&type=%s";
-	private static final String H5_INDEX ="redirect:http://qrcode.linkmoreparking.com?preid=%s&openid=%s&type=%s";
+	//private static final String H5_INDEX ="redirect:http://qrcode.linkmoreparking.com?preid=%s&openid=%s&type=%s";
+	private static final String H5_INDEX ="redirect:http://qrcode.linkmoretech.cn?preid=%s&openid=%s&type=%s";
 	
 	public String getWxCode(String appId, String redirect_uri,Long preId) {
 		return String.format(WX_OAUTH_CODE, appId, redirect_uri,preId);
