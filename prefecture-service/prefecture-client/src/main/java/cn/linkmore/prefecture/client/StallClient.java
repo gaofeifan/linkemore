@@ -18,6 +18,7 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStaffPreDetails;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
@@ -250,5 +251,9 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/control-up", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean controlUp(@RequestBody ReqOrderStall stall);
+	
+	@RequestMapping(value = "/v2.0/pre-stall-details", method = RequestMethod.GET)
+	@ResponseBody
+	public ResStaffPreDetails findPreStallDetails(@RequestParam("preId") Long preId,@RequestParam(value="floor",required=false) String floor);
 	
 }

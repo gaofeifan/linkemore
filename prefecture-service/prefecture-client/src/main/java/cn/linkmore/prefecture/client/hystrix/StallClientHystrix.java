@@ -20,6 +20,7 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStaffPreDetails;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
@@ -232,4 +233,12 @@ public class StallClientHystrix implements StallClient {
 		log.info("prefecture service Boolean controlUp(ReqOrderStall stall) hystrix");
 		return false;
 	}
+
+	@Override
+	public ResStaffPreDetails findPreStallDetails(Long preId, String layer) {
+		log.info("prefecture service ResStaffPreDetails findPreStallDetails(Long preId, String layer) hystrix");
+		return null;
+	}
+	
+	
 }

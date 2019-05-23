@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import cn.linkmore.prefecture.entity.Stall;
+import cn.linkmore.prefecture.response.ResStaffPreDetails;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallOps;
 /**
@@ -116,5 +117,7 @@ public interface StallClusterMapper {
 	List<ResStall> findStallsByPreIds(Map<String, Object> map);
 	
 	Stall findByLockNameAndPreId(@Param("stallName")String stallName,@Param("preId") Long preId);
+	
+	ResStaffPreDetails findPreStallDetails(@Param("preId")Long preId, @Param("floor")String layer);
 	
 }

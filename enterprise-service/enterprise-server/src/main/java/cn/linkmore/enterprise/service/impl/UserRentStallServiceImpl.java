@@ -558,6 +558,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			if (record != null) {
 				isHave = true;
 				rentUser = new ResRentUser();
+				
 				ResStallEntity resStallEntity = this.stallClient.findById(record.getStallId());
 				rentUserStallList = new ArrayList<>();
 				rentUserStall = new ResRentUserStall();

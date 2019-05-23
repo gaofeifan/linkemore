@@ -1,6 +1,7 @@
 package cn.linkmore.prefecture.service.impl;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +112,7 @@ import cn.linkmore.prefecture.response.ResLockMessage;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStaffCity;
+import cn.linkmore.prefecture.response.ResStaffPreDetails;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallAssign;
 import cn.linkmore.prefecture.response.ResStallEntity;
@@ -913,13 +916,13 @@ public class StallServiceImpl implements StallService {
 						}
 						stallMasterMapper.lockdown(stall);
 						if (reqc.getStatus() == 1) {
-							downLock(reqc.getStallId(), 1,reqc.getType());
+//							downLock(reqc.getStallId(), 1,reqc.getType());
 							redisService.remove(reqc.getKey());
 						}
 
 					} else {
 						if (reqc.getStatus() == 1) {
-							downLock(reqc.getStallId(), 0,reqc.getType());
+//							downLock(reqc.getStallId(), 0,reqc.getType());
 						}
 					}
 				}
@@ -1555,7 +1558,7 @@ public class StallServiceImpl implements StallService {
 				flag = true;
 				stallMasterMapper.lockdown(stall);
 				if (reqc.getStatus() == 1) {
-					downLock(reqc.getStallId(), 1,reqc.getType());
+//					downLock(reqc.getStallId(), 1,reqc.getType());
 				}
 				if(redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus())) {
 					this.redisService.remove(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId() + reqc.getUserId() +reqc.getStatus());
@@ -2621,6 +2624,11 @@ public class StallServiceImpl implements StallService {
 		stall.setLockId(null);
 		stall.setLockSn(null);
 		this.stallMasterMapper.update(stall);
+	}
+
+	@Override
+	public ResStaffPreDetails findPreStallDetails(Long preId, String floor) {
+		return this.stallClusterMapper.findPreStallDetails(preId,floor);
 	}
 	
 	

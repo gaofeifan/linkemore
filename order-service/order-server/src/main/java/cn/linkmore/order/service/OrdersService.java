@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
+import cn.linkmore.enterprise.request.ReqPreDetails;
+import cn.linkmore.enterprise.request.ReqStaffPreOwnerStall;
+import cn.linkmore.enterprise.response.ResStaffPreOwnerStall;
 import cn.linkmore.order.controller.app.request.ReqBooking;
 import cn.linkmore.order.controller.app.request.ReqBrandBooking;
 import cn.linkmore.order.controller.app.request.ReqOrderStall;
@@ -28,6 +31,8 @@ import cn.linkmore.order.response.ResOrderExcel;
 import cn.linkmore.order.response.ResOrderOperateLog;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreOrderCount;
+import cn.linkmore.order.response.ResPreOrderDetails;
+import cn.linkmore.order.response.ResTempStallReportForms;
 import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResUserOrder;
 
@@ -290,5 +295,11 @@ public interface OrdersService {
 	 * @return
 	 */
 	boolean controlUp(ReqOrderStall ros, HttpServletRequest request);
+
+	List<ResStaffPreOwnerStall> findPresOrder(ReqStaffPreOwnerStall reqStaffPreOwnerStall);
+
+	ResPreOrderDetails findPreOrderDetails(ReqPreDetails reqPreDetails);
+
+	ResTempStallReportForms findTempStallReportForms(ReqPreDetails details);
 		
 }

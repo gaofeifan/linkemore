@@ -12,7 +12,12 @@ import org.springframework.stereotype.Service;
 import cn.linkmore.enterprise.dao.cluster.EntRentedRecordClusterMapper;
 import cn.linkmore.enterprise.dao.master.EntRentedRecordMasterMapper;
 import cn.linkmore.enterprise.entity.EntRentedRecord;
+import cn.linkmore.enterprise.request.ReqPreDetails;
+import cn.linkmore.enterprise.request.ReqStaffPreOwnerStall;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
+import cn.linkmore.enterprise.response.ResOwnerStallDetails;
+import cn.linkmore.enterprise.response.ResOwnerStallReportForms;
+import cn.linkmore.enterprise.response.ResStaffOwnerUseStall;
 
 @Service
 public class EntRenedRecordServiceImpl implements EntRenedRecordService {
@@ -45,6 +50,18 @@ public class EntRenedRecordServiceImpl implements EntRenedRecordService {
 	public EntRentedRecord findByUserId(Long userId) {
 		EntRentedRecord record = this.entRentedRecordClusterMapper.findByUser(userId);
 		return record;
+	}
+	@Override
+	public List<ResStaffOwnerUseStall> findPreUseNumber(ReqStaffPreOwnerStall reqStaffPreOwnerStall) {
+		return this.entRentedRecordClusterMapper.findPreUseNumber(reqStaffPreOwnerStall);
+	}
+	@Override
+	public ResOwnerStallDetails findPreDetails(ReqPreDetails reqPreDetails) {
+		return this.entRentedRecordClusterMapper.findPreDetails(reqPreDetails);
+	}
+	@Override
+	public ResOwnerStallReportForms findOwnerStallReportForms(ReqPreDetails details) {
+		return this.entRentedRecordClusterMapper.findOwnerStallReportForms(details);
 	}
 	
 	

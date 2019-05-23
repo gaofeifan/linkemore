@@ -20,6 +20,7 @@ import cn.linkmore.prefecture.request.ReqAdminUser;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminUser;
+import cn.linkmore.prefecture.response.ResStaffPres;
 /**
  * 远程调用 - 管理员
  * @author   GFF
@@ -56,5 +57,9 @@ public interface StaffAdminUserClient {
 	@RequestMapping(value = "/pw", method = RequestMethod.PUT)
 	@ResponseBody
 	public void updatePw(@RequestParam("id")Long id, @RequestParam("pw")String pw);
+
+	@RequestMapping(value = "/find-user-pres", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResStaffPres> findUserPres(@RequestParam("id")Long id);
 	
 }

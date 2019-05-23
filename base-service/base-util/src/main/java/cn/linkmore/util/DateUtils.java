@@ -1,5 +1,6 @@
 package cn.linkmore.util;
 
+import java.text.DateFormat.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DateUtils {
 
 	public static final String DARW_FORMAT_TIME = "yyyy-MM-dd HH:mm:ss";
+	public static final String DARW_FORMAT = "yyyy-MM-dd";
 	/**
 	 * 获取开始日期和结束日期之间的日期
 	 * 
@@ -478,5 +480,80 @@ public class DateUtils {
 			return calendar.get(field) + 1;
 		}
 		return calendar.get(field);
+	}
+	
+	/**
+	 * @Description  根据当前时间获取周一周日的时间
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public static Date[] getWeekDate(Date date){
+	      Calendar cal = Calendar.getInstance();
+	      cal.setTime(date);
+	      // 判断要计算的日期是否是周日，如果是则减一天计算周六的，否则会出问题，计算到下一周去了  
+	      int dayWeek = cal.get(Calendar.DAY_OF_WEEK);// 获得当前日期是一个星期的第几天  
+	      if(1 == dayWeek){
+	         cal.add(Calendar.DAY_OF_MONTH,-1);
+	      }
+	      Date[] dates = new Date[2];
+	      // 设置一个星期的第一天，按中国的习惯一个星期的第一天是星期一  
+	      cal.setFirstDayOfWeek(Calendar.MONDAY);
+	      // 获得当前日期是一个星期的第几天  
+	      int day = cal.get(Calendar.DAY_OF_WEEK);
+	      // 根据日历的规则，给当前日期减去星期几与一个星期第一天的差值  
+	      SimpleDateFormat sdf = new SimpleDateFormat(DARW_FORMAT);
+	      cal.add(Calendar.DATE, cal.getFirstDayOfWeek() - day);
+	      dates[0] = cal.getTime();
+	      // System.out.println("所在周星期一的日期：" + imptimeBegin);  
+	      cal.add(Calendar.DATE,6);
+	      dates[1] = cal.getTime();
+	      // System.out.println("所在周星期日的日期：" + imptimeEnd);  
+	      return dates;
+	}
+	/**
+	 * @Description  根据当前时间获取月初月末的时间
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public static Date[] getMonthDate(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		// 判断要计算的日期是否是周日，如果是则减一天计算周六的，否则会出问题，计算到下一周去了  
+		int dayMonth = cal.get(Calendar.DAY_OF_MONTH);
+		if(1 != dayMonth){
+			cal.set(Field.DAY_OF_MONTH.getCalendarField(), 1);
+		}
+		Date[] dates = new Date[2];
+		dates[0] = cal.getTime();
+		cal.set(Field.MONTH.getCalendarField(), cal.get(Field.MONTH.getCalendarField())+1);
+		cal.set(Field.DAY_OF_MONTH.getCalendarField(),  cal.get(Field.DAY_OF_MONTH.getCalendarField())-1);
+		dates[1] = cal.getTime();
+		return dates;
+	}
+	/**
+	 * @Description  根据开始时间结束时间获取时间列表
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public static Date[] getDateList(Date[] date) {
+		Date[] dates = new Date[31];
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date[0]);
+		dates[0] = date[0];
+		int number = 1;
+		while (true) {
+			cal.set(Field.DAY_OF_YEAR.getCalendarField(), cal.get(Field.DAY_OF_YEAR.getCalendarField())+1);
+			if(cal.getTime().getTime() == date[1].getTime()) {
+				dates[number] =  date[1];
+				return dates;
+			}
+			dates[number] =  cal.getTime();
+			number++;
+		}
+	}
+	
+	public static void main(String[] args) {
+		Date date = getPast2String(-1, Calendar.getInstance());
+		System.out.println(converter(date, null));
 	}
 }

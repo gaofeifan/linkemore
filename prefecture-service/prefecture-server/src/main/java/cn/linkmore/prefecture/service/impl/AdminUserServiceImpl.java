@@ -29,6 +29,8 @@ import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminAuth;
 import cn.linkmore.prefecture.response.ResAdminUser;
 import cn.linkmore.prefecture.response.ResAdminUserAuth;
+import cn.linkmore.prefecture.response.ResStaffPres;
+import cn.linkmore.prefecture.service.AdminAuthService;
 import cn.linkmore.prefecture.service.AdminUserService;
 import cn.linkmore.util.DomainUtil;
 import cn.linkmore.util.ObjectUtils;
@@ -46,7 +48,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 	private AdminAuthClusterMapper adminAuthClusterMapper;
 	@Autowired
 	private AdminUserAuthClusterMapper adminUserAuthClusterMapper;
-	
+	@Autowired
+	private AdminAuthService adminAuthService;
 	@Autowired
 	private AdminUserMasterMapper adminUserMasterMapper;
 	@Autowired
@@ -357,6 +360,13 @@ public class AdminUserServiceImpl implements AdminUserService {
 		System.out.println(new Date().getTime());
 		
 	}
+
+	@Override
+	public List<ResStaffPres> findUserPres(Long id) {
+		List<ResStaffPres> pres = adminAuthService.findUserPres(id);
+		return pres;
+	}
+	
 	
 }
 class Md5PW{

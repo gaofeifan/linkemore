@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.controller.staff;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminUser;
+import cn.linkmore.prefecture.response.ResStaffPres;
 import cn.linkmore.prefecture.service.AdminUserService;
 import io.swagger.annotations.Api;
 import springfox.documentation.annotations.ApiIgnore;
@@ -61,5 +64,11 @@ public class StaffAdminUserController {
 	@ResponseBody
 	public void updatePw(@RequestParam("id")Long id, @RequestParam("pw")String pw) {
 		this.adminUserService.updatePw(id,pw);
+	}
+	
+	@RequestMapping(value = "/find-user-pres", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResStaffPres> findUserPres(@RequestParam("id")Long id){
+		return this.adminUserService.findUserPres(id);
 	}
 }

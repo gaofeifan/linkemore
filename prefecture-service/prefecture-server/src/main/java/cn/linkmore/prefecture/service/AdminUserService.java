@@ -9,6 +9,7 @@ import cn.linkmore.prefecture.request.ReqAdminUser;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminUser;
+import cn.linkmore.prefecture.response.ResStaffPres;
 
 /**
  * Service - 线下管理员
@@ -102,5 +103,7 @@ public interface AdminUserService {
 	void updateMobile(Long id, String mobile);
 	
 	void updatePw(Long id, String pw);
+	
+	List<ResStaffPres> findUserPres(Long id);
 
 }

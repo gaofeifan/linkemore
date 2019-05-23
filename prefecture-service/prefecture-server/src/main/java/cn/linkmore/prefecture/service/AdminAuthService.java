@@ -13,6 +13,7 @@ import cn.linkmore.prefecture.response.ResAdminAuthPre;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResStaffCity;
+import cn.linkmore.prefecture.response.ResStaffPres;
 
 /**
  * Service - 线下管理员 授权
@@ -52,5 +53,12 @@ public interface AdminAuthService {
 	 * @Version  v2.0
 	 */
 	List<ResPre> findStaffPreByAdminId(Long id);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStaffPres> findUserPres(Long id);
 
 }

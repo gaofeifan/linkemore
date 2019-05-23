@@ -1,5 +1,7 @@
 package cn.linkmore.prefecture.client.hystrix;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Component;
 import cn.linkmore.prefecture.client.StaffAdminUserClient;
 import cn.linkmore.prefecture.response.ResAdmin;
 import cn.linkmore.prefecture.response.ResAdminUser;
+import cn.linkmore.prefecture.response.ResStaffPres;
 @Component
 public class StaffAdminUserClientHystrix implements StaffAdminUserClient {
 
@@ -44,6 +47,11 @@ public class StaffAdminUserClientHystrix implements StaffAdminUserClient {
 	public void updatePw(Long id, String pw) {
 		log.info(" updatePw(Long id, String pw) hystrix");
 		
+	}
+	@Override
+	public List<ResStaffPres> findUserPres(Long id) {
+		log.info(" List<ResStaffPres> findUserPres(Long id) hystrix");
+		return null;
 	}
 	
 	

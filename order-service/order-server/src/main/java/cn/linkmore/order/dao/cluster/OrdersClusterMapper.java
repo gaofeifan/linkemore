@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import cn.linkmore.enterprise.request.ReqPreDetails;
+import cn.linkmore.enterprise.request.ReqStaffPreOwnerStall;
 import cn.linkmore.order.controller.app.response.ResMonthCount;
 import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.entity.Orders;
@@ -18,6 +20,8 @@ import cn.linkmore.order.response.ResOrderOps;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreDataList;
 import cn.linkmore.order.response.ResPreOrderCount;
+import cn.linkmore.order.response.ResPreOrderDetails;
+import cn.linkmore.order.response.ResTempStallReportForms;
 import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
 @Mapper
@@ -277,6 +281,17 @@ public interface OrdersClusterMapper {
 	 * @return
 	 */
 	List<ResUserOrder> findFinishedUserList(Map<String, Object> param);
+
+	/**
+	 * @Description   orderNumber,pre_id preId,sum(actual_amount) orderAmount
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<cn.linkmore.enterprise.response.ResStaffPreOwnerStall> findPresOrder(ReqStaffPreOwnerStall reqStaffPreOwnerStall);
+
+	ResPreOrderDetails findPreOrderDetails(ReqPreDetails reqPreDetails);
+
+	ResTempStallReportForms findTempStallReportForms(ReqPreDetails details);
 
 
 

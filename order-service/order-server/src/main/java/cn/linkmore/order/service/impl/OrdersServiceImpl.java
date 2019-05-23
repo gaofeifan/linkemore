@@ -53,8 +53,11 @@ import cn.linkmore.common.client.BaseDictClient;
 import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.coupon.client.CouponClient;
 import cn.linkmore.coupon.request.ReqCouponPay;
+import cn.linkmore.enterprise.request.ReqPreDetails;
+import cn.linkmore.enterprise.request.ReqStaffPreOwnerStall;
 import cn.linkmore.enterprise.response.ResBrandPre;
 import cn.linkmore.enterprise.response.ResBrandStall;
+import cn.linkmore.enterprise.response.ResStaffPreOwnerStall;
 import cn.linkmore.notice.client.UserSocketClient;
 import cn.linkmore.order.config.BaseConfig;
 import cn.linkmore.order.controller.app.request.ReqBooking;
@@ -86,6 +89,8 @@ import cn.linkmore.order.response.ResOrderOperateLog;
 import cn.linkmore.order.response.ResOrderPlate;
 import cn.linkmore.order.response.ResPreDataList;
 import cn.linkmore.order.response.ResPreOrderCount;
+import cn.linkmore.order.response.ResPreOrderDetails;
+import cn.linkmore.order.response.ResTempStallReportForms;
 import cn.linkmore.order.response.ResTrafficFlow;
 import cn.linkmore.order.response.ResTrafficFlowList;
 import cn.linkmore.order.response.ResUserOrder;
@@ -2519,6 +2524,21 @@ public class OrdersServiceImpl implements OrdersService {
 			return upStatus;
 		}
 		return false;
+	}
+
+	@Override
+	public List<ResStaffPreOwnerStall> findPresOrder(ReqStaffPreOwnerStall reqStaffPreOwnerStall) {
+		return this.ordersClusterMapper.findPresOrder(reqStaffPreOwnerStall);
+	}
+
+	@Override
+	public ResPreOrderDetails findPreOrderDetails(ReqPreDetails reqPreDetails) {
+		return 	this.ordersClusterMapper.findPreOrderDetails(reqPreDetails);
+	}
+
+	@Override
+	public ResTempStallReportForms findTempStallReportForms(ReqPreDetails details) {
+		return 	this.ordersClusterMapper.findTempStallReportForms(details);
 	}
 	
 }

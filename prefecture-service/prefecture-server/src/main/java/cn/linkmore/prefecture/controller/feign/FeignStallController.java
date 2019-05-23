@@ -25,6 +25,7 @@ import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
 import cn.linkmore.prefecture.request.ReqStallOperateLog;
+import cn.linkmore.prefecture.response.ResStaffPreDetails;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
@@ -397,4 +398,11 @@ public class FeignStallController {
 		log.info("controlUp:{} .......................................",JsonUtil.toJson(stall));
 		return this.stallService.controlUp(stall);
 	}
+	
+	@RequestMapping(value = "/v2.0/pre-stall-details", method = RequestMethod.GET)
+	@ResponseBody
+	public ResStaffPreDetails findPreStallDetails(@RequestParam("preId") Long preId,@RequestParam(value="floor",required=false) String floor) {
+		return this.stallService.findPreStallDetails(preId,floor);
+	}
+	
 }

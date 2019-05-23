@@ -8,9 +8,14 @@ import org.apache.ibatis.annotations.Param;
 
 import cn.linkmore.enterprise.entity.EntRentedRecord;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
+import cn.linkmore.enterprise.request.ReqPreDetails;
 import cn.linkmore.enterprise.request.ReqRentedRecord;
+import cn.linkmore.enterprise.request.ReqStaffPreOwnerStall;
 import cn.linkmore.enterprise.response.ResEnterprise;
+import cn.linkmore.enterprise.response.ResOwnerStallDetails;
+import cn.linkmore.enterprise.response.ResOwnerStallReportForms;
 import cn.linkmore.enterprise.response.ResRentedRecord;
+import cn.linkmore.enterprise.response.ResStaffOwnerUseStall;
 /**
  * 长租用户会用记录--读
  * @author   GFF
@@ -102,5 +107,10 @@ public interface EntRentedRecordClusterMapper {
 	 * @Version  v2.0
 	 */
 	Integer findUseCountByMonth(Map<String, Long> param);
+	
+	List<ResStaffOwnerUseStall> findPreUseNumber(ReqStaffPreOwnerStall reqStaffPreOwnerStall);
+	
+	ResOwnerStallDetails findPreDetails(ReqPreDetails reqPreDetails);
+	ResOwnerStallReportForms findOwnerStallReportForms(ReqPreDetails details);
 	
 }

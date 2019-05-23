@@ -11,6 +11,15 @@
     <result column="auth_id" jdbcType="BIGINT" property="authId" />
     <result column="pre_id" jdbcType="BIGINT" property="preId" />
   </resultMap>
+  <resultMap id="ResStaffBaseResultMap" type="cn.linkmore.prefecture.response.ResStaffPres">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="auth_id" jdbcType="BIGINT" property="authId" />
+    <result column="pre_id" jdbcType="BIGINT" property="preId" />
+	<association property="preType" javaType="cn.linkmore.prefecture.response.ResStaffPresType">
+		<result column="tempStallNumber" jdbcType="INTEGER" property="tempStallNumber"/>
+		<result column="ownerStallNumber" jdbcType="INTEGER" property="ownerStallNumber"/>
+	</association>
+  </resultMap>
   <sql id="Base_Column_List">
     id, auth_id, pre_id
   </sql>
@@ -42,6 +51,18 @@
 	<if test="preId != null">
 		AND pre.pre_id = #{preId}
 	</if>
+	GROUP BY pre_id 
+  </select>
+  <select id="findUserPres" parameterType="java.lang.Long" resultMap="ResStaffBaseResultMap">
+	select pre.auth_id , pre.pre_id,s.tempStallNumber,s.ownerStallNumber
+	 FROM t_admin_auth_prefecture pre INNER JOIN (
+		select auth_id,user_id FROM t_admin_user_auth  
+		) users ON users.auth_id = pre.auth_id 
+	LEFT JOIN (
+		SELECT pre_id,count(if(type=0,1,null)) tempStallNumber,COUNT(if(type=2 ,1,null)) ownerStallNumber FROM v_stall GROUP BY pre_id
+	) s on s.pre_id = pre.id
+	where 
+		 users.user_id = #{userId}
 	GROUP BY pre_id 
   </select>
  

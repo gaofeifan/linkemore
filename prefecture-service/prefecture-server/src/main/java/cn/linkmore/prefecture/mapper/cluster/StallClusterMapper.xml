@@ -181,6 +181,9 @@
 	   <if test="preId != null">
 	   	AND pre_id = #{preId}
 	   </if>
+	   <if test="floor != null">
+	   	AND floor = #{floor}
+	   </if>
 	    <if test="type!=null">
 	       and type = #{type,jdbcType=SMALLINT}
 	    </if>
@@ -223,6 +226,17 @@
     where pre_id = #{preId,jdbcType=BIGINT}
     group by area_name
     order by area_name ASC
+  </select>
+  <select id="findPreStallDetails" resultType="cn.linkmore.prefecture.response.ResStaffPreDetails">
+  	select 
+count(id) totalStallNumber, count(if(status = 2,1,null)) useStalNumber,count(if(type = 2 and status = 2,1,null)) ownerUseStallNumber,
+count(if(type = 2,1,null)) ownerStallNumber,count(if(type = 0,1,null)) tempStallNumber,count(if(type = 0 and status = 2,1,null)) tempUseStallNumber
+from 
+v_stall 
+where pre_id = #{preId}
+<if test="floor != null and floor != 'all'">
+	floor = #{floor}
+</if>
   </select>
 
   <select id="findList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >

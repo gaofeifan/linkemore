@@ -143,6 +143,82 @@
     from o_orders
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findTempStallReportForms" parameterType="cn.linkmore.enterprise.request.ReqPreDetails" resultType="cn.linkmore.order.response.ResTempStallReportForms">
+ 	select 
+	ord1.orderNumber,
+	CONCAT(ROUND((ord1.orderNumber-ord2.orderNumber)*100/ord2.orderNumber,2),"%") orderNumberPercent,
+	ord1.orderIncome,
+	CONCAT(ROUND((ord1.orderIncome-ord2.orderIncome)*100/ord2.orderIncome,2),"%") orderIncomePercent,
+	ord1.orderAdvanceIncome,
+	CONCAT(ROUND((ord1.orderAdvanceIncome-ord2.orderAdvanceIncome)*100/ord2.orderAdvanceIncome,2),"%") orderAdvanceIncomePercent,
+	ord1.orderScanIncome,
+	CONCAT(ROUND((ord1.orderScanIncome - ord2.orderScanIncome)*100/ord2.orderScanIncome,2),"%") orderScanIncomePercent,
+	ord1.orderShareIncome,
+	CONCAT(ifnull(ROUND((ord1.orderShareIncome-ord2.orderShareIncome)*100/ord2.orderShareIncome,2),0.00),"%") orderShareIncomePercent, 
+	ord1.orderUseDuration,
+	CONCAT(ROUND((ord1.orderUseDuration-ord2.orderUseDuration)*100/ord2.orderUseDuration,2),"%") orderUseDurationPercent
+	from(
+	select 
+	pre_id,
+	count(id) orderNumber,
+	SUM(actual_amount) orderIncome,
+	SUM(if(order_source = 1,actual_amount,0)) orderAdvanceIncome,
+	SUM(if(order_source = 2,actual_amount,0))orderScanIncome,
+	SUM(if(order_source = 3,actual_amount,0)) orderShareIncome,
+	ROUND(sum(TIMESTAMPDIFF(MINUTE,
+		(DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i')),
+		(DATE_FORMAT(end_time, '%Y-%m-%d %H:%i'))
+		)/60)/(TIMESTAMPDIFF(DAY  ,
+		(DATE_FORMAT(#{startTime}, '%Y-%m-%d')),  
+		(DATE_FORMAT(#{endTime},'%Y-%m-%d'))
+		)+1)/#{stallCount},2) orderUseDuration 
+	from o_orders where pre_id = #{preId} AND `status` = 3
+	<!-- <if test="type == 0">
+			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
+		</if>
+		<if test="type != 0">
+	 		and <![CDATA[ DATE_FORMAT(#{startTime},'%Y-%m-%d')<= DATE_FORMAT(begin_time,'%Y-%m-%d') ]]>
+		and <![CDATA[DATE_FORMAT(#{endTime},'%Y-%m-%d') >= DATE_FORMAT(begin_time,'%Y-%m-%d')]]>
+		</if> -->
+	 <if test="stallIds != null ">
+		and stall_id in
+		 <foreach collection="stallIds"  index="index" item="stallId" open="(" separator="," close=")"  >
+		 	#{stallId} 
+	  	 </foreach>
+	</if>
+	)ord1 
+	INNER JOIN 
+	(select 
+	pre_id,
+	count(id) orderNumber,
+	SUM(actual_amount) orderIncome,
+	SUM(if(order_source = 1,actual_amount,0)) orderAdvanceIncome,
+	SUM(if(order_source = 2,actual_amount,0))orderScanIncome,
+	SUM(if(order_source = 3,actual_amount,0)) orderShareIncome,
+	sum(TIMESTAMPDIFF(MINUTE,
+		(DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i')),
+		(DATE_FORMAT(end_time, '%Y-%m-%d %H:%i'))
+		)/60)/(TIMESTAMPDIFF(DAY  ,
+		(DATE_FORMAT(#{contrastStartTime}, '%Y-%m-%d')),  
+		(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'))
+		)+1)/#{stallCount} orderUseDuration 
+	from o_orders where pre_id = #{preId} AND `status` = 3
+	<!-- <if test="type == 0">
+			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
+		</if>
+		<if test="type != 0">
+ 			 		and <![CDATA[ DATE_FORMAT(#{startTime},'%Y-%m-%d')<= DATE_FORMAT(begin_time,'%Y-%m-%d') ]]>
+			and <![CDATA[DATE_FORMAT(#{endTime},'%Y-%m-%d') >= DATE_FORMAT(begin_time,'%Y-%m-%d')]]>
+		</if> -->
+	 <if test="stallIds != null ">
+		and stall_id in
+		 <foreach collection="stallIds"  index="index" item="stallId" open="(" separator="," close=")"  >
+		 	#{stallId} 
+	  	 </foreach>
+	</if>
+	)ord2 ON ord1.pre_id = ord2.pre_id 
+		
+  </select>
   <select id="findUserLatest" parameterType="java.lang.Long" resultMap="ResResultMap">
     select 
     <include refid="Res_Column_List" />
@@ -661,6 +737,21 @@ select o.pre_id preId,p.name preName,	IFNULL(de.dayAmount,0.0) dayAmount,IFNULL(
 		DATE_FORMAT(end_time, '%Y-%m-%d')
 	ORDER BY end_time ASC
   </select>
+  <select id="findPresOrder" parameterType="cn.linkmore.enterprise.request.ReqStaffPreOwnerStall" resultType="cn.linkmore.enterprise.response.ResStaffPreOwnerStall">
+ 	select count(id) orderNumber,pre_id preId,sum(if(status = 3,actual_amount,null)) orderAmount from o_orders where pre_id in
+ 	<foreach collection="preIds"  index="index" item="id" open="(" separator="," close=")" >
+   		#{id}
+   	</foreach>
+ 	 and status in (1,2,3,6)
+ 	 <if test="type == 0">
+		and DATE_FORMAT(begin_time,'%Y-%m-%d') =  DATE_FORMAT(#{startTime},'%Y-%m-%d')
+ 	 </if>
+ 	 <if test="type != 0">
+ 		and <![CDATA[ DATE_FORMAT(#{startTime},'%Y-%m-%d')<= DATE_FORMAT(begin_time,'%Y-%m-%d') ]]>
+		and <![CDATA[DATE_FORMAT(#{endTime},'%Y-%m-%d') >= DATE_FORMAT(begin_time,'%Y-%m-%d')]]>
+ 	 </if>
+ 	GROUP BY pre_id
+  </select>
   <select id="findStaffPreDataList" parameterType="java.util.Map" resultType="cn.linkmore.order.response.ResPreDataList">
  	SELECT
 		sum(actual_amount) dayAmount,
@@ -743,6 +834,23 @@ GROUP BY
     from o_orders  
     where user_id = #{userId,jdbcType=BIGINT} and status = 4 
     <![CDATA[ and date(create_time) = curdate()]]>
+  </select>
+  
+  <select id="findPreOrderDetails" parameterType="cn.linkmore.enterprise.request.ReqPreDetails" resultType="cn.linkmore.order.response.ResPreOrderDetails">
+    select 
+  	ifnull(sum(if(status = 3 ,actual_amount,0)),0.00) orderIncome,count(id) orderNumber,count(if(status = 3,1,null)) orderOver,count(if(status != 3,1,null)) orderNotOver
+    from o_orders  
+    where 
+    	pre_id = #{preId}
+    <if test="type == 0">
+    	and begin_time = now()
+    </if>
+    <if test="stallIds">
+   	 AND stall_id in
+     <foreach collection="stallIds"  index="index" item="id" open="(" separator="," close=")"  >
+	 	#{id} 
+  	 </foreach>
+    </if>
   </select>
   
 </mapper>

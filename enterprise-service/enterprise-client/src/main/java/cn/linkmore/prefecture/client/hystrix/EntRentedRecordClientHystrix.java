@@ -1,12 +1,18 @@
 package cn.linkmore.prefecture.client.hystrix;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import cn.linkmore.enterprise.request.ReqPreDetails;
+import cn.linkmore.enterprise.request.ReqStaffPreOwnerStall;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
+import cn.linkmore.enterprise.response.ResOwnerStallDetails;
+import cn.linkmore.enterprise.response.ResOwnerStallReportForms;
+import cn.linkmore.enterprise.response.ResStaffOwnerUseStall;
 import cn.linkmore.prefecture.client.EntRentedRecordClient;
 @Component
 public class EntRentedRecordClientHystrix implements EntRentedRecordClient {
@@ -29,6 +35,21 @@ public class EntRentedRecordClientHystrix implements EntRentedRecordClient {
 	@Override
 	public ResEntRentedRecord findByUserId(Long userId) {
 		log.info("ResEntRentedRecord findByUserId(Long userId) hystrix");
+		return null;
+	}
+	@Override
+	public List<ResStaffOwnerUseStall> findPreUseNumber(ReqStaffPreOwnerStall reqStaffPreOwnerStall) {
+		log.info("findPreUseNumber(ReqStaffPreOwnerStall reqStaffPreOwnerStall) hystrix");
+		return null;
+	}
+	@Override
+	public ResOwnerStallDetails findPreDetails(ReqPreDetails reqPreDetails) {
+		log.info("ResOwnerStallDetails findPreDetails(ReqPreDetails reqPreDetails) hystrix");
+		return null;
+	}
+	@Override
+	public ResOwnerStallReportForms findOwnerStallReportForms(ReqPreDetails details) {
+		log.info("ResOwnerStallReportForms findOwnerStallReportForms(ReqPreDetails details) hystrix");
 		return null;
 	}
 

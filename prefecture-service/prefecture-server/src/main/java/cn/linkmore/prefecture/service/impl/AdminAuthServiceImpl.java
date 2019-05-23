@@ -42,6 +42,7 @@ import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResStaffCity;
+import cn.linkmore.prefecture.response.ResStaffPres;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.service.AdminAuthService;
 import cn.linkmore.util.DomainUtil;
@@ -313,6 +314,11 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 		
 		List<ResPre> pres = this.prefectureClusterMapper.findByIds(collect);
 		return pres;
+	}
+
+	@Override
+	public List<ResStaffPres> findUserPres(Long id) {
+		return this.adminAuthPreClusterMapper.findUserPres(id);
 	}
 
 	

@@ -1,9 +1,15 @@
 package cn.linkmore.enterprise.service;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.linkmore.enterprise.entity.EntRentedRecord;
+import cn.linkmore.enterprise.request.ReqPreDetails;
+import cn.linkmore.enterprise.request.ReqStaffPreOwnerStall;
 import cn.linkmore.enterprise.response.ResEntRentedRecord;
+import cn.linkmore.enterprise.response.ResOwnerStallDetails;
+import cn.linkmore.enterprise.response.ResOwnerStallReportForms;
+import cn.linkmore.enterprise.response.ResStaffOwnerUseStall;
 
 public interface EntRenedRecordService {
 
@@ -33,5 +39,26 @@ public interface EntRenedRecordService {
 	 * @return
 	 */
 	EntRentedRecord findByUserId(Long userId);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStaffOwnerUseStall> findPreUseNumber(ReqStaffPreOwnerStall reqStaffPreOwnerStall);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResOwnerStallDetails findPreDetails(ReqPreDetails reqPreDetails);
+
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	ResOwnerStallReportForms findOwnerStallReportForms(ReqPreDetails details);
 
 }

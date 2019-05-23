@@ -23,6 +23,7 @@ import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.request.ReqOrderStall;
 import cn.linkmore.prefecture.request.ReqStall;
+import cn.linkmore.prefecture.response.ResStaffPreDetails;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallOps;
@@ -381,5 +382,8 @@ public interface StallService {
 	Boolean controlUp(ReqOrderStall stall);
 
 	Boolean installLock(ReqLockIntall reqLockIntall, HttpServletRequest request);
+	
 	void removeStallLock(Long stallId, HttpServletRequest request);
+	
+	ResStaffPreDetails findPreStallDetails(Long preId, String layer);
 }
