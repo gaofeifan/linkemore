@@ -275,6 +275,7 @@
     left join t_user u on er.user_id = u.id
     where er.status = 1
   	 and er.stall_id = #{stallId}
+  	 and u.id is not null
     order by er.id desc
    limit #{pageNo},10
   </select>

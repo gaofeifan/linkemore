@@ -102,4 +102,9 @@ public class OpsPrefectureClientHystrix implements OpsPrefectureClient {
 		log.info("prefecture List<ResPreList> findSelectListByUser(map) hystrix");
 		return null;
 	}
+	@Override
+	public List<String> getFloor(Long preId) {
+		log.info("prefecture List<String> getFloor(preId) hystrix");
+		return null;
+	}
 }

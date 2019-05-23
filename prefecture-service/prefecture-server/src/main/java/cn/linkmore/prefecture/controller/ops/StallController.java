@@ -169,6 +169,7 @@ public class StallController {
 			st.setRentMoType(stall.getRentMoType());
 			Stall sta = new Stall();
 			sta = ObjectUtils.copyObject(st, sta);
+			sta.setFloor(stall.getFloor());
 			return this.stallService.update(sta);
 		}
 		return 0;

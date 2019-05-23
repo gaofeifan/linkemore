@@ -10,6 +10,7 @@ import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
 import cn.linkmore.prefecture.controller.app.response.ResAppointGroupDetail;
+import cn.linkmore.prefecture.controller.app.response.ResEntranceType;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
@@ -240,6 +241,13 @@ public interface PrefectureService {
 	 * @Version  v2.0
 	 */
 	Boolean confirm(String serialNumber, HttpServletRequest request);
+	/**
+	 * 车场入口列表
+	 * @param preId
+	 * @param request
+	 * @return
+	 */
+	List<ResEntranceType> entranceList(Long preId, HttpServletRequest request);
 
 
 }

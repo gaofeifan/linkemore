@@ -508,6 +508,7 @@ public class StallServiceImpl implements StallService {
 					stallName.setType((short)0);
 					stallName.setAreaName(reqLockIntall.getAreaName());
 					stallName.setStallLocal(reqLockIntall.getStallName());
+					stallName.setFloor(reqLockIntall.getFloor());
 					// 插入车位
 					this.stallMasterMapper.save(stallName);
 					Map<String, Object> param = new HashMap<>();

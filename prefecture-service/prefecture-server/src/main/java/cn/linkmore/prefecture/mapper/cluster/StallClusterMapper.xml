@@ -26,6 +26,7 @@
     <result column="create_user_name" jdbcType="VARCHAR" property="createName" />
     <result column="rent_om_type" jdbcType="SMALLINT" property="rentOmType" />
     <result column="rent_mo_type" jdbcType="SMALLINT" property="rentMoType" />
+    <result column="floor" jdbcType="VARCHAR" property="floor" />
   </resultMap>
   <resultMap id="BaseResultMapOps" type="cn.linkmore.prefecture.response.ResStallOps">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -59,13 +60,12 @@
     <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
     <result column="area_name" jdbcType="VARCHAR" property="areaName" />
     <result column="bind_order_status" jdbcType="INTEGER" property="bindOrderStatus" />
-        <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
   
   <sql id="Base_Column_List">
     id, stall_name, sell_count, pre_id, gateway_id, radar, lock_id, lock_sn, lock_status, 
     status, stall_local, route_guidance, create_time, update_time, image_url, lock_battery, 
-    lock_voltage, bind_order_status,type,brand,area_name,rent_om_type,rent_mo_type
+    lock_voltage, bind_order_status,type,brand,area_name,rent_om_type,rent_mo_type,floor
   </sql>
   <select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

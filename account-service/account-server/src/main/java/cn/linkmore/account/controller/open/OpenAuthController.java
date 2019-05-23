@@ -208,26 +208,6 @@ public class OpenAuthController {
 	 */
 	@RequestMapping(value = "/index")
 	public void main(HttpServletRequest request,HttpServletResponse response) {
-		
-		//打印请求头内容
-		System.out.println("请求头");
-		for(Enumeration<String> enu = request.getHeaderNames();enu.hasMoreElements();){
-			String name = enu.nextElement();
-			System.out.println(name+":"+request.getHeader(name));
-		}
-		System.out.println("请求参数");
-		Map<String,String[]> paramMap=request.getParameterMap();
-		if(paramMap!=null) {
-			for(Map.Entry<String,String[]> entry :paramMap.entrySet()){
-				System.out.println(entry.getKey()+":"+Arrays.toString(entry.getValue()) );
-			}
-		}
-		/*
-		System.out.println("");
-		if(request.getHeader("Cookie")!=null) {
-			response.addHeader("Cookie", request.getHeader("Cookie"));
-		}
-		*/
 		String url=baseUri+codePath+"?client_id="+appKey
 				+"&response_type=code&scope=basic&redirect_uri="+redirectUri
 				+"&state="+UUID.randomUUID().toString().replaceAll("-", "")

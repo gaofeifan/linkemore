@@ -1015,7 +1015,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 						rentUserStall.setValidity(DateUtils.convert(enttall.getEndTime(), DateUtils.DARW_FORMAT_TIME));
 						// 车位状态 :1，空闲；2，使用中；4，下线
 						rentUserStall.setStallStatus(enttall.getStatus().intValue());
-
+						// 获取车位上车位锁状态，下面在根据实际情况进行校正
+						rentUserStall.setLockStatus(enttall.getLockStatus().intValue());
 						// 车位锁属性
 						
 						if (tempMap != null && !tempMap.isEmpty()) {
@@ -1029,6 +1030,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											// 网关状态(默认展示0 调不到锁平台时显示0) 0离线 1 在线
 											rentUserStall.setGatewayStatus(inf.getOnlineState());
 											// 锁状态 1升起 2 降下
+											log.info("...lock_sn = {} lock-state= {}",enttall.getLockSn(), inf.getLockState());
 											if (inf.getLockState() == 1) {
 												rentUserStall.setLockStatus(inf.getLockState());
 											} else {

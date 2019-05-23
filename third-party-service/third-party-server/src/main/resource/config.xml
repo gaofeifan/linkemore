@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>  
-	<sms tpl="SMS_163625172" id="user_app_login_code" desc="登录验证码"/> 
-	<sms tpl="SMS_163620315" id="share_coupon_notice" desc="常规发送停车券和分享领券"/>
-	<sms tpl="SMS_163620317" id="order_closed_coupon_notice" desc="无车位订单关闭通知"/>
-	<sms tpl="SMS_163620321" id="unsub_brand_coupon_notice" desc="未授权品牌送券通知"/>
-	<sms tpl="SMS_163625180" id="subed_brand_coupon_notice" desc="已授权品牌送券通知"/>
-	<sms tpl="SMS_163625181" id="new_user_reg_notice" desc="新注册用户优惠券包"/>
-	<sms tpl="SMS_163625629" id="order_suspend_notice" desc="挂起订单通知"/>
-	<sms tpl="SMS_163625734" id="auth_rent_stall_notice" desc="长租车位授权通知"/>
+	<sms tpl="SMS_163625172" id="user_app_login_code" desc="登录验证码" message="登录，验证码：${code}，10分钟内有效"/> 
+	<sms tpl="SMS_163620315" id="share_coupon_notice" desc="常规发送停车券和分享领券" message="用户您好，${enterprise}送您${money}元停车代金券，登录凌猫停车APP或微信服务号即可使用，祝您使用愉快！"/>
+	<sms tpl="SMS_163620317" id="order_closed_coupon_notice" desc="无车位订单关闭通知" message="非常抱歉目前无空闲车位可以为您指派！为了表示歉意凌猫送您一张停车券，欢迎您下次使用！"/>
+	<sms tpl="SMS_163620321" id="unsub_brand_coupon_notice" desc="未授权品牌送券通知" message="${brand}送您一张（或者套餐）停车券，您的信息已经提报给商家，商家审核结束后即可为您开通该权限！"/>
+	<sms tpl="SMS_163625180" id="subed_brand_coupon_notice" desc="已授权品牌送券通知" message="${brand}送你一张停车券，请及时使用！"/>
+	<sms tpl="SMS_163625181" id="new_user_reg_notice" desc="新注册用户优惠券包" message="恭喜您成功注册凌猫停车，新人专享礼包已经放入您的账户，登录凌猫停车小程序或APP查看使用吧。祝您出行愉快！"/>
+	<sms tpl="SMS_163625629" id="order_suspend_notice" desc="挂起订单通知" message="凌猫用户您好！您有一笔订单尚未支付，请登录凌猫停车小程序/APP结账，以免影响您下次预约使用！"/>
+	<sms tpl="SMS_163625734" id="auth_rent_stall_notice" desc="长租车位授权通知" message="您的好友（${tel}）分享给您一个长租车位，请登录凌猫停车小程序/APP使用"/>
 </config>

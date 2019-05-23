@@ -1,7 +1,10 @@
 package cn.linkmore.prefecture.controller.app;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import cn.linkmore.bean.exception.StatusEnum;
 import cn.linkmore.prefecture.controller.app.request.ReqBooking;
 import cn.linkmore.prefecture.controller.app.request.ReqNearPrefecture;
 import cn.linkmore.prefecture.controller.app.request.ReqPrefecture;
+import cn.linkmore.prefecture.controller.app.response.ResEntranceType;
 import cn.linkmore.prefecture.controller.app.response.ResGroupStrategy;
 import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPreCity;
@@ -221,6 +225,36 @@ public class AppPrefectureController {
 		}
 		return response;
 	} 
+	
+	@ApiOperation(value = "车区入口管理", notes = "根据车区获取入口列表", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/entrance-list", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<ResEntranceType>> entranceList(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
+		ResponseEntity<List<ResEntranceType>> response = null;
+		try { 
+			List<ResEntranceType> list = this.prefectureService.entranceList(preId, request);
+			response = ResponseEntity.success(list, request);
+		} catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		return response;
+	} 
+	
+	@ApiOperation(value = "根据车区id获取车位楼层", notes = "根据车区id获取车位楼层", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/get-floor", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> getFloor(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
+		cn.linkmore.prefecture.response.ResPrefectureDetail detail =  this.prefectureService.findById(preId);
+		List<String> floorList = new ArrayList<String>();
+		if(detail !=null && StringUtils.isNotBlank(detail.getUnderLayer())) {
+			floorList = Arrays.asList(detail.getUnderLayer().split("、"));
+		}else {
+			floorList.add("整层");
+		}
+		return floorList;
+	}
 	
 	
 }
