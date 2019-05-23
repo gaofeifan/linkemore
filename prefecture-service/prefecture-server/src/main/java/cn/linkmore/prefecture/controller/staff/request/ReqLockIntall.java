@@ -8,9 +8,9 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("地锁安装")
 public class ReqLockIntall {
 
-	@ApiModelProperty("车区")
-	 Long preId;
-	@ApiModelProperty("分区")
+	@ApiModelProperty("车区Id")
+	Long preId;
+	@ApiModelProperty("分区名称")
 	String  areaName;
 	@ApiModelProperty("车位号")
 	@NotBlank(message="车位号不能为空")
@@ -18,7 +18,15 @@ public class ReqLockIntall {
 	@ApiModelProperty("序列号")
 	@NotBlank(message="车位锁编号不能为空")
 	String lockSn;
+	@ApiModelProperty("所在楼层")
+	String floor;
 
+	public String getFloor() {
+		return floor;
+	}
+	public void setFloor(String floor) {
+		this.floor = floor;
+	}
 	public Long getPreId() {
 		return preId;
 	}

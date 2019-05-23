@@ -230,6 +230,15 @@ public class PrefectureController extends BaseController{
 	public ResPrefectureDetail detail(@RequestBody Long id) {
 		return this.preService.findById(id);
 	}
+	
+	/*
+	 * 根据车区id获取车区楼层数
+	 */
+	@RequestMapping(value = "/floor", method = RequestMethod.POST)
+	@ResponseBody
+	public List<String> floor(@RequestBody Long preId) {
+		return this.preService.findFloorByPreId(preId);
+	}
 
 	/*
 	 * 更新

@@ -105,5 +105,11 @@ public interface PrefectureService {
 	List<cn.linkmore.prefecture.response.ResPrefecture> findPreList();
 	
 	List<ResPreList> findSelectListByUser(Map<String, Object> map);
+	/**
+	 * 根据车区id获取车位所在楼层List
+	 * @param preId
+	 * @return
+	 */
+	List<String> findFloorByPreId(Long preId);
 	
 }

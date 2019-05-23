@@ -1,8 +1,12 @@
 package cn.linkmore.prefecture.controller.ops;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,6 +189,19 @@ public class PrefectureController {
 	@ResponseBody
 	public List<ResPreList> findSelectListByUser(@RequestBody Map<String, Object> param){
 		return this.preService.findSelectListByUser(param);
+	}
+	
+	@RequestMapping(value = "/v2.0/get-floor", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> getFloor(@RequestParam("preId") Long preId) {
+		ResPrefectureDetail detail =  this.preService.findById(preId);
+		List<String> floorList = new ArrayList<String>();
+		if(detail !=null && StringUtils.isNotBlank(detail.getUnderLayer())) {
+			floorList = Arrays.asList(detail.getUnderLayer().split("、"));
+		}else {
+			floorList.add("整层");
+		}
+		return floorList;
 	}
 	
 }

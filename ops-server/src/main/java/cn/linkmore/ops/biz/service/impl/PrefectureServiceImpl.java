@@ -178,6 +178,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<ResPreList> findSelectListByUser(Map<String, Object> map) {
 		return this.prefectureClient.findSelectListByUser(map);
 	}
-	
+
+	@Override
+	public List<String> findFloorByPreId(Long preId) {
+		return this.prefectureClient.getFloor(preId);
+	}
 
 }

@@ -129,8 +129,20 @@ public class ReqStall {
      * 长租车位标识多对一标识 默认0 1开启
      */
     private Short rentMoType = 0;
+    /**
+     * 车位所在层数如B1
+     */
+    private String floor;
     
-    public Short getRentOmType() {
+    public String getFloor() {
+		return floor;
+	}
+
+	public void setFloor(String floor) {
+		this.floor = floor;
+	}
+
+	public Short getRentOmType() {
 		return rentOmType;
 	}
 

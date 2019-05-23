@@ -1115,6 +1115,10 @@ public class OrdersServiceImpl implements OrdersService {
 			if (stall != null) {
 				ro.setStallName(stall.getStallName());
 				ro.setBluetooth(stall.getLockSn());
+				//若车位含有楼层，覆盖车区楼层信息
+				if(StringUtils.isNotBlank(stall.getFloor())) {
+					ro.setUnderLayer(stall.getFloor());
+				}
 			}
 			if(orders.getLockDownStatus() != null && orders.getLockDownStatus().intValue() == 1) {
 				ro.setCancelFlag((short)2);
