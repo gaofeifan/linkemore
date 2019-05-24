@@ -11,7 +11,7 @@ public class ResPrefecture {
 	@ApiModelProperty(value = "车区名称")
 	private String name;
 	
-	@ApiModelProperty(value = "空闲车位数量")
+	@ApiModelProperty(value = "实际空闲车位数量")
 	private Integer leisureStall;
 	
 	@ApiModelProperty(value = "经度")
@@ -73,8 +73,19 @@ public class ResPrefecture {
 	
 	@ApiModelProperty(value = "车区类型，1临停车区（包含临停和固定车位） 2固定车区（全部为固定车位）")
     private Short preType = (short)1;
-    
-    public Short getPreType() {
+	
+	@ApiModelProperty(value = "虚拟空闲车位数量，若不为0则空车位数展示虚拟空闲车位，若为0 则展示车场实际空闲车位，预约按钮是否可预约根据实际空闲车位来定")
+	private Integer vmLeisureStall = 0;
+	
+    public Integer getVmLeisureStall() {
+		return vmLeisureStall;
+	}
+
+	public void setVmLeisureStall(Integer vmLeisureStall) {
+		this.vmLeisureStall = vmLeisureStall;
+	}
+
+	public Short getPreType() {
 		return preType;
 	}
 

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import cn.linkmore.prefecture.controller.app.response.ResOpenPres;
 import cn.linkmore.prefecture.controller.app.response.ResPrefecture;
+import cn.linkmore.prefecture.entity.PrefectureView;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPreExcel;
 import cn.linkmore.prefecture.response.ResPreGateway;
@@ -87,5 +88,11 @@ public interface PrefectureClusterMapper {
 	
 	
 	List<ResOpenPres> findByAppid(String appId);
+	/**
+	 * 根据车区id获取虚拟空闲车位数据
+	 * @param id
+	 * @return
+	 */
+	List<PrefectureView> findVmList(Long id);
 	
 }
