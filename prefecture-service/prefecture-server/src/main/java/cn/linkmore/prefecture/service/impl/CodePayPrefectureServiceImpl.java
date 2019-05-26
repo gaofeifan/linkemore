@@ -104,7 +104,8 @@ public class CodePayPrefectureServiceImpl implements CodePayPrefectureService{
 	public Map<String, Object> down(String preId) {
 		Map<String,Object> param = new HashMap<String,Object>(); 
 		//String url = "http://test.linkmoreparking.cn/api/order/h5/d?preId="+preId;
-		String url = "http://api.linkmoreparking.com/api/order/h5/d?preId="+preId;
+		//String url = "http://apilinkmoreparking.com./api/order/h5/d?preId="+preId;
+		String url = "http://linkmoretech.cn/api/order/h5/d?preId="+preId;
 		param.put("url", url);
 		return param;
 	}
@@ -113,7 +114,8 @@ public class CodePayPrefectureServiceImpl implements CodePayPrefectureService{
 	public List<Map<String, Object>> selectAll() {
 		Map<String, Object> parameters = new HashMap<>();
 		//String ur= "http://192.168.1.133:8086/api/select-park";
-		String ur= "http://gateapi.linkmoreparking.com/api/select-park";
+		//String ur= "http://gateapi.linkmoreparking.com/api/select-park";
+		String ur= "http://gateapi.linkmoretech.cn/api/select-park";
 		String response = HttpUtil.sendJson(ur, JsonUtil.toJson(parameters));
 		Map<String, Object> order = new HashMap<>();
 		order = JsonUtil.toObject(response, order.getClass());
