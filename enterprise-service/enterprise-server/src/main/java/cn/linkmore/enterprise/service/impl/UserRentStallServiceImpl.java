@@ -949,7 +949,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		List<ResHaveRentPreStall> rentUserStallList = null;
 		ResHaveRentPreStall rentUserStall = null;
 		ResHaveRentPre rentUser = null;
-		
+		List<EntRentedRecord> changesRecord = new ArrayList<>();
 		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
 
 		log.info("v2.0.0.2 userId = {} stalllist={}", user.getId(), JSON.toJSON(stalllist));
@@ -1026,8 +1026,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											rentUserStall.setBattery(inf.getElectricity());
 											// 车位状态 0 上方无车 1 上方有车 ，其他值 表示未知
 											rentUserStall.setParkingState(inf.getParkingState());
-											// 网关状态(默认展示0 调不到锁平台时显示0) 0离线 1 在线
-											rentUserStall.setGatewayStatus(inf.getOnlineState());
+											// 网关状态(默认展示0 调不到锁平台时显示0) 0离线 1 在线 inf.getOnlineState()
+											rentUserStall.setGatewayStatus(1);
 											// 锁状态 1升起 2 降下
 											log.info("...lock_sn = {} lock-state= {}",enttall.getLockSn(), inf.getLockState());
 											if (inf.getLockState() == 1) {
@@ -1046,6 +1046,16 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 
 						for (EntRentedRecord resRentedRecord : records) {
 							if (resRentedRecord.getStallId().equals(enttall.getStallId())) {
+								//20190528新增代码
+								if(rentUserStall.getLockStatus() == 1) {
+									if(resRentedRecord.getStatus().intValue() != 1 ) {
+										resRentedRecord.setStatus(1l);
+										resRentedRecord.setLeaveTime(new Date());
+										rentUserStall.setStallStatus(1);
+										changesRecord.add(resRentedRecord);
+									}
+								}
+								
 								switch (rentUserStall.getLockStatus()) {
 								case 1:
 									rentUserStall.setUseUpLockTime(resRentedRecord.getLeaveTime());
@@ -1090,6 +1100,14 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		}
 		log.info("rentUserList = {}",JSON.toJSON(rentUserList));
 		authRentStall.setRentPres(rentUserList);
+		
+		new Thread(()->{
+			if(CollectionUtils.isNotEmpty(rentUserList)) {
+				if(CollectionUtils.isNotEmpty(changesRecord)) {
+					updateRecord(changesRecord);
+				}
+			}
+		},"v2.0.2批量更新用户使用记录线程"+Thread.currentThread().getName()); 
 		return authRentStall;
 	}
 	
