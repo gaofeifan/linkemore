@@ -93,7 +93,7 @@ public class SmsJiujaxintongImpl {
 				messageTpl=messageTpl.replace("${"+e.getKey()+"}", e.getValue());
 			}
 		}
-		log.info(messageTpl);
+		log.info("mobile = {}, content ={}", req.getMobile(), messageTpl);
 		return StringUtils.isNotBlank(messageTpl)? jiujaxintongSendHttp(req.getMobile(),messageTpl):false;
 	}
 	

@@ -96,9 +96,7 @@
 		<result column="charge_time"  jdbcType="VARCHAR" property="chargeTime" />
 		<result column="charge_price"  jdbcType="VARCHAR" property="chargePrice" />
 	</resultMap>
-
-
-
+	
 	<resultMap type="cn.linkmore.prefecture.response.ResPreExcel"
 		id="ResPreExcelMap">
 		<id column="id" property="id" jdbcType="BIGINT" />
@@ -121,6 +119,14 @@
 		<result column="version" property="version" jdbcType="VARCHAR" />
 		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
 		<result column="create_ent_name" property="createEntName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="PrefectureView" type="cn.linkmore.prefecture.entity.PrefectureView">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="pre_name" jdbcType="VARCHAR" property="preName" />
+		<result column="pre_id" jdbcType="BIGINT" property="preId" />
+		<result column="time" jdbcType="VARCHAR" property="time" />
+		<result column="free_stall"  jdbcType="INTEGER" property="freeStall" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -463,6 +469,11 @@
 			v_prefecture v
 		INNER JOIN t_third_prefecture p ON v.id = p.pre_id
 		AND p.app_id =#{appId}
+	</select>
+	
+	<select id="findVmList" parameterType="java.lang.Long" resultMap="PrefectureView" >
+		select id,pre_id,pre_name,time,free_stall from v_prefecture_view 
+		where pre_id =#{preId,jdbcType=BIGINT}
 	</select>
 
 </mapper>

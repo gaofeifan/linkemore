@@ -60,8 +60,19 @@ public class ResPrefectureDetail {
 	
 	@ApiModelProperty(value = "车区分组列表")
 	private List<ResPrefectureGroup> preGroupList; 
-    
-    public Short getPreType() {
+	
+	@ApiModelProperty(value = "虚拟空闲车位数量")
+	private Integer vmLeisureStall;
+	
+    public Integer getVmLeisureStall() {
+		return vmLeisureStall;
+	}
+
+	public void setVmLeisureStall(Integer vmLeisureStall) {
+		this.vmLeisureStall = vmLeisureStall;
+	}
+
+	public Short getPreType() {
 		return preType;
 	}
 

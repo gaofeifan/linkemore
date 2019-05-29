@@ -75,10 +75,10 @@
       area_name = #{areaName,jdbcType=VARCHAR},
       bind_order_status = #{bindOrderStatus,jdbcType=SMALLINT},
       rent_om_type = #{rentOmType,jdbcType=SMALLINT},
-      rent_mo_type = #{rentMoType,jdbcType=SMALLINT},
       <if test="floor != null">
-       floor = #{floor,jdbcType=VARCHAR}
+       floor = #{floor,jdbcType=VARCHAR},
       </if>
+      rent_mo_type = #{rentMoType,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

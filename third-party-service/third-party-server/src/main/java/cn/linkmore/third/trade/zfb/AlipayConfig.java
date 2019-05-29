@@ -21,8 +21,9 @@ public class AlipayConfig {
 		// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问,内网的话必须同一网段，如192.168.1.21
 		//public static String return_url =  "http://test.linkmoreparking.cn/api/order/h5/f";
 		
-		public static String return_url =  "http://api.linkmoreparking.com/api/order/h5/f";
-		
+		//public static String return_url =  "http://api.linkmoreparking.com/api/order/h5/f";
+		public static String return_url =  "http://api.linkmoretech.cn/api/order/h5/f";
+
 		public static String sign_type = "MD5";
 		
 		// MD5密钥，安全检验码，由数字和字母组成的32位字符串，查看地址：https://b.alipay.com/order/pidAndKey.htm

@@ -76,6 +76,7 @@ import cn.linkmore.prefecture.entity.LockServerCity;
 import cn.linkmore.prefecture.entity.Prefecture;
 import cn.linkmore.prefecture.entity.PrefectureElement;
 import cn.linkmore.prefecture.entity.PrefectureEntrance;
+import cn.linkmore.prefecture.entity.PrefectureView;
 import cn.linkmore.prefecture.entity.StrategyBase;
 import cn.linkmore.prefecture.entity.StrategyGroupDetail;
 import cn.linkmore.prefecture.request.ReqCheck;
@@ -541,6 +542,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 					count = 0L;
 				}
 				prb.setLeisureStall(count.intValue());
+				
+				Integer vmLeisureStall = this.getVmLeisureStall(prb.getId());
+				prb.setVmLeisureStall(vmLeisureStall);
+				
 				prb.setDistance(MapUtil.getDistance(prb.getLatitude(), prb.getLongitude(), new Double(rp.getLatitude()),
 						new Double(rp.getLongitude())));
 				if(prb.getRegion()!= null && prb.getRegion().contains("地面")) {
@@ -611,6 +616,95 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return resPreCityList;
 	}
 
+	private Integer getVmLeisureStall(Long preId) {
+		Integer vmLeisureStall = 0;
+		List<PrefectureView> viewList = this.prefectureClusterMapper.findVmList(preId);
+		if(CollectionUtils.isNotEmpty(viewList)) {
+			Map<String, Integer> freeMap = new HashMap<String, Integer>();
+			for(PrefectureView pv : viewList) {
+				freeMap.put(pv.getTime(), pv.getFreeStall());
+			}
+			SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
+			int nowTime = Integer.valueOf(sdf.format(new Date()));
+			log.info("nowTime= {}" , nowTime);
+			Map<String, String> betMap = getBetweenTime(nowTime);
+			vmLeisureStall = random(freeMap, betMap, nowTime);
+			log.info("nowTime= {} current vmLeisureStall ={}" , nowTime, vmLeisureStall);
+		}
+		return vmLeisureStall;
+	}
+	
+	public static Integer getNumber(Integer small, Integer big) {
+		Integer num = (int) (small + Math.random() * (big - small + 1));
+		return num;
+	}
+	
+	public static Map<String, String> getBetweenTime(int nowTime) {
+		Map<String, String> map = new HashMap<String, String>();
+		for (int i = 0; i <= 12; i++) {
+			int j = i * 200;
+			if (nowTime >= j && nowTime <= j + 200) {
+				System.out.println(nowTime + " between " + j + " and " + (j + 200));
+				map.put("min", j/100 + ":00");
+				map.put("max", (j + 200)/100 + ":00");
+			}
+		}
+		System.out.println(JSON.toJSON(map));
+		return map;
+	}
+	
+	public static Integer random(Map<String, Integer> freeMap, Map<String, String> betMap, int nowTime) {
+		String minTime = betMap.get("min");
+		String maxTime = betMap.get("max");
+		String[] minArr = minTime.split(":");
+		String[] maxArr = maxTime.split(":");
+		
+		int averageTime = (Integer.valueOf(minArr[0]) + Integer.valueOf(maxArr[0]))*50;
+		
+		System.out.println("minTime = "+ minTime +" maxTime ="+maxTime + " averageTime = "+averageTime);
+
+		Integer minNum = freeMap.get(betMap.get("min"));
+		Integer maxNum = freeMap.get(betMap.get("max"));
+
+		Integer average = (minNum + maxNum)/2;
+		
+		System.out.println("mixNum = "+ minNum +" maxNum ="+maxNum +" average ="+average);
+		
+		//minTime时间对应的数量 < maxTime时间对应的数量
+		int currentNumber = 0;
+		 
+		if(minNum < maxNum) {
+			currentNumber = getNumber(minNum, maxNum);
+			System.out.println("current free stall num = " + currentNumber);
+			if(nowTime <= averageTime && currentNumber > average) {
+				System.out.println("递增规律下，当前时间<平均时间，当前值大于平均值重新计算");
+				currentNumber = random(freeMap, betMap, nowTime);
+			}
+			if(nowTime > averageTime && currentNumber <= average) {
+				System.out.println("递增规律下，当前时间>平均时间，当前值小于平均值重新计算");
+				currentNumber = random(freeMap, betMap, nowTime);
+			}
+		}else if(minNum > maxNum) {
+			currentNumber = getNumber(maxNum, minNum);
+			System.out.println("current free stall num 2 = " + currentNumber);
+			if(nowTime <= averageTime && currentNumber < average) {
+				System.out.println("递减规律下，当前时间<平均时间，当前值小于平均值重新计算");
+				currentNumber = random(freeMap, betMap, nowTime);
+			}
+			if(nowTime > averageTime && currentNumber >= average) {
+				System.out.println("递减规律下，当前时间<平均时间，当前值大于平均值重新计算");
+				currentNumber = random(freeMap, betMap, nowTime);
+			}
+		}else if(minNum == maxNum){
+			currentNumber = average;
+		}
+		/*if(currentNumber < realNum) {
+			System.out.println("空闲车位数<实际空闲车位数");
+			currentNumber = random(freeMap, betMap, nowTime, realNum);
+		}*/
+		return currentNumber;
+	}
+
 	@Override
 	public List<cn.linkmore.prefecture.response.ResPrefecture> findPreList() {
 		return this.prefectureClusterMapper.findPreList();
@@ -665,6 +759,10 @@ public class PrefectureServiceImpl implements PrefectureService {
 				count = 0L;
 			}
 			detail.setLeisureStall(count.intValue());
+			
+			Integer vmLeisureStall = this.getVmLeisureStall(preDetail.getId());
+			detail.setVmLeisureStall(vmLeisureStall);
+			
 			if(preDetail.getRegion()!= null && preDetail.getRegion().contains("地面")) {
 				detail.setRegion1("地面");
 			}

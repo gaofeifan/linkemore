@@ -241,7 +241,12 @@ public class ResPrefectureDetail {
 	}
 
 	public String getUnderLayer() {
-		return underLayer;
+		if(underLayer.contains("层")) {
+			return underLayer;
+		}else {
+			return underLayer + "层";
+		}
+		//return underLayer;
 	}
 
 	public void setUnderLayer(String underLayer) {
