@@ -949,6 +949,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 						ids.add(entOwnerStall.getPreId());
 					}
 				}
+				if (ids.size() == 0) {
+					return list;
+				}
 				prelist = ownerStallClusterMapper.findPreByIds(ids);
 			}
 			if (prelist == null || prelist.size() == 0) {
@@ -1028,7 +1031,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				ids.add(entOwnerStall.getPreId());
 			}
 		}
-		
+		if (ids.size() == 0) {
+			return authRentStall;
+		}
 		List<EntOwnerPre> preList = ownerStallClusterMapper.findPreByIds(ids);
 		List<String> gateways = preList.stream().map(pre -> pre.getGateway()).collect(Collectors.toList());
 		List<ResLockInfos> lockInfos = this.feignLockClient.lockLists(gateways);
