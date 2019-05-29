@@ -1498,4 +1498,20 @@ public class PrefectureServiceImpl implements PrefectureService {
 		return entTypeList;
 	}
 
+	@Override
+	public List<cn.linkmore.prefecture.response.ResOpenPres> openPres(String appId) {
+		List<ResOpenPres>  pres = prefectureClusterMapper.findByAppid(appId);
+		List<cn.linkmore.prefecture.response.ResOpenPres> resOpenPres = new ArrayList<>();
+		cn.linkmore.prefecture.response.ResOpenPres resOpenPre = null;
+		if(CollectionUtils.isNotEmpty(pres)) {
+			for(ResOpenPres openPres : pres) {
+				resOpenPre = ObjectUtils.copyObject(openPres, new cn.linkmore.prefecture.response.ResOpenPres());
+				resOpenPres.add(resOpenPre);
+			}
+		}
+		return resOpenPres;
+	}
+
+	
+
 }

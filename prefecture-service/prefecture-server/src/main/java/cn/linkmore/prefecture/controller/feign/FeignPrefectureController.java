@@ -2,7 +2,6 @@ package cn.linkmore.prefecture.controller.feign;
 
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import cn.linkmore.prefecture.response.ResOpenPres;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.service.PrefectureService;
@@ -77,6 +78,13 @@ public class FeignPrefectureController {
 	@ResponseBody
 	public String nearFreeStallLockSn(@RequestParam("stallId") Long stallId, @RequestParam("preId") Long preId) {
 		return this.strategyGroupService.nearFreeStallLockSn(stallId, preId);
+	}
+	
+	@RequestMapping(value = "/v2.0/open-list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ResOpenPres> openPres(@RequestParam("appId") String appId) {
+		List<ResOpenPres> list = this.preService.openPres(appId);
+		return list;
 	}
 	
 }
