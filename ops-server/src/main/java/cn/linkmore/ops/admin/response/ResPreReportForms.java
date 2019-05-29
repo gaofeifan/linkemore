@@ -1,4 +1,4 @@
-package cn.linkmore.order.controller.staff.response;
+package cn.linkmore.ops.admin.response;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,13 +12,15 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("车场报表")
 public class ResPreReportForms {
 
+	private String floor;
+	
+	private int date;
 	@ApiModelProperty("类型为日时 为昨日时间  类型为周或月时为周月的开始时间")
 	private Date startTime;
 	
 	@ApiModelProperty("类型为日时 为空  类型为周或月时为周月的结束时间")
 	private Date endTime;
-	@ApiModelProperty("类型  0自营  2固定  4全部 5暂无数据(默认)")
-	private short type = 0;
+	
 	@ApiModelProperty("固定使用车位数")
 	private int entUseStallCount;
 	@ApiModelProperty("固定使用车位环比")
@@ -72,8 +74,7 @@ public class ResPreReportForms {
 	private Double tempStallUseTime;
 	@ApiModelProperty("临停车位使用时长环比")
 	private String tempStallUseTimeRelative;
-	@ApiModelProperty("车场有效时间")
-	private Date validTime;
+	
 	@ApiModelProperty("车场层级")
 	private List<String> floors;
 	
@@ -255,17 +256,17 @@ public class ResPreReportForms {
 	public void setFloors(List<String> floors) {
 		this.floors = floors;
 	}
-	public short getType() {
-		return type;
+	public String getFloor() {
+		return floor;
 	}
-	public void setType(short type) {
-		this.type = type;
+	public void setFloor(String floor) {
+		this.floor = floor;
 	}
-	public Date getValidTime() {
-		return validTime;
+	public int getDate() {
+		return date;
 	}
-	public void setValidTime(Date validTime) {
-		this.validTime = validTime;
+	public void setDate(int date) {
+		this.date = date;
 	}
 	
 }

@@ -1,5 +1,6 @@
 package cn.linkmore.ops.biz.service.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import cn.linkmore.common.response.ResOldDict;
 import cn.linkmore.ops.biz.service.PrefectureService;
 import cn.linkmore.prefecture.client.OpsPrefectureClient;
 import cn.linkmore.prefecture.client.OpsStrategyBaseClient;
+import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.request.ReqCheck;
 import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefectureEntity;
@@ -32,6 +34,8 @@ import cn.linkmore.prefecture.response.ResPrefectureDetail;
 public class PrefectureServiceImpl implements PrefectureService {
 	@Autowired
 	private OpsPrefectureClient prefectureClient;
+	@Autowired
+	private PrefectureClient prefectureClient2;
 	@Autowired
 	private CityClient cityClient;
 	@Autowired
@@ -183,5 +187,24 @@ public class PrefectureServiceImpl implements PrefectureService {
 	public List<String> findFloorByPreId(Long preId) {
 		return this.prefectureClient.getFloor(preId);
 	}
+
+	@Override
+	public List<String> floor(Long id) {
+		List<String> floor = findFloorByPreId(id);
+		if(floor == null) {
+			floor = new ArrayList<>();
+		}
+		if(floor.size() == 0) {
+			floor.add("整层");
+		}else {
+			if(floor.contains("整层")) {
+				return floor;
+			}
+			floor.add(0, "整层");
+		}
+		return floor;
+	}
+	
+	
 
 }

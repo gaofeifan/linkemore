@@ -119,6 +119,7 @@ import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOperateLog;
 import cn.linkmore.prefecture.response.ResStallOps;
+import cn.linkmore.prefecture.response.ResStallType;
 import cn.linkmore.prefecture.service.AdminUserService;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallAssignService;
@@ -2630,6 +2631,11 @@ public class StallServiceImpl implements StallService {
 	@Override
 	public ResStaffPreDetails findPreStallDetails(Long preId, String floor) {
 		return this.stallClusterMapper.findPreStallDetails(preId,floor);
+	}
+
+	@Override
+	public List<ResStallType> findStallType(List<Long> preIds) {
+		return this.stallClusterMapper.findStallType(preIds);
 	}
 	
 	

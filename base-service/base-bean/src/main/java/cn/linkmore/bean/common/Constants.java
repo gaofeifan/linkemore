@@ -9,7 +9,7 @@ package cn.linkmore.bean.common;
  */
 public class Constants {
 	public final static String ACCESS_TOKEN_HEADER_NAME = "X-Access-Auth-Token";
-	
+	public final static String FLOOR_ALL = "整场";
 	public enum TradeType{
 		//-1消费[未付款],0消费[账户余额],1消费[订单充值],2账户充值[订单充值],3账户充值[用户充值]
 		ORDER_NONE_PAY(-1),
@@ -315,6 +315,10 @@ public class Constants {
 		STAFF_ENT_AUTH_CODE("staff_ent:auth:code:"), 
 		STAFF_STAFF_AUTH_CODE("staff_staff:auth:code:"), 
 		STAFF_ENT_AUTH_MOBILE("staff_ent:auth:mobile:"), 
+		STAFF_DATA_COUNT_PRE_LIST("staff:data:count:pre:list:"), 
+		STAFF_DATA_COUNT_PRE_DETAILS("staff:data:count:pre:details:"), 
+		STAFF_DATA_COUNT_PRE_FORMS("staff:data:count:pre:forms:"), 
+		STAFF_DATA_COUNT_RISE("staff:data:count:RISE:"), 
 		STAFF_STAFF_AUTH_MOBILE("staff_staff:auth:mobile:"), 
 		USER_APP_USER_CODE("user_app:user:code:"), 
 		USER_APP_USER_MOBILE("user_app:user:mobile:"), 

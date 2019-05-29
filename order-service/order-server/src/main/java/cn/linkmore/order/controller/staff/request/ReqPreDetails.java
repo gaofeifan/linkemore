@@ -2,6 +2,9 @@ package cn.linkmore.order.controller.staff.request;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
+
+import cn.linkmore.bean.common.Constants;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -24,6 +27,10 @@ public class ReqPreDetails {
 	}
 
 	public String getFloor() {
+		if(StringUtils.isNotBlank(floor)) {
+			floor.equals(Constants.FLOOR_ALL);
+			floor = null;
+		}
 		return floor;
 	}
 

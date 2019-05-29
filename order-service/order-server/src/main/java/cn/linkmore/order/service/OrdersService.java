@@ -21,6 +21,7 @@ import cn.linkmore.order.controller.app.response.ResOrder;
 import cn.linkmore.order.controller.app.response.ResOrderDetail;
 import cn.linkmore.order.controller.staff.request.ReqUnusualOrder;
 import cn.linkmore.order.controller.staff.response.UnusualOrderResponseBean;
+import cn.linkmore.order.request.ReqDataCount;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResCharge;
 import cn.linkmore.order.response.ResChargeDetail;
@@ -301,5 +302,6 @@ public interface OrdersService {
 	ResPreOrderDetails findPreOrderDetails(ReqPreDetails reqPreDetails);
 
 	ResTempStallReportForms findTempStallReportForms(ReqPreDetails details);
+
 		
 }

@@ -64,6 +64,14 @@ public class PrefectureClientHystrix implements PrefectureClient {
 		log.info("String nearFreeStallLockSn(Long stallId, Long preId) hystrix");
 		return null;
 	}
+
+	@Override
+	public List<String> getFloor(Long preId) {
+		log.info("List<String> getFloor(Long preId)  hystrix");
+		return null;
+	}
+	
+	
 	
 
 }

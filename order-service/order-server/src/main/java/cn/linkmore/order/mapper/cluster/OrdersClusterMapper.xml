@@ -145,76 +145,84 @@
   </select>
   <select id="findTempStallReportForms" parameterType="cn.linkmore.enterprise.request.ReqPreDetails" resultType="cn.linkmore.order.response.ResTempStallReportForms">
  	select 
+ 	ord1.startTime,
 	ord1.orderNumber,
-	CONCAT(ROUND((ord1.orderNumber-ord2.orderNumber)*100/ord2.orderNumber,2),"%") orderNumberPercent,
+	CONCAT(ROUND((ord1.orderNumber-ord2.orderNumber)*100/if(ord2.orderNumber = 0 or ord1.orderNumber = 0,1,ord2.orderNumber),2),"%") orderNumberPercent,
 	ord1.orderIncome,
-	CONCAT(ROUND((ord1.orderIncome-ord2.orderIncome)*100/ord2.orderIncome,2),"%") orderIncomePercent,
+	CONCAT(ROUND((ord1.orderIncome-ord2.orderIncome)*100/if(ord2.orderIncome = 0 or ord1.orderIncome=0,1,ord2.orderIncome),2),"%") orderIncomePercent,
 	ord1.orderAdvanceIncome,
-	CONCAT(ROUND((ord1.orderAdvanceIncome-ord2.orderAdvanceIncome)*100/ord2.orderAdvanceIncome,2),"%") orderAdvanceIncomePercent,
+	CONCAT(ROUND((ord1.orderAdvanceIncome-ord2.orderAdvanceIncome)*100/if(ord2.orderAdvanceIncome= 0 or ord1.orderAdvanceIncome = 0 ,1,ord2.orderAdvanceIncome),2),"%") orderAdvanceIncomePercent,
 	ord1.orderScanIncome,
-	CONCAT(ROUND((ord1.orderScanIncome - ord2.orderScanIncome)*100/ord2.orderScanIncome,2),"%") orderScanIncomePercent,
+	CONCAT(ROUND((ord1.orderScanIncome - ord2.orderScanIncome)*100/if(ord2.orderScanIncome or ord1.orderScanIncome =0,1,ord2.orderScanIncome),2),"%") orderScanIncomePercent,
 	ord1.orderShareIncome,
-	CONCAT(ifnull(ROUND((ord1.orderShareIncome-ord2.orderShareIncome)*100/ord2.orderShareIncome,2),0.00),"%") orderShareIncomePercent, 
+	CONCAT(ifnull(ROUND((ord1.orderShareIncome-ord2.orderShareIncome)*100/if(ord2.orderShareIncome=0 or ord2.orderShareIncome=0 ,1,ord2.orderShareIncome),2),0.00),"%") orderShareIncomePercent, 
 	ord1.orderUseDuration,
-	CONCAT(ROUND((ord1.orderUseDuration-ord2.orderUseDuration)*100/ord2.orderUseDuration,2),"%") orderUseDurationPercent
+	CONCAT(ROUND((ord1.orderUseDuration-ord2.orderUseDuration)*100/if(ord2.orderUseDuration = 0 OR ord1.orderUseDuration=0,1,ord2.orderUseDuration),2),"%") orderUseDurationPercent
 	from(
-	select 
-	pre_id,
+	select
+	min(begin_time) startTime,
+	ifnull(pre_id,#{preId}) pre_id,
 	count(id) orderNumber,
-	SUM(actual_amount) orderIncome,
-	SUM(if(order_source = 1,actual_amount,0)) orderAdvanceIncome,
-	SUM(if(order_source = 2,actual_amount,0))orderScanIncome,
-	SUM(if(order_source = 3,actual_amount,0)) orderShareIncome,
-	ROUND(sum(TIMESTAMPDIFF(MINUTE,
+	ifnull(SUM(actual_amount),0) orderIncome,
+	ifnull(SUM(if(order_source = 1,actual_amount,0)),0) orderAdvanceIncome,
+	ifnull(SUM(if(order_source = 2,actual_amount,0)),0)orderScanIncome,
+	ifnull(SUM(if(order_source = 3,actual_amount,0)),0) orderShareIncome,
+	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
 		(DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i')),
 		(DATE_FORMAT(end_time, '%Y-%m-%d %H:%i'))
 		)/60)/(TIMESTAMPDIFF(DAY  ,
 		(DATE_FORMAT(#{startTime}, '%Y-%m-%d')),  
 		(DATE_FORMAT(#{endTime},'%Y-%m-%d'))
-		)+1)/#{stallCount},2) orderUseDuration 
+		)+1)/#{stallCount},2),0) orderUseDuration 
 	from o_orders where pre_id = #{preId} AND `status` = 3
-	<!-- <if test="type == 0">
+	<if test="type == 0">
 			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
 		</if>
 		<if test="type != 0">
 	 		and <![CDATA[ DATE_FORMAT(#{startTime},'%Y-%m-%d')<= DATE_FORMAT(begin_time,'%Y-%m-%d') ]]>
 		and <![CDATA[DATE_FORMAT(#{endTime},'%Y-%m-%d') >= DATE_FORMAT(begin_time,'%Y-%m-%d')]]>
-		</if> -->
+		</if>
 	 <if test="stallIds != null ">
 		and stall_id in
 		 <foreach collection="stallIds"  index="index" item="stallId" open="(" separator="," close=")"  >
 		 	#{stallId} 
 	  	 </foreach>
 	</if>
+	<if test="stallIds == null ">
+		AND stall_id = 0
+	</if>
 	)ord1 
 	INNER JOIN 
 	(select 
-	pre_id,
+	ifnull(pre_id,#{preId}) pre_id,
 	count(id) orderNumber,
-	SUM(actual_amount) orderIncome,
-	SUM(if(order_source = 1,actual_amount,0)) orderAdvanceIncome,
-	SUM(if(order_source = 2,actual_amount,0))orderScanIncome,
-	SUM(if(order_source = 3,actual_amount,0)) orderShareIncome,
-	sum(TIMESTAMPDIFF(MINUTE,
+	ifnull(SUM(actual_amount),0) orderIncome,
+	ifnull(SUM(if(order_source = 1,actual_amount,0)),0) orderAdvanceIncome,
+	ifnull(SUM(if(order_source = 2,actual_amount,0)),0)orderScanIncome,
+	ifnull(SUM(if(order_source = 3,actual_amount,0)),0) orderShareIncome,
+	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
 		(DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i')),
 		(DATE_FORMAT(end_time, '%Y-%m-%d %H:%i'))
 		)/60)/(TIMESTAMPDIFF(DAY  ,
 		(DATE_FORMAT(#{contrastStartTime}, '%Y-%m-%d')),  
 		(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'))
-		)+1)/#{stallCount} orderUseDuration 
+		)+1)/#{contrastStallCount},2),0) orderUseDuration 
 	from o_orders where pre_id = #{preId} AND `status` = 3
-	<!-- <if test="type == 0">
+	<if test="type == 0">
 			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
 		</if>
 		<if test="type != 0">
  			 		and <![CDATA[ DATE_FORMAT(#{startTime},'%Y-%m-%d')<= DATE_FORMAT(begin_time,'%Y-%m-%d') ]]>
 			and <![CDATA[DATE_FORMAT(#{endTime},'%Y-%m-%d') >= DATE_FORMAT(begin_time,'%Y-%m-%d')]]>
-		</if> -->
-	 <if test="stallIds != null ">
+		</if>
+	 <if test="contrastStallIds != null ">
 		and stall_id in
-		 <foreach collection="stallIds"  index="index" item="stallId" open="(" separator="," close=")"  >
+		 <foreach collection="contrastStallIds"  index="index" item="stallId" open="(" separator="," close=")"  >
 		 	#{stallId} 
 	  	 </foreach>
+	</if>
+	 <if test="contrastStallIds == null ">
+		and stall_id = 0
 	</if>
 	)ord2 ON ord1.pre_id = ord2.pre_id 
 		
@@ -843,7 +851,7 @@ GROUP BY
     where 
     	pre_id = #{preId}
     <if test="type == 0">
-    	and begin_time = now()
+    	and  DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(now(),'%Y-%m-%d')
     </if>
     <if test="stallIds">
    	 AND stall_id in

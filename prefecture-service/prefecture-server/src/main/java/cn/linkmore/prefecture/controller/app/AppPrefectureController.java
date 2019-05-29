@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -251,7 +253,7 @@ public class AppPrefectureController {
 		if(detail !=null && StringUtils.isNotBlank(detail.getUnderLayer())) {
 			floorList = Arrays.asList(detail.getUnderLayer().split("、"));
 		}else {
-			floorList.add("整层");
+			floorList.add(Constants.FLOOR_ALL);
 		}
 		return floorList;
 	}

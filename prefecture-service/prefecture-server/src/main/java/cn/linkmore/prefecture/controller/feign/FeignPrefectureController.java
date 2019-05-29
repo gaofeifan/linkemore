@@ -5,10 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import cn.linkmore.bean.common.Constants;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StrategyGroupService;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Controller - 车区信息
@@ -82,4 +88,17 @@ public class FeignPrefectureController {
 		return this.strategyGroupService.nearFreeStallLockSn(stallId, preId);
 	}
 	
+	@ApiOperation(value = "根据车区id获取车位楼层", notes = "根据车区id获取车位楼层", consumes = "application/json")
+	@RequestMapping(value = "/v2.0/get-floor", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> getFloor(@Validated @RequestParam(value="preId", required=true) Long preId) {
+		cn.linkmore.prefecture.response.ResPrefectureDetail detail =  this.preService.findById(preId);
+		List<String> floorList = new ArrayList<String>();
+		if(detail !=null && StringUtils.isNotBlank(detail.getUnderLayer())) {
+			floorList = Arrays.asList(detail.getUnderLayer().split("、"));
+		}else {
+			floorList.add(Constants.FLOOR_ALL);
+		}
+		return floorList;
+	}
 }

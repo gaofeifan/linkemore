@@ -231,6 +231,11 @@ public class PrefectureController extends BaseController{
 		return this.preService.findById(id);
 	}
 	
+	@RequestMapping(value = "/data-count-floor", method = RequestMethod.POST)
+	@ResponseBody
+	public List<String> dataCountFloor(@RequestBody Long id) {
+		return this.preService.floor(id);
+	}
 	/*
 	 * 根据车区id获取车区楼层数
 	 */

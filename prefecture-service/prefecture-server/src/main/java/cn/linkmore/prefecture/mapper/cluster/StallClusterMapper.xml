@@ -60,6 +60,7 @@
     <result column="lock_status" jdbcType="INTEGER" property="lockStatus" />
     <result column="area_name" jdbcType="VARCHAR" property="areaName" />
     <result column="bind_order_status" jdbcType="INTEGER" property="bindOrderStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   
   <sql id="Base_Column_List">
@@ -169,7 +170,7 @@
   </select>
   
   <select id="findPreStallList" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
-  	select id, stall_name, pre_id,lock_sn, status, type,lock_status,bind_order_status
+  	select id, stall_name, pre_id,lock_sn, status, type,lock_status,bind_order_status,create_time
 	from v_stall 
 	<where>
 	   <if test="list != null">
@@ -198,6 +199,14 @@
 	    </if>
 	</where>
 	order by stall_name
+  </select>
+  <select id="findStallType" resultType="cn.linkmore.prefecture.response.ResStallType" parameterType="java.util.List" >
+  	select GROUP_CONCAT( DISTINCT type) types , pre_id preId from v_stall where 
+		 pre_id in  
+		    <foreach collection="list"  index="index" item="id" open="(" separator="," close=")"  >
+		       #{id}
+		    </foreach>
+  	GROUP BY pre_id
   </select>
 
   <select id="findListByArea" resultMap="ResponseResultMap" parameterType="java.util.HashMap" >
@@ -228,14 +237,14 @@
     order by area_name ASC
   </select>
   <select id="findPreStallDetails" resultType="cn.linkmore.prefecture.response.ResStaffPreDetails">
-  	select 
+  	select  pre_id preId,
 count(id) totalStallNumber, count(if(status = 2,1,null)) useStalNumber,count(if(type = 2 and status = 2,1,null)) ownerUseStallNumber,
 count(if(type = 2,1,null)) ownerStallNumber,count(if(type = 0,1,null)) tempStallNumber,count(if(type = 0 and status = 2,1,null)) tempUseStallNumber
 from 
 v_stall 
 where pre_id = #{preId}
-<if test="floor != null and floor != 'all'">
-	floor = #{floor}
+<if test="floor != null">
+	AND floor = #{floor}
 </if>
   </select>
 

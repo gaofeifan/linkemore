@@ -14,6 +14,7 @@ import cn.linkmore.bean.view.ViewPage;
 import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.order.client.hystrix.OrderClientHystrix;
+import cn.linkmore.order.request.ReqDataCount;
 import cn.linkmore.order.request.ReqOrderExcel;
 import cn.linkmore.order.response.ResOrder;
 import cn.linkmore.order.response.ResOrderExcel;
@@ -94,5 +95,19 @@ public interface OrderClient {
 	@RequestMapping(value = "/save-order-log", method = RequestMethod.POST)
 	@ResponseBody
 	public void savel(@RequestBody  ResOrderOperateLog resOrderOperateLog);
+	
+	@RequestMapping(value = "/save-virtual-data", method = RequestMethod.POST)
+	@ResponseBody
+	public void saveVirtualData(@RequestBody ReqDataCount copyObject);
+
+	@RequestMapping(value = "/stop", method = RequestMethod.GET)
+	@ResponseBody
+	void stop();
+	@RequestMapping(value = "/start", method = RequestMethod.GET)
+	@ResponseBody
+	void start();
+	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	@ResponseBody
+	void delete(@RequestBody Long ids);
 	
 }

@@ -9,6 +9,7 @@ import cn.linkmore.prefecture.entity.Stall;
 import cn.linkmore.prefecture.response.ResStaffPreDetails;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallOps;
+import cn.linkmore.prefecture.response.ResStallType;
 /**
  * dao 车位
  * @author jiaohanbin
@@ -119,5 +120,7 @@ public interface StallClusterMapper {
 	Stall findByLockNameAndPreId(@Param("stallName")String stallName,@Param("preId") Long preId);
 	
 	ResStaffPreDetails findPreStallDetails(@Param("preId")Long preId, @Param("floor")String layer);
+	
+	List<ResStallType> findStallType(List<Long> preIds);
 	
 }

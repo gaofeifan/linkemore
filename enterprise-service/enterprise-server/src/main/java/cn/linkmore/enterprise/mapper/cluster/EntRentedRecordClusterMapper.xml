@@ -39,14 +39,14 @@
   </select>
   <select id="findPreUseNumber" parameterType="cn.linkmore.enterprise.request.ReqStaffPreOwnerStall" resultType="cn.linkmore.enterprise.response.ResStaffOwnerUseStall">
     select 
-   	pre_id preId,count(id) useNumber
+   	pre_id preId,count(id) useNumber, count(DISTINCT stall_id) ownerStallNumber
     from t_ent_rented_record
     where pre_id in
     <foreach collection="preIds"  index="index" item="preId" open="(" separator="," close=")"  >
 	 	#{preId} 
   	 </foreach>
-  	 <if test="type = 0">
-  	 	AND DATE_FORMAT(down_time,'%Y-%m-%d') = DATE_FORMAT(startTime,'%Y-%m-%d')
+  	 <if test="type == 0">
+  	 	AND DATE_FORMAT(down_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
   	 </if>
   	 <if test="type != 0">
   	 	and <![CDATA[ DATE_FORMAT(#{startTime},'%Y-%m-%d')<= DATE_FORMAT(down_time,'%Y-%m-%d') ]]>
@@ -73,30 +73,32 @@
    <select id="findOwnerStallReportForms" parameterType="cn.linkmore.enterprise.request.ReqPreDetails" resultType="cn.linkmore.enterprise.response.ResOwnerStallReportForms">
 	select 
 	ent1.pre_id preId,
+	ent1.startTime,
 	ent1.useStall,
-	CONCAT(ROUND((ent1.useStall - ent2.useStall)*100/ent2.useStall,2),"%") useStallContrast,
+		CONCAT(ROUND((ent1.useStall - ent2.useStall)*100/if(ent2.useStall=0 OR ent1.useStall=0,1,ent2.useStall),2),"%") useStallContrast,
 	ent1.useStallCount,
-	 CONCAT(ROUND((ent1.useStallCount - ent2.useStallCount)*100/ent2.useStallCount,2),"%") useStallCountContrast,
+	 CONCAT(ROUND((ent1.useStallCount - ent2.useStallCount)*100/if(ent2.useStallCount = 0 OR ent1.useStallCount,1,ent2.useStallCount),2),"%") useStallCountContrast,
 	 ent1.oneselfUseStallNumber,
-		 CONCAT(ifnull(ROUND((ent1.oneselfUseStallNumber - ent2.oneselfUseStallNumber)*100/ent2.oneselfUseStallNumber,2),0.00),"%") oneselfUseStallNumberContrast,
+		 CONCAT(ifnull(ROUND((ent1.oneselfUseStallNumber - ent2.oneselfUseStallNumber)*100/if(ent2.oneselfUseStallNumber = 0 or ent1.oneselfUseStallNumber = 0 ,1 ,ent2.oneselfUseStallNumber),2),0.00),"%") oneselfUseStallNumberContrast,
 	 ent1.authStallNumber,
-	 CONCAT(ifnull(ROUND((ent1.authStallNumber - ent2.authStallNumber)*100/ent2.authStallNumber,2),0.00),"%") authStallNumberContrast,
+	 CONCAT(ifnull(ROUND((ent1.authStallNumber - ent2.authStallNumber)*100/if(ent2.authStallNumber=0 or ent1.authStallNumber=0 , 1,ent2.authStallNumber),2),0.00),"%") authStallNumberContrast,
 	 ent1.useDuration,
-	 CONCAT(ROUND((ent1.useDuration-ent2.useDuration)*100/ent2.useDuration,2),"%") useDurationContrast
+	 CONCAT(ROUND((ent1.useDuration-ent2.useDuration)*100/if(ent2.useDuration !=0.00 and ent1.useDuration != 0.00 ,2 ,1),2),"%") useDurationContrast
 	from (
 	select
-	pre_id, 
+	min(down_time) startTime,
+	ifnull(pre_id,#{preId}) pre_id, 
 	count(DISTINCT stall_id) useStall,
 	count( DISTINCT id) useStallCount,
 	count( if(type = 1 or type is null,1,null)) oneselfUseStallNumber,
 	count( if(type = 2 ,1,null)) authStallNumber,
-	ROUND(sum(TIMESTAMPDIFF(MINUTE,
+	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
 	(DATE_FORMAT(down_time,'%Y-%m-%d %H:%i')),
 	(DATE_FORMAT(leave_time, '%Y-%m-%d %H:%i'))
 	)/60)/(TIMESTAMPDIFF(DAY  ,
 	(DATE_FORMAT(#{startTime}, '%Y-%m-%d')),  
 	(DATE_FORMAT(#{endTime},'%Y-%m-%d'))
-	)+1)/#{stallCount},2) useDuration 
+	)+1)/#{stallCount},2),0) useDuration 
 		from t_ent_rented_record where 
 		pre_id = #{preId} and status != 0
 		<if test="stallIds != null ">
@@ -105,42 +107,48 @@
 		 	#{stallId} 
 	  	 </foreach>
 		</if>
-		<!-- <if test="type == 0">
+		<if test="stallIds == null">
+			and stall_id = 0
+		</if>
+		<if test="type == 0">
 			AND DATE_FORMAT(down_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
 		</if>
 		<if test="type != 0">
 			 AND <![CDATA[DATE_FORMAT(down_time,'%Y-%m-%d') >= DATE_FORMAT(#{startTime},'%Y-%m-%d')]]>
 			 AND <![CDATA[DATE_FORMAT(down_time,'%Y-%m-%d') <= DATE_FORMAT(#{endTime},'%Y-%m-%d')]]>
-		</if> -->
+		</if>
 	) ent1 INNER JOIN 
 	(
 		select
-	pre_id, 
+	ifnull(pre_id,#{preId}) pre_id, 
 	count(DISTINCT stall_id) useStall,
 	count( DISTINCT id) useStallCount,
 	count( if(type = 1 or type is null,1,null)) oneselfUseStallNumber,
 	count( if(type = 2 ,1,null)) authStallNumber,
-	sum(TIMESTAMPDIFF(MINUTE,
+	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
 	(DATE_FORMAT(down_time,'%Y-%m-%d %H:%i')),
 	(DATE_FORMAT(leave_time, '%Y-%m-%d %H:%i'))
 	)/60)/(TIMESTAMPDIFF(DAY  ,
 	(DATE_FORMAT(#{startTime}, '%Y-%m-%d')),  
 	(DATE_FORMAT(#{endTime},'%Y-%m-%d'))
-	)+1)/#{stallCount} useDuration 
+	)+1)/#{contrastStallCount},2),0) useDuration 
 		from t_ent_rented_record where pre_id = #{preId} and status != 0
-		<if test="stallIds != null ">
+		<if test="contrastStallIds != null ">
 		and stall_id in
-			 <foreach collection="stallIds"  index="index" item="stallId" open="(" separator="," close=")"  >
+			 <foreach collection="contrastStallIds"  index="index" item="stallId" open="(" separator="," close=")"  >
 		 	#{stallId} 
 	  	 </foreach>
 		</if>
-		<!-- <if test="type == 0">
+		<if test="contrastStallIds == null">
+			and stall_id = 0
+		</if>
+		<if test="type == 0">
 			AND DATE_FORMAT(down_time,'%Y-%m-%d') = DATE_FORMAT(#{contrastStartTime},'%Y-%m-%d')
 		</if>
 		<if test="type != 0">
 			 AND <![CDATA[DATE_FORMAT(down_time,'%Y-%m-%d') >= DATE_FORMAT(#{contrastStartTime},'%Y-%m-%d')]]>
 			 AND <![CDATA[DATE_FORMAT(down_time,'%Y-%m-%d') <= DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d')]]>
-		</if> -->
+		</if>
 	) ent2 on ent1.pre_id = ent2.pre_id
   </select>
   
@@ -166,7 +174,7 @@
 	  	 </foreach>
     </if>
     <if test="type == 0">
-    	   <![CDATA[and now() = down_time]]>
+    	   <![CDATA[and DATE_FORMAT(down_time,'%Y-%m-%d') = DATE_FORMAT(now(),'%Y-%m-%d')]]>
     </if>
   </select>
   

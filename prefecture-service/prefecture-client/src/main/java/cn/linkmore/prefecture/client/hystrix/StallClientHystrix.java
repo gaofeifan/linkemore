@@ -25,6 +25,7 @@ import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
+import cn.linkmore.prefecture.response.ResStallType;
 /**
  * 远程调用实现 - 车位信息
  * @author jiaohanbin
@@ -239,6 +240,13 @@ public class StallClientHystrix implements StallClient {
 		log.info("prefecture service ResStaffPreDetails findPreStallDetails(Long preId, String layer) hystrix");
 		return null;
 	}
+
+	@Override
+	public List<ResStallType> findStallType(List<Long> preIds) {
+		log.info("prefecture service List<ResStallType> findStallType(List<Long> preIds) hystrix");
+		return null;
+	}
+	
 	
 	
 }

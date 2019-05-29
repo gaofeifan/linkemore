@@ -1,4 +1,4 @@
-package cn.linkmore.order.controller.staff.response;
+package cn.linkmore.ops.admin.response;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("车场详情")
 public class ResPreDetails {
 
+	private String floor;
 	@ApiModelProperty("车位使用数")
 	private int stallUseNumber;
 	@ApiModelProperty("总车位数")
@@ -38,9 +39,6 @@ public class ResPreDetails {
 	private int appOrderUnfinished;
 	@ApiModelProperty("车场层级数组")
 	private List<String> floors;
-	@ApiModelProperty("类型  0自营  2固定  4全部 5暂无数据(默认)")
-	private short type = 0;
-	
 	public int getStallUseNumber() {
 		return stallUseNumber;
 	}
@@ -125,10 +123,22 @@ public class ResPreDetails {
 	public void setEntStallUseCount(int entStallUseCount) {
 		this.entStallUseCount = entStallUseCount;
 	}
-	public short getType() {
-		return type;
+	public String getFloor() {
+		return floor;
 	}
-	public void setType(short type) {
-		this.type = type;
+	public void setFloor(String floor) {
+		this.floor = floor;
 	}
+	@Override
+	public String toString() {
+		return "ResPreDetails [floor=" + floor + ", stallUseNumber=" + stallUseNumber + ", totalStallNumber="
+				+ totalStallNumber + ", entStallUseNumber=" + entStallUseNumber + ", entTotalStallNumber="
+				+ entTotalStallNumber + ", appStallUseNumber=" + appStallUseNumber + ", appTotalStallNumber="
+				+ appTotalStallNumber + ", entHelpOneself=" + entHelpOneself + ", entAuth=" + entAuth
+				+ ", entStallUseCount=" + entStallUseCount + ", appOrderIncome=" + appOrderIncome + ", appOrderCount="
+				+ appOrderCount + ", appOrderOver=" + appOrderOver + ", appOrderUnfinished=" + appOrderUnfinished
+				+ ", floors=" + floors + "]";
+	}
+	
+	
 }

@@ -27,6 +27,7 @@ import cn.linkmore.prefecture.response.ResStaffPreDetails;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallOps;
+import cn.linkmore.prefecture.response.ResStallType;
 
 /**
  * Service接口 - 车位信息
@@ -386,4 +387,11 @@ public interface StallService {
 	void removeStallLock(Long stallId, HttpServletRequest request);
 	
 	ResStaffPreDetails findPreStallDetails(Long preId, String layer);
+	
+	/**
+	 * @Description  
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	List<ResStallType> findStallType(List<Long> preIds);
 }

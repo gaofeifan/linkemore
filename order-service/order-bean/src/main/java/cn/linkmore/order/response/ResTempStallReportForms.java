@@ -1,5 +1,7 @@
 package cn.linkmore.order.response;
 
+import java.util.Date;
+
 public class ResTempStallReportForms {
 
 	private int orderNumber;
@@ -26,10 +28,17 @@ public class ResTempStallReportForms {
 	
 	private String orderUseDurationPercent;
 	
-	
+	private Date startTime;
 
 	public int getOrderNumber() {
 		return orderNumber;
+	}
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
 	}
 
 	public void setOrderNumber(int orderNumber) {

@@ -112,4 +112,6 @@ public interface PrefectureService {
 	 */
 	List<String> findFloorByPreId(Long preId);
 	
+	List<String> floor(Long id);
+	
 }

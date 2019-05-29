@@ -23,6 +23,7 @@ import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
+import cn.linkmore.prefecture.response.ResStallType;
 /**
  * 远程调用 - 车位操作
  * @author jiaohanbin
@@ -255,5 +256,9 @@ public interface StallClient {
 	@RequestMapping(value = "/v2.0/pre-stall-details", method = RequestMethod.GET)
 	@ResponseBody
 	public ResStaffPreDetails findPreStallDetails(@RequestParam("preId") Long preId,@RequestParam(value="floor",required=false) String floor);
+	
+	@RequestMapping(value = "/v2.0/find-stall-type", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ResStallType> findStallType(@RequestBody List<Long> preIds);
 	
 }

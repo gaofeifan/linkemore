@@ -30,6 +30,7 @@ import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.prefecture.response.ResStallLock;
 import cn.linkmore.prefecture.response.ResStallOps;
+import cn.linkmore.prefecture.response.ResStallType;
 import cn.linkmore.prefecture.service.PrefectureService;
 import cn.linkmore.prefecture.service.StallLockService;
 import cn.linkmore.prefecture.service.StallOperateLogService;
@@ -405,4 +406,9 @@ public class FeignStallController {
 		return this.stallService.findPreStallDetails(preId,floor);
 	}
 	
+	@RequestMapping(value = "/v2.0/find-stall-type", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public List<ResStallType> findStallType(@RequestBody List<Long> preIds){
+		return this.stallService.findStallType(preIds);
+	}
 }

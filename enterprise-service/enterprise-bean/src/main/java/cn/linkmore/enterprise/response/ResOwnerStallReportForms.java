@@ -1,5 +1,7 @@
 package cn.linkmore.enterprise.response;
 
+import java.util.Date;
+
 public class ResOwnerStallReportForms {
 
 	private int useStall;
@@ -21,6 +23,15 @@ public class ResOwnerStallReportForms {
 	private Double useDuration;
 	
 	private String useDurationContrast;
+
+	private Date startTime;
+	
+	public Date getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
 
 	public int getUseStall() {
 		return useStall;

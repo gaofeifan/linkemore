@@ -40,6 +40,8 @@ public class ResStall {
 	
 	private Date endTime;
 	
+	private Date createTime;
+	
 	private Integer bindOrderStatus;
 	/**
 	 *  锁状态
@@ -116,6 +118,12 @@ public class ResStall {
 	}
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+	public Date getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 	
 }

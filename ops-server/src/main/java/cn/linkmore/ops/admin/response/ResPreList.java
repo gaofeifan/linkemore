@@ -1,45 +1,29 @@
 package cn.linkmore.ops.admin.response;
-/**
- * 响应-后台车区列表
- * @author jiaohanbin
- * @version 2.0
- *
- */
+
+
 public class ResPreList {
-	/**
-	 * 专区id
-	 */
-	private Long id;
-	/**
-	 * 专区名称
-	 */
-	private String name;
-	/**
-	 * 状态
-	 */
-	private Integer status;
 
-	public Long getId() {
-		return id;
+	private Long preId;
+	private String preName;
+	private ResPreListType listType = new ResPreListType();
+	public Long getPreId() {
+		return preId;
 	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public void setPreId(Long preId) {
+		this.preId = preId;
 	}
-
-	public String getName() {
-		return name;
+	public String getPreName() {
+		return preName;
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setPreName(String preName) {
+		this.preName = preName;
 	}
-
-	public Integer getStatus() {
-		return status;
+	public ResPreListType getListType() {
+		return listType;
 	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
+	public void setListType(ResPreListType listType) {
+		this.listType = listType;
 	}
+	
+	
 }

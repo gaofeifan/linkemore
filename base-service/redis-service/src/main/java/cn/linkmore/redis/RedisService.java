@@ -302,4 +302,8 @@ public class RedisService {
 		Long increment = redisTemplate.opsForValue().increment(key, step);
 		return increment;
 	}
+	public void hDel(String key, Object... hashKeys) {
+		HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
+		hash.delete(key, hashKeys);
+	}
 }

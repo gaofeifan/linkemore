@@ -11,17 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.linkmore.bean.view.ViewPage;
-import cn.linkmore.bean.view.ViewPageable;
 import cn.linkmore.feign.FeignConfiguration;
 import cn.linkmore.prefecture.client.hystrix.PrefectureClientHystrix;
-import cn.linkmore.prefecture.request.ReqCheck;
-import cn.linkmore.prefecture.request.ReqPreExcel;
 import cn.linkmore.prefecture.request.ReqPrefecture;
-import cn.linkmore.prefecture.request.ReqPrefectureEntity;
 import cn.linkmore.prefecture.response.ResPre;
-import cn.linkmore.prefecture.response.ResPreExcel;
-import cn.linkmore.prefecture.response.ResPreList;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
 import cn.linkmore.prefecture.response.ResPrefectureList;
@@ -85,4 +78,8 @@ public interface PrefectureClient {
 	@ResponseBody
 	public String nearFreeStallLockSn(@RequestParam("stallId") Long stallId, @RequestParam("preId") Long preId);
 		
+	
+	@RequestMapping(value = "/v2.0/get-floor", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> getFloor(@RequestParam(value="preId", required=true) Long preId);
 }

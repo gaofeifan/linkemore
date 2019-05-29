@@ -3,6 +3,8 @@ package cn.linkmore.enterprise.request;
 import java.util.Date;
 import java.util.List;
 
+import org.bouncycastle.cert.ocsp.Req;
+
 public class ReqPreDetails {
 
 	private String floor;
@@ -23,6 +25,9 @@ public class ReqPreDetails {
 	
 	private int stallCount = 1;
 	
+	private int contrastStallCount = 1;
+	
+	private List<Long> contrastStallIds;
 	
 	public int getStallCount() {
 		return stallCount;
@@ -46,7 +51,6 @@ public class ReqPreDetails {
 	}
 
 	public ReqPreDetails(String floor, List<Long> stallIds, Long preId) {
-		super();
 		this.floor = floor;
 		this.stallIds = stallIds;
 		this.preId = preId;
@@ -116,6 +120,20 @@ public class ReqPreDetails {
 	public void setContrastEndTime(Date contrastEndTime) {
 		this.contrastEndTime = contrastEndTime;
 	}
-	
-	
+
+	public List<Long> getContrastStallIds() {
+		return contrastStallIds;
+	}
+
+	public void setContrastStallIds(List<Long> contrastStallIds) {
+		this.contrastStallIds = contrastStallIds;
+	}
+
+	public int getContrastStallCount() {
+		return contrastStallCount;
+	}
+
+	public void setContrastStallCount(int contrastStallCount) {
+		this.contrastStallCount = contrastStallCount;
+	}
 }
