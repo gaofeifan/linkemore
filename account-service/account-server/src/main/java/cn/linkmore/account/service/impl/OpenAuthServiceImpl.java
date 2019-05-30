@@ -17,11 +17,14 @@ import com.auth0.jwt.interfaces.Claim;
 import cn.linkmore.account.controller.open.requset.ReqOpenAuth;
 import cn.linkmore.account.controller.open.requset.ReqOpenUser;
 import cn.linkmore.account.controller.open.response.ResOpenAuth;
+import cn.linkmore.account.dao.cluster.ThirdUserClusterMapper;
 import cn.linkmore.account.dao.cluster.UserClusterMapper;
 import cn.linkmore.account.dao.cluster.VehicleMarkManageClusterMapper;
+import cn.linkmore.account.dao.master.ThirdUserMasterMapper;
 import cn.linkmore.account.dao.master.UserMasterMapper;
 import cn.linkmore.account.dao.master.VehicleMarkManageMasterMapper;
 import cn.linkmore.account.entity.OpenSecret;
+import cn.linkmore.account.entity.ThirdUser;
 import cn.linkmore.account.entity.VehicleMarkManage;
 import cn.linkmore.account.response.ResUser;
 import cn.linkmore.account.service.OpenAuthService;
@@ -45,6 +48,12 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 	private UserClusterMapper userClusterMapper;
 	@Resource
 	private UserMasterMapper userMasterMapper;
+	
+	@Resource
+	private ThirdUserClusterMapper thirdUserClusterMapper;
+	
+	@Resource
+	private ThirdUserMasterMapper thirdUserMasterMapper;
 
 	@Resource
 	private VehicleMarkManageClusterMapper vehicleMarkManageClusterMapper;
@@ -123,27 +132,57 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 
 	@Override
 	public String getToken(ReqOpenUser reqOpenUser) {
-		//ResUser user = this.userClusterMapper.findByMobile(reqOpenUser.getPhone());
-		ResUser user = this.userClusterMapper.findByMobile(reqOpenUser.getAccountName());
+		Map<String,Object> thirdParam = new HashMap<String,Object>();
+		thirdParam.put("appId", "appid");
+		thirdParam.put("accountName", reqOpenUser.getAccountName());
+		ThirdUser thirdUser = null;
+		thirdUser = this.thirdUserClusterMapper.findByAccountName(thirdParam);
+		ResUser user = null;
+		if(thirdUser != null) {
+			user = this.userClusterMapper.findById(thirdUser.getUserId());
+			log.info("register third user success = {}",JSON.toJSON(user));
+		}
 		if (user == null) {
-			user = new ResUser();
-			user.setMobile(reqOpenUser.getPhone());
-			user.setUsername(reqOpenUser.getAccountName());
-			user.setNickname(reqOpenUser.getNickName());
-			user.setPassword("");
-			user.setUserType("4");
-			user.setStatus("1");
-			user.setSex(reqOpenUser.getSex());
-			user.setIcon(reqOpenUser.getIcon());
-			user.setLastLoginTime(new Date());
-			user.setCreateTime(new Date());
-			user.setUpdateTime(new Date());
-			user.setIsAppRegister((short) 2);
-			user.setAppRegisterTime(new Date());
-			user.setIsWechatBind((short) 0);
-			user.setFansStatus((short) 0);
-			this.userMasterMapper.save(user);
-		} else {
+			//第三方用户没有注册的情况下，初始化凌猫用户并新增第三方用户信息
+			user = this.userClusterMapper.findByMobile(reqOpenUser.getPhone());
+			log.info("register linkmore user success ={}",JSON.toJSON(user));
+			if(user == null) {
+				user = new ResUser();
+				user.setMobile(reqOpenUser.getPhone());
+				user.setUsername(reqOpenUser.getPhone());
+				user.setNickname(reqOpenUser.getNickName());
+				user.setPassword("");
+				user.setUserType("4");
+				user.setStatus("1");
+				user.setSex(reqOpenUser.getSex());
+				user.setIcon(reqOpenUser.getIcon());
+				user.setLastLoginTime(new Date());
+				user.setCreateTime(new Date());
+				user.setUpdateTime(new Date());
+				user.setIsAppRegister((short) 2);
+				user.setAppRegisterTime(new Date());
+				user.setIsWechatBind((short) 0);
+				user.setFansStatus((short) 0);
+				this.userMasterMapper.save(user);
+			} else {
+				user.setLastLoginTime(new Date());
+				Map<String, Object> param = new HashMap<String, Object>();
+				param.put("id", user.getId());
+				param.put("lastLoginTime", new Date());
+				param.put("updateTime", new Date());
+				this.userMasterMapper.updateLoginTime(param);
+				this.updateFansStatus((short) 0, user.getId());
+			}
+			//初始化第三方用户信息表
+			thirdUser = new ThirdUser();
+			thirdUser.setAccountName(reqOpenUser.getAccountName());
+			thirdUser.setAppId("appid");
+			thirdUser.setNickname(reqOpenUser.getNickName());
+			thirdUser.setPhone(reqOpenUser.getPhone());
+			thirdUser.setUserId(user.getId());
+			this.thirdUserMasterMapper.save(thirdUser);
+			
+		}else {
 			user.setLastLoginTime(new Date());
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("id", user.getId());
@@ -151,17 +190,21 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 			param.put("updateTime", new Date());
 			this.userMasterMapper.updateLoginTime(param);
 			this.updateFansStatus((short) 0, user.getId());
+			
+			if(thirdUser!=null && !thirdUser.getPhone().equals(reqOpenUser.getPhone())) {
+				thirdParam.put("id", thirdUser.getId());
+				thirdParam.put("phone", reqOpenUser.getPhone());
+				this.thirdUserMasterMapper.update(thirdParam);
+			}
 		}
 		// 放入redis中 返回key
 		String key = UUID.randomUUID().toString().replaceAll("-", "");
-		
 		CacheUser u = new CacheUser();
 		u.setId(user.getId());
 		u.setAppId("appid");
 		u.setMobile(user.getMobile());
 		u.setToken(key);
 		cacheOpenUse2(u);
-		
 
 		return key;
 	}
