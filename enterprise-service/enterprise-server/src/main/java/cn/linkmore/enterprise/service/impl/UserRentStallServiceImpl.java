@@ -234,8 +234,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							OwnerStall.setMobile(enttall.getMobile());
 							OwnerStall.setPlate(enttall.getPlate());
 							OwnerStall.setStallName(enttall.getStallName());
-							// OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
-							// OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
 							OwnerStall.setImageUrl(enttall.getImageUrl());
 							OwnerStall.setStallEndTime(DateUtils.convert(enttall.getEndTime(), null));
 							OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
@@ -358,17 +356,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			}
 		}
 
-		// 新逻辑
-		/*
-		 * if(stallEntity!= null) { //多对一操作允许控制同一个车位
-		 * if(stallEntity.getRentMoType().intValue() == 0) { if (using>0) {
-		 * this.redisService.remove(robkey); throw new
-		 * BusinessException(StatusEnum.STALL_AlREADY_CONTROL); } } }
-		 */
-
-		// 未完成记录同一用户只有一单
-		// EntRentedRecord record =
-		// entRentedRecordClusterMapper.findByUser(user.getId());
 		Map<String, Long> param = new HashMap<String, Long>();
 		param.put("userId", user.getId());
 		param.put("stallId", reqOperatStall.getStallId());
@@ -378,33 +365,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			log.info("用户>>>" + user.getId() + "升锁>>>" + reqOperatStall.getStallId());
 		} else if (reqOperatStall.getState() == 1) {
 			log.info("用户>>>" + user.getId() + "降锁>>>" + reqOperatStall.getStallId());
-
-			// 正常车位，若无使用记录则插入数据 && stallEntity.getRentOmType().intValue() == 0 &&
-			// stallEntity.getRentMoType().intValue() == 0
 			if (!Objects.nonNull(record)) {
 				entRentedRecordMasterMapper.saveSelective(newrecord);
 			}
-			// 当长租车位为1对多标识时，若无记录或者有使用记录但使用记录车位Id和当前操作车位Id不一致时可添加使用记录
-			/*
-			 * if(stallEntity.getRentOmType().intValue() == 1 && (record == null ||
-			 * (record!=null && record.getStallId()!=stallEntity.getId()))) {
-			 * entRentedRecordMasterMapper.saveSelective(newrecord); }
-			 */
-
-			// 当长租车位为多对1标识时，若当前用户无使用记录，且该车位没有被占用则可以新增记录
-			/*
-			 * if(stallEntity.getRentMoType().intValue() == 1 && record == null && using
-			 * ==0) { entRentedRecordMasterMapper.saveSelective(newrecord); }
-			 */
-
-			// 原流程
-			// Objects.nonNull 如果参数不为空则返回true
-			/*
-			 * if (!Objects.nonNull(record)) { try {
-			 * entRentedRecordMasterMapper.saveSelective(newrecord); } catch (Exception e) {
-			 * e.printStackTrace(); } log.info("用户>>>" + user.getId() + "record>>>" +
-			 * reqOperatStall.getStallId()); }
-			 */
 		}
 		// 放入缓存
 		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
