@@ -256,6 +256,20 @@ public class StaffAuthController {
 		}
 		return response;
 	}
-	
-	
+
+	private int i = 1;
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@ResponseBody
+	public String test() {
+		new Thread(()->{try {
+			Thread.sleep(5000);
+			if(i%2 == 0) {
+				throw new BusinessException(StatusEnum.ACCOUNT_PASSWORD_ERROR);
+			}
+			i++;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}}) .start();
+		return "test";
+	}
 }

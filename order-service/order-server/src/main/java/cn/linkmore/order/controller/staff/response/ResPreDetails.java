@@ -1,13 +1,15 @@
 package cn.linkmore.order.controller.staff.response;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("车场详情")
-public class ResPreDetails {
+public class ResPreDetails implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	@ApiModelProperty("车位使用数")
 	private int stallUseNumber;
 	@ApiModelProperty("总车位数")

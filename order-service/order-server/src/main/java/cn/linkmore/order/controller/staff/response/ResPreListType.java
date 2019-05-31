@@ -1,10 +1,17 @@
 package cn.linkmore.order.controller.staff.response;
 
+import java.io.Serializable;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("车场列表类型")
-public class ResPreListType {
+public class ResPreListType implements Serializable{
+
+	/**
+	 *  
+	 */ 
+	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty("订单总数")
 	private int orderConunt = 0;

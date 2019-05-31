@@ -1,5 +1,6 @@
 package cn.linkmore.order.controller.staff.response;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("车场报表")
-public class ResPreReportForms {
+public class ResPreReportForms implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty("类型为日时 为昨日时间  类型为周或月时为周月的开始时间")
 	private Date startTime;
@@ -199,6 +202,9 @@ public class ResPreReportForms {
 	}
 
 	public Double getAllStallUseTime() {
+		if(allStallUseTime != null) {
+			return allStallUseTime;
+		}
 		if(entStallUseTime == null && tempStallUseTime == null) {
 			return 0.00d;
 		}else {
@@ -209,6 +215,9 @@ public class ResPreReportForms {
 		this.allStallUseTime = allStallUseTime;
 	}
 	public String getAllStallUseTimeRelative() {
+		if(StringUtils.isNotBlank(allStallUseTimeRelative)) {
+			return allStallUseTimeRelative;
+		}
 		if(StringUtils.isBlank(entStallUseTimeRelative)&&StringUtils.isBlank(tempStallUseTimeRelative)) {
 			return "0.00%";
 		}else {
