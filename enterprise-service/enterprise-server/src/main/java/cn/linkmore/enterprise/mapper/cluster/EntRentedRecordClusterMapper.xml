@@ -139,18 +139,30 @@
 	</select>
 	
 	<select id="exportList" parameterType="cn.linkmore.enterprise.request.ReqRentedRecord" resultMap="ExcelResultMap">
-		select t.plate_no,t.down_time,t.leave_time,t.stall_name, t.pre_name,u.username as mobile,t.`status` from t_ent_rented_record t left join t_user u on t.user_id= u.id
- 		where 1 = 1
-		<if test="preName != null">
-			AND pre_name like #{preName}
-		</if>
+		SELECT
+			t.plate_no,
+			t.down_time,
+			t.leave_time,
+			t.stall_name,
+			t.pre_name,
+			u.mobile,
+			t.status
+		FROM
+			t_ent_rented_record t
+		LEFT JOIN t_user u ON t.user_id = u.id
+		WHERE 1 = 1 and  (t.down_time <![CDATA[ < ]]> t.leave_time OR t.leave_time IS NULL)
 		<if test="downTime!=null">
 	    <![CDATA[and t.down_time >= #{downTime}]]>
 	    </if> 
 	    <if test="leaveTime!=null">
-	    <![CDATA[and t.leave_time <= #{leaveTime}]]>
+	    <![CDATA[and t.down_time <= #{leaveTime}]]>
 	    </if> 
-	    order by down_time desc
+	    <if test="preName != null">
+			AND pre_name like #{preName}
+		</if>
+		and t.pre_id in (select id from v_prefecture v where v.category in(0,2))
+		ORDER BY
+			t.pre_id,t.down_time desc
 	</select>
 	
 	<select id="findAllByUser" parameterType="java.lang.Long" resultMap="BaseResultMap">

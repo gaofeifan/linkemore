@@ -16,6 +16,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -78,7 +79,11 @@ public class RentedRecordController extends BaseController{
 				s.put("preName", rb.getPreName());
 				s.put("stallName", rb.getStallName());
 				s.put("downTime", sdf.format(rb.getDownTime()));
-				s.put("leaveTime", sdf.format(rb.getLeaveTime()));
+				if(rb.getLeaveTime() != null) {
+					s.put("leaveTime", sdf.format(rb.getLeaveTime()));
+				}else {
+					s.put("leaveTime", "");
+				}
 				s.put("status", str.get(rb.getStatus()));
 				ja.add(s);
 			}
