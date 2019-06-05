@@ -83,6 +83,11 @@
 	 ent1.authStallNumber,
 	 CONCAT(ifnull(ROUND((ent1.authStallNumber - ent2.authStallNumber)*100/if(ent2.authStallNumber=0 or ent1.authStallNumber=0 , 1,ent2.authStallNumber),2),0.00),"%") authStallNumberContrast,
 	 ent1.useDuration,
+	 ent1.oneselfUseStallContrast oneselfUseStall,
+	 ent1.authUseStallContrast authUseStall,
+	 ent1.onceStallUserTime onceStallUserTime,
+	  CONCAT(ifnull(ROUND((ent1.oneselfUseStallContrast - ent2.oneselfUseStallContrast)*100/if(ent2.oneselfUseStallContrast=0 or ent1.oneselfUseStallContrast=0 , 1,ent2.oneselfUseStallContrast),2),0.00),"%") oneselfUseStallContrast,
+	  CONCAT(ifnull(ROUND((ent1.authUseStallContrast - ent2.authUseStallContrast)*100/if(ent2.authUseStallContrast=0 or ent1.authUseStallContrast=0 , 1,ent2.authUseStallContrast),2),0.00),"%") authUseStallContrast,
 	 CONCAT(ROUND((ent1.useDuration-ent2.useDuration)*100/if(ent2.useDuration !=0.00 and ent1.useDuration != 0.00 ,2 ,1),2),"%") useDurationContrast
 	from (
 	select
@@ -91,6 +96,8 @@
 	count(DISTINCT stall_id) useStall,
 	count( DISTINCT id) useStallCount,
 	count( if(type = 1 or type is null,1,null)) oneselfUseStallNumber,
+	(select count(DISTINCT stall_id) from t_ent_rented_record where pre_id = #{preId} and (type = 1 or type is null))  oneselfUseStallContrast,
+	(select count(DISTINCT stall_id) from t_ent_rented_record where pre_id = #{preId} and (type = 2))  authUseStallContrast,
 	count( if(type = 2 ,1,null)) authStallNumber,
 	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
 	(DATE_FORMAT(down_time,'%Y-%m-%d %H:%i')),
@@ -98,7 +105,11 @@
 	)/60)/(TIMESTAMPDIFF(DAY  ,
 	(DATE_FORMAT(#{startTime}, '%Y-%m-%d')),  
 	(DATE_FORMAT(#{endTime},'%Y-%m-%d'))
-	)+1)/#{stallCount},2),0) useDuration 
+	)+1)/#{stallCount},2),0) useDuration ,
+	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
+	(DATE_FORMAT(down_time,'%Y-%m-%d %H:%i')),
+	(DATE_FORMAT(leave_time, '%Y-%m-%d %H:%i'))
+	)/60)/count(DISTINCT id),2),0.00) onceStallUserTime
 		from t_ent_rented_record where 
 		pre_id = #{preId} and status != 0
 		<if test="stallIds != null ">
@@ -125,6 +136,8 @@
 	count( DISTINCT id) useStallCount,
 	count( if(type = 1 or type is null,1,null)) oneselfUseStallNumber,
 	count( if(type = 2 ,1,null)) authStallNumber,
+		(select count(DISTINCT stall_id) from t_ent_rented_record where pre_id = #{preId} and (type = 1 or type is null))  oneselfUseStallContrast,
+	(select count(DISTINCT stall_id) from t_ent_rented_record where pre_id = #{preId} and (type = 2))  authUseStallContrast,
 	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
 	(DATE_FORMAT(down_time,'%Y-%m-%d %H:%i')),
 	(DATE_FORMAT(leave_time, '%Y-%m-%d %H:%i'))

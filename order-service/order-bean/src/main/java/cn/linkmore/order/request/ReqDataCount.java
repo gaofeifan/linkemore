@@ -17,6 +17,8 @@ private Long preId;
 	private String reportForms;
 	
 	private String preName;
+	
+	private Short type;
 
 	public Long getPreId() {
 		return preId;
@@ -81,4 +83,14 @@ private Long preId;
 	public void setReportForms(String reportForms) {
 		this.reportForms = reportForms;
 	}
+
+	public Short getType() {
+		return type;
+	}
+
+	public void setType(Short type) {
+		this.type = type;
+	}
+	
+	
 }

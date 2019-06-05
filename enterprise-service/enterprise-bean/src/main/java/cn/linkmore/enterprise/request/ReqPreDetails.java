@@ -66,6 +66,9 @@ public class ReqPreDetails {
 	}
 
 	public List<Long> getStallIds() {
+		if(stallIds == null || stallIds.size() == 0) {
+			return null;
+		}
 		return stallIds;
 	}
 
@@ -122,6 +125,9 @@ public class ReqPreDetails {
 	}
 
 	public List<Long> getContrastStallIds() {
+		if(contrastStallIds == null || contrastStallIds.size() == 0) {
+			return null;
+		}
 		return contrastStallIds;
 	}
 

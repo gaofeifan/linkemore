@@ -2007,6 +2007,7 @@ public class StallServiceImpl implements StallService {
 		Stall stall = this.stallClusterMapper.findByLockSn(sn);
 		if(stall != null) {
 			stallSn.setStallId(stall.getId());
+			stallSn.setFloor(stall.getFloor());
 			stallSn.setAreaName(stall.getAreaName());
 			CacheUser cu = (CacheUser) this.redisService
 					.get(RedisKey.STAFF_STAFF_AUTH_USER.key + TokenUtil.getKey(request));
@@ -2527,7 +2528,7 @@ public class StallServiceImpl implements StallService {
 			}
 			StallLock stallLock = insertLock(reqLockIntall,adminUser);
 			updateLockStallId(stall.getId(), stall.getPreId(), stallLock.getId());
-			updateStallLockId(reqLockIntall.getLockSn(), stallLock.getId(), stall);
+			updateStallLockId(reqLockIntall.getLockSn(), stallLock.getId(), stall,reqLockIntall.getFloor());
 		}else {
 			StallLock stallLock = insertLock(reqLockIntall,adminUser);
 			stall = installStall(reqLockIntall, stallLock.getId());
@@ -2547,9 +2548,10 @@ public class StallServiceImpl implements StallService {
 		stallLockMasterMapper.save(stallLock);	
 		return stallLock;
 	}
-	private void updateStallLockId(String lockSn,Long lockId,Stall stall) {
+	private void updateStallLockId(String lockSn,Long lockId,Stall stall,String floor) {
 		stall.setLockSn(lockSn);
 		stall.setLockId(lockId);
+		stall.setFloor(floor);
 		stallMasterMapper.update(stall);
 	}
 	private void notityLockTerrace(ReqLockIntall reqLockIntall) {
@@ -2574,6 +2576,7 @@ public class StallServiceImpl implements StallService {
 		stallName.setLockStatus(0);
 		stallName.setLockBattery(0);
 		stallName.setType((short)0);
+		stallName.setFloor(reqLockIntall.getFloor());
 		stallName.setAreaName(reqLockIntall.getAreaName());
 		stallName.setStallLocal(reqLockIntall.getStallName());
 		// 插入车位

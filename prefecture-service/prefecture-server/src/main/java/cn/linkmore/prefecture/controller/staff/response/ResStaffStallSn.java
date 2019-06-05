@@ -70,6 +70,10 @@ public class ResStaffStallSn {
 	private int bindStata = 1;
 	@ApiModelProperty(value="是否具有删除权限")
 	private short gatewayDelete = 0;
+	
+	
+	@ApiModelProperty(value="车位所属层级")
+	private String floor;
 	@ApiModelProperty(value="车位锁绑定的网关")
 	private List<ResLockGatewayList> gatewayList = new ArrayList<>();
 	public String getStallSn() {
@@ -162,6 +166,15 @@ public class ResStaffStallSn {
 
 	public boolean isBindStatus() {
 		return bindStatus;
+	}
+
+
+	public String getFloor() {
+		return floor;
+	}
+
+	public void setFloor(String floor) {
+		this.floor = floor;
 	}
 
 	public void setBindStatus(boolean bindStatus) {

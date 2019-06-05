@@ -15,17 +15,49 @@ public class ResOwnerStallReportForms {
 	private int oneselfUseStallNumber;
 	
 	private String oneselfUseStallNumberContrast;
-	
+	private String oneselfUseStallContrast;
 	private int authStallNumber;
 	
 	private String authStallNumberContrast;
-	
+	private String authUseStallContrast;
 	private Double useDuration;
 	
 	private String useDurationContrast;
-
+	private int oneselfUseStall;
+	private int authUseStall;
 	private Date startTime;
 	
+	private Double onceStallUserTime;
+	
+	public String getOneselfUseStallContrast() {
+		return oneselfUseStallContrast;
+	}
+	
+	public int getOneselfUseStall() {
+		return oneselfUseStall;
+	}
+
+	public void setOneselfUseStall(int oneselfUseStall) {
+		this.oneselfUseStall = oneselfUseStall;
+	}
+
+	public int getAuthUseStall() {
+		return authUseStall;
+	}
+
+	public void setAuthUseStall(int authUseStall) {
+		this.authUseStall = authUseStall;
+	}
+
+	public void setOneselfUseStallContrast(String oneselfUseStallContrast) {
+		this.oneselfUseStallContrast = oneselfUseStallContrast;
+	}
+	public String getAuthUseStallContrast() {
+		return authUseStallContrast;
+	}
+	public void setAuthUseStallContrast(String authUseStallContrast) {
+		this.authUseStallContrast = authUseStallContrast;
+	}
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -112,6 +144,13 @@ public class ResOwnerStallReportForms {
 	public void setAuthStallNumberContrast(String authStallNumberContrast) {
 		this.authStallNumberContrast = authStallNumberContrast;
 	}
-	
+
+	public Double getOnceStallUserTime() {
+		return onceStallUserTime;
+	}
+
+	public void setOnceStallUserTime(Double onceStallUserTime) {
+		this.onceStallUserTime = onceStallUserTime;
+	}
 	
 }

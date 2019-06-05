@@ -42,6 +42,10 @@ public class ResPreDetails implements Serializable{
 	private List<String> floors;
 	@ApiModelProperty("类型  0自营  2固定  4全部 5暂无数据(默认)")
 	private short type = 0;
+	@ApiModelProperty("车场id")
+	private Long preId;
+	@ApiModelProperty("车场名称")
+	private String preName;
 	
 	public int getStallUseNumber() {
 		return stallUseNumber;
@@ -132,5 +136,17 @@ public class ResPreDetails implements Serializable{
 	}
 	public void setType(short type) {
 		this.type = type;
+	}
+	public Long getPreId() {
+		return preId;
+	}
+	public void setPreId(Long preId) {
+		this.preId = preId;
+	}
+	public String getPreName() {
+		return preName;
+	}
+	public void setPreName(String preName) {
+		this.preName = preName;
 	}
 }

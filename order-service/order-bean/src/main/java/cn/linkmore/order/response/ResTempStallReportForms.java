@@ -14,14 +14,13 @@ public class ResTempStallReportForms {
 	
 	private Double orderAdvanceIncome;
 	
+	private String orderAdvancePercent;
 	private String orderAdvanceIncomePercent;
-	
 	private Double orderScanIncome;
-	
 	private String orderScanIncomePercent;
-	
+	private String orderScanPercent;
 	private Double orderShareIncome;
-	
+	private String orderSharePercent;
 	private String orderShareIncomePercent;
 	
 	private Double orderUseDuration;
@@ -29,6 +28,12 @@ public class ResTempStallReportForms {
 	private String orderUseDurationPercent;
 	
 	private Date startTime;
+	
+	private int orderAdvanceNumber;   
+	private int orderScanNumber;     
+	private int orderShareNumber;
+	
+	private Double onceStallUserTime;
 
 	public int getOrderNumber() {
 		return orderNumber;
@@ -56,7 +61,24 @@ public class ResTempStallReportForms {
 	public double getOrderIncome() {
 		return orderIncome;
 	}
-
+	public int getOrderAdvanceNumber() {
+		return orderAdvanceNumber;
+	}
+	public void setOrderAdvanceNumber(int orderAdvanceNumber) {
+		this.orderAdvanceNumber = orderAdvanceNumber;
+	}
+	public int getOrderScanNumber() {
+		return orderScanNumber;
+	}
+	public void setOrderScanNumber(int orderScanNumber) {
+		this.orderScanNumber = orderScanNumber;
+	}
+	public int getOrderShareNumber() {
+		return orderShareNumber;
+	}
+	public void setOrderShareNumber(int orderShareNumber) {
+		this.orderShareNumber = orderShareNumber;
+	}
 	public void setOrderIncome(double orderIncome) {
 		this.orderIncome = orderIncome;
 	}
@@ -132,6 +154,31 @@ public class ResTempStallReportForms {
 	public void setOrderUseDurationPercent(String orderUseDurationPercent) {
 		this.orderUseDurationPercent = orderUseDurationPercent;
 	}
-	
-	
+	public String getOrderAdvancePercent() {
+		return orderAdvancePercent;
+	}
+	public void setOrderAdvancePercent(String orderAdvancePercent) {
+		this.orderAdvancePercent = orderAdvancePercent;
+	}
+	public String getOrderScanPercent() {
+		return orderScanPercent;
+	}
+	public void setOrderScanPercent(String orderScanPercent) {
+		this.orderScanPercent = orderScanPercent;
+	}
+	public String getOrderSharePercent() {
+		if(orderSharePercent == null) {
+			return "0.00%";
+		}
+		return orderSharePercent;
+	}
+	public void setOrderSharePercent(String orderSharePercent) {
+		this.orderSharePercent = orderSharePercent;
+	}
+	public Double getOnceStallUserTime() {
+		return onceStallUserTime;
+	}
+	public void setOnceStallUserTime(Double onceStallUserTime) {
+		this.onceStallUserTime = onceStallUserTime;
+	}
 }

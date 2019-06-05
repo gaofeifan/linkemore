@@ -10,6 +10,8 @@ public class ReqDataCount {
 	
 	private Integer fixed;
 	
+	private Short type;
+	
 	private Integer fixedNumberUse;
 	
 	private String details;
@@ -76,6 +78,14 @@ public class ReqDataCount {
 
 	public String getReportForms() {
 		return reportForms;
+	}
+
+	public Short getType() {
+		return type;
+	}
+
+	public void setType(Short type) {
+		this.type = type;
 	}
 
 	public void setReportForms(String reportForms) {

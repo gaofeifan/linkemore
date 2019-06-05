@@ -33,13 +33,21 @@ public class ResPreReportForms implements Serializable{
 	
 	@ApiModelProperty("固定自用车位数")
 	private int entOneselfStallNumber;
-	@ApiModelProperty("固定自用使用车位数环比")
+	@ApiModelProperty("固定自用使用车位次数环比")
 	private String entOneselfStallRelative;
 	@ApiModelProperty("固定授权数")
 	private int entAuthStallNumber;
 	@ApiModelProperty("固定授权车位次数环比")
 	private String entAuthStallRelative;
 	
+	@ApiModelProperty("固定自用使用车位数")
+	private int entOneselfUseStall;
+	@ApiModelProperty("固定自用使用车位数环比")
+	private String entOneselfUseStallRelative;
+	@ApiModelProperty("固定授权车位次数")
+	private int entAuthUseStall;
+	@ApiModelProperty("固定授权车位次数环比")
+	private String entAuthUseStallRelative;
 	
 	@ApiModelProperty("临停订单数")
 	private int tempOrderNumber;
@@ -63,22 +71,42 @@ public class ResPreReportForms implements Serializable{
 	@ApiModelProperty("临停分享收入环比")
 	private String tempShareRelative;
 	
-	@ApiModelProperty("所有的车位使用时长 (类型为double保留两位小数 单位小时)")
+	@ApiModelProperty("临停预约订单环比")
+	private String tempAppointmentOrderRelative;
+	@ApiModelProperty("临停扫码订单环比")
+	private String tempScanCodeOrderRelative;
+	@ApiModelProperty("临停分享订单环比")
+	private String tempShareOrderRelative;
+	@ApiModelProperty("临停预约订单")
+	private int tempAppointmentOrder;
+	@ApiModelProperty("临停扫码订单")
+	private int tempScanCodeOrder;
+	@ApiModelProperty("临停分享订单")
+	private int tempShareOrder;
+	
+	@ApiModelProperty("所有的单车位使用时长 (类型为double保留两位小数 单位小时)")
 	private Double allStallUseTime;
-	@ApiModelProperty("所有的车位使用时长环比")
+	@ApiModelProperty("所有的单车位使用时长环比")
 	private String allStallUseTimeRelative;
-	@ApiModelProperty("固定车位使用时长  (类型为double保留两位小数 单位小时)")
+	@ApiModelProperty("固定单车位使用时长  (类型为double保留两位小数 单位小时)")
 	private Double entStallUseTime;
-	@ApiModelProperty("固定车位使用时长环比")
+	@ApiModelProperty("固定单车位使用时长环比")
 	private String entStallUseTimeRelative;
-	@ApiModelProperty("临停车位使用时长 (类型为double保留两位小数 单位小时)")
+	@ApiModelProperty("临停单车位使用时长 (类型为double保留两位小数 单位小时)")
 	private Double tempStallUseTime;
-	@ApiModelProperty("临停车位使用时长环比")
+	@ApiModelProperty("临停单车位使用时长环比")
 	private String tempStallUseTimeRelative;
 	@ApiModelProperty("车场有效时间")
 	private Date validTime;
 	@ApiModelProperty("车场层级")
 	private List<String> floors;
+	
+	@ApiModelProperty("整体单次车位使用时长")
+	private Double allOnceStallUseTime;
+	@ApiModelProperty("固定单次车位使用时长")
+	private Double entOnceStallUseTime;
+	@ApiModelProperty("临停单次车位使用时长")
+	private Double tempOnceStallUseTime;
 	
 	public Date getStartTime() {
 		return startTime;
@@ -276,5 +304,98 @@ public class ResPreReportForms implements Serializable{
 	public void setValidTime(Date validTime) {
 		this.validTime = validTime;
 	}
+	public String getEntOneselfUseStallRelative() {
+		return entOneselfUseStallRelative;
+	}
+	public void setEntOneselfUseStallRelative(String entOneselfUseStallRelative) {
+		this.entOneselfUseStallRelative = entOneselfUseStallRelative;
+	}
+	public String getEntAuthUseStallRelative() {
+		return entAuthUseStallRelative;
+	}
+	public void setEntAuthUseStallRelative(String entAuthUseStallRelative) {
+		this.entAuthUseStallRelative = entAuthUseStallRelative;
+	}
+	public String getTempAppointmentOrderRelative() {
+		return tempAppointmentOrderRelative;
+	}
+	public void setTempAppointmentOrderRelative(String tempAppointmentOrderRelative) {
+		this.tempAppointmentOrderRelative = tempAppointmentOrderRelative;
+	}
+	public String getTempScanCodeOrderRelative() {
+		return tempScanCodeOrderRelative;
+	}
+	public void setTempScanCodeOrderRelative(String tempScanCodeOrderRelative) {
+		this.tempScanCodeOrderRelative = tempScanCodeOrderRelative;
+	}
+	public String getTempShareOrderRelative() {
+		return tempShareOrderRelative;
+	}
+	public void setTempShareOrderRelative(String tempShareOrderRelative) {
+		this.tempShareOrderRelative = tempShareOrderRelative;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	public int getEntOneselfUseStall() {
+		return entOneselfUseStall;
+	}
+	public void setEntOneselfUseStall(int entOneselfUseStall) {
+		this.entOneselfUseStall = entOneselfUseStall;
+	}
+	public int getEntAuthUseStall() {
+		return entAuthUseStall;
+	}
+	public void setEntAuthUseStall(int entAuthUseStall) {
+		this.entAuthUseStall = entAuthUseStall;
+	}
+	public int getTempAppointmentOrder() {
+		return tempAppointmentOrder;
+	}
+	public void setTempAppointmentOrder(int tempAppointmentOrder) {
+		this.tempAppointmentOrder = tempAppointmentOrder;
+	}
+	public int getTempScanCodeOrder() {
+		return tempScanCodeOrder;
+	}
+	public void setTempScanCodeOrder(int tempScanCodeOrder) {
+		this.tempScanCodeOrder = tempScanCodeOrder;
+	}
+	public int getTempShareOrder() {
+		return tempShareOrder;
+	}
+	public void setTempShareOrder(int tempShareOrder) {
+		this.tempShareOrder = tempShareOrder;
+	}
+	public Double getAllOnceStallUseTime() {
+		if(allOnceStallUseTime != null) {
+			return allOnceStallUseTime;
+		}
+		if(entOnceStallUseTime != null && tempOnceStallUseTime != null) {
+			return new BigDecimal(entOnceStallUseTime).add(new BigDecimal(tempOnceStallUseTime)).divide(new BigDecimal(2)).doubleValue();
+		}else if(entOnceStallUseTime != null){
+			return new BigDecimal(entOnceStallUseTime).divide(new BigDecimal(2)).doubleValue();
+		}else if(entOnceStallUseTime != null) {
+			return new BigDecimal(entOnceStallUseTime).divide(new BigDecimal(2)).doubleValue();
+		}else {
+			return 0D;
+		}
+	}
+	public void setAllOnceStallUseTime(Double allOnceStallUseTime) {
+		this.allOnceStallUseTime = allOnceStallUseTime;
+	}
+	public Double getEntOnceStallUseTime() {
+		return entOnceStallUseTime;
+	}
+	public void setEntOnceStallUseTime(Double entOnceStallUseTime) {
+		this.entOnceStallUseTime = entOnceStallUseTime;
+	}
+	public Double getTempOnceStallUseTime() {
+		return tempOnceStallUseTime;
+	}
+	public void setTempOnceStallUseTime(Double tempOnceStallUseTime) {
+		this.tempOnceStallUseTime = tempOnceStallUseTime;
+	}
+	
 	
 }

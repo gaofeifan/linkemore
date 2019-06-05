@@ -18,7 +18,9 @@ public class DataCountServiceIMpl implements DataCountService {
 	
 	@Override
 	public void save(ReqDataCount dataCount) {
-		dataCountClient.saveVirtualData(ObjectUtils.copyObject(dataCount, new cn.linkmore.order.request.ReqDataCount()));
+		cn.linkmore.order.request.ReqDataCount object = ObjectUtils.copyObject(dataCount, new cn.linkmore.order.request.ReqDataCount());
+		object.setOrderIncome(dataCount.getOrderIncome());
+		dataCountClient.saveVirtualData(object);
 	}
 
 	@Override
