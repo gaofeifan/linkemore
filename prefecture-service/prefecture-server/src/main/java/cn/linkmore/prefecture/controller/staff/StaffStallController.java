@@ -272,7 +272,7 @@ public class StaffStallController {
 	@ApiOperation(value = "根据车区id获取车位楼层", notes = "根据车区id获取车位楼层", consumes = "application/json")
 	@RequestMapping(value = "/get-floor", method = RequestMethod.GET)
 	@ResponseBody
-	public List<String> getFloor(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
+	public ResponseEntity<List<String>> getFloor(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
 		cn.linkmore.prefecture.response.ResPrefectureDetail detail =  this.prefectureService.findById(preId);
 		List<String> floorList = new ArrayList<String>();
 		if(detail !=null && StringUtils.isNotBlank(detail.getUnderLayer())) {
@@ -280,7 +280,7 @@ public class StaffStallController {
 		}else {
 			floorList.add(Constants.FLOOR_ALL);
 		}
-		return floorList;
+		return ResponseEntity.success(floorList, request);
 	}
 	
 }
