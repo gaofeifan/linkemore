@@ -1,11 +1,14 @@
 package cn.linkmore.prefecture.controller.staff;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.ResponseEntity;
 import cn.linkmore.bean.exception.BusinessException;
 import cn.linkmore.bean.exception.StatusEnum;
@@ -263,6 +267,20 @@ public class StaffStallController {
 			){
 		Boolean flag = prefectureService.confirm(serialNumber,request);
 		return ResponseEntity.success(flag, request);
+	}
+	
+	@ApiOperation(value = "根据车区id获取车位楼层", notes = "根据车区id获取车位楼层", consumes = "application/json")
+	@RequestMapping(value = "/get-floor", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<List<String>> getFloor(@Validated @RequestParam(value="preId", required=true) Long preId, HttpServletRequest request) {
+		cn.linkmore.prefecture.response.ResPrefectureDetail detail =  this.prefectureService.findById(preId);
+		List<String> floorList = new ArrayList<String>();
+		if(detail !=null && StringUtils.isNotBlank(detail.getUnderLayer())) {
+			floorList = Arrays.asList(detail.getUnderLayer().split("、"));
+		}else {
+			floorList.add(Constants.FLOOR_ALL);
+		}
+		return ResponseEntity.success(floorList, request);
 	}
 	
 }
