@@ -74,6 +74,8 @@ public class ResStaffStallDetail {
 	private Short orderStatus;
 	@ApiModelProperty(value = "订单id")
 	private Long orderId;
+	@ApiModelProperty(value = "floor")
+	private String floor;
 	public String getStallName() {
 		return stallName;
 	}
@@ -237,6 +239,12 @@ public class ResStaffStallDetail {
 	}
 	public void setAreaName(String areaName) {
 		this.areaName = areaName;
+	}
+	public String getFloor() {
+		return floor;
+	}
+	public void setFloor(String floor) {
+		this.floor = floor;
 	}
 	
 	

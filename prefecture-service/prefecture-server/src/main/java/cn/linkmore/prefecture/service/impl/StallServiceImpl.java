@@ -1718,6 +1718,7 @@ public class StallServiceImpl implements StallService {
 		ResLockInfo lockBean = this.lockTools.lockInfo(stall.getLockSn());
 		List<ResBaseDict> baseDict = this.baseDictClient.findList(DOWN_CAUSE);
 		detail.setStallId(stall.getId());
+		detail.setFloor(stall.getFloor());
 		if (lockBean != null) {
 			detail.setBetty(lockBean.getElectricity());
 			detail.setCarStatus(lockBean.getParkingState());
@@ -1820,7 +1821,7 @@ public class StallServiceImpl implements StallService {
 						ResEntRentedRecord record = this.entRentedRecordClient.findLastPlateNumber(stall.getId());
 						if (record != null && record.getDownTime() != null) {
 							detail.setDownTime(record.getDownTime());
-						}
+						}                       
 					}
 				*/
 				ResFixedPlate fixedPlate = fixedPlateClient.findPlateNosByStallId(stall.getId());
@@ -1837,7 +1838,6 @@ public class StallServiceImpl implements StallService {
 						detail.setDownTime(record.getDownTime());
 					}
 				}
-				
 				}
 			}
 			// 指定车位锁
