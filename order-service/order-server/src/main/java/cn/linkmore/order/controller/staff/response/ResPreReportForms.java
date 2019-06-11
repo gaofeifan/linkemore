@@ -33,16 +33,16 @@ public class ResPreReportForms implements Serializable{
 	
 	@ApiModelProperty("固定自用车位数")
 	private int entOneselfStallNumber;
-	@ApiModelProperty("固定自用使用车位次数环比")
+	@ApiModelProperty("固定自用使用车位数环比")
 	private String entOneselfStallRelative;
-	@ApiModelProperty("固定授权数")
+	@ApiModelProperty("固定授权车位数")
 	private int entAuthStallNumber;
-	@ApiModelProperty("固定授权车位次数环比")
+	@ApiModelProperty("固定授权车位数环比")
 	private String entAuthStallRelative;
 	
-	@ApiModelProperty("固定自用使用车位数")
+	@ApiModelProperty("固定自用使用次数")
 	private int entOneselfUseStall;
-	@ApiModelProperty("固定自用使用车位数环比")
+	@ApiModelProperty("固定自用使用车位次数环比")
 	private String entOneselfUseStallRelative;
 	@ApiModelProperty("固定授权车位次数")
 	private int entAuthUseStall;
@@ -234,7 +234,7 @@ public class ResPreReportForms implements Serializable{
 			return allStallUseTime;
 		}
 		if(entStallUseTime == null && tempStallUseTime == null) {
-			return 0.00d;
+			return 0.0d;
 		}else {
 			return new BigDecimal(entStallUseTime).add(new BigDecimal(tempStallUseTime)).divide(new BigDecimal(2)).doubleValue();
 		}
@@ -247,18 +247,14 @@ public class ResPreReportForms implements Serializable{
 			return allStallUseTimeRelative;
 		}
 		if(StringUtils.isBlank(entStallUseTimeRelative)&&StringUtils.isBlank(tempStallUseTimeRelative)) {
-			return "0.00%";
+			return "0.0%";
 		}else {
 			String string = entStallUseTimeRelative.substring(0, entStallUseTimeRelative.length()-1);
 			String string2 = tempStallUseTimeRelative.substring(0, tempStallUseTimeRelative.length()-1);
-			return new BigDecimal(string).add(new BigDecimal(string2)).divide(new BigDecimal(2)).toString()+"%";
+			return new BigDecimal(string).add(new BigDecimal(string2)).divide(new BigDecimal(2)).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue()+"%";
 		}
 	}
 	
-	public static void main(String[] args) {
-		String str = "0.00%";
-		System.out.println(str.substring(0, str.length()-1));
-	}
 	public void setAllStallUseTimeRelative(String allStallUseTimeRelative) {
 		this.allStallUseTimeRelative = allStallUseTimeRelative;
 	}
@@ -372,13 +368,13 @@ public class ResPreReportForms implements Serializable{
 			return allOnceStallUseTime;
 		}
 		if(entOnceStallUseTime != null && tempOnceStallUseTime != null) {
-			return new BigDecimal(entOnceStallUseTime).add(new BigDecimal(tempOnceStallUseTime)).divide(new BigDecimal(2)).doubleValue();
+			return new BigDecimal(entOnceStallUseTime).add(new BigDecimal(tempOnceStallUseTime)).divide(new BigDecimal(2)).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 		}else if(entOnceStallUseTime != null){
-			return new BigDecimal(entOnceStallUseTime).divide(new BigDecimal(2)).doubleValue();
+			return new BigDecimal(entOnceStallUseTime).divide(new BigDecimal(2)).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 		}else if(entOnceStallUseTime != null) {
-			return new BigDecimal(entOnceStallUseTime).divide(new BigDecimal(2)).doubleValue();
+			return new BigDecimal(entOnceStallUseTime).divide(new BigDecimal(2)).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 		}else {
-			return 0D;
+			return 0.0D;
 		}
 	}
 	public void setAllOnceStallUseTime(Double allOnceStallUseTime) {
