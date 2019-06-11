@@ -75,20 +75,20 @@
 	ent1.pre_id preId,
 	ent1.startTime,
 	ent1.useStall,
-		CONCAT(ROUND((ent1.useStall - ent2.useStall)*100/if(ent2.useStall=0 OR ent1.useStall=0,1,ent2.useStall),2),"%") useStallContrast,
+		CONCAT(ROUND((ent1.useStall - ent2.useStall)*100/if(ent2.useStall=0 OR ent1.useStall=0,1,ent2.useStall),1),"%") useStallContrast,
 	ent1.useStallCount,
-	 CONCAT(ROUND((ent1.useStallCount - ent2.useStallCount)*100/if(ent2.useStallCount = 0 OR ent1.useStallCount,1,ent2.useStallCount),2),"%") useStallCountContrast,
+	 CONCAT(ROUND((ent1.useStallCount - ent2.useStallCount)*100/if(ent2.useStallCount = 0 OR ent1.useStallCount,1,ent2.useStallCount),1),"%") useStallCountContrast,
 	 ent1.oneselfUseStallNumber,
-		 CONCAT(ifnull(ROUND((ent1.oneselfUseStallNumber - ent2.oneselfUseStallNumber)*100/if(ent2.oneselfUseStallNumber = 0 or ent1.oneselfUseStallNumber = 0 ,1 ,ent2.oneselfUseStallNumber),2),0.00),"%") oneselfUseStallNumberContrast,
+		 CONCAT(ifnull(ROUND((ent1.oneselfUseStallNumber - ent2.oneselfUseStallNumber)*100/if(ent2.oneselfUseStallNumber = 0 or ent1.oneselfUseStallNumber = 0 ,1 ,ent2.oneselfUseStallNumber),1),0.0),"%") oneselfUseStallNumberContrast,
 	 ent1.authStallNumber,
-	 CONCAT(ifnull(ROUND((ent1.authStallNumber - ent2.authStallNumber)*100/if(ent2.authStallNumber=0 or ent1.authStallNumber=0 , 1,ent2.authStallNumber),2),0.00),"%") authStallNumberContrast,
+	 CONCAT(ifnull(ROUND((ent1.authStallNumber - ent2.authStallNumber)*100/if(ent2.authStallNumber=0 or ent1.authStallNumber=0 , 1,ent2.authStallNumber),1),0.0),"%") authStallNumberContrast,
 	 ent1.useDuration,
 	 ent1.oneselfUseStallContrast oneselfUseStall,
 	 ent1.authUseStallContrast authUseStall,
 	 ent1.onceStallUserTime onceStallUserTime,
-	  CONCAT(ifnull(ROUND((ent1.oneselfUseStallContrast - ent2.oneselfUseStallContrast)*100/if(ent2.oneselfUseStallContrast=0 or ent1.oneselfUseStallContrast=0 , 1,ent2.oneselfUseStallContrast),2),0.00),"%") oneselfUseStallContrast,
-	  CONCAT(ifnull(ROUND((ent1.authUseStallContrast - ent2.authUseStallContrast)*100/if(ent2.authUseStallContrast=0 or ent1.authUseStallContrast=0 , 1,ent2.authUseStallContrast),2),0.00),"%") authUseStallContrast,
-	 CONCAT(ROUND((ent1.useDuration-ent2.useDuration)*100/if(ent2.useDuration !=0.00 and ent1.useDuration != 0.00 ,2 ,1),2),"%") useDurationContrast
+	  CONCAT(ifnull(ROUND((ent1.oneselfUseStallContrast - ent2.oneselfUseStallContrast)*100/if(ent2.oneselfUseStallContrast=0 or ent1.oneselfUseStallContrast=0 , 1,ent2.oneselfUseStallContrast),1),0.0),"%") oneselfUseStallContrast,
+	  CONCAT(ifnull(ROUND((ent1.authUseStallContrast - ent2.authUseStallContrast)*100/if(ent2.authUseStallContrast=0 or ent1.authUseStallContrast=0 , 1,ent2.authUseStallContrast),1),0.0),"%") authUseStallContrast,
+	 CONCAT(ROUND((ent1.useDuration-ent2.useDuration)*100/if(ent2.useDuration !=0.00 and ent1.useDuration != 0.00 ,2 ,1),1),"%") useDurationContrast
 	from (
 	select
 	min(down_time) startTime,
@@ -99,17 +99,20 @@
 	(select count(DISTINCT stall_id) from t_ent_rented_record where pre_id = #{preId} and (type = 1 or type is null))  oneselfUseStallContrast,
 	(select count(DISTINCT stall_id) from t_ent_rented_record where pre_id = #{preId} and (type = 2))  authUseStallContrast,
 	count( if(type = 2 ,1,null)) authStallNumber,
-	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
-	(DATE_FORMAT(down_time,'%Y-%m-%d %H:%i')),
-	(DATE_FORMAT(leave_time, '%Y-%m-%d %H:%i'))
-	)/60)/(TIMESTAMPDIFF(DAY  ,
-	(DATE_FORMAT(#{startTime}, '%Y-%m-%d')),  
-	(DATE_FORMAT(#{endTime},'%Y-%m-%d'))
-	)+1)/#{stallCount},2),0) useDuration ,
-	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
-	(DATE_FORMAT(down_time,'%Y-%m-%d %H:%i')),
-	(DATE_FORMAT(leave_time, '%Y-%m-%d %H:%i'))
-	)/60)/count(DISTINCT id),2),0.00) onceStallUserTime
+	ROUND(sum((
+		UNIX_TIMESTAMP(
+			if(leave_time > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),leave_time
+	    ))
+		-UNIX_TIMESTAMP(down_time))/3600
+	)/#{stallCount}/if(datediff(leave_time,down_time)=0,1,datediff(leave_time,down_time)),2)  useDuration ,
+	ROUND(sum((
+		UNIX_TIMESTAMP(
+			if(leave_time > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),leave_time
+	    ))
+		-UNIX_TIMESTAMP(down_time))/3600
+	)/count(id),2)  onceStallUserTime
 		from t_ent_rented_record where 
 		pre_id = #{preId} and status != 0
 		<if test="stallIds != null ">
@@ -138,13 +141,13 @@
 	count( if(type = 2 ,1,null)) authStallNumber,
 		(select count(DISTINCT stall_id) from t_ent_rented_record where pre_id = #{preId} and (type = 1 or type is null))  oneselfUseStallContrast,
 	(select count(DISTINCT stall_id) from t_ent_rented_record where pre_id = #{preId} and (type = 2))  authUseStallContrast,
-	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
-	(DATE_FORMAT(down_time,'%Y-%m-%d %H:%i')),
-	(DATE_FORMAT(leave_time, '%Y-%m-%d %H:%i'))
-	)/60)/(TIMESTAMPDIFF(DAY  ,
-	(DATE_FORMAT(#{startTime}, '%Y-%m-%d')),  
-	(DATE_FORMAT(#{endTime},'%Y-%m-%d'))
-	)+1)/#{contrastStallCount},2),0) useDuration 
+	ROUND(sum((
+		UNIX_TIMESTAMP(
+			if(leave_time > DATE_FORMAT(#{contrastStartTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{contrastStartTime},'%Y-%m-%d'), interval 1 day),leave_time
+	    ))
+		-UNIX_TIMESTAMP(down_time))/3600
+	)/#{contrastStallCount}/if(datediff(leave_time,down_time)=0,1,datediff(leave_time,down_time)),2)  useDuration 
 		from t_ent_rented_record where pre_id = #{preId} and status != 0
 		<if test="contrastStallIds != null ">
 		and stall_id in

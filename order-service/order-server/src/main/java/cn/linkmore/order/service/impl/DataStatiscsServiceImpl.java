@@ -283,17 +283,19 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 		}
 		List<String> floor = this.prefectureClient.getFloor(details.getPreId());
 		ResPrefectureDetail prefectureDetail = this.prefectureClient.findById(details.getPreId());
-		forms.setValidTime(prefectureDetail.getUpdateTime());
+		forms.setValidTime(prefectureDetail.getCreateTime());
 		if(floor != null) {
 			forms.setFloors(floor);
 		}
 		List<ResStallType> stallType = this.stallClient.findStallType(Arrays.asList(details.getPreId()));
 		forms.setType(setType(stallType, details.getPreId()));
 		if(reportForms.getType() == 0) {
-			Date date = DateUtils.getPast2String(-1, Calendar.getInstance());
+			Date date = reportForms.getDate();
 			details.setStartTime(date);
 			details.setEndTime(date);
-			date = DateUtils.getPast2String(-2, Calendar.getInstance());
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			date = DateUtils.getPast2String(-1,calendar);
 			details.setContrastStartTime(date);
 			details.setContrastEndTime(date);
 		}else{
@@ -330,21 +332,32 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 			
 			forms.setEndTime(details.getEndTime());
 			if(ownerReportForms != null) {
-				forms.setEntAuthStallNumber(ownerReportForms.getAuthStallNumber());
 				forms.setEntAuthStallRelative(ownerReportForms.getAuthStallNumberContrast());
-				forms.setEntOneselfStallNumber(ownerReportForms.getOneselfUseStallNumber());
-				forms.setEntOneselfStallRelative(ownerReportForms.getOneselfUseStallNumberContrast());
 				forms.setEntUseStallCount(ownerReportForms.getUseStall());
 				forms.setEntUseStallRelative(ownerReportForms.getUseStallContrast());
 				forms.setEntUseStallNumber(ownerReportForms.getUseStallCount());
 				forms.setEntUseStallNumberRelative(ownerReportForms.getUseStallCountContrast());
 				forms.setEntStallUseTime(ownerReportForms.getUseDuration());
 				forms.setEntStallUseTimeRelative(ownerReportForms.getUseDurationContrast());
+				/**
+				 * getOneselfUseStallNumber 次数
+				 * getOneselfUseStallNumberContrast 次数环比
+				 * getOneselfUseStall  数
+				 * authUseStallContrast 数
+				 * authStallNumber 次数
+				 * 
+				 */
+				// 使用数
+				forms.setEntOneselfStallNumber(ownerReportForms.getOneselfUseStall());
+				forms.setEntOneselfStallRelative(ownerReportForms.getOneselfUseStallNumberContrast());
+				forms.setEntAuthStallNumber(ownerReportForms.getAuthUseStall());
+				forms.setEntAuthStallRelative(ownerReportForms.getAuthUseStallContrast());
 //				forms.setValidTime(ownerReportForms.getStartTime());
-				forms.setEntOneselfUseStallRelative(ownerReportForms.getOneselfUseStallContrast());
-				forms.setEntAuthUseStallRelative(ownerReportForms.getAuthUseStallContrast());
-				forms.setEntOneselfUseStall(ownerReportForms.getOneselfUseStall());
-				forms.setEntAuthUseStall(ownerReportForms.getAuthUseStall());
+				// 	使用次数
+				forms.setEntOneselfUseStall(ownerReportForms.getOneselfUseStallNumber());
+				forms.setEntOneselfUseStallRelative(ownerReportForms.getOneselfUseStallNumberContrast());
+				forms.setEntAuthUseStall(ownerReportForms.getAuthStallNumber());
+				forms.setEntAuthUseStallRelative(ownerReportForms.getAuthStallNumberContrast());
 				forms.setEntOnceStallUseTime(ownerReportForms.getOnceStallUserTime());
 			}
 			ResTempStallReportForms tempReportForms = this.ordersService.findTempStallReportForms(details);

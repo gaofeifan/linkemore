@@ -180,17 +180,20 @@
 	count(if(order_source=1 ,1,null)) orderAdvancePercent,
 	count(if(order_source=2 ,1,null)) orderScanPercent,
 	count(if(order_source=3 ,1,null)) orderSharePercent,
-	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
-		(DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i')),
-		(DATE_FORMAT(end_time, '%Y-%m-%d %H:%i'))
-		)/60)/(TIMESTAMPDIFF(DAY  ,
-		(DATE_FORMAT(#{startTime}, '%Y-%m-%d')),  
-		(DATE_FORMAT(#{endTime},'%Y-%m-%d'))
-		)+1)/#{stallCount},2),0) orderUseDuration,
-	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
-		(DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i')),
-		(DATE_FORMAT(end_time, '%Y-%m-%d %H:%i'))
-	)/60)/count(DISTINCT id),2),0.00) onceStallUserTime
+	ROUND(sum((
+		UNIX_TIMESTAMP(
+			if(end_time > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time))/3600
+	)/#{stallCount}/if(datediff(end_time,begin_time)=0,1,datediff(end_time,begin_time)),2)  orderUseDuration,
+		ROUND(sum((
+		UNIX_TIMESTAMP(
+			if(end_time > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time))/3600
+	)/count(id),2) onceStallUserTime
 	from o_orders where pre_id = #{preId} AND `status` = 3
 	<if test="type == 0">
 			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
@@ -866,7 +869,7 @@ GROUP BY
   
   <select id="findPreOrderDetails" parameterType="cn.linkmore.enterprise.request.ReqPreDetails" resultType="cn.linkmore.order.response.ResPreOrderDetails">
     select 
-  	ifnull(sum(if(status = 3 ,actual_amount,0)),0.00) orderIncome,count(id) orderNumber,count(if(status = 3,1,null)) orderOver,count(if(status != 3,1,null)) orderNotOver
+  	ifnull(sum(if(status = 3 ,actual_amount,0)),0.00) orderIncome,count(id) orderNumber,count(if(status = 3,1,null)) orderOver,count(if(status = 1 or status = 6,1,null)) orderNotOver
     from o_orders  
     where 
     	pre_id = #{preId}

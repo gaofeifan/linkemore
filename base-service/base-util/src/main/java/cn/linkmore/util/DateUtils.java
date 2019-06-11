@@ -552,8 +552,17 @@ public class DateUtils {
 		}
 	}
 	
-	public static void main(String[] args) {
-		Date date = getPast2String(-1, Calendar.getInstance());
-		System.out.println(converter(date, null));
+	public static void main(String[] args) throws ParseException {
+//		Date date = getPast2String(-1, Calendar.getInstance());
+		SimpleDateFormat sdf = new SimpleDateFormat(DARW_FORMAT_TIME);
+		Date s = sdf.parse("2019-06-06 17:58:02");
+		Date e = sdf.parse("2019-06-10 16:10:32");
+		long time = e.getTime() - s.getTime();
+		System.out.println(time);
+		 long hours = (time*(1000 * 60 * 60 * 24))/(1000* 60 * 60); //获取时
+		 long minutes = (time*(1000 * 60 * 60 * 24)-hours*(1000* 60 * 60))/(1000*
+		 60); //获取分钟
+		System.out.println("小时"+hours);
+		System.out.println("分钟"+minutes);
 	}
 }
