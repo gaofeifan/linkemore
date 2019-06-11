@@ -591,7 +591,7 @@ public class StallServiceImpl implements StallService {
 		stall.setType((short)0);
 		stall.setAreaName(reqLockIntall.getAreaName());
 		stall.setStallLocal(reqLockIntall.getStallName());
-		
+		stall.setFloor(reqLockIntall.getFloor());
 		// 插入车位
 		this.stallMasterMapper.save(stall);
 //		stall = stallClusterMapper.findByLockSn(reqLockIntall.getLockSn());
