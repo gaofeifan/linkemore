@@ -16,6 +16,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +42,7 @@ import cn.linkmore.ops.utils.ExcelUtil;
 @Controller
 @RequestMapping("/admin/ent/rented-record")
 public class RentedRecordController extends BaseController{
-
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private RentedRecordService rentedRecordService;
 	
@@ -78,7 +80,12 @@ public class RentedRecordController extends BaseController{
 				s.put("preName", rb.getPreName());
 				s.put("stallName", rb.getStallName());
 				s.put("downTime", sdf.format(rb.getDownTime()));
-				s.put("leaveTime", sdf.format(rb.getLeaveTime()));
+				if(rb.getLeaveTime()!=null) {
+					s.put("leaveTime", sdf.format(rb.getLeaveTime()));
+				}
+				else {
+					s.put("leaveTime", "");
+				}
 				s.put("status", str.get(rb.getStatus()));
 				ja.add(s);
 			}
@@ -113,6 +120,7 @@ public class RentedRecordController extends BaseController{
 			outputStream.flush();
 			outputStream.close();
 		} catch (Exception e) {
+			log.info("message = {} stack = {}",e.getMessage(),e.getStackTrace());
 			e.printStackTrace();
 		}
 	}
