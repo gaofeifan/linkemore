@@ -132,6 +132,12 @@ public class OrderController extends BaseController{
 		        s.put("totalAmount", rrb.getTotalAmount());
 		        s.put("actualAmount", rrb.getActualAmount()); 
 	            s.put("createTime", sdf.format(rrb.getCreateTime()));
+	            if(rrb.getEndTime() != null) {
+	            	s.put("endTime", sdf.format(rrb.getEndTime()));
+	            }else {
+	            	s.put("endTime", "");
+	            }
+	            
 	            ja.add(s);
 	        } 
 	        Map<String,String> headMap = new LinkedHashMap<String,String>();
@@ -144,6 +150,7 @@ public class OrderController extends BaseController{
 	        headMap.put("totalAmount", "订单金额");
 	        headMap.put("actualAmount", "实际金额");
 	        headMap.put("createTime", "预约时间");
+	        headMap.put("endTime", "结束时间");
             baos = new ByteArrayOutputStream();
             String title = "预约订单信息";
             ExcelUtil.exportExcel(title,headMap,ja,null,0,baos);

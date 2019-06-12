@@ -173,12 +173,20 @@ public class FixedRentController  extends BaseController{
 		}else {
 			return "车牌号不能为空"; 
 		}
-		if (StringUtils.isEmpty(reqFixedRent.getStallIds())) {
+		if (StringUtils.isEmpty(reqFixedRent.getStallIds()) && StringUtils.isEmpty(reqFixedRent.getStallNames())) {
 			return "没有选择车位"; 
 		}
-		if(reqFixedRent.getPlateNos().split(",").length > 3 * reqFixedRent.getStallIds().split(",").length) {
-			return "车牌号的数量不能超过车位数量的3倍"; 
+		if(StringUtils.isNotEmpty(reqFixedRent.getStallIds())) {
+			if(reqFixedRent.getPlateNos().split(",").length > 3 * reqFixedRent.getStallIds().split(",").length) {
+				return "车牌号的数量不能超过车位数量的3倍"; 
+			}
 		}
+		if(StringUtils.isNotEmpty(reqFixedRent.getStallNames())) {
+			if(reqFixedRent.getPlateNos().split(",").length > 3 * reqFixedRent.getStallNames().split(",").length) {
+				return "车牌号的数量不能超过车位数量的3倍"; 
+			}
+		}
+		
 		return "";
 	}
 	/**
