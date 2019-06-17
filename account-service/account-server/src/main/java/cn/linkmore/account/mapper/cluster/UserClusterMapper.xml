@@ -133,7 +133,7 @@
     ) o ON u.id = o.user_id
     LEFT JOIN v_prefecture p ON o.pre_id = p.id 
     LEFT JOIN t_city cy ON p.city_id = cy.id
-    where u.user_type = 1
+    where 1 = 1 
     <if test="ordersCount!=null">  
     and u.order_count = #{ordersCount}
     </if>
@@ -269,7 +269,7 @@
   </select>
   
   <select id="getUserByUserName" resultMap="ResBaseResultMap" parameterType="java.lang.String">
-  	select <include refid="Base_Column_List"/> from t_user u where u.user_type =1
+  	select <include refid="Base_Column_List"/> from t_user u where 1 = 1
   	and  u.username = #{userName}
   </select>
   <select id="findAll" resultMap="ResBaseResultMap">

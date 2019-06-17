@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.linkmore.account.dao.cluster.ThirdUserClusterMapper">
+  <resultMap id="BaseResultMap" type="cn.linkmore.account.entity.ThirdUser">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, account_name, phone, nickname, user_id, app_id
+  </sql>
+  
+  <select id="findByAccountName" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_third_user
+    where 1 = 1
+    <if test="appId != null">  
+    and app_id = #{appId,jdbcType=VARCHAR}
+    </if>
+    <if test="accountName != null">  
+    and account_name = #{accountName,jdbcType=VARCHAR}
+    </if>
+    limit 0,1
+  </select>
+</mapper>

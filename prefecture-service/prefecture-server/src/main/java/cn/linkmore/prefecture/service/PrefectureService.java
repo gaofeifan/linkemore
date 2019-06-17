@@ -248,6 +248,12 @@ public interface PrefectureService {
 	 * @return
 	 */
 	List<ResEntranceType> entranceList(Long preId, HttpServletRequest request);
+	/**
+	 * 根据第三方appId标识查询车区列表
+	 * @param appId
+	 * @return
+	 */
+	List<cn.linkmore.prefecture.response.ResOpenPres> openPres(String appId);
 
 
 }

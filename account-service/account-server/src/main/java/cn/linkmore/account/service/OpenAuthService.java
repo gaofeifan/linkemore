@@ -7,8 +7,6 @@ import cn.linkmore.account.controller.open.response.ResOpenAuth;
 public interface OpenAuthService {
 
 	public ResOpenAuth getToken(ReqOpenAuth reqOpenAuth);
-
-	public ResOpenAuth getAccessToken(ReqOpenAuth reqOpenAuth);
 	 
-	 public String getToken(ReqOpenUser reqOpenUser);
+	public String getToken(ReqOpenUser reqOpenUser);
 }
