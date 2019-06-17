@@ -107,6 +107,28 @@
 			<artifactId>swagger-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.everhomes</groupId>
+		    <artifactId>ehutil-common</artifactId>
+		    <version>1.0.0-SNAPSHOT</version>
+		    <scope>system</scope>
+   			<systemPath>${project.basedir}/lib/ehutil-common-1.0.0-20171212.025820-8.jar</systemPath>
+		</dependency>
+		<!--  
+		<dependency>
+		    <groupId>com.everhomes.pay</groupId>
+		    <artifactId>ehpay-rest</artifactId>
+			<version>6.5.0-SNAPSHOT</version>
+		    <scope>system</scope>
+   			<systemPath>${project.basedir}/lib/ehpay-rest-6.5.0-20190527.024822-4.jar</systemPath>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -126,6 +148,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+	                <execution>
+	                    <goals>
+	                        <goal>repackage</goal>
+	                    </goals>
+	                </execution>
+            	</executions>
 			</plugin>
 		</plugins>
 		
@@ -145,6 +174,8 @@
                 </includes>
                 <filtering>true</filtering>
             </resource>
+           
+
         </resources>
 	</build> 
 </project>
