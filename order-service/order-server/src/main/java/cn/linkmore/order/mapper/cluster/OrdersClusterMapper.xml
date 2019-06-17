@@ -147,15 +147,15 @@
  	select 
  	ord1.startTime,
 	ord1.orderNumber,
-	CONCAT(ROUND((ord1.orderNumber-ord2.orderNumber)*100/if(ord2.orderNumber = 0 or ord1.orderNumber = 0,1,ord2.orderNumber),2),"%") orderNumberPercent,
+	CONCAT(truncate((ord1.orderNumber-ord2.orderNumber)*100/if(ord2.orderNumber = 0 ,1,ord2.orderNumber),1),"%") orderNumberPercent,
 	ord1.orderIncome,
-	CONCAT(ROUND((ord1.orderIncome-ord2.orderIncome)*100/if(ord2.orderIncome = 0 or ord1.orderIncome=0,1,ord2.orderIncome),2),"%") orderIncomePercent,
+	CONCAT(truncate((ord1.orderIncome-ord2.orderIncome)*100/if(ord2.orderIncome = 0 ,1,ord2.orderIncome),1),"%") orderIncomePercent,
 	ord1.orderAdvanceIncome,
-	CONCAT(ROUND((ord1.orderAdvanceIncome-ord2.orderAdvanceIncome)*100/if(ord2.orderAdvanceIncome= 0 or ord1.orderAdvanceIncome = 0 ,1,ord2.orderAdvanceIncome),2),"%") orderAdvanceIncomePercent,
+	CONCAT(truncate((ord1.orderAdvanceIncome-ord2.orderAdvanceIncome)*100/if(ord2.orderAdvanceIncome= 0  ,1,ord2.orderAdvanceIncome),1),"%") orderAdvanceIncomePercent,
 	ord1.orderScanIncome,
-	CONCAT(ROUND((ord1.orderScanIncome - ord2.orderScanIncome)*100/if(ord2.orderScanIncome or ord1.orderScanIncome =0,1,ord2.orderScanIncome),2),"%") orderScanIncomePercent,
+	CONCAT(truncate((ord1.orderScanIncome - ord2.orderScanIncome)*100/if(ord2.orderScanIncome =0,1,ord2.orderScanIncome),1),"%") orderScanIncomePercent,
 	ord1.orderShareIncome,
-	CONCAT(ifnull(ROUND((ord1.orderShareIncome-ord2.orderShareIncome)*100/if(ord2.orderShareIncome=0 or ord2.orderShareIncome=0 ,1,ord2.orderShareIncome),2),0.00),"%") orderShareIncomePercent, 
+	CONCAT(ifnull(truncate((ord1.orderShareIncome-ord2.orderShareIncome)*100/if(ord2.orderShareIncome=0 ,1,ord2.orderShareIncome),1),0.0),"%") orderShareIncomePercent, 
 	ord1.orderUseDuration,
 
 	ord1.orderAdvancePercent orderAdvanceNumber,
@@ -163,11 +163,14 @@
 	ord1.orderSharePercent orderShareNumber,
 	ord1.onceStallUserTime onceStallUserTime,
 	
-	CONCAT(ifnull(ROUND((ord1.orderAdvancePercent-ord2.orderAdvancePercent)*100/if(ord2.orderAdvancePercent=0 or ord2.orderAdvancePercent=0 ,1,ord2.orderAdvancePercent),2),0.00),"%") orderAdvancePercent, 
-	CONCAT(ifnull(ROUND((ord1.orderScanPercent-ord2.orderScanPercent)*100/if(ord2.orderScanPercent=0 or ord2.orderScanPercent=0 ,1,ord2.orderScanPercent),2),0.00),"%") orderScanPercent, 
-	CONCAT(ifnull(ROUND((ord1.orderSharePercent-ord2.orderSharePercent)*100/if(ord2.orderSharePercent=0 or ord2.orderSharePercent=0 ,1,ord2.orderSharePercent),2),0.00),"%") orderSharePercent, 
-	
-	CONCAT(ROUND((ord1.orderUseDuration-ord2.orderUseDuration)*100/if(ord2.orderUseDuration = 0 OR ord1.orderUseDuration=0,1,ord2.orderUseDuration),2),"%") orderUseDurationPercent
+	CONCAT(ifnull(truncate((ord1.orderAdvancePercent-ord2.orderAdvancePercent)*100/if(ord2.orderAdvancePercent=0  ,1,ord2.orderAdvancePercent),1),0.0),"%") orderAdvancePercent, 
+	CONCAT(ifnull(truncate((ord1.orderScanPercent-ord2.orderScanPercent)*100/if(ord2.orderScanPercent=0  ,1,ord2.orderScanPercent),1),0.0),"%") orderScanPercent, 
+	CONCAT(ifnull(truncate((ord1.orderSharePercent-ord2.orderSharePercent)*100/if(ord2.orderSharePercent=0  ,1,ord2.orderSharePercent),1),0.0),"%") orderSharePercent, 
+	CONCAT(truncate((ord1.orderUseDuration-ord2.orderUseDuration)*100/if(ord2.orderUseDuration = 0 or ord2.orderUseDuration is null ,1,ord2.orderUseDuration),1),"%") orderUseDurationPercent ,
+	ord1.useDurationTimestamp useDurationTimestamp,
+	ord2.useDurationTimestamp useDurationContrastTimestamp,
+	ord1.onceStallUserTimestamp onceStallUserTimestamp,
+	ord2.onceStallUserTimestamp onceStallUserContrastTimestamp
 	from(
 	select
 	min(begin_time) startTime,
@@ -180,20 +183,34 @@
 	count(if(order_source=1 ,1,null)) orderAdvancePercent,
 	count(if(order_source=2 ,1,null)) orderScanPercent,
 	count(if(order_source=3 ,1,null)) orderSharePercent,
-	ROUND(sum((
+	ifnull(truncate(sum((
 		UNIX_TIMESTAMP(
-			if(end_time > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
 				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
 	    ))
 		-UNIX_TIMESTAMP(begin_time))/3600
-	)/#{stallCount}/if(datediff(end_time,begin_time)=0,1,datediff(end_time,begin_time)),2)  orderUseDuration,
-		ROUND(sum((
+	)/#{stallCount}/#{day},2),0)  orderUseDuration,
+		ifnull(truncate(sum((
 		UNIX_TIMESTAMP(
-			if(end_time > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
 				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
 	    ))
 		-UNIX_TIMESTAMP(begin_time))/3600
-	)/count(id),2) onceStallUserTime
+	)/count(id),1),0) onceStallUserTime,
+		ifnull(truncate(sum(
+		UNIX_TIMESTAMP(
+			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time)
+	),2),0)  useDurationTimestamp,
+		ifnull(truncate(sum(
+		UNIX_TIMESTAMP(
+			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time)
+	),1),0) onceStallUserTimestamp
 	from o_orders where pre_id = #{preId} AND `status` = 3
 	<if test="type == 0">
 			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
@@ -223,20 +240,41 @@
 	count(if(order_source=1 ,1,null)) orderAdvancePercent,
 	count(if(order_source=2 ,1,null)) orderScanPercent,
 	count(if(order_source=3 ,1,null)) orderSharePercent,
-	ifnull(ROUND(sum(TIMESTAMPDIFF(MINUTE,
-		(DATE_FORMAT(begin_time,'%Y-%m-%d %H:%i')),
-		(DATE_FORMAT(end_time, '%Y-%m-%d %H:%i'))
-		)/60)/(TIMESTAMPDIFF(DAY  ,
-		(DATE_FORMAT(#{contrastStartTime}, '%Y-%m-%d')),  
-		(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'))
-		)+1)/#{contrastStallCount},2),0) orderUseDuration 
+	ifnull(truncate(sum((
+		UNIX_TIMESTAMP(
+			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time))/3600
+	)/#{contrastStallCount}/#{contrastDay},2),0)  orderUseDuration,
+	ifnull(truncate(sum((
+		UNIX_TIMESTAMP(
+			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time))/3600
+	)/count(id),1),0) onceStallUserTime ,
+	ifnull(truncate(sum(
+		UNIX_TIMESTAMP(
+			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time)
+	),2),0)  useDurationTimestamp,
+		ifnull(truncate(sum(
+		UNIX_TIMESTAMP(
+			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time)
+	),1),0) onceStallUserTimestamp
 	from o_orders where pre_id = #{preId} AND `status` = 3
 	<if test="type == 0">
-			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
+			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{contrastStartTime},'%Y-%m-%d')
 		</if>
 		<if test="type != 0">
- 			 		and <![CDATA[ DATE_FORMAT(#{startTime},'%Y-%m-%d')<= DATE_FORMAT(begin_time,'%Y-%m-%d') ]]>
-			and <![CDATA[DATE_FORMAT(#{endTime},'%Y-%m-%d') >= DATE_FORMAT(begin_time,'%Y-%m-%d')]]>
+ 			 		and <![CDATA[ DATE_FORMAT(#{contrastStartTime},'%Y-%m-%d')<= DATE_FORMAT(begin_time,'%Y-%m-%d') ]]>
+			and <![CDATA[DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d') >= DATE_FORMAT(begin_time,'%Y-%m-%d')]]>
 		</if>
 	 <if test="contrastStallIds != null ">
 		and stall_id in
@@ -250,6 +288,113 @@
 	)ord2 ON ord1.pre_id = ord2.pre_id 
 		
   </select>
+<!--   <select id="findTempStallReportForms" parameterType="cn.linkmore.enterprise.request.ReqPreDetails" resultType="cn.linkmore.order.response.ResTempStallReportForms">
+ 	select 
+ 	ord1.startTime,
+	ord1.orderNumber,
+	CONCAT(truncate((ord1.orderNumber-ord2.orderNumber)*100/if(ord2.orderNumber = 0 or ord1.orderNumber = 0,1,ord2.orderNumber),1),"%") orderNumberPercent,
+	ord1.orderIncome,
+	CONCAT(ROUND((ord1.orderIncome-ord2.orderIncome)*100/if(ord2.orderIncome = 0 or ord1.orderIncome=0,1,ord2.orderIncome),1),"%") orderIncomePercent,
+	ord1.orderAdvanceIncome,
+	CONCAT(ROUND((ord1.orderAdvanceIncome-ord2.orderAdvanceIncome)*100/if(ord2.orderAdvanceIncome= 0 or ord1.orderAdvanceIncome = 0 ,1,ord2.orderAdvanceIncome),1),"%") orderAdvanceIncomePercent,
+	ord1.orderScanIncome,
+	CONCAT(ROUND((ord1.orderScanIncome - ord2.orderScanIncome)*100/if(ord2.orderScanIncome or ord1.orderScanIncome =0,1,ord2.orderScanIncome),1),"%") orderScanIncomePercent,
+	ord1.orderShareIncome,
+	CONCAT(ifnull(ROUND((ord1.orderShareIncome-ord2.orderShareIncome)*100/if(ord2.orderShareIncome=0 or ord2.orderShareIncome=0 ,1,ord2.orderShareIncome),1),0.0),"%") orderShareIncomePercent, 
+	ord1.orderUseDuration,
+
+	ord1.orderAdvancePercent orderAdvanceNumber,
+	ord1.orderScanPercent orderScanNumber,
+	ord1.orderSharePercent orderShareNumber,
+	ord1.onceStallUserTime onceStallUserTime,
+	
+	CONCAT(ifnull(ROUND((ord1.orderAdvancePercent-ord2.orderAdvancePercent)*100/if(ord2.orderAdvancePercent=0 or ord2.orderAdvancePercent=0 ,1,ord2.orderAdvancePercent),1),0.0),"%") orderAdvancePercent, 
+	CONCAT(ifnull(ROUND((ord1.orderScanPercent-ord2.orderScanPercent)*100/if(ord2.orderScanPercent=0 or ord2.orderScanPercent=0 ,1,ord2.orderScanPercent),1),0.0),"%") orderScanPercent, 
+	CONCAT(ifnull(ROUND((ord1.orderSharePercent-ord2.orderSharePercent)*100/if(ord2.orderSharePercent=0 or ord2.orderSharePercent=0 ,1,ord2.orderSharePercent),1),0.0),"%") orderSharePercent, 
+	
+	CONCAT(ROUND((ord1.orderUseDuration-ord2.orderUseDuration)*100/if(ord2.orderUseDuration = 0 OR ord1.orderUseDuration=0,1,ord2.orderUseDuration),1),"%") orderUseDurationPercent
+	from(
+	select
+	min(begin_time) startTime,
+	ifnull(pre_id,#{preId}) pre_id,
+	count(id) orderNumber,
+	ifnull(SUM(actual_amount),0) orderIncome,
+	ifnull(SUM(if(order_source = 1,actual_amount,0)),0) orderAdvanceIncome,
+	ifnull(SUM(if(order_source = 2,actual_amount,0)),0)orderScanIncome,
+	ifnull(SUM(if(order_source = 3,actual_amount,0)),0) orderShareIncome,
+	count(if(order_source=1 ,1,null)) orderAdvancePercent,
+	count(if(order_source=2 ,1,null)) orderScanPercent,
+	count(if(order_source=3 ,1,null)) orderSharePercent,
+	ROUND(sum((
+		UNIX_TIMESTAMP(
+			if(end_time > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time))/3600
+	)/#{stallCount}/if(datediff(end_time,begin_time)=0,1,datediff(end_time,begin_time)),2)  orderUseDuration,
+		ROUND(sum((
+		UNIX_TIMESTAMP(
+			if(end_time > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time))/3600
+	)/count(id),1) onceStallUserTime
+	from o_orders where pre_id = #{preId} AND `status` = 3
+	<if test="type == 0">
+			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
+		</if>
+		<if test="type != 0">
+	 		and <![CDATA[ DATE_FORMAT(#{startTime},'%Y-%m-%d')<= DATE_FORMAT(begin_time,'%Y-%m-%d') ]]>
+		and <![CDATA[DATE_FORMAT(#{endTime},'%Y-%m-%d') >= DATE_FORMAT(begin_time,'%Y-%m-%d')]]>
+		</if>
+	 <if test="stallIds != null ">
+		and stall_id in
+		 <foreach collection="stallIds"  index="index" item="stallId" open="(" separator="," close=")"  >
+		 	#{stallId} 
+	  	 </foreach>
+	</if>
+	<if test="stallIds == null ">
+		AND stall_id = 0
+	</if>
+	)ord1 
+	INNER JOIN 
+	(select 
+	ifnull(pre_id,#{preId}) pre_id,
+	count(id) orderNumber,
+	ifnull(SUM(actual_amount),0) orderIncome,
+	ifnull(SUM(if(order_source = 1,actual_amount,0)),0) orderAdvanceIncome,
+	ifnull(SUM(if(order_source = 2,actual_amount,0)),0)orderScanIncome,
+	ifnull(SUM(if(order_source = 3,actual_amount,0)),0) orderShareIncome,
+	count(if(order_source=1 ,1,null)) orderAdvancePercent,
+	count(if(order_source=2 ,1,null)) orderScanPercent,
+	count(if(order_source=3 ,1,null)) orderSharePercent,
+	ROUND(sum((
+		UNIX_TIMESTAMP(
+			if(end_time > DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'),
+				 date_add(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'), interval 1 day),end_time
+	    ))
+		-UNIX_TIMESTAMP(begin_time))/3600
+	)/#{contrastStallCount}/if(datediff(end_time,begin_time)=0,1,datediff(end_time,begin_time)),2)  orderUseDuration
+	from o_orders where pre_id = #{preId} AND `status` = 3
+	<if test="type == 0">
+			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{contrastStartTime},'%Y-%m-%d')
+		</if>
+		<if test="type != 0">
+ 			 		and <![CDATA[ DATE_FORMAT(#{contrastStartTime},'%Y-%m-%d')<= DATE_FORMAT(begin_time,'%Y-%m-%d') ]]>
+			and <![CDATA[DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d') >= DATE_FORMAT(begin_time,'%Y-%m-%d')]]>
+		</if>
+	 <if test="contrastStallIds != null ">
+		and stall_id in
+		 <foreach collection="contrastStallIds"  index="index" item="stallId" open="(" separator="," close=")"  >
+		 	#{stallId} 
+	  	 </foreach>
+	</if>
+	 <if test="contrastStallIds == null ">
+		and stall_id = 0
+	</if>
+	)ord2 ON ord1.pre_id = ord2.pre_id 
+		
+  </select> -->
   <select id="findUserLatest" parameterType="java.lang.Long" resultMap="ResResultMap">
     select 
     <include refid="Res_Column_List" />
@@ -873,6 +1018,7 @@ GROUP BY
     from o_orders  
     where 
     	pre_id = #{preId}
+    	and status in (1,2,3,6)
     <if test="type == 0">
     	and  DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(now(),'%Y-%m-%d')
     </if>

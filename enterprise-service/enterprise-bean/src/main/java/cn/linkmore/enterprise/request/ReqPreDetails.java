@@ -29,6 +29,10 @@ public class ReqPreDetails {
 	
 	private List<Long> contrastStallIds;
 	
+	private int contrastDay = 1;
+	
+	private int day = 1;
+	
 	public int getStallCount() {
 		return stallCount;
 	}
@@ -142,4 +146,22 @@ public class ReqPreDetails {
 	public void setContrastStallCount(int contrastStallCount) {
 		this.contrastStallCount = contrastStallCount;
 	}
+
+	public int getDay() {
+		return day;
+	}
+
+	public void setDay(int day) {
+		this.day = day;
+	}
+
+	public int getContrastDay() {
+		return contrastDay;
+	}
+
+	public void setContrastDay(int contrastDay) {
+		this.contrastDay = contrastDay;
+	}
+
+	
 }

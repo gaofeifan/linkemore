@@ -19,5 +19,7 @@
 		<module>base-bean</module>
 		<module>base-util</module>
 		<module>server-service</module>
+		
+		
 	</modules>
 </project>

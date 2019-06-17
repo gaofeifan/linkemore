@@ -229,30 +229,8 @@ public class ResPreReportForms implements Serializable{
 		this.tempShareRelative = tempShareRelative;
 	}
 
-	public Double getAllStallUseTime() {
-		if(allStallUseTime != null) {
-			return allStallUseTime;
-		}
-		if(entStallUseTime == null && tempStallUseTime == null) {
-			return 0.0d;
-		}else {
-			return new BigDecimal(entStallUseTime).add(new BigDecimal(tempStallUseTime)).divide(new BigDecimal(2)).doubleValue();
-		}
-	}
 	public void setAllStallUseTime(Double allStallUseTime) {
 		this.allStallUseTime = allStallUseTime;
-	}
-	public String getAllStallUseTimeRelative() {
-		if(StringUtils.isNotBlank(allStallUseTimeRelative)) {
-			return allStallUseTimeRelative;
-		}
-		if(StringUtils.isBlank(entStallUseTimeRelative)&&StringUtils.isBlank(tempStallUseTimeRelative)) {
-			return "0.0%";
-		}else {
-			String string = entStallUseTimeRelative.substring(0, entStallUseTimeRelative.length()-1);
-			String string2 = tempStallUseTimeRelative.substring(0, tempStallUseTimeRelative.length()-1);
-			return new BigDecimal(string).add(new BigDecimal(string2)).divide(new BigDecimal(2)).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue()+"%";
-		}
 	}
 	
 	public void setAllStallUseTimeRelative(String allStallUseTimeRelative) {
@@ -363,19 +341,15 @@ public class ResPreReportForms implements Serializable{
 	public void setTempShareOrder(int tempShareOrder) {
 		this.tempShareOrder = tempShareOrder;
 	}
+
+	public Double getAllStallUseTime() {
+		return allStallUseTime;
+	}
+	public String getAllStallUseTimeRelative() {
+		return allStallUseTimeRelative;
+	}
 	public Double getAllOnceStallUseTime() {
-		if(allOnceStallUseTime != null) {
-			return allOnceStallUseTime;
-		}
-		if(entOnceStallUseTime != null && tempOnceStallUseTime != null) {
-			return new BigDecimal(entOnceStallUseTime).add(new BigDecimal(tempOnceStallUseTime)).divide(new BigDecimal(2)).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-		}else if(entOnceStallUseTime != null){
-			return new BigDecimal(entOnceStallUseTime).divide(new BigDecimal(2)).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-		}else if(entOnceStallUseTime != null) {
-			return new BigDecimal(entOnceStallUseTime).divide(new BigDecimal(2)).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
-		}else {
-			return 0.0D;
-		}
+		return allOnceStallUseTime;
 	}
 	public void setAllOnceStallUseTime(Double allOnceStallUseTime) {
 		this.allOnceStallUseTime = allOnceStallUseTime;

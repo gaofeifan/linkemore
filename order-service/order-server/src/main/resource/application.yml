@@ -1,5 +1,5 @@
 server:
-  port: 8005 
+  port: 8019 
   session:
     timeout: 240
 spring:
@@ -7,7 +7,7 @@ spring:
     name: order-server
   boot: 
     admin:
-      url: http://192.168.1.223:6002
+      url: http://192.168.1.142:6002
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -17,7 +17,7 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.128:6003/eureka/ 
+      defaultZone: http://192.168.1.142:6003/eureka/ 
 feign:
   hystrix:
     enabled: true
@@ -33,13 +33,13 @@ hystrix:
           enabled: true
         isolation:
           thread:
-            timeoutInMilliseconds: 30000
+            timeoutInMilliseconds: 35000
             ribbon:
               ReadTimeout: 30000
               ConnectTimeout: 60000
  
 master-db:   
-  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+  url: jdbc:mysql://192.168.1.218:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -59,7 +59,7 @@ master-db:
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   
 cluster-db:   
-  url: jdbc:mysql://192.168.1.219:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+  url: jdbc:mysql://192.168.1.218:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
@@ -77,7 +77,8 @@ cluster-db:
   max-pool-prepared-statement-per-connection-size: 20 
   filters: stat,wall,slf4j 
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 
-
+logging:
+  level: cn.linkmore.order.mapper.cluster=debug
 security:
   basic:
     enabled: false
@@ -85,7 +86,7 @@ security:
 redis:
   host: 192.168.1.218
   port: 6379
-  database: 0
+  database: 4
   timeout: 5000
   password: ppyx1234
   pool-max-active: 500
@@ -105,7 +106,6 @@ base:
   trade-number: 4
   free-plate: 浙AD900Z浙AG19A6浙A500XM浙A819XM浙AG86Q5浙AS85Q9浙AP56N3浙A7HZ97浙AF548A浙AV89M0浙AW58M3
   cancel-number: 5
-  
 swagger:
   enable: true
   title: 凌猫预约结账服务接口文档
@@ -113,129 +113,14 @@ swagger:
   version: 2.0
   service-url: http://www.linkmoreparking.com
   contact: 凌猫停车 
-  base-package: cn.linkmore.order.controller.app,cn.linkmore.order.controller.h5
+  base-package: cn.linkmore.order.controller.app,cn.linkmore.order.controller.staff
 
-#授权转发192.168.1.133:8086
 oauth: 
-  wx-code-url: http://test.linkmoreparking.cn/api/order/h5/a
-  zfb-code-url: http://test.linkmoreparking.cn/api/order/h5/b
-  h5-url: http://order.linkmoreparking.cn
+  wx-code-url: http://api.linkmoreparking.com/api/order/h5/a
+  zfb-code-url: http://api.linkmoreparking.com/api/order/h5/b
+  h5-url: http://qrcode.linkmoreparking.com
   park-order : http://192.168.1.133:8086/api/gate-car-info
-  order-checkout: http://192.168.1.133:8086/api/order-checkout
-  notify-url: http://test.linkmoreparking.cn/api/order/h5/r
-  send-url: http://test.linkmoreparking.cn/api/order/h5/m
-#server:
-#  port: 8005 
-#  session:
-#    timeout: 60
-#spring:
-#  application:
-#    name: order-server
-#  boot: 
-#    admin:
-#      url: http://192.168.1.223:6002
-#eureka:
-#  instance:
-#    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
-#    prefer-ip-address: true
-#    lease-renewal-interval-in-seconds: 5
-#    lease-expiration-duration-in-seconds: 15
-#  client:
-#    fetch-registry: true 
-#    serviceUrl:
-#      defaultZone: http://192.168.1.223:6003/eureka/ 
-#feign:
-#  hystrix:
-#    enabled: true
-#
-#ribbon:
-#  ConnectTimeout: 6000
-#  ReadTimeout: 60000
-#hystrix: 
-#  command:
-#    default:
-#      execution:
-#        timeout:
-#          enabled: true
-#        isolation:
-#          thread:
-#            timeoutInMilliseconds: 30000
-#            ribbon:
-#              ReadTimeout: 30000
-#              ConnectTimeout: 60000
-# 
-#master-db:   
-#  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
-#  username: root
-#  password: Linkmore@2018
-#  driver-class-name: com.mysql.jdbc.Driver  
-#  initial-size: 2
-#  min-idle: 2
-#  max-active: 5 
-#  max-wait: 60000 
-#  time-between-eviction-runs-millis: 60000 
-#  min-evictable-idle-time-millis: 30000
-#  validation-query: select 'x'
-#  test-while-idle: true
-#  test-on-borrow: false
-#  test-on-return: false 
-#  pool-prepared-statements: true
-#  max-pool-prepared-statement-per-connection-size: 20 
-#  filters: stat,wall,slf4j 
-#  connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-#  
-#cluster-db:   
-#  url: jdbc:mysql://192.168.1.219:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
-#  username: root
-#  password: Linkmore@2018
-#  driver-class-name: com.mysql.jdbc.Driver  
-#  initial-size: 2
-#  min-idle: 2
-#  max-active: 5 
-#  max-wait: 60000 
-#  time-between-eviction-runs-millis: 60000 
-#  min-evictable-idle-time-millis: 30000
-#  validation-query: select 'x'
-#  test-while-idle: true
-#  test-on-borrow: false
-#  test-on-return: false 
-#  pool-prepared-statements: true
-#  max-pool-prepared-statement-per-connection-size: 20 
-#  filters: stat,wall,slf4j 
-#  connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 
-#
-#security:
-#  basic:
-#    enabled: false
-#    
-#redis:
-#  host: 192.168.1.218
-#  port: 6379
-#  database: 2
-#  timeout: 5000
-#  password: ppyx1234
-#  pool-max-active: 500
-#  pool-max-wait: -1
-#  pool-max-idle: 100
-#  pool-min-idle: 5
-#  test-while-idle: true
-#  test-on-borrow: true
-#  test-on-create: true 
-#  sentinel-master: mymaster
-#  sentinel-nodes: 192.168.1.219:26379
-#  channel: order
-#  
-#base: 
-#  online: false
-#  order-number: 4
-#  recharge-number: 4
-#  trade-number: 4
-#
-#swagger:
-#  enable: true
-#  title: 凌猫预约结账服务接口文档
-#  description: 本文档为内部文档，仅供内部前端及测试人员参考。 完全基于RESTful接口说明
-#  version: 2.0
-#  service-url: http://www.linkmoreparking.com
-#  contact: 凌猫停车 
-#  base-package: cn.linkmore.order.controller.app
+  order-checkout: http://gateapi.linkmoreparking.com/api/order-checkout
+  notify-url: http://api.linkmoreparking.com/api/order/h5/r
+  send-url: http://api.linkmoreparking.com/api/order/h5/m
+  zfb-return-url: http://api.linkmoreparking.com/api/order/h5/f

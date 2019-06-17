@@ -34,7 +34,38 @@ public class ResTempStallReportForms {
 	private int orderShareNumber;
 	
 	private Double onceStallUserTime;
+	
+	private Double useDurationTimestamp;
+	private Double useDurationContrastTimestamp;
+	
+	private Double onceStallUserTimestamp;
+	private Double onceStallUserContrastTimestamp;
+	
 
+	public Double getUseDurationTimestamp() {
+		return useDurationTimestamp;
+	}
+	public void setUseDurationTimestamp(Double useDurationTimestamp) {
+		this.useDurationTimestamp = useDurationTimestamp;
+	}
+	public Double getUseDurationContrastTimestamp() {
+		return useDurationContrastTimestamp;
+	}
+	public void setUseDurationContrastTimestamp(Double useDurationContrastTimestamp) {
+		this.useDurationContrastTimestamp = useDurationContrastTimestamp;
+	}
+	public Double getOnceStallUserTimestamp() {
+		return onceStallUserTimestamp;
+	}
+	public void setOnceStallUserTimestamp(Double onceStallUserTimestamp) {
+		this.onceStallUserTimestamp = onceStallUserTimestamp;
+	}
+	public Double getOnceStallUserContrastTimestamp() {
+		return onceStallUserContrastTimestamp;
+	}
+	public void setOnceStallUserContrastTimestamp(Double onceStallUserContrastTimestamp) {
+		this.onceStallUserContrastTimestamp = onceStallUserContrastTimestamp;
+	}
 	public int getOrderNumber() {
 		return orderNumber;
 	}

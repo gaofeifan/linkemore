@@ -37,8 +37,9 @@ public class ReqPreReportForms {
 	
 	public String getFloor() {
 		if(StringUtils.isNotBlank(floor)) {
-			floor.equals(Constants.FLOOR_ALL);
-			floor = null;
+			if(floor.equals(Constants.FLOOR_ALL)) {
+				floor = null;
+			}
 		}
 		return floor;
 	}

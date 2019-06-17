@@ -119,7 +119,7 @@ public interface StallClusterMapper {
 	
 	Stall findByLockNameAndPreId(@Param("stallName")String stallName,@Param("preId") Long preId);
 	
-	ResStaffPreDetails findPreStallDetails(@Param("preId")Long preId, @Param("floor")String layer);
+	ResStaffPreDetails findPreStallDetails(@Param("preId")Long preId, @Param("floor")String floor);
 	
 	List<ResStallType> findStallType(List<Long> preIds);
 	
