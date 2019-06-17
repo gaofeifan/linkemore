@@ -153,7 +153,7 @@ public enum StatusEnum {
 	UP_LOCK_FAIL_CHANGE_OWNER(8005101,"升锁失败，故障上报"),
 	DOWN_LOCK_FAIL_CHANGE_OWNER(8005102,"降锁失败，故障上报"),
 	STAFF_STALL_BIN_EXISTS(8005103,"该车位已绑定该车锁"),
-	DELETE_PLATE_NO_FAILED(8005104,"当前车牌正在使用长租车位，禁止删除"),
+	DELETE_PLATE_NO_FAILED(8005104,"当前车牌正在使用固定车位，禁止删除"),
 	NO_FREE_STALL_CLOSE(8005105,"无空闲车位，订单已关闭"),
 	SWITCH_STALL_FAILED(8005106,"切换车位失败"),
 	

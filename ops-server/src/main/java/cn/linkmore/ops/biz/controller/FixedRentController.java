@@ -89,8 +89,8 @@ public class FixedRentController  extends BaseController{
 	}
 	
 	private boolean isValidPlate(String plate) {
-		final String[] values= {"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[DF]$)|([DF][A-HJ-NP-Z0-9][0-9]{4}$))"
-                ,"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$"};
+		final String[] values= {"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{1}[A-HJ-Z]{1}(([0-9]{5}[DF]{1}$)|([DF]{1}[A-HJ-NP-Z0-9]{1}[0-9]{4}$))"
+                ,"^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{1}[A-HJ-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$|(使[0-9]{6}$)|((([沪粤川云桂鄂陕蒙藏黑辽渝]{1}A)|鲁B|闽D|蒙E|蒙H)[0-9]{4}领$)"};
 		final int[] lengths={8,7};
 		for (int i = 0; i < lengths.length; i++) {
 			if (plate.length() == lengths[i]) {
@@ -173,12 +173,20 @@ public class FixedRentController  extends BaseController{
 		}else {
 			return "车牌号不能为空"; 
 		}
-		if (StringUtils.isEmpty(reqFixedRent.getStallIds())) {
+		if (StringUtils.isEmpty(reqFixedRent.getStallIds()) && StringUtils.isEmpty(reqFixedRent.getStallNames())) {
 			return "没有选择车位"; 
 		}
-		if(reqFixedRent.getPlateNos().split(",").length > 3 * reqFixedRent.getStallIds().split(",").length) {
-			return "车牌号的数量不能超过车位数量的3倍"; 
+		if(StringUtils.isNotEmpty(reqFixedRent.getStallIds())) {
+			if(reqFixedRent.getPlateNos().split(",").length > 3 * reqFixedRent.getStallIds().split(",").length) {
+				return "车牌号的数量不能超过车位数量的3倍"; 
+			}
 		}
+		if(StringUtils.isNotEmpty(reqFixedRent.getStallNames())) {
+			if(reqFixedRent.getPlateNos().split(",").length > 3 * reqFixedRent.getStallNames().split(",").length) {
+				return "车牌号的数量不能超过车位数量的3倍"; 
+			}
+		}
+		
 		return "";
 	}
 	/**

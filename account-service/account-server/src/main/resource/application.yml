@@ -117,6 +117,21 @@ guomaofuwu:
   tokenPath: /evh/oauth2/token
   userInfoPath: /evh/oauth2api/trd/userInfo
   authInfoPath: /evh/oauth2api/trd/authenticationInfo
+  pay: 
+    appKey: 9f682eaa-b4ac-4f79-b5fb-5d9d0a60f60e
+    paySecretKey: gvjsTXp7A61e38wNchTI7x7tQtKEzA91m+3IE9xM0IVfcfzlXuDLAmU9aA1xlz0Uayae7w2AdQpXv2b/FmXiHg==
+    callBackSecretKey: zChUBcTTn0CPR31fwRr96qdEmkn53SCZCMzNGwnBa7yREcC2a/Phlxsml4dmFBZnuuLRjPiSoJxJRA2GtsIkpg==
+    #accountCode: NS999948
+    namespaceId: 999948
+    payerUserId: 5088
+    payeeUserId: 6646
+    baseUri: http://guomaofuwu-bizbeta.zuolin.com
+    #baseUri: http://guomaofuwu-biz.zuolin.com
+    payHomePath: /nar/biz/web/zl-app-pay/index.html
+    refundOrderPath: /zl-ec/rest/biz/mis/pay/createV2RefundOrder
+    queryOrderPath: /zl-ec/rest/biz/mis/pay/queryV2OrderByOrderNum
+    callBackUri: https://api.linkmoreparking.cn/api/account/open/guomao/callBack
+
 staff: 
   code: 6699
   auth-code: true

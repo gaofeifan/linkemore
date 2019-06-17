@@ -134,6 +134,10 @@ public class TokenFilter extends ZuulFilter {
 			add("/open/auth/index");
 			add("/open/auth/backUri");
 			add("/open/auth/redirect");
+			add("/open/guomao/payPage");
+			add("/open/guomao/callBack");
+			add("/open/guomao/refundOrder");
+			add("/open/guomao/queryOrder");
 		}
 	};
 

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +56,12 @@ import cn.linkmore.enterprise.service.OwnerStallService;
 import cn.linkmore.enterprise.service.RentedRecordService;
 import cn.linkmore.enterprise.service.UserRentStallService;
 import cn.linkmore.prefecture.client.FeignLockClient;
+import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.client.StallClient;
 import cn.linkmore.prefecture.request.ReqControlLock;
 import cn.linkmore.prefecture.response.ResLockInfo;
 import cn.linkmore.prefecture.response.ResLockInfos;
+import cn.linkmore.prefecture.response.ResOpenPres;
 import cn.linkmore.prefecture.response.ResStall;
 import cn.linkmore.prefecture.response.ResStallEntity;
 import cn.linkmore.redis.RedisLock;
@@ -95,6 +98,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	private FeignLockClient feignLockClient;
 	@Autowired
 	private StallClient stallClient;
+	@Autowired
+	private PrefectureClient prefectureClient;
 
 	@Override
 	public OwnerRes findStall(HttpServletRequest request, ReqLocation location) {
@@ -229,8 +234,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 							OwnerStall.setMobile(enttall.getMobile());
 							OwnerStall.setPlate(enttall.getPlate());
 							OwnerStall.setStallName(enttall.getStallName());
-							// OwnerStall.setStartTime(handleTime(enttall.getStartTime()));
-							// OwnerStall.setEndTime(handleTime(enttall.getEndTime()));
 							OwnerStall.setImageUrl(enttall.getImageUrl());
 							OwnerStall.setStallEndTime(DateUtils.convert(enttall.getEndTime(), null));
 							OwnerStall.setRouteGuidance(enttall.getRouteGuidance());
@@ -353,17 +356,6 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			}
 		}
 
-		// 新逻辑
-		/*
-		 * if(stallEntity!= null) { //多对一操作允许控制同一个车位
-		 * if(stallEntity.getRentMoType().intValue() == 0) { if (using>0) {
-		 * this.redisService.remove(robkey); throw new
-		 * BusinessException(StatusEnum.STALL_AlREADY_CONTROL); } } }
-		 */
-
-		// 未完成记录同一用户只有一单
-		// EntRentedRecord record =
-		// entRentedRecordClusterMapper.findByUser(user.getId());
 		Map<String, Long> param = new HashMap<String, Long>();
 		param.put("userId", user.getId());
 		param.put("stallId", reqOperatStall.getStallId());
@@ -373,33 +365,9 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			log.info("用户>>>" + user.getId() + "升锁>>>" + reqOperatStall.getStallId());
 		} else if (reqOperatStall.getState() == 1) {
 			log.info("用户>>>" + user.getId() + "降锁>>>" + reqOperatStall.getStallId());
-
-			// 正常车位，若无使用记录则插入数据 && stallEntity.getRentOmType().intValue() == 0 &&
-			// stallEntity.getRentMoType().intValue() == 0
 			if (!Objects.nonNull(record)) {
 				entRentedRecordMasterMapper.saveSelective(newrecord);
 			}
-			// 当长租车位为1对多标识时，若无记录或者有使用记录但使用记录车位Id和当前操作车位Id不一致时可添加使用记录
-			/*
-			 * if(stallEntity.getRentOmType().intValue() == 1 && (record == null ||
-			 * (record!=null && record.getStallId()!=stallEntity.getId()))) {
-			 * entRentedRecordMasterMapper.saveSelective(newrecord); }
-			 */
-
-			// 当长租车位为多对1标识时，若当前用户无使用记录，且该车位没有被占用则可以新增记录
-			/*
-			 * if(stallEntity.getRentMoType().intValue() == 1 && record == null && using
-			 * ==0) { entRentedRecordMasterMapper.saveSelective(newrecord); }
-			 */
-
-			// 原流程
-			// Objects.nonNull 如果参数不为空则返回true
-			/*
-			 * if (!Objects.nonNull(record)) { try {
-			 * entRentedRecordMasterMapper.saveSelective(newrecord); } catch (Exception e) {
-			 * e.printStackTrace(); } log.info("用户>>>" + user.getId() + "record>>>" +
-			 * reqOperatStall.getStallId()); }
-			 */
 		}
 		// 放入缓存
 		String rediskey = RedisKey.ACTION_STALL_DOING.key + reqOperatStall.getStallId();
@@ -503,6 +471,26 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		if ((stalllist == null || stalllist.size() == 0) && (findRecordList == null || findRecordList.size() == 0)) {
 			return authRentStall;
 		}
+		
+		// 所拥有的所有车区信息
+		Set<Long> ids = new HashSet<Long>();
+		if (StringUtils.isNotBlank(user.getAppId())) {
+			List<ResOpenPres> openPres = prefectureClient.openPres(user.getAppId());
+			if (CollectionUtils.isNotEmpty(openPres)) {
+				Set<Long> preIds = openPres.stream().map(f -> f.getId()).collect(Collectors.toSet());
+				for (EntOwnerStall entOwnerStall : stalllist) {
+					if(preIds.contains(entOwnerStall.getPreId())) {
+						ids.add(entOwnerStall.getPreId());
+					}
+				}
+			}
+		}else {
+			for (EntOwnerStall entOwnerStall : stalllist) {
+				ids.add(entOwnerStall.getPreId());
+			}
+		}
+		
+		
 		List<Long> preIdAuthList = null;
 		List<Long> stallIdAuthList = null;
 		List<ResStall> resStallList = null;
@@ -538,10 +526,11 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				stalls.addAll(stallIdOwnerList);
 			}
 		}
-		if (preIds.size() == 0) {
+		if (ids.size() == 0) {
 			return authRentStall;
 		}
-		List<EntOwnerPre> preList = ownerStallClusterMapper.findPreByIds(preIds);
+		log.info("preIds = {}, filter by third party id ids ={}", JSON.toJSON(preIds),ids);
+		List<EntOwnerPre> preList = ownerStallClusterMapper.findPreByIds(ids);
 		List<String> gateways = preList.stream().map(pre -> pre.getGateway()).collect(Collectors.toList());
 		List<ResLockInfos> lockInfos = this.feignLockClient.lockLists(gateways);
 		Map<Long, List<ResLockInfo>> tempMap = new HashMap<>();
@@ -865,19 +854,33 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 	public ResRentStallFlag authFlag(HttpServletRequest request) {
 		CacheUser user = (CacheUser) this.redisService.get(appUserFactory.createTokenRedisKey(request));
 		Boolean is = false;
-		if (user != null) {
-			List<EntOwnerStall> stalllist = ownerStallClusterMapper.findAuthStall(user.getId());
+		if (user == null) {
+			throw new BusinessException(StatusEnum.USER_APP_NO_LOGIN);
+		}
+		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findAuthStall(user.getId());
+		if (StringUtils.isNotBlank(user.getAppId())) {
+			List<ResOpenPres> openPres = prefectureClient.openPres(user.getAppId());
+			if (CollectionUtils.isNotEmpty(stalllist) && CollectionUtils.isNotEmpty(openPres)) {
+				Set<Long> preIds = openPres.stream().map(f -> f.getId()).collect(Collectors.toSet());
+				for (EntOwnerStall stall : stalllist) {
+					if (preIds.contains(stall.getPreId())) {
+						is = true;
+						break;
+					}
+				}
+			}
+		} else {
 			if (stalllist.size() > 0) {
 				is = true;
 			}
 		}
 		ResRentStallFlag flag = new ResRentStallFlag();
 		flag.setAuthFlag(is);
-	
-		Set<Object> members = this.redisService.members(RedisKey.USER_APP_SHARE_STALL.key+user.getId());
-		if(members != null && members.size() != 0) {
+
+		Set<Object> members = this.redisService.members(RedisKey.USER_APP_SHARE_STALL.key + user.getId());
+		if (members != null && members.size() != 0) {
 			flag.setShareFlag(true);
-			this.redisService.remove(RedisKey.USER_APP_SHARE_STALL.key+user.getId());
+			this.redisService.remove(RedisKey.USER_APP_SHARE_STALL.key + user.getId());
 		}
 		return flag;
 	}
@@ -895,8 +898,23 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 			}
 			Set<Long> ids = new HashSet<Long>();
 			if (CollectionUtils.isNotEmpty(stalllist) && stalllist.size() > 0) {
-				for (EntOwnerStall entOwnerStall : stalllist) {
-					ids.add(entOwnerStall.getPreId());
+				if (StringUtils.isNotBlank(user.getAppId())) {
+					List<ResOpenPres> openPres = prefectureClient.openPres(user.getAppId());
+					if (CollectionUtils.isNotEmpty(openPres)) {
+						Set<Long> preIds = openPres.stream().map(f -> f.getId()).collect(Collectors.toSet());
+						for (EntOwnerStall entOwnerStall : stalllist) {
+							if(preIds.contains(entOwnerStall.getPreId())) {
+								ids.add(entOwnerStall.getPreId());
+							}
+						}
+					}
+				}else {
+					for (EntOwnerStall entOwnerStall : stalllist) {
+						ids.add(entOwnerStall.getPreId());
+					}
+				}
+				if (ids.size() == 0) {
+					return list;
 				}
 				prelist = ownerStallClusterMapper.findPreByIds(ids);
 			}
@@ -950,18 +968,37 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		List<ResHaveRentPreStall> rentUserStallList = null;
 		ResHaveRentPreStall rentUserStall = null;
 		ResHaveRentPre rentUser = null;
-		
+		List<EntRentedRecord> changesRecord = new ArrayList<>();
 		List<EntOwnerStall> stalllist = ownerStallClusterMapper.findStall(user.getId());
 
 		log.info("v2.0.0.2 userId = {} stalllist={}", user.getId(), JSON.toJSON(stalllist));
 		if (CollectionUtils.isEmpty(stalllist)) {
 			return authRentStall;
 		}
-		Set<Long> preIds = stalllist.stream().map(f -> f.getPreId()).collect(Collectors.toSet());
+		//Set<Long> preIds = stalllist.stream().map(f -> f.getPreId()).collect(Collectors.toSet());
 		List<Long> stallIds = stalllist.stream().map(f -> f.getStallId()).collect(Collectors.toList());
 		Set<Long> stallIdList = new HashSet<>();
 		// 所拥有的所有车区信息
-		List<EntOwnerPre> preList = ownerStallClusterMapper.findPreByIds(preIds);
+		Set<Long> ids = new HashSet<Long>();
+		if (StringUtils.isNotBlank(user.getAppId())) {
+			List<ResOpenPres> openPres = prefectureClient.openPres(user.getAppId());
+			if (CollectionUtils.isNotEmpty(openPres)) {
+				Set<Long> preIds = openPres.stream().map(f -> f.getId()).collect(Collectors.toSet());
+				for (EntOwnerStall entOwnerStall : stalllist) {
+					if(preIds.contains(entOwnerStall.getPreId())) {
+						ids.add(entOwnerStall.getPreId());
+					}
+				}
+			}
+		}else {
+			for (EntOwnerStall entOwnerStall : stalllist) {
+				ids.add(entOwnerStall.getPreId());
+			}
+		}
+		if (ids.size() == 0) {
+			return authRentStall;
+		}
+		List<EntOwnerPre> preList = ownerStallClusterMapper.findPreByIds(ids);
 		List<String> gateways = preList.stream().map(pre -> pre.getGateway()).collect(Collectors.toList());
 		List<ResLockInfos> lockInfos = this.feignLockClient.lockLists(gateways);
 		Map<Long, List<ResLockInfo>> tempMap = new HashMap<>();
@@ -1027,8 +1064,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											rentUserStall.setBattery(inf.getElectricity());
 											// 车位状态 0 上方无车 1 上方有车 ，其他值 表示未知
 											rentUserStall.setParkingState(inf.getParkingState());
-											// 网关状态(默认展示0 调不到锁平台时显示0) 0离线 1 在线
-											rentUserStall.setGatewayStatus(inf.getOnlineState());
+											// 网关状态(默认展示0 调不到锁平台时显示0) 0离线 1 在线 inf.getOnlineState()
+											rentUserStall.setGatewayStatus(1);
 											// 锁状态 1升起 2 降下
 											log.info("...lock_sn = {} lock-state= {}",enttall.getLockSn(), inf.getLockState());
 											if (inf.getLockState() == 1) {
@@ -1047,6 +1084,16 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 
 						for (EntRentedRecord resRentedRecord : records) {
 							if (resRentedRecord.getStallId().equals(enttall.getStallId())) {
+								//20190528新增代码
+								if(rentUserStall.getLockStatus() == 1) {
+									if(resRentedRecord.getStatus().intValue() != 1 ) {
+										resRentedRecord.setStatus(1l);
+										resRentedRecord.setLeaveTime(new Date());
+										rentUserStall.setStallStatus(1);
+										changesRecord.add(resRentedRecord);
+									}
+								}
+								
 								switch (rentUserStall.getLockStatus()) {
 								case 1:
 									rentUserStall.setUseUpLockTime(resRentedRecord.getLeaveTime());
@@ -1091,6 +1138,14 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 		}
 		log.info("rentUserList = {}",JSON.toJSON(rentUserList));
 		authRentStall.setRentPres(rentUserList);
+		
+		new Thread(()->{
+			if(CollectionUtils.isNotEmpty(rentUserList)) {
+				if(CollectionUtils.isNotEmpty(changesRecord)) {
+					updateRecord(changesRecord);
+				}
+			}
+		},"v2.0.2批量更新用户使用记录线程"+Thread.currentThread().getName()); 
 		return authRentStall;
 	}
 	

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import cn.linkmore.prefecture.client.PrefectureClient;
 import cn.linkmore.prefecture.request.ReqPrefecture;
+import cn.linkmore.prefecture.response.ResOpenPres;
 import cn.linkmore.prefecture.response.ResPre;
 import cn.linkmore.prefecture.response.ResPrefecture;
 import cn.linkmore.prefecture.response.ResPrefectureDetail;
@@ -71,7 +72,9 @@ public class PrefectureClientHystrix implements PrefectureClient {
 		return null;
 	}
 	
-	
-	
+	public List<ResOpenPres> openPres(String appId) {
+		log.info("prefecture service List<ResOpenPres> openPres(appId) hystrix");
+		return null;
+	}
 
 }

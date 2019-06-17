@@ -82,6 +82,24 @@ public class AppUserRentStallController {
 		}
 		 return response;
 	}
+	
+	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
+	@RequestMapping(value = "/v2.0.2/list", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<ResHaveRentList> rentStallList(@Validated  @RequestBody ReqLocation  location,HttpServletRequest request) {
+		ResponseEntity<ResHaveRentList> response = null;
+		 try {
+			 ResHaveRentList stallList = userRentStallService.findRentStallList(request,location);
+			 response = ResponseEntity.success(stallList, request);
+		}  catch (BusinessException e) {
+			response = ResponseEntity.fail( e.getStatusEnum(),  request);
+		} catch (Exception e) { 
+			log.info("exception = {} stack = {}",e.getMessage(),e.getStackTrace());
+			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
+		}
+		 return response;
+	}
+	
 	@ApiOperation(value = "长租用户操作车位锁",notes = "8005099地锁升起失败,再升一次,8005100地锁降下失败,再降一次,8005101地锁升起失败,8005102地锁降下失败,8005093 车位锁其他用户在操作;", consumes = "application/json")
 	@RequestMapping(value = "/v2.0/control", method = RequestMethod.POST)
 	@ResponseBody
@@ -152,23 +170,5 @@ public class AppUserRentStallController {
 		List<OwnerPre> ownerPreList = userRentStallService.authStall(request);
 		return ResponseEntity.success(ownerPreList, request);
 	}
-	
-	@ApiOperation(value = "获取车位列表", notes = "根据用户身份获取已拥有车位", consumes = "application/json")
-	@RequestMapping(value = "/v2.0.2/list", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<ResHaveRentList> rentStallList(@Validated  @RequestBody ReqLocation  location,HttpServletRequest request) {
-		ResponseEntity<ResHaveRentList> response = null;
-		 try {
-			 ResHaveRentList stallList = userRentStallService.findRentStallList(request,location);
-			 response = ResponseEntity.success(stallList, request);
-		}  catch (BusinessException e) {
-			response = ResponseEntity.fail( e.getStatusEnum(),  request);
-		} catch (Exception e) { 
-			log.info("exception = {} stack = {}",e.getMessage(),e.getStackTrace());
-			response = ResponseEntity.fail(StatusEnum.SERVER_EXCEPTION, request);
-		}
-		 return response;
-	}
-	
 	
 }
