@@ -7,12 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Service;
-
 import cn.linkmore.bean.common.Constants.RedisKey;
 import cn.linkmore.bean.common.security.CacheUser;
 import cn.linkmore.bean.exception.BusinessException;
@@ -24,9 +21,6 @@ import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlow;
 import cn.linkmore.enterprise.controller.ent.response.ResDayTrafficFlows;
 import cn.linkmore.enterprise.controller.ent.response.ResIncome;
 import cn.linkmore.enterprise.dao.cluster.EntAuthPreClusterMapper;
-import cn.linkmore.enterprise.entity.EntAuthPre;
-import cn.linkmore.enterprise.entity.EntAuthStall;
-import cn.linkmore.enterprise.entity.EntPrefecture;
 import cn.linkmore.enterprise.entity.EntStaff;
 import cn.linkmore.enterprise.service.EntStaffService;
 import cn.linkmore.enterprise.service.EntStallService;

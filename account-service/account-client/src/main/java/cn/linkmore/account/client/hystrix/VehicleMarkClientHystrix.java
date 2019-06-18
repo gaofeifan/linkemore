@@ -1,5 +1,6 @@
 package cn.linkmore.account.client.hystrix;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class VehicleMarkClientHystrix  implements VehicleMarkClient{
  
 	public List<ResVechicleMark> list(@PathVariable ("userId")Long userId){
 		log.info("account service VechicleMark list(Long userId) hystrix");
-		return null;
+		return new ArrayList<ResVechicleMark>();
 	}
 	 
 	public void create( @RequestBody ReqVehicleMark bean) {
