@@ -1,13 +1,14 @@
 server:
   port: 8002
   session:
-    timeout: 60 
+    timeout: 10000 
 spring:
   application:
     name: prefecture-server
   boot: 
     admin:
-      url: http://192.168.1.142:6002
+      url: http://192.168.1.128:6002
+      
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ipAddress}:${server.port}
@@ -17,13 +18,14 @@ eureka:
   client:
     fetch-registry: true 
     serviceUrl:
-      defaultZone: http://192.168.1.142:6003/eureka/
+      defaultZone: http://192.168.1.128:6003/eureka/ 
 feign:
   hystrix:
     enabled: true
+
 ribbon:
-  ConnectTimeout: 6000
-  ReadTimeout: 60000
+  ConnectTimeout: 2000
+  ReadTimeout: 35000
 hystrix: 
   command:
     default:
@@ -32,19 +34,16 @@ hystrix:
           enabled: true
         isolation:
           thread:
-            timeoutInMilliseconds: 35000
-            ribbon:
-              ReadTimeout: 30000
-              ConnectTimeout: 35000    
- 
+            timeoutInMilliseconds: 70000
+
 master-db:   
-  url: jdbc:mysql://192.168.1.218:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
+  url: jdbc:mysql://192.168.1.218:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8&useSSL=false
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
-  initial-size: 10
-  min-idle: 10
-  max-active: 20 
+  initial-size: 2
+  min-idle: 2
+  max-active: 5 
   max-wait: 60000 
   time-between-eviction-runs-millis: 60000 
   min-evictable-idle-time-millis: 30000
@@ -58,13 +57,13 @@ master-db:
   connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   
 cluster-db:   
-  url: jdbc:mysql://192.168.1.219:3306/db_linkmore?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
+  url: jdbc:mysql://192.168.1.219:3306/linkmore_cn?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF8
   username: root
   password: Linkmore@2018
   driver-class-name: com.mysql.jdbc.Driver  
-  initial-size: 10
-  min-idle: 10
-  max-active: 20 
+  initial-size: 2
+  min-idle: 2
+  max-active: 5 
   max-wait: 60000 
   time-between-eviction-runs-millis: 60000 
   min-evictable-idle-time-millis: 30000
@@ -84,7 +83,7 @@ security:
 redis:
   host: 192.168.1.218
   port: 6379
-  database: 4
+  database: 2
   timeout: 5000
   password: ppyx1234
   pool-max-active: 500
@@ -102,9 +101,6 @@ lock:
   app-secret: b36441d95239bc919eac75aa18c0c54b
   app-id: 95b94e076c8546db9f329bbd8c0f2030
   linkemore-lock-url: http://open-api.linkmoreparking.cn
-logging:
-  level:
-     cn.linkmore.prefecture.dao : debug
 
 swagger:
   enable: true
@@ -122,3 +118,4 @@ strategyfee:
     detail: http://192.168.1.76:8086//charge/api/get_charge_detail
   fee-code: 987656
   fee-secret: 99876505523
+    
