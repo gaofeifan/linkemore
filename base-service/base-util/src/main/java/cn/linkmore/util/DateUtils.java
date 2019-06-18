@@ -552,17 +552,22 @@ public class DateUtils {
 		}
 	}
 	
+	/**
+	 * @Description  获取两个时间相差的天数
+	 * @Author   GFF 
+	 * @Version  v2.0
+	 */
+	public static int differentDaysByMillisecond(Date date1,Date date2) {
+        int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
+        return days+1;
+    }
+	
 	public static void main(String[] args) throws ParseException {
 //		Date date = getPast2String(-1, Calendar.getInstance());
-		SimpleDateFormat sdf = new SimpleDateFormat(DARW_FORMAT_TIME);
-		Date s = sdf.parse("2019-06-06 17:58:02");
-		Date e = sdf.parse("2019-06-10 16:10:32");
-		long time = e.getTime() - s.getTime();
-		System.out.println(time);
-		 long hours = (time*(1000 * 60 * 60 * 24))/(1000* 60 * 60); //获取时
-		 long minutes = (time*(1000 * 60 * 60 * 24)-hours*(1000* 60 * 60))/(1000*
-		 60); //获取分钟
-		System.out.println("小时"+hours);
-		System.out.println("分钟"+minutes);
+		SimpleDateFormat sdf = new SimpleDateFormat(DARW_FORMAT);
+		Date s = sdf.parse("2019-06-10");
+		Date e = sdf.parse("2019-06-16");
+		int millisecond = differentDaysByMillisecond(s, e);
+		System.out.println(millisecond);
 	}
 }

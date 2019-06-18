@@ -24,6 +24,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>  
+  <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>5.1</version>
+        </dependency>
         <dependency>
 			<groupId>de.codecentric</groupId>
 			<artifactId>spring-boot-admin-starter-client</artifactId>
@@ -44,6 +49,11 @@
 			<artifactId>redis-service</artifactId>
 			<version>${project.version}</version>
 		</dependency> 
+		<!-- <dependency>
+			<groupId>cn.linkmore</groupId>
+			<artifactId>elk-service</artifactId>
+			<version>${project.version}</version>
+		</dependency> -->
 		<dependency>
 			<groupId>cn.linkmore</groupId>
 			<artifactId>base-bean</artifactId>

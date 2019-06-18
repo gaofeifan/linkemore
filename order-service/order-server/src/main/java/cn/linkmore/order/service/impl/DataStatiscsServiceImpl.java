@@ -1,5 +1,6 @@
 package cn.linkmore.order.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.linkmore.bean.common.Constants;
 import cn.linkmore.bean.common.Constants.RedisKey;
@@ -192,6 +194,10 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 		if(de == null) {
 			return preDetails;
 		}
+		List<String> floor = this.prefectureClient.getFloor(details.getPreId());
+		if(floor != null) {
+			preDetails.setFloors(floor);
+		}
 		ResPrefectureDetail prefectureDetail = this.prefectureClient.findById(details.getPreId());
 		preDetails.setPreId(prefectureDetail.getId());
 		preDetails.setPreName(prefectureDetail.getName());
@@ -217,12 +223,9 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 		param .put("preId",details.getPreId());
 		param.put("floor", details.getFloor());
 		List<ResStall> preStallList = this.stallClient.findPreStallList(param );
+
 		if(preStallList == null || preStallList.size() == 0) {
 			return preDetails;
-		}
-		List<String> floor = this.prefectureClient.getFloor(details.getPreId());
-		if(floor != null) {
-			preDetails.setFloors(floor);
 		}
 		preDetails.setTotalStallNumber(de.getTotalStallNumber());
 		preDetails.setEntTotalStallNumber(de.getOwnerStallNumber());
@@ -252,6 +255,10 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 	public ResPreReportForms findPreReportForms(HttpServletRequest request, ReqPreReportForms reportForms) {
 		cn.linkmore.enterprise.request.ReqPreDetails details = new cn.linkmore.enterprise.request.ReqPreDetails(reportForms.getFloor(),null,reportForms.getPreId());
 		ResPreReportForms forms = new ResPreReportForms();
+		List<String> floor = this.prefectureClient.getFloor(details.getPreId());
+		if(floor != null) {
+			forms.setFloors(floor);
+		}
 		if(getRise()) {
 			Object object = this.redisService.hmGet(RedisKey.STAFF_DATA_COUNT_PRE_FORMS.key, reportForms.getPreId());
 			if(object != null) {
@@ -278,17 +285,17 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 			param.put("floor", reportForms.getFloor());
 		}
 		List<ResStall> preStallList = this.stallClient.findPreStallList(param );
+
 		if(preStallList == null || preStallList.size() == 0) {
 			return forms;
 		}
-		List<String> floor = this.prefectureClient.getFloor(details.getPreId());
+		
 		ResPrefectureDetail prefectureDetail = this.prefectureClient.findById(details.getPreId());
 		forms.setValidTime(prefectureDetail.getCreateTime());
-		if(floor != null) {
-			forms.setFloors(floor);
-		}
+	
 		List<ResStallType> stallType = this.stallClient.findStallType(Arrays.asList(details.getPreId()));
 		forms.setType(setType(stallType, details.getPreId()));
+		int stallLength = 0;
 		if(reportForms.getType() == 0) {
 			Date date = reportForms.getDate();
 			details.setStartTime(date);
@@ -309,6 +316,8 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 				Date[] datesc = DateUtils.getWeekDate(start);
 				details.setContrastStartTime((datesc[0]));
 				details.setContrastEndTime(datesc[1]);
+				details.setDay(7);
+				details.setContrastDay(7);
 			}else if(reportForms.getType() == 2) {
 				Date[] dates = DateUtils.getMonthDate(reportForms.getDate());
 				details.setStartTime(dates[0]);
@@ -319,18 +328,29 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 				Date[] datec = DateUtils.getMonthDate(start);
 				details.setContrastEndTime(datec[1]);
 				details.setContrastStartTime(datec[0]);
+				details.setDay(DateUtils.differentDaysByMillisecond(details.getStartTime(), details.getEndTime()));
+				details.setContrastDay(DateUtils.differentDaysByMillisecond(details.getContrastStartTime(),details.getContrastEndTime()));
 			}
-			List<Long> stallIds = preStallList.stream().filter(s -> s.getCreateTime().getTime() <= details.getStartTime().getTime()).map(s -> s.getId() ).collect(Collectors.toList());
+		}
+			List<Long> stallIds = preStallList.stream().filter(s -> DateUtils.convert(s.getCreateTime(), null).getTime() <= details.getEndTime().getTime() &&s.getType() == (short)2).map(s -> s.getId() ).collect(Collectors.toList());
 			details.setStallIds(stallIds);
 			details.setStallCount(stallIds.size());
-			stallIds = preStallList.stream().filter(s -> s.getCreateTime().getTime() <= details.getContrastStartTime().getTime()).map(s -> s.getId() ).collect(Collectors.toList());
+			stallLength +=stallIds.size();
+			stallIds = preStallList.stream().filter(s -> DateUtils.convert(s.getCreateTime(), null).getTime() <= details.getContrastEndTime().getTime()  &&s.getType() == (short)2).map(s -> s.getId() ).collect(Collectors.toList());
 			details.setContrastStallIds(stallIds);
 			details.setType(reportForms.getType());
+//			stallLength +=stallIds.size();
 			details.setContrastStallCount(stallIds.size());
 			ResOwnerStallReportForms ownerReportForms = this.entRentedRecordClient.findOwnerStallReportForms(details);
 			forms.setStartTime(details.getStartTime());
-			
 			forms.setEndTime(details.getEndTime());
+			
+			BigDecimal useTime = new BigDecimal(0);
+			BigDecimal onceTime = new BigDecimal(0);
+			BigDecimal useTimeUp = new BigDecimal(0);
+			BigDecimal onceTimeUp = new BigDecimal(0);
+			int stallUseCount = 0;
+			
 			if(ownerReportForms != null) {
 				forms.setEntAuthStallRelative(ownerReportForms.getAuthStallNumberContrast());
 				forms.setEntUseStallCount(ownerReportForms.getUseStall());
@@ -359,7 +379,20 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 				forms.setEntAuthUseStall(ownerReportForms.getAuthStallNumber());
 				forms.setEntAuthUseStallRelative(ownerReportForms.getAuthStallNumberContrast());
 				forms.setEntOnceStallUseTime(ownerReportForms.getOnceStallUserTime());
+				useTime = useTime.add(toBigDecimal(ownerReportForms.getUseDurationTimestamp()));
+				onceTime = onceTime.add(toBigDecimal(ownerReportForms.getOnceStallUserTimestamp()));
+				useTimeUp = useTimeUp.add(toBigDecimal(ownerReportForms.getUseDurationContrastTimestamp()));
+				onceTimeUp = onceTimeUp.add(toBigDecimal(ownerReportForms.getOnceStallUserContrastTimestamp()));
+				stallUseCount +=ownerReportForms.getUseStallCount();
+				
 			}
+			stallIds = preStallList.stream().filter(s -> DateUtils.convert(s.getCreateTime(), null).getTime() <= details.getEndTime().getTime() &&s.getType() == (short)0).map(s -> s.getId() ).collect(Collectors.toList());
+			details.setStallIds(stallIds);
+			details.setStallCount(stallIds.size());
+			stallLength +=stallIds.size();
+			stallIds = preStallList.stream().filter(s -> DateUtils.convert(s.getCreateTime(), null).getTime() <= details.getContrastEndTime().getTime()  &&s.getType() == (short)0).map(s -> s.getId() ).collect(Collectors.toList());
+			details.setContrastStallIds(stallIds);
+			details.setContrastStallCount(stallIds.size());
 			ResTempStallReportForms tempReportForms = this.ordersService.findTempStallReportForms(details);
 			if(tempReportForms != null) {
 				forms.setTempOnceStallUseTime(tempReportForms.getOnceStallUserTime());
@@ -381,14 +414,36 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 				forms.setTempAppointmentOrder(tempReportForms.getOrderAdvanceNumber());
 				forms.setTempScanCodeOrder(tempReportForms.getOrderScanNumber());
 				forms.setTempShareOrder(tempReportForms.getOrderShareNumber());
+				useTime = useTime.add(toBigDecimal(tempReportForms.getUseDurationTimestamp()));
+				onceTime = onceTime.add(toBigDecimal(tempReportForms.getOnceStallUserTimestamp()));
+				useTimeUp = useTimeUp.add(toBigDecimal(tempReportForms.getUseDurationContrastTimestamp()));
+				onceTimeUp = onceTimeUp.add(toBigDecimal(tempReportForms.getOnceStallUserContrastTimestamp()));
+				stallUseCount+=tempReportForms.getOrderNumber();
 //				if(forms.getValidTime() == null || forms.getValidTime().getTime() >  tempReportForms.getStartTime().getTime()) {
 //					forms.setValidTime(tempReportForms.getStartTime());
 //				}
 			}
-		}
+//			stallIds = preStallList.stream().filter(s -> DateUtils.convert(s.getCreateTime(), null).getTime() <= details.getStartTime().getTime() &&(s.getType() == (short)0 ||s.getType() == (short)2 )).map(s -> s.getId() ).collect(Collectors.toList());
+			if(useTime.doubleValue() != 0) {
+				useTime = useTime.divide(new BigDecimal(stallLength),2,BigDecimal.ROUND_DOWN).divide(new BigDecimal(3600),2, BigDecimal.ROUND_DOWN)
+						.divide(new BigDecimal(DateUtils.differentDaysByMillisecond(details.getStartTime(), details.getEndTime())),2, BigDecimal.ROUND_DOWN).setScale(2, BigDecimal.ROUND_DOWN);
+			}
+			if(useTimeUp.doubleValue() != 0) {
+				useTimeUp = useTimeUp.divide(new BigDecimal(stallLength),2, BigDecimal.ROUND_DOWN).divide(new BigDecimal(3600),2, BigDecimal.ROUND_DOWN).divide(new BigDecimal(DateUtils.differentDaysByMillisecond(details.getStartTime(), details.getEndTime())),2, BigDecimal.ROUND_DOWN).setScale(2, BigDecimal.ROUND_DOWN);
+			}
+			if(onceTime.doubleValue() != 0) {
+				onceTime = onceTime.divide(new BigDecimal(3600),2, BigDecimal.ROUND_DOWN).divide(new BigDecimal(stallUseCount),2, BigDecimal.ROUND_DOWN).setScale(2, BigDecimal.ROUND_DOWN);
+			}
+//			onceTimeUp = onceTimeUp.divide(new BigDecimal(stallUseCount== 0 ? 1 :stallUseCount)).setScale(2, BigDecimal.ROUND_DOWN);
+			forms.setAllStallUseTime(useTime.doubleValue());
+			forms.setAllOnceStallUseTime(onceTime.doubleValue());
+			useTime = useTime.subtract(useTimeUp).multiply(new BigDecimal(100)).divide(useTimeUp.doubleValue() == 0 ? new BigDecimal(1):useTimeUp,2, BigDecimal.ROUND_DOWN).setScale(1, BigDecimal.ROUND_DOWN);
+			forms.setAllStallUseTimeRelative(useTime.doubleValue()+"%");
 		return forms;
 	}
 
+	
+	
 	private CacheUser getUser(HttpServletRequest request) {
 		String os = this.userFactory.createTokenRedisKey(TokenUtil.getKey(request), request.getHeader("os"));
 		CacheUser cu = (CacheUser) this.redisService.get(os);
@@ -428,6 +483,7 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 	}
 
 	@Override
+	@Transactional
 	public void saveVirtualData(ReqDataCount dataCount) {
 			//		首页
 			ResPreList resPreList = new ResPreList();
@@ -442,7 +498,6 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 			resPreListType.setOrderIncome(dataCount.getOrderIncome());
 			resPreListType.setType(dataCount.getType());
 			resPreList.setListType(resPreListType);
-			this.redisService.add(RedisKey.STAFF_DATA_COUNT_PRE_LIST.key, resPreList);
 			// 详情 
 			ResPreDetails resPreDetails = null;
 			List<ResStaffDataCountVo<ResPreDetails>> resPreDetailsList = new ArrayList<>();
@@ -455,6 +510,8 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 				}
 				String[] data = floor.split(",");
 				resPreDetails = new ResPreDetails();
+				resPreDetails.setPreId(dataCount.getPreId());
+				resPreDetails.setPreName(dataCount.getPreName());
 				resPreDetails.setTotalStallNumber(toInt(data[1]));
 				resPreDetails.setStallUseNumber(toInt(data[2]));
 				resPreDetails.setEntTotalStallNumber(toInt(data[3]));
@@ -473,7 +530,7 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 				ResStaffDataCountVo<ResPreDetails> resPreListVo = new ResStaffDataCountVo<ResPreDetails>(floor, null, resPreDetails);
 				resPreDetailsList.add(resPreListVo);
 			}
-			this.redisService.hmSet(RedisKey.STAFF_DATA_COUNT_PRE_DETAILS.key, dataCount.getPreId(), resPreDetailsList);
+			
 				
 				//报表
 //				"#{固定车位数},#{固定车位数环比},#{固定使用次数},#{固定使用次数环比},#{固定自用},#{固定自用环比},#{固定授权},#{固定授权环比}";
@@ -533,6 +590,35 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 					System.out.println(JsonUtil.toJson(resPreReportForms));
 					ResStaffDataCountVo<ResPreReportForms> vo = new ResStaffDataCountVo<ResPreReportForms>(data[0].toString(), toInt(data[1]), resPreReportForms);
 					resPreReportFormsList.add(vo);
+				}
+				Object ob = null;
+				Set<Object> members = this.redisService.members(RedisKey.STAFF_DATA_COUNT_PRE_LIST.key);
+				for (Object object : members) {
+					ResPreList o = (ResPreList)object;
+					if(o != null && o.getPreId() != null && o.getPreId().longValue() == resPreList.getPreId().longValue()) {
+						ob = object;
+						break;
+					}
+					o = null;
+				}
+				if(ob != null) {
+					members.remove(ob);
+					members.add(resPreList);
+					this.redisService.addAll(RedisKey.STAFF_DATA_COUNT_PRE_LIST.key, members);
+				}else {
+					this.redisService.add(RedisKey.STAFF_DATA_COUNT_PRE_LIST.key, resPreList);
+				}
+				Object hmGet = this.redisService.hmGet(RedisKey.STAFF_DATA_COUNT_PRE_DETAILS.key,  dataCount.getPreId());
+				if(hmGet != null) {
+					this.redisService.remove(RedisKey.STAFF_DATA_COUNT_PRE_DETAILS.key);
+					hmGet = null;
+				}
+				this.redisService.hmSet(RedisKey.STAFF_DATA_COUNT_PRE_DETAILS.key, dataCount.getPreId(), resPreDetailsList);
+				
+				hmGet = this.redisService.hmGet(RedisKey.STAFF_DATA_COUNT_PRE_FORMS.key,  dataCount.getPreId());
+				if(hmGet != null) {
+					this.redisService.remove(RedisKey.STAFF_DATA_COUNT_PRE_FORMS.key);
+					hmGet = null;
 				}
 				this.redisService.hmSet(RedisKey.STAFF_DATA_COUNT_PRE_FORMS.key,dataCount.getPreId(),resPreReportFormsList);
 		}
@@ -630,5 +716,10 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 	}
 	
 
-
+	private BigDecimal toBigDecimal(Double obj) {
+		if(obj == null) {
+			return new BigDecimal(0);
+		}
+		return new BigDecimal(obj);
+	}
 }
