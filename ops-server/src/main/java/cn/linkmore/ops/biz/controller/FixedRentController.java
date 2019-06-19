@@ -260,6 +260,7 @@ public class FixedRentController  extends BaseController{
 				if (StringUtils.isNotEmpty(checkMsg)) {
 					return new ViewMsg(checkMsg, true); 
 				}
+				reqFixedRent.setPreId(getPerson().getPreId());
 				checkMsg=fixedRentService.check(reqFixedRent);
 				if(StringUtils.isNotEmpty(checkMsg)) {
 					return new ViewMsg(checkMsg, false);
