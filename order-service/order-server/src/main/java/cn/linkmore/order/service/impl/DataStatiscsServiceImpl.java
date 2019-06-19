@@ -296,6 +296,7 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 		List<ResStallType> stallType = this.stallClient.findStallType(Arrays.asList(details.getPreId()));
 		forms.setType(setType(stallType, details.getPreId()));
 		int stallLength = 0;
+		int stallLengthUp = 0;
 		if(reportForms.getType() == 0) {
 			Date date = reportForms.getDate();
 			details.setStartTime(date);
@@ -339,6 +340,7 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 			stallIds = preStallList.stream().filter(s -> DateUtils.convert(s.getCreateTime(), null).getTime() <= details.getContrastEndTime().getTime()  &&s.getType() == (short)2).map(s -> s.getId() ).collect(Collectors.toList());
 			details.setContrastStallIds(stallIds);
 			details.setType(reportForms.getType());
+			stallLengthUp += stallIds.size();
 //			stallLength +=stallIds.size();
 			details.setContrastStallCount(stallIds.size());
 			ResOwnerStallReportForms ownerReportForms = this.entRentedRecordClient.findOwnerStallReportForms(details);
@@ -369,7 +371,7 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 				 */
 				// 使用数
 				forms.setEntOneselfStallNumber(ownerReportForms.getOneselfUseStall());
-				forms.setEntOneselfStallRelative(ownerReportForms.getOneselfUseStallNumberContrast());
+				forms.setEntOneselfStallRelative(ownerReportForms.getOneselfUseStallContrast());
 				forms.setEntAuthStallNumber(ownerReportForms.getAuthUseStall());
 				forms.setEntAuthStallRelative(ownerReportForms.getAuthUseStallContrast());
 //				forms.setValidTime(ownerReportForms.getStartTime());
@@ -393,6 +395,7 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 			stallIds = preStallList.stream().filter(s -> DateUtils.convert(s.getCreateTime(), null).getTime() <= details.getContrastEndTime().getTime()  &&s.getType() == (short)0).map(s -> s.getId() ).collect(Collectors.toList());
 			details.setContrastStallIds(stallIds);
 			details.setContrastStallCount(stallIds.size());
+			stallLengthUp += stallIds.size();
 			ResTempStallReportForms tempReportForms = this.ordersService.findTempStallReportForms(details);
 			if(tempReportForms != null) {
 				forms.setTempOnceStallUseTime(tempReportForms.getOnceStallUserTime());
@@ -429,7 +432,7 @@ public class DataStatiscsServiceImpl implements DataStatiscsService {
 						.divide(new BigDecimal(DateUtils.differentDaysByMillisecond(details.getStartTime(), details.getEndTime())),2, BigDecimal.ROUND_DOWN).setScale(2, BigDecimal.ROUND_DOWN);
 			}
 			if(useTimeUp.doubleValue() != 0) {
-				useTimeUp = useTimeUp.divide(new BigDecimal(stallLength),2, BigDecimal.ROUND_DOWN).divide(new BigDecimal(3600),2, BigDecimal.ROUND_DOWN).divide(new BigDecimal(DateUtils.differentDaysByMillisecond(details.getStartTime(), details.getEndTime())),2, BigDecimal.ROUND_DOWN).setScale(2, BigDecimal.ROUND_DOWN);
+				useTimeUp = useTimeUp.divide(new BigDecimal(stallLengthUp),2, BigDecimal.ROUND_DOWN).divide(new BigDecimal(3600),2, BigDecimal.ROUND_DOWN).divide(new BigDecimal(DateUtils.differentDaysByMillisecond(details.getStartTime(), details.getEndTime())),2, BigDecimal.ROUND_DOWN).setScale(2, BigDecimal.ROUND_DOWN);
 			}
 			if(onceTime.doubleValue() != 0) {
 				onceTime = onceTime.divide(new BigDecimal(3600),2, BigDecimal.ROUND_DOWN).divide(new BigDecimal(stallUseCount),2, BigDecimal.ROUND_DOWN).setScale(2, BigDecimal.ROUND_DOWN);

@@ -79,12 +79,12 @@ public class DataCountController {
 		ViewMsg msg = null;
 		try {
 			this.dataCountService.start();
-			msg = new ViewMsg("删除成功",true);
+			msg = new ViewMsg("启动成功",true);
 		}catch(DataException e) {
 			msg = new ViewMsg(e.getMessage(),false);
 		}catch(Exception e) {
 			e.printStackTrace();
-			msg = new ViewMsg("删除失败",false);
+			msg = new ViewMsg("启动失败",false);
 		}
 		return msg;
 	}
@@ -94,12 +94,12 @@ public class DataCountController {
 		ViewMsg msg = null;
 		try {
 			this.dataCountService.stop();
-			msg = new ViewMsg("删除成功",true);
+			msg = new ViewMsg("关闭成功",true);
 		}catch(DataException e) {
 			msg = new ViewMsg(e.getMessage(),false);
 		}catch(Exception e) {
 			e.printStackTrace();
-			msg = new ViewMsg("删除失败",false);
+			msg = new ViewMsg("关闭失败",false);
 		}
 		return msg;
 	}
