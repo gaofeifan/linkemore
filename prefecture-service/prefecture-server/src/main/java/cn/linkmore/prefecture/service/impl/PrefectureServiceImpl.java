@@ -644,7 +644,6 @@ public class PrefectureServiceImpl implements PrefectureService {
 		for (int i = 0; i <= 12; i++) {
 			int j = i * 200;
 			if (nowTime >= j && nowTime <= j + 200) {
-				System.out.println(nowTime + " between " + j + " and " + (j + 200));
 				map.put("min", j/100 + ":00");
 				map.put("max", (j + 200)/100 + ":00");
 			}
@@ -664,6 +663,9 @@ public class PrefectureServiceImpl implements PrefectureService {
 		System.out.println("minTime = "+ minTime +" maxTime ="+maxTime + " averageTime = "+averageTime);
 
 		Integer minNum = freeMap.get(betMap.get("min"));
+		if(minNum == null) {
+			minNum = freeMap.get("24:00");
+		}
 		Integer maxNum = freeMap.get(betMap.get("max"));
 
 		Integer average = (minNum + maxNum)/2;
@@ -698,10 +700,7 @@ public class PrefectureServiceImpl implements PrefectureService {
 		}else if(minNum == maxNum){
 			currentNumber = average;
 		}
-		/*if(currentNumber < realNum) {
-			System.out.println("空闲车位数<实际空闲车位数");
-			currentNumber = random(freeMap, betMap, nowTime, realNum);
-		}*/
+		
 		return currentNumber;
 	}
 

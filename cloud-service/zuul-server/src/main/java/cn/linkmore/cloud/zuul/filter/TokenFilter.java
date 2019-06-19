@@ -138,6 +138,9 @@ public class TokenFilter extends ZuulFilter {
 			add("/open/guomao/callBack");
 			add("/open/guomao/refundOrder");
 			add("/open/guomao/queryOrder");
+			
+			add("/app/web-site/v2.0/login-pw");
+			add("/app/web-site/v2.0/register");
 		}
 	};
 

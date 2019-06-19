@@ -140,7 +140,7 @@ public class OpenApiFilter extends ZuulFilter {
         	return null;
 		}
 
-        if(System.currentTimeMillis()-timestamp>5000) {
+        if(System.currentTimeMillis()-timestamp>50000) {
         	filterOut(StatusEnum.OPENAPI_TIMESTAMP_TIMEOUT,ctx);
         	return null;
         }
