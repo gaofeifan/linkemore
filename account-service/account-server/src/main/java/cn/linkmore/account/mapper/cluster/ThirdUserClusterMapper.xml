@@ -24,7 +24,18 @@
     </if>
     <if test="accountName != null">  
     and account_name = #{accountName,jdbcType=VARCHAR}
+    </if> 
+    order by id desc limit 0,1
+  </select>
+  
+  <select id="findByUserId" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_third_user
+    where 1 = 1
+    <if test="userId != null">  
+    and user_id = #{userId,jdbcType=BIGINT}
     </if>
-    limit 0,1
+    order by id desc limit 0,1
   </select>
 </mapper>

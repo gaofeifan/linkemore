@@ -1,7 +1,8 @@
 package cn.linkmore.account.controller.open.requset;
 
 public class ReqOpenUser {
-	
+	//用户id
+	Long id;
 	//唯一标识
 	String accountName;	
 	//手机号
@@ -13,7 +14,12 @@ public class ReqOpenUser {
 	//头像
 	String icon;
 	
-	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getAccountName() {
 		return accountName;
 	}

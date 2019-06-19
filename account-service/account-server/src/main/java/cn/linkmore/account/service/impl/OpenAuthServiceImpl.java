@@ -175,6 +175,7 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 			}
 			//初始化第三方用户信息表
 			thirdUser = new ThirdUser();
+			thirdUser.setThirdUserId(reqOpenUser.getId());
 			thirdUser.setAccountName(reqOpenUser.getAccountName());
 			thirdUser.setAppId("appid");
 			thirdUser.setNickname(reqOpenUser.getNickName());
@@ -204,6 +205,8 @@ public class OpenAuthServiceImpl implements OpenAuthService {
 		u.setAppId("appid");
 		u.setMobile(user.getMobile());
 		u.setToken(key);
+		//存放第三方用户唯一标识到redis用户中
+		u.setAccount(reqOpenUser.getAccountName());
 		cacheOpenUse2(u);
 
 		return key;
