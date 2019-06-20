@@ -8,5 +8,7 @@ import cn.linkmore.account.entity.ThirdUser;
 public interface ThirdUserClusterMapper {
 	
     ThirdUser findByAccountName(Map<String,Object> param);
+    
+    ThirdUser findByUserId(Map<String,Object> param);
 
 }

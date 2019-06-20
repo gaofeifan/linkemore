@@ -11,10 +11,10 @@
   </resultMap>
   <insert id="save" parameterType="cn.linkmore.account.entity.ThirdUser">
     insert into t_third_user (id, account_name, phone, 
-      nickname, user_id, app_id
+      nickname, user_id, app_id, third_user_id
       )
     values (#{id,jdbcType=BIGINT}, #{accountName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{nickname,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{appId,jdbcType=VARCHAR}
+      #{nickname,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{appId,jdbcType=VARCHAR},#{thirdUserId,jdbcType=BIGINT}
       )
   </insert>
   

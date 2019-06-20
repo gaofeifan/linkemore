@@ -594,7 +594,8 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 				if (lockInfo != null) {
 					rentUserStall.setBattery(lockInfo.getElectricity());
 					rentUserStall.setParkingState(lockInfo.getParkingState());
-					rentUserStall.setGatewayStatus(lockInfo.getOnlineState());
+					//rentUserStall.setGatewayStatus(lockInfo.getOnlineState());
+					rentUserStall.setGatewayStatus(1);
 					if (lockInfo.getLockState() == 1) {
 						rentUserStall.setLockStatus(lockInfo.getLockState());
 					} else {
@@ -661,6 +662,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 											rentUserStall.setBattery(inf.getElectricity());
 											rentUserStall.setParkingState(inf.getParkingState());
 											rentUserStall.setGatewayStatus(inf.getOnlineState());
+											rentUserStall.setGatewayStatus(1);
 											if (inf.getLockState() == 1) {
 												log.info(inf.getLockCode() + "===" + inf.getLockState());
 												rentUserStall.setLockStatus(inf.getLockState());
@@ -740,6 +742,7 @@ public class UserRentStallServiceImpl implements UserRentStallService {
 													rentUserStall.setParkingState(inf.getParkingState());
 													rentUserStall.setBattery(inf.getElectricity());
 													rentUserStall.setGatewayStatus(inf.getOnlineState());
+													rentUserStall.setGatewayStatus(1);
 													if (inf.getLockState() == 1) {
 														log.info(inf.getLockCode() + "===" + inf.getLockState());
 														rentUserStall.setLockStatus(inf.getLockState());

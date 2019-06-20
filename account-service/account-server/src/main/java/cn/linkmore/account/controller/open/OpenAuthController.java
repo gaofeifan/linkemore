@@ -243,20 +243,16 @@ public class OpenAuthController {
 					if(obj !=null) {
 						if(obj.has("phone")) {
 							ReqOpenUser reqOpenUser=new ReqOpenUser();
+							reqOpenUser.setId(obj.getLong("id"));
 							reqOpenUser.setAccountName(obj.getString("accountName"));
 							reqOpenUser.setPhone(obj.getString("phone"));
 							reqOpenUser.setNickName(obj.getString("nickName"));
 							reqOpenUser.setSex(obj.getInt("gender"));
-							//reqOpenUser.setIcon(icon);
 							String mytoken = openAuthService.getToken(reqOpenUser);
 							response.sendRedirect(backUri +"?token="+ mytoken);
 						}
 					}
 				}
-				/*
-				response.sendRedirect(backUri +"?userInfo="+ encoder.encodeToString(userInfo.getBytes("UTF-8"))
-					+"&authInfo="+java.net.URLEncoder.encode(encoder.encodeToString(authInfo.getBytes("UTF-8")), "UTF-8"));
-				*/
 			}else {
 				response.setContentType("text/html;charset=utf-8");
 				response.getWriter().print("获取token失败，请联系管理员");

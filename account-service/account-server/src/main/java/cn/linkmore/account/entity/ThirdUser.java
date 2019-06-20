@@ -2,9 +2,10 @@ package cn.linkmore.account.entity;
 
 public class ThirdUser {
     private Long id;
-    /**
-     * 唯一标识
-     */
+    
+    //第三方用户id
+    private Long thirdUserId;
+    //唯一标识
     private String accountName;
 
     private String phone;
@@ -14,8 +15,16 @@ public class ThirdUser {
     private Long userId;
 
     private String appId;
+    
+    public Long getThirdUserId() {
+		return thirdUserId;
+	}
 
-    public Long getId() {
+	public void setThirdUserId(Long thirdUserId) {
+		this.thirdUserId = thirdUserId;
+	}
+
+	public Long getId() {
         return id;
     }
 
