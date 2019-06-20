@@ -73,7 +73,7 @@ public class ResHaveRentPreStall {
 	private String useUserMobile;
 
 	@ApiModelProperty(value = "网关状态(默认展示0  调不到锁平台时显示0) 0离线 1 在线")
-	private int gatewayStatus;
+	private int gatewayStatus = 1;
 	
 	@ApiModelProperty(value = "锁编码")
 	private String lockSn;
