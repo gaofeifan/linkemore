@@ -35,5 +35,7 @@ public interface EntRentedRecordMasterMapper {
 	void updateType(@Param("id")Long id, @Param("type")Short type);
 
 	void updateRecordBatch(List<EntRentedRecord> chengsRecord);
+
+	void updateDownStatus(EntRentedRecord record);
 	
 }

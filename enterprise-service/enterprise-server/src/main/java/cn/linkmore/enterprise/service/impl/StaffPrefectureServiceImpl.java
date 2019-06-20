@@ -140,6 +140,7 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 		reqc.setRobkey(robkey);
 		reqc.setType(stall.getType());
 		Boolean flag = stallClient.managerlock(reqc);
+		
 		if(flag == null || !flag) {
 			if (this.redisService.exists(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId())) {
 				Object object = this.redisService.get(RedisKey.OWNER_CONTROL_LOCK.key + reqc.getStallId());
@@ -154,7 +155,8 @@ public class StaffPrefectureServiceImpl implements StaffPrefectureService {
 			EntRentedRecord record = this.entRentedRecordClusterMapper.findByStallId(reqc.getStallId());
 			if(record != null && record.getStatus().intValue() != 1) {
 				record.setStatus(1L);
-				this.rentedRecordMasterMapper.updateById(record);
+				record.setLeaveTime(new Date());
+				this.rentedRecordMasterMapper.updateDownStatus(record);
 			}
 		}
 		return flag;

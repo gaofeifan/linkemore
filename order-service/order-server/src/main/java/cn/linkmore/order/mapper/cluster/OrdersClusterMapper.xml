@@ -196,7 +196,7 @@
 				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
 	    ))
 		-UNIX_TIMESTAMP(begin_time))/3600
-	)/count(id),1),0) onceStallUserTime,
+	)/count(id),2),0) onceStallUserTime,
 		ifnull(truncate(sum(
 		UNIX_TIMESTAMP(
 			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{endTime},'%Y-%m-%d'),
@@ -210,7 +210,7 @@
 				 date_add(DATE_FORMAT(#{endTime},'%Y-%m-%d'), interval 1 day),end_time
 	    ))
 		-UNIX_TIMESTAMP(begin_time)
-	),1),0) onceStallUserTimestamp
+	),2),0) onceStallUserTimestamp
 	from o_orders where pre_id = #{preId} AND `status` = 3
 	<if test="type == 0">
 			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{startTime},'%Y-%m-%d')
@@ -253,7 +253,7 @@
 				 date_add(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'), interval 1 day),end_time
 	    ))
 		-UNIX_TIMESTAMP(begin_time))/3600
-	)/count(id),1),0) onceStallUserTime ,
+	)/count(id),2),0) onceStallUserTime ,
 	ifnull(truncate(sum(
 		UNIX_TIMESTAMP(
 			if(DATE_FORMAT(end_time,'%Y-%m-%d') > DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'),
@@ -267,7 +267,7 @@
 				 date_add(DATE_FORMAT(#{contrastEndTime},'%Y-%m-%d'), interval 1 day),end_time
 	    ))
 		-UNIX_TIMESTAMP(begin_time)
-	),1),0) onceStallUserTimestamp
+	),2),0) onceStallUserTimestamp
 	from o_orders where pre_id = #{preId} AND `status` = 3
 	<if test="type == 0">
 			AND DATE_FORMAT(begin_time,'%Y-%m-%d') = DATE_FORMAT(#{contrastStartTime},'%Y-%m-%d')

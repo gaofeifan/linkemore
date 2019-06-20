@@ -119,6 +119,15 @@
       type = #{type,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateDownStatus" parameterType="cn.linkmore.enterprise.entity.EntRentedRecord">
+    update t_ent_rented_record
+     set 
+     <if test="leaveTime != null">
+      	leave_time = #{leaveTime,jdbcType=TIMESTAMP},
+     </if>
+      status = #{status,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
   <update id="updateRecordBatch" parameterType="java.util.List">
    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
     update t_ent_rented_record
